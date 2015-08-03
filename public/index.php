@@ -37,6 +37,9 @@ try {
         $url->setBaseUri('/');
         return $url;
     });
+
+    require '../foundation/mvc/router.php';
+
     
     $di->set('router', function(){
         require '../config/routes.php';
