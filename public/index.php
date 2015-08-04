@@ -37,10 +37,14 @@ try {
         $url->setBaseUri('/');
         return $url;
     });
-
-    require '../foundation/mvc/router.php';
-
     
+    require '../foundation/mvc/router.php';
+    require_once '../foundation/config.php';
+    $config = new \Foundation\Config\Config();
+    $config->init();
+
+
+    // @todo - add actions route
     $di->set('router', function(){
         require '../config/routes.php';
         return $router;

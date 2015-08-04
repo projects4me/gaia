@@ -44,9 +44,101 @@
  * using the notation $routes['new_route'] => array(..properties..)
  */
 
-use Phalcon\Config;
+/**
+ * Each route must define the following
+ *  - path  (optional for system && required for app and rest)
+ *  - controller (required)
+ *  - action (required)
+ *  - type (required | possible values - app, system, rest)
+ *  - method (optional)
+ *  - parameters (optional,multiple)
+ */
 
-$routes = array(
+
+$config['routes'] = array(
+    // Index route
+    0 => array(
+        'path' => '/',
+        'controller' => 'index',
+        'action' => 'index',
+        'type' => 'app'
+    ),
     
+    // ------ REST routes
+
+    // GET with the format /api/:controller/:string
+    1 => array(
+        'path' => '/api/:controller/([a-zA-Z0-9_-]+)',
+        'controller' => 1,
+        'action' => 'get',
+        'type' => 'rest',
+        'method' => 'GET',
+        'id' => '2'
+    ),
     
+    // GET with the format /api/:controller/
+    2 => array(
+        'path' => '/api/:controller',
+        'controller' => 1,
+        'action' => 'list',
+        'type' => 'rest',
+        'method' => 'GET',
+    ),
+
+    // POST with the format /api/:controller
+    3 => array(
+        'path' => '/api/:controller/',
+        'controller' => 1,
+        'action' => 'save',
+        'type' => 'rest',
+        'method' => 'POST'
+    ),
+
+    // PUT with the format /api/:controller
+    4 => array(
+        'path' => '/api/:controller/([a-zA-Z0-9_-]+)',
+        'controller' => 1,
+        'action' => 'put',
+        'type' => 'rest',
+        'method' => 'PUT',
+        'id' => 2
+    ),
+
+    // PATCH with the format /api/:controller
+    5 => array(
+        'path' => '/api/:controller/([a-zA-Z0-9_-]+)',
+        'controller' => 1,
+        'action' => 'patch',
+        'type' => 'rest',
+        'method' => 'PATCH',
+        'id' => 2
+    ),
+
+    // DELETE with the format /api/:controller
+    6 => array(
+        'path' => '/api/:controller/([a-zA-Z0-9_-]+)',
+        'controller' => 1,
+        'action' => 'delete',
+        'type' => 'rest',
+        'method' => 'DELETE',
+        'id' => 2
+    ),
+    
+    // ------ end REST routes
+
+    // Not Found Route
+    7 => array(
+        'controller' => 'error',
+        'action' => 'not_found',
+        'type' => 'system',
+        'method' => 'notfound'
+    ),
+
+    // Default Route
+    8 => array(
+        'controller' => 'index',
+        'action' => 'index',
+        'type' => 'system',
+        'method' => 'default'
+    ),
 );

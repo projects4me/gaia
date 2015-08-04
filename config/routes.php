@@ -38,66 +38,69 @@ use Foundation\Mvc\Router;
     //Remove trailing slashes automatically
     $router->removeExtraSlashes(true);
 
-    //main route
-    $router->add("/", array(
-        'controller' => 'index',
-        'action' => 'index'
-    ));
-
-    //GET VERB - GET ELEMENT
-    //Get elemets of relationship. Ex: /department/2/user
-    $router->addGet('/api/:controller/:int/([a-zA-Z0-9_-]+)', array(
-        'controller'    => 1,
-        'action'        => "list",
-        'id'            => 2,
-        'relationship'  => 3
-    ));
-    //Get one element. Ex: /user/2
-    $router->addGet('/api/:controller/:int', array(
-        'controller' => 1,
-        'action'     => "get",
-        'id'         => 2
-    ));
-    //Get all elements. Ex: /user
-    $router->addGet('/api/:controller', array(
-        'controller' => 1,
-        'action'     => "list"
-    ));
-
-//POST VERB - CREATE ELEMENT
-    //Create a new element. Ex: /user
-    $router->addPost('/api/:controller', array(
-        'controller' => 1,
-        'action'     => "save"
-    ));
-
-//PUT VERB - UPDATE ELEMENT
-    //Update a new element. Ex: /user
-    $router->addPut('/api/:controller/:int', array(
-        'controller' => 1,
-        'action'     => "save",
-        'id'         => 2
-    ));
-
-
-//DELETE VERB - UPDATE ELEMENT
-    //Update a new element. Ex: /user
-    $router->addDelete('/api/:controller/:int', array(
-        'controller' => 1,
-        'action'     => "delete",
-        'id'         => 2
-    ));
-
-
-//not founded route
-    $router->notFound(array(
-        'controller' => 'error',
-        'action' => 'page404'        
-    ));
-
-    $router->setDefaults(array(
-        'controller' => 'index',
-        'action' => 'index'
-    ));
+    global $settings;
+    
+    foreach($settings->routes as $approute)
+    {
+        $method = '';
+        if (isset($approute->method))
+        {
+            $method = $approute->method;
+            unset($approute->method);
+        }
+        
+        $path = '';
+        if (isset($approute->path))
+        {
+            $path = $approute->path;
+            unset($approute->path);
+        }
+         
+        $type = $approute->type;
+        unset($approute->type);
+        
+        if ($type == 'rest')
+        {
+            switch ($method)
+            {
+                case 'GET':
+                $router->addGet($path,(array) $approute);
+                break;
+            
+                case 'POST':
+                $router->addPost($path,(array) $approute);
+                break;
+            
+                case 'PUT':
+                $router->addPut($path,(array) $approute);
+                break;
+            
+                case 'PATCH':
+                $router->addPatch($path,(array) $approute);
+                break;
+            
+                case 'DELETE':
+                $router->addDelete($path,(array) $approute);
+                break;
+            }
+        }
+        else if ($type == 'system')
+        {
+            switch ($method)
+            {
+                case 'notfound':
+                $router->notFound((array) $approute);
+                break;
+            
+                case 'default':
+                $router->setDefaults((array) $approute);
+                break;
+            }
+        }
+        else if($type == 'app')
+        {
+            $router->add($path,(array) $approute);
+        }
+    }
 
 return $router;

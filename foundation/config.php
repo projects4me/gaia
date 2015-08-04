@@ -32,8 +32,7 @@
  */
 
 namespace Foundation\Config;
-use Phalcon\Config;
-
+use Phalcon\Config as PhalconConfig;
 
 /**
  * This is the config class in the foundation package. The class manages the
@@ -53,35 +52,71 @@ class Config
     protected $config;
     
     /**
-     * This function is resposible for initializing the configurations and
+     * This function is responsible for initializing the configurations and
      * populating them in the glocal variable $config.
+     * 
+     * @todo make sure that the merge allows config to be overwritten as well
      */
     public function init()
     {
-        global $config;
-        $default = array();
-        $custom = array();
-        
+       
+        global $settings;
         /* First load all the default configurations        */
         $default = $this->loadDefault();
         
         /* Next load all the custom configurations        */
         $custom = $this->loadCustom();
-
+        
+        // Initiate the routes
+        $settings = new PhalconConfig($default);
+        //$customConfig = new PhalconConfig($custom);
+        
+        // Merge them
+        //$settings->merge($customConfig);
     }
     
     /**
+     * This function is responsible including the necassary default 
+     * configurations
      * 
+     * @return array default configurations
+     * @todo merge all the files in folder to one files in future
      */
     protected function loadDefault(){
-        
+        // Loading all the files in foundation/config/
+        return $this->readFolder('../foundation/config/');
     }
     
     /**
+     * This function is responsible including the necassary custom 
+     * configurations, if any
      * 
+     * @return array custom configurations
+     * @todo merge all the files in folder to one files in future
      */
     protected function loadCustom(){
-        
+        // Loading all the files in config/
+        return $this->readFolder('../config/');        
+    }
+    
+    protected function readFolder($folder){
+        $config = array();
+        if (is_dir($folder)){
+            $files = array();
+            $files = scandir($folder,0);
+            if (is_array($files)){
+                $allowed_extenstions = array('.php');
+                foreach($files as $file)
+                {
+                    $file_ext = substr($file, (strlen($file)-4),strlen($file));
+                    if (in_array($file_ext,$allowed_extenstions))
+                    {
+                        require($folder.'/'.$file);
+                    }
+                }
+            }
+        }
+        return $config;
     }
 
 }
