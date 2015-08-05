@@ -69,10 +69,10 @@ class Config
         
         // Initiate the routes
         $settings = new PhalconConfig($default);
-        //$customConfig = new PhalconConfig($custom);
+        $customConfig = new PhalconConfig($custom);
         
         // Merge them
-        //$settings->merge($customConfig);
+        $settings->merge($customConfig);
     }
     
     /**

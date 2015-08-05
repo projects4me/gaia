@@ -37,8 +37,8 @@ try {
         $url->setBaseUri('/');
         return $url;
     });
-    
-    require '../foundation/mvc/router.php';
+
+    // @todo - set in di
     require_once '../foundation/config.php';
     $config = new \Foundation\Config\Config();
     $config->init();
@@ -46,7 +46,9 @@ try {
 
     // @todo - add actions route
     $di->set('router', function(){
-        require '../config/routes.php';
+        require '../foundation/mvc/router.php';
+        $router = new Foundation\Mvc\Router();
+        $router->init();
         return $router;
     });
 
