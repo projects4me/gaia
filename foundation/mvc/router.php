@@ -46,5 +46,103 @@ use Phalcon\Mvc as PhalconRouter;
  */
 class Router extends PhalconRouter\Router
 {
-    
+    /**
+     * This function is responsible for setting initializing the routes set
+     * in configuration files.
+     * 
+     */
+    public function init()
+    {
+        // Initialiing the global settings variable to populate the data
+        global $settings;
+        
+        // Removing extra slashed
+        $this->removeExtraSlashes(true);
+
+        // Traversing through the routes library set in the settings
+        // throwing an exception if no routes were found
+        if (isset($settings->routes) && !empty($settings->routes))
+        {
+            foreach($settings->routes as $approute)
+            {
+                // Initializing 'method' as it is optional and can be blank
+                $method = '';
+                if (isset($approute->method))
+                {
+                    $method = $approute->method;
+                    // unsetting the method from the object so that we can pass
+                    // the same array to the Phalcon\Config class
+                    unset($approute->method);
+                }
+
+                // Initializing 'path' as it is optional and can be blank
+                $path = '';
+                if (isset($approute->path))
+                {
+                    $path = $approute->path;
+                    // unsetting the path from the object so that we can pass
+                    // the same array to the Phalcon\Config class
+                    unset($approute->path);
+                }
+
+                //type is required and we need to make decision on it
+                // possible values for type are rest|app|system
+                $type = $approute->type;
+                // unsetting the type from the object so that we can pass
+                // the same array to the Phalcon\Config class
+                unset($approute->type);
+
+                // processing all the REST routes
+                if ($type == 'rest')
+                {
+                    // swtiching on the bases on method, the supported values
+                    // are GET|POST|PUT|PATCH|DELETE|OPTIONS
+                    switch ($method)
+                    {
+                        case 'GET':
+                        $this->addGet($path,(array) $approute);
+                        break;
+
+                        case 'POST':
+                        $this->addPost($path,(array) $approute);
+                        break;
+
+                        case 'PUT':
+                        $this->addPut($path,(array) $approute);
+                        break;
+
+                        case 'PATCH':
+                        $this->addPatch($path,(array) $approute);
+                        break;
+
+                        case 'DELETE':
+                        $this->addDelete($path,(array) $approute);
+                        break;
+                    }
+                }
+                // processing all the system level routes
+                else if ($type == 'system')
+                {
+                    switch ($method)
+                    {
+                        case 'notfound':
+                        $this->notFound((array) $approute);
+                        break;
+
+                        case 'default':
+                        $this->setDefaults((array) $approute);
+                        break;
+                    }
+                }
+                // processing all the application level routes
+                else if($type == 'app') {
+                    $this->add($path,(array) $approute);
+                }
+            }// end -foreach
+        }
+        else {
+            //@todo throw/log error
+        } // end if
+        
+    }
 }
