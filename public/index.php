@@ -37,10 +37,12 @@ try {
         $url->setBaseUri('/');
         return $url;
     });
-
+    
+    require_once '../foundation/models/model.php';
+    
     // @todo - set in di
     require_once '../foundation/config.php';
-    $config = new \Foundation\Config\Config();
+    $config = new \Foundation\Config();
     $config->init();
 
 

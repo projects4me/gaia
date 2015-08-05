@@ -31,4 +31,24 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
+namespace Foundation\Mvc;
+use Phalcon\Mvc\Model as PhalconModel;
+use Phalcon\Mvc\Model\Message;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Mvc\Model\Validator\InclusionIn;
 
+
+/**
+ * This class is the base model in the foundation framework and is used to
+ * overwrite the default functionality of Phalcon\Mvc\Model in order to
+ * introdcude manual meta-data extensions along with other changes
+ * 
+ * @author Hammad Hassan <gollomer@gmail.com>
+ * @package Foundation\Mvc
+ * @category Model
+ * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ */
+class Model extends PhalconModel
+{
+    
+}

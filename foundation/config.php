@@ -31,7 +31,7 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-namespace Foundation\Config;
+namespace Foundation;
 use Phalcon\Config as PhalconConfig;
 
 /**

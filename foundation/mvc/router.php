@@ -118,6 +118,10 @@ class Router extends PhalconRouter\Router
                         case 'DELETE':
                         $this->addDelete($path,(array) $approute);
                         break;
+
+                        case 'OPTIONS':
+                        $this->addOptions($path,(array) $approute);
+                        break;
                     }
                 }
                 // processing all the system level routes
