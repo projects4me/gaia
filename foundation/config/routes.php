@@ -123,11 +123,21 @@ $config['routes'] = array(
         'method' => 'DELETE',
         'id' => 2
     ),
-    
+
+    // OPTIONS with the format /api/:controller
+    7 => array(
+        'path' => '/api/:controller/([a-zA-Z0-9_-]+)',
+        'controller' => 1,
+        'action' => 'options',
+        'type' => 'rest',
+        'method' => 'OPTIONS',
+        'id' => 2
+    ),
+
     // ------ end REST routes
 
     // Not Found Route
-    7 => array(
+    8 => array(
         'controller' => 'error',
         'action' => 'not_found',
         'type' => 'system',
@@ -135,7 +145,7 @@ $config['routes'] = array(
     ),
 
     // Default Route
-    8 => array(
+    9 => array(
         'controller' => 'index',
         'action' => 'index',
         'type' => 'system',
