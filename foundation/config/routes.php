@@ -152,3 +152,5 @@ $config['routes'] = array(
         'method' => 'default'
     ),
 );
+
+return $config;

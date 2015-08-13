@@ -41,7 +41,7 @@ try {
     require_once '../foundation/models/model.php';
     
     // @todo - set in di
-    require_once '../foundation/config.php';
+    require_once '../foundation/libs/config.php';
     $config = new \Foundation\Config();
     $config->init();
 
@@ -56,12 +56,7 @@ try {
 
     // Set up the database service
     $di->set('db', function () {
-        return new DbAdapter(array(
-            "host"      => "localhost",
-            "username"  => "root",
-            "password"  => "123qwe",
-            "dbname"    => "projects4me"
-        ));
+        return new DbAdapter((array) $GLOBALS['settings']['database']);
     });
   
     //Handle the request

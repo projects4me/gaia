@@ -69,10 +69,10 @@ class Config
         
         // Initiate the routes
         $settings = new PhalconConfig($default);
-        $customConfig = new PhalconConfig($custom);
+        $customSettings = new PhalconConfig($custom);
         
         // Merge them
-        $settings->merge($customConfig);
+        $settings->merge($customSettings);
     }
     
     /**
@@ -100,7 +100,7 @@ class Config
     }
     
     protected function readFolder($folder){
-        $config = array();
+        $system_config = array();
         if (is_dir($folder)){
             $files = array();
             $files = scandir($folder,0);
@@ -111,12 +111,20 @@ class Config
                     $file_ext = substr($file, (strlen($file)-4),strlen($file));
                     if (in_array($file_ext,$allowed_extenstions))
                     {
-                        require($folder.'/'.$file);
+                        $returned_data = $this->readFile($folder.'/'.$file);
+                        if (is_array($returned_data))
+                            $system_config = array_merge($system_config,$returned_data);
                     }
                 }
             }
         }
-        return $config;
+        return $system_config;
+    }
+    
+    protected function readFile($path)
+    {
+        if (file_exists($path))
+            return include $path;
     }
 
 }
