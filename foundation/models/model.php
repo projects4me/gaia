@@ -51,6 +51,12 @@ use Foundation\metaManager;
  */
 class Model extends PhalconModel
 {
+    /**
+     * This function read the meta data stored for a model and returns an array
+     * with parsed in a format that PhalconModel can understand
+     * 
+     * @return array
+     */
     public function metaData()
     {
         return metaManager::getModelMeta(get_class($this));

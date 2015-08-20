@@ -42,7 +42,7 @@ namespace Foundation;
 class fileHandler
 {
     /**
-     * This function will read all the files in the gived $folder and will
+     * This function will read all the files in the given $folder and will
      * return all them merged in an array.
      * 
      * @param string $folder

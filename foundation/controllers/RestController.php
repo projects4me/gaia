@@ -1,5 +1,7 @@
 <?php
 
+namespace Foundation\Mvc;
+
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\Resultset;
 use Phalcon\DI;

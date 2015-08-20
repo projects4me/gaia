@@ -16,11 +16,13 @@ try {
     //Register an autoloader
     $loader = new \Phalcon\Loader();
     $loader->registerDirs(array(
+        '../foundation/controllers/',
         '../app/controllers/',
         '../app/models/',
         '../config/',        
     ))->register();
 
+    require_once('../foundation/controllers/RestController.php');
     //Create a DI
     $di = new Phalcon\DI\FactoryDefault();
 
