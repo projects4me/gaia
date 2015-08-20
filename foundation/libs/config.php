@@ -84,7 +84,7 @@ class Config
      */
     protected function loadDefault(){
         // Loading all the files in foundation/config/
-        return $this->readFolder('../foundation/config/');
+        return fileHandler::readFolder('../foundation/config/');
     }
     
     /**
@@ -96,35 +96,9 @@ class Config
      */
     protected function loadCustom(){
         // Loading all the files in config/
-        return $this->readFolder('../config/');        
+        return fileHandler::readFolder('../config/');        
     }
     
-    protected function readFolder($folder){
-        $system_config = array();
-        if (is_dir($folder)){
-            $files = array();
-            $files = scandir($folder,0);
-            if (is_array($files)){
-                $allowed_extenstions = array('.php');
-                foreach($files as $file)
-                {
-                    $file_ext = substr($file, (strlen($file)-4),strlen($file));
-                    if (in_array($file_ext,$allowed_extenstions))
-                    {
-                        $returned_data = $this->readFile($folder.'/'.$file);
-                        if (is_array($returned_data))
-                            $system_config = array_merge($system_config,$returned_data);
-                    }
-                }
-            }
-        }
-        return $system_config;
-    }
-    
-    protected function readFile($path)
-    {
-        if (file_exists($path))
-            return include $path;
-    }
+
 
 }

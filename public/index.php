@@ -39,6 +39,9 @@ try {
     });
     
     require_once '../foundation/models/model.php';
+    require_once '../foundation/libs/fileHanlder.php';
+
+    require_once '../foundation/libs/metaManager.php';
     
     // @todo - set in di
     require_once '../foundation/libs/config.php';

@@ -31,28 +31,48 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-namespace Foundation\Mvc;
-use Phalcon\Mvc\Model as PhalconModel;
-use Phalcon\Mvc\Model\Message;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
-use Phalcon\Mvc\Model\Validator\InclusionIn;
-use Foundation\metaManager;
+$models['Users'] = array(
+   'tableName' => 'users',
+   'fields' => array(
+       'id' => array(
+           'name' => 'id',
+           'label' => 'LBL_USERS_ID',
+           'type' => 'int',
+           'length' => '11',
+           'null' => false,
+       ),
+       'username' => array(
+           'name' => 'username',
+           'label' => 'LBL_USERS_USERNAME',
+           'type' => 'varchar',
+           'length' => '50',
+           'null' => false,
+       ),
+       'password' => array(
+           'name' => 'password',
+           'label' => 'LBL_USERS_PASSWORD',
+           'type' => 'varchar',
+           'length' => '50',
+           'null' => false,
+       ),
+       'email' => array(
+           'name' => 'email',
+           'label' => 'LBL_USERS_EMAIL',
+           'type' => 'varchar',
+           'length' => '200',
+           'null' => true,
+       )
+    ),
+    'indexes' => array(
+        'id' => 'primary',
+        'username' => 'unique',
+    ),
+    'foriegnKeys' => array(
+       
+    ) ,
+    'triggers' => array(
+        
+    ),
+);
 
-
-/**
- * This class is the base model in the foundation framework and is used to
- * overwrite the default functionality of Phalcon\Mvc\Model in order to
- * introdcude manual meta-data extensions along with other changes
- * 
- * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation\Mvc
- * @category Model
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
- */
-class Model extends PhalconModel
-{
-    public function metaData()
-    {
-        return metaManager::getModelMeta(get_class($this));
-    }   
-}
+return $models;

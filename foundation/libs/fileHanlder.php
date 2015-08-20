@@ -31,28 +31,56 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Users'] = array(
-   'tableName' => 'users',
-   'fields' => array(
-       'id' => array(
-           'name' => 'id',
-           'label' => 'LBL_USERS_ID',
-           'type' => 'int',
-           'length' => '11',
-       ),
-       'username' => array(
-           'name' => 'username',
-           'label' => 'LBL_USERS_USERNAME',
-           'type' => 'varchar',
-           'length' => '50'
-       ),
-       'password' => array(
-           'name' => 'password',
-           'label' => 'LBL_USERS_PASSWORD',
-           'type' => 'varchar',
-           'length' => '50'
-       )
-   ) 
-);
+namespace Foundation;
 
-return $models;
+/**
+ * This class is used for basic filing operations. Foundation applications rely
+ * on metadata and configuragtions which are stored using files in the fs. This
+ * class provides functions that helps to retireve the data stored
+ * 
+ */
+class fileHandler
+{
+    /**
+     * This function will read all the files in the gived $folder and will
+     * return all them merged in an array.
+     * 
+     * @param string $folder
+     * @return array
+     */
+    public function readFolder($folder){
+        $data = array();
+        if (is_dir($folder)){
+            $files = array();
+            $files = scandir($folder,0);
+            if (is_array($files)){
+                $allowed_extenstions = array('.php');
+                foreach($files as $file)
+                {
+                    $file_ext = substr($file, (strlen($file)-4),strlen($file));
+                    if (in_array($file_ext,$allowed_extenstions))
+                    {
+                        $returned_data = self::readFile($folder.'/'.$file);
+                        if (is_array($returned_data))
+                            $data = array_merge($data,$returned_data);
+                    }
+                }
+            }
+        }
+        return $data;
+    }
+    
+    /**
+     * This function returns the array stored in the file at $path
+     * 
+     * @todo expection handling
+     * @param string $path
+     * @return array
+     */
+    public function readFile($path)
+    {
+        if (file_exists($path))
+            return include $path;
+    }
+    
+}
