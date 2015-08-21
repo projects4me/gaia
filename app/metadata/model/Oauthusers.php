@@ -31,36 +31,55 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-namespace Foundation\Mvc;
-use Phalcon\Mvc\Model as PhalconModel;
-use Phalcon\Mvc\Model\Message;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
-use Phalcon\Mvc\Model\Validator\InclusionIn;
-use Foundation\metaManager;
+$models['Oauthusers'] = array(
+   'tableName' => 'oauth_users',
+   'fields' => array(
+       'id' => array(
+           'name' => 'id',
+           'label' => 'LBL_OAUTH_USERS_ID',
+           'type' => 'varchar',
+           'length' => '36',
+           'null' => false,
+       ),
+       'username' => array(
+           'name' => 'username',
+           'label' => 'LBL_OAUTH_USERS_USERNAME',
+           'type' => 'varchar',
+           'length' => '255',
+           'null' => false,
+       ),
+       'password' => array(
+           'name' => 'password',
+           'label' => 'LBL_OAUTH_USERS_PASSWORD',
+           'type' => 'varchar',
+           'length' => '36',
+           'null' => false,
+       ),
+       'first_name' => array(
+           'name' => 'first_name',
+           'label' => 'LBL_OAUTH_USERS_FIRST_NAME',
+           'type' => 'varchar',
+           'length' => '255',
+           'null' => true,
+       ),
+       'last_name' => array(
+           'name' => 'last_name',
+           'label' => 'LBL_OAUTH_USERS_LAST_NAME',
+           'type' => 'varchar',
+           'length' => '255',
+           'null' => false,
+       ),
+    ),
+    'indexes' => array(
+        'id' => 'primary',
+        'username' => 'unique',
+    ),
+    'foriegnKeys' => array(
+       
+    ) ,
+    'triggers' => array(
+        
+    ),
+);
 
-
-/**
- * This class is the base model in the foundation framework and is used to
- * overwrite the default functionality of Phalcon\Mvc\Model in order to
- * introdcude manual meta-data extensions along with other changes
- * 
- * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation\Mvc
- * @category Model
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
- */
-class Model extends PhalconModel
-{
-    /**
-     * This function read the meta data stored for a model and returns an array
-     * with parsed in a format that PhalconModel can understand
-     * 
-     * @return array
-     */
-    public function metaData()
-    {
-        $metadata = metaManager::getModelMeta(get_class($this));
-        $this->setSource($metadata['tableName']);
-        return $metadata;
-    }   
-}
+return $models;

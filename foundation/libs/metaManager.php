@@ -69,6 +69,9 @@ class metaManager
         $fields = self::parseFields($metadata);
         
         $modelMeta = array(
+            // Set the table name
+            'tableName' => $fields['tableName'],
+            
             // Every column in the mapped table
             MetaData::MODELS_ATTRIBUTES => $fields['attributes'],
 
@@ -124,7 +127,8 @@ class metaManager
     private function parseFields($metadata,$type='attributes')
     {
         // The application default values
-        $data = array('id'=>'id','default'=>array());
+        $data = array('default'=>array());
+        $data['tableName'] = $metadata['tableName'];
         foreach ($metadata['fields'] as $field => $properties)
         {
             // Add all the fields in the attributes array
@@ -133,6 +137,7 @@ class metaManager
             // Sort out the primary and non primary fiedsl
             if(isset($metadata['indexes'][$field]) && $metadata['indexes'][$field] == 'primary') {
                 $data['primary'][] = $field;
+                $data['id'] = $field;
             } 
             else {
                 $data['nonPrimary'][] = $field;

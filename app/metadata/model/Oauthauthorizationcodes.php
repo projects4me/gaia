@@ -31,36 +31,62 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-namespace Foundation\Mvc;
-use Phalcon\Mvc\Model as PhalconModel;
-use Phalcon\Mvc\Model\Message;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
-use Phalcon\Mvc\Model\Validator\InclusionIn;
-use Foundation\metaManager;
 
+$models['Oauthauthorizationcodes'] = array(
+   'tableName' => 'oauth_authorization_codes',
+   'fields' => array(
+       'authorization_code' => array(
+           'name' => 'authorization_code',
+           'label' => 'LBL_OAUTH_AUTHORIZATION_CODES_AUTHORIZATION_CODE',
+           'type' => 'varchar',
+           'length' => '40',
+           'null' => false,
+       ),
+       'client_id' => array(
+           'name' => 'client_id',
+           'label' => 'LBL_OAUTH_AUTHORIZATION_CODES_CLIENT_ID',
+           'type' => 'varchar',
+           'length' => '36',
+           'null' => false,
+       ),
+       'user_id' => array(
+           'name' => 'user_id',
+           'label' => 'LBL_OAUTH_AUTHORIZATION_CODES_USER_ID',
+           'type' => 'varchar',
+           'length' => '36',
+           'null' => true,
+       ),
+       'redirect_uri' => array(
+           'name' => 'redirect_uri',
+           'label' => 'LBL_OAUTH_AUTHORIZATION_CODES_REDIRECT_URI',
+           'type' => 'varchar',
+           'length' => '2000',
+           'null' => true,
+       ),
+       'scope' => array(
+           'name' => 'scope',
+           'label' => 'LBL_OAUTH_AUTHORIZATION_CODES_SCOPE',
+           'type' => 'varchar',
+           'length' => '2000',
+           'null' => true,
+       ),
+       'expires' => array(
+           'name' => 'expires',
+           'label' => 'LBL_OAUTH_AUTHORIZATION_CODES_EXPIRES',
+           'type' => 'datetime',
+           'length' => '40',
+           'null' => false,
+       ),
+    ),
+    'indexes' => array(
+        'authorization_code' => 'primary',
+    ),
+    'foriegnKeys' => array(
+       
+    ) ,
+    'triggers' => array(
+        
+    ),
+);
 
-/**
- * This class is the base model in the foundation framework and is used to
- * overwrite the default functionality of Phalcon\Mvc\Model in order to
- * introdcude manual meta-data extensions along with other changes
- * 
- * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation\Mvc
- * @category Model
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
- */
-class Model extends PhalconModel
-{
-    /**
-     * This function read the meta data stored for a model and returns an array
-     * with parsed in a format that PhalconModel can understand
-     * 
-     * @return array
-     */
-    public function metaData()
-    {
-        $metadata = metaManager::getModelMeta(get_class($this));
-        $this->setSource($metadata['tableName']);
-        return $metadata;
-    }   
-}
+return $models;

@@ -31,36 +31,40 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-namespace Foundation\Mvc;
-use Phalcon\Mvc\Model as PhalconModel;
-use Phalcon\Mvc\Model\Message;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
-use Phalcon\Mvc\Model\Validator\InclusionIn;
-use Foundation\metaManager;
+$models['Oauthjwt'] = array(
+   'tableName' => 'oauth_jwt',
+   'fields' => array(
+       'client_id' => array(
+           'name' => 'client_id',
+           'label' => 'LBL_OAUTH_JWT_CLIENT_ID',
+           'type' => 'varchar',
+           'length' => '36',
+           'null' => false,
+       ),
+       'subject' => array(
+           'name' => 'subject',
+           'label' => 'LBL_OAUTH_JWT_SUBJECT',
+           'type' => 'varchar',
+           'length' => '80',
+           'null' => true,
+       ),
+       'public_key' => array(
+           'name' => 'public_key',
+           'label' => 'LBL_OAUTH_JWT_CLIENT_PUBLIC_KEY',
+           'type' => 'varchar',
+           'length' => '2000',
+           'null' => true,
+       ),
+    ),
+    'indexes' => array(
+        'client_id' => 'primary',
+    ),
+    'foriegnKeys' => array(
+       
+    ) ,
+    'triggers' => array(
+        
+    ),
+);
 
-
-/**
- * This class is the base model in the foundation framework and is used to
- * overwrite the default functionality of Phalcon\Mvc\Model in order to
- * introdcude manual meta-data extensions along with other changes
- * 
- * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation\Mvc
- * @category Model
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
- */
-class Model extends PhalconModel
-{
-    /**
-     * This function read the meta data stored for a model and returns an array
-     * with parsed in a format that PhalconModel can understand
-     * 
-     * @return array
-     */
-    public function metaData()
-    {
-        $metadata = metaManager::getModelMeta(get_class($this));
-        $this->setSource($metadata['tableName']);
-        return $metadata;
-    }   
-}
+return $models;

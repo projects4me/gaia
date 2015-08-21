@@ -31,36 +31,41 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-namespace Foundation\Mvc;
-use Phalcon\Mvc\Model as PhalconModel;
-use Phalcon\Mvc\Model\Message;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
-use Phalcon\Mvc\Model\Validator\InclusionIn;
-use Foundation\metaManager;
+$models['Oauthscopes'] = array(
+   'tableName' => 'oauth_scopes',
+   'fields' => array(
+       'id' => array(
+           'name' => 'id',
+           'label' => 'LBL_OAUTH_SCOPES_ID',
+           'type' => 'varchar',
+           'length' => '36',
+           'null' => false,
+       ),
+       'scope' => array(
+           'name' => 'scope',
+           'label' => 'LBL_OAUTH_SCOPES_SCOPE',
+           'type' => 'text',
+           'length' => '255',
+           'null' => false,
+       ),
+       'is_default' => array(
+           'name' => 'is_default',
+           'label' => 'LBL_OAUTH_SCOPES_IS_DEFAULT',
+           'type' => 'bool',
+           'length' => '1',
+           'null' => true,
+           'default' => '0'
+       ),
+    ),
+    'indexes' => array(
+        'id' => 'primary',
+    ),
+    'foriegnKeys' => array(
+       
+    ) ,
+    'triggers' => array(
+        
+    ),
+);
 
-
-/**
- * This class is the base model in the foundation framework and is used to
- * overwrite the default functionality of Phalcon\Mvc\Model in order to
- * introdcude manual meta-data extensions along with other changes
- * 
- * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation\Mvc
- * @category Model
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
- */
-class Model extends PhalconModel
-{
-    /**
-     * This function read the meta data stored for a model and returns an array
-     * with parsed in a format that PhalconModel can understand
-     * 
-     * @return array
-     */
-    public function metaData()
-    {
-        $metadata = metaManager::getModelMeta(get_class($this));
-        $this->setSource($metadata['tableName']);
-        return $metadata;
-    }   
-}
+return $models;
