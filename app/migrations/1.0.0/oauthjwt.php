@@ -32,9 +32,9 @@
  */
 
 
+require_once APP_PATH.'/foundation/libs/metaMigration.php';
 
-use Foundation\Mvc\RestController;
-
-class OauthusersController extends RestController
+class OauthjwtMigration_100 extends Foundation\Mvc\Model\Migration
 {
+
 }

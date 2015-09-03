@@ -33,6 +33,7 @@
 
 namespace Foundation;
 use Phalcon\Config as PhalconConfig;
+require_once APP_PATH.'/foundation/libs/fileHandler.php';
 
 /**
  * This is the config class in the foundation package. The class manages the
@@ -84,7 +85,7 @@ class Config
      */
     protected function loadDefault(){
         // Loading all the files in foundation/config/
-        return fileHandler::readFolder('../foundation/config/');
+        return fileHandler::readFolder(APP_PATH.'/foundation/config/');
     }
     
     /**
@@ -96,7 +97,7 @@ class Config
      */
     protected function loadCustom(){
         // Loading all the files in config/
-        return fileHandler::readFolder('../config/');        
+        return fileHandler::readFolder(APP_PATH.'/config/');        
     }
     
 

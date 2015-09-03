@@ -45,7 +45,7 @@ $models['Users'] = array(
            'name' => 'username',
            'label' => 'LBL_USERS_USERNAME',
            'type' => 'varchar',
-           'length' => '50',
+           'length' => '51',
            'null' => false,
        ),
        'password' => array(
@@ -60,6 +60,13 @@ $models['Users'] = array(
            'label' => 'LBL_USERS_EMAIL',
            'type' => 'varchar',
            'length' => '200',
+           'null' => true,
+       ),
+       'status' => array(
+           'name' => 'status',
+           'label' => 'LBL_USERS_STATUS',
+           'type' => 'varchar',
+           'length' => '60',
            'null' => true,
        )
     ),

@@ -62,5 +62,16 @@ class Model extends PhalconModel
         $metadata = metaManager::getModelMeta(get_class($this));
         $this->setSource($metadata['tableName']);
         return $metadata;
-    }   
+    }
+    
+    /**
+     * For some reason the tableName being set in the function metaData gets
+     * overridden so we are seting the table again when the object is being
+     * constructed
+     */
+    public function onConstruct()
+    {
+        $metadata = metaManager::getModelMeta(get_class($this));
+        $this->setSource($metadata['tableName']);    
+    }
 }

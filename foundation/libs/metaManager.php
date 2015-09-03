@@ -51,7 +51,7 @@ use Phalcon\Mvc\Model\MetaData;
 class metaManager
 {
     
-    private static $base_path = '../app/metadata';
+    const basePath = '/app/metadata';
     /**
      * This function get the model metadata stored for the application and
      * returns it. This class uses Phalcon Model Data
@@ -60,13 +60,13 @@ class metaManager
      * @param string $model
      * @return array
      */
-    public function getModelMeta($model)
+    public static function getModelMeta($model)
     {
-        $metadata = fileHandler::readFile(self::$base_path.'/model/'.$model.'.php');
+        $metadata = fileHandler::readFile(APP_PATH.metaManager::basePath.'/model/'.$model.'.php');
         
         $metadata = $metadata[$model];
 
-        $fields = self::parseFields($metadata);
+        $fields = metaManager::parseFields($metadata);
         
         $modelMeta = array(
             // Set the table name
@@ -124,7 +124,7 @@ class metaManager
      * @param type $type
      * @return type
      */
-    private function parseFields($metadata,$type='attributes')
+    private static function parseFields($metadata,$type='attributes')
     {
         // The application default values
         $data = array('default'=>array());
@@ -149,10 +149,10 @@ class metaManager
             }
             
             // set the field type
-            $data['type'][$field] = self::getFieldType($properties['type']);
+            $data['type'][$field] = metaManager::getFieldType($properties['type']);
 
             // set the field data bind type
-            $data['bind'][$field] = self::getBindType($properties['type']);
+            $data['bind'][$field] = metaManager::getBindType($properties['type']);
             
             // if default value is set in metadata then set it
             if (isset($properties['default']))
@@ -169,7 +169,7 @@ class metaManager
      * @param string $type
      * @return integer
      */
-    private function getFieldType($type)
+    public static function getFieldType($type)
     {
         $dbType = '';
         switch ($type)
@@ -227,7 +227,7 @@ class metaManager
      * @param string $type
      * @return integer
      */
-    private function getBindType($type)
+    public static function getBindType($type)
     {
         $bindType = '';
         switch ($type)

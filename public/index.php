@@ -8,6 +8,10 @@ use Phalcon\DI\FactoryDefault,
     Phalcon\Session\Adapter\Files as SessionAdapter,
     Phalcon\Translate\Adapter\NativeArray;
 
+error_reporting(E_ALL);
+define('APP_PATH', realpath('..'));
+ini_set('display_errors',true);
+
 try {
     
     global $stime;
@@ -16,20 +20,20 @@ try {
     //Register an autoloader
     $loader = new \Phalcon\Loader();
     $loader->registerDirs(array(
-        '../foundation/controllers/',
-        '../app/controllers/',
-        '../app/models/',
-        '../config/',        
+        APP_PATH.'/foundation/controllers/',
+        APP_PATH.'/app/controllers/',
+        APP_PATH.'/app/models/',
+        APP_PATH.'/config/',        
     ))->register();
 
-    require_once('../foundation/controllers/RestController.php');
+    require_once(APP_PATH.'/foundation/controllers/RestController.php');
     //Create a DI
     $di = new Phalcon\DI\FactoryDefault();
 
     //Setup the view component
     $di->set('view', function(){
         $view = new \Phalcon\Mvc\View();
-        $view->setViewsDir('../app/views/');
+        $view->setViewsDir(APP_PATH.'/app/views/');
         return $view;
     });
 
@@ -40,20 +44,20 @@ try {
         return $url;
     });
     
-    require_once '../foundation/models/model.php';
-    require_once '../foundation/libs/fileHanlder.php';
+    require_once APP_PATH.'/foundation/models/model.php';
+    require_once APP_PATH.'/foundation/libs/fileHandler.php';
 
-    require_once '../foundation/libs/metaManager.php';
+    require_once APP_PATH.'/foundation/libs/metaManager.php';
     
     // @todo - set in di
-    require_once '../foundation/libs/config.php';
+    require_once APP_PATH.'/foundation/libs/config.php';
     $config = new \Foundation\Config();
     $config->init();
 
 
     // @todo - add actions route
     $di->set('router', function(){
-        require '../foundation/mvc/router.php';
+        require APP_PATH.'/foundation/mvc/router.php';
         $router = new Foundation\Mvc\Router();
         $router->init();
         return $router;
@@ -63,7 +67,13 @@ try {
     $di->set('db', function () {
         return new DbAdapter((array) $GLOBALS['settings']['database']);
     });
-  
+
+    //require_once '../foundation/libs/modelMigration.php';
+    //$modelMigration = new Foundation\Mvc\Model\Migration();
+    
+    //$modelMigration->init();
+    
+    
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);
     
