@@ -65,7 +65,6 @@ class metaManager
         $metadata = fileHandler::readFile(APP_PATH.metaManager::basePath.'/model/'.$model.'.php');
         
         $metadata = $metadata[$model];
-
         $fields = metaManager::parseFields($metadata);
         
         $modelMeta = array(
@@ -111,7 +110,12 @@ class metaManager
 
             // Fields that allow empty strings
             MetaData::MODELS_EMPTY_STRING_VALUES => array(
-            )
+            ),
+            
+            // All the relationships for the model
+            // For now we will just copy things over and see if for future
+            // we need any adjustment in the format
+            'relationships' => $metadata['relationships']
         );
         
         return $modelMeta;

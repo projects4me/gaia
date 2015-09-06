@@ -31,48 +31,47 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Users'] = array(
-   'tableName' => 'users',
+$models['Contacts'] = array(
+   'tableName' => 'contacts',
    'fields' => array(
        'id' => array(
            'name' => 'id',
-           'label' => 'LBL_USERS_ID',
+           'label' => 'LBL_CONTACTS_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
-       'username' => array(
-           'name' => 'username',
-           'label' => 'LBL_USERS_USERNAME',
+       'firstName' => array(
+           'name' => 'firstName',
+           'label' => 'LBL_CONTACTS_FIRSTNAME',
            'type' => 'varchar',
-           'length' => '51',
-           'null' => false,
+           'length' => '50',
+           'null' => true,
        ),
-       'password' => array(
-           'name' => 'password',
-           'label' => 'LBL_USERS_PASSWORD',
+       'lastName' => array(
+           'name' => 'lastName',
+           'label' => 'LBL_CONTACTS_LASTNAME',
            'type' => 'varchar',
            'length' => '50',
            'null' => false,
        ),
        'email' => array(
            'name' => 'email',
-           'label' => 'LBL_USERS_EMAIL',
+           'label' => 'LBL_CONTACTS_EMAIL',
            'type' => 'varchar',
            'length' => '200',
            'null' => true,
        ),
-       'status' => array(
-           'name' => 'status',
-           'label' => 'LBL_USERS_STATUS',
+       'phoneHome' => array(
+           'name' => 'phoneHome',
+           'label' => 'LBL_CONTACTS_PHONEHOME',
            'type' => 'varchar',
-           'length' => '60',
+           'length' => '15',
            'null' => true,
        )
     ),
     'indexes' => array(
         'id' => 'primary',
-        'username' => 'unique',
     ),
     'foriegnKeys' => array(
        
@@ -82,10 +81,25 @@ $models['Users'] = array(
     ),
     'relationships' => array(
         'hasMany' => array(
+            'Notes' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Notes',
+                'relatedKey' => 'contact_id',
+            ),
             'ContactsUsers' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => 'ContactsUsers',
-                'relatedKey' => 'user_id',
+                'relatedKey' => 'contact_id',
+            )
+        ),
+        'hasManyToMany' => array(
+            'UsersContacts' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'ContactsUsers',
+                'rhsKey' => 'contact_id',
+                'lhsKey' => 'user_id',
+                'secondaryModel' => 'Users',
+                'secondaryKey' => 'id',
             )
         )
     ),

@@ -13,39 +13,39 @@ class RestController extends \Phalcon\Mvc\Controller
     /**
     * Model's name is registered from controller via parameter
     */
-    private $modelName;
+    protected $modelName;
 
     /**
     * Model's name of relationship model
     */
-    private $relationship=null;
+    protected $relationship=null;
 
     /**
     * Name of controller is passed in parameter 
     */
-    private $controllerName;
+    protected $controllerName;
     
     /**
     * Value of primary key field of model (passed in parameter)
     */
-    private $id;
+    protected $id;
 
     /**
     * Parameters
     */
-    private $params;
+    protected $params;
 
     /**
      * Response object
      * @var Phalcon\Http\Response
      */
-    private $response;
+    protected $response;
 
     /**
      * Language's messages
      * @var array
      */
-    private $language;
+    protected $language;
 
     public function initialize()
     {
@@ -144,7 +144,7 @@ class RestController extends \Phalcon\Mvc\Controller
      * @param  Objcet     data object collecion with data
      * @return JSON       data in JSON
      */
-    private function extractData($data){
+    protected function extractData($data){
         //extracting data to array
         $data->setHydrateMode(Resultset::HYDRATE_ARRAYS);        
         $result = array();

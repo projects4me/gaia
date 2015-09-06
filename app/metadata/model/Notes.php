@@ -31,61 +31,59 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Users'] = array(
-   'tableName' => 'users',
+$models['Notes'] = array(
+   'tableName' => 'notes',
    'fields' => array(
        'id' => array(
            'name' => 'id',
-           'label' => 'LBL_USERS_ID',
+           'label' => 'LBL_NOTES_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
-       'username' => array(
-           'name' => 'username',
-           'label' => 'LBL_USERS_USERNAME',
+       'subject' => array(
+           'name' => 'subject',
+           'label' => 'LBL_NOTES_Subject',
            'type' => 'varchar',
-           'length' => '51',
+           'length' => '255',
            'null' => false,
        ),
-       'password' => array(
-           'name' => 'password',
-           'label' => 'LBL_USERS_PASSWORD',
-           'type' => 'varchar',
-           'length' => '50',
+       'body' => array(
+           'name' => 'body',
+           'label' => 'LBL_NOTES_BODY',
+           'type' => 'text',
+           'length' => '64665',
            'null' => false,
        ),
-       'email' => array(
-           'name' => 'email',
-           'label' => 'LBL_USERS_EMAIL',
-           'type' => 'varchar',
-           'length' => '200',
-           'null' => true,
+       'user_id' => array(
+           'name' => 'user_id',
+           'label' => 'LBL_NOTES_USER',
+           'type' => 'int',
+           'length' => '11',
+           'null' => false,
        ),
-       'status' => array(
-           'name' => 'status',
-           'label' => 'LBL_USERS_STATUS',
-           'type' => 'varchar',
-           'length' => '60',
-           'null' => true,
-       )
+       'contact_id' => array(
+           'name' => 'contact_id',
+           'label' => 'LBL_NOTES_CONTACT',
+           'type' => 'int',
+           'length' => '11',
+           'null' => false,
+       ),
     ),
     'indexes' => array(
         'id' => 'primary',
-        'username' => 'unique',
     ),
     'foriegnKeys' => array(
-       
     ) ,
     'triggers' => array(
         
     ),
     'relationships' => array(
-        'hasMany' => array(
-            'ContactsUsers' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'ContactsUsers',
-                'relatedKey' => 'user_id',
+        'hasOne' => array(
+            'AssignedUser' => array(
+                'primaryKey' => 'user_id',
+                'relatedModel' => 'Users',
+                'relatedKey' => 'id'
             )
         )
     ),

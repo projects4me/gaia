@@ -31,48 +31,33 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Users'] = array(
-   'tableName' => 'users',
+$models['ContactsUsers'] = array(
+   'tableName' => 'contacts_users',
    'fields' => array(
        'id' => array(
            'name' => 'id',
-           'label' => 'LBL_USERS_ID',
+           'label' => 'LBL_CONTACTS_USERS_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
-       'username' => array(
-           'name' => 'username',
-           'label' => 'LBL_USERS_USERNAME',
-           'type' => 'varchar',
-           'length' => '51',
+       'contact_id' => array(
+           'name' => 'contact_id',
+           'label' => 'LBL_CONTACTS_USERS_CONTACT_ID',
+           'type' => 'int',
+           'length' => '11',
            'null' => false,
        ),
-       'password' => array(
-           'name' => 'password',
-           'label' => 'LBL_USERS_PASSWORD',
-           'type' => 'varchar',
-           'length' => '50',
+       'user_id' => array(
+           'name' => 'user_id',
+           'label' => 'LBL_CONTACTS_USERS_USER_ID',
+           'type' => 'int',
+           'length' => '11',
            'null' => false,
        ),
-       'email' => array(
-           'name' => 'email',
-           'label' => 'LBL_USERS_EMAIL',
-           'type' => 'varchar',
-           'length' => '200',
-           'null' => true,
-       ),
-       'status' => array(
-           'name' => 'status',
-           'label' => 'LBL_USERS_STATUS',
-           'type' => 'varchar',
-           'length' => '60',
-           'null' => true,
-       )
     ),
     'indexes' => array(
         'id' => 'primary',
-        'username' => 'unique',
     ),
     'foriegnKeys' => array(
        
@@ -81,11 +66,16 @@ $models['Users'] = array(
         
     ),
     'relationships' => array(
-        'hasMany' => array(
-            'ContactsUsers' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'ContactsUsers',
-                'relatedKey' => 'user_id',
+        'belongsTo' => array(
+            'Users' => array(
+                'primaryKey' => 'user_id',
+                'relatedModel' => 'Users',
+                'relatedKey' => 'id',
+            ),
+            'Contacts' => array(
+                'primaryKey' => 'contact_id',
+                'relatedModel' => 'Contacts',
+                'relatedKey' => 'id',
             )
         )
     ),

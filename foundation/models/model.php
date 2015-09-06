@@ -49,8 +49,91 @@ use Foundation\metaManager;
  * @category Model
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class Model extends PhalconModel
+class Model extends \Phalcon\Mvc\Model
 {
+    protected $metadata;
+    
+
+        public function initialize()
+    {
+        $this->metadata = metaManager::getModelMeta(get_class($this));
+        $this->loadRelationships();
+    }
+    
+    /**
+     * This function is responsibles for loading all the relationships defined
+     * in the model meta data
+     */
+    protected function loadRelationships()
+    {
+        // Load each of the relationship types one by one
+        if (isset($this->metadata['relationships']['hasOne']))
+        {
+            foreach($this->metadata['relationships']['hasOne'] as $alias => $relationship)
+            {
+                $this->hasOne( 
+                    $relationship['primaryKey'],
+                    $relationship['relatedModel'],
+                    $relationship['relatedKey'],
+                    array(
+                        'alias' => $alias
+                    )
+                );
+            }
+        }
+        
+        // Load each of the relationship types one by many
+        if (isset($this->metadata['relationships']['hasMany']))
+        {
+            foreach($this->metadata['relationships']['hasMany'] as $alias => $relationship)
+            {
+                $this->hasMany( 
+                    $relationship['primaryKey'],
+                    $relationship['relatedModel'],
+                    $relationship['relatedKey'],
+                    array(
+                        'alias' => $alias
+                    )
+                );
+            }
+        }
+        
+        // Load each of the relationship types many by one
+        if (isset($this->metadata['relationships']['belongsTo']))
+        {
+            foreach($this->metadata['relationships']['belongsTo'] as $alias => $relationship)
+            {
+                $this->belongsTo( 
+                    $relationship['primaryKey'],
+                    $relationship['relatedModel'],
+                    $relationship['relatedKey'],
+                    array(
+                        'alias' => $alias
+                    )
+                );
+            }
+        }
+        
+        // Load each of the relationship types many by many
+        if (isset($this->metadata['relationships']['hasManyToMany']))
+        {
+            foreach($this->metadata['relationships']['hasManyToMany'] as $alias => $relationship)
+            {
+                $this->hasManyToMany( 
+                    $relationship['primaryKey'],
+                    $relationship['relatedModel'],
+                    $relationship['rhsKey'],
+                    $relationship['lhsKey'],
+                    $relationship['secondaryModel'],
+                    $relationship['secondaryKey'],
+                    array(
+                        'alias' => $alias
+                    )
+                );
+            }
+        }
+    }
+
     /**
      * This function read the meta data stored for a model and returns an array
      * with parsed in a format that PhalconModel can understand

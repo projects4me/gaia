@@ -54,7 +54,7 @@ use Foundation\metaManager;
  * through the user interface yet as the files required are to be seperately
  * install on the system 
  * 
- * Currently with Phalcon 2.0.3 the following syntax can be used to sync the
+ * Currently with Phalcon 2.0.6 the following syntax can be used to sync the
  * data 
  * 
  *  $ phalcon migration run
