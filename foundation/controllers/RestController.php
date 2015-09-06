@@ -47,6 +47,10 @@ class RestController extends \Phalcon\Mvc\Controller
      */
     protected $language;
 
+    /**
+     * @todo Add a way that will allow us to control the controllers and actions
+     * exempted from Authorization
+     */
     public function initialize()
     {
         //set the language
@@ -54,6 +58,15 @@ class RestController extends \Phalcon\Mvc\Controller
         
     	//print_r($this->dispatcher->getParams());exit;
     	$this->controllerName = $this->dispatcher->getControllerName();//controller
+        if ($this->controllerName != 'Token')
+        {
+            require_once APP_PATH.'/foundation/libs/oAuthServer.php';
+            if (!$server->verifyResourceRequest(\OAuth2\Request::createFromGlobals())) {
+                $server->getResponse()->send();
+                die();
+            }    
+
+        }
     	$this->modelName = $this->controllerName;//model
 		$this->id = $this->dispatcher->getParam("id");//id
 		$this->relationship = $this->dispatcher->getParam("relationship");//relationship

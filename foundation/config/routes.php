@@ -87,7 +87,7 @@ $config['routes'] = array(
 
     // POST with the format /api/:controller
     3 => array(
-        'path' => '/api/:controller/',
+        'path' => '/api/:controller',
         'controller' => 1,
         'action' => 'save',
         'type' => 'rest',
