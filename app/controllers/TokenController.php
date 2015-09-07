@@ -4,7 +4,7 @@ use Foundation\Mvc\RestController;
 
 class TokenController extends RestController
 {
-    
+    protected $authorization = false;
     public function saveAction() {
         // include our OAuth2 Server object
         require_once APP_PATH.'/foundation/libs/oAuthServer.php';

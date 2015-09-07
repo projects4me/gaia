@@ -48,6 +48,12 @@ class RestController extends \Phalcon\Mvc\Controller
     protected $language;
 
     /**
+     * Authorization flag
+     * @var bool
+     */
+    protected $authorization = true;
+    
+    /**
      * @todo Add a way that will allow us to control the controllers and actions
      * exempted from Authorization
      */
@@ -58,13 +64,13 @@ class RestController extends \Phalcon\Mvc\Controller
         
     	//print_r($this->dispatcher->getParams());exit;
     	$this->controllerName = $this->dispatcher->getControllerName();//controller
-        if ($this->controllerName != 'Token')
+        if ($this->authorization)
         {
             require_once APP_PATH.'/foundation/libs/oAuthServer.php';
             if (!$server->verifyResourceRequest(\OAuth2\Request::createFromGlobals())) {
                 $server->getResponse()->send();
                 die();
-            }    
+            }
 
         }
     	$this->modelName = $this->controllerName;//model
