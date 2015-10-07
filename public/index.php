@@ -21,10 +21,25 @@ try {
     $loader = new \Phalcon\Loader();
     $loader->registerDirs(array(
         APP_PATH.'/foundation/controllers/',
-        APP_PATH.'/app/controllers/',
+        APP_PATH.'/app/api/v1/controllers/',
         APP_PATH.'/app/models/',
         APP_PATH.'/config/',        
     ))->register();
+
+    /*
+    print "<pre>";
+    $regDirs = $loader->getDirs();
+    print_r($regDirs);
+    
+    $loader->registerDirs(array(
+        APP_PATH.'/app/models/v1/',
+    ))->register();
+
+    $classes = $loader->getClasses();
+    print "<pre>";
+    print_r($loader);
+    print "</pre>";
+*/
 
     require_once(APP_PATH.'/foundation/controllers/RestController.php');
     //Create a DI
@@ -54,12 +69,14 @@ try {
     $config = new \Foundation\Config();
     $config->init();
 
-
     // @todo - add actions route
     $di->set('router', function(){
         require APP_PATH.'/foundation/mvc/router.php';
         $router = new Foundation\Mvc\Router();
         $router->init();
+//        print "<pre>";
+//        print_r($router);
+//        print "</pre>";die();
         return $router;
     });
 
@@ -72,7 +89,23 @@ try {
     //$modelMigration = new Foundation\Mvc\Model\Migration();
     
     //$modelMigration->init();
+//    print "------------------";
+    //require '../vendors/phalcon-devtools/phalcon.php';
     
+/*    try {
+        Phalcon\Migrations::run(array(
+            'config' => $GLOBALS['settings'],
+            'directory'     => null,
+            'tableName'     => 'all',
+            'migrationsDir' => '../app/migrations/',
+            'force'         => 0
+        ));
+
+        $this->flash->success('The migration was executed successfully.');
+    } catch (BuilderException $e) {
+        $this->flash->error($e->getMessage());
+    }*/        
+//    die();
     
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);

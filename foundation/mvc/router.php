@@ -46,6 +46,7 @@ use Phalcon\Mvc as PhalconRouter;
  */
 class Router extends PhalconRouter\Router
 {
+    
     /**
      * This function is responsible for setting initializing the routes set
      * in configuration files.
@@ -53,81 +54,94 @@ class Router extends PhalconRouter\Router
      */
     public function init()
     {
+        
         // Initialiing the global settings variable to populate the data
         global $settings;
-        
+
         // Removing extra slashed
         $this->removeExtraSlashes(true);
 
-        // Traversing through the routes library set in the settings
-        // throwing an exception if no routes were found
+        //print_r($settings);
+        // Travese all the route types
         if (isset($settings->routes) && !empty($settings->routes))
         {
-            foreach($settings->routes as $approute)
+            if (isset($settings->routes['rest']) && !empty($settings->routes['rest']))
             {
-                // Initializing 'method' as it is optional and can be blank
-                $method = '';
-                if (isset($approute->method))
+                // Scan all the REST routes and set them up
+                foreach($settings->routes['rest'] as $version => $versionRoutes)
                 {
-                    $method = $approute->method;
-                    // unsetting the method from the object so that we can pass
-                    // the same array to the Phalcon\Config class
-                    unset($approute->method);
-                }
+                    // Traverse the routes for all the versions registered
+                    foreach($versionRoutes as $module => $moduleRoutes)
+                    {
+                        // Setup the base path considering the version
+                        $basepath = preg_replace('/\:version/i',$version,$moduleRoutes->path);
 
-                // Initializing 'path' as it is optional and can be blank
-                $path = '';
-                if (isset($approute->path))
+                        // Setup the individual methods
+                        foreach($moduleRoutes->allowedMethods as $method)
+                        {
+                            switch ($method)
+                            {
+                                case 'GET':
+
+                                // register two paths for get, for collection and entity
+                                $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
+                                $this->addGet($path,array('controller'=> $module,'action' => 'get', $moduleRoutes->identifier => '1'));
+
+                                $path = (($basepath[0] === '/')?'':'/').$basepath;
+                                $this->addGet($path,array('controller'=> $module,'action' => 'list'));
+
+                                break;
+
+                                case 'POST':
+                                // @todo : allow batch insertion
+                                $path = (($basepath[0] === '/')?'':'/').$basepath;
+                                $this->addPost($path,array('controller'=> $module,'action' => 'post'));
+                                break;
+
+                                case 'PUT':
+                                // @todo : allow batch updates
+                                $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
+                                $this->addPut($path,array('controller'=> $module,'action' => 'put'));
+                                break;
+
+                                case 'PATCH':
+                                // @todo : allow batch updates
+                                $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
+                                $this->addPatch($path,array('controller'=> $module,'action' => 'patch'));
+                                break;
+
+                                case 'DELETE':
+                                $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
+                                $this->addDelete($path,array('controller'=> $module,'action' => 'delete'));
+                                break;
+
+                                case 'OPTIONS':
+                                $path = (($basepath[0] === '/')?'':'/').$basepath;
+                                $this->addOptions($path,array('controller'=> $module,'action' => 'options'));
+                                break;
+                            } // end switch on method
+                        } // end foreach on $allowedMethods
+                    } // end foreach on $versionRoutes 
+                } // end foreach on $routes['rest']
+            } // end if $routes['test'];
+
+            // Traverse app routes
+            if (isset($settings->routes['app']) && !empty($settings->routes['app']))
+            {
+                foreach($settings->routes['app'] as $name => $approute)
                 {
                     $path = $approute->path;
-                    // unsetting the path from the object so that we can pass
-                    // the same array to the Phalcon\Config class
                     unset($approute->path);
+                    $this->add($path,(array) $approute);
                 }
-
-                //type is required and we need to make decision on it
-                // possible values for type are rest|app|system
-                $type = $approute->type;
-                // unsetting the type from the object so that we can pass
-                // the same array to the Phalcon\Config class
-                unset($approute->type);
-
-                // processing all the REST routes
-                if ($type == 'rest')
+            }
+            
+            // Traverse system routes
+            if (isset($settings->routes['system']) && !empty($settings->routes['system']))
+            {
+                foreach($settings->routes['system'] as $type => $approute)
                 {
-                    // swtiching on the bases on method, the supported values
-                    // are GET|POST|PUT|PATCH|DELETE|OPTIONS
-                    switch ($method)
-                    {
-                        case 'GET':
-                        $this->addGet($path,(array) $approute);
-                        break;
-
-                        case 'POST':
-                        $this->addPost($path,(array) $approute);
-                        break;
-
-                        case 'PUT':
-                        $this->addPut($path,(array) $approute);
-                        break;
-
-                        case 'PATCH':
-                        $this->addPatch($path,(array) $approute);
-                        break;
-
-                        case 'DELETE':
-                        $this->addDelete($path,(array) $approute);
-                        break;
-
-                        case 'OPTIONS':
-                        $this->addOptions($path,(array) $approute);
-                        break;
-                    }
-                }
-                // processing all the system level routes
-                else if ($type == 'system')
-                {
-                    switch ($method)
+                    switch ($name)
                     {
                         case 'notfound':
                         $this->notFound((array) $approute);
@@ -138,15 +152,10 @@ class Router extends PhalconRouter\Router
                         break;
                     }
                 }
-                // processing all the application level routes
-                else if($type == 'app') {
-                    $this->add($path,(array) $approute);
-                }
-            }// end -foreach
+            }
+            
+            // @todo : Allow console routes
         }
-        else {
-            //@todo throw/log error
-        } // end if
-        
+
     }
 }

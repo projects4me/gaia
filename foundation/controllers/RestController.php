@@ -129,7 +129,6 @@ class RestController extends \Phalcon\Mvc\Controller
         $modelName = $this->modelName;
 
         $data = $modelName::find( $this->id );
-
         return $this->extractData($data);
     }
 
@@ -141,7 +140,6 @@ class RestController extends \Phalcon\Mvc\Controller
     public function listAction()
     {
         $modelName = $this->modelName;
-
         //data of more models (relationship)
         if ( $this->relationship!=null ){
             $data = $modelName::findFirst( $this->id );
@@ -234,7 +232,7 @@ class RestController extends \Phalcon\Mvc\Controller
     * Method Http accept: POST (insert) and PUT (update)
     * Save/update data 
     */
-    public function saveAction()
+    public function postAction()
     {
         $modelName = $this->modelName;      
         $model = new $modelName();
