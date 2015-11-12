@@ -39,6 +39,7 @@
  * non-conflict. The GUIDs generated are not random but sequential therefore 
  * should not be used if security is a concern.
  * 
+ * @assert (1, 1) == 1
  * @return string guid
  */
 function create_guid(){

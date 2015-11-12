@@ -31,26 +31,126 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-namespace Foundation;
+namespace Foundation\Mvc\Model;
 
-use Phalcon\Script;
-use Phalcon\Version;
-use Phalcon\Script\Color;
-use Phalcon\Commands\CommandsListener;
-use Phalcon\Loader;
-use Phalcon\Events\Manager as EventsManager;
-use Phalcon\Exception as PhalconException;
+// In the project we do not need to use the phalcon-dev elsewhere therefore we
+// do not want to include the phalcon-devtool in the application bootstrap using
+// dependency injector so avoid extra load
+require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Mvc/Model/Migration.php';
+require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Migrations.php';
 
+use Phalcon\Db\Column;
+use Phalcon\Db\Index;
+use Phalcon\Mvc\Model\Migration as PhalconMigration;
+use Foundation\fileHandler as fileHandler;
+use Foundation\metaManager as metaManager;
 
-try {
+/**
+ * This class is responsible for synchronizing the database by using the
+ * metadata defined for all the models in app\metadata\model.
+ * 
+ * This calss is dependant on Phalcon Dev Tools. 
+ *  
+ * @author Hammad Hassan <gollomer@gmail.com>
+ * @package Foundation\Mvc\Model
+ * @category Migration
+ * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ */
+class Migration extends PhalconMigration
+{
+
+    /**
+     * This function is responsible for synchronizing the database using the
+     * metadata. As per the Phalcon Dev Tools this function is to be implemented
+     * in the individual files in app\migrations. However, since in this
+     * application we are relying on model metadata defined through files in
+     * app\metadata\model it would be redundant to have the columns defined
+     * again so this function get the metadata from the files and sets them up
+     * 
+     * @todo get table engines and collation from the model meta and system config
+     */
+    public function up($model)
+    {
+        // Get the entity name from the Mirgation files
+        //$entity = $this->getModelName();
+        
+        // Get the table definitions from the meta data
+        $tableDefinition = $this->getMetaData($model);
+
+        // Sync the table in the database
+        $this->morphTable(
+            $tableDefinition['tableName'],
+            array(
+                'columns' => $tableDefinition['columns'],
+                'indexes' => $tableDefinition['indexes'],
+                'options' => array(
+                    'TABLE_TYPE' => 'BASE TABLE',
+                    'AUTO_INCREMENT' => '',
+                    'ENGINE' => 'InnoDB',
+                    'TABLE_COLLATION' => 'utf8_unicode_ci'
+                )
+            )
+        );
+    }
     
-    
-} catch (PhalconException $e) {
-    print Color::error($e->getMessage()) . PHP_EOL;
-} catch (Exception $e) {
-    if ($extensionLoaded) {
-        print Color::error($e->getMessage()) . PHP_EOL;
-    } else {
-        print 'ERROR: ' . $e->getMessage() . PHP_EOL;
+    /**
+     * This function is responsible for reading the individual metadata from
+     * the application and process it for this class
+     * 
+     * @todo Include parsing for all type of indexes
+     * @param string $model
+     * @return array
+     */
+    private function getMetaData($model)
+    {
+        // Read the metadata from the file
+        $meta = fileHandler::readFile(APP_PATH.metaManager::basePath.'/model/'.$model.'.php');
+        
+        // Initialize the array to be filled in
+        $tableDescription = array(
+            'tableName' => $meta[$model]['tableName'],
+            'columns' => array(),
+            'indexes' => array(),
+        );
+       
+        // Traverse through the fields and process them
+	foreach($meta[$model]['fields'] as $field => $schema)
+	{
+            $fieldOptions = array();
+            $fieldOptions['type'] = metaManager::getFieldType($schema['type']);
+            $fieldOptions['size'] = $schema['length'];
+            $fieldOptions['notNull'] = !$schema['null'];
+            $tableDescription['columns'][] = new Column($schema['name'],$fieldOptions);
+	}
+
+        // Traverse through the indexes and process them
+        foreach($meta[$model]['indexes'] as $field => $type)
+	{
+            // need to be able to recognize all types of indexes
+            $index = '';
+            if ($type == 'primary')
+            {
+                $index = 'PRIMARY';
+            }
+            else if ($type == 'unique')
+            {
+                $index = $field.'_UNIQUE';			
+            }
+            $tableDescription['indexes'][] = new Index($index, array($field));
+	}
+        
+        return $tableDescription;
+    }
+        
+    /**
+     * This function initiate a new instance on Migration class and use it to 
+     * perform the migration
+     * 
+     * @param string $model model name to be migrated
+     */
+    public static function migrateModel($model)
+    {
+        $migration = new Migration();
+        $migration->up($model);
     }
 }

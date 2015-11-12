@@ -21,9 +21,11 @@ try {
     $loader = new \Phalcon\Loader();
     $loader->registerDirs(array(
         APP_PATH.'/foundation/controllers/',
+        APP_PATH.'/foundation/libs/',
         APP_PATH.'/app/api/v1/controllers/',
         APP_PATH.'/app/models/',
         APP_PATH.'/config/',        
+        APP_PATH.'/vendor/',        
     ))->register();
 
     /*
@@ -63,12 +65,13 @@ try {
     require_once APP_PATH.'/foundation/libs/fileHandler.php';
 
     require_once APP_PATH.'/foundation/libs/metaManager.php';
+    require_once APP_PATH.'/foundation/libs/migration.php';
     
     // @todo - set in di
     require_once APP_PATH.'/foundation/libs/config.php';
     $config = new \Foundation\Config();
     $config->init();
-
+    
     // @todo - add actions route
     $di->set('router', function(){
         require APP_PATH.'/foundation/mvc/router.php';
@@ -85,27 +88,11 @@ try {
         return new DbAdapter((array) $GLOBALS['settings']['database']);
     });
 
-    //require_once '../foundation/libs/modelMigration.php';
-    //$modelMigration = new Foundation\Mvc\Model\Migration();
-    
-    //$modelMigration->init();
-//    print "------------------";
-    //require '../vendors/phalcon-devtools/phalcon.php';
-    
-/*    try {
-        Phalcon\Migrations::run(array(
-            'config' => $GLOBALS['settings'],
-            'directory'     => null,
-            'tableName'     => 'all',
-            'migrationsDir' => '../app/migrations/',
-            'force'         => 0
-        ));
-
-        $this->flash->success('The migration was executed successfully.');
-    } catch (BuilderException $e) {
-        $this->flash->error($e->getMessage());
-    }*/        
-//    die();
+    /**
+     * @todo move the migration away to elsewhere
+     */
+    require '../foundation/libs/migration/driver.php';
+    Foundation\Mvc\Model\Migration\Driver::migrate();
     
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);

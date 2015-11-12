@@ -36,7 +36,7 @@
  * @todo Load the user_table from config or from the Users model
  */
 
-require_once(APP_PATH.'/vendors/OAuth2/Autoloader.php');
+require_once(APP_PATH.'/vendor/OAuth2/Autoloader.php');
 OAuth2\Autoloader::register();
 
 $pdo = \Phalcon\Di::getDefault()->get('db')->getInternalHandler();
