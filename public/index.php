@@ -14,7 +14,7 @@ ini_set('display_errors',true);
 
 try {
     
-    global $stime;
+    global $stime,$di;
     $stime = explode(" ",microtime());
     $stime = $stime[1] + $stime[0];
     //Register an autoloader
@@ -93,6 +93,7 @@ try {
      */
     require '../foundation/libs/migration/driver.php';
     Foundation\Mvc\Model\Migration\Driver::migrate();
+    require '../foundation/libs/acl.php';
     
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);

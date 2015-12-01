@@ -31,49 +31,21 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Notes'] = array(
-   'tableName' => 'notes',
+$models['Projects'] = array(
+   'tableName' => 'projects',
    'fields' => array(
        'id' => array(
            'name' => 'id',
-           'label' => 'LBL_NOTES_ID',
+           'label' => 'LBL_PROJECTSS_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
-       'subject' => array(
-           'name' => 'subject',
-           'label' => 'LBL_NOTES_Subject',
+       'name' => array(
+           'name' => 'name',
+           'label' => 'LBL_PROJECTS_NAME',
            'type' => 'varchar',
-           'length' => '255',
-           'null' => false,
-       ),
-       'body' => array(
-           'name' => 'body',
-           'label' => 'LBL_NOTES_BODY',
-           'type' => 'text',
-           'length' => '64665',
-           'null' => false,
-       ),
-       'userId' => array(
-           'name' => 'userId',
-           'label' => 'LBL_NOTES_USER',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'projectId' => array(
-           'name' => 'projectId',
-           'label' => 'LBL_NOTES_PROJECT',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'contact_id' => array(
-           'name' => 'contact_id',
-           'label' => 'LBL_NOTES_CONTACT',
-           'type' => 'int',
-           'length' => '11',
+           'length' => '50',
            'null' => false,
        ),
     ),
@@ -81,17 +53,37 @@ $models['Notes'] = array(
         'id' => 'primary',
     ),
     'foriegnKeys' => array(
+       
     ) ,
     'triggers' => array(
         
     ),
     'relationships' => array(
-        'hasOne' => array(
-            'AssignedUser' => array(
-                'primaryKey' => 'user_id',
-                'relatedModel' => 'Users',
-                'relatedKey' => 'id'
-            )
+        'hasManyToMany' => array(
+            'Teams' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'ProjectsTeams',
+                'rhsKey' => 'projectId',
+                'lhsKey' => 'teamId',
+                'secondaryModel' => 'Teams',
+                'secondaryKey' => 'id',
+            ),
+            'Users' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'ProjectsRoles',
+                'rhsKey' => 'projectId',
+                'lhsKey' => 'userId',
+                'secondaryModel' => 'Users',
+                'secondaryKey' => 'id',
+            ),
+            'Roles' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'ProjectsRoles',
+                'rhsKey' => 'projectId',
+                'lhsKey' => 'roleId',
+                'secondaryModel' => 'Roles',
+                'secondaryKey' => 'id',
+            ),
         )
     ),
 );

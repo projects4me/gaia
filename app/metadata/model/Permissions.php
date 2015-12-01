@@ -31,68 +31,102 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Notes'] = array(
-   'tableName' => 'notes',
+$models['Permissions'] = array(
+   'tableName' => 'permissions',
    'fields' => array(
        'id' => array(
            'name' => 'id',
-           'label' => 'LBL_NOTES_ID',
+           'label' => 'LBL_PERMISSIONS_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
-       'subject' => array(
-           'name' => 'subject',
-           'label' => 'LBL_NOTES_Subject',
-           'type' => 'varchar',
-           'length' => '255',
-           'null' => false,
-       ),
-       'body' => array(
-           'name' => 'body',
-           'label' => 'LBL_NOTES_BODY',
-           'type' => 'text',
-           'length' => '64665',
-           'null' => false,
-       ),
-       'userId' => array(
-           'name' => 'userId',
-           'label' => 'LBL_NOTES_USER',
+       'roleId' => array(
+           'name' => 'roleId',
+           'label' => 'LBL_PERMISSSIONS_ROLE_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
-       'projectId' => array(
-           'name' => 'projectId',
-           'label' => 'LBL_NOTES_PROJECT',
+       'resourceId' => array(
+           'name' => 'resourceId',
+           'label' => 'LBL_PERMISSSIONS_RESOURCE_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
-       'contact_id' => array(
-           'name' => 'contact_id',
-           'label' => 'LBL_NOTES_CONTACT',
+       '_read' => array(
+           'name' => '_read',
+           'label' => 'LBL_PERMISSIONS_READ',
            'type' => 'int',
-           'length' => '11',
-           'null' => false,
+           'length' => '1',
+           'null' => true,
+       ),
+       '_search' => array(
+           'name' => '_search',
+           'label' => 'LBL_PERMISSIONS_SEARCH',
+           'type' => 'int',
+           'length' => '1',
+           'null' => true,
+       ),
+       '_create' => array(
+           'name' => '_create',
+           'label' => 'LBL_PERMISSIONS_CREATE',
+           'type' => 'int',
+           'length' => '1',
+           'null' => true,
+       ),
+       '_update' => array(
+           'name' => '_update',
+           'label' => 'LBL_PERMISSIONS_UPDATE',
+           'type' => 'int',
+           'length' => '1',
+           'null' => true,
+       ),
+       '_delete' => array(
+           'name' => '_delete',
+           'label' => 'LBL_PERMISSIONS_DELETE',
+           'type' => 'int',
+           'length' => '1',
+           'null' => true,
+       ),
+       '_export' => array(
+           'name' => '_export',
+           'label' => 'LBL_PERMISSIONS_EXPORT',
+           'type' => 'int',
+           'length' => '1',
+           'null' => true,
+       ),
+       '_import' => array(
+           'name' => '_import',
+           'label' => 'LBL_PERMISSIONS_IMPORT',
+           'type' => 'int',
+           'length' => '1',
+           'null' => true,
        ),
     ),
     'indexes' => array(
         'id' => 'primary',
     ),
     'foriegnKeys' => array(
+       
     ) ,
     'triggers' => array(
         
     ),
     'relationships' => array(
         'hasOne' => array(
-            'AssignedUser' => array(
-                'primaryKey' => 'user_id',
-                'relatedModel' => 'Users',
-                'relatedKey' => 'id'
+            'Resources' => array(
+                'primaryKey' => 'resourcesId',
+                'relatedModel' => 'Resources',
+                'relatedKey' => 'id',
+            ),
+            'Requesters' => array(
+                'primaryKey' => 'requestersId',
+                'relatedModel' => 'Requesters',
+                'relatedKey' => 'id',
             )
-        )
+        ),
     ),
 );
 

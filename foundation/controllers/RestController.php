@@ -16,6 +16,12 @@ class RestController extends \Phalcon\Mvc\Controller
     protected $modelName;
 
     /**
+     * Model object in question
+     * @var mixed
+     */
+    protected $model;
+            
+    /**
     * Model's name of relationship model
     */
     protected $relationship=null;
@@ -25,6 +31,10 @@ class RestController extends \Phalcon\Mvc\Controller
     */
     protected $controllerName;
     
+    /**
+    * Name of action is passed in parameter 
+    */
+    protected $actionName;
     /**
     * Value of primary key field of model (passed in parameter)
     */
@@ -54,6 +64,32 @@ class RestController extends \Phalcon\Mvc\Controller
     protected $authorization = true;
     
     /**
+     * Project authorization flag
+     * @var bool
+     */
+    protected $projectAuthorization = true;
+
+    /**
+     * Accessible projects list
+     * @var array
+     */
+    protected $accessibleProjects = array();
+
+    /**
+     * Acl Map
+     * @var array
+     */
+    protected $aclMap = array(
+        'get' => 'read',
+        'list' => 'read',
+        'post' => 'create',
+        'search' => 'search',
+        'delete' => 'delete',
+        'put' => 'update',
+        'patch' => 'update'
+    );
+
+    /**
      * @todo Add a way that will allow us to control the controllers and actions
      * exempted from Authorization
      */
@@ -61,23 +97,65 @@ class RestController extends \Phalcon\Mvc\Controller
     {
         //set the language
         $this->setLanguage();
+
+        $this->response = new Response();
         
     	//print_r($this->dispatcher->getParams());exit;
     	$this->controllerName = $this->dispatcher->getControllerName();//controller
+        $this->actionName = $this->dispatcher->getActionName();//controller
+
+        $this->modelName = $this->controllerName;//model
+        $this->id = $this->dispatcher->getParam("id");//id
+        $this->relationship = $this->dispatcher->getParam("relationship");//relationship
+
+        $this->authorize();
+    }
+    
+    private function authorize()
+    {
         if ($this->authorization)
         {
             require_once APP_PATH.'/foundation/libs/oAuthServer.php';
             if (!$server->verifyResourceRequest(\OAuth2\Request::createFromGlobals())) {
                 $server->getResponse()->send();
-                die();
+                exit();
             }
+            if ($this->projectAuthorization)
+            {
+                $projects = array();
+                // Check for access on Projects Module
+                if (!empty($this->id))
+                {
+                    $modelName = $this->modelName;
+                    $data = $modelName::find($this->id);
+                    if (isset($data[0]->projectId))
+                    {
+                        $permission = \Foundation\Acl::hasProjectAccess('1', $this->controllerName, $this->aclMap[$this->actionName], $data[0]->projectId);
+                        if ($permission != 0)
+                        {
+                            $projects[] = $data[0]->projectId;
+                        }
+                    }
+                }
+                else
+                {
+                    $projects = \Foundation\Acl::getProjects('1', $this->controllerName, $this->aclMap[$this->actionName]);
+                }
+                
+                if (empty($projects))
+                {
+                    $this->response->setStatusCode(403, "Forbidden");
+                    $this->response->setJsonContent(array('error' => 'Access Denied - Check ACL'));     
 
-        }
-    	$this->modelName = $this->controllerName;//model
-		$this->id = $this->dispatcher->getParam("id");//id
-		$this->relationship = $this->dispatcher->getParam("relationship");//relationship
-
-        $this->response = new Response();
+                    $this->response->send();
+                    exit();
+                }
+                else
+                {
+                    $this->accessibleProjects = $projects;
+                }
+            }
+        }        
     }
 
     /**
@@ -139,6 +217,9 @@ class RestController extends \Phalcon\Mvc\Controller
     */
     public function listAction()
     {
+        //check for accessible projects
+        print_r($this->accessibleProjects);
+        die();
         $modelName = $this->modelName;
         //data of more models (relationship)
         if ( $this->relationship!=null ){

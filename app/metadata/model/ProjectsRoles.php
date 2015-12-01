@@ -31,47 +31,33 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Notes'] = array(
-   'tableName' => 'notes',
+$models['ProjectsRoles'] = array(
+   'tableName' => 'projects_roles',
    'fields' => array(
        'id' => array(
            'name' => 'id',
-           'label' => 'LBL_NOTES_ID',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'subject' => array(
-           'name' => 'subject',
-           'label' => 'LBL_NOTES_Subject',
-           'type' => 'varchar',
-           'length' => '255',
-           'null' => false,
-       ),
-       'body' => array(
-           'name' => 'body',
-           'label' => 'LBL_NOTES_BODY',
-           'type' => 'text',
-           'length' => '64665',
-           'null' => false,
-       ),
-       'userId' => array(
-           'name' => 'userId',
-           'label' => 'LBL_NOTES_USER',
+           'label' => 'LBL_PROJECTS_ROLES_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
        'projectId' => array(
            'name' => 'projectId',
-           'label' => 'LBL_NOTES_PROJECT',
+           'label' => 'LBL_PROJECTS_ROLES_PROJECT_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
-       'contact_id' => array(
-           'name' => 'contact_id',
-           'label' => 'LBL_NOTES_CONTACT',
+       'roleId' => array(
+           'name' => 'roleId',
+           'label' => 'LBL_PROJECTS_ROLES_ROLE_ID',
+           'type' => 'int',
+           'length' => '11',
+           'null' => false,
+       ),
+       'userId' => array(
+           'name' => 'userId',
+           'label' => 'LBL_PROJECTS_ROLES_USER_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
@@ -81,16 +67,27 @@ $models['Notes'] = array(
         'id' => 'primary',
     ),
     'foriegnKeys' => array(
+       
     ) ,
     'triggers' => array(
         
     ),
     'relationships' => array(
-        'hasOne' => array(
-            'AssignedUser' => array(
-                'primaryKey' => 'user_id',
+        'belongsTo' => array(
+            'Projects' => array(
+                'primaryKey' => 'projectId',
+                'relatedModel' => 'Projects',
+                'relatedKey' => 'id',
+            ),
+            'Users' => array(
+                'primaryKey' => 'userId',
                 'relatedModel' => 'Users',
-                'relatedKey' => 'id'
+                'relatedKey' => 'id',
+            ),
+            'Roles' => array(
+                'primaryKey' => 'roleId',
+                'relatedModel' => 'Roles',
+                'relatedKey' => 'id',
             )
         )
     ),

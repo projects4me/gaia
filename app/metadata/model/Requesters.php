@@ -31,68 +31,69 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Notes'] = array(
-   'tableName' => 'notes',
+$models['Requesters'] = array(
+   'tableName' => 'requesters',
    'fields' => array(
        'id' => array(
            'name' => 'id',
-           'label' => 'LBL_NOTES_ID',
+           'label' => 'LBL_REQUESTERS_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
-       'subject' => array(
-           'name' => 'subject',
-           'label' => 'LBL_NOTES_Subject',
+       'parentId' => array(
+           'name' => 'parentId',
+           'label' => 'LBL_REQUESTERS_PARENT_ID',
+           'type' => 'int',
+           'length' => '11',
+           'null' => true,
+       ),
+       'entity' => array(
+           'name' => 'entity',
+           'label' => 'LBL_REQUESTERS_ENTITY',
            'type' => 'varchar',
-           'length' => '255',
+           'length' => '50',
            'null' => false,
        ),
-       'body' => array(
-           'name' => 'body',
-           'label' => 'LBL_NOTES_BODY',
-           'type' => 'text',
-           'length' => '64665',
-           'null' => false,
-       ),
-       'userId' => array(
-           'name' => 'userId',
-           'label' => 'LBL_NOTES_USER',
+       'entityId' => array(
+           'name' => 'entityId',
+           'label' => 'LBL_REQUESTERS_ENTITY_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
-       'projectId' => array(
-           'name' => 'projectId',
-           'label' => 'LBL_NOTES_PROJECT',
+       'left' => array(
+           'name' => 'left',
+           'label' => 'LBL_REQUESTERS_LEFT',
            'type' => 'int',
-           'length' => '11',
+           'length' => '15',
            'null' => false,
        ),
-       'contact_id' => array(
-           'name' => 'contact_id',
-           'label' => 'LBL_NOTES_CONTACT',
+       'right' => array(
+           'name' => 'right',
+           'label' => 'LBL_REQUESTERS_RIGHT',
            'type' => 'int',
-           'length' => '11',
+           'length' => '15',
            'null' => false,
-       ),
+       )
     ),
     'indexes' => array(
         'id' => 'primary',
     ),
     'foriegnKeys' => array(
+       
     ) ,
     'triggers' => array(
         
     ),
     'relationships' => array(
-        'hasOne' => array(
-            'AssignedUser' => array(
-                'primaryKey' => 'user_id',
-                'relatedModel' => 'Users',
-                'relatedKey' => 'id'
-            )
-        )
+        'hasMany' => array(
+            'Permissions' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Permissisons',
+                'relatedKey' => 'requestersId',
+            ),
+        ),
     ),
 );
 

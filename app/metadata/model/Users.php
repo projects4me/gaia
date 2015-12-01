@@ -81,11 +81,14 @@ $models['Users'] = array(
         
     ),
     'relationships' => array(
-        'hasMany' => array(
-            'ContactsUsers' => array(
+        'hasManyToMany' => array(
+            'Teams' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'ContactsUsers',
-                'relatedKey' => 'user_id',
+                'relatedModel' => 'TeamsMemberships',
+                'rhsKey' => 'userId',
+                'lhsKey' => 'teamId',
+                'secondaryModel' => 'Teams',
+                'secondaryKey' => 'id',
             )
         )
     ),

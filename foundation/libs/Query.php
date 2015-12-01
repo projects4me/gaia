@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Projects4Me Community Edition is an open source project management software 
  * developed by PROJECTS4ME Inc. Copyright (C) 2015-2016 PROJECTS4ME Inc.
  * 
@@ -31,69 +31,11 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Notes'] = array(
-   'tableName' => 'notes',
-   'fields' => array(
-       'id' => array(
-           'name' => 'id',
-           'label' => 'LBL_NOTES_ID',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'subject' => array(
-           'name' => 'subject',
-           'label' => 'LBL_NOTES_Subject',
-           'type' => 'varchar',
-           'length' => '255',
-           'null' => false,
-       ),
-       'body' => array(
-           'name' => 'body',
-           'label' => 'LBL_NOTES_BODY',
-           'type' => 'text',
-           'length' => '64665',
-           'null' => false,
-       ),
-       'userId' => array(
-           'name' => 'userId',
-           'label' => 'LBL_NOTES_USER',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'projectId' => array(
-           'name' => 'projectId',
-           'label' => 'LBL_NOTES_PROJECT',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'contact_id' => array(
-           'name' => 'contact_id',
-           'label' => 'LBL_NOTES_CONTACT',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-    ),
-    'indexes' => array(
-        'id' => 'primary',
-    ),
-    'foriegnKeys' => array(
-    ) ,
-    'triggers' => array(
-        
-    ),
-    'relationships' => array(
-        'hasOne' => array(
-            'AssignedUser' => array(
-                'primaryKey' => 'user_id',
-                'relatedModel' => 'Users',
-                'relatedKey' => 'id'
-            )
-        )
-    ),
-);
-
-return $models;
+/**
+ * Description of Query
+ *
+ * @author ubuntu
+ */
+class Query {
+    //put your code here
+}

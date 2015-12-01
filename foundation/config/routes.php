@@ -68,6 +68,50 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'Roles' => array(
+                'path' => '/api/:version/Roles',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'Projects' => array(
+                'path' => '/api/:version/Projects',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'Teams' => array(
+                'path' => '/api/:version/Teams',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'Users' => array(
+                'path' => '/api/:version/Users',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'Token' => array(
                 'path' => '/api/:version/Token',
                 'allowedMethods' => array(

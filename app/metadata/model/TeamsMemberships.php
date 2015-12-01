@@ -31,47 +31,26 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Notes'] = array(
-   'tableName' => 'notes',
+$models['TeamsMemberships'] = array(
+   'tableName' => 'teams_memberships',
    'fields' => array(
        'id' => array(
            'name' => 'id',
-           'label' => 'LBL_NOTES_ID',
+           'label' => 'LBL_TEAMS_MEMBERSHIPS_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
-       'subject' => array(
-           'name' => 'subject',
-           'label' => 'LBL_NOTES_Subject',
-           'type' => 'varchar',
-           'length' => '255',
-           'null' => false,
-       ),
-       'body' => array(
-           'name' => 'body',
-           'label' => 'LBL_NOTES_BODY',
-           'type' => 'text',
-           'length' => '64665',
+       'teamId' => array(
+           'name' => 'teamId',
+           'label' => 'LBL_TEAMS_MEMBERSHIPS_TEAM_ID',
+           'type' => 'int',
+           'length' => '11',
            'null' => false,
        ),
        'userId' => array(
            'name' => 'userId',
-           'label' => 'LBL_NOTES_USER',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'projectId' => array(
-           'name' => 'projectId',
-           'label' => 'LBL_NOTES_PROJECT',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'contact_id' => array(
-           'name' => 'contact_id',
-           'label' => 'LBL_NOTES_CONTACT',
+           'label' => 'LBL_TEAMS_MEMBERSHIPS_USER_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
@@ -81,16 +60,22 @@ $models['Notes'] = array(
         'id' => 'primary',
     ),
     'foriegnKeys' => array(
+       
     ) ,
     'triggers' => array(
         
     ),
     'relationships' => array(
-        'hasOne' => array(
-            'AssignedUser' => array(
-                'primaryKey' => 'user_id',
+        'belongsTo' => array(
+            'Teams' => array(
+                'primaryKey' => 'teamId',
+                'relatedModel' => 'Teams',
+                'relatedKey' => 'id',
+            ),
+            'Users' => array(
+                'primaryKey' => 'userId',
                 'relatedModel' => 'Users',
-                'relatedKey' => 'id'
+                'relatedKey' => 'id',
             )
         )
     ),

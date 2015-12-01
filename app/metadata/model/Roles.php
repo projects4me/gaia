@@ -31,49 +31,21 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Notes'] = array(
-   'tableName' => 'notes',
+$models['Roles'] = array(
+   'tableName' => 'roles',
    'fields' => array(
        'id' => array(
            'name' => 'id',
-           'label' => 'LBL_NOTES_ID',
+           'label' => 'LBL_ROLES_ID',
            'type' => 'int',
            'length' => '11',
            'null' => false,
        ),
-       'subject' => array(
-           'name' => 'subject',
-           'label' => 'LBL_NOTES_Subject',
+       'name' => array(
+           'name' => 'name',
+           'label' => 'LBL_ROLES_NAME',
            'type' => 'varchar',
-           'length' => '255',
-           'null' => false,
-       ),
-       'body' => array(
-           'name' => 'body',
-           'label' => 'LBL_NOTES_BODY',
-           'type' => 'text',
-           'length' => '64665',
-           'null' => false,
-       ),
-       'userId' => array(
-           'name' => 'userId',
-           'label' => 'LBL_NOTES_USER',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'projectId' => array(
-           'name' => 'projectId',
-           'label' => 'LBL_NOTES_PROJECT',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'contact_id' => array(
-           'name' => 'contact_id',
-           'label' => 'LBL_NOTES_CONTACT',
-           'type' => 'int',
-           'length' => '11',
+           'length' => '50',
            'null' => false,
        ),
     ),
@@ -81,18 +53,19 @@ $models['Notes'] = array(
         'id' => 'primary',
     ),
     'foriegnKeys' => array(
+       
     ) ,
     'triggers' => array(
         
     ),
     'relationships' => array(
-        'hasOne' => array(
-            'AssignedUser' => array(
-                'primaryKey' => 'user_id',
-                'relatedModel' => 'Users',
-                'relatedKey' => 'id'
-            )
-        )
+        'hasMany' => array(
+            'Permissions' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Permissions',
+                'relatedKey' => 'resourcesId',
+            ),
+        ),
     ),
 );
 
