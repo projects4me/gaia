@@ -2,7 +2,7 @@
 
 use Foundation\Mvc\RestController;
 
-class RolesController extends RestController
+class PermissionsController extends RestController
 {
     /**
      * Project authorization flag
@@ -15,4 +15,5 @@ class RolesController extends RestController
      * @var bool
      */
     protected $systemLevel = true;
+    
 }

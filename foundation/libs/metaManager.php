@@ -115,7 +115,7 @@ class metaManager
             // All the relationships for the model
             // For now we will just copy things over and see if for future
             // we need any adjustment in the format
-            'relationships' => $metadata['relationships']
+            'relationships' => (isset($metadata['relationships'])?$metadata['relationships']:array())
         );
         
         return $modelMeta;

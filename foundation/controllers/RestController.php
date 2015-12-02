@@ -90,6 +90,12 @@ class RestController extends \Phalcon\Mvc\Controller
     );
 
     /**
+     * System level flag
+     * @var bool
+     */
+    protected $systemLevel = false;    
+    
+    /**
      * @todo Add a way that will allow us to control the controllers and actions
      * exempted from Authorization
      */
@@ -112,8 +118,10 @@ class RestController extends \Phalcon\Mvc\Controller
     }
     
     /**
-     * @todo throw error
+     * Make currentUser available as global
+     * 
      * @global type $currentUser
+     * @param type $reuqest
      */
     private function setUser($reuqest)
     {
@@ -186,6 +194,19 @@ class RestController extends \Phalcon\Mvc\Controller
                 else
                 {
                     $this->accessibleProjects = $projects;
+                }
+            }
+            elseif($this->systemLevel)
+            {
+                $permission = \Foundation\Acl::roleHasAccess('1', $this->controllerName, $this->aclMap[$this->actionName]);
+                
+                if ($permission == 0)
+                {
+                    $this->response->setStatusCode(403, "Forbidden");
+                    $this->response->setJsonContent(array('error' => 'Access Denied - Check ACL'));     
+
+                    $this->response->send();
+                    exit();
                 }
             }
         }        

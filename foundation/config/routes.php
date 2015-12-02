@@ -123,6 +123,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'Permissions' => array(
+                'path' => '/api/:version/Permissions',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'Token' => array(
                 'path' => '/api/:version/Token',
                 'allowedMethods' => array(

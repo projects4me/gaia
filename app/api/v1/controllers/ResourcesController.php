@@ -9,4 +9,10 @@ class ResourcesController extends RestController
      * @var bool
      */
     protected $projectAuthorization = false;
+    
+    /**
+     * System level flag
+     * @var bool
+     */
+    protected $systemLevel = true;
 }
