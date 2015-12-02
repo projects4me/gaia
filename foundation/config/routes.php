@@ -112,6 +112,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'Resources' => array(
+                'path' => '/api/:version/Resources',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'Token' => array(
                 'path' => '/api/:version/Token',
                 'allowedMethods' => array(
