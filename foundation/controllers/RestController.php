@@ -111,15 +111,42 @@ class RestController extends \Phalcon\Mvc\Controller
         $this->authorize();
     }
     
+    /**
+     * @todo throw error
+     * @global type $currentUser
+     */
+    private function setUser($reuqest)
+    {
+        global $currentUser;
+        $token = str_replace('Bearer ','',$reuqest->headers['AUTHORIZATION']);
+        $oAuthAccessToken = \Oauthaccesstokens::findFirst(array("access_token='".$token."'"));
+        if (isset($oAuthAccessToken->user_id))
+        {
+            $currentUser = \Users::findFirst("username ='".$oAuthAccessToken->user_id."'");
+        }
+        else
+        {
+            $this->response->setStatusCode(403, "Forbidden");
+            $this->response->setJsonContent(array('error' => 'Invalid Token'));     
+
+            $this->response->send();
+            exit();            
+        }
+    }
+    
     private function authorize()
     {
+        global $currentUser;
         if ($this->authorization)
         {
             require_once APP_PATH.'/foundation/libs/oAuthServer.php';
-            if (!$server->verifyResourceRequest(\OAuth2\Request::createFromGlobals())) {
+            $reuqest = \OAuth2\Request::createFromGlobals();
+            if (!$server->verifyResourceRequest($reuqest)) {
                 $server->getResponse()->send();
                 exit();
             }
+            $this->setUser($reuqest);
+            
             if ($this->projectAuthorization)
             {
                 $projects = array();
@@ -136,7 +163,7 @@ class RestController extends \Phalcon\Mvc\Controller
                     
                     if (isset($data[0]->$identifier))
                     {
-                        $permission = \Foundation\Acl::hasProjectAccess('1', $this->controllerName, $this->aclMap[$this->actionName], $data[0]->$identifier);
+                        $permission = \Foundation\Acl::hasProjectAccess($currentUser->id, $this->controllerName, $this->aclMap[$this->actionName], $data[0]->$identifier);
                         if ($permission != 0)
                         {
                             $projects[] = $data[0]->$identifier;
@@ -145,7 +172,7 @@ class RestController extends \Phalcon\Mvc\Controller
                 }
                 else
                 {
-                    $projects = \Foundation\Acl::getProjects('1', $this->controllerName, $this->aclMap[$this->actionName]);
+                    $projects = \Foundation\Acl::getProjects($currentUser->id, $this->controllerName, $this->aclMap[$this->actionName]);
                 }
                 
                 if (empty($projects))

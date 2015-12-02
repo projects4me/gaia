@@ -36,19 +36,22 @@ namespace Foundation;
 use Phalcon\Mvc\Model\Query as Query;
 
 /**
- * @todo Fill in Documentation
+ * @todo Fill in Documentation and fix namespace
  */
 class Acl{
     
     /**
+     * Check is the user has access to a particular resrouce within the domain
+     * of a certain project
      * 
-     * @global type $di
-     * @param type $requester
-     * @param type $resource
-     * @param type $control
-     * @param type $projectId
+     * Also allowing the possibilty of having one user associated with one
+     * project with multiple roles
+     * 
+     * @param string $userId
+     * @param string $resource
+     * @param string $control
+     * @param string $projectId
      * @return int
-     * @todo use objects and queryBuilder instead of query
      */
     public static function hasProjectAccess($userId,$resource,$control,$projectId)
     {
@@ -71,10 +74,17 @@ class Acl{
                 $access = $max;
             }
         }
-
        return $access;
     }
     
+    /**
+     * Get all the projects that the user has access to
+     * 
+     * @param type $userId
+     * @param type $resource
+     * @param type $control
+     * @return type
+     */
     public static function getProjects($userId,$resource,$control)
     {
         $projects = array();
@@ -94,9 +104,16 @@ class Acl{
         return $projects;
     }
     
+    /**
+     * check if a role has access to a particular control
+     * 
+     * @param type $roleId
+     * @param type $resource
+     * @param type $control
+     * @return type
+     */
     public static function roleHasAccess($roleId,$resource,$control='read')
     {
-        global $di;
         $access = 0;
         if (isset($roleId) && !empty($roleId))
         {
