@@ -94,37 +94,33 @@ class Acl{
         return $projects;
     }
     
-    public static function roleHasAccess($roleId,$resource='list',$control='read')
+    public static function roleHasAccess($roleId,$resource,$control='read')
     {
         global $di;
         $access = 0;
         if (isset($roleId) && !empty($roleId))
         {
-            $phql = "SELECT parent.* FROM Resources AS child ".
-                    "INNER JOIN Resources as parent ".
-                    "ON child.[left] BETWEEN parent.[left] AND parent.[right] ".
-                    "WHERE child.entity='".$resource."'";
+            $Resource = \Resources::find(array("entity='".$resource."'"));
 
-            $query = new Query($phql,$di);
-            $resourceObjs = $query->execute();
-            $length = count($resourceObjs);
-
-            if ($length > 0)
+            // If the resrouce exists then check for the permissions
+            if (isset($Resource[0]))
             {
-                for($i=($length-1);$i>=0;$i--)
+                $controlField = '_'.$control;
+                
+                // First check out the permissions for the resource directly
+                $Permission = \Permissions::findFirst(array("resourceId='".($Resource[0]->id)."' AND roleId='".$roleId."'"));
+                if (!isset($Permission->id) && isset($Resource[0]->parentId))
+                {   
+                    // if not found then check for its parent
+                    $Permission = \Permissions::findFirst(array("resourceId='".($Resource[0]->parentId)."' AND roleId='".$roleId."'"));
+                }
+                
+                if (isset($Permission->id))
                 {
-                    $phql = "SELECT _".$control." as permission FROM Permissions ".
-                            "WHERE resourceId='".($resourceObjs[$i]->id)."' AND roleId='".$roleId."'";
-
-                    $query = new Query($phql,$di);
-                    $permissions = $query->execute();
-                    if (isset($permissions[0])){
-                        $permission = (int) $permissions[0]->permission;
-                        if ($permission != 0)
-                        {
-                            $access = $permission;
-                            break;
-                        }
+                    $permission = (int) $Permission->$controlField;
+                    if ($permission != 0)
+                    {
+                        $access = $permission;
                     }
                 }
             }

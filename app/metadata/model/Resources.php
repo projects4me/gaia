@@ -62,20 +62,6 @@ $models['Resources'] = array(
            'length' => '11',
            'null' => false,
        ),
-       'left' => array(
-           'name' => 'left',
-           'label' => 'LBL_RESOURCES_LEFT',
-           'type' => 'int',
-           'length' => '15',
-           'null' => false,
-       ),
-       'right' => array(
-           'name' => 'right',
-           'label' => 'LBL_RESOURCES_RIGHT',
-           'type' => 'int',
-           'length' => '15',
-           'null' => false,
-       )
     ),
     'indexes' => array(
         'id' => 'primary',

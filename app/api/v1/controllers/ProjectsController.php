@@ -4,7 +4,7 @@ use Foundation\Mvc\RestController;
 
 class ProjectsController extends RestController
 {
-    
+    /*
     public function getAction()
     {
         $modelName = $this->modelName;
@@ -12,7 +12,7 @@ class ProjectsController extends RestController
         //$data = $modelName::find($this->id);
         $Project = $modelName::findFirst($this->id);
         print "User Permission : ".(\Foundation\Acl::hasProjectAccess('1','Accounts', 'read', $this->id))."\r\n";
-/*
+        
         $allTeams = $Project->getTeams();
         foreach ($allTeams as $key => $team) {
             print "Team $key: ".$team->name;
@@ -26,7 +26,7 @@ class ProjectsController extends RestController
             print "<br>".$user->status;
             print "<hr>";
         }
-        /*
+        
         $allRoles = $Project->getRoles();
         foreach ($allRoles as $key => $role) {
             print "Role $key: ".$role->name;
@@ -39,12 +39,12 @@ class ProjectsController extends RestController
             print "Role $key: ".$role->name;
             print "<br>".$role->id;
             print "<hr>";
-        }*/
+        }
         
         die();
         
         $modelName = $this->modelName;
         $notes = $modelName::find($this->id);
         return $this->extractData($notes);
-    }
+    }*/
 }
