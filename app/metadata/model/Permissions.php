@@ -116,14 +116,14 @@ $models['Permissions'] = array(
     ),
     'relationships' => array(
         'hasOne' => array(
-            'Resources' => array(
-                'primaryKey' => 'resourcesId',
+            'Resource' => array(
+                'primaryKey' => 'resourceId',
                 'relatedModel' => 'Resources',
                 'relatedKey' => 'id',
             ),
-            'Requesters' => array(
-                'primaryKey' => 'requestersId',
-                'relatedModel' => 'Requesters',
+            'Role' => array(
+                'primaryKey' => 'roleId',
+                'relatedModel' => 'Roles',
                 'relatedKey' => 'id',
             )
         ),

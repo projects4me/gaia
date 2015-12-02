@@ -34,41 +34,48 @@
 $models['Contacts'] = array(
    'tableName' => 'contacts',
    'fields' => array(
-       'id' => array(
-           'name' => 'id',
-           'label' => 'LBL_CONTACTS_ID',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'firstName' => array(
-           'name' => 'firstName',
-           'label' => 'LBL_CONTACTS_FIRSTNAME',
-           'type' => 'varchar',
-           'length' => '50',
-           'null' => true,
-       ),
-       'lastName' => array(
-           'name' => 'lastName',
-           'label' => 'LBL_CONTACTS_LASTNAME',
-           'type' => 'varchar',
-           'length' => '50',
-           'null' => false,
-       ),
-       'email' => array(
-           'name' => 'email',
-           'label' => 'LBL_CONTACTS_EMAIL',
-           'type' => 'varchar',
-           'length' => '200',
-           'null' => true,
-       ),
+        'id' => array(
+            'name' => 'id',
+            'label' => 'LBL_CONTACTS_ID',
+            'type' => 'int',
+            'length' => '11',
+            'null' => false,
+        ),
+        'firstName' => array(
+            'name' => 'firstName',
+            'label' => 'LBL_CONTACTS_FIRSTNAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => true,
+        ),
+        'lastName' => array(
+            'name' => 'lastName',
+            'label' => 'LBL_CONTACTS_LASTNAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
+        'email' => array(
+            'name' => 'email',
+            'label' => 'LBL_CONTACTS_EMAIL',
+            'type' => 'varchar',
+            'length' => '200',
+            'null' => true,
+        ),
        'phoneHome' => array(
-           'name' => 'phoneHome',
-           'label' => 'LBL_CONTACTS_PHONEHOME',
-           'type' => 'varchar',
-           'length' => '15',
-           'null' => true,
-       )
+            'name' => 'phoneHome',
+            'label' => 'LBL_CONTACTS_PHONEHOME',
+            'type' => 'varchar',
+            'length' => '15',
+            'null' => true,
+        ),
+        'projectId' => array(
+            'name' => 'projectId',
+            'label' => 'LBL_CONTACTS_PROJECT',
+            'type' => 'int',
+            'length' => '11',
+            'null' => false,
+        )
     ),
     'indexes' => array(
         'id' => 'primary',

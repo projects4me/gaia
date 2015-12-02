@@ -63,7 +63,7 @@ $models['Roles'] = array(
             'Permissions' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => 'Permissions',
-                'relatedKey' => 'resourcesId',
+                'relatedKey' => 'roleId',
             ),
         ),
     ),

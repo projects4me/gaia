@@ -128,12 +128,18 @@ class RestController extends \Phalcon\Mvc\Controller
                 {
                     $modelName = $this->modelName;
                     $data = $modelName::find($this->id);
-                    if (isset($data[0]->projectId))
+                    $identifier = 'projectId';
+                    if (strtolower($modelName) === 'projects')
                     {
-                        $permission = \Foundation\Acl::hasProjectAccess('1', $this->controllerName, $this->aclMap[$this->actionName], $data[0]->projectId);
+                        $identifier = 'id';
+                    }
+                    
+                    if (isset($data[0]->$identifier))
+                    {
+                        $permission = \Foundation\Acl::hasProjectAccess('1', $this->controllerName, $this->aclMap[$this->actionName], $data[0]->$identifier);
                         if ($permission != 0)
                         {
-                            $projects[] = $data[0]->projectId;
+                            $projects[] = $data[0]->$identifier;
                         }
                     }
                 }
@@ -218,9 +224,14 @@ class RestController extends \Phalcon\Mvc\Controller
     public function listAction()
     {
         //check for accessible projects
-        print_r($this->accessibleProjects);
-        die();
         $modelName = $this->modelName;
+        $identifier = 'projectId';
+        if (strtolower($modelName) === 'projects')
+        {
+            $identifier = 'id';
+        }
+
+
         //data of more models (relationship)
         if ( $this->relationship!=null ){
             $data = $modelName::findFirst( $this->id );
@@ -231,7 +242,19 @@ class RestController extends \Phalcon\Mvc\Controller
 
         //data of one model
         }else{
-            $data = $modelName::find();
+            $query  = $modelName::query();
+            if ($this->projectAuthorization)
+            {
+                $conditions = array();
+                foreach ($this->accessibleProjects as $accessibleProject)
+                {
+                    $conditions[] = $identifier."='".$accessibleProject."'";
+                }
+                $condition = "(".implode(' OR ',$conditions).")";
+                $query->where($condition);
+            }
+            $data = $query->execute();
+            
         }      
 
         return $this->extractData($data);
