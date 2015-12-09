@@ -114,13 +114,10 @@ class Router extends PhalconRouter\Router
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
                                 $this->addDelete($path,array('controller'=> $module,'action' => 'delete'));
                                 break;
-
-                                case 'OPTIONS':
-                                $path = (($basepath[0] === '/')?'':'/').$basepath;
-                                $this->addOptions($path,array('controller'=> $module,'action' => 'options'));
-                                break;
                             } // end switch on method
                         } // end foreach on $allowedMethods
+                        $path = (($basepath[0] === '/')?'':'/').$basepath;
+                        $this->addOptions($path,array('controller'=> $module,'action' => 'options'));
                     } // end foreach on $versionRoutes 
                 } // end foreach on $routes['rest']
             } // end if $routes['test'];
@@ -130,7 +127,7 @@ class Router extends PhalconRouter\Router
             {
                 foreach($settings->routes['app'] as $name => $approute)
                 {
-                    $path = $approute->path;
+                    $path = (isset($approute->path))?$approute->path:'/';
                     unset($approute->path);
                     $this->add($path,(array) $approute);
                 }

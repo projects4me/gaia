@@ -6,6 +6,8 @@ use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\Resultset;
 use Phalcon\DI;
 use Phalcon\Mvc\Dispatcher;
+use Phalcon\Text;
+use function Foundation\create_guid as create_guid;
 
 class RestController extends \Phalcon\Mvc\Controller
 {
@@ -95,6 +97,10 @@ class RestController extends \Phalcon\Mvc\Controller
      */
     protected $systemLevel = false;    
     
+    protected $uses = array('acl','auditable');
+    
+    protected $components = array();
+    
     /**
      * @todo Add a way that will allow us to control the controllers and actions
      * exempted from Authorization
@@ -113,10 +119,87 @@ class RestController extends \Phalcon\Mvc\Controller
         $this->modelName = $this->controllerName;//model
         $this->id = $this->dispatcher->getParam("id");//id
         $this->relationship = $this->dispatcher->getParam("relationship");//relationship
-
-        $this->authorize();
+        if ($this->actionName != 'options')
+            $this->authorize();
     }
     
+    /**
+     * This function preloads the component classes for use later
+     */
+    final private function loadComponents(){
+        if (!isset($this->components) || empty($this->components))
+        {
+            if (isset($this->uses) && !empty($this->uses))
+            {
+                foreach($this->uses as $component)
+                {
+                    $componentClass = '\\Foundation\\Mvc\\Controller\\Component\\'.strtolower($component).'Component';
+                    $this->components[$component] = new $componentClass();
+                }
+            }
+        }
+    }
+
+    /**
+     * The event handler that allows us to call multiple mixin behaviors before
+     * executing the desired action
+     * 
+     * @todo Examine performance
+     * @todo preload the mixins
+     * @param type $dispatcher
+     */
+    public function beforeExecuteRoute($dispatcher)
+    {
+        $this->loadComponents();
+        $method = 'before'.\Phalcon\Text::camelize($dispatcher->getActionName());
+        if (isset($this->uses) && !empty($this->uses))
+        {
+            foreach($this->uses as $component)
+            {
+                if ($this->components[$component]->initialize())
+                {
+                    if (method_exists($this->components[$component],$method))
+                    {
+                        if (!($this->components[$component]->$method($this)))
+                        {
+                            throw new \Phalcon\Exception('Failed while executing the function '.$method.' for the Component::'.$component);
+                        }
+                    }
+                }
+                else
+                {
+                    throw new \Phalcon\Exception('Failed to initialize the Component::'.$component);
+                }
+            }
+        }
+    }
+
+        /**
+     * The event handler that allows us to call multiple mixin behaviors before
+     * executing the desired action
+     * 
+     * @todo Examine performance
+     * @todo preload the mixins
+     * @param type $dispatcher
+     */
+    public function afterExecuteRoute($dispatcher)
+    {
+        $method = 'after'.\Phalcon\Text::camelize($dispatcher->getActionName());
+        if (isset($this->uses) && !empty($this->uses))
+        {
+            foreach($this->uses as $component)
+            {
+                if (method_exists($this->components[$component],$method))
+                {
+                    if (!($this->components[$component]->$method($this)))
+                    {
+                        throw new \Exception('Failed while executing the function '.$method.' for the Component::'.$component);
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Make currentUser available as global
      * 
@@ -253,11 +336,38 @@ class RestController extends \Phalcon\Mvc\Controller
         $this->language = $messages;
     }
 
+    
+    /**
+     * Method Http accept: OPTIONS
+     * @return JSON return list of functions available
+     * @todo improve version mapping
+     */
+    public function optionsAction(){
+        global $settings;
+        
+        $modelName = $this->modelName;
+        $requestURI = $this->request->getURI();
+        if (preg_match('@api/?([^/]+)@',$requestURI,$matches))
+        {
+            $version = $matches[1];
+            $allowedMethods = (array) $settings->routes['rest']->$version->$modelName->allowedMethods;
+            $this->response->setJsonContent(array('methods' => $allowedMethods));
+        }
+        else
+        {
+            $this->response->setStatusCode(400);
+            $this->response->setJsonContent(array('status' => 'error','description' => 'Method only allowed for API'));
+        }
+        return $this->response;
+    }
+    
+    
     /**
      * Method Http accept: GET
      * @return JSON Retrive data by id
      */
     public function getAction(){
+
         $modelName = $this->modelName;
 
         $data = $modelName::find( $this->id );
@@ -388,7 +498,8 @@ class RestController extends \Phalcon\Mvc\Controller
     {
         $modelName = $this->modelName;      
         $model = new $modelName();
-        $util = new Util();
+
+        $util = new \Util();
         $data = array();
 
         //get data
@@ -399,7 +510,6 @@ class RestController extends \Phalcon\Mvc\Controller
             $data = $temp;
         else
             $data[0] = $temp;
-
 
         //scroll through the arraay data and make the action save/update
         foreach ($data as $key => $value) {
@@ -418,15 +528,20 @@ class RestController extends \Phalcon\Mvc\Controller
             //if have param then update
             if ( isset($this->id) ) //if passed by url
                 $model = $modelName::findFirst($this->id);
-            
+            else
+            {
+                $new_id = create_guid();
+                $value['id'] = $new_id;
+            }
+
             if ( $model->save($value) ){
                 $dataResponse = get_object_vars($model);
-
                 //update
                 if ( isset($this->id) ){
                     $this->response->setJsonContent(array('status' => 'OK'));
                 //insert
                 }else{
+                    $dataResponse['id'] = $new_id;
                     $this->response->setStatusCode(201, "Created");
                     $this->response->setJsonContent(array(
                         'status' => 'OK',

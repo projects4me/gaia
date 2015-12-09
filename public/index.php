@@ -11,7 +11,10 @@ use Phalcon\DI\FactoryDefault,
 error_reporting(E_ALL);
 define('APP_PATH', realpath('..'));
 ini_set('display_errors',true);
-
+require '../foundation/controllers/component.php';
+require '../foundation/controllers/components/acl.php';
+require '../foundation/controllers/components/auditable.php';
+    
 try {
     
     global $stime,$di;
@@ -42,7 +45,7 @@ try {
     print_r($loader);
     print "</pre>";
 */
-
+    require_once(APP_PATH.'/foundation/libs/utility_functions.php');
     require_once(APP_PATH.'/foundation/controllers/RestController.php');
     //Create a DI
     $di = new Phalcon\DI\FactoryDefault();
@@ -74,7 +77,7 @@ try {
     
     // @todo - add actions route
     $di->set('router', function(){
-        require APP_PATH.'/foundation/mvc/router.php';
+        require_once APP_PATH.'/foundation/mvc/router.php';
         $router = new Foundation\Mvc\Router();
         $router->init();
 //        print "<pre>";
@@ -94,7 +97,7 @@ try {
     require '../foundation/libs/migration/driver.php';
     Foundation\Mvc\Model\Migration\Driver::migrate();
     require '../foundation/libs/acl.php';
-    
+
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);
     
