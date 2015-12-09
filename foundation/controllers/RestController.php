@@ -340,17 +340,15 @@ class RestController extends \Phalcon\Mvc\Controller
     /**
      * Method Http accept: OPTIONS
      * @return JSON return list of functions available
-     * @todo improve version mapping
      */
     public function optionsAction(){
-        global $settings;
+        global $settings,$apiVersion;
         
         $modelName = $this->modelName;
-        $requestURI = $this->request->getURI();
-        if (preg_match('@api/?([^/]+)@',$requestURI,$matches))
+        // only allow versioned API calls
+        if (preg_match('@api/@',$this->request->getURI()))
         {
-            $version = $matches[1];
-            $allowedMethods = (array) $settings->routes['rest']->$version->$modelName->allowedMethods;
+            $allowedMethods = (array) $settings->routes['rest']->$apiVersion->$modelName->allowedMethods;
             $this->response->setJsonContent(array('methods' => $allowedMethods));
         }
         else

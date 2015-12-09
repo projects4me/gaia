@@ -17,15 +17,28 @@ require '../foundation/controllers/components/auditable.php';
     
 try {
     
-    global $stime,$di;
+    global $stime,$di,$apiVersion;
     $stime = explode(" ",microtime());
     $stime = $stime[1] + $stime[0];
+    
+    $request = new \Phalcon\Http\Request();
+    $appVersions = include('../version.php'); 
+    $apiVersion = $appVersions['apiVersion'];
+    // if api version is available in the request then load it
+    /**
+     * @todo add more validation
+     */
+    if (preg_match('@api/?(v[^/]+)@',$request->getURI(),$matches))
+    {
+        $apiVersion = $matches[1];
+    }
+
     //Register an autoloader
     $loader = new \Phalcon\Loader();
     $loader->registerDirs(array(
         APP_PATH.'/foundation/controllers/',
         APP_PATH.'/foundation/libs/',
-        APP_PATH.'/app/api/v1/controllers/',
+        APP_PATH.'/app/api/'.$apiVersion.'/controllers/',
         APP_PATH.'/app/models/',
         APP_PATH.'/config/',        
         APP_PATH.'/vendor/',        
@@ -100,7 +113,6 @@ try {
 
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);
-    
     echo $app->handle()->getContent();
 
 } catch(\Phalcon\Exception $e) {
