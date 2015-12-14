@@ -379,9 +379,44 @@ class RestController extends \Phalcon\Mvc\Controller
     */
     public function listAction()
     {
-        //check for accessible projects
+        global $di;
+
         $modelName = $this->modelName;
+        
+        /**
+         * @todo get from settings
+         */
+        $requestLimit = $this->request->get('limit');
+        $limit = ($requestLimit)?($requestLimit+1):21;
+        
+        
+        $requestPage = $this->request->get('page');
+        $offset = ($requestPage && $requestPage != 0 && $requestPage != 1)?$requestPage:0;
+        
+        $query = ($this->request->get('query'))?($this->request->get('query')):'';
+        $sort = ($this->request->get('sort'))?($this->request->get('sort')):'';
+        $order = ($this->request->get('order'))?($this->request->get('order')):'DESC';
+        
+        $fields = ($this->request->get('fields'))?(explode(',',$this->request->get('fields'))):array();
+        
+        $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
+
+        $model = new $modelName;
+        $data = $model->read(array(
+            'fields' => $fields,
+            'rels' => $rels,
+            'where' => $query,
+            'sort' => $sort,
+            'order' => $order,
+            'limit'=> $limit,
+            'offset' => $offset
+        ));
+
+        return $this->extractData($data);
+
         $identifier = 'projectId';
+
+        
         if (strtolower($modelName) === 'projects')
         {
             $identifier = 'id';

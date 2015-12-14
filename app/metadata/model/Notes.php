@@ -88,7 +88,7 @@ $models['Notes'] = array(
     'relationships' => array(
         'hasOne' => array(
             'AssignedUser' => array(
-                'primaryKey' => 'user_id',
+                'primaryKey' => 'userId',
                 'relatedModel' => 'Users',
                 'relatedKey' => 'id'
             )

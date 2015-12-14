@@ -157,4 +157,264 @@ class Model extends \Phalcon\Mvc\Model
         $metadata = metaManager::getModelMeta(get_class($this));
         $this->setSource($metadata['tableName']);    
     }
+    
+    public function read($params)
+    {
+        $query = $this->query();
+        $query->columns($params['fields']);
+        $query->orderBy($params['sort']);
+        $query->limit($params['limit'], $params['offset']);
+        $where = self::preProcessWhere($params['where']);
+        $query->where($where);
+
+        // process joins
+
+        // process ACL and other behaviors before executing the query
+        
+        $data = $query->execute();
+        return $data;
+        //print_r($this->request->getQuery('query'));
+        //$model = new \Notes;
+/*        $params = array(
+            'models'     => array($modelName),
+            'columns'    => array('id', 'subject', 'body'),
+            'conditions' => "subject LIKE '%2%' AND body LIKE '%POST%'",
+            'order'      => array('subject', 'id'),
+            'limit'      => 20,
+            'offset'     => 0,
+            // or 'limit' => array(20, 20),
+        );
+        $queryBuilder = new \Phalcon\Mvc\Model\Query\Builder($params);   
+        print $queryBuilder->getPhql();
+        $query = $queryBuilder->getQuery();
+        $query->setDI($this->di);
+        
+        //$query = $this->modelsManager->createQuery($queryBuilder->getPhql());
+        $data  = $query->execute();        
+        foreach($data as $index => $values)
+        {
+            print_r($index);
+            print_r($values);
+        }
+ */
+        //$query  = $model::query();
+        /*
+            ->columns(array('Notes.id', 'Notes.subject', 'Notes.body','Users.username'))
+            ->leftJoin('Users')
+            ->where("subject LIKE '%2%'")
+            ->andWhere("body LIKE '%POST%'")
+            ->order("subject")
+            ->limit(20,0)
+            ->execute();*/        
+    }
+    
+    /**
+     * The purpose of this function is parse the query string from a string to
+     * and array
+     * 
+     * Allowed operators
+     *  AND         And
+     *  OR          Or
+     *  BETWEEN     Between
+     *  :           Equals to, = is not allowed for friendly URL parsing
+     *  <           Less than
+     *  >           Greater than
+     *  <:          Less than or equals to
+     *  >:          Grater than or equals to
+     *  CONTAINS    Contains, acts as IN for CSVs and LIKE %% otherwise
+     *  STARTS      Starts with
+     *  ENDS        Ends with
+     *  NULL        Is NULL
+     *  EMPTY       Is empty
+     *  !           Not, no space allowed after it
+     *  (           Statement starts
+     *  )           Statement ends
+     *  ,           Multiple possible values
+     *  '           String values
+     *
+     * Every statement must be comprised of substatement, each enclosed with 
+     * parenthesis. Substatements can only be enjoined using AND or OR
+     * This condition is applied to reduce complex parsing improving the overall
+     * time for processing the where statements
+     * 
+     * The input needs to have the following format
+     * <code>
+     *  ((Module.field CONTAINS data) AND (Module.field !: data)) 
+     * </code>
+     * Note: If CONTAINS is passed multiple values then all values must be encapsulated in single quotes '.
+     * Otherwise there is no way to tell a string like "Yes,No" and "No, You don't" apart.
+     * You can also encapsulate a string in single quotes and send it but if the delimiter ',' are foung in the input
+     * then it will be treated as multiple values.
+     * <code>
+     *  (Module.field !BETWEEN rangeStart AND rangeEnd) 
+     * </code>
+     * <code>
+     *  ((Module.field CONTAINS data1,data2,data3) AND (Module.field <: data)) 
+     * </code>
+     * Note: Parenthesis are are allowed in a substatement.
+     * Note: Subqueries are also not allowed.
+     * Note: Apostrophe must be preceded with \
+     * @todo Allow : without spaces
+     * @param type $queryString
+     * @return array
+     */
+    public static function preProcessWhere($statement)
+    {
+        // Parsing ideology is simples, first extract all the sub statements
+        // Then replace them in the queryString to get the exact
+        //  \Phalcon\Mvc\Model compatible statement
+
+        // process using another variable to retain the original statement
+        $query = $statement;
+
+        // ensure that the parenthesis are well formed
+        if(substr_count($statement, '(') != substr_count($statement, ')'))
+        {
+            $errorStr = 'Invalid query, please refer to the guides. '.
+            'Please check the paranthesis in the query.';
+            if (substr_count($statement, '(') > substr_count($statement, ')'))
+            {
+                $errorStr .= 'You have forgotten ")"';
+            }
+            else
+            {
+                $errorStr .= 'You have forgotten "("';
+            }
+            throw new \Phalcon\Exception($errorStr);
+        }
+        // extract all the substatments based on parenthesis
+        $expression = '@\([^(]*[^)]\)@';
+        if (preg_match_all($expression,$statement,$matches))
+        {
+            $substatements = $matches[0];
+            foreach($substatements as $substatement)
+            {
+                // Check for :,<,>,<:,>: in the string, if found then process
+                // ignoring the spaces
+                
+                if (preg_match('@NULL|EMPTY@', $substatement))
+                {
+                    $valueOffset = strlen($substatement)-2;
+                }
+                else
+                {
+                    // Get the position for the second space in a substatement
+                    $valueOffset = strpos($substatement, ' ',(strpos($substatement, ' ')+1));
+                }
+                $value = substr($substatement, $valueOffset,(strlen($substatement)-$valueOffset-1));
+
+                list($field,$operator) = explode(' ',substr($substatement, 1,$valueOffset));
+                
+                // Trim three components of the substatement
+                $operator = strtoupper(trim($operator));
+                $field = trim($field);
+                $value = trim($value);
+                $value = trim($value,"'");
+                $translatedStatement = '';
+                // parse based on the operator
+                switch ($operator)
+                {
+                    case ':':
+                        $translatedStatement = "(".$field." = '".$value."')";
+                        break;
+                    case '!:':
+                        $translatedStatement = "(".$field." != '".$value."')";
+                        break;
+                    case '>':
+                        $translatedStatement = "(".$field." > '".$value."')";
+                        break;
+                    case '<':
+                        $translatedStatement = "(".$field." < '".$value."')";
+                        break;
+                    case '>:':
+                        $translatedStatement = "(".$field." >= '".$value."')";
+                        break;
+                    case '<:':
+                        $translatedStatement = "(".$field." <= '".$value."')";
+                        break;
+                    case 'CONTAINS':
+                        if (preg_match("@','@",$value))
+                        {
+                            $translatedStatement = "(".$field." IN ('".$value."'))";
+                        }
+                        else
+                        {
+                            $translatedStatement = "(".$field." LIKE '%".$value."%')";
+                        }
+                        break;
+                    case 'STARTS':
+                        $translatedStatement = "(".$field." LIKE '".$value."%')";
+                        break;
+                    case 'ENDS':
+                        $translatedStatement = "(".$field." LIKE '%".$value."')";
+                        break;
+                    case '!CONTAINS':
+                        if (preg_match("@','@",$value))
+                        {
+                            $translatedStatement = "(".$field." NOT IN ('".$value."'))";
+                        }
+                        else
+                        {
+                            $translatedStatement = "(".$field." NOT LIKE '%".$value."%')";
+                        }
+                        break;
+                    case '!STARTS':
+                        $translatedStatement = "(".$field." NOT LIKE '".$value."%')";
+                        break;
+                    case '!ENDS':
+                        $translatedStatement = "(".$field." NOT LIKE '%".$value."')";
+                        break;
+                    case 'NULL':
+                        $translatedStatement = "(".$field." IS NULL)";
+                        break;
+                    case '!NULL':
+                        $translatedStatement = "(".$field." IS NOT NULL)";
+                        break;
+                    case 'EMPTY':
+                        $translatedStatement = "(".$field." = '')";
+                        break;
+                    case '!EMPTY':
+                        $translatedStatement = "(".$field." != '')";
+                        break;
+                    case 'BETWEEN':
+                        list($upper,$lower) = explode(' AND ',$value);
+                        $upper = trim($upper,"'");
+                        $upper = trim($upper);
+                        $lower = trim($lower,"'");
+                        $lower = trim($lower);
+                        $translatedStatement = "(".$field." BETWEEN '".$upper."' AND '".$lower."')";
+                        break;
+                    case '!BETWEEN':
+                        list($upper,$lower) = explode(' AND ',$value);
+                        $upper = trim($upper,"'");
+                        $upper = trim($upper);
+                        $lower = trim($lower,"'");
+                        $lower = trim($lower);
+                        $translatedStatement = "(!(".$field." BETWEEN '".$upper."' AND '".$lower."'))";
+                        break;
+                    default :
+                        $translatedStatement = false;
+                        break;
+                }
+
+                $query = str_replace($substatement, $translatedStatement, $query);
+
+                   // make sure that we were able to parse all substatements
+                if (!$translatedStatement)
+                {
+                    throw new \Phalcon\Exception('Invalid query, please check the guides. '.
+                    'Most common issues are extra spaces and invalid operators, '.
+                    'please note that "=" is not allowed use ":" instead. '.
+                    'Possible issue in '.$substatement);
+                }
+            }
+        }
+        else
+        {
+            throw new \Phalcon\Exception('Invalid query, please refer to guides. '.
+            'Query must have atleast one substatement eclosed in parenthesis.');
+        }
+        
+        return $query;
+    }
 }
