@@ -37,6 +37,7 @@ use Phalcon\Mvc\Model\Message;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 use Phalcon\Mvc\Model\Validator\InclusionIn;
 use Foundation\metaManager;
+use Phalcon\Mvc\Model\MetaData;
 
 
 /**
@@ -158,16 +159,115 @@ class Model extends \Phalcon\Mvc\Model
         $this->setSource($metadata['tableName']);    
     }
     
+    /**
+     * This function returns the fields in the current model
+     * 
+     * @return array
+     */
+    protected function getFields()
+    {
+        $fields = $this->metadata[MetaData::MODELS_ATTRIBUTES];
+        foreach ($fields as &$field)
+        {
+            $field = get_class($this).'.'.$field;
+        }
+        return $fields;
+    }
+    
+    /**
+     * This function returns relationship names for all relationships types or of the specidied type
+     * 
+     * @param string $type possible values are hasOne, hasMany, belongsTo and hasManyToMany
+     * @return array
+     */
+    protected function getRelationNames($type = '')
+    {
+        $relations = array();
+
+        $hasOne = false;
+        $hasMany = false;
+        $belongsTo = false;
+        $hasManyToMany = false;
+
+        if (isset($type) && !empty($type))
+        {
+            $$type = true;
+        }
+        else
+        {
+            $hasOne = $hasMany = $belongsTo = $hasManyToMany = true;
+        }
+        
+        if(isset($this->metadata['relationships']['hasOne']) && !empty($this->metadata['relationships']['hasOne']) && $hasOne)
+        {
+            $relations = array_merge($relations,$this->metadata['relationships']['hasOne']);
+        }
+
+        if(isset($this->metadata['relationships']['hasMany']) && !empty($this->metadata['relationships']['hasMany']) && $hasMany)
+        {
+            $relations = array_merge($relations,$this->metadata['relationships']['hasMany']);
+        }
+        
+        if(isset($this->metadata['relationships']['belongsTo']) && !empty($this->metadata['relationships']['belongsTo']) && $belongsTo)
+        {
+            $relations = array_merge($relations,$this->metadata['relationships']['belongsTo']);
+        }
+        
+        if(isset($this->metadata['relationships']['hasManyToMany']) && !empty($this->metadata['relationships']['hasManyToMany']) && $hasManyToMany)
+        {
+            $relations = array_merge($relations,$this->metadata['relationships']['hasManyToMany']);
+        }
+        return $relations;
+    }
+
+    protected function getRelatedFields($relation)
+    {
+        
+    }
+
     public function read($params)
     {
+        // Initiate query
         $query = $this->query();
-        $query->columns($params['fields']);
-        $query->orderBy($params['sort']);
-        $query->limit($params['limit'], $params['offset']);
-        $where = self::preProcessWhere($params['where']);
-        $query->where($where);
+
+        // Get fields and relationships
+        $fields = $this->getFields();
+        $relations = $this->getRelationNames();
 
         // process joins
+        if(!isset($params['rels']) || (isset($params['rels']) && empty($params['rels'])))
+        {
+            $relationships = array_keys($relations);
+        }
+        else
+        {
+            $relationships = $params['rels'];
+        }
+        
+        if (isset($params['fields']) && !empty($params['fields']))
+        {
+            $query->columns($params['fields']);
+        }
+        else
+        {
+            $query->columns($fields);
+        }
+        $query->orderBy($params['sort']);
+        $query->limit($params['limit'], $params['offset']);
+        if (isset($params['where']) && !empty($params['where']))
+        {
+            $where = self::preProcessWhere($params['where']);
+            $query->where($where);
+        }
+        foreach($relationships as $relationship)
+        {   
+            if (!isset($relations[$relationship]) || empty($relations[$relationship]))
+            {
+                throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides.");
+            }
+            $relatedModel = $relations[$relationship]['relatedModel'];
+            $query->leftJoin($relatedModel,null,$relationship);
+        }
 
         // process ACL and other behaviors before executing the query
         

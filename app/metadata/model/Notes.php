@@ -91,8 +91,18 @@ $models['Notes'] = array(
                 'primaryKey' => 'userId',
                 'relatedModel' => 'Users',
                 'relatedKey' => 'id'
-            )
-        )
+            ),
+            'Project' => array(
+                'primaryKey' => 'projectId',
+                'relatedModel' => 'Projects',
+                'relatedKey' => 'id'
+            ),
+            'Contact' => array(
+                'primaryKey' => 'contact_id',
+                'relatedModel' => 'Contacts',
+                'relatedKey' => 'id'
+            ),
+        ),
     ),
 );
 

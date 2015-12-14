@@ -464,14 +464,36 @@ class RestController extends \Phalcon\Mvc\Controller
             $result[] = $value;
         }   
 
-        //se for um único elemento remove os índices de cada item
+        
         if ($this->id && !$this->relationship) $result = $result[0];
 
+        // do not allow passwords to be returned
+        $this->removePassword($result);
+        
         $this->response->setJsonContent($result);     
 
         return $this->response;
     }
 
+    /**
+     * This function is responsble for removing password from the result set
+     * 
+     * @param array $array
+     */
+    final private function removePassword(array &$array)
+    {
+        foreach($array as $key => &$value)
+        {
+            if(is_array($value))
+            {                
+                $this->removePassword($value);
+            }
+            elseif($key == 'password')
+            {
+                unset($array[$key]);
+            }
+        }
+    }
     /**
     * Method Http accept: GET
     * Search data with field/value passed in parameter
