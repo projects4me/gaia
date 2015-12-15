@@ -6,7 +6,8 @@ use Phalcon\DI\FactoryDefault,
     Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter,
     Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter,
     Phalcon\Session\Adapter\Files as SessionAdapter,
-    Phalcon\Translate\Adapter\NativeArray;
+    Phalcon\Translate\Adapter\NativeArray,
+    Phalcon\Logger\Adapter\File;
 
 error_reporting(E_ALL);
 define('APP_PATH', realpath('..'));
@@ -17,7 +18,7 @@ require '../foundation/controllers/components/auditable.php';
     
 try {
     
-    global $stime,$di,$apiVersion;
+    global $stime,$di,$apiVersion,$logger;
     $stime = explode(" ",microtime());
     $stime = $stime[1] + $stime[0];
     
@@ -99,9 +100,32 @@ try {
         return $router;
     });
 
+    
     // Set up the database service
     $di->set('db', function () {
-        return new DbAdapter((array) $GLOBALS['settings']['database']);
+ //       global $logger;
+        $connection = new DbAdapter((array) $GLOBALS['settings']['database']);
+        
+        $eventsManager = new Phalcon\Events\Manager();
+
+        $logger = new \Phalcon\Logger\Adapter\File(APP_PATH . "/db.log");
+//         print_r($logger);
+        //Listen all the database events
+        $eventsManager->attach('db', function($event, $connection) use ($logger) {
+//            global $logger;
+            if ($event->getType() == 'beforeQuery') {
+                $sqlVariables = $connection->getSQLVariables();
+                if (count($sqlVariables)) {
+                    $logger->log($connection->getSQLStatement() . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
+                } else {
+                    $logger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
+                }
+            }
+        });
+
+         //Assign the eventsManager to the db adapter instance
+         $connection->setEventsManager($eventsManager);
+        return $connection;
     });
 
     /**

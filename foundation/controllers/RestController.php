@@ -400,7 +400,7 @@ class RestController extends \Phalcon\Mvc\Controller
         $fields = ($this->request->get('fields'))?(explode(',',$this->request->get('fields'))):array();
         
         $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
-
+        
         $model = new $modelName;
         $data = $model->read(array(
             'fields' => $fields,

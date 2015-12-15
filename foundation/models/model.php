@@ -220,19 +220,30 @@ class Model extends \Phalcon\Mvc\Model
         return $relations;
     }
 
-    protected function getRelatedFields($relation)
-    {
-        
-    }
-
-    public function read($params)
+    /**
+     * This function is an alternate of \Phalcon\Mv\Model::find
+     * This RestController must use this function instead of find so that we can
+     * support the default pagination, sorting, filtering and relationships
+     * 
+     * @param array $params
+     * @return array
+     * @throws \Phalcon\Exception
+     */
+    public function read(array $params)
     {
         // Initiate query
         $query = $this->query();
 
+        // has Many and Many-To-Many not working properly
+        // enable where to support query params
+        
         // Get fields and relationships
         $fields = $this->getFields();
         $relations = $this->getRelationNames();
+        
+        // Limit the default relationships being fetched to hasOne and belongsTo
+        //$relations = $this->getRelationNames('hasOne');
+        //$relations = array_merge($relations,$this->getRelationNames('belongsTo'));
 
         // process joins
         if(!isset($params['rels']) || (isset($params['rels']) && empty($params['rels'])))
@@ -250,10 +261,32 @@ class Model extends \Phalcon\Mvc\Model
         }
         else
         {
+            foreach($relationships as $relationship)
+            {   
+                //check Many-Many and hasMany as well
+                if (!isset($relations[$relationship]) || empty($relations[$relationship]))
+                {
+                    throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides.");
+                }
+                $fields[] = $relationship.'.*';
+            }
             $query->columns($fields);
         }
-        $query->orderBy($params['sort']);
-        $query->limit($params['limit'], $params['offset']);
+        if (isset($params['sort']) && !empty($params['sort']))
+        {
+            $query->orderBy($params['sort']);
+        }
+        if (isset($params['limit']) && !empty($params['limit']))
+        {
+            if (isset($params['offset']) && !empty($params['offset']))
+            {
+                $query->limit($params['limit'], $params['offset']);
+            }
+            else
+            {
+                $query->limit($params['limit']);                
+            }
+        }
         if (isset($params['where']) && !empty($params['where']))
         {
             $where = self::preProcessWhere($params['where']);
@@ -261,6 +294,7 @@ class Model extends \Phalcon\Mvc\Model
         }
         foreach($relationships as $relationship)
         {   
+            //check Many-Many and hasMany as well
             if (!isset($relations[$relationship]) || empty($relations[$relationship]))
             {
                 throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides.");
@@ -272,40 +306,8 @@ class Model extends \Phalcon\Mvc\Model
         // process ACL and other behaviors before executing the query
         
         $data = $query->execute();
-        return $data;
-        //print_r($this->request->getQuery('query'));
-        //$model = new \Notes;
-/*        $params = array(
-            'models'     => array($modelName),
-            'columns'    => array('id', 'subject', 'body'),
-            'conditions' => "subject LIKE '%2%' AND body LIKE '%POST%'",
-            'order'      => array('subject', 'id'),
-            'limit'      => 20,
-            'offset'     => 0,
-            // or 'limit' => array(20, 20),
-        );
-        $queryBuilder = new \Phalcon\Mvc\Model\Query\Builder($params);   
-        print $queryBuilder->getPhql();
-        $query = $queryBuilder->getQuery();
-        $query->setDI($this->di);
         
-        //$query = $this->modelsManager->createQuery($queryBuilder->getPhql());
-        $data  = $query->execute();        
-        foreach($data as $index => $values)
-        {
-            print_r($index);
-            print_r($values);
-        }
- */
-        //$query  = $model::query();
-        /*
-            ->columns(array('Notes.id', 'Notes.subject', 'Notes.body','Users.username'))
-            ->leftJoin('Users')
-            ->where("subject LIKE '%2%'")
-            ->andWhere("body LIKE '%POST%'")
-            ->order("subject")
-            ->limit(20,0)
-            ->execute();*/        
+        return $data;
     }
     
     /**
