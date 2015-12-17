@@ -8,7 +8,8 @@ use Phalcon\DI;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Text;
 use function Foundation\create_guid as create_guid;
-
+use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
+ 
 class RestController extends \Phalcon\Mvc\Controller
 {
 
@@ -86,7 +87,6 @@ class RestController extends \Phalcon\Mvc\Controller
         'list' => 'read',
         'related' => 'read',
         'post' => 'create',
-        'search' => 'search',
         'delete' => 'delete',
         'put' => 'update',
         'patch' => 'update'
@@ -530,139 +530,88 @@ class RestController extends \Phalcon\Mvc\Controller
     }
 
     /**
-     * 
-     * @param array $data
-     * @return string
+     * Method Http accept: PUT (update but all the fields)
+     * Save/update data 
      */
-    protected function buildHAL(array $data,$limit=-1, $page=-1)
+    public function putAction()
     {
-        $hal = array();
-        $query = $this->request->getQuery();
-        $self = $next = $prev = array();
+        print 'here';
+        $data = array('error' => array('code' => 405, 'description' => 'Method not allowed'));
+        return $this->returnResponse($data);        
+    }
 
-        $endPage = true;
-        if ($limit != -1)
+    /**
+     * Method Http accept: PUT (update but all the fields)
+     * Save/update data 
+     */
+    public function putCollectionAction()
+    {
+        $data = array('error' => array('code' => 405, 'description' => 'Method not allowed'));
+        return $this->returnResponse($data);
+    }
+
+    /**
+     * Method Http accept: PATCH (update only the given fields)
+     * Save/update data 
+     */
+    public function patchAction()
+    {
+        
+    }
+
+    /**
+     * Method Http accept: PATCH (update only the given fields)
+     * Save/update data 
+     */
+    public function patchCollectionAction()
+    {
+        $modelName = $this->modelName;      
+        //$model = new $modelName();
+
+        //get data
+        $data = $this->request->getJsonRawBody();
+
+        if (!isset($data->collection) && is_array($data->collection))
         {
-            if(isset($data[$limit]))
-            {            
-                unset($data[$limit]);
-                $endPage = false;
+            $data = array('error' => array('code' => 400, 'description' => 'Collection missing'));
+            return $this->returnResponse($data);
+        }
+
+        $transactionManager = new TransactionManager();
+        $transaction = $transactionManager->get();
+        
+        foreach ($data->collection as $index => $resource)
+        {
+            $temp = (array) $resource;
+            if (!isset($temp['id']))
+            {
+                $data = array('error' => array('code' => 400, 'description' => 'Id missing for record '.$index));
+                $transaction->rollback("Id missing for record ".$index);
+                return $this->returnResponse($data);
             }
             
-            if($page == -1)
-                $page = 0;
-            if (!isset($query['page']))
+//            $model = $modelName::findFirst($temp['id']);
+            $model = \Notes::findFirst($temp['id']);
+            if (!isset($model->id))
             {
-                $query['page'] = $page;
+                $data = array('error' => array('code' => 400, 'description' => 'Invalid record with identifier '.$temp['id']));
+                $transaction->rollback("Invalid record with identifier ".$temp['id']);
+                return $this->returnResponse($data);                
+            }
+            $updatedData = $model->cloneResult($model, $temp);
+            $updatedData->setTransaction($transaction);
+            if(!$updatedData->save())
+            {
+                $data = array('error' => array('code' => 400, 'description' => 'Unable to save '.$temp['id'].', all changes reverted'));
+                $transaction->rollback("Patched failed for ".$temp['id']);
+                return $this->returnResponse($data);                
             }
         }
-        
-        
-        foreach($query as $param => $value)
-        {
-            if ($param != '_url')
-            {
-                $self[] = $param.'='.$value;
-                if (isset($limit))
-                {
-                    if ($param == 'page')
-                    {
-                        $next[] = $param.'='.($page+1);                        
-                        $prev[] = $param.'='.($page-1);
-                    }
-                    else
-                    {
-                        $next[] = $param.'='.$value;
-                        $prev[] = $param.'='.$value;
-                    }
-
-                }
-            }
-        }
-        
-        $hal['resultset'] = $data;
-        
-        $hal['_links']['self']['href'] = $query['_url'];
-        if (!empty($self))
-        {
-            $hal['_links']['self']['href'] .= '?'.implode('&',$self);
-        }
-        if (!empty($next) && !$endPage)
-        {            
-            $hal['_links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
-        }
-        
-        if (!empty($prev) && $page > 1)
-        {    
-            $hal['_links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
-        }
-            
-        return $hal;
+        $transaction->commit();
+        $data = array('status' => 'Data saved successfully');
+        return $this->returnResponse($data);                        
     }
     
-    /**
-     * Return the response, allow the error code handling here
-     * 
-     * @param array $data
-     * @return \Phalcon\Http\Response
-     */
-    protected function returnResponse(array $data)
-    {
-        $this->response->setJsonContent($data);     
-        $this->response->setContentType('text/json');
-        return $this->response;
-    }
-
-    /**
-     * Extract collection data to json
-     * @param  Objcet     data object collecion with data
-     * @return JSON       data in JSON
-     */
-    protected function extractData($data){
-        //extracting data to array
-        if ($data instanceof Resultset)
-        {
-            $data->setHydrateMode(Resultset::HYDRATE_ARRAYS);        
-            $result = array();
-            foreach( $data as $value ){
-                $result[] = $value;
-            }   
-        }
-        elseif (is_array ($data))
-        {
-            $result = $data;
-        }
-        else
-        {
-            $result = array();
-        }
-        
-        // do not allow passwords to be returned
-        $this->removePassword($result);
-        
-        return $result;
-    }
-
-    /**
-     * This function is responsble for removing password from the result set
-     * 
-     * @param array $array
-     */
-    final private function removePassword(array &$array)
-    {
-        foreach($array as $key => &$value)
-        {
-            if(is_array($value))
-            {                
-                $this->removePassword($value);
-            }
-            elseif($key == 'password')
-            {
-                unset($array[$key]);
-            }
-        }
-    }
-
     /**
      * Method Http accept: POST (insert) and PUT (update)
      * Save/update data 
@@ -740,10 +689,12 @@ class RestController extends \Phalcon\Mvc\Controller
     }
 
     /**
-    * Method Http accept: DELETE
-    */
+     * Method Http accept: DELETE
+     */
     public function deleteAction()
     {
+        
+        // need to evaluate if we need to use this function
         $modelName = $this->modelName;
 
         $model = $modelName::findFirst($this->id);
@@ -768,5 +719,154 @@ class RestController extends \Phalcon\Mvc\Controller
 
         return $this->response;
     }
+    
+    /**
+     * Method Http accept: DELETE
+     */
+    public function deleteCollectionAction()
+    {
+    }
+
+    /**
+     * 
+     * @param array $data
+     * @return string
+     */
+    protected function buildHAL(array $data,$limit=-1, $page=-1)
+    {
+        $hal = array();
+        $query = $this->request->getQuery();
+        $self = $next = $prev = array();
+
+        $endPage = true;
+        if ($limit != -1)
+        {
+            if(isset($data[$limit]))
+            {            
+                unset($data[$limit]);
+                $endPage = false;
+            }
+            
+            if($page == -1)
+                $page = 0;
+            if (!isset($query['page']))
+            {
+                $query['page'] = $page;
+            }
+        }
+        
+        
+        foreach($query as $param => $value)
+        {
+            if ($param != '_url')
+            {
+                $self[] = $param.'='.$value;
+                if (isset($limit))
+                {
+                    if ($param == 'page')
+                    {
+                        $next[] = $param.'='.($page+1);                        
+                        $prev[] = $param.'='.($page-1);
+                    }
+                    else
+                    {
+                        $next[] = $param.'='.$value;
+                        $prev[] = $param.'='.$value;
+                    }
+
+                }
+            }
+        }
+        
+        $hal['resultset'] = $data;
+        $hal['count'] = count($data);
+        
+        $hal['_links']['self']['href'] = $query['_url'];
+        if (!empty($self))
+        {
+            $hal['_links']['self']['href'] .= '?'.implode('&',$self);
+        }
+        if (!empty($next) && !$endPage)
+        {            
+            $hal['_links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
+        }
+        
+        if (!empty($prev) && $page > 1)
+        {    
+            $hal['_links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
+        }
+            
+        return $hal;
+    }
+    
+    /**
+     * Return the response, allow the error code handling here
+     * 
+     * @param array $data
+     * @return \Phalcon\Http\Response
+     */
+    protected function returnResponse(array $data)
+    {
+        $this->response->setJsonContent($data);     
+        $this->response->setContentType('text/json');
+        
+        if (isset($data['error']))
+        {
+            $this->response->setStatusCode($data['error']['code']);
+        }
+        
+        return $this->response;
+    }
+
+    /**
+     * Extract collection data to json
+     * @param  Objcet     data object collecion with data
+     * @return JSON       data in JSON
+     */
+    protected function extractData($data){
+        //extracting data to array
+        if ($data instanceof Resultset)
+        {
+            $data->setHydrateMode(Resultset::HYDRATE_ARRAYS);        
+            $result = array();
+            foreach( $data as $value ){
+                $result[] = $value;
+            }   
+        }
+        elseif (is_array ($data))
+        {
+            $result = $data;
+        }
+        else
+        {
+            $result = array();
+        }
+        
+        // do not allow passwords to be returned
+        $this->removePassword($result);
+        
+        return $result;
+    }
+
+    /**
+     * This function is responsble for removing password from the result set
+     * 
+     * @param array $array
+     */
+    final private function removePassword(array &$array)
+    {
+        foreach($array as $key => &$value)
+        {
+            if(is_array($value))
+            {                
+                $this->removePassword($value);
+            }
+            elseif($key == 'password')
+            {
+                unset($array[$key]);
+            }
+        }
+    }
+    
 
 }

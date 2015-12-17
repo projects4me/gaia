@@ -82,41 +82,54 @@ class Router extends PhalconRouter\Router
                             switch ($method)
                             {
                                 case 'GET':
-
-                                // register two paths for get, for collection and entity
+                                // Allow retrieval of entity
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
                                 $this->addGet($path,array('controller'=> $module,'action' => 'get', $moduleRoutes->identifier => '1'));
 
-                                // register two paths for get, for collection and entity
+                                // Allow retrieval of realted records for an entity
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)';
                                 $this->addGet($path,array('controller'=> $module,'action' => 'related', $moduleRoutes->identifier => '1', 'relation' => '2'));
                                 
+                                // Allow retrieval of Collection
                                 $path = (($basepath[0] === '/')?'':'/').$basepath;
                                 $this->addGet($path,array('controller'=> $module,'action' => 'list'));
-
                                 break;
 
                                 case 'POST':
-                                // @todo : allow batch insertion
+                                /**
+                                 * @todo : allow batch insertion
+                                 */
                                 $path = (($basepath[0] === '/')?'':'/').$basepath;
                                 $this->addPost($path,array('controller'=> $module,'action' => 'post'));
                                 break;
 
                                 case 'PUT':
-                                // @todo : allow batch updates
+                                // Officialy we do not suuport the optionn but just in case
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
                                 $this->addPut($path,array('controller'=> $module,'action' => 'put'));
+
+                                $path = (($basepath[0] === '/')?'':'/').$basepath;
+                                $this->addPut($path,array('controller'=> $module,'action' => 'putCollection'));
                                 break;
 
                                 case 'PATCH':
-                                // @todo : allow batch updates
+                                // Allow update for an independant resource
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
                                 $this->addPatch($path,array('controller'=> $module,'action' => 'patch'));
+
+                                // Allow update for a collection of resources
+                                $path = (($basepath[0] === '/')?'':'/').$basepath;
+                                $this->addPatch($path,array('controller'=> $module,'action' => 'patchCollection'));
                                 break;
 
                                 case 'DELETE':
+                                // Allow deletion of an entity
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
                                 $this->addDelete($path,array('controller'=> $module,'action' => 'delete'));
+
+                                // Allow deletion of a collection of resource
+                                $path = (($basepath[0] === '/')?'':'/').$basepath;
+                                $this->addDelete($path,array('controller'=> $module,'action' => 'deleteCollection'));
                                 break;
                             } // end switch on method
                         } // end foreach on $allowedMethods
