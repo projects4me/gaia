@@ -69,7 +69,7 @@ class RestController extends \Phalcon\Mvc\Controller
      * Project authorization flag
      * @var bool
      */
-    protected $projectAuthorization = true;
+    protected $projectAuthorization = false;
 
     /**
      * Accessible projects list
@@ -84,6 +84,7 @@ class RestController extends \Phalcon\Mvc\Controller
     protected $aclMap = array(
         'get' => 'read',
         'list' => 'read',
+        'related' => 'read',
         'post' => 'create',
         'search' => 'search',
         'delete' => 'delete',
@@ -97,7 +98,7 @@ class RestController extends \Phalcon\Mvc\Controller
      */
     protected $systemLevel = false;    
     
-    protected $uses = array('acl','auditable');
+    //protected $uses = array('acl','auditable');
     
     protected $components = array();
     
@@ -368,41 +369,113 @@ class RestController extends \Phalcon\Mvc\Controller
 
         $modelName = $this->modelName;
 
+        if (!(isset($this->id) && !empty($this->id)))
+        {
+            throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+        }
+        
+        $query = $this->request->get('query',null,'');
+        $sort = $this->request->get('sort',null,'');
+        $order = $this->request->get('order',null,'DESC');
+        
+        $fields = $this->request->get('fields',null,array());
+        $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
+        
+        $params = array(
+            'id' => $this->id,
+            'rels' => $rels,
+            'fields' => $fields,
+            'where' => $query,
+            'sort' => $sort,
+            'order' => $order,
+        );
+        
+        $model = new $modelName;
+        
+        $data = $model->read($params);
+        
+        return $this->extractData($data);
+
         $data = $modelName::find( $this->id );
         return $this->extractData($data);
     }
 
 
     /**
-    * Method Http accept: GET
+     * Method Http accept: GET
      * @return JSON Retrive all data, with and without relationship
-    */
+     */
+    public function relatedAction()
+    {
+        $modelName = $this->modelName;
+        
+        if (!(isset($this->id) && !empty($this->id)))
+        {
+            throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+        }
+        
+        /**
+         * @todo get from settings
+         */
+        $limit = $this->request->get('limit',null,20);
+        
+        $requestPage = $this->request->get('page');
+        $page = ($requestPage && $requestPage != 0 && $requestPage != 1)?$requestPage:1;
+        $offset = ($page-1) * $limit;
+        $limit++;
+        
+        $query = $this->request->get('query',null,'');
+        $sort = $this->request->get('sort',null,'');
+        $order = $this->request->get('order',null,'DESC');
+        
+        $fields = $this->request->get('fields',null,array());
+        $relation = $this->dispatcher->getParam("relation");
+        
+        $params = array(
+            'id' => $this->id,
+            'related' =>$relation,
+            'fields' => $fields,
+            'where' => $query,
+            'sort' => $sort,
+            'order' => $order,
+            'limit'=> $limit,
+            'offset' => $offset,
+        );
+        
+        $model = new $modelName;
+        
+        $related = $model->readRelated($params);
+        
+        return $this->extractData($related);
+    }
+    
+    /**
+     * Method Http accept: GET
+     * @return JSON Retrive all data, with and without relationship
+     */
     public function listAction()
     {
-        global $di;
-
         $modelName = $this->modelName;
         
         /**
          * @todo get from settings
          */
-        $requestLimit = $this->request->get('limit');
-        $limit = ($requestLimit)?($requestLimit+1):21;
-        
+        $limit = $this->request->get('limit',null,20);
         
         $requestPage = $this->request->get('page');
-        $offset = ($requestPage && $requestPage != 0 && $requestPage != 1)?$requestPage:0;
+        $page = ($requestPage && $requestPage != 0 && $requestPage != 1)?$requestPage:1;
+        $offset = ($page-1) * $limit;
+        $limit++;
         
-        $query = ($this->request->get('query'))?($this->request->get('query')):'';
-        $sort = ($this->request->get('sort'))?($this->request->get('sort')):'';
-        $order = ($this->request->get('order'))?($this->request->get('order')):'DESC';
+        $query = $this->request->get('query',null,'');
+        $sort = $this->request->get('sort',null,'');
+        $order = $this->request->get('order',null,'DESC');
         
-        $fields = ($this->request->get('fields'))?(explode(',',$this->request->get('fields'))):array();
+        $fields = $this->request->get('fields',null,array());
         
         $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
-        
-        $model = new $modelName;
-        $data = $model->read(array(
+
+        $params = array(
             'fields' => $fields,
             'rels' => $rels,
             'where' => $query,
@@ -410,7 +483,10 @@ class RestController extends \Phalcon\Mvc\Controller
             'order' => $order,
             'limit'=> $limit,
             'offset' => $offset
-        ));
+        );
+        
+        $model = new $modelName;
+        $data = $model->readAll($params);
 
         return $this->extractData($data);
 
@@ -458,14 +534,25 @@ class RestController extends \Phalcon\Mvc\Controller
      */
     protected function extractData($data){
         //extracting data to array
-        $data->setHydrateMode(Resultset::HYDRATE_ARRAYS);        
-        $result = array();
-        foreach( $data as $value ){
-            $result[] = $value;
-        }   
+        if ($data instanceof Resultset)
+        {
+            $data->setHydrateMode(Resultset::HYDRATE_ARRAYS);        
+            $result = array();
+            foreach( $data as $value ){
+                $result[] = $value;
+            }   
+        }
+        elseif (is_array ($data))
+        {
+            $result = $data;
+        }
+        else
+        {
+            $result = array();
+        }
 
         
-        if ($this->id && !$this->relationship) $result = $result[0];
+        //if ($this->id && !$this->relationship) $result = $result[0];
 
         // do not allow passwords to be returned
         $this->removePassword($result);

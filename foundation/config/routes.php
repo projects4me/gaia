@@ -68,6 +68,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'Contacts' => array(
+                'path' => '/api/:version/Contacts',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'Roles' => array(
                 'path' => '/api/:version/Roles',
                 'allowedMethods' => array(

@@ -55,7 +55,7 @@ class Model extends \Phalcon\Mvc\Model
     protected $metadata;
     
 
-        public function initialize()
+    public function initialize()
     {
         $this->metadata = metaManager::getModelMeta(get_class($this));
         $this->loadRelationships();
@@ -180,46 +180,25 @@ class Model extends \Phalcon\Mvc\Model
      * @param string $type possible values are hasOne, hasMany, belongsTo and hasManyToMany
      * @return array
      */
-    protected function getRelationNames($type = '')
+    protected function getRelationships($type = false)
     {
         $relations = array();
-
-        $hasOne = false;
-        $hasMany = false;
-        $belongsTo = false;
-        $hasManyToMany = false;
-
-        if (isset($type) && !empty($type))
-        {
-            $$type = true;
-        }
-        else
-        {
-            $hasOne = $hasMany = $belongsTo = $hasManyToMany = true;
-        }
         
-        if(isset($this->metadata['relationships']['hasOne']) && !empty($this->metadata['relationships']['hasOne']) && $hasOne)
+        foreach($this->metadata['relationships'] as $relType => $relationships)
         {
-            $relations = array_merge($relations,$this->metadata['relationships']['hasOne']);
-        }
-
-        if(isset($this->metadata['relationships']['hasMany']) && !empty($this->metadata['relationships']['hasMany']) && $hasMany)
-        {
-            $relations = array_merge($relations,$this->metadata['relationships']['hasMany']);
-        }
-        
-        if(isset($this->metadata['relationships']['belongsTo']) && !empty($this->metadata['relationships']['belongsTo']) && $belongsTo)
-        {
-            $relations = array_merge($relations,$this->metadata['relationships']['belongsTo']);
-        }
-        
-        if(isset($this->metadata['relationships']['hasManyToMany']) && !empty($this->metadata['relationships']['hasManyToMany']) && $hasManyToMany)
-        {
-            $relations = array_merge($relations,$this->metadata['relationships']['hasManyToMany']);
+            foreach($relationships as $name => $data)
+            {
+                
+                if (!$type || $type == $relType)
+                {
+                    $data['type'] = $relType;
+                    $relations[$name] = $data;
+                }
+            }
         }
         return $relations;
     }
-
+    
     /**
      * This function is an alternate of \Phalcon\Mv\Model::find
      * This RestController must use this function instead of find so that we can
@@ -231,50 +210,200 @@ class Model extends \Phalcon\Mvc\Model
      */
     public function read(array $params)
     {
-        // Initiate query
-        $query = $this->query();
-
-        // has Many and Many-To-Many not working properly
-        // enable where to support query params
-        
         // Get fields and relationships
-        $fields = $this->getFields();
-        $relations = $this->getRelationNames();
+        $moduleFields = $this->getFields();
+        $relationshipFields = array();
+        $relations = array_merge($this->getRelationships('hasOne'),$this->getRelationships('belongsTo'));
         
-        // Limit the default relationships being fetched to hasOne and belongsTo
-        //$relations = $this->getRelationNames('hasOne');
-        //$relations = array_merge($relations,$this->getRelationNames('belongsTo'));
-
-        // process joins
+        // Prepare the default joins
         if(!isset($params['rels']) || (isset($params['rels']) && empty($params['rels'])))
         {
-            $relationships = array_keys($relations);
-        }
-        else
-        {
-            $relationships = $params['rels'];
+            $params['rels'] = array_keys($relations);
         }
         
+        //Verify the relationships
+        foreach($params['rels'] as $relationship)
+        {   
+            if (!isset($relations[$relationship]) || empty($relations[$relationship]))
+            {
+                throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
+            }
+
+            if (!(isset($params['fields']) && !empty($params['fields'])))
+            {
+                $relationshipFields[] = $relationship.'.*';
+            }
+            else 
+            {
+                if (!in_array($relationship.'.*', $params['fields']))
+                {
+                    $relationshipFields[] = $relationship.'.*';
+                }
+            }
+                
+        }
+
+        // Set the fields
         if (isset($params['fields']) && !empty($params['fields']))
         {
-            $query->columns($params['fields']);
+            $params['fields'] = array_merge($params['fields'],$relationshipFields);
         }
         else
         {
-            foreach($relationships as $relationship)
-            {   
-                //check Many-Many and hasMany as well
-                if (!isset($relations[$relationship]) || empty($relations[$relationship]))
-                {
-                    throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides.");
-                }
-                $fields[] = $relationship.'.*';
-            }
-            $query->columns($fields);
+            $params['fields'] = array_merge($moduleFields,$relationshipFields);
         }
+        
+        $query = $this->query();
+        // get the query
+        $query = $this->setQuery($query,$params);
+
+        $query->andWhere(get_class($this).".id = '".$params['id']."'");
+
+        // process ACL and other behaviors before executing the query
+        $data = $query->execute();
+        
+        return $data;
+    }
+    
+    /**
+     * This function is an alternate of \Phalcon\Mv\Model::find
+     * This RestController must use this function instead of find so that we can
+     * support the default pagination, sorting, filtering and relationships
+     * 
+     * @param array $params
+     * @return array
+     * @throws \Phalcon\Exception
+     */
+    public function readAll(array $params)
+    {
+        // Get fields and relationships
+        $moduleFields = $this->getFields();
+        $relationshipFields = array();
+        $relations = array_merge($this->getRelationships('hasOne'),$this->getRelationships('belongsTo'));
+        $userDefinedRelations = true;
+        
+        // Prepare the default joins
+        if(!isset($params['rels']) || (isset($params['rels']) && empty($params['rels'])))
+        {
+            $params['rels'] = array_keys($relations);
+        }
+
+        
+        //Verify the relationships
+        foreach($params['rels'] as $relationship)
+        {   
+            if (!isset($relations[$relationship]) || empty($relations[$relationship]))
+            {
+                throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
+            }
+
+            if (!(isset($params['fields']) && !empty($params['fields'])))
+            {
+                $relationshipFields[] = $relationship.'.*';
+            }
+            else 
+            {
+                if (!in_array($relationship.'.*', $params['fields']))
+                {
+                    $relationshipFields[] = $relationship.'.*';
+                }
+            }
+                
+        }
+
+        // Set the fields
+        if (isset($params['fields']) && !empty($params['fields']))
+        {
+            $params['fields'] = array_merge($params['fields'],$relationshipFields);
+        }
+        else
+        {
+            $params['fields'] = array_merge($moduleFields,$relationshipFields);
+        }
+        
+        $query = $this->query();
+        // get the query
+        $query = $this->setQuery($query,$params);
+        
+        // process ACL and other behaviors before executing the query
+        $data = $query->execute();
+        
+        return $data;
+    }
+
+    /**
+     * This function is an alternate of \Phalcon\Mv\Model::getRelated
+     * This RestController must use this function instead of find so that we can
+     * support the default pagination, sorting, filtering and relationships
+     * 
+     * @param array $params
+     * @return array
+     * @throws \Phalcon\Exception
+     */
+    public function readRelated(array $params)
+    {
+        // check for existance
+        $related = $params['related'];
+        $modelRelations = $this->getRelationships();
+        
+        //$relation = $modelRelations[$related];
+        
+        if (!isset($modelRelations[$related]) || empty($modelRelations[$related]))
+        {
+            throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
+        }
+        
+        $params['rels'] = array($related);
+        
+        // Set the fields
+        if (isset($params['fields']) && !empty($params['fields']))
+        {
+            $params['fields'] = $params['fields'];
+        }
+        else
+        {
+            $params['fields'] = $related.'.*';
+        }
+        
+        $query = $this->query();
+        
+        
+        // get the query
+        $query = $this->setQuery($query,$params);
+        
+        $query->andWhere(get_class($this).".id = '".$params['id']."'");
+        
+        // process ACL and other behaviors before executing the query
+        $data = $query->execute();
+        
+        return $data;
+    }
+    
+    /**
+     * Prepare the query for the model
+     * Any behavior that must chage the query can attach the 'after' event
+     * with this function
+     * 
+     * @param array $params
+     * @return \Phalcon\Mvc\Model\Criteria
+     * @throws \Phalcon\Exception
+     */
+    protected function setQuery(\Phalcon\Mvc\Model\Criteria $query,array $params)
+    {   
+        $relations = $this->getRelationships();
+        
+        $query->columns($params['fields']);
+        
         if (isset($params['sort']) && !empty($params['sort']))
         {
-            $query->orderBy($params['sort']);
+            if (isset($params['order']) && !empty($params['order']))
+            {
+                $query->orderBy($params['sort'].' '.$params['order']);
+            }
+            else
+            {
+                $query->orderBy($params['sort']);
+            }
         }
         if (isset($params['limit']) && !empty($params['limit']))
         {
@@ -292,24 +421,37 @@ class Model extends \Phalcon\Mvc\Model
             $where = self::preProcessWhere($params['where']);
             $query->where($where);
         }
-        foreach($relationships as $relationship)
+        foreach($params['rels'] as $relationship)
         {   
             //check Many-Many and hasMany as well
             if (!isset($relations[$relationship]) || empty($relations[$relationship]))
             {
                 throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides.");
             }
-            $relatedModel = $relations[$relationship]['relatedModel'];
-            $query->leftJoin($relatedModel,null,$relationship);
+            
+            if ($relations[$relationship]['type'] == 'hasManyToMany')
+            {
+                $relatedModel = $relations[$relationship]['relatedModel'];
+                $secondaryModel = $relations[$relationship]['secondaryModel'];
+                $relatedQuery = get_class($this).'.'.$relations[$relationship]['primaryKey'].
+                                ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['rhsKey'];
+                $secondaryQuery = $secondaryModel.'.'.$relations[$relationship]['secondaryKey'].
+                                ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['lhsKey'];
+                
+                $query->leftJoin($relatedModel,$relatedQuery,$relationship.$relatedModel);
+                $query->leftJoin($secondaryModel,$secondaryQuery,$relationship);
+            }
+            else
+            {
+                $relatedModel = $relations[$relationship]['relatedModel'];
+                $query->leftJoin($relatedModel,null,$relationship);
+            }
         }
 
-        // process ACL and other behaviors before executing the query
-        
-        $data = $query->execute();
-        
-        return $data;
+        return $query;
     }
-    
+
+
     /**
      * The purpose of this function is parse the query string from a string to
      * and array

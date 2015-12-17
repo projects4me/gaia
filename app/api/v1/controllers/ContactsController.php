@@ -4,6 +4,7 @@ use Foundation\Mvc\RestController;
 
 class ContactsController extends RestController
 {
+    /*
     public function getAction(){
         $modelName = $this->modelName;
 
@@ -36,5 +37,5 @@ class ContactsController extends RestController
         
         die();
         return $this->extractData($data);
-    }
+    }*/
 }

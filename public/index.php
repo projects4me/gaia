@@ -18,9 +18,11 @@ require '../foundation/controllers/components/auditable.php';
     
 try {
     
-    global $stime,$di,$apiVersion,$logger;
+    global $stime,$di,$apiVersion,$logger,$timer;
     $stime = explode(" ",microtime());
     $stime = $stime[1] + $stime[0];
+
+    $timer = new executiontime();
     
     $request = new \Phalcon\Http\Request();
     $appVersions = include('../version.php'); 
@@ -105,21 +107,23 @@ try {
     $di->set('db', function () {
  //       global $logger;
         $connection = new DbAdapter((array) $GLOBALS['settings']['database']);
-        
         $eventsManager = new Phalcon\Events\Manager();
-
         $logger = new \Phalcon\Logger\Adapter\File(APP_PATH . "/db.log");
 //         print_r($logger);
         //Listen all the database events
         $eventsManager->attach('db', function($event, $connection) use ($logger) {
 //            global $logger;
             if ($event->getType() == 'beforeQuery') {
+                $GLOBALS['timer']->diff();
                 $sqlVariables = $connection->getSQLVariables();
                 if (count($sqlVariables)) {
-                    $logger->log($connection->getSQLStatement() . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
+                    $logger->log($connection->getRealSQLStatement() . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
                 } else {
-                    $logger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
+                    $logger->log($connection->getRealSQLStatement(), \Phalcon\Logger::INFO);
                 }
+            }
+            if ($event->getType() == 'afterQuery') {
+                $logger->log('Query execution time:'.($GLOBALS['timer']->diff()).' seconds', \Phalcon\Logger::INFO);
             }
         });
 
@@ -143,3 +147,32 @@ try {
      echo "PhalconException: ", $e->getMessage();
 }
 
+
+class executiontime
+{
+    protected $starttime;
+    protected $lasttime;
+    
+    public function executiontime()
+    {
+        $this->starttime = $this->gettime();
+        $this->lasttime = $this->gettime();
+    }
+    
+    public function tillnow()
+    {
+        return ($this->gettime() - $this->starttime);
+    }
+    public function diff()
+    {
+        $lasttime = ($this->gettime() - $this->lasttime);
+        $this->lasttime = $this->gettime();
+        return $lasttime;
+    }
+    
+    private function gettime()
+    {
+        $mtime = explode(" ",microtime());
+        return $mtime[1] + $mtime[0];
+    }
+}

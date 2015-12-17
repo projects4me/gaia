@@ -4,7 +4,7 @@ use Foundation\Mvc\RestController;
 
 class TeamsController extends RestController
 {
-    
+/*  
     public function getAction()
     {
         $modelName = $this->modelName;
@@ -31,4 +31,6 @@ class TeamsController extends RestController
         $notes = $modelName::find($this->id);
         return $this->extractData($notes);
     }
+*/
+  
 }

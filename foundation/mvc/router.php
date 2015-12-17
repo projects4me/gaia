@@ -87,6 +87,10 @@ class Router extends PhalconRouter\Router
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
                                 $this->addGet($path,array('controller'=> $module,'action' => 'get', $moduleRoutes->identifier => '1'));
 
+                                // register two paths for get, for collection and entity
+                                $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)';
+                                $this->addGet($path,array('controller'=> $module,'action' => 'related', $moduleRoutes->identifier => '1', 'relation' => '2'));
+                                
                                 $path = (($basepath[0] === '/')?'':'/').$basepath;
                                 $this->addGet($path,array('controller'=> $module,'action' => 'list'));
 
