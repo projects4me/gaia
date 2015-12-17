@@ -287,7 +287,12 @@ class Model extends \Phalcon\Mvc\Model
         {
             $params['rels'] = array_keys($relations);
         }
-
+        
+        if(isset($params['fields']) && !empty($params['fields']))
+        {
+            if(!is_array($params['fields']))
+                $params['fields'] = explode (',', $params['fields']);
+        }
         
         //Verify the relationships
         foreach($params['rels'] as $relationship)

@@ -394,10 +394,9 @@ class RestController extends \Phalcon\Mvc\Controller
         
         $data = $model->read($params);
         
-        return $this->extractData($data);
-
-        $data = $modelName::find( $this->id );
-        return $this->extractData($data);
+        $dataArray = $this->extractData($data);
+        $finalData = $this->buildHAL($dataArray);
+        return $this->returnResponse($finalData);
     }
 
 
@@ -444,9 +443,11 @@ class RestController extends \Phalcon\Mvc\Controller
         
         $model = new $modelName;
         
-        $related = $model->readRelated($params);
+        $data = $model->readRelated($params);
         
-        return $this->extractData($related);
+        $dataArray = $this->extractData($data);
+        $finalData = $this->buildHAL($dataArray,--$limit,$page);
+        return $this->returnResponse($finalData);
     }
     
     /**
@@ -488,11 +489,13 @@ class RestController extends \Phalcon\Mvc\Controller
         $model = new $modelName;
         $data = $model->readAll($params);
 
-        return $this->extractData($data);
+        $dataArray = $this->extractData($data);
+        $finalData = $this->buildHAL($dataArray,--$limit,$page);
+        return $this->returnResponse($finalData);
 
-        $identifier = 'projectId';
+/*        $identifier = 'projectId';
 
-        
+      
         if (strtolower($modelName) === 'projects')
         {
             $identifier = 'id';
@@ -523,8 +526,91 @@ class RestController extends \Phalcon\Mvc\Controller
             $data = $query->execute();
             
         }      
+*/
+    }
 
-        return $this->extractData($data);
+    /**
+     * 
+     * @param array $data
+     * @return string
+     */
+    protected function buildHAL(array $data,$limit=-1, $page=-1)
+    {
+        $hal = array();
+        $query = $this->request->getQuery();
+        $self = $next = $prev = array();
+
+        $endPage = true;
+        if ($limit != -1)
+        {
+            if(isset($data[$limit]))
+            {            
+                unset($data[$limit]);
+                $endPage = false;
+            }
+            
+            if($page == -1)
+                $page = 0;
+            if (!isset($query['page']))
+            {
+                $query['page'] = $page;
+            }
+        }
+        
+        
+        foreach($query as $param => $value)
+        {
+            if ($param != '_url')
+            {
+                $self[] = $param.'='.$value;
+                if (isset($limit))
+                {
+                    if ($param == 'page')
+                    {
+                        $next[] = $param.'='.($page+1);                        
+                        $prev[] = $param.'='.($page-1);
+                    }
+                    else
+                    {
+                        $next[] = $param.'='.$value;
+                        $prev[] = $param.'='.$value;
+                    }
+
+                }
+            }
+        }
+        
+        $hal['resultset'] = $data;
+        
+        $hal['_links']['self']['href'] = $query['_url'];
+        if (!empty($self))
+        {
+            $hal['_links']['self']['href'] .= '?'.implode('&',$self);
+        }
+        if (!empty($next) && !$endPage)
+        {            
+            $hal['_links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
+        }
+        
+        if (!empty($prev) && $page > 1)
+        {    
+            $hal['_links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
+        }
+            
+        return $hal;
+    }
+    
+    /**
+     * Return the response, allow the error code handling here
+     * 
+     * @param array $data
+     * @return \Phalcon\Http\Response
+     */
+    protected function returnResponse(array $data)
+    {
+        $this->response->setJsonContent($data);     
+        $this->response->setContentType('text/json');
+        return $this->response;
     }
 
     /**
@@ -550,16 +636,11 @@ class RestController extends \Phalcon\Mvc\Controller
         {
             $result = array();
         }
-
         
-        //if ($this->id && !$this->relationship) $result = $result[0];
-
         // do not allow passwords to be returned
         $this->removePassword($result);
         
-        $this->response->setJsonContent($result);     
-
-        return $this->response;
+        return $result;
     }
 
     /**
@@ -581,61 +662,11 @@ class RestController extends \Phalcon\Mvc\Controller
             }
         }
     }
-    /**
-    * Method Http accept: GET
-    * Search data with field/value passed in parameter
-    * 
-    * Ex : url: /user/search/name/edvaldo/email/edvaldo2107@gmail.com/order/name
-    *      sql generated: select * from user where name='edvaldo' and email='edvaldo2107@gmail.com' order by name
-    * Ex2 : url: /user/search/id_department/(IN)1,2/order/name
-    *      sql generated: select * from user where id_department in (1,2) order by name
-    */
-    public function searchAction()
-    {
-        //get model name
-        $modelName = $this->modelName;
-
-        //extracting parameterrs
-        $params = array();
-        for ( $i=3; $i<count($this->params); $i++ ){
-            $params[$this->params[$i]] = $this->params[++$i];
-        }
-
-        //building the query        
-        $query = '$model = \\' . $modelName . "::query()";        
-        $query .= "->where(\"1=1\")";//where default
-        foreach ($params as $key => $value) {
-            //if order by
-            if ( $key=="order" ){
-                $query .= "->orderBy(\"".$value."\")";
-                break;
-            //if condition is IN
-            }else if ( strpos($value, "(IN)")!==false ){
-                $value = substr($value, strpos($value, "(IN)")+4); 
-                $query .= "->andWhere(\"$key IN ($value)\")";
-            }else{
-                $query .= "->andWhere(\"$key = '$value'\")";
-            }
-        }
-        $query .= "->execute();";
-        eval($query);
-
-        //extracting data from resultset after query executed
-        $model->setHydrateMode(Resultset::HYDRATE_ARRAYS);
-        $result = array();
-        foreach ($model as $key => $value) {
-           $result[] = $value;
-        }
-    
-        $this->response->setJsonContent($result);     
-
-        return $this->response;
-    }
 
     /**
-    * Method Http accept: POST (insert) and PUT (update)
-    * Save/update data 
-    */
+     * Method Http accept: POST (insert) and PUT (update)
+     * Save/update data 
+     */
     public function postAction()
     {
         $modelName = $this->modelName;      
