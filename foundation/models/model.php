@@ -53,12 +53,28 @@ use Phalcon\Mvc\Model\MetaData;
 class Model extends \Phalcon\Mvc\Model
 {
     protected $metadata;
-    
+
+    public $query;
 
     public function initialize()
     {
         $this->metadata = metaManager::getModelMeta(get_class($this));
+
+        // Load the behaviors in the model as well
+        $this->loadBehavior();
         $this->loadRelationships();
+    }
+    
+    public function loadBehavior()
+    {
+        // Load each of the relationship types one by one
+        if (isset($this->metadata['behaviors']) && !empty($this->metadata['behaviors']))
+        {
+            foreach($this->metadata['behaviors'] as $behavior)
+            {
+                $this->addBehavior(new $behavior);
+            }
+        }        
     }
     
     /**
@@ -276,6 +292,11 @@ class Model extends \Phalcon\Mvc\Model
      */
     public function readAll(array $params)
     {
+        
+        $this->fireEvent("beforeRead");//->fire("model:beforeRead", $this);
+        //print_r($eventManager);
+        //die();
+        
         // Get fields and relationships
         $moduleFields = $this->getFields();
         $relationshipFields = array();
@@ -326,12 +347,18 @@ class Model extends \Phalcon\Mvc\Model
             $params['fields'] = array_merge($moduleFields,$relationshipFields);
         }
         
-        $query = $this->query();
+        $this->query = $this->query();
         // get the query
-        $query = $this->setQuery($query,$params);
+        $this->query = $this->setQuery($this->query,$params);
         
+        $queryAppended = $this->fireEvent("beforeQuery");
+        if($queryAppended instanceof \Phalcon\Mvc\Model\Criteria)
+        {
+            $this->query = $queryAppended;
+        }
+
         // process ACL and other behaviors before executing the query
-        $data = $query->execute();
+        $data = $this->query->execute();
         
         return $data;
     }

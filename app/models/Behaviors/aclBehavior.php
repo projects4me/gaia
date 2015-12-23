@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Projects4Me Community Edition is an open source project management software 
  * developed by PROJECTS4ME Inc. Copyright (C) 2015-2016 PROJECTS4ME Inc.
  * 
@@ -31,64 +31,52 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Projects'] = array(
-   'tableName' => 'projects',
-   'fields' => array(
-       'id' => array(
-           'name' => 'id',
-           'label' => 'LBL_PROJECTSS_ID',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'name' => array(
-           'name' => 'name',
-           'label' => 'LBL_PROJECTS_NAME',
-           'type' => 'varchar',
-           'length' => '50',
-           'null' => false,
-       ),
-    ),
-    'indexes' => array(
-        'id' => 'primary',
-    ),
-    'foriegnKeys' => array(
-       
-    ) ,
-    'triggers' => array(
-        
-    ),
-    'relationships' => array(
-        'hasManyToMany' => array(
-            'Teams' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'ProjectsTeams',
-                'rhsKey' => 'projectId',
-                'lhsKey' => 'teamId',
-                'secondaryModel' => 'Teams',
-                'secondaryKey' => 'id',
-            ),
-            'Users' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'ProjectsRoles',
-                'rhsKey' => 'projectId',
-                'lhsKey' => 'userId',
-                'secondaryModel' => 'Users',
-                'secondaryKey' => 'id',
-            ),
-            'Roles' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'ProjectsRoles',
-                'rhsKey' => 'projectId',
-                'lhsKey' => 'roleId',
-                'secondaryModel' => 'Roles',
-                'secondaryKey' => 'id',
-            ),
-        )
-    ),
-    'behaviors' => array(
-        'aclBehavior',
-    ),
-);
+use Phalcon\Mvc\ModelInterface;
+use Phalcon\Mvc\Model\BehaviorInterface;
+use Phalcon\Mvc\Model\Behavior;
 
-return $models;
+
+/**
+ * Description of testbhave
+ *
+ * @author Hammad Hassan <gollomer@gmail.com>
+ */
+class aclBehavior extends Behavior implements BehaviorInterface
+{
+/*    public function __construct($options = null) {
+        //return parent::__construct($options);
+    }
+*/
+    public function notify($eventType, Phalcon\Mvc\ModelInterface $model)
+    {
+        switch ($eventType) {
+
+            case 'beforeCreate':
+            case 'beforeDelete':
+            case 'beforeUpdate':
+
+
+                $userName = $GLOBALS['currentUser']->id;
+
+                //Store in a log the username - event type and primary key
+                file_put_contents('blamable-log.txt', $userName.' '.$eventType.' '.$model->id."\r",FILE_APPEND);
+
+                break;
+            case 'beforeQuery':
+
+
+                $userName = $GLOBALS['currentUser']->id;
+                if ($model instanceof Projects)
+                {
+                    $model->query->andWhere("Projects.name='Kya'");
+                }
+                return $model->query;
+                break;
+
+            default:
+                /* ignore the rest of events */
+        }
+    }
+
+}//put your code here
+

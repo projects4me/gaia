@@ -43,6 +43,7 @@ try {
         APP_PATH.'/foundation/libs/',
         APP_PATH.'/app/api/'.$apiVersion.'/controllers/',
         APP_PATH.'/app/models/',
+        APP_PATH.'/app/models/Behaviors',
         APP_PATH.'/config/',        
         APP_PATH.'/vendor/',        
     ))->register();
@@ -61,6 +62,7 @@ try {
     print_r($loader);
     print "</pre>";
 */
+    require_once(APP_PATH.'/app/models/Behaviors/aclBehavior.php');
     require_once(APP_PATH.'/foundation/libs/utility_functions.php');
     require_once(APP_PATH.'/foundation/controllers/RestController.php');
     //Create a DI
