@@ -32,3 +32,22 @@
 Foundation = Ember.Application.create({
     LOG_TRANSITIONS:true
 });
+
+Foundation.ApplicationRoute = Em.Route.extend({
+  beforeModel: function(){
+    var lang = 'en_US';
+    var route = this;
+    if(lang){
+      return new Ember.RSVP.Promise(function(resolve) {
+        // Fetch language file
+        Em.$.getJSON('app/locale/'+lang+".json").then(function(data){
+          Em.I18n.translations = data;
+          route.transitionTo('signin');
+          resolve();
+        });
+      });
+    }else{
+      this.transitionTo('lang');
+    }
+  }
+});

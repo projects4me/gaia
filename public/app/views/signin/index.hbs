@@ -1,16 +1,37 @@
-<form class="form-signin">
-    <label for="inputUsername" class="sr-only">Username</label>
-    <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-    <button class="btn btn btn-primary btn-block" type="submit"><i class="fa fa-sign-in"></i><span class='btn-txt'>Sign In</span></button>
-    <div class="checkbox">
-        <label>
-            <input type="checkbox" value="remember-me"> Remember me?
-        </label>
+<div class="view-signin">
+    <div class="logo-img text-center">
+        <a href="//projects4.me" title="Projects4Me" id="logo">
+            <img src="/img/app/logo-256.png" />
+        </a>
     </div>
-    <div class="row">
-        <div class="col-md-6 text-left">{{link "Sing Up" "signup"}}</div>
-        <div class="col-md-6 text-right">{{link "Forgot Password?" "forgotpassword"}}</div>
+    <form class="form-signin">
+        <label for="inputUsername" class="sr-only">{{t "view.signin.username"}}</label>
+        <input type="text" id="inputUsername" class="form-control" placeholder="{{t "view.signin.username"}}" required autofocus>
+        <label for="inputPassword" class="sr-only">{{t "view.signin.password"}}</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="{{t "view.signin.password"}}" required>
+        <button class="btn btn btn-primary btn-block" type="submit"><i class="fa fa-sign-in"></i><span class='btn-txt'>{{t "view.signin.sign-in"}}</span></button>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" value="remember-me"> {{t "view.signin.remember-me"}}
+            </label>
+        </div>
+        <div class="row">
+            <div class="col-xs-6 text-left">{{link "view.signin.sign-up" "signup"}}</div>
+            <div class="col-xs-6 text-right">{{link "view.signin.forgot-password" "forgotpassword"}}</div>
+        </div>
+    </form>
+
+    <div class="additional-links">
+
+        <div class="row">
+            <div class="col-xs-12 text-center"><button class="btn btn-danger btn-block" type="submit"><i class="fa fa-google-plus"></i><span class='btn-txt'>{{t "view.signin.sign-up-with-google"}}</span></button></div>
+        </div>
+    
+        <div class="row">
+            <div class="col-xs-3 text-left">{{link "view.signin.terms" "static/termsandconditions"}}</div>
+            <div class="col-xs-3 text-left">{{link "view.signin.privacy" "static/privacypolicy"}}</div>
+            <div class="col-xs-3 text-left">{{link "view.signin.security" "static/securitypolicy"}}</div>
+            <div class="col-xs-3 text-left">{{link "view.signin.contact" "static/contactus"}}</div>
+        </div>
     </div>
-</form>
+</div>

@@ -1,0 +1,13 @@
+{
+    "view.signin.username": "Username",
+    "view.signin.password": "Password",
+    "view.signin.sign-in": "Sign In",
+    "view.signin.remember-me": "Remember me?",
+    "view.signin.sign-up": "Sign Up",
+    "view.signin.forgot-password": "Forgot Password",
+    "view.signin.sign-up-with-google": "Sign Up with Google",
+    "view.signin.terms": "Terms",
+    "view.signin.privacy": "Privacy",
+    "view.signin.security": "Security",
+    "view.signin.contact": "Contact"
+}
