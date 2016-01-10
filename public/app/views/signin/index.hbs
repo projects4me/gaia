@@ -1,0 +1,16 @@
+<form class="form-signin">
+    <label for="inputUsername" class="sr-only">Username</label>
+    <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+    <button class="btn btn btn-primary btn-block" type="submit"><i class="fa fa-sign-in"></i><span class='btn-txt'>Sign In</span></button>
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" value="remember-me"> Remember me?
+        </label>
+    </div>
+    <div class="row">
+        <div class="col-md-6 text-left">{{link "Sing Up" "signup"}}</div>
+        <div class="col-md-6 text-right">{{link "Forgot Password?" "forgotpassword"}}</div>
+    </div>
+</form>

@@ -37,46 +37,52 @@ use Phalcon\Mvc\Model\Behavior;
 
 
 /**
- * Description of testbhave
+ * Description of aclBehavior
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  */
 class aclBehavior extends Behavior implements BehaviorInterface
 {
-/*    public function __construct($options = null) {
-        //return parent::__construct($options);
-    }
-*/
+    /**
+     * 
+     * @param string $eventType
+     * @param Phalcon\Mvc\ModelInterface $model
+     * @return mixed
+     */
     public function notify($eventType, Phalcon\Mvc\ModelInterface $model)
     {
-        switch ($eventType) {
-
-            case 'beforeCreate':
-            case 'beforeDelete':
-            case 'beforeUpdate':
-
-
-                $userName = $GLOBALS['currentUser']->id;
-
-                //Store in a log the username - event type and primary key
-                file_put_contents('blamable-log.txt', $userName.' '.$eventType.' '.$model->id."\r",FILE_APPEND);
-
-                break;
-            case 'beforeQuery':
-
-
-                $userName = $GLOBALS['currentUser']->id;
-                if ($model instanceof Projects)
-                {
-                    $model->query->andWhere("Projects.name='Kya'");
-                }
-                return $model->query;
-                break;
-
-            default:
-                /* ignore the rest of events */
+        if (method_exists($this, $eventType))
+        {
+            $this->$eventType($model);
         }
     }
 
-}//put your code here
+    /**
+     * 
+     * @param Phalcon\Mvc\ModelInterface $model
+     * @return Phalcon\Mvc\ModelInterface
+     */
+    protected function beforeCreate(&$model)
+    {
+        $userName = $GLOBALS['currentUser']->id;
 
+        //Store in a log the username - event type and primary key
+        file_put_contents('blamable-log.txt', $userName.' '.$eventType.' '.$model->id."\r",FILE_APPEND);
+        
+        return $model;
+    }
+
+    /**
+     * 
+     * @param Phalcon\Mvc\ModelInterface $model
+     * @return Phalcon\Mvc\Model\Criteria
+     */
+    protected function beforeQuery($model)
+    {
+        $userName = $GLOBALS['currentUser']->id;
+        if ($model instanceof Projects)
+        {
+            $model->query->andWhere("Projects.name='Kya'");
+        }
+    }
+}

@@ -1,0 +1,16 @@
+.form-signin {
+    border: 1px solid #CCCCCC;
+    max-width: 300px;
+    padding: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:150px;
+}
+
+.form-signin input, .form-signin button{
+    margin: 5px 0px;
+}
+
+.form-signin .btn .btn-txt {
+    padding: 5px;
+}

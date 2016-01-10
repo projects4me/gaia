@@ -351,11 +351,9 @@ class Model extends \Phalcon\Mvc\Model
         // get the query
         $this->query = $this->setQuery($this->query,$params);
         
-        $queryAppended = $this->fireEvent("beforeQuery");
-        if($queryAppended instanceof \Phalcon\Mvc\Model\Criteria)
-        {
-            $this->query = $queryAppended;
-        }
+        $this->fireEvent("beforeQuery");
+        
+        
 
         // process ACL and other behaviors before executing the query
         $data = $this->query->execute();

@@ -72,6 +72,11 @@ try {
     $di->set('view', function(){
         $view = new \Phalcon\Mvc\View();
         $view->setViewsDir(APP_PATH.'/app/views/');
+        $view->registerEngines(
+            array(
+                ".volt" => 'Phalcon\Mvc\View\Engine\Volt'
+            )
+        );
         return $view;
     });
 
