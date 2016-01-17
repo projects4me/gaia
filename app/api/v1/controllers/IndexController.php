@@ -40,7 +40,7 @@ class IndexController extends \Phalcon\Mvc\Controller
                 }
                 sort($jsFiles);
 
-                $Directory = new RecursiveDirectoryIterator(APP_PATH.'/public/app');
+                $Directory = new RecursiveDirectoryIterator(APP_PATH.'/public/foundation');
                 $Iterator = new RecursiveIteratorIterator($Directory);
                 $Regex = new RegexIterator($Iterator, '/^.+\.js$/i', RecursiveRegexIterator::GET_MATCH);
                 foreach($Regex as $jsfile)
@@ -52,7 +52,7 @@ class IndexController extends \Phalcon\Mvc\Controller
                     $jsFiles[] = $path;
                 }
 
-                $Directory = new RecursiveDirectoryIterator(APP_PATH.'/public/foundation');
+                $Directory = new RecursiveDirectoryIterator(APP_PATH.'/public/app');
                 $Iterator = new RecursiveIteratorIterator($Directory);
                 $Regex = new RegexIterator($Iterator, '/^.+\.js$/i', RecursiveRegexIterator::GET_MATCH);
                 foreach($Regex as $jsfile)

@@ -30,7 +30,32 @@
  */
 
 Foundation = Ember.Application.create({
-    LOG_TRANSITIONS:true
+    LOG_TRANSITIONS:true,
+    VERSION:'1'
+});
+
+    
+Foundation.ApplicationStore = DS.Store.extend({
+    //adapter translating requested records into the appropriate calls
+    adapter: 'DS.RESTAdapter',
+//    serializer: Foundation.RESTSerializer
+ });
+ 
+Foundation.ApplicationAdapter = DS.RESTAdapter.extend({
+    namespace:'api/v'+Foundation.VERSION,
+    headers: {
+        "Authorization": "Bearer 5b0d6ba8cc54dce2eedb9a900c02b4c756343afb"
+    },
+    pathForType: function(modelName) {
+        return Ember.String.capitalize(modelName);
+    }
+});
+var hammad2;
+Foundation.ApplicationSerializer = DS.RESTSerializer.extend({
+    primaryKey: 'id',
+    modelNameFromPayloadKey :function(modelName){
+        return modelName;
+    }
 });
 
 Foundation.ApplicationRoute = Em.Route.extend({
@@ -50,4 +75,15 @@ Foundation.ApplicationRoute = Em.Route.extend({
       this.transitionTo('lang');
     }
   }
+});
+var hammad;
+
+
+
+Foundation.ProjectsRoute = Em.Route.extend({
+    model: function() {
+        hammad = this.store.findAll('Projects','1');
+        console.log(hammad);
+        return hammad;
+    }
 });

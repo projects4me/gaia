@@ -118,7 +118,8 @@ class Migration extends PhalconMigration
 	{
             $fieldOptions = array();
             $fieldOptions['type'] = metaManager::getFieldType($schema['type']);
-            $fieldOptions['size'] = $schema['length'];
+            if (isset($schema['length']))
+                $fieldOptions['size'] = $schema['length'];
             $fieldOptions['notNull'] = !$schema['null'];
             $tableDescription['columns'][] = new Column($schema['name'],$fieldOptions);
 	}

@@ -1,0 +1,9 @@
+<h1>Projects</h1>
+<p>This is the project detail page.</p>
+{{debug model}}
+{{model.id}} - {{model.name}}
+<ul>
+{{#each project in model}}
+      <li>{{project.name}} - {{project.notes}}</li>
+{{/each}}
+</ul>

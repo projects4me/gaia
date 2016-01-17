@@ -778,7 +778,7 @@ class RestController extends \Phalcon\Mvc\Controller
             }
         }
         
-        $hal['resultset'] = $data;
+        $hal[$this->modelName] = $data;
         $hal['count'] = count($data);
         
         $hal['_links']['self']['href'] = $query['_url'];

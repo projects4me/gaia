@@ -34,20 +34,68 @@
 $models['Projects'] = array(
    'tableName' => 'projects',
    'fields' => array(
-       'id' => array(
-           'name' => 'id',
-           'label' => 'LBL_PROJECTSS_ID',
-           'type' => 'int',
-           'length' => '11',
-           'null' => false,
-       ),
-       'name' => array(
+        'id' => array(
+            'name' => 'id',
+            'label' => 'LBL_PROJECTSS_ID',
+            'type' => 'int',
+            'length' => '11',
+            'null' => false,
+        ),
+        'name' => array(
            'name' => 'name',
            'label' => 'LBL_PROJECTS_NAME',
            'type' => 'varchar',
            'length' => '50',
            'null' => false,
-       ),
+        ),
+        'dateCreated' => array(
+            'name' => 'dateCreated',
+            'label' => 'LBL_PROJECTS_DATE_CREATED',
+            'type' => 'datetime',
+            'null' => false,
+            'default' => 'now',
+        ),
+        'dateModified' => array(
+            'name' => 'dateModified',
+            'label' => 'LBL_PROJECTS_DATE_MODIFIED',
+            'type' => 'datetime',
+            'null' => false,
+            'default' => 'now',
+        ),
+        'notes' => array(
+            'name' => 'notes',
+            'label' => 'LBL_PROJECTS_NOTES',
+            'type' => 'text',
+            'null' => true,
+        ),
+        'startDate' => array(
+            'name' => 'startDate',
+            'label' => 'LBL_PROJECTS_START_DATE',
+            'type' => 'date',
+            'null' => true,
+            'default' => 'now',
+        ),
+        'endDate' => array(
+            'name' => 'endDate',
+            'label' => 'LBL_PROJECTS_END_DATE',
+            'type' => 'date',
+            'null' => true,
+        ),
+        'shortCode' => array(
+            'name' => 'shortCode',
+            'label' => 'LBL_PROJECTS_SHORT_CODE',
+            'type' => 'varchar',
+            'null' => false,
+            'length' => '50'
+        ),
+        'type' => array(
+            'name' => 'type',
+            'label' => 'LBL_PROJECTS_TYPE',
+            'type' => 'varchar',
+            'null' => false,
+            'default' => 'software',
+            'length' => '50'
+        )       
     ),
     'indexes' => array(
         'id' => 'primary',

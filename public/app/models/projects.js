@@ -1,6 +1,4 @@
-<?php
-
-/*
+/* 
  * Projects4Me Community Edition is an open source project management software 
  * developed by PROJECTS4ME Inc. Copyright (C) 2015-2016 PROJECTS4ME Inc.
  * 
@@ -31,58 +29,14 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-use Phalcon\Mvc\ModelInterface;
-use Phalcon\Mvc\Model\BehaviorInterface;
-use Phalcon\Mvc\Model\Behavior;
-
-
-/**
- * Description of aclBehavior
- *
- * @author Hammad Hassan <gollomer@gmail.com>
- */
-class aclBehavior extends Behavior implements BehaviorInterface
-{
-    /**
-     * 
-     * @param string $eventType
-     * @param Phalcon\Mvc\ModelInterface $model
-     * @return mixed
-     */
-    public function notify($eventType, Phalcon\Mvc\ModelInterface $model)
-    {
-        if (method_exists($this, $eventType))
-        {
-            $this->$eventType($model);
-        }
-    }
-
-    /**
-     * 
-     * @param Phalcon\Mvc\ModelInterface $model
-     * @return Phalcon\Mvc\ModelInterface
-     */
-    protected function beforeCreate(&$model)
-    {
-        $userName = $GLOBALS['currentUser']->id;
-
-        //Store in a log the username - event type and primary key
-        file_put_contents('blamable-log.txt', $userName.' '.$eventType.' '.$model->id."\r",FILE_APPEND);
-        
-        return $model;
-    }
-
-    /**
-     * 
-     * @param Phalcon\Mvc\ModelInterface $model
-     * @return Phalcon\Mvc\Model\Criteria
-     */
-    protected function beforeQuery($model)
-    {
-        $userName = $GLOBALS['currentUser']->id;
-        if ($model instanceof Projects)
-        {
-            //$model->query->andWhere("Projects.name='Kya'");
-        }
-    }
-}
+Foundation.Projects = DS.Model.extend({
+  name: DS.attr('string'),
+  dateCreated: DS.attr('date'),
+  dateModified: DS.attr('date'),
+  notes: DS.attr('string'),
+  startDate: DS.attr('date'),
+  endDate: DS.attr('date'),
+  status: DS.attr('string'),
+  type: DS.attr('string'),
+  shortCode: DS.attr('string'),
+});

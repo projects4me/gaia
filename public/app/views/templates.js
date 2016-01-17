@@ -79,6 +79,128 @@ Ember.TEMPLATES["index/index"] = Ember.Handlebars.template((function() {
   };
 }()));
 
+Ember.TEMPLATES["projects/index"] = Ember.Handlebars.template((function() {
+  var child0 = (function() {
+    return {
+      meta: {
+        "revision": "Ember@1.13.11",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 6,
+            "column": 0
+          },
+          "end": {
+            "line": 8,
+            "column": 0
+          }
+        }
+      },
+      arity: 1,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createTextNode("      ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("li");
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode(" - ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [1]);
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(element0,0,0);
+        morphs[1] = dom.createMorphAt(element0,2,2);
+        return morphs;
+      },
+      statements: [
+        ["content","project.name",["loc",[null,[7,10],[7,26]]]],
+        ["content","project.notes",["loc",[null,[7,29],[7,46]]]]
+      ],
+      locals: ["project"],
+      templates: []
+    };
+  }());
+  return {
+    meta: {
+      "revision": "Ember@1.13.11",
+      "loc": {
+        "source": null,
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 9,
+          "column": 5
+        }
+      }
+    },
+    arity: 0,
+    cachedFragment: null,
+    hasRendered: false,
+    buildFragment: function buildFragment(dom) {
+      var el0 = dom.createDocumentFragment();
+      var el1 = dom.createElement("h1");
+      var el2 = dom.createTextNode("Projects");
+      dom.appendChild(el1, el2);
+      dom.appendChild(el0, el1);
+      var el1 = dom.createTextNode("\n");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createElement("p");
+      var el2 = dom.createTextNode("This is the project detail page.");
+      dom.appendChild(el1, el2);
+      dom.appendChild(el0, el1);
+      var el1 = dom.createTextNode("\n");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createComment("");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createTextNode("\n");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createComment("");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createTextNode(" - ");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createComment("");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createTextNode("\n");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createElement("ul");
+      var el2 = dom.createTextNode("\n");
+      dom.appendChild(el1, el2);
+      var el2 = dom.createComment("");
+      dom.appendChild(el1, el2);
+      dom.appendChild(el0, el1);
+      return el0;
+    },
+    buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+      var morphs = new Array(4);
+      morphs[0] = dom.createMorphAt(fragment,4,4,contextualElement);
+      morphs[1] = dom.createMorphAt(fragment,6,6,contextualElement);
+      morphs[2] = dom.createMorphAt(fragment,8,8,contextualElement);
+      morphs[3] = dom.createMorphAt(dom.childAt(fragment, [10]),1,1);
+      return morphs;
+    },
+    statements: [
+      ["inline","debug",[["get","model",["loc",[null,[3,8],[3,13]]]]],[],["loc",[null,[3,0],[3,15]]]],
+      ["content","model.id",["loc",[null,[4,0],[4,12]]]],
+      ["content","model.name",["loc",[null,[4,15],[4,29]]]],
+      ["block","each",[["get","model",["loc",[null,[6,19],[6,24]]]]],[],0,null,["loc",[null,[6,0],[8,9]]]]
+    ],
+    locals: [],
+    templates: [child0]
+  };
+}()));
+
 Ember.TEMPLATES["signin/index"] = Ember.Handlebars.template((function() {
   return {
     meta: {

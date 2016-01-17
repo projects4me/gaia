@@ -33,5 +33,6 @@
 Foundation.Router.map(function() {
     this.route('index', { path: '/' }, function() {});
     this.route('signin', { path: '/signin' }, function() {});
+    this.route('projects', { path: '/projects' }, function() {});
 });
 
