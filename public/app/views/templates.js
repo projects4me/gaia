@@ -257,14 +257,9 @@ Ember.TEMPLATES["signin/index"] = Ember.Handlebars.template((function() {
       var el4 = dom.createComment("");
       dom.appendChild(el3, el4);
       dom.appendChild(el2, el3);
-      var el3 = dom.createTextNode("\n        ");
+      var el3 = dom.createTextNode("\n         ");
       dom.appendChild(el2, el3);
-      var el3 = dom.createElement("input");
-      dom.setAttribute(el3,"type","text");
-      dom.setAttribute(el3,"id","inputUsername");
-      dom.setAttribute(el3,"class","form-control");
-      dom.setAttribute(el3,"required","");
-      dom.setAttribute(el3,"autofocus","");
+      var el3 = dom.createComment("");
       dom.appendChild(el2, el3);
       var el3 = dom.createTextNode("\n        ");
       dom.appendChild(el2, el3);
@@ -276,17 +271,12 @@ Ember.TEMPLATES["signin/index"] = Ember.Handlebars.template((function() {
       dom.appendChild(el2, el3);
       var el3 = dom.createTextNode("\n        ");
       dom.appendChild(el2, el3);
-      var el3 = dom.createElement("input");
-      dom.setAttribute(el3,"type","password");
-      dom.setAttribute(el3,"id","inputPassword");
-      dom.setAttribute(el3,"class","form-control");
-      dom.setAttribute(el3,"required","");
+      var el3 = dom.createComment("");
       dom.appendChild(el2, el3);
       var el3 = dom.createTextNode("\n        ");
       dom.appendChild(el2, el3);
       var el3 = dom.createElement("button");
       dom.setAttribute(el3,"class","btn btn btn-primary btn-block");
-      dom.setAttribute(el3,"type","submit");
       var el4 = dom.createElement("i");
       dom.setAttribute(el4,"class","fa fa-sign-in");
       dom.appendChild(el3, el4);
@@ -417,33 +407,34 @@ Ember.TEMPLATES["signin/index"] = Ember.Handlebars.template((function() {
     buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
       var element0 = dom.childAt(fragment, [0]);
       var element1 = dom.childAt(element0, [3]);
-      var element2 = dom.childAt(element1, [3]);
-      var element3 = dom.childAt(element1, [7]);
-      var element4 = dom.childAt(element1, [13]);
-      var element5 = dom.childAt(element0, [5]);
-      var element6 = dom.childAt(element5, [3]);
-      var morphs = new Array(13);
+      var element2 = dom.childAt(element1, [9]);
+      var element3 = dom.childAt(element1, [13]);
+      var element4 = dom.childAt(element0, [5]);
+      var element5 = dom.childAt(element4, [3]);
+      var morphs = new Array(14);
       morphs[0] = dom.createMorphAt(dom.childAt(element1, [1]),0,0);
-      morphs[1] = dom.createAttrMorph(element2, 'placeholder');
+      morphs[1] = dom.createMorphAt(element1,3,3);
       morphs[2] = dom.createMorphAt(dom.childAt(element1, [5]),0,0);
-      morphs[3] = dom.createAttrMorph(element3, 'placeholder');
-      morphs[4] = dom.createMorphAt(dom.childAt(element1, [9, 1]),0,0);
-      morphs[5] = dom.createMorphAt(dom.childAt(element1, [11, 1]),3,3);
-      morphs[6] = dom.createMorphAt(dom.childAt(element4, [1]),0,0);
-      morphs[7] = dom.createMorphAt(dom.childAt(element4, [3]),0,0);
-      morphs[8] = dom.createMorphAt(dom.childAt(element5, [1, 1, 0, 1]),0,0);
-      morphs[9] = dom.createMorphAt(dom.childAt(element6, [1]),0,0);
-      morphs[10] = dom.createMorphAt(dom.childAt(element6, [3]),0,0);
-      morphs[11] = dom.createMorphAt(dom.childAt(element6, [5]),0,0);
-      morphs[12] = dom.createMorphAt(dom.childAt(element6, [7]),0,0);
+      morphs[3] = dom.createMorphAt(element1,7,7);
+      morphs[4] = dom.createElementMorph(element2);
+      morphs[5] = dom.createMorphAt(dom.childAt(element2, [1]),0,0);
+      morphs[6] = dom.createMorphAt(dom.childAt(element1, [11, 1]),3,3);
+      morphs[7] = dom.createMorphAt(dom.childAt(element3, [1]),0,0);
+      morphs[8] = dom.createMorphAt(dom.childAt(element3, [3]),0,0);
+      morphs[9] = dom.createMorphAt(dom.childAt(element4, [1, 1, 0, 1]),0,0);
+      morphs[10] = dom.createMorphAt(dom.childAt(element5, [1]),0,0);
+      morphs[11] = dom.createMorphAt(dom.childAt(element5, [3]),0,0);
+      morphs[12] = dom.createMorphAt(dom.childAt(element5, [5]),0,0);
+      morphs[13] = dom.createMorphAt(dom.childAt(element5, [7]),0,0);
       return morphs;
     },
     statements: [
       ["inline","t",["view.signin.username"],[],["loc",[null,[8,51],[8,79]]]],
-      ["attribute","placeholder",["concat",[["subexpr","t",["view.signin.username"],[],["loc",[null,[9,80],[9,108]]]]]]],
+      ["inline","input",[],["type","text","value",["subexpr","@mut",[["get","username",["loc",[null,[9,35],[9,43]]]]],[],[]],"required",true,"autofocus",true,"placeholder",["subexpr","t",["view.signin.username"],[],["loc",[null,[9,85],[9,111]]]],"class","form-control"],["loc",[null,[9,9],[9,134]]]],
       ["inline","t",["view.signin.password"],[],["loc",[null,[10,51],[10,79]]]],
-      ["attribute","placeholder",["concat",[["subexpr","t",["view.signin.password"],[],["loc",[null,[11,84],[11,112]]]]]]],
-      ["inline","t",["view.signin.sign-in"],[],["loc",[null,[12,119],[12,146]]]],
+      ["inline","input",[],["type","password","value",["subexpr","@mut",[["get","password",["loc",[null,[11,38],[11,46]]]]],[],[]],"required",true,"placeholder",["subexpr","t",["view.signin.password"],[],["loc",[null,[11,73],[11,99]]]],"class","form-control"],["loc",[null,[11,8],[11,122]]]],
+      ["element","action",["signin"],[],["loc",[null,[12,54],[12,73]]]],
+      ["inline","t",["view.signin.sign-in"],[],["loc",[null,[12,125],[12,152]]]],
       ["inline","t",["view.signin.remember-me"],[],["loc",[null,[15,60],[15,91]]]],
       ["inline","link",["view.signin.sign-up","signup"],[],["loc",[null,[19,44],[19,83]]]],
       ["inline","link",["view.signin.forgot-password","forgotpassword"],[],["loc",[null,[20,45],[20,100]]]],

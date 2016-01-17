@@ -31,7 +31,9 @@
 
 Foundation = Ember.Application.create({
     LOG_TRANSITIONS:true,
-    VERSION:'1'
+    VERSION:'1',
+    CLIENT_ID:'projects4me',
+    CLIENT_SECRET:'06110fb83488715ca69057f4a7cedf93'
 });
 
     
@@ -54,6 +56,7 @@ var hammad2;
 Foundation.ApplicationSerializer = DS.RESTSerializer.extend({
     primaryKey: 'id',
     modelNameFromPayloadKey :function(modelName){
+        hammad2 = this;
         return modelName;
     }
 });
@@ -87,3 +90,15 @@ Foundation.ProjectsRoute = Em.Route.extend({
         return hammad;
     }
 });
+
+Foundation.oAuth = {
+    client_id : Foundation.CLIENT_ID,
+    client_secret : Foundation.CLIENT_SECRET,
+    auth_token : '',
+    refresh_token : '',
+    expiry : '',
+    authorize:function(username,password){
+        
+    }
+};
+

@@ -6,10 +6,10 @@
     </div>
     <form class="form-signin">
         <label for="inputUsername" class="sr-only">{{t "view.signin.username"}}</label>
-        <input type="text" id="inputUsername" class="form-control" placeholder="{{t "view.signin.username"}}" required autofocus>
+         {{input type="text" value=username required=true autofocus=true placeholder=(t "view.signin.username") class="form-control"}}
         <label for="inputPassword" class="sr-only">{{t "view.signin.password"}}</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="{{t "view.signin.password"}}" required>
-        <button class="btn btn btn-primary btn-block" type="submit"><i class="fa fa-sign-in"></i><span class='btn-txt'>{{t "view.signin.sign-in"}}</span></button>
+        {{input type="password" value=password required=true placeholder=(t "view.signin.password") class="form-control"}}
+        <button class="btn btn btn-primary btn-block" {{action 'signin'}}><i class="fa fa-sign-in"></i><span class='btn-txt'>{{t "view.signin.sign-in"}}</span></button>
         <div class="checkbox">
             <label>
                 <input type="checkbox" value="remember-me"> {{t "view.signin.remember-me"}}

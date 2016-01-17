@@ -116,8 +116,8 @@ class RestController extends \Phalcon\Mvc\Controller
     	//print_r($this->dispatcher->getParams());exit;
     	$this->controllerName = $this->dispatcher->getControllerName();//controller
         $this->actionName = $this->dispatcher->getActionName();//controller
-
         $this->modelName = $this->controllerName;//model
+
         $this->id = $this->dispatcher->getParam("id");//id
         $this->relationship = $this->dispatcher->getParam("relationship");//relationship
         if ($this->actionName != 'options')
@@ -229,6 +229,7 @@ class RestController extends \Phalcon\Mvc\Controller
     private function authorize()
     {
         global $currentUser;
+
         if ($this->authorization)
         {
             require_once APP_PATH.'/foundation/libs/oAuthServer.php';
@@ -779,21 +780,21 @@ class RestController extends \Phalcon\Mvc\Controller
         }
         
         $hal[$this->modelName] = $data;
-        $hal['count'] = count($data);
+        $hal['meta']['count'] = count($data);
         
-        $hal['_links']['self']['href'] = $query['_url'];
+        $hal['meta']['_links']['self']['href'] = $query['_url'];
         if (!empty($self))
         {
-            $hal['_links']['self']['href'] .= '?'.implode('&',$self);
+            $hal['meta']['_links']['self']['href'] .= '?'.implode('&',$self);
         }
         if (!empty($next) && !$endPage)
         {            
-            $hal['_links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
+            $hal['meta']['_links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
         }
         
         if (!empty($prev) && $page > 1)
         {    
-            $hal['_links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
+            $hal['meta']['_links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
         }
             
         return $hal;
