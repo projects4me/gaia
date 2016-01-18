@@ -80,6 +80,8 @@ class IndexController extends \Phalcon\Mvc\Controller
                     $cssFiles[] = $path;
                 }
                 sort($cssFiles);
+                $cssFiles[] = 'vendors/scrollbar/jquery.mCustomScrollbar.min.css';
+                $jsFiles[] = 'vendors/scrollbar/jquery.mCustomScrollbar.concat.min.js';
                 $this->view->jsFiles = $jsFiles;
                 $this->view->cssFiles = $cssFiles;                
                 break;

@@ -45,60 +45,121 @@ Foundation.ApplicationStore = DS.Store.extend({
  
 Foundation.ApplicationAdapter = DS.RESTAdapter.extend({
     namespace:'api/v'+Foundation.VERSION,
-    headers: {
-        "Authorization": "Bearer 5b0d6ba8cc54dce2eedb9a900c02b4c756343afb"
-    },
+    headers: Ember.computed(function() {
+        return {
+            "Authorization": "Bearer "+Foundation.oAuth.get('access_token')
+        };
+    }).volatile(),
+
     pathForType: function(modelName) {
         return Ember.String.capitalize(modelName);
     }
 });
-var hammad2;
+
 Foundation.ApplicationSerializer = DS.RESTSerializer.extend({
     primaryKey: 'id',
     modelNameFromPayloadKey :function(modelName){
-        hammad2 = this;
         return modelName;
     }
 });
 
+
 Foundation.ApplicationRoute = Em.Route.extend({
-  beforeModel: function(){
-    var lang = 'en_US';
-    var route = this;
-    if(lang){
-      return new Ember.RSVP.Promise(function(resolve) {
-        // Fetch language file
-        Em.$.getJSON('app/locale/'+lang+".json").then(function(data){
-          Em.I18n.translations = data;
-          route.transitionTo('signin');
-          resolve();
-        });
-      });
-    }else{
+    auth :  null,
+    setupController: function(controller, model) {
+        var isAuthenticated = Foundation.oAuth.isAuthenticated();
+        controller.set('isAuthenticated', isAuthenticated);
+    },
+    beforeModel: function(){
+        var lang = 'en_US';
+        var route = this;
+        this.auth = Foundation.oAuth.initialize(this);        
+        var isAuthenticated = Foundation.oAuth.isAuthenticated();
+        if (!isAuthenticated)
+            route.transitionTo('signin');
+        if(lang){
+            return new Ember.RSVP.Promise(function(resolve) {
+                // Fetch language file
+                Em.$.getJSON('app/locale/'+lang+".json").then(function(data){
+                    Em.I18n.translations = data;
+                    resolve();
+                });
+            });
+        }else{
       this.transitionTo('lang');
     }
-  }
+    }
 });
-var hammad;
 
-
+Foundation.SigninIndexRoute = Em.Route.extend({
+    /**
+     * if a rest returns unauthorize then use refresk the token
+     * or take the user to the authentication page
+     * @todo on error clear the console
+     * @returns {undefined}
+     */
+   beforeModel:function(){
+       if (Foundation.oAuth.isAuthenticated())
+            this.transitionTo('projects');
+   } 
+});
 
 Foundation.ProjectsRoute = Em.Route.extend({
     model: function() {
-        hammad = this.store.findAll('Projects','1');
-        console.log(hammad);
-        return hammad;
+        return this.store.findAll('Projects','1');
     }
 });
 
+/**
+ * @todo log errors
+ * @todo cater history
+ */
+var hammad = null;
 Foundation.oAuth = {
     client_id : Foundation.CLIENT_ID,
     client_secret : Foundation.CLIENT_SECRET,
-    auth_token : '',
-    refresh_token : '',
-    expiry : '',
+    access_token : null,
+    refresh_token : null,
+    expires_in : null,
+    route:null,
+    initialize:function(route){
+        this.route = route;
+        return this;
+    },
     authorize:function(username,password){
-        
+        Token = this.route.store.createRecord('Token',{
+            username:username,
+            password:password,
+            grant_type:'password',
+            client_id:Foundation.CLIENT_ID,
+            client_secret:Foundation.CLIENT_SECRET
+        });
+        Token.save().then(function(Token){
+            this.access_token = Token.get('access_token');
+            this.refresh_token = Token.get('refresh_token');
+            this.expires_in = Token.get('expires_in');
+            Ember.$.cookie('access_token',this.access_token);
+            Ember.$.cookie('refresh_token',this.refresh_token);
+            Ember.$.cookie('expires_in',this.expires_in);
+            Foundation.oAuth.route.transitionTo('projects');
+        },function(){
+            return false;
+        });
+    },
+    isAuthenticated:function(){
+        if (Ember.$.cookie('access_token') != undefined && Ember.$.cookie('access_token') != '')
+            return true;
+        else
+            return false;
+    },
+    get:function(param){
+        if (Ember.$.cookie(param) != undefined || Ember.$.cookie(param) != '')
+        {
+            return Ember.$.cookie(param);
+        }
+        else
+        {
+            return 'none'
+        }
     }
 };
-

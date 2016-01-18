@@ -28,13 +28,32 @@
  * display of the logo is not reasonably feasible for technical reasons, the 
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
-var hammad3;
-Foundation.SigninIndexController = Ember.Controller.extend({
-    actions: {
-        signin:function() {
-            hammad3 = this;
-            Foundation.__container__.lookup("route:application").auth.authorize(this.get('username'),this.get('password'));
-        }
-    }
+
+var timer;
+function renderClock()
+{
+        clearTimeout(timer)
+        var now = new Date();
+        var hour = now.getHours();
+        var minute = now.getMinutes();
+        var ampm = hour >= 12 ? 'pm' : 'am';
+        hour = hour % 12;
+        if (hour <10) hour = '0'+hour;
+        if (minute <10) minute = '0'+minute;
+        $('#clock-hour').text(hour);		
+        $('#clock-minute').text(minute);
+        $('#clock-period').text(ampm);
+        timer = setTimeout(renderClock,3600);
+}
+
+function toggleSidebar()
+{
+        $(".sidebar-panel").animate({width:'toggle'},350);
+}
+
+$( document ).ready(function() {
+        renderClock();
+        toggleSidebar();
+        $('.mCustomScrollbar').mCustomScrollbar();
 });
-//Token = Foundation.__container__.lookup("controller:application").store.createRecord('Token',{username:'hammad',password:'hammad',grant_type:'password',client_id:Foundation.CLIENT_ID,client_secret:Foundation.CLIENT_SECRET})
+
