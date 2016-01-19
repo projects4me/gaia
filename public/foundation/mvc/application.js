@@ -53,7 +53,15 @@ Foundation.ApplicationAdapter = DS.RESTAdapter.extend({
 
     pathForType: function(modelName) {
         return Ember.String.capitalize(modelName);
-    }
+    },
+    normalizeErrorResponse: function (status, headers, payload) {
+        if (status == 401)
+        {
+            Foundation.oAuth.clear();
+            Foundation.oAuth.route.transitionTo('signin');
+            return false;
+        }
+    },
 });
 
 Foundation.ApplicationSerializer = DS.RESTSerializer.extend({
@@ -81,7 +89,7 @@ Foundation.ApplicationRoute = Em.Route.extend({
             return new Ember.RSVP.Promise(function(resolve) {
                 // Fetch language file
                 Em.$.getJSON('app/locale/'+lang+".json").then(function(data){
-                    Em.I18n.translations = data;
+                    //Em.I18n.translations = data;
                     resolve();
                 });
             });
@@ -90,8 +98,37 @@ Foundation.ApplicationRoute = Em.Route.extend({
     }
     }
 });
+/*
+Ember.View.reopen({
+    layoutName:Ember.computed(function() {
+        console.log('--------------------------');
+        console.log(this.authenticate);
+        console.log(this.get('controller'));
+        console.log('--------------------------');
+        return "";
+    }).volatile(),
+    didInsertElement : function(){
+    this._super();
+    $('.mCustomScrollbar').mCustomScrollbar();
+    Ember.run.scheduleOnce('afterRender', this, this.afterRenderEvent);
+  },
+  afterRenderEvent : function(){
+    // implement this hook in your own subclasses and run your jQuery logic there
+  }
+});*/
+/*
+Foundation.defaultView = Em.View.extend({
+    layoutName:'layouts/default',
+});
 
-Foundation.SigninIndexRoute = Em.Route.extend({
+Foundation.ApplicationView = Em.View.extend({
+//    layoutName:'layouts/default'
+});
+/**/
+
+
+
+Foundation.SigninIndexRoute = Em.Route.extend({ 
     /**
      * if a rest returns unauthorize then use refresk the token
      * or take the user to the authentication page
@@ -104,12 +141,20 @@ Foundation.SigninIndexRoute = Em.Route.extend({
    } 
 });
 
+Foundation.SigninIndexController = Ember.Controller.extend({
+    authenticate:false,
+});
+
 Foundation.ProjectsRoute = Em.Route.extend({
     model: function() {
         return this.store.findAll('Projects','1');
     }
 });
-
+/*
+Foundation.IndexView = Foundation.defaultView.extend();
+*/
+Foundation.ProjectsIndexController = Ember.Controller.extend({authenticate:true});
+/**/
 /**
  * @todo log errors
  * @todo cater history
@@ -161,5 +206,10 @@ Foundation.oAuth = {
         {
             return 'none'
         }
+    },
+    clear:function(){
+        Ember.$.removeCookie('access_token');
+        Ember.$.removeCookie('refresh_token');
+        Ember.$.removeCookie('expires_in');
     }
 };

@@ -16,7 +16,7 @@
     <script src="<?php echo $jsFile; ?>"></script>
     <?php } ?>
     
-    <script src="/vendors/ember-i18n-3.1.1/lib/i18n.js"></script>
+    <!--script src="/vendors/ember-i18n-3.1.1/lib/i18n.js"></script-->
     <script src="/vendors/carhartl-jquery-cookie/jquery.cookie.js"></script>
 </head>
 

@@ -5,33 +5,33 @@
         </a>
     </div>
     <form class="form-signin">
-        <label for="inputUsername" class="sr-only">{{t "view.signin.username"}}</label>
-         {{input type="text" value=username required=true autofocus=true placeholder=(t "view.signin.username") class="form-control"}}
-        <label for="inputPassword" class="sr-only">{{t "view.signin.password"}}</label>
-        {{input type="password" value=password required=true placeholder=(t "view.signin.password") class="form-control"}}
-        <button class="btn btn btn-primary btn-block" {{action 'signin'}}><i class="fa fa-sign-in"></i><span class='btn-txt'>{{t "view.signin.sign-in"}}</span></button>
+        <label for="inputUsername" class="sr-only">"view.signin.username"</label>
+         {{input type="text" value=username required=true autofocus=true placeholder="view.signin.username" class="form-control"}}
+        <label for="inputPassword" class="sr-only">"view.signin.password"</label>
+        {{input type="password" value=password required=true placeholder="view.signin.password" class="form-control"}}
+        <button class="btn btn btn-primary btn-block" {{action 'signin'}}><i class="fa fa-sign-in"></i><span class='btn-txt'>"view.signin.sign-in"</span></button>
         <div class="checkbox">
             <label>
-                <input type="checkbox" value="remember-me"> {{t "view.signin.remember-me"}}
+                <input type="checkbox" value="remember-me"> "view.signin.remember-me"
             </label>
         </div>
         <div class="row">
-            <div class="col-xs-6 text-left">{{link "view.signin.sign-up" "signup"}}</div>
-            <div class="col-xs-6 text-right">{{link "view.signin.forgot-password" "forgotpassword"}}</div>
+            <div class="col-xs-6 text-left">"view.signin.sign-up"</div>
+            <div class="col-xs-6 text-right">"view.signin.forgot-password"</div>
         </div>
     </form>
 
     <div class="additional-links">
 
         <div class="row">
-            <div class="col-xs-12 text-center"><button class="btn btn-danger btn-block" type="submit"><i class="fa fa-google-plus"></i><span class='btn-txt'>{{t "view.signin.sign-up-with-google"}}</span></button></div>
+            <div class="col-xs-12 text-center"><button class="btn btn-danger btn-block" type="submit"><i class="fa fa-google-plus"></i><span class='btn-txt'>"view.signin.sign-up-with-google"</span></button></div>
         </div>
     
         <div class="row">
-            <div class="col-xs-3 text-left">{{link "view.signin.terms" "static/termsandconditions"}}</div>
-            <div class="col-xs-3 text-left">{{link "view.signin.privacy" "static/privacypolicy"}}</div>
-            <div class="col-xs-3 text-left">{{link "view.signin.security" "static/securitypolicy"}}</div>
-            <div class="col-xs-3 text-left">{{link "view.signin.contact" "static/contactus"}}</div>
+            <div class="col-xs-3 text-left">"view.signin.terms" "static/termsandconditions"</div>
+            <div class="col-xs-3 text-left">"view.signin.privacy" "static/privacypolicy"</div>
+            <div class="col-xs-3 text-left">"view.signin.security" "static/securitypolicy"</div>
+            <div class="col-xs-3 text-left">"view.signin.contact" "static/contactus"</div>
         </div>
     </div>
 </div>

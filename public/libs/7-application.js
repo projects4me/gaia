@@ -51,9 +51,7 @@ function toggleSidebar()
         $(".sidebar-panel").animate({width:'toggle'},350);
 }
 
-$( document ).ready(function() {
+$(document).ready(function() {
         renderClock();
-        toggleSidebar();
-        $('.mCustomScrollbar').mCustomScrollbar();
 });
 
