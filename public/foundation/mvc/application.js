@@ -137,7 +137,7 @@ Foundation.SigninIndexRoute = Em.Route.extend({
      */
    beforeModel:function(){
        if (Foundation.oAuth.isAuthenticated())
-            this.transitionTo('projects');
+            this.transitionTo('app.module',{module:'projects'});
    } 
 });
 
@@ -145,15 +145,21 @@ Foundation.SigninIndexController = Ember.Controller.extend({
     authenticate:false,
 });
 
-Foundation.ProjectsRoute = Em.Route.extend({
+Foundation.AppProjectsRoute = Em.Route.extend({
     model: function() {
         return this.store.findAll('Projects','1');
+    }
+});
+Foundation.AppModuleRoute = Em.Route.extend({
+    model:function(params){
+        var module = Ember.String.capitalize(params.module);
+        return this.store.findAll(module,'1');
     }
 });
 /*
 Foundation.IndexView = Foundation.defaultView.extend();
 */
-Foundation.ProjectsIndexController = Ember.Controller.extend({authenticate:true});
+//Foundation.ProjectsIndexController = Ember.Controller.extend({authenticate:true});
 /**/
 /**
  * @todo log errors
@@ -186,7 +192,7 @@ Foundation.oAuth = {
             Ember.$.cookie('access_token',this.access_token);
             Ember.$.cookie('refresh_token',this.refresh_token);
             Ember.$.cookie('expires_in',this.expires_in);
-            Foundation.oAuth.route.transitionTo('projects');
+            Foundation.oAuth.route.transitionTo('app.module',{module:'projects'});
         },function(){
             return false;
         });

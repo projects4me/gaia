@@ -29,10 +29,20 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-
+/*
 Foundation.Router.map(function() {
-    this.route('index', { path: '/' }, function() {});
+    this.route('index', { path: '/' }, function() {
+        this.route('app',{path:'/app'})
+    });
     this.route('signin', { path: '/signin' }, function() {});
     this.route('projects', { path: '/projects' }, function() {});
 });
-
+*/
+Foundation.Router.map(function(){
+  this.route('index', { path: '/' });
+  this.route('app',function() {
+    this.route('module',{path:':module'});
+    this.route('detail',{path:':module/:id'});
+  });
+  this.route('signin', { path: '/signin' }, function() {});
+});
