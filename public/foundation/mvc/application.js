@@ -36,7 +36,21 @@ Foundation = Ember.Application.create({
     CLIENT_SECRET:'06110fb83488715ca69057f4a7cedf93'
 });
 
-    
+Foundation.moduleList = {
+    module:[
+        "Projects",
+        "Users",
+        "Accounts",
+        "Issues"
+    ]
+};
+
+Foundation.Router.reopen({  
+    startProgress:function(){
+        Pace.restart();
+    }.on('willTransition')
+});
+
 Foundation.ApplicationStore = DS.Store.extend({
     //adapter translating requested records into the appropriate calls
     adapter: 'DS.RESTAdapter',
@@ -218,4 +232,38 @@ Foundation.oAuth = {
         Ember.$.removeCookie('refresh_token');
         Ember.$.removeCookie('expires_in');
     }
+};
+
+/***
+ * The meta is the main object storing the different types of metaata that the
+ * application makes use of
+ * 
+ * @type object meta
+ */
+Foundation.metaData = {
+    // module list
+    modules:{},
+    // object models, containing the model definition
+    models:{},
+    // view meta data
+    views:{},
+    /**
+     * This variable store the business logic for the system, although the basic
+     * application behavior would be hard coded and would not work through the
+     * definitions in this object. However, hard coding the business logic
+     * makes us compromise the flexibility that we would otherwise have. This 
+     * is where the businessLogic meta comes into play, this logic will be
+     * executed by the application and thus would allow us to extend the
+     * application behavior. All good but this is complex so will come later :)
+     * @type object businessLogic
+     */
+    businessLogic:{},
+    
+    /**
+     * This function is 
+     * @returns void
+     */
+    init:function(){
+        
+    },
 };

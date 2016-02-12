@@ -6,10 +6,13 @@
   "devDependencies": {
     "grunt": "*",
     "grunt-contrib-watch": "*",
+    "handlebars": "~2.0.0",
     "grunt-ember-templates": "*",
+    "ember-template-compiler": "*",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-sass": "~0.4.1",
-    "ember-i18n": "*"
+    "grunt-contrib-compass": "~0.4.1",
+    "compass": "^0.1.1"
   }
 }
