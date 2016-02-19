@@ -1071,6 +1071,125 @@ Ember.TEMPLATES["app"] = Ember.Handlebars.template((function() {
   };
 }()));
 
+Ember.TEMPLATES["app/create"] = Ember.Handlebars.template((function() {
+  var child0 = (function() {
+    return {
+      meta: {
+        "fragmentReason": false,
+        "revision": "Ember@2.3.0",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 8,
+            "column": 2
+          },
+          "end": {
+            "line": 12,
+            "column": 2
+          }
+        }
+      },
+      isEmpty: false,
+      arity: 2,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createTextNode("    ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("li");
+        var el2 = dom.createTextNode("Hello sexy ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("!");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n    ");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]),1,1);
+        morphs[1] = dom.createMorphAt(fragment,3,3,contextualElement);
+        return morphs;
+      },
+      statements: [
+        ["content","definition.fieldName",["loc",[null,[9,19],[9,43]]]],
+        ["inline","field-text",[],["definition",["subexpr","@mut",[["get","definition",["loc",[null,[11,28],[11,38]]]]],[],[]]],["loc",[null,[11,4],[11,40]]]]
+      ],
+      locals: ["field","definition"],
+      templates: []
+    };
+  }());
+  return {
+    meta: {
+      "fragmentReason": {
+        "name": "missing-wrapper",
+        "problems": [
+          "multiple-nodes",
+          "wrong-type"
+        ]
+      },
+      "revision": "Ember@2.3.0",
+      "loc": {
+        "source": null,
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 13,
+          "column": 5
+        }
+      }
+    },
+    isEmpty: false,
+    arity: 0,
+    cachedFragment: null,
+    hasRendered: false,
+    buildFragment: function buildFragment(dom) {
+      var el0 = dom.createDocumentFragment();
+      var el1 = dom.createElement("h1");
+      var el2 = dom.createTextNode("Creating ");
+      dom.appendChild(el1, el2);
+      var el2 = dom.createComment("");
+      dom.appendChild(el1, el2);
+      dom.appendChild(el0, el1);
+      var el1 = dom.createTextNode("\n\nGood Luck!\n");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createElement("br");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createTextNode("\n\nField Labels:  \n");
+      dom.appendChild(el0, el1);
+      var el1 = dom.createElement("ul");
+      var el2 = dom.createTextNode("\n");
+      dom.appendChild(el1, el2);
+      var el2 = dom.createComment("");
+      dom.appendChild(el1, el2);
+      dom.appendChild(el0, el1);
+      return el0;
+    },
+    buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+      var morphs = new Array(2);
+      morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0]),1,1);
+      morphs[1] = dom.createMorphAt(dom.childAt(fragment, [4]),1,1);
+      return morphs;
+    },
+    statements: [
+      ["content","module",["loc",[null,[1,13],[1,23]]]],
+      ["block","each-in",[["get","metaData",["loc",[null,[8,13],[8,21]]]]],[],0,null,["loc",[null,[8,2],[12,14]]]]
+    ],
+    locals: [],
+    templates: [child0]
+  };
+}()));
+
 Ember.TEMPLATES["app/detail"] = Ember.Handlebars.template((function() {
   return {
     meta: {
@@ -1405,6 +1524,112 @@ Ember.TEMPLATES["application"] = Ember.Handlebars.template((function() {
     ],
     locals: [],
     templates: []
+  };
+}()));
+
+Ember.TEMPLATES["components/field-text"] = Ember.Handlebars.template((function() {
+  var child0 = (function() {
+    return {
+      meta: {
+        "fragmentReason": false,
+        "revision": "Ember@2.3.0",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 2,
+            "column": 39
+          },
+          "end": {
+            "line": 2,
+            "column": 97
+          }
+        }
+      },
+      isEmpty: false,
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("span");
+        dom.setAttribute(el1,"class","required");
+        var el2 = dom.createTextNode("*");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes() { return []; },
+      statements: [
+
+      ],
+      locals: [],
+      templates: []
+    };
+  }());
+  return {
+    meta: {
+      "fragmentReason": false,
+      "revision": "Ember@2.3.0",
+      "loc": {
+        "source": null,
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 5,
+          "column": 6
+        }
+      }
+    },
+    isEmpty: false,
+    arity: 0,
+    cachedFragment: null,
+    hasRendered: false,
+    buildFragment: function buildFragment(dom) {
+      var el0 = dom.createDocumentFragment();
+      var el1 = dom.createElement("div");
+      var el2 = dom.createTextNode("\n    ");
+      dom.appendChild(el1, el2);
+      var el2 = dom.createElement("label");
+      var el3 = dom.createComment("");
+      dom.appendChild(el2, el3);
+      dom.appendChild(el1, el2);
+      var el2 = dom.createComment("");
+      dom.appendChild(el1, el2);
+      var el2 = dom.createTextNode("\n    ");
+      dom.appendChild(el1, el2);
+      var el2 = dom.createElement("span");
+      dom.setAttribute(el2,"class","error");
+      var el3 = dom.createComment("");
+      dom.appendChild(el2, el3);
+      dom.appendChild(el1, el2);
+      var el2 = dom.createTextNode("\n    ");
+      dom.appendChild(el1, el2);
+      var el2 = dom.createElement("span");
+      var el3 = dom.createTextNode("value");
+      dom.appendChild(el2, el3);
+      dom.appendChild(el1, el2);
+      var el2 = dom.createTextNode("\n");
+      dom.appendChild(el1, el2);
+      dom.appendChild(el0, el1);
+      return el0;
+    },
+    buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+      var element0 = dom.childAt(fragment, [0]);
+      var morphs = new Array(3);
+      morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]),0,0);
+      morphs[1] = dom.createMorphAt(element0,2,2);
+      morphs[2] = dom.createMorphAt(dom.childAt(element0, [4]),0,0);
+      return morphs;
+    },
+    statements: [
+      ["content","definition.label",["loc",[null,[2,11],[2,31]]]],
+      ["block","if",[["get","definition.required",["loc",[null,[2,45],[2,64]]]]],[],0,null,["loc",[null,[2,39],[2,104]]]],
+      ["content","definition.errorMsg",["loc",[null,[3,24],[3,47]]]]
+    ],
+    locals: [],
+    templates: [child0]
   };
 }()));
 

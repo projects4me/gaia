@@ -43,6 +43,7 @@ Foundation.Router.map(function(){
   this.route('app',function() {
     this.route('module',{path:':module'});
     this.route('detail',{path:':module/:id'});
+    this.route('create',{path:':module/create'});
   });
   this.route('signin', { path: '/signin' }, function() {});
 });

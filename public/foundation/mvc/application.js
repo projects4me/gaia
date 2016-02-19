@@ -48,7 +48,13 @@ Foundation.moduleList = {
 Foundation.Router.reopen({  
     startProgress:function(){
         Pace.restart();
-    }.on('willTransition')
+    }.on('willTransition'),
+    /**
+     * @todo load the scroll bar on application load as well
+     */
+    reloadScorllbar:function(){
+        $('.mCustomScrollbar').mCustomScrollbar();
+    }.on('didTransition')
 });
 
 Foundation.ApplicationStore = DS.Store.extend({
@@ -112,35 +118,6 @@ Foundation.ApplicationRoute = Em.Route.extend({
     }
     }
 });
-/*
-Ember.View.reopen({
-    layoutName:Ember.computed(function() {
-        console.log('--------------------------');
-        console.log(this.authenticate);
-        console.log(this.get('controller'));
-        console.log('--------------------------');
-        return "";
-    }).volatile(),
-    didInsertElement : function(){
-    this._super();
-    $('.mCustomScrollbar').mCustomScrollbar();
-    Ember.run.scheduleOnce('afterRender', this, this.afterRenderEvent);
-  },
-  afterRenderEvent : function(){
-    // implement this hook in your own subclasses and run your jQuery logic there
-  }
-});*/
-/*
-Foundation.defaultView = Em.View.extend({
-    layoutName:'layouts/default',
-});
-
-Foundation.ApplicationView = Em.View.extend({
-//    layoutName:'layouts/default'
-});
-/**/
-
-
 
 Foundation.SigninIndexRoute = Em.Route.extend({ 
     /**
@@ -170,11 +147,28 @@ Foundation.AppModuleRoute = Em.Route.extend({
         return this.store.findAll(module,'1');
     }
 });
-/*
-Foundation.IndexView = Foundation.defaultView.extend();
-*/
-//Foundation.ProjectsIndexController = Ember.Controller.extend({authenticate:true});
-/**/
+
+Foundation.AppCreateRoute = Ember.Route.extend({
+    module : null,
+    metaData: null,
+    model:function(params){
+        this.module = Ember.String.capitalize(params.module);
+        this.metaData = Foundation.metaData.getViewMeta(this.module,'create');
+    },
+    setupController:function(controller,model){
+        controller.set('module',this.module);
+        controller.set('metaData',this.metaData);
+        console.log(this.metaData)
+    }
+});
+
+Foundation.AppCreateController = Ember.Controller.extend({
+    module:'--',
+    init:function(){
+        //console.log(this.get('target').get('params'));
+    }
+});
+
 /**
  * @todo log errors
  * @todo cater history
@@ -246,7 +240,30 @@ Foundation.metaData = {
     // object models, containing the model definition
     models:{},
     // view meta data
-    views:{},
+    views:{
+        Projects:{
+            create:{
+                name : {
+                    fieldName: "name",
+                    label: "view.projects.create.name",
+                    size: 'xs-12',
+                    type: 'text',
+                    help: 'view.projects.create.name.help',
+                    required: true,
+                    errorMsg: 'view.projects.create.name.error',
+                },
+                description:{
+                    fieldName: "description",
+                    label: "view.projects.create.description",
+                    size: 'XS-12',
+                    type: 'text',
+                    help: 'view.projects.create.description.help',
+                    required: false,
+                    errorMsg: 'view.projects.create.description.error',                    
+                }
+            }
+        }
+    },
     /**
      * This variable store the business logic for the system, although the basic
      * application behavior would be hard coded and would not work through the
@@ -266,4 +283,12 @@ Foundation.metaData = {
     init:function(){
         
     },
+    
+    getViewMeta:function(module,view){
+        if (this.views[module] != undefined && this.views[module][view] != undefined) 
+        {
+            return this.views[module][view];
+        }
+        return false;
+    }
 };
