@@ -1,31 +1,31 @@
-/* 
- * Projects4Me Community Edition is an open source project management software 
+/*
+ * Projects4Me Community Edition is an open source project management software
  * developed by PROJECTS4ME Inc. Copyright (C) 2015-2016 PROJECTS4ME Inc.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 (GNU AGPL v3) as
- * published be the Free Software Foundation with the addition of the following 
- * permission added to Section 15 as permitted in Section 7(a): FOR ANY PART OF 
- * THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY PROJECTS4ME Inc., 
+ * published be the Free Software Foundation with the addition of the following
+ * permission added to Section 15 as permitted in Section 7(a): FOR ANY PART OF
+ * THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY PROJECTS4ME Inc.,
  * Projects4Me DISCLAIMS THE WARRANTY OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU AGPL v3 for more details.
- * 
- * You should have received a copy of the GNU AGPL v3 along with this program; 
- * if not, see http://www.gnu.org/licenses or write to the Free Software 
+ *
+ * You should have received a copy of the GNU AGPL v3 along with this program;
+ * if not, see http://www.gnu.org/licenses or write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- * 
+ *
  * You can contact PROJECTS4ME, Inc. at email address contact@projects4.me.
- * 
- * The interactive user interfaces in modified source and object code versions 
- * of this program must display Appropriate Legal Notices, as required under 
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU AGPL v3.
- * 
- * In accordance with Section 7(b) of the GNU AGPL v3, these Appropriate Legal 
- * Notices must retain the display of the "Powered by Projects4Me" logo. If the 
- * display of the logo is not reasonably feasible for technical reasons, the 
+ *
+ * In accordance with Section 7(b) of the GNU AGPL v3, these Appropriate Legal
+ * Notices must retain the display of the "Powered by Projects4Me" logo. If the
+ * display of the logo is not reasonably feasible for technical reasons, the
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
@@ -45,7 +45,7 @@ Foundation.moduleList = {
     ]
 };
 
-Foundation.Router.reopen({  
+Foundation.Router.reopen({
     startProgress:function(){
         Pace.restart();
     }.on('willTransition'),
@@ -62,7 +62,7 @@ Foundation.ApplicationStore = DS.Store.extend({
     adapter: 'DS.RESTAdapter',
 //    serializer: Foundation.RESTSerializer
  });
- 
+
 Foundation.ApplicationAdapter = DS.RESTAdapter.extend({
     namespace:'api/v'+Foundation.VERSION,
     headers: Ember.computed(function() {
@@ -101,7 +101,7 @@ Foundation.ApplicationRoute = Em.Route.extend({
     beforeModel: function(){
         var lang = 'en_US';
         var route = this;
-        this.auth = Foundation.oAuth.initialize(this);        
+        this.auth = Foundation.oAuth.initialize(this);
         var isAuthenticated = Foundation.oAuth.isAuthenticated();
         if (!isAuthenticated)
             route.transitionTo('signin');
@@ -119,7 +119,7 @@ Foundation.ApplicationRoute = Em.Route.extend({
     }
 });
 
-Foundation.SigninIndexRoute = Em.Route.extend({ 
+Foundation.SigninIndexRoute = Em.Route.extend({
     /**
      * if a rest returns unauthorize then use refresk the token
      * or take the user to the authentication page
@@ -129,7 +129,7 @@ Foundation.SigninIndexRoute = Em.Route.extend({
    beforeModel:function(){
        if (Foundation.oAuth.isAuthenticated())
             this.transitionTo('app.module',{module:'projects'});
-   } 
+   }
 });
 
 Foundation.SigninIndexController = Ember.Controller.extend({
@@ -158,7 +158,7 @@ Foundation.AppCreateRoute = Ember.Route.extend({
     setupController:function(controller,model){
         controller.set('module',this.module);
         controller.set('metaData',this.metaData);
-        console.log(this.metaData)
+        console.log(this.metaData);
     }
 });
 
@@ -231,7 +231,7 @@ Foundation.oAuth = {
 /***
  * The meta is the main object storing the different types of metaata that the
  * application makes use of
- * 
+ *
  * @type object meta
  */
 Foundation.metaData = {
@@ -259,7 +259,7 @@ Foundation.metaData = {
                     type: 'text',
                     help: 'view.projects.create.description.help',
                     required: false,
-                    errorMsg: 'view.projects.create.description.error',                    
+                    errorMsg: 'view.projects.create.description.error',
                 }
             }
         }
@@ -268,24 +268,24 @@ Foundation.metaData = {
      * This variable store the business logic for the system, although the basic
      * application behavior would be hard coded and would not work through the
      * definitions in this object. However, hard coding the business logic
-     * makes us compromise the flexibility that we would otherwise have. This 
+     * makes us compromise the flexibility that we would otherwise have. This
      * is where the businessLogic meta comes into play, this logic will be
      * executed by the application and thus would allow us to extend the
      * application behavior. All good but this is complex so will come later :)
      * @type object businessLogic
      */
     businessLogic:{},
-    
+
     /**
-     * This function is 
+     * This function is
      * @returns void
      */
     init:function(){
-        
+
     },
-    
+
     getViewMeta:function(module,view){
-        if (this.views[module] != undefined && this.views[module][view] != undefined) 
+        if (this.views[module] != undefined && this.views[module][view] != undefined)
         {
             return this.views[module][view];
         }

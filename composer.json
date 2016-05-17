@@ -1,5 +1,9 @@
 {
     "require": {
-        "phalcon/incubator": "^2.0"
+        "phalcon/incubator": "^2.0",
+	"phpdocumentor/phpdocumentor":"2.*",
+        "phpunit/phpunit": "5.2.*",
+	"bshaffer/oauth2-server-php": "~1.8",
+	"phalcon/devtools": "dev-master"
     }
 }

@@ -6,5 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    $vendorDir . '/swiftmailer/swiftmailer/lib/swift_required.php',
+    '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => $vendorDir . '/symfony/polyfill-mbstring/bootstrap.php',
+    '2c102faa651ef8ea5874edb585946bce' => $vendorDir . '/swiftmailer/swiftmailer/lib/swift_required.php',
+    '742b7e606e92b28dd726e835467f413a' => $vendorDir . '/herrera-io/json/src/lib/json_version.php',
+    'f0e9d233388e461ee3c460665eb265f0' => $vendorDir . '/herrera-io/phar-update/src/lib/constants.php',
 );

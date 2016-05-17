@@ -1,33 +1,33 @@
 <?php
 
-/* 
- * Projects4Me Community Edition is an open source project management software 
+/*
+ * Projects4Me Community Edition is an open source project management software
  * developed by PROJECTS4ME Inc. Copyright (C) 2015-2016 PROJECTS4ME Inc.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 (GNU AGPL v3) as
- * published be the Free Software Foundation with the addition of the following 
- * permission added to Section 15 as permitted in Section 7(a): FOR ANY PART OF 
- * THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY PROJECTS4ME Inc., 
+ * published be the Free Software Foundation with the addition of the following
+ * permission added to Section 15 as permitted in Section 7(a): FOR ANY PART OF
+ * THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY PROJECTS4ME Inc.,
  * Projects4Me DISCLAIMS THE WARRANTY OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU AGPL v3 for more details.
- * 
- * You should have received a copy of the GNU AGPL v3 along with this program; 
- * if not, see http://www.gnu.org/licenses or write to the Free Software 
+ *
+ * You should have received a copy of the GNU AGPL v3 along with this program;
+ * if not, see http://www.gnu.org/licenses or write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- * 
+ *
  * You can contact PROJECTS4ME, Inc. at email address contact@projects4.me.
- * 
- * The interactive user interfaces in modified source and object code versions 
- * of this program must display Appropriate Legal Notices, as required under 
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU AGPL v3.
- * 
- * In accordance with Section 7(b) of the GNU AGPL v3, these Appropriate Legal 
- * Notices must retain the display of the "Powered by Projects4Me" logo. If the 
- * display of the logo is not reasonably feasible for technical reasons, the 
+ *
+ * In accordance with Section 7(b) of the GNU AGPL v3, these Appropriate Legal
+ * Notices must retain the display of the "Powered by Projects4Me" logo. If the
+ * display of the logo is not reasonably feasible for technical reasons, the
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 namespace Foundation\Mvc;
@@ -43,17 +43,17 @@ use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 /**
  * The is the deafult controller used by foundation that provides the basic
  * implementation of REST function, e.g. GET, POST, PATCH, DELETE and OPTIONS.
- * 
+ *
  * The default functionality support a custome implementation of HAL
- * 
+ *
  * Supports only JSON, OAUTH, ACL, Mixin Implementation (Components)
- * 
- * 
+ *
+ *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
  * @category REST, COntroller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
- */ 
+ */
 class RestController extends \Phalcon\Mvc\Controller
 {
 
@@ -67,19 +67,19 @@ class RestController extends \Phalcon\Mvc\Controller
      * @var mixed
      */
     protected $model;
-            
+
     /**
     * Model's name of relationship model
     */
     protected $relationship=null;
 
     /**
-    * Name of controller is passed in parameter 
+    * Name of controller is passed in parameter
     */
     protected $controllerName;
-    
+
     /**
-    * Name of action is passed in parameter 
+    * Name of action is passed in parameter
     */
     protected $actionName;
     /**
@@ -109,7 +109,7 @@ class RestController extends \Phalcon\Mvc\Controller
      * @var bool
      */
     protected $authorization = true;
-    
+
     /**
      * Project authorization flag
      * @var bool
@@ -140,12 +140,12 @@ class RestController extends \Phalcon\Mvc\Controller
      * System level flag
      * @var bool
      */
-    protected $systemLevel = false;    
-    
+    protected $systemLevel = false;
+
     //protected $uses = array('acl','auditable');
-    
+
     protected $components = array();
-    
+
     /**
      * @todo Add a way that will allow us to control the controllers and actions
      * exempted from Authorization
@@ -156,7 +156,7 @@ class RestController extends \Phalcon\Mvc\Controller
         $this->setLanguage();
 
         $this->response = new Response();
-        
+
     	//print_r($this->dispatcher->getParams());exit;
     	$this->controllerName = $this->dispatcher->getControllerName();//controller
         $this->actionName = $this->dispatcher->getActionName();//controller
@@ -167,7 +167,7 @@ class RestController extends \Phalcon\Mvc\Controller
         if ($this->actionName != 'options')
             $this->authorize();
     }
-    
+
     /**
      * This function preloads the component classes for use later
      */
@@ -188,7 +188,7 @@ class RestController extends \Phalcon\Mvc\Controller
     /**
      * The event handler that allows us to call multiple mixin behaviors before
      * executing the desired action
-     * 
+     *
      * @todo Examine performance
      * @todo preload the mixins
      * @param type $dispatcher
@@ -222,7 +222,7 @@ class RestController extends \Phalcon\Mvc\Controller
         /**
      * The event handler that allows us to call multiple mixin behaviors before
      * executing the desired action
-     * 
+     *
      * @todo Examine performance
      * @todo preload the mixins
      * @param type $dispatcher
@@ -247,7 +247,7 @@ class RestController extends \Phalcon\Mvc\Controller
 
     /**
      * Make currentUser available as global
-     * 
+     *
      * @global type $currentUser
      * @param type $reuqest
      */
@@ -263,13 +263,13 @@ class RestController extends \Phalcon\Mvc\Controller
         else
         {
             $this->response->setStatusCode(403, "Forbidden");
-            $this->response->setJsonContent(array('error' => 'Invalid Token'));     
+            $this->response->setJsonContent(array('error' => 'Invalid Token'));
 
             $this->response->send();
-            exit();            
+            exit();
         }
     }
-    
+
     private function authorize()
     {
         global $currentUser;
@@ -283,7 +283,7 @@ class RestController extends \Phalcon\Mvc\Controller
                 exit();
             }
             $this->setUser($reuqest);
-            
+
             if ($this->projectAuthorization)
             {
                 $projects = array();
@@ -297,7 +297,7 @@ class RestController extends \Phalcon\Mvc\Controller
                     {
                         $identifier = 'id';
                     }
-                    
+
                     if (isset($data[0]->$identifier))
                     {
                         $permission = \Foundation\Acl::hasProjectAccess($currentUser->id, $this->controllerName, $this->aclMap[$this->actionName], $data[0]->$identifier);
@@ -311,11 +311,11 @@ class RestController extends \Phalcon\Mvc\Controller
                 {
                     $projects = \Foundation\Acl::getProjects($currentUser->id, $this->controllerName, $this->aclMap[$this->actionName]);
                 }
-                
+
                 if (empty($projects))
                 {
                     $this->response->setStatusCode(403, "Forbidden");
-                    $this->response->setJsonContent(array('error' => 'Access Denied - Check ACL'));     
+                    $this->response->setJsonContent(array('error' => 'Access Denied - Check ACL'));
 
                     $this->response->send();
                     exit();
@@ -328,17 +328,17 @@ class RestController extends \Phalcon\Mvc\Controller
             elseif($this->systemLevel)
             {
                 $permission = \Foundation\Acl::roleHasAccess('1', $this->controllerName, $this->aclMap[$this->actionName]);
-                
+
                 if ($permission == 0)
                 {
                     $this->response->setStatusCode(403, "Forbidden");
-                    $this->response->setJsonContent(array('error' => 'Access Denied - Check ACL'));     
+                    $this->response->setJsonContent(array('error' => 'Access Denied - Check ACL'));
 
                     $this->response->send();
                     exit();
                 }
             }
-        }        
+        }
     }
 
     /**
@@ -378,18 +378,18 @@ class RestController extends \Phalcon\Mvc\Controller
 
         }
 
-        //set the messages language 
+        //set the messages language
         $this->language = $messages;
     }
 
-    
+
     /**
      * Method Http accept: OPTIONS
      * @return JSON return list of functions available
      */
     public function optionsAction(){
         global $settings,$apiVersion;
-        
+
         $modelName = $this->modelName;
         // only allow versioned API calls
         if (preg_match('@api/@',$this->request->getURI()))
@@ -404,8 +404,8 @@ class RestController extends \Phalcon\Mvc\Controller
         }
         return $this->response;
     }
-    
-    
+
+
     /**
      * Method Http accept: GET
      * @return JSON Retrive data by id
@@ -418,14 +418,14 @@ class RestController extends \Phalcon\Mvc\Controller
         {
             throw new \Phalcon\Exception('Id must be set, please refer to guides.');
         }
-        
+
         $query = $this->request->get('query',null,'');
         $sort = $this->request->get('sort',null,'');
         $order = $this->request->get('order',null,'DESC');
-        
+
         $fields = $this->request->get('fields',null,array());
         $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
-        
+
         $params = array(
             'id' => $this->id,
             'rels' => $rels,
@@ -434,11 +434,11 @@ class RestController extends \Phalcon\Mvc\Controller
             'sort' => $sort,
             'order' => $order,
         );
-        
+
         $model = new $modelName;
-        
+
         $data = $model->read($params);
-        
+
         $dataArray = $this->extractData($data);
         $finalData = $this->buildHAL($dataArray);
         return $this->returnResponse($finalData);
@@ -452,29 +452,29 @@ class RestController extends \Phalcon\Mvc\Controller
     public function relatedAction()
     {
         $modelName = $this->modelName;
-        
+
         if (!(isset($this->id) && !empty($this->id)))
         {
             throw new \Phalcon\Exception('Id must be set, please refer to guides.');
         }
-        
+
         /**
          * @todo get from settings
          */
         $limit = $this->request->get('limit',null,20);
-        
+
         $requestPage = $this->request->get('page');
         $page = ($requestPage && $requestPage != 0 && $requestPage != 1)?$requestPage:1;
         $offset = ($page-1) * $limit;
         $limit++;
-        
+
         $query = $this->request->get('query',null,'');
         $sort = $this->request->get('sort',null,'');
         $order = $this->request->get('order',null,'DESC');
-        
+
         $fields = $this->request->get('fields',null,array());
         $relation = $this->dispatcher->getParam("relation");
-        
+
         $params = array(
             'id' => $this->id,
             'related' =>$relation,
@@ -485,16 +485,16 @@ class RestController extends \Phalcon\Mvc\Controller
             'limit'=> $limit,
             'offset' => $offset,
         );
-        
+
         $model = new $modelName;
-        
+
         $data = $model->readRelated($params);
-        
+
         $dataArray = $this->extractData($data);
         $finalData = $this->buildHAL($dataArray,--$limit,$page);
         return $this->returnResponse($finalData);
     }
-    
+
     /**
      * Method Http accept: GET
      * @return JSON Retrive all data, with and without relationship
@@ -502,23 +502,23 @@ class RestController extends \Phalcon\Mvc\Controller
     public function listAction()
     {
         $modelName = $this->modelName;
-        
+
         /**
          * @todo get from settings
          */
         $limit = $this->request->get('limit',null,20);
-        
+
         $requestPage = $this->request->get('page');
         $page = ($requestPage && $requestPage != 0 && $requestPage != 1)?$requestPage:1;
         $offset = ($page-1) * $limit;
         $limit++;
-        
+
         $query = $this->request->get('query',null,'');
         $sort = $this->request->get('sort',null,'');
         $order = $this->request->get('order',null,'DESC');
-        
+
         $fields = $this->request->get('fields',null,array());
-        
+
         $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
 
         $params = array(
@@ -530,7 +530,7 @@ class RestController extends \Phalcon\Mvc\Controller
             'limit'=> $limit,
             'offset' => $offset
         );
-        
+
         $model = new $modelName;
         $data = $model->readAll($params);
 
@@ -540,7 +540,7 @@ class RestController extends \Phalcon\Mvc\Controller
 
 /*        $identifier = 'projectId';
 
-      
+
         if (strtolower($modelName) === 'projects')
         {
             $identifier = 'id';
@@ -552,7 +552,7 @@ class RestController extends \Phalcon\Mvc\Controller
             $data = $modelName::findFirst( $this->id );
 
 			$relationship = $this->relationship;
-            
+
 			$data = $data->$relationship;
 
         //data of one model
@@ -569,25 +569,25 @@ class RestController extends \Phalcon\Mvc\Controller
                 $query->where($condition);
             }
             $data = $query->execute();
-            
-        }      
+
+        }
 */
     }
 
     /**
      * Method Http accept: PUT (update but all the fields)
-     * Save/update data 
+     * Save/update data
      */
     public function putAction()
     {
         print 'here';
         $data = array('error' => array('code' => 405, 'description' => 'Method not allowed'));
-        return $this->returnResponse($data);        
+        return $this->returnResponse($data);
     }
 
     /**
      * Method Http accept: PUT (update but all the fields)
-     * Save/update data 
+     * Save/update data
      */
     public function putCollectionAction()
     {
@@ -597,20 +597,20 @@ class RestController extends \Phalcon\Mvc\Controller
 
     /**
      * Method Http accept: PATCH (update only the given fields)
-     * Save/update data 
+     * Save/update data
      */
     public function patchAction()
     {
-        
+
     }
 
     /**
      * Method Http accept: PATCH (update only the given fields)
-     * Save/update data 
+     * Save/update data
      */
     public function patchCollectionAction()
     {
-        $modelName = $this->modelName;      
+        $modelName = $this->modelName;
         //$model = new $modelName();
 
         //get data
@@ -624,7 +624,7 @@ class RestController extends \Phalcon\Mvc\Controller
 
         $transactionManager = new TransactionManager();
         $transaction = $transactionManager->get();
-        
+
         foreach ($data->collection as $index => $resource)
         {
             $temp = (array) $resource;
@@ -634,14 +634,14 @@ class RestController extends \Phalcon\Mvc\Controller
                 $transaction->rollback("Id missing for record ".$index);
                 return $this->returnResponse($data);
             }
-            
+
 //            $model = $modelName::findFirst($temp['id']);
             $model = \Notes::findFirst($temp['id']);
             if (!isset($model->id))
             {
                 $data = array('error' => array('code' => 400, 'description' => 'Invalid record with identifier '.$temp['id']));
                 $transaction->rollback("Invalid record with identifier ".$temp['id']);
-                return $this->returnResponse($data);                
+                return $this->returnResponse($data);
             }
             $updatedData = $model->cloneResult($model, $temp);
             $updatedData->setTransaction($transaction);
@@ -649,21 +649,21 @@ class RestController extends \Phalcon\Mvc\Controller
             {
                 $data = array('error' => array('code' => 400, 'description' => 'Unable to save '.$temp['id'].', all changes reverted'));
                 $transaction->rollback("Patched failed for ".$temp['id']);
-                return $this->returnResponse($data);                
+                return $this->returnResponse($data);
             }
         }
         $transaction->commit();
         $data = array('status' => 'Data saved successfully');
-        return $this->returnResponse($data);                        
+        return $this->returnResponse($data);
     }
-    
+
     /**
      * Method Http accept: POST (insert) and PUT (update)
-     * Save/update data 
+     * Save/update data
      */
     public function postAction()
     {
-        $modelName = $this->modelName;      
+        $modelName = $this->modelName;
         $model = new $modelName();
 
         $util = new \Util();
@@ -685,10 +685,10 @@ class RestController extends \Phalcon\Mvc\Controller
             foreach ($value as $k => $v) {
                 if ( $v=="CURRENT_DATE" ){
                     $now = new \DateTime();
-                    $value[$k] =  $now->format('Y-m-d'); 
+                    $value[$k] =  $now->format('Y-m-d');
                 }else if ( $v=="CURRENT_DATETIME" ){
                     $now = new \DateTime();
-                    $value[$k] =  $now->format('Y-m-d H:i:s'); 
+                    $value[$k] =  $now->format('Y-m-d H:i:s');
                 }
             }
 
@@ -700,7 +700,7 @@ class RestController extends \Phalcon\Mvc\Controller
                 $new_id = create_guid();
                 $value['id'] = $new_id;
             }
-
+            print_r($value);
             if ( $model->save($value) ){
                 $dataResponse = get_object_vars($model);
                 //update
@@ -727,7 +727,7 @@ class RestController extends \Phalcon\Mvc\Controller
                 ));
             }
 
-  
+
         }//end foreach
 
         return $this->response;
@@ -738,7 +738,7 @@ class RestController extends \Phalcon\Mvc\Controller
      */
     public function deleteAction()
     {
-        
+
         // need to evaluate if we need to use this function
         $modelName = $this->modelName;
 
@@ -764,7 +764,7 @@ class RestController extends \Phalcon\Mvc\Controller
 
         return $this->response;
     }
-    
+
     /**
      * Method Http accept: DELETE
      */
@@ -773,7 +773,7 @@ class RestController extends \Phalcon\Mvc\Controller
     }
 
     /**
-     * 
+     *
      * @param array $data
      * @return string
      */
@@ -787,11 +787,11 @@ class RestController extends \Phalcon\Mvc\Controller
         if ($limit != -1)
         {
             if(isset($data[$limit]))
-            {            
+            {
                 unset($data[$limit]);
                 $endPage = false;
             }
-            
+
             if($page == -1)
                 $page = 0;
             if (!isset($query['page']))
@@ -799,8 +799,8 @@ class RestController extends \Phalcon\Mvc\Controller
                 $query['page'] = $page;
             }
         }
-        
-        
+
+
         foreach($query as $param => $value)
         {
             if ($param != '_url')
@@ -810,7 +810,7 @@ class RestController extends \Phalcon\Mvc\Controller
                 {
                     if ($param == 'page')
                     {
-                        $next[] = $param.'='.($page+1);                        
+                        $next[] = $param.'='.($page+1);
                         $prev[] = $param.'='.($page-1);
                     }
                     else
@@ -822,44 +822,44 @@ class RestController extends \Phalcon\Mvc\Controller
                 }
             }
         }
-        
+
         $hal[$this->modelName] = $data;
         $hal['meta']['count'] = count($data);
-        
+
         $hal['meta']['_links']['self']['href'] = $query['_url'];
         if (!empty($self))
         {
             $hal['meta']['_links']['self']['href'] .= '?'.implode('&',$self);
         }
         if (!empty($next) && !$endPage)
-        {            
+        {
             $hal['meta']['_links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
         }
-        
+
         if (!empty($prev) && $page > 1)
-        {    
+        {
             $hal['meta']['_links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
         }
-            
+
         return $hal;
     }
-    
+
     /**
      * Return the response, allow the error code handling here
-     * 
+     *
      * @param array $data
      * @return \Phalcon\Http\Response
      */
     protected function returnResponse(array $data)
     {
-        $this->response->setJsonContent($data);     
+        $this->response->setJsonContent($data);
         $this->response->setContentType('text/json');
-        
+
         if (isset($data['error']))
         {
             $this->response->setStatusCode($data['error']['code']);
         }
-        
+
         return $this->response;
     }
 
@@ -872,11 +872,11 @@ class RestController extends \Phalcon\Mvc\Controller
         //extracting data to array
         if ($data instanceof Resultset)
         {
-            $data->setHydrateMode(Resultset::HYDRATE_ARRAYS);        
+            $data->setHydrateMode(Resultset::HYDRATE_ARRAYS);
             $result = array();
             foreach( $data as $value ){
                 $result[] = $value;
-            }   
+            }
         }
         elseif (is_array ($data))
         {
@@ -886,16 +886,16 @@ class RestController extends \Phalcon\Mvc\Controller
         {
             $result = array();
         }
-        
+
         // do not allow passwords to be returned
         $this->removePassword($result);
-        
+
         return $result;
     }
 
     /**
      * This function is responsble for removing password from the result set
-     * 
+     *
      * @param array $array
      */
     final private function removePassword(array &$array)
@@ -903,7 +903,7 @@ class RestController extends \Phalcon\Mvc\Controller
         foreach($array as $key => &$value)
         {
             if(is_array($value))
-            {                
+            {
                 $this->removePassword($value);
             }
             elseif($key == 'password')
@@ -912,6 +912,6 @@ class RestController extends \Phalcon\Mvc\Controller
             }
         }
     }
-    
+
 
 }

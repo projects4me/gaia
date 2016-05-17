@@ -15,17 +15,37 @@ ini_set('display_errors',true);
 require '../foundation/controllers/component.php';
 require '../foundation/controllers/components/acl.php';
 require '../foundation/controllers/components/auditable.php';
-    
+
+// Allow from any origin
+if (isset($_SERVER['HTTP_ORIGIN'])) {
+    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Max-Age: 86400');    // cache for 1 day
+}
+
+// Access-Control headers are received during OPTIONS requests
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+        header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+
+    exit(0);
+}
+
+
 try {
-    
+
     global $stime,$di,$apiVersion,$logger,$timer;
     $stime = explode(" ",microtime());
     $stime = $stime[1] + $stime[0];
 
     $timer = new executiontime();
-    
+
     $request = new \Phalcon\Http\Request();
-    $appVersions = include('../version.php'); 
+    $appVersions = include('../version.php');
     $apiVersion = $appVersions['apiVersion'];
     // if api version is available in the request then load it
     /**
@@ -44,15 +64,15 @@ try {
         APP_PATH.'/app/api/'.$apiVersion.'/controllers/',
         APP_PATH.'/app/models/',
         APP_PATH.'/app/models/Behaviors',
-        APP_PATH.'/config/',        
-        APP_PATH.'/vendor/',        
+        APP_PATH.'/config/',
+        APP_PATH.'/vendor/',
     ))->register();
 
     /*
     print "<pre>";
     $regDirs = $loader->getDirs();
     print_r($regDirs);
-    
+
     $loader->registerDirs(array(
         APP_PATH.'/app/models/v1/',
     ))->register();
@@ -86,18 +106,18 @@ try {
         $url->setBaseUri('/');
         return $url;
     });
-    
+
     require_once APP_PATH.'/foundation/models/model.php';
     require_once APP_PATH.'/foundation/libs/fileHandler.php';
 
     require_once APP_PATH.'/foundation/libs/metaManager.php';
     require_once APP_PATH.'/foundation/libs/migration.php';
-    
+
     // @todo - set in di
     require_once APP_PATH.'/foundation/libs/config.php';
     $config = new \Foundation\Config();
     $config->init();
-    
+
     // @todo - add actions route
     $di->set('router', function(){
         require_once APP_PATH.'/foundation/mvc/router.php';
@@ -109,7 +129,7 @@ try {
         return $router;
     });
 
-    
+
     // Set up the database service
     $di->set('db', function () {
  //       global $logger;
@@ -124,13 +144,14 @@ try {
                 $GLOBALS['timer']->diff();
                 $sqlVariables = $connection->getSQLVariables();
                 if (count($sqlVariables)) {
-                    $logger->log($connection->getRealSQLStatement() . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
+                    $logger->log(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
                 } else {
-                    $logger->log($connection->getRealSQLStatement(), \Phalcon\Logger::INFO);
+                    $logger->log(print_r($connection->getSQLBindTypes(),1), \Phalcon\Logger::INFO);
                 }
             }
             if ($event->getType() == 'afterQuery') {
                 $logger->log('Query execution time:'.($GLOBALS['timer']->diff()).' seconds', \Phalcon\Logger::INFO);
+                $logger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
             }
         });
 
@@ -142,8 +163,8 @@ try {
     /**
      * @todo move the migration away to elsewhere
      */
-    //require '../foundation/libs/migration/driver.php';
-    //Foundation\Mvc\Model\Migration\Driver::migrate();
+    require '../foundation/libs/migration/driver.php';
+    Foundation\Mvc\Model\Migration\Driver::migrate();
     require '../foundation/libs/acl.php';
 
     //Handle the request
@@ -159,13 +180,13 @@ class executiontime
 {
     protected $starttime;
     protected $lasttime;
-    
+
     public function executiontime()
     {
         $this->starttime = $this->gettime();
         $this->lasttime = $this->gettime();
     }
-    
+
     public function tillnow()
     {
         return ($this->gettime() - $this->starttime);
@@ -176,7 +197,7 @@ class executiontime
         $this->lasttime = $this->gettime();
         return $lasttime;
     }
-    
+
     private function gettime()
     {
         $mtime = explode(" ",microtime());
