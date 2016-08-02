@@ -31,113 +31,129 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Projects'] = array(
-   'tableName' => 'projects',
+$models['Issues'] = array(
+   'tableName' => 'issues',
    'fields' => array(
         'id' => array(
             'name' => 'id',
-            'label' => 'LBL_PROJECTSS_ID',
+            'label' => 'LBL_ISSUES_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
-        'name' => array(
-           'name' => 'name',
-           'label' => 'LBL_PROJECTS_NAME',
-           'type' => 'varchar',
-           'length' => '255',
-           'null' => false,
+        'subject' => array(
+            'name' => 'subject',
+            'label' => 'LBL_ISSUES_SUBJECT',
+            'type' => 'varchar',
+            'length' => '255',
+            'null' => false,
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
-            'label' => 'LBL_PROJECTS_DATE_CREATED',
+            'label' => 'LBL_ISSUES_DATE_CREATED',
             'type' => 'datetime',
             'null' => false,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
-            'label' => 'LBL_PROJECTS_DATE_MODIFIED',
+            'label' => 'LBL_ISSUES_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false,
-        ),
-        'createdUser' => array(
-            'name' => 'dateModified',
-            'label' => 'LBL_PROJECTS_CREATED_USER',
-            'type' => 'varchar',
-            'length' => '36'
-            'null' => false,
-        ),
-        'modifiedUser' => array(
-            'name' => 'modifiedUser',
-            'label' => 'LBL_PROJECTS_MODIFIED_USER',
-            'type' => 'varchar',
-            'length' => '36'
-            'null' => false,
-        ),
-        'assignee' => array(
-            'name' => 'assignee',
-            'label' => 'LBL_PROJECTS_ASSIGNEE',
-            'type' => 'varchar',
-            'length' => '36'
             'null' => false,
         ),
         'deleted' => array(
             'name' => 'deleted',
-            'label' => 'LBL_PROJECTS_DELETED',
+            'label' => 'LBL_ISSUES_DELETED',
             'type' => 'bool',
-            'length' => '1'
+            'length' => '1',
             'null' => false,
         ),
-        'description' => array(
+       'description' => array(
             'name' => 'description',
-            'label' => 'LBL_PROJECTS_DESCRIPTION',
+            'label' => 'LBL_ISSUES_DESCRIPTION',
             'type' => 'text',
+            'null' => true,
+        ),
+        'createdUser' => array(
+            'name' => 'createdUser',
+            'label' => 'LBL_ISSUES_CREATED_USER',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'owner' => array(
+            'name' => 'owner',
+            'label' => 'LBL_ISSUES_OWNER',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'assignee' => array(
+            'name' => 'assignee',
+            'label' => 'LBL_ISSUES_ASSIGNEE',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'reportedUser' => array(
+            'name' => 'reportedUser',
+            'label' => 'LBL_ISSUES_REPORTED_USER',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'modifiedUser' => array(
+            'name' => 'modifiedUser',
+            'label' => 'LBL_ISSUES_MODIFIED_USER',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'issueNumber' => array(
+            'name' => 'issueNumber',
+            'label' => 'LBL_ISSUES_ISSUE_NUMBER',
+            'type' => 'int',
+            'length' => '11',
+            'null' => false,
+        ),
+        'endDate' => array(
+            'name' => 'endDate',
+            'label' => 'LBL_ISSUES_END_DATE',
+            'type' => 'date',
             'null' => true,
         ),
         'startDate' => array(
             'name' => 'startDate',
-            'label' => 'LBL_PROJECTS_START_DATE',
+            'label' => 'LBL_ISSUES_START_DATE',
             'type' => 'date',
             'null' => true,
-        ),
-        'endDate' => array(
-            'name' => 'endDate',
-            'label' => 'LBL_PROJECTS_END_DATE',
-            'type' => 'date',
-            'null' => true,
-        ),
-        'shortCode' => array(
-            'name' => 'shortCode',
-            'label' => 'LBL_PROJECTS_SHORT_CODE',
-            'type' => 'varchar',
-            'null' => false,
-            'length' => '50'
         ),
         'status' => array(
             'name' => 'status',
-            'label' => 'LBL_PROJECTS_STATUS',
+            'label' => 'LBL_ISSUES_STATUS',
             'type' => 'varchar',
+            'length' => '25'
             'null' => false,
-            'length' => '15'
         ),
         'type' => array(
             'name' => 'type',
-            'label' => 'LBL_PROJECTS_TYPE',
+            'label' => 'LBL_ISSUES_TYPE',
             'type' => 'varchar',
+            'length' => '25'
             'null' => false,
-            'length' => '15'
         ),
-        'scope' => array(
-            'name' => 'scope',
-            'label' => 'LBL_PROJECTS_SCOPE',
-            'type' => 'text',
-            'null' => true,
+        'priority' => array(
+            'name' => 'priority',
+            'label' => 'LBL_ISSUES_PRIORITY',
+            'type' => 'varchar',
+            'length' => '25'
+            'null' => false,
         ),
-        'vision' => array(
-            'name' => 'vision',
-            'label' => 'LBL_PROJECTS_VISION',
-            'type' => 'text',
-            'null' => true,
+        'projectId' => array(
+            'name' => 'projectId',
+            'label' => 'LBL_ISSUES_PROJECT',
+            'type' => 'varchar',
+            'length' => '36'
+            'null' => false,
         ),
     ),
     'indexes' => array(
@@ -150,7 +166,7 @@ $models['Projects'] = array(
 
     ),
     'relationships' => array(
-      'hasOne' => array(
+        'hasOne' => array(
           'Assignee' => array(
               'primaryKey' => 'assignee',
               'relatedModel' => 'Users',
@@ -166,48 +182,22 @@ $models['Projects'] = array(
               'relatedModel' => 'Users',
               'relatedKey' => 'id'
           ),
-        ),
-        'hasMany' => array(
-            'Issues' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'Issues',
-                'relatedKey' => 'projectId',
-            ),
-            'Conversations' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'Conversations',
-                'relatedKey' => 'projectId',
-            ),
-        ),
-        'hasManyToMany' => array(
-            'Teams' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'ProjectsTeams',
-                'rhsKey' => 'projectId',
-                'lhsKey' => 'teamId',
-                'secondaryModel' => 'Teams',
-                'secondaryKey' => 'id',
-            ),
-            'Users' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'ProjectsRoles',
-                'rhsKey' => 'projectId',
-                'lhsKey' => 'userId',
-                'secondaryModel' => 'Users',
-                'secondaryKey' => 'id',
-            ),
-            'Roles' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'ProjectsRoles',
-                'rhsKey' => 'projectId',
-                'lhsKey' => 'roleId',
-                'secondaryModel' => 'Roles',
-                'secondaryKey' => 'id',
-            ),
+          'Owner' => array(
+              'primaryKey' => 'owner',
+              'relatedModel' => 'Users',
+              'relatedKey' => 'id'
+          ),
+          'ReportedUser' => array(
+              'primaryKey' => 'reportedUser',
+              'relatedModel' => 'Users',
+              'relatedKey' => 'id'
+          ),
+          'Project' => array(
+              'primaryKey' => 'projectId',
+              'relatedModel' => 'Projects',
+              'relatedKey' => 'id'
+          ),
         )
-    ),
-    'behaviors' => array(
-        'aclBehavior',
     ),
 );
 
