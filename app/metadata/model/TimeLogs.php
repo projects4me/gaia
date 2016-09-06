@@ -31,61 +31,76 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Roles'] = array(
-   'tableName' => 'roles',
+$models['TimeLogs'] = array(
+   'tableName' => 'time_logs',
    'fields' => array(
        'id' => array(
            'name' => 'id',
-           'label' => 'LBL_ROLES_ID',
+           'label' => 'LBL_TIME_LOGS',
            'type' => 'varchar',
            'length' => '36',
            'null' => false,
        ),
-       'name' => array(
-           'name' => 'name',
-           'label' => 'LBL_ROLES_NAME',
-           'type' => 'varchar',
-           'length' => '50',
-           'null' => false,
-       ),
        'dateCreated' => array(
            'name' => 'dateCreated',
-           'label' => 'LBL_ROLES_DATE_CREATED',
+           'label' => 'LBL_TIME_LOGS_DATE_CREATED',
            'type' => 'datetime',
            'null' => false,
        ),
        'dateModified' => array(
            'name' => 'dateModified',
-           'label' => 'LBL_ROLES_DATE_MODIFIED',
+           'label' => 'LBL_TIME_LOGS_DATE_MODIFIED',
            'type' => 'datetime',
            'null' => false,
        ),
        'deleted' => array(
            'name' => 'deleted',
-           'label' => 'LBL_ROLES_DELETED',
+           'label' => 'LBL_TIME_LOGS_DELETED',
            'type' => 'bool',
            'length' => '1',
            'null' => false,
        ),
-      'description' => array(
-           'name' => 'description',
-           'label' => 'LBL_ROLES_DESCRIPTION',
-           'type' => 'text',
-           'null' => true,
-       ),
        'createdUser' => array(
            'name' => 'createdUser',
-           'label' => 'LBL_ROLES_CREATED_USER',
+           'label' => 'LBL_TIME_LOGS_CREATED_USER',
            'type' => 'varchar',
            'length' => '36',
            'null' => false,
        ),
        'modifiedUser' => array(
            'name' => 'modifiedUser',
-           'label' => 'LBL_ROLES_MODIFIED_USER',
+           'label' => 'LBL_TIME_LOGS_MODIFIED_USER',
            'type' => 'varchar',
            'length' => '36',
            'null' => false,
+       ),
+       'issueId' => array(
+           'name' => 'issueId',
+           'label' => 'LBL_TIME_LOGS_ISSUE_ID',
+           'type' => 'varchar',
+           'length' => '36',
+           'null' => false,
+       ),
+       'minutes' => array(
+           'name' => 'minutes',
+           'label' => 'LBL_TIME_LOGS_MINUTES',
+           'type' => 'int',
+           'length' => '2',
+           'null' => true,
+       ),
+       'hours' => array(
+           'name' => 'hours',
+           'label' => 'LBL_TIME_LOGS_HOURS',
+           'type' => 'int',
+           'length' => '2',
+           'null' => true,
+       ),
+       'days' => array(
+           'name' => 'days',
+           'label' => 'LBL_TIME_LOGS_DAYS',
+           'type' => 'int',
+           'length' => '5',
+           'null' => true,
        )
     ),
     'indexes' => array(
@@ -98,13 +113,23 @@ $models['Roles'] = array(
 
     ),
     'relationships' => array(
-        'hasMany' => array(
-            'Permissions' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'Permissions',
-                'relatedKey' => 'roleId',
-            ),
-        ),
+      'hasOne' => array(
+          'Issue' => array(
+              'primaryKey' => 'issueId',
+              'relatedModel' => 'Issues',
+              'relatedKey' => 'id'
+          ),
+          'CreatedUser' => array(
+              'primaryKey' => 'createdUser',
+              'relatedModel' => 'Users',
+              'relatedKey' => 'id'
+          ),
+          'ModifiedUser' => array(
+              'primaryKey' => 'modifiedUser',
+              'relatedModel' => 'Users',
+              'relatedKey' => 'id'
+          ),
+      ),
     ),
 );
 

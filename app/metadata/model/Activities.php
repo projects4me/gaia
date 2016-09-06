@@ -31,62 +31,56 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Roles'] = array(
-   'tableName' => 'roles',
+$models['Activities'] = array(
+   'tableName' => 'activities',
    'fields' => array(
-       'id' => array(
-           'name' => 'id',
-           'label' => 'LBL_ROLES_ID',
-           'type' => 'varchar',
-           'length' => '36',
-           'null' => false,
-       ),
-       'name' => array(
-           'name' => 'name',
-           'label' => 'LBL_ROLES_NAME',
-           'type' => 'varchar',
-           'length' => '50',
-           'null' => false,
-       ),
-       'dateCreated' => array(
-           'name' => 'dateCreated',
-           'label' => 'LBL_ROLES_DATE_CREATED',
-           'type' => 'datetime',
-           'null' => false,
-       ),
-       'dateModified' => array(
-           'name' => 'dateModified',
-           'label' => 'LBL_ROLES_DATE_MODIFIED',
-           'type' => 'datetime',
-           'null' => false,
-       ),
-       'deleted' => array(
-           'name' => 'deleted',
-           'label' => 'LBL_ROLES_DELETED',
-           'type' => 'bool',
-           'length' => '1',
-           'null' => false,
-       ),
-      'description' => array(
-           'name' => 'description',
-           'label' => 'LBL_ROLES_DESCRIPTION',
-           'type' => 'text',
-           'null' => true,
-       ),
-       'createdUser' => array(
-           'name' => 'createdUser',
-           'label' => 'LBL_ROLES_CREATED_USER',
-           'type' => 'varchar',
-           'length' => '36',
-           'null' => false,
-       ),
-       'modifiedUser' => array(
-           'name' => 'modifiedUser',
-           'label' => 'LBL_ROLES_MODIFIED_USER',
-           'type' => 'varchar',
-           'length' => '36',
-           'null' => false,
-       )
+        'id' => array(
+            'name' => 'id',
+            'label' => 'LBL_ACTIVITIES_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'dateCreated' => array(
+            'name' => 'dateCreated',
+            'label' => 'LBL_ACTIVITIES_DATE_CREATED',
+            'type' => 'datetime',
+            'null' => false,
+        ),
+       'description' => array(
+            'name' => 'description',
+            'label' => 'LBL_ACTIVITIES_DESCRIPTION',
+            'type' => 'text',
+            'null' => true,
+        ),
+        'createdUser' => array(
+            'name' => 'createdUser',
+            'label' => 'LBL_ACTIVITIES_CREATED_USER',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'relatedTo' => array(
+            'name' => 'relatedTo',
+            'label' => 'LBL_ACTIVITIES_MODIFIED_USER',
+            'type' => 'varchar',
+            'length' => '30',
+            'null' => false,
+        ),
+        'relatedId' => array(
+            'name' => 'relatedId',
+            'label' => 'LBL_ACTIVITIES_MODIFIED_USER',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'type' => array(
+            'name' => 'type',
+            'label' => 'LBL_ACTIVITIES_TYPE',
+            'type' => 'varchar',
+            'length' => '15',
+            'null' => false,
+        )
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -98,13 +92,6 @@ $models['Roles'] = array(
 
     ),
     'relationships' => array(
-        'hasMany' => array(
-            'Permissions' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'Permissions',
-                'relatedKey' => 'roleId',
-            ),
-        ),
     ),
 );
 

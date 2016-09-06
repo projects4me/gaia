@@ -31,126 +31,91 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Issues'] = array(
-   'tableName' => 'issues',
+$models['Milestones'] = array(
+   'tableName' => 'milestones',
    'fields' => array(
         'id' => array(
             'name' => 'id',
-            'label' => 'LBL_ISSUES_ID',
+            'label' => 'LBL_MILESTONES_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
-        'subject' => array(
-            'name' => 'subject',
-            'label' => 'LBL_ISSUES_SUBJECT',
+        'name' => array(
+            'name' => 'name',
+            'label' => 'LBL_MILESTONES_NAME',
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
-            'label' => 'LBL_ISSUES_DATE_CREATED',
+            'label' => 'LBL_MILESTONES_DATE_CREATED',
             'type' => 'datetime',
             'null' => false,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
-            'label' => 'LBL_ISSUES_DATE_MODIFIED',
+            'label' => 'LBL_MILESTONES_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => false,
         ),
         'deleted' => array(
             'name' => 'deleted',
-            'label' => 'LBL_ISSUES_DELETED',
+            'label' => 'LBL_MILESTONES_DELETED',
             'type' => 'bool',
             'length' => '1',
             'null' => false,
         ),
        'description' => array(
             'name' => 'description',
-            'label' => 'LBL_ISSUES_DESCRIPTION',
+            'label' => 'LBL_MILESTONES_DESCRIPTION',
             'type' => 'text',
             'null' => true,
         ),
         'createdUser' => array(
             'name' => 'createdUser',
-            'label' => 'LBL_ISSUES_CREATED_USER',
-            'type' => 'varchar',
-            'length' => '36',
-            'null' => false,
-        ),
-        'owner' => array(
-            'name' => 'owner',
-            'label' => 'LBL_ISSUES_OWNER',
-            'type' => 'varchar',
-            'length' => '36',
-            'null' => false,
-        ),
-        'assignee' => array(
-            'name' => 'assignee',
-            'label' => 'LBL_ISSUES_ASSIGNEE',
-            'type' => 'varchar',
-            'length' => '36',
-            'null' => false,
-        ),
-        'reportedUser' => array(
-            'name' => 'reportedUser',
-            'label' => 'LBL_ISSUES_REPORTED_USER',
+            'label' => 'LBL_MILESTONES_CREATED_USER',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
-            'label' => 'LBL_ISSUES_MODIFIED_USER',
+            'label' => 'LBL_MILESTONES_MODIFIED_USER',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
-        'issueNumber' => array(
-            'name' => 'issueNumber',
-            'label' => 'LBL_ISSUES_ISSUE_NUMBER',
-            'type' => 'int',
-            'length' => '11',
-            'null' => false,
-        ),
         'endDate' => array(
             'name' => 'endDate',
-            'label' => 'LBL_ISSUES_END_DATE',
+            'label' => 'LBL_MILESTONES_END_DATE',
             'type' => 'date',
             'null' => true,
         ),
         'startDate' => array(
             'name' => 'startDate',
-            'label' => 'LBL_ISSUES_START_DATE',
+            'label' => 'LBL_MILESTONES_START_DATE',
             'type' => 'date',
             'null' => true,
         ),
         'status' => array(
             'name' => 'status',
-            'label' => 'LBL_ISSUES_STATUS',
+            'label' => 'LBL_MILESTONES_STATUS',
             'type' => 'varchar',
             'length' => '25',
             'null' => false,
         ),
         'type' => array(
             'name' => 'type',
-            'label' => 'LBL_ISSUES_TYPE',
-            'type' => 'varchar',
-            'length' => '25',
-            'null' => false,
-        ),
-        'priority' => array(
-            'name' => 'priority',
-            'label' => 'LBL_ISSUES_PRIORITY',
+            'label' => 'LBL_MILESTONES_TYPE',
             'type' => 'varchar',
             'length' => '25',
             'null' => false,
         ),
         'projectId' => array(
             'name' => 'projectId',
-            'label' => 'LBL_ISSUES_PROJECT',
+            'label' => 'LBL_MILESTONES_PROJECT',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
@@ -167,11 +132,6 @@ $models['Issues'] = array(
     ),
     'relationships' => array(
         'hasOne' => array(
-          'Assignee' => array(
-              'primaryKey' => 'assignee',
-              'relatedModel' => 'Users',
-              'relatedKey' => 'id'
-          ),
           'CreatedUser' => array(
               'primaryKey' => 'createdUser',
               'relatedModel' => 'Users',
@@ -179,16 +139,6 @@ $models['Issues'] = array(
           ),
           'ModifiedUser' => array(
               'primaryKey' => 'modifiedUser',
-              'relatedModel' => 'Users',
-              'relatedKey' => 'id'
-          ),
-          'Owner' => array(
-              'primaryKey' => 'owner',
-              'relatedModel' => 'Users',
-              'relatedKey' => 'id'
-          ),
-          'ReportedUser' => array(
-              'primaryKey' => 'reportedUser',
               'relatedModel' => 'Users',
               'relatedKey' => 'id'
           ),

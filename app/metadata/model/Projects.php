@@ -64,28 +64,28 @@ $models['Projects'] = array(
             'name' => 'dateModified',
             'label' => 'LBL_PROJECTS_CREATED_USER',
             'type' => 'varchar',
-            'length' => '36'
+            'length' => '36',
             'null' => false,
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
             'label' => 'LBL_PROJECTS_MODIFIED_USER',
             'type' => 'varchar',
-            'length' => '36'
+            'length' => '36',
             'null' => false,
         ),
         'assignee' => array(
             'name' => 'assignee',
             'label' => 'LBL_PROJECTS_ASSIGNEE',
             'type' => 'varchar',
-            'length' => '36'
+            'length' => '36',
             'null' => false,
         ),
         'deleted' => array(
             'name' => 'deleted',
             'label' => 'LBL_PROJECTS_DELETED',
             'type' => 'bool',
-            'length' => '1'
+            'length' => '1',
             'null' => false,
         ),
         'description' => array(
@@ -173,12 +173,14 @@ $models['Projects'] = array(
                 'relatedModel' => 'Issues',
                 'relatedKey' => 'projectId',
             ),
-            'Conversations' => array(
+            'ConversationRooms' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Conversations',
+                'relatedModel' => 'ConversationRooms',
                 'relatedKey' => 'projectId',
+                'condition' => 'ConcersationRooms.type = "projects"'
             ),
         ),
+/*
         'hasManyToMany' => array(
             'Teams' => array(
                 'primaryKey' => 'id',
@@ -205,6 +207,7 @@ $models['Projects'] = array(
                 'secondaryKey' => 'id',
             ),
         )
+*/
     ),
     'behaviors' => array(
         'aclBehavior',

@@ -134,6 +134,7 @@ $models['Users'] = array(
 
     ),
     'relationships' => array(
+/*
         'hasManyToMany' => array(
             'Teams' => array(
                 'primaryKey' => 'id',
@@ -144,6 +145,7 @@ $models['Users'] = array(
                 'secondaryKey' => 'id',
             )
         )
+*/
     ),
 );
 
