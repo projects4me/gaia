@@ -61,7 +61,7 @@ $models['Projects'] = array(
             'null' => false,
         ),
         'createdUser' => array(
-            'name' => 'dateModified',
+            'name' => 'createdUser',
             'label' => 'LBL_PROJECTS_CREATED_USER',
             'type' => 'varchar',
             'length' => '36',
