@@ -31,7 +31,7 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['TimeLogs'] = array(
+$models['Timelogs'] = array(
    'tableName' => 'time_logs',
    'fields' => array(
        'id' => array(

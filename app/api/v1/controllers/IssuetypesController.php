@@ -41,6 +41,6 @@ use Foundation\Mvc\RestController;
  * @category Controller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class IssueTypesController extends RestController
+class IssuetypesController extends RestController
 {
 }

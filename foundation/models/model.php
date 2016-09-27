@@ -38,6 +38,7 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
 use Phalcon\Mvc\Model\Validator\InclusionIn;
 use Foundation\metaManager;
 use Phalcon\Mvc\Model\MetaData;
+use Phalcon\Text;
 
 
 /**
@@ -420,21 +421,27 @@ class Model extends \Phalcon\Mvc\Model
      */
     protected function setQuery(\Phalcon\Mvc\Model\Criteria $query,array $params)
     {
+        // fetch all the relationships
         $relations = $this->getRelationships();
 
+        // setup the passed columns
         $query->columns($params['fields']);
 
+        // if sorting is requested then set it up
         if (isset($params['sort']) && !empty($params['sort']))
         {
-            if (isset($params['order']) && !empty($params['order']))
-            {
-                $query->orderBy($params['sort'].' '.$params['order']);
-            }
-            else
-            {
-                $query->orderBy($params['sort']);
-            }
+          // if order is requested the use otherwise use the default one
+          if (isset($params['order']) && !empty($params['order']))
+          {
+              $query->orderBy($params['sort'].' '.$params['order']);
+          }
+          else
+          {
+              $query->orderBy($params['sort']);
+          }
         }
+
+        // if pagination params are set then set them up
         if (isset($params['limit']) && !empty($params['limit']))
         {
             if (isset($params['offset']) && !empty($params['offset']))
@@ -446,11 +453,15 @@ class Model extends \Phalcon\Mvc\Model
                 $query->limit($params['limit']);
             }
         }
+
+        // if condition is requested then set it up
         if (isset($params['where']) && !empty($params['where']))
         {
             $where = self::preProcessWhere($params['where']);
             $query->where($where);
         }
+
+        // setup all the clauses related to relationships
         foreach($params['rels'] as $relationship)
         {
             //check Many-Many and hasMany as well
@@ -459,49 +470,54 @@ class Model extends \Phalcon\Mvc\Model
                 throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides.");
             }
 
-            // do this for other types of joins as well
+            // If hte relationtype is defined in the meta data then use that
+            // otherwise use the leftJoin as the default
+            if (isset($relations[$relationship]['relType']))
+            {
+              $join = \Phalcon\Text::lower($relations[$relationship]['relType'])."Join";
+            }
+            else
+            {
+              $join = 'leftJoin';
+            }
 
+            // based on the metadata setup the joins in order to fetch relationships
             if ($relations[$relationship]['type'] == 'hasManyToMany')
             {
-                $relatedModel = $relations[$relationship]['relatedModel'];
+                // for a many-many relationship two joins are required
                 $secondaryModel = $relations[$relationship]['secondaryModel'];
                 $relatedQuery = get_class($this).'.'.$relations[$relationship]['primaryKey'].
                                 ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['rhsKey'];
                 $secondaryQuery = $secondaryModel.'.'.$relations[$relationship]['secondaryKey'].
                                 ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['lhsKey'];
 
-                $query->leftJoin($relatedModel,$relatedQuery,$relationship.$relatedModel);
-                $query->leftJoin($secondaryModel,$secondaryQuery,$relationship);
-            }
-            else if ($relations[$relationship]['type'] == 'hasOne' || $relations[$relationship]['type'] == 'hasMany' || $relations[$relationship]['type'] == 'belongsTo')
-            {
-                if (isset($relations[$relationship]['relType']))
-                {
-                  $rel = $relations[$relationship]['relType']."Join";
-                  $relatedModel = $relations[$relationship]['relatedModel'];
-                  if (isset($relations[$relationship]['conditionExclusive']))
-                  {
-                    $relatedQuery = $relations[$relationship]['conditionExclusive'];
-                  }
-                  else
-                  {
-                    $relatedQuery = get_class($this).'.'.$relations[$relationship]['primaryKey'].
-                                  ' = '.$relationship.'.'.$relations[$relationship]['relatedKey'];
-                  }
-                  $query->$rel($relatedModel,$relatedQuery,$relationship);
-                }
-                else
-                {
-                  $relatedModel = $relations[$relationship]['relatedModel'];
-                  $relatedQuery = get_class($this).'.'.$relations[$relationship]['primaryKey'].
-                                ' = '.$relationship.'.'.$relations[$relationship]['relatedKey'];
-                  $query->leftJoin($relatedModel,$relatedQuery,$relationship);
-                }
+                $query->$join($relatedModel,$relatedQuery,$relationship.$relatedModel);
+                $query->$join($secondaryModel,$secondaryQuery,$relationship);
             }
             else
             {
                 $relatedModel = $relations[$relationship]['relatedModel'];
-                $query->leftJoin($relatedModel,null,$relationship);
+
+                // If an exclusive condition is defined then use that
+                if (isset($relations[$relationship]['conditionExclusive']))
+                {
+                  $relatedQuery = $relations[$relationship]['conditionExclusive'];
+                  $query->$join($relatedModel,$relatedQuery,$relationship);
+                }
+                else
+                {
+                  $relatedQuery = get_class($this).'.'.$relations[$relationship]['primaryKey'].
+                                  ' = '.$relationship.'.'.$relations[$relationship]['relatedKey'];
+
+                  // if a condition is set in the metadat then use it
+                  if (isset($relations[$relationship]['condition']))
+                  {
+                    $relatedQuery .= ' AND '.$relations[$relationship]['condition'];
+                  }
+
+                  // for each relationship apply the relationship joins
+                  $query->$join($relatedModel,$relatedQuery,$relationship);
+                }
             }
         }
 

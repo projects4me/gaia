@@ -2,7 +2,7 @@
 
 use Foundation\Mvc\Model;
 
-class TimeLogs extends Model
+class Conversationrooms extends Model
 {
 
 }

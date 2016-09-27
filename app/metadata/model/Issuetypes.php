@@ -31,32 +31,32 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['ConversationRooms'] = array(
-   'tableName' => 'conversation_rooms',
+$models['Issuetypes'] = array(
+   'tableName' => 'issue_types',
    'fields' => array(
         'id' => array(
             'name' => 'id',
-            'label' => 'LBL_CONVERSATION_ROOMS_ID',
+            'label' => 'LBL_ISSUE_TYPES_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
-        'subject' => array(
-            'name' => 'subject',
-            'label' => 'LBL_CONVERSATION_ROOMS_SUBJECT',
+        'name' => array(
+            'name' => 'name',
+            'label' => 'LBL_ISSUE_TYPES_NAME',
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
-            'label' => 'LBL_CONVERSATION_ROOMS_DATE_CREATED',
+            'label' => 'LBL_ISSUE_TYPES_DATE_CREATED',
             'type' => 'datetime',
             'null' => false,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
-            'label' => 'LBL_CONVERSATION_ROOMS_DATE_MODIFIED',
+            'label' => 'LBL_ISSUE_TYPES_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => false,
         ),
@@ -69,29 +69,29 @@ $models['ConversationRooms'] = array(
         ),
        'description' => array(
             'name' => 'description',
-            'label' => 'LBL_CONVERSATION_ROOMS_DESCRIPTION',
+            'label' => 'LBL_ISSUE_TYPES_DESCRIPTION',
             'type' => 'text',
             'null' => true,
         ),
         'createdUser' => array(
             'name' => 'createdUser',
-            'label' => 'LBL_CONVERSATION_ROOMS_CREATED_USER',
+            'label' => 'LBL_ISSUE_TYPES_CREATED_USER',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
-            'label' => 'LBL_CONVERSATION_ROOMS_MODIFIED_USER',
+            'label' => 'LBL_ISSUE_TYPES_MODIFIED_USER',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
-        'type' => array(
-            'name' => 'type',
-            'label' => 'LBL_CONVERSATION_ROOMS_TYPE',
-            'type' => 'varchar',
-            'length' => '15',
+        'system' => array(
+            'name' => 'system',
+            'label' => 'LBL_ISSUE_TYPES_SYSTEM',
+            'type' => 'bool',
+            'length' => '1',
             'null' => false,
         )
     ),

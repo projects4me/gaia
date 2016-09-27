@@ -2,7 +2,7 @@
 
 use Foundation\Mvc\Model;
 
-class ConversationRooms extends Model
+class Issuetypes extends Model
 {
 
 }
