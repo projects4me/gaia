@@ -145,6 +145,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'Mentions' => array(
+                'path' => '/api/:version/Mentions',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'Timelogs' => array(
                 'path' => '/api/:version/Timelogs',
                 'allowedMethods' => array(
