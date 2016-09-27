@@ -327,7 +327,7 @@ class RestController extends \Phalcon\Mvc\Controller
             }
             elseif($this->systemLevel)
             {
-                $permission = \Foundation\Acl::roleHasAccess('1', $this->controllerName, $this->aclMap[$this->actionName]);
+                $permission = \Foundation\Acl::roleHasAccess('1', "Controllers.".$this->controllerName, $this->aclMap[$this->actionName]);
 
                 if ($permission == 0)
                 {

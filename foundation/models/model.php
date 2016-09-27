@@ -1,33 +1,33 @@
 <?php
 
-/* 
- * Projects4Me Community Edition is an open source project management software 
+/*
+ * Projects4Me Community Edition is an open source project management software
  * developed by PROJECTS4ME Inc. Copyright (C) 2015-2016 PROJECTS4ME Inc.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 (GNU AGPL v3) as
- * published be the Free Software Foundation with the addition of the following 
- * permission added to Section 15 as permitted in Section 7(a): FOR ANY PART OF 
- * THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY PROJECTS4ME Inc., 
+ * published be the Free Software Foundation with the addition of the following
+ * permission added to Section 15 as permitted in Section 7(a): FOR ANY PART OF
+ * THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY PROJECTS4ME Inc.,
  * Projects4Me DISCLAIMS THE WARRANTY OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU AGPL v3 for more details.
- * 
- * You should have received a copy of the GNU AGPL v3 along with this program; 
- * if not, see http://www.gnu.org/licenses or write to the Free Software 
+ *
+ * You should have received a copy of the GNU AGPL v3 along with this program;
+ * if not, see http://www.gnu.org/licenses or write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- * 
+ *
  * You can contact PROJECTS4ME, Inc. at email address contact@projects4.me.
- * 
- * The interactive user interfaces in modified source and object code versions 
- * of this program must display Appropriate Legal Notices, as required under 
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU AGPL v3.
- * 
- * In accordance with Section 7(b) of the GNU AGPL v3, these Appropriate Legal 
- * Notices must retain the display of the "Powered by Projects4Me" logo. If the 
- * display of the logo is not reasonably feasible for technical reasons, the 
+ *
+ * In accordance with Section 7(b) of the GNU AGPL v3, these Appropriate Legal
+ * Notices must retain the display of the "Powered by Projects4Me" logo. If the
+ * display of the logo is not reasonably feasible for technical reasons, the
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
@@ -44,7 +44,7 @@ use Phalcon\Mvc\Model\MetaData;
  * This class is the base model in the foundation framework and is used to
  * overwrite the default functionality of Phalcon\Mvc\Model in order to
  * introdcude manual meta-data extensions along with other changes
- * 
+ *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation\Mvc
  * @category Model
@@ -64,7 +64,7 @@ class Model extends \Phalcon\Mvc\Model
         $this->loadBehavior();
         $this->loadRelationships();
     }
-    
+
     public function loadBehavior()
     {
         // Load each of the relationship types one by one
@@ -74,9 +74,9 @@ class Model extends \Phalcon\Mvc\Model
             {
                 $this->addBehavior(new $behavior);
             }
-        }        
+        }
     }
-    
+
     /**
      * This function is responsibles for loading all the relationships defined
      * in the model meta data
@@ -88,7 +88,7 @@ class Model extends \Phalcon\Mvc\Model
         {
             foreach($this->metadata['relationships']['hasOne'] as $alias => $relationship)
             {
-                $this->hasOne( 
+                $this->hasOne(
                     $relationship['primaryKey'],
                     $relationship['relatedModel'],
                     $relationship['relatedKey'],
@@ -98,13 +98,13 @@ class Model extends \Phalcon\Mvc\Model
                 );
             }
         }
-        
+
         // Load each of the relationship types one by many
         if (isset($this->metadata['relationships']['hasMany']))
         {
             foreach($this->metadata['relationships']['hasMany'] as $alias => $relationship)
             {
-                $this->hasMany( 
+                $this->hasMany(
                     $relationship['primaryKey'],
                     $relationship['relatedModel'],
                     $relationship['relatedKey'],
@@ -114,13 +114,13 @@ class Model extends \Phalcon\Mvc\Model
                 );
             }
         }
-        
+
         // Load each of the relationship types many by one
         if (isset($this->metadata['relationships']['belongsTo']))
         {
             foreach($this->metadata['relationships']['belongsTo'] as $alias => $relationship)
             {
-                $this->belongsTo( 
+                $this->belongsTo(
                     $relationship['primaryKey'],
                     $relationship['relatedModel'],
                     $relationship['relatedKey'],
@@ -130,13 +130,13 @@ class Model extends \Phalcon\Mvc\Model
                 );
             }
         }
-        
+
         // Load each of the relationship types many by many
         if (isset($this->metadata['relationships']['hasManyToMany']))
         {
             foreach($this->metadata['relationships']['hasManyToMany'] as $alias => $relationship)
             {
-                $this->hasManyToMany( 
+                $this->hasManyToMany(
                     $relationship['primaryKey'],
                     $relationship['relatedModel'],
                     $relationship['rhsKey'],
@@ -154,7 +154,7 @@ class Model extends \Phalcon\Mvc\Model
     /**
      * This function read the meta data stored for a model and returns an array
      * with parsed in a format that PhalconModel can understand
-     * 
+     *
      * @return array
      */
     public function metaData()
@@ -163,7 +163,7 @@ class Model extends \Phalcon\Mvc\Model
         $this->setSource($metadata['tableName']);
         return $metadata;
     }
-    
+
     /**
      * For some reason the tableName being set in the function metaData gets
      * overridden so we are seting the table again when the object is being
@@ -172,12 +172,12 @@ class Model extends \Phalcon\Mvc\Model
     public function onConstruct()
     {
         $metadata = metaManager::getModelMeta(get_class($this));
-        $this->setSource($metadata['tableName']);    
+        $this->setSource($metadata['tableName']);
     }
-    
+
     /**
      * This function returns the fields in the current model
-     * 
+     *
      * @return array
      */
     protected function getFields()
@@ -189,22 +189,22 @@ class Model extends \Phalcon\Mvc\Model
         }
         return $fields;
     }
-    
+
     /**
      * This function returns relationship names for all relationships types or of the specidied type
-     * 
+     *
      * @param string $type possible values are hasOne, hasMany, belongsTo and hasManyToMany
      * @return array
      */
     protected function getRelationships($type = false)
     {
         $relations = array();
-        
+
         foreach($this->metadata['relationships'] as $relType => $relationships)
         {
             foreach($relationships as $name => $data)
             {
-                
+
                 if (!$type || $type == $relType)
                 {
                     $data['type'] = $relType;
@@ -214,12 +214,12 @@ class Model extends \Phalcon\Mvc\Model
         }
         return $relations;
     }
-    
+
     /**
      * This function is an alternate of \Phalcon\Mv\Model::find
      * This RestController must use this function instead of find so that we can
      * support the default pagination, sorting, filtering and relationships
-     * 
+     *
      * @param array $params
      * @return array
      * @throws \Phalcon\Exception
@@ -230,16 +230,16 @@ class Model extends \Phalcon\Mvc\Model
         $moduleFields = $this->getFields();
         $relationshipFields = array();
         $relations = array_merge($this->getRelationships('hasOne'),$this->getRelationships('belongsTo'));
-        
+
         // Prepare the default joins
         if(!isset($params['rels']) || (isset($params['rels']) && empty($params['rels'])))
         {
             $params['rels'] = array_keys($relations);
         }
-        
+
         //Verify the relationships
         foreach($params['rels'] as $relationship)
-        {   
+        {
             if (!isset($relations[$relationship]) || empty($relations[$relationship]))
             {
                 throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
@@ -249,14 +249,14 @@ class Model extends \Phalcon\Mvc\Model
             {
                 $relationshipFields[] = $relationship.'.*';
             }
-            else 
+            else
             {
                 if (!in_array($relationship.'.*', $params['fields']))
                 {
                     $relationshipFields[] = $relationship.'.*';
                 }
             }
-                
+
         }
 
         // Set the fields
@@ -268,7 +268,7 @@ class Model extends \Phalcon\Mvc\Model
         {
             $params['fields'] = array_merge($moduleFields,$relationshipFields);
         }
-        
+
         $query = $this->query();
         // get the query
         $query = $this->setQuery($query,$params);
@@ -277,47 +277,47 @@ class Model extends \Phalcon\Mvc\Model
 
         // process ACL and other behaviors before executing the query
         $data = $query->execute();
-        
+
         return $data;
     }
-    
+
     /**
      * This function is an alternate of \Phalcon\Mv\Model::find
      * This RestController must use this function instead of find so that we can
      * support the default pagination, sorting, filtering and relationships
-     * 
+     *
      * @param array $params
      * @return array
      * @throws \Phalcon\Exception
      */
     public function readAll(array $params)
     {
-        
+
         $this->fireEvent("beforeRead");//->fire("model:beforeRead", $this);
         //print_r($eventManager);
         //die();
-        
+
         // Get fields and relationships
         $moduleFields = $this->getFields();
         $relationshipFields = array();
         $relations = array_merge($this->getRelationships('hasOne'),$this->getRelationships('belongsTo'));
         $userDefinedRelations = true;
-        
+
         // Prepare the default joins
         if(!isset($params['rels']) || (isset($params['rels']) && empty($params['rels'])))
         {
             $params['rels'] = array_keys($relations);
         }
-        
+
         if(isset($params['fields']) && !empty($params['fields']))
         {
             if(!is_array($params['fields']))
                 $params['fields'] = explode (',', $params['fields']);
         }
-        
+
         //Verify the relationships
         foreach($params['rels'] as $relationship)
-        {   
+        {
             if (!isset($relations[$relationship]) || empty($relations[$relationship]))
             {
                 throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
@@ -327,14 +327,14 @@ class Model extends \Phalcon\Mvc\Model
             {
                 $relationshipFields[] = $relationship.'.*';
             }
-            else 
+            else
             {
                 if (!in_array($relationship.'.*', $params['fields']))
                 {
                     $relationshipFields[] = $relationship.'.*';
                 }
             }
-                
+
         }
 
         // Set the fields
@@ -346,18 +346,18 @@ class Model extends \Phalcon\Mvc\Model
         {
             $params['fields'] = array_merge($moduleFields,$relationshipFields);
         }
-        
+
         $this->query = $this->query();
         // get the query
         $this->query = $this->setQuery($this->query,$params);
-        
+
         $this->fireEvent("beforeQuery");
-        
-        
+
+
 
         // process ACL and other behaviors before executing the query
         $data = $this->query->execute();
-        
+
         return $data;
     }
 
@@ -365,7 +365,7 @@ class Model extends \Phalcon\Mvc\Model
      * This function is an alternate of \Phalcon\Mv\Model::getRelated
      * This RestController must use this function instead of find so that we can
      * support the default pagination, sorting, filtering and relationships
-     * 
+     *
      * @param array $params
      * @return array
      * @throws \Phalcon\Exception
@@ -375,16 +375,16 @@ class Model extends \Phalcon\Mvc\Model
         // check for existance
         $related = $params['related'];
         $modelRelations = $this->getRelationships();
-        
+
         //$relation = $modelRelations[$related];
-        
+
         if (!isset($modelRelations[$related]) || empty($modelRelations[$related]))
         {
             throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
         }
-        
+
         $params['rels'] = array($related);
-        
+
         // Set the fields
         if (isset($params['fields']) && !empty($params['fields']))
         {
@@ -394,36 +394,36 @@ class Model extends \Phalcon\Mvc\Model
         {
             $params['fields'] = $related.'.*';
         }
-        
+
         $query = $this->query();
-        
-        
+
+
         // get the query
         $query = $this->setQuery($query,$params);
-        
+
         $query->andWhere(get_class($this).".id = '".$params['id']."'");
-        
+
         // process ACL and other behaviors before executing the query
         $data = $query->execute();
-        
+
         return $data;
     }
-    
+
     /**
      * Prepare the query for the model
      * Any behavior that must chage the query can attach the 'after' event
      * with this function
-     * 
+     *
      * @param array $params
      * @return \Phalcon\Mvc\Model\Criteria
      * @throws \Phalcon\Exception
      */
     protected function setQuery(\Phalcon\Mvc\Model\Criteria $query,array $params)
-    {   
+    {
         $relations = $this->getRelationships();
-        
+
         $query->columns($params['fields']);
-        
+
         if (isset($params['sort']) && !empty($params['sort']))
         {
             if (isset($params['order']) && !empty($params['order']))
@@ -443,7 +443,7 @@ class Model extends \Phalcon\Mvc\Model
             }
             else
             {
-                $query->limit($params['limit']);                
+                $query->limit($params['limit']);
             }
         }
         if (isset($params['where']) && !empty($params['where']))
@@ -452,13 +452,15 @@ class Model extends \Phalcon\Mvc\Model
             $query->where($where);
         }
         foreach($params['rels'] as $relationship)
-        {   
+        {
             //check Many-Many and hasMany as well
             if (!isset($relations[$relationship]) || empty($relations[$relationship]))
             {
                 throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides.");
             }
-            
+
+            // do this for other types of joins as well
+
             if ($relations[$relationship]['type'] == 'hasManyToMany')
             {
                 $relatedModel = $relations[$relationship]['relatedModel'];
@@ -467,9 +469,34 @@ class Model extends \Phalcon\Mvc\Model
                                 ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['rhsKey'];
                 $secondaryQuery = $secondaryModel.'.'.$relations[$relationship]['secondaryKey'].
                                 ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['lhsKey'];
-                
+
                 $query->leftJoin($relatedModel,$relatedQuery,$relationship.$relatedModel);
                 $query->leftJoin($secondaryModel,$secondaryQuery,$relationship);
+            }
+            else if ($relations[$relationship]['type'] == 'hasOne' || $relations[$relationship]['type'] == 'hasMany' || $relations[$relationship]['type'] == 'belongsTo')
+            {
+                if (isset($relations[$relationship]['relType']))
+                {
+                  $rel = $relations[$relationship]['relType']."Join";
+                  $relatedModel = $relations[$relationship]['relatedModel'];
+                  if (isset($relations[$relationship]['conditionExclusive']))
+                  {
+                    $relatedQuery = $relations[$relationship]['conditionExclusive'];
+                  }
+                  else
+                  {
+                    $relatedQuery = get_class($this).'.'.$relations[$relationship]['primaryKey'].
+                                  ' = '.$relationship.'.'.$relations[$relationship]['relatedKey'];
+                  }
+                  $query->$rel($relatedModel,$relatedQuery,$relationship);
+                }
+                else
+                {
+                  $relatedModel = $relations[$relationship]['relatedModel'];
+                  $relatedQuery = get_class($this).'.'.$relations[$relationship]['primaryKey'].
+                                ' = '.$relationship.'.'.$relations[$relationship]['relatedKey'];
+                  $query->leftJoin($relatedModel,$relatedQuery,$relationship);
+                }
             }
             else
             {
@@ -485,7 +512,7 @@ class Model extends \Phalcon\Mvc\Model
     /**
      * The purpose of this function is parse the query string from a string to
      * and array
-     * 
+     *
      * Allowed operators
      *  AND         And
      *  OR          Or
@@ -506,24 +533,24 @@ class Model extends \Phalcon\Mvc\Model
      *  ,           Multiple possible values
      *  '           String values
      *
-     * Every statement must be comprised of substatement, each enclosed with 
+     * Every statement must be comprised of substatement, each enclosed with
      * parenthesis. Substatements can only be enjoined using AND or OR
      * This condition is applied to reduce complex parsing improving the overall
      * time for processing the where statements
-     * 
+     *
      * The input needs to have the following format
      * <code>
-     *  ((Module.field CONTAINS data) AND (Module.field !: data)) 
+     *  ((Module.field CONTAINS data) AND (Module.field !: data))
      * </code>
      * Note: If CONTAINS is passed multiple values then all values must be encapsulated in single quotes '.
      * Otherwise there is no way to tell a string like "Yes,No" and "No, You don't" apart.
      * You can also encapsulate a string in single quotes and send it but if the delimiter ',' are foung in the input
      * then it will be treated as multiple values.
      * <code>
-     *  (Module.field !BETWEEN rangeStart AND rangeEnd) 
+     *  (Module.field !BETWEEN rangeStart AND rangeEnd)
      * </code>
      * <code>
-     *  ((Module.field CONTAINS data1,data2,data3) AND (Module.field <: data)) 
+     *  ((Module.field CONTAINS data1,data2,data3) AND (Module.field <: data))
      * </code>
      * Note: Parenthesis are are allowed in a substatement.
      * Note: Subqueries are also not allowed.
@@ -565,7 +592,7 @@ class Model extends \Phalcon\Mvc\Model
             {
                 // Check for :,<,>,<:,>: in the string, if found then process
                 // ignoring the spaces
-                
+
                 if (preg_match('@NULL|EMPTY@', $substatement))
                 {
                     $valueOffset = strlen($substatement)-2;
@@ -578,7 +605,7 @@ class Model extends \Phalcon\Mvc\Model
                 $value = substr($substatement, $valueOffset,(strlen($substatement)-$valueOffset-1));
 
                 list($field,$operator) = explode(' ',substr($substatement, 1,$valueOffset));
-                
+
                 // Trim three components of the substatement
                 $operator = strtoupper(trim($operator));
                 $field = trim($field);
@@ -688,7 +715,7 @@ class Model extends \Phalcon\Mvc\Model
             throw new \Phalcon\Exception('Invalid query, please refer to guides. '.
             'Query must have atleast one substatement eclosed in parenthesis.');
         }
-        
+
         return $query;
     }
 }
