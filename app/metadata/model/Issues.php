@@ -134,11 +134,11 @@ $models['Issues'] = array(
             'length' => '25',
             'null' => false,
         ),
-        'type' => array(
-            'name' => 'type',
+        'typeId' => array(
+            'name' => 'typeId',
             'label' => 'LBL_ISSUES_TYPE',
             'type' => 'varchar',
-            'length' => '25',
+            'length' => '36',
             'null' => false,
         ),
         'priority' => array(
@@ -154,6 +154,20 @@ $models['Issues'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+        ),
+        'milestoneId' => array(
+            'name' => 'milestoneId',
+            'label' => 'LBL_ISSUES_MILESTONE',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+        ),
+        'parentId' => array(
+            'name' => 'parentId',
+            'label' => 'LBL_ISSUES_PARENT',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
         ),
     ),
     'indexes' => array(
