@@ -12,6 +12,10 @@ use Phalcon\DI\FactoryDefault,
 error_reporting(E_ALL);
 define('APP_PATH', realpath('..'));
 ini_set('display_errors',true);
+
+
+require APP_PATH.'/vendor/autoload.php';
+
 require '../foundation/controllers/component.php';
 require '../foundation/controllers/components/acl.php';
 require '../foundation/controllers/components/auditable.php';

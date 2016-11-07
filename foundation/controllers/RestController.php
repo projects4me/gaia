@@ -635,8 +635,8 @@ class RestController extends \Phalcon\Mvc\Controller
                 return $this->returnResponse($data);
             }
 
-//            $model = $modelName::findFirst($temp['id']);
-            $model = \Notes::findFirst($temp['id']);
+            $model = $modelName::findFirst($temp['id']);
+            //$model = \Notes::findFirst($temp['id']);
             if (!isset($model->id))
             {
                 $data = array('error' => array('code' => 400, 'description' => 'Invalid record with identifier '.$temp['id']));

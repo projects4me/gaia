@@ -5,7 +5,7 @@ module.exports = function(environment) {
     modulePrefix: 'dummy',
     podModulePrefix: process.env.POD_MODULE_PREFIX,
     environment: environment,
-    baseURL: '/',
+    rootURL: '/',
     i18n: { defaultLocale: 'en' },
     locationType: 'auto',
     EmberENV: {
@@ -31,7 +31,7 @@ module.exports = function(environment) {
 
   if (environment === 'test') {
     // Testem prefers this...
-    ENV.baseURL = '/';
+    ENV.rootURL = '/';
     ENV.locationType = 'none';
 
     // keep test console output quieter

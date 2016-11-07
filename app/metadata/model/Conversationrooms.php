@@ -105,6 +105,14 @@ $models['Conversationrooms'] = array(
 
     ),
     'relationships' => array(
+      'hasMany' => array(
+          'Projects' => array(
+              'primaryKey' => 'id',
+              'relatedModel' => 'Conversers',
+              'relatedKey' => 'conversationRoomId',
+              'condition' => 'Conversers.relatedTo = "project"'
+          ),
+      ),
     ),
 );
 

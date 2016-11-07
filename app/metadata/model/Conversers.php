@@ -86,6 +86,20 @@ $models['Conversers'] = array(
 
     ),
     'relationships' => array(
+      'hasOne' => array(
+          'Projectrooms' => array(
+              'primaryKey' => 'conversationRoomId',
+              'relatedModel' => 'Conversationrooms',
+              'relatedKey' => 'id',
+              'condition' => 'Conversers.relatedTo = "project"'
+          ),
+          'Privaterooms' => array(
+              'primaryKey' => 'conversationRoomId',
+              'relatedModel' => 'Conversationrooms',
+              'relatedKey' => 'id',
+              'condition' => 'Conversers.relatedTo = "user"'
+          ),
+      ),
     ),
 );
 

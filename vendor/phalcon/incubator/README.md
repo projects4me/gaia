@@ -24,7 +24,7 @@ Install Composer in a common location or in your project:
 curl -s http://getcomposer.org/installer | php
 ```
 
-If you are still using Phalcon 2.0.x, create the `composer.json` file as follows:
+If you are using Phalcon 2.0.x, create the `composer.json` file as follows:
 
 ```json
 {
@@ -131,6 +131,7 @@ See [CONTRIBUTING.md](docs/CONTRIBUTING.md)
 ### Logger
 * [Phalcon\Logger\Adapter\Database](Library/Phalcon/Logger) - Adapter to store logs in a database table (!phalcon)
 * [Phalcon\Logger\Adapter\Firelogger](Library/Phalcon/Logger) - Adapter to log messages in the Firelogger console in Firebug (@phalcon)
+* [Phalcon\Logger\Adapter\Udplogger](Library/Phalcon/Logger) - Adapter to log messages using UDP protocol to external server (@vitalypanait)
 * [Phalcon\Logger\Adapter\File\Multiple](Library/Phalcon/Logger) - Adapter to log to multiple files (@rlaffers)
 
 ### Mailer
@@ -174,7 +175,9 @@ See [CONTRIBUTING.md](docs/CONTRIBUTING.md)
 * [Phalcon\Avatar\Gravatar](Library/Phalcon/Avatar) - Provides an easy way to retrieve a user's profile image from Gravatar site based on a given email address (@sergeyklay)
 
 ### Validators
+* [Phalcon\Validation\Validator\ConfirmationOf](Library/Phalcon/Validation/Validator) - Validates confirmation of other field value (@davihu)
 * [Phalcon\Validation\Validator\MongoId](Library/Phalcon/Validation/Validator) - Validate MongoId value (@Kachit)
+* [Phalcon\Validation\Validator\PasswordStrength](Library/Phalcon/Validation/Validator) - Validates password strength (@davihu)
 
 ## License
 
