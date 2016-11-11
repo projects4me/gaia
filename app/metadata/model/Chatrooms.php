@@ -31,30 +31,48 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Conversers'] = array(
-   'tableName' => 'conversers',
+$models['Chatrooms'] = array(
+   'tableName' => 'chat_rooms',
    'fields' => array(
         'id' => array(
             'name' => 'id',
-            'label' => 'LBL_CONVERSERS_ID',
+            'label' => 'LBL_CHAT_ROOMS_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
-        'userId' => array(
-            'name' => 'userId',
-            'label' => 'LBL_CONVERSERS_USER',
+        'subject' => array(
+            'name' => 'subject',
+            'label' => 'LBL_CHAT_ROOMS_SUBJECT',
+            'type' => 'text',
+            'null' => false,
+        ),
+        'dateCreated' => array(
+            'name' => 'dateCreated',
+            'label' => 'LBL_CHAT_ROOMS_DATE_CREATED',
+            'type' => 'datetime',
+            'null' => false,
+        ),
+        'dateModified' => array(
+            'name' => 'dateModified',
+            'label' => 'LBL_CHAT_ROOMS_DATE_MODIFIED',
+            'type' => 'datetime',
+            'null' => false,
+        ),
+        'createdUser' => array(
+            'name' => 'createdUser',
+            'label' => 'LBL_CHAT_ROOMS_CREATED_USER',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
-        'chatRoomId' => array(
-            'name' => 'chatRoomId',
-            'label' => 'LBL_CONVERSERS_CHAT_ROOM',
+        'modifiedUser' => array(
+            'name' => 'modifiedUser',
+            'label' => 'LBL_CHAT_ROOMS_MODIFIED_USER',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
-        )
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -66,20 +84,13 @@ $models['Conversers'] = array(
 
     ),
     'relationships' => array(
-      'hasOne' => array(
-          'Chatroom' => array(
-              'primaryKey' => 'chatRoomId',
-              'relatedModel' => 'Chatrooms',
-              'relatedKey' => 'id',
+      'hasMany' => array(
+          'Conversers' => array(
+              'primaryKey' => 'id',
+              'relatedModel' => 'Conversers',
+              'relatedKey' => 'chatRoomId',
           ),
       ),
-      'hasMany' => array(
-        'Users' => array(
-          'primaryKey' => 'userId',
-          'relatedModel' => 'Users',
-          'relatedKey' => 'id',
-        ),
-      )
     ),
 );
 

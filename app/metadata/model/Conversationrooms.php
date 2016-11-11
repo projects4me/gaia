@@ -87,11 +87,18 @@ $models['Conversationrooms'] = array(
             'length' => '36',
             'null' => false,
         ),
-        'type' => array(
-            'name' => 'type',
-            'label' => 'LBL_CONVERSATION_ROOMS_TYPE',
+        'roomType' => array(
+            'name' => 'roomType',
+            'label' => 'LBL_CONVERSATION_ROOMS_ROOM_TYPE',
             'type' => 'varchar',
             'length' => '15',
+            'null' => false,
+        ),
+        'projectId' => array(
+            'name' => 'projectId',
+            'label' => 'LBL_CONVERSATION_ROOMS_PROJECT',
+            'type' => 'varchar',
+            'length' => '36',
             'null' => false,
         )
     ),
@@ -105,12 +112,19 @@ $models['Conversationrooms'] = array(
 
     ),
     'relationships' => array(
-      'hasMany' => array(
+      'hasOne' => array(
           'Projects' => array(
+              'primaryKey' => 'projectId',
+              'relatedModel' => 'Projects',
+              'relatedKey' => 'id',
+          ),
+      ),
+      'hasMany' => array(
+          'Comments' => array(
               'primaryKey' => 'id',
-              'relatedModel' => 'Conversers',
-              'relatedKey' => 'conversationRoomId',
-              'condition' => 'Conversers.relatedTo = "project"'
+              'relatedModel' => 'Comments',
+              'relatedKey' => 'relatedId',
+              'condition' => 'Comments.relatedTo = "conversationrooms"'
           ),
       ),
     ),

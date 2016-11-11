@@ -31,56 +31,55 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Conversers'] = array(
-   'tableName' => 'conversers',
-   'fields' => array(
-        'id' => array(
-            'name' => 'id',
-            'label' => 'LBL_CONVERSERS_ID',
-            'type' => 'varchar',
-            'length' => '36',
-            'null' => false,
-        ),
-        'userId' => array(
-            'name' => 'userId',
-            'label' => 'LBL_CONVERSERS_USER',
-            'type' => 'varchar',
-            'length' => '36',
-            'null' => false,
-        ),
-        'chatRoomId' => array(
-            'name' => 'chatRoomId',
-            'label' => 'LBL_CONVERSERS_CHAT_ROOM',
-            'type' => 'varchar',
-            'length' => '36',
-            'null' => false,
-        )
-    ),
-    'indexes' => array(
-        'id' => 'primary',
-    ),
-    'foriegnKeys' => array(
+use Foundation\Mvc\RestController;
+use ElephantIO\Client,
+ElephantIO\Engine\SocketIO\Version1X;
 
-    ) ,
-    'triggers' => array(
 
-    ),
-    'relationships' => array(
-      'hasOne' => array(
-          'Chatroom' => array(
-              'primaryKey' => 'chatRoomId',
-              'relatedModel' => 'Chatrooms',
-              'relatedKey' => 'id',
-          ),
-      ),
-      'hasMany' => array(
-        'Users' => array(
-          'primaryKey' => 'userId',
-          'relatedModel' => 'Users',
-          'relatedKey' => 'id',
-        ),
-      )
-    ),
-);
 
-return $models;
+/**
+ * ConversationRooms Controller
+ *
+ * @author Hammad Hassan <gollomer@gmail.com>
+ * @package Foundation
+ * @category Controller
+ * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ */
+class ChatroomsController extends RestController
+{
+  /**
+   * This function saves a conversation room which is done via the RestController.
+   * In addition to saving we add the created room in the Hermes as well.
+   *
+   * @return \Phalcon\Http\Response
+   * @throws \Phalcon\Exception
+   * @todo Get the host from configuration file
+   * @todo Implement multi-tenancy
+   */
+  public function postAction(){
+
+    // Call the parent so that the Conversation room can be saved
+    $response = parent::postAction();
+
+    // If the Conversation room was saved then add it to Hermes
+    if ($response->getStatusCode() == '201 Created')
+    {
+
+      // Todo- link
+      $host = 'http://localhost:3000';
+
+      // The tenant id - Must be initialized in the bootstrap
+      $tenant = 'abc';
+
+      // Establish a connection with Hermes
+      $client = new Client(new Version1X($host));
+      $client->initialize();
+
+      // Using the namespace of Gaia create the room and register the current user to it
+      $client->of('/gaia');
+      $client->emit('createRoom', ['room'=>json_decode($response->getContent())->data->id,'tenant'=>$tenant,'user'=>$GLOBALS['currentUser']->id]);
+      $client->close();
+    }
+    return $response;
+  }
+}
