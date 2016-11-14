@@ -39,6 +39,7 @@ use Phalcon\Mvc\Dispatcher;
 use Phalcon\Text;
 use function Foundation\create_guid as create_guid;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
+use Foundation\metaManager;
 
 /**
  * The is the deafult controller used by foundation that provides the basic
@@ -439,7 +440,7 @@ class RestController extends \Phalcon\Mvc\Controller
 
         $data = $model->read($params);
 
-        $dataArray = $this->extractData($data);
+        $dataArray = $this->extractData($data,'one');
         $finalData = $this->buildHAL($dataArray);
         return $this->returnResponse($finalData);
     }
@@ -490,7 +491,7 @@ class RestController extends \Phalcon\Mvc\Controller
 
         $data = $model->readRelated($params);
 
-        $dataArray = $this->extractData($data);
+        $dataArray = $this->extractData($data,'all',$relation);
         $finalData = $this->buildHAL($dataArray,--$limit,$page);
         return $this->returnResponse($finalData);
     }
@@ -823,7 +824,7 @@ class RestController extends \Phalcon\Mvc\Controller
             }
         }
 
-        $hal[$this->modelName] = $data;
+        $hal = $data;
         $hal['meta']['count'] = count($data);
 
         $hal['meta']['_links']['self']['href'] = $query['_url'];
@@ -867,8 +868,19 @@ class RestController extends \Phalcon\Mvc\Controller
      * Extract collection data to json
      * @param  Objcet     data object collecion with data
      * @return JSON       data in JSON
+     * @todo optimize the code
+     * @todo build HAL within
      */
-    protected function extractData($data){
+    protected function extractData($data,$type = 'all',$relation=''){
+
+      $modelName = strtolower($this->modelName);
+      if (!empty($relation))
+      {
+        $modelName = strtolower($relation);
+      }
+        $jsonapi_org = array();
+        $jsonapi_org['data'] = array();
+
         //extracting data to array
         if ($data instanceof Resultset)
         {
@@ -887,10 +899,141 @@ class RestController extends \Phalcon\Mvc\Controller
             $result = array();
         }
 
+
         // do not allow passwords to be returned
         $this->removePassword($result);
 
+        $count = 0;
+
+        if ($type == 'all')
+        {
+          // prepare the data for JSONAPI.org standard
+          foreach ($result as $object)
+          {
+            $jsonapi_org['data'][$count]['type'] = $modelName;
+
+            foreach($object as $attr => $val)
+            {
+              if (!is_array($val))
+              {
+                // process attributes
+                if ($attr == 'id')
+                {
+                  $jsonapi_org['data'][$count]['id'] = $val;
+                }
+                else {
+                  $jsonapi_org['data'][$count]['attributes'][$attr] = $val;
+                }
+              }
+              else {
+                // process relationships
+                $included = array();
+                if (isset($val['id'])) {
+                  $jsonapi_org['data'][$count]['relationships'][$attr] = array();
+                  $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                  $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower($relationDefinition['relatedModel']);
+                  $id = '';
+                  $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['id'] = $val['id'];
+                  $id = $val['id'];
+                  unset($val['id']);
+
+                  $included['attributes'] = $val;
+
+                  $jsonapi_org['included'][($this->modelName.$id)] = $included;
+                }
+              }
+            }
+            if ($modelName == 'conversationrooms')
+            {
+              $jsonapi_org['data'][$count]['relationships']['comments'] = array(
+                'data' => array(
+                  'type' => 'comments',
+                ),
+                'links' => array(
+                  'related' => 'http://projects4me/api/v1/Conversationrooms/'.$jsonapi_org['data'][$count]['id'].'/comments'
+                )
+              );
+            }
+            $count++;
+          }
+        }
+        else {
+
+          foreach ($result as $object)
+          {
+            $jsonapi_org['data']['type'] = strtolower($this->modelName);
+
+            foreach($object as $attr => $val)
+            {
+              if (!is_array($val))
+              {
+                // process attributes
+                if ($attr == 'id')
+                {
+                  $jsonapi_org['data']['id'] = $val;
+                }
+                else {
+                  $jsonapi_org['data']['attributes'][$attr] = $val;
+                }
+              }
+              else {
+                // process relationships
+                if (isset($val['id'])) {
+                  $included = array();
+                  $jsonapi_org['data']['relationships'][$attr] = array();
+                  $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                  $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower($relationDefinition['relatedModel']);
+                  $id = '';
+                  $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data']['id'] = $val['id'];
+                  $id = $val['id'];
+                  unset($val['id']);
+
+                  $included['attributes'] = $val;
+                  $jsonapi_org['included'][($relationDefinition['relatedModel'].$id)] = $included;
+                }
+              }
+            }
+            $count++;
+          }
+        }
+        if(!empty($jsonapi_org['included']))
+        {
+          $jsonapi_org['included'] = array_values($jsonapi_org['included']);
+        }
+
+
+/*
+        $jsonapi_org['data']['relationships']['comments'] = array(
+          'data' => array(
+            'type' => 'comments',
+          ),
+          'links' => array(
+            'related' => 'http://projects4me/api/v1/Conversationrooms/6240fcc25825-9d6a-c1c8-c518771d35c4/comments'
+          )
+        );
+*/
+
+
+        $result = $jsonapi_org;
+
         return $result;
+    }
+
+    final private function getRelationshipMeta($modelName,$rel){
+      $modelMetadata = metaManager::getModelMeta($modelName);
+      $relatedMetadata = array();
+      foreach ($modelMetadata['relationships'] as $related)
+      {
+        foreach ($related as $relName => $relDef)
+        {
+          if ($relName == $rel)
+          {
+            $relatedMetadata = $relDef;
+            break 2;
+          }
+        }
+      }
+      return $relatedMetadata;
     }
 
     /**
