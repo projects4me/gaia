@@ -303,6 +303,7 @@ class Model extends \Phalcon\Mvc\Model
         $moduleFields = $this->getFields();
         $relationshipFields = array();
         $relations = array_merge($this->getRelationships('hasOne'),$this->getRelationships('belongsTo'));
+        $relations = $this->getRelationships();
         $userDefinedRelations = true;
 
         // Prepare the default joins

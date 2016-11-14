@@ -177,7 +177,7 @@ $models['Project'] = array(
                 'primaryKey' => 'id',
                 'relatedModel' => 'Conversationroom',
                 'relatedKey' => 'projectId',
-                'condition' => 'conversationRooms.type = "projects"'
+                //'condition' => 'conversationRooms.type = "projects"'
             ),
         ),
 /*

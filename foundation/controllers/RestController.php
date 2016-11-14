@@ -880,14 +880,38 @@ class RestController extends \Phalcon\Mvc\Controller
       }
         $jsonapi_org = array();
         $jsonapi_org['data'] = array();
-
+        //print_r($data->toArray());
         //extracting data to array
         if ($data instanceof Resultset)
         {
             $data->setHydrateMode(Resultset::HYDRATE_ARRAYS);
             $result = array();
-            foreach( $data as $value ){
-                $result[] = $value;
+            foreach($data as $values){
+              foreach ($values as $attr => $value){
+                if (!isset($result[$values['id']])){
+                  $result[$values['id']] = array();
+                }
+
+                  if (is_array($value))
+                  {
+                    $relDef = $this->getRelationshipMeta($this->modelName,$attr);
+                    if ($relDef['type'] == 'hasMany' || $relDef['type'] == 'hasManyToMany')
+                    {
+                        if (!empty($value['id']))
+                        {
+                          $result[$values['id']][$attr][] = $value;
+                        }
+                    }
+                    else
+                    {
+                      $result[$values['id']][$attr] = $value;
+                    }
+                  }
+                  else
+                  {
+                    $result[$values['id']][$attr] = $value;
+                  }
+              }
             }
         }
         elseif (is_array ($data))
@@ -903,8 +927,6 @@ class RestController extends \Phalcon\Mvc\Controller
         // do not allow passwords to be returned
         $this->removePassword($result);
 
-        print_r($result);
-        die();
 
         $count = 0;
 
@@ -944,6 +966,24 @@ class RestController extends \Phalcon\Mvc\Controller
 
                   $jsonapi_org['included'][($this->modelName.$id)] = $included;
                 }
+                else {
+                  foreach($val as $idx => $object){
+                    if (isset($object['id'])) {
+                      $included = array();
+                      $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx] = array();
+                      $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                      $relatedCount = 0;
+                      $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition['relatedModel']);
+                      $id = '';
+                      $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
+                      $id = $object['id'];
+                      unset($object['id']);
+
+                      $included['attributes'] = $object;
+                      $jsonapi_org['included'][($relationDefinition['relatedModel'].$id)] = $included;
+                    }
+                  }
+                }
               }
             }
             /*
@@ -981,6 +1021,8 @@ class RestController extends \Phalcon\Mvc\Controller
                 }
               }
               else {
+                //print_r($attr);
+                //print_r($val);
                 // process relationships
                 if (isset($val['id'])) {
                   $included = array();
@@ -995,6 +1037,24 @@ class RestController extends \Phalcon\Mvc\Controller
 
                   $included['attributes'] = $val;
                   $jsonapi_org['included'][($relationDefinition['relatedModel'].$id)] = $included;
+                }
+                else {
+                  foreach($val as $idx => $object){
+                    if (isset($object['id'])) {
+                      $included = array();
+                      $jsonapi_org['data']['relationships'][$attr]['data'][$idx] = array();
+                      $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                      $relatedCount = 0;
+                      $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition['relatedModel']);
+                      $id = '';
+                      $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
+                      $id = $object['id'];
+                      unset($object['id']);
+
+                      $included['attributes'] = $object;
+                      $jsonapi_org['included'][($relationDefinition['relatedModel'].$id)] = $included;
+                    }
+                  }
                 }
               }
             }
