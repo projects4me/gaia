@@ -57,8 +57,8 @@
 $config['routes'] = array(
     'rest' => array(
         'v1' => array(
-            'Activities' => array(
-                'path' => '/api/:version/Activities',
+            'activity' => array(
+                'path' => '/api/:version/activity',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -68,8 +68,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Comments' => array(
-                'path' => '/api/:version/Comments',
+            'comment' => array(
+                'path' => '/api/:version/comment',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -79,8 +79,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Conversationrooms' => array(
-                'path' => '/api/:version/Conversationrooms',
+            'conversationroom' => array(
+                'path' => '/api/:version/conversationroom',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -90,8 +90,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Conversers' => array(
-                'path' => '/api/:version/Conversers',
+            'converser' => array(
+                'path' => '/api/:version/converser',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -101,8 +101,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Issues' => array(
-                'path' => '/api/:version/Issues',
+            'issue' => array(
+                'path' => '/api/:version/issue',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -112,8 +112,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Issuetypes' => array(
-                'path' => '/api/:version/Issuetypes',
+            'issuetype' => array(
+                'path' => '/api/:version/issuetype',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -123,8 +123,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Memberships' => array(
-                'path' => '/api/:version/Memberships',
+            'membership' => array(
+                'path' => '/api/:version/membership',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -134,8 +134,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Milestones' => array(
-                'path' => '/api/:version/Milestones',
+            'milestone' => array(
+                'path' => '/api/:version/milestone',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -145,8 +145,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Mentions' => array(
-                'path' => '/api/:version/Mentions',
+            'mention' => array(
+                'path' => '/api/:version/mention',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -156,8 +156,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Timelogs' => array(
-                'path' => '/api/:version/Timelogs',
+            'timelog' => array(
+                'path' => '/api/:version/timelog',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -167,8 +167,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Roles' => array(
-                'path' => '/api/:version/Roles',
+            'role' => array(
+                'path' => '/api/:version/role',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -178,8 +178,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Projects' => array(
-                'path' => '/api/:version/Projects',
+            'project' => array(
+                'path' => '/api/:version/project',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -189,8 +189,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Users' => array(
-                'path' => '/api/:version/Users',
+            'user' => array(
+                'path' => '/api/:version/user',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -200,8 +200,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Resources' => array(
-                'path' => '/api/:version/Resources',
+            'resource' => array(
+                'path' => '/api/:version/resource',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -211,8 +211,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Permissions' => array(
-                'path' => '/api/:version/Permissions',
+            'permissions' => array(
+                'path' => '/api/:version/permissions',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
@@ -222,8 +222,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'Token' => array(
-                'path' => '/api/:version/Token',
+            'token' => array(
+                'path' => '/api/:version/token',
                 'allowedMethods' => array(
                     'POST',
                 ),

@@ -159,9 +159,9 @@ class RestController extends \Phalcon\Mvc\Controller
         $this->response = new Response();
 
     	//print_r($this->dispatcher->getParams());exit;
-    	$this->controllerName = $this->dispatcher->getControllerName();//controller
+  	    $this->controllerName = $this->dispatcher->getControllerName();//controller
         $this->actionName = $this->dispatcher->getActionName();//controller
-        $this->modelName = $this->controllerName;//model
+        $this->modelName = \Phalcon\Text::camelize($this->controllerName);//model
 
         $this->id = $this->dispatcher->getParam("id");//id
         $this->relationship = $this->dispatcher->getParam("relationship");//relationship
@@ -256,10 +256,10 @@ class RestController extends \Phalcon\Mvc\Controller
     {
         global $currentUser;
         $token = str_replace('Bearer ','',$reuqest->headers['AUTHORIZATION']);
-        $oAuthAccessToken = \Oauthaccesstokens::findFirst(array("access_token='".$token."'"));
+        $oAuthAccessToken = \Oauthaccesstoken::findFirst(array("access_token='".$token."'"));
         if (isset($oAuthAccessToken->user_id))
         {
-            $currentUser = \Users::findFirst("username ='".$oAuthAccessToken->user_id."'");
+            $currentUser = \User::findFirst("username ='".$oAuthAccessToken->user_id."'");
         }
         else
         {
@@ -903,6 +903,9 @@ class RestController extends \Phalcon\Mvc\Controller
         // do not allow passwords to be returned
         $this->removePassword($result);
 
+        print_r($result);
+        die();
+
         $count = 0;
 
         if ($type == 'all')
@@ -943,17 +946,18 @@ class RestController extends \Phalcon\Mvc\Controller
                 }
               }
             }
-            if ($modelName == 'conversationrooms')
+            /*
+            if ($modelName == 'conversationroom')
             {
               $jsonapi_org['data'][$count]['relationships']['comments'] = array(
                 'data' => array(
-                  'type' => 'comments',
+                  'type' => 'comment',
                 ),
                 'links' => array(
-                  'related' => 'http://projects4me/api/v1/Conversationrooms/'.$jsonapi_org['data'][$count]['id'].'/comments'
+                  'related' => 'http://projects4me/api/v1/conversationroom/'.$jsonapi_org['data'][$count]['id'].'/comments'
                 )
               );
-            }
+            }*/
             $count++;
           }
         }
@@ -982,6 +986,7 @@ class RestController extends \Phalcon\Mvc\Controller
                   $included = array();
                   $jsonapi_org['data']['relationships'][$attr] = array();
                   $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                  $relatedCount = 0;
                   $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower($relationDefinition['relatedModel']);
                   $id = '';
                   $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data']['id'] = $val['id'];
@@ -1022,13 +1027,14 @@ class RestController extends \Phalcon\Mvc\Controller
     final private function getRelationshipMeta($modelName,$rel){
       $modelMetadata = metaManager::getModelMeta($modelName);
       $relatedMetadata = array();
-      foreach ($modelMetadata['relationships'] as $related)
+      foreach ($modelMetadata['relationships'] as $relationType => $related)
       {
         foreach ($related as $relName => $relDef)
         {
           if ($relName == $rel)
           {
             $relatedMetadata = $relDef;
+            $relatedMetadata['type'] = $relationType;
             break 2;
           }
         }
