@@ -80,11 +80,25 @@ $models['Conversationroom'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_CONVERSATION_ROOMS_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
             'label' => 'LBL_CONVERSATION_ROOMS_MODIFIED_USER',
             'type' => 'varchar',
             'length' => '36',
+            'null' => false,
+        ),
+        'modifiedUserName' => array(
+            'name' => 'modifiedUserName',
+            'label' => 'LBL_CONVERSATION_ROOMS_MODIFIED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
             'null' => false,
         ),
         'roomType' => array(
@@ -100,7 +114,14 @@ $models['Conversationroom'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
-        )
+        ),
+        'projectName' => array(
+            'name' => 'projectName',
+            'label' => 'LBL_CONVERSATION_ROOMS_PROJECT_NAME',
+            'type' => 'varchar',
+            'length' => '255',
+            'null' => false,
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',

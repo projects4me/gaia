@@ -236,6 +236,11 @@ $config['routes'] = array(
             'path' => '/',
             'controller' => 'index',
             'action' => 'index',
+        ),
+        'image' => array(
+            'path' => '/image',
+            'controller' => 'userimage',
+            'action' => 'get',
         )
     ),
     'system' => array(

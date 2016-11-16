@@ -73,11 +73,25 @@ $models['Comment'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_COMMENTS_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
             'label' => 'LBL_COMMENTS_MODIFIED_USER',
             'type' => 'varchar',
             'length' => '36',
+            'null' => false,
+        ),
+        'modifiedUserName' => array(
+            'name' => 'modifiedUserName',
+            'label' => 'LBL_COMMENTS_MODIFIED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
             'null' => false,
         ),
         'relatedTo' => array(
@@ -93,7 +107,14 @@ $models['Comment'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
-        )
+        ),
+        'relatedName' => array(
+            'name' => 'relatedName',
+            'label' => 'LBL_COMMENTS_RELATED_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -106,12 +127,12 @@ $models['Comment'] = array(
     ),
     'relationships' => array(
       'hasOne' => array(
-        'createdUser' => array(
+        'createdBy' => array(
           'primaryKey' => 'createdUser',
           'relatedModel' => 'User',
           'relatedKey' => 'id',
         ),
-        'modifiedUser' => array(
+        'modifiedBy' => array(
           'primaryKey' => 'modifiedUser',
           'relatedModel' => 'User',
           'relatedKey' => 'id',
@@ -120,19 +141,19 @@ $models['Comment'] = array(
           'primaryKey' => 'relatedId',
           'relatedModel' => 'Conversationroom',
           'relatedKey' => 'id',
-          'condition' => 'Comments.relatedTo = "conversationrooms"'
+          'condition' => 'Comment.relatedTo = "conversationrooms"'
         ),
         'chatRoom' => array(
           'primaryKey' => 'relatedId',
           'relatedModel' => 'Chatroom',
           'relatedKey' => 'id',
-          'condition' => 'Comments.relatedTo = "chatrooms"'
+          'condition' => 'Comment.relatedTo = "chatrooms"'
         ),
         'issue' => array(
           'primaryKey' => 'relatedId',
           'relatedModel' => 'Issue',
           'relatedKey' => 'id',
-          'condition' => 'Comments.relatedTo = "issues"'
+          'condition' => 'Comment.relatedTo = "issues"'
         ),
       ),
     ),

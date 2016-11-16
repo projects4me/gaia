@@ -674,10 +674,21 @@ class RestController extends \Phalcon\Mvc\Controller
         $temp = $util->objectToArray($this->request->getJsonRawBody());
 
         //verify if exist more than one element
-        if ( $util->existSubArray($temp) )
+        if ($util->existSubArray($temp) )
+        {
+          if (isset($temp['data']['attributes']))
+          {
+            $data[] = $temp['data']['attributes'];
+          }
+          else {
             $data = $temp;
+          }
+
+        }
         else
-            $data[0] = $temp;
+        {
+          $data[0] = $temp;
+        }
 
         //scroll through the arraay data and make the action save/update
         foreach ($data as $key => $value) {
@@ -701,7 +712,7 @@ class RestController extends \Phalcon\Mvc\Controller
                 $new_id = create_guid();
                 $value['id'] = $new_id;
             }
-            print_r($value);
+            //print_r($value);
             if ( $model->save($value) ){
                 $dataResponse = get_object_vars($model);
                 //update
@@ -711,10 +722,16 @@ class RestController extends \Phalcon\Mvc\Controller
                 }else{
                     $dataResponse['id'] = $new_id;
                     $this->response->setStatusCode(201, "Created");
-                    $this->response->setJsonContent(array(
+
+                    $data = $model->read(array('id' => $new_id));
+
+                    $dataArray = $this->extractData($data,'one');
+                    $finalData = $this->buildHAL($dataArray);
+                    return $this->returnResponse($finalData);                    
+/*                    $this->response->setJsonContent(array(
                         'status' => 'OK',
                         'data' => array_merge($value, $dataResponse) //merge form data with return db
-                    ));
+                    ));*/
                 }
 
             }else{

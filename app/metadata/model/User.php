@@ -45,7 +45,7 @@ $models['User'] = array(
            'name' => 'name',
            'label' => 'LBL_USERS_NAME',
            'type' => 'varchar',
-           'length' => '255',
+           'length' => '50',
            'null' => false,
        ),
        'dateCreated' => array(

@@ -31,10 +31,10 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-use Foundation\Mvc\RestController;
+use Foundation\fileHandler;
 
 /**
- * User controller
+ * User Image controller
  *
  *
  * @author Hammad Hassan <gollomer@gmail.com>
@@ -42,7 +42,40 @@ use Foundation\Mvc\RestController;
  * @category Controller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class UserController extends RestController
+class UserimageController extends \Phalcon\Mvc\Controller
 {
+
+  /**
+   * retrive the user and image and return
+   *
+   * @return Image
+   * @todo Handle validation
+   * @todo Generate Image
+   */
+  public function getAction($id){
+
+      $modelName = 'User';
+
+      if (!(isset($id) && !empty($id)))
+      {
+          throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+      }
+
+      $filePath = APP_PATH.DS.'filesystem'.DS.'img'.DS.'user'.DS.$id;
+
+      $data = fileHandler::readFile($filePath);
+
+      $this->response->setStatusCode(200, "OK");
+      $this->response->setContent($data);
+      $this->response->setContentType('image/jpeg');
+
+      if (isset($data['error']))
+      {
+          $this->response->setStatusCode($data['error']['code']);
+      }
+
+      $this->response->send();
+      exit();
+  }
 
 }

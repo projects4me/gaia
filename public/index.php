@@ -11,6 +11,7 @@ use Phalcon\DI\FactoryDefault,
 
 error_reporting(E_ALL);
 define('APP_PATH', realpath('..'));
+define('DS', DIRECTORY_SEPARATOR);
 ini_set('display_errors',true);
 
 

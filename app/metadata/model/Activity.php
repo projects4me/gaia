@@ -60,6 +60,13 @@ $models['Activity'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_ACTIVITIES_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'relatedTo' => array(
             'name' => 'relatedTo',
             'label' => 'LBL_ACTIVITIES_MODIFIED_USER',
