@@ -113,7 +113,7 @@ $models['Comment'] = array(
             'label' => 'LBL_COMMENTS_RELATED_NAME',
             'type' => 'varchar',
             'length' => '50',
-            'null' => false,
+            'null' => true,
         ),
     ),
     'indexes' => array(
