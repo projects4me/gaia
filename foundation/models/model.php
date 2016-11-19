@@ -238,6 +238,11 @@ class Model extends \Phalcon\Mvc\Model
         {
             $params['rels'] = array_keys($relations);
         }
+        else if (isset($params['rels'][0]) && $params['rels'][0] == 'none')
+        {
+            $params['rels'] = array();
+        }
+
 
         //Verify the relationships
         foreach($params['rels'] as $relationship)
@@ -310,6 +315,10 @@ class Model extends \Phalcon\Mvc\Model
         if(!isset($params['rels']) || (isset($params['rels']) && empty($params['rels'])))
         {
             $params['rels'] = array_keys($relations);
+        }
+        else if (isset($params['rels'][0]) && $params['rels'][0] == 'none')
+        {
+            $params['rels'] = array();
         }
 
         if(isset($params['fields']) && !empty($params['fields']))
