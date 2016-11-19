@@ -31,17 +31,18 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-use Foundation\Mvc\Model;
+ use Foundation\Mvc\RestController;
 
 /**
- * Mention Model
+ * Wiki controller
+ *
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
- * @category Model
+ * @category Controller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class Mention extends Model
+class WikiController extends RestController
 {
-
+  
 }

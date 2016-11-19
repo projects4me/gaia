@@ -34,14 +34,14 @@
 use Foundation\Mvc\Model;
 
 /**
- * Mention Model
+ * Wiki Model
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
  * @category Model
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class Mention extends Model
+class Wiki extends Model
 {
 
 }

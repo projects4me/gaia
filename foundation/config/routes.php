@@ -228,6 +228,28 @@ $config['routes'] = array(
                     'POST',
                 ),
                 'identifier' => 'id',
+            ),
+            'tag' => array(
+                'path' => '/api/:version/tag',
+                'allowedMethods' => array(
+                  'GET',
+                  'POST',
+                  'PUT',
+                  'DELETE',
+                  'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'wiki' => array(
+                'path' => '/api/:version/wiki',
+                'allowedMethods' => array(
+                  'GET',
+                  'POST',
+                  'PUT',
+                  'DELETE',
+                  'PATCH',
+                ),
+                'identifier' => 'id',
             )
         )
     ),
