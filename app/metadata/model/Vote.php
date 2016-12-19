@@ -31,111 +31,83 @@
  * Appropriate Legal Notices must display the words "Powered by Projects4Me".
  */
 
-$models['Wiki'] = array(
-   'tableName' => 'wiki',
+$models['Vote'] = array(
+   'tableName' => 'votes',
    'fields' => array(
         'id' => array(
             'name' => 'id',
-            'label' => 'LBL_WIKI_ID',
+            'label' => 'LBL_VOTE_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
-        'name' => array(
-           'name' => 'name',
-           'label' => 'LBL_WIKI_NAME',
-           'type' => 'varchar',
-           'length' => '255',
-           'null' => false,
-        ),
         'dateCreated' => array(
             'name' => 'dateCreated',
-            'label' => 'LBL_WIKI_DATE_CREATED',
+            'label' => 'LBL_VOTE_DATE_CREATED',
             'type' => 'datetime',
             'null' => false,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
-            'label' => 'LBL_WIKI_DATE_MODIFIED',
+            'label' => 'LBL_VOTE_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => false,
         ),
         'createdUser' => array(
             'name' => 'createdUser',
-            'label' => 'LBL_WIKI_CREATED_USER',
+            'label' => 'LBL_VOTE_CREATED_USER',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
-            'label' => 'LBL_COMMENTS_CREATED_USER_NAME',
+            'label' => 'LBL_VOTE_CREATED_USER_NAME',
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
-            'label' => 'LBL_WIKI_MODIFIED_USER',
+            'label' => 'LBL_VOTE_MODIFIED_USER',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
-            'label' => 'LBL_COMMENTS_MODIFIED_USER_NAME',
+            'label' => 'LBL_VOTE_MODIFIED_USER_NAME',
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
         ),
-        'deleted' => array(
-            'name' => 'deleted',
-            'label' => 'LBL_WIKI_DELETED',
+        'vote' => array(
+            'name' => 'vote',
+            'label' => 'LBL_VOTE_VOTE',
             'type' => 'bool',
-            'length' => '1',
             'null' => false,
         ),
-        'status' => array(
-            'name' => 'status',
-            'label' => 'LBL_WIKI_STATUS',
+        'relatedTo' => array(
+            'name' => 'relatedTo',
+            'label' => 'LBL_VOTE_RELATED_TO',
             'type' => 'varchar',
-            'length' => '15',
+            'length' => '20',
             'null' => false,
         ),
-        'locked' => array(
-            'name' => 'locked',
-            'label' => 'LBL_WIKI_LOCKED',
-            'type' => 'bool',
-            'length' => '1',
-            'null' => false,
-        ),
-        'upvotes' => array(
-            'name' => 'upvotes',
-            'label' => 'LBL_WIKI_UPVOTES',
-            'type' => 'int',
-            'length' => '5',
-            'null' => false,
-        ),
-        'projectId' => array(
-            'name' => 'projectId',
-            'label' => 'LBL_WIKI_PROJECT',
+        'relatedId' => array(
+            'name' => 'relatedId',
+            'label' => 'LBL_VOTE_RELATED_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
-        'markUp' => array(
-            'name' => 'markUp',
-            'label' => 'LBL_WIKI_MARK_UP',
-            'type' => 'text',
-            'null' => false,
-        ),
-        'parentId' => array(
-            'name' => 'parentId',
-            'label' => 'LBL_WIKI_PARENT',
+        'relatedName' => array(
+            'name' => 'relatedName',
+            'label' => 'LBL_VOTE_RELATED_NAME',
             'type' => 'varchar',
-            'length' => '36',
+            'length' => '50',
             'null' => true,
-        )
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -147,44 +119,38 @@ $models['Wiki'] = array(
 
     ),
     'relationships' => array(
-      'belongsTo' => array(
-        'project' => array(
-          'primaryKey' => 'projectId',
-          'relatedModel' => 'Project',
-          'relatedKey' => 'id'
-        ),
-        'parent' => array(
-          'primaryKey' => 'parentId',
-          'relatedModel' => 'Wiki',
-          'relatedKey' => 'id'
-        )
-      ),
       'hasOne' => array(
         'createdBy' => array(
           'primaryKey' => 'createdUser',
           'relatedModel' => 'User',
-          'relatedKey' => 'id'
+          'relatedKey' => 'id',
         ),
         'modifiedBy' => array(
           'primaryKey' => 'modifiedUser',
           'relatedModel' => 'User',
-          'relatedKey' => 'id'
-        ),
-      ),
-      'hasManyToMany' => array(
-        'tagged' => array(
-          'primaryKey' => 'id',
-          'relatedModel' => 'Tagged',
-          'rhsKey' => 'relatedId',
-          'lhsKey' => 'tagId',
-          'secondaryModel' => 'Tag',
-          'secondaryKey' => 'id',
-          'condition' => 'Tagged.relatedTo = "wiki"'
+          'relatedKey' => 'id',
         )
-      )
-    ),
-    'behaviors' => array(
-        'aclBehavior',
+      ),
+      'belongsTo' => array(
+          'wiki' => array(
+              'primaryKey' => 'relatedId',
+              'relatedModel' => 'Wiki',
+              'relatedKey' => 'id',
+              'condition' => 'Vote.relatedTo = "wiki"'
+          ),
+          'comment' => array(
+              'primaryKey' => 'relatedId',
+              'relatedModel' => 'Comment',
+              'relatedKey' => 'id',
+              'condition' => 'Vote.relatedTo = "comment"'
+          ),
+          'conversationroom' => array(
+              'primaryKey' => 'relatedId',
+              'relatedModel' => 'Conversationroom',
+              'relatedKey' => 'id',
+              'condition' => 'Vote.relatedTo = "conversationroom"'
+          )
+      ),
     ),
 );
 

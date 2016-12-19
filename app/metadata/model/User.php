@@ -115,6 +115,13 @@ $models['User'] = array(
            'length' => '25',
            'null' => true,
        ),
+       'title' => array(
+           'name' => 'title',
+           'label' => 'LBL_USERS_TITLE',
+           'type' => 'varchar',
+           'length' => '100',
+           'null' => true,
+       ),
        'phone' => array(
            'name' => 'phone',
            'label' => 'LBL_USERS_PHONE',

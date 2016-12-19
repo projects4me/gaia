@@ -427,6 +427,11 @@ class RestController extends \Phalcon\Mvc\Controller
         $fields = $this->request->get('fields',null,array());
         $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
 
+        if ($modelName === 'User' && $this->id === 'me')
+        {
+          $this->id = $GLOBALS['currentUser']->id;
+        }
+
         $params = array(
             'id' => $this->id,
             'rels' => $rels,
@@ -602,6 +607,70 @@ class RestController extends \Phalcon\Mvc\Controller
      */
     public function patchAction()
     {
+      $modelName = $this->modelName;
+      $model = new $modelName();
+
+      $util = new \Util();
+      $data = array();
+
+      //get data
+      $temp = $util->objectToArray($this->request->getJsonRawBody());
+
+      //verify if exist more than one element
+      if ($util->existSubArray($temp) )
+      {
+        if (isset($temp['data']['attributes']))
+        {
+          if (isset($temp['data']['id']) && !empty($temp['data']['id']))
+          {
+            $temp['data']['attributes']['id'] = $temp['data']['id'];
+          }
+          $data[] = $temp['data']['attributes'];
+        }
+        else {
+          $data = $temp;
+        }
+
+      }
+      else
+      {
+        $data[0] = $temp;
+      }
+
+
+      //scroll through the array data and make the action save/update
+      foreach ($data as $key => $value) {
+
+        //if have param then update
+        if ( isset($value['id']) ) {
+          //if passed by url
+          $model = $modelName::findFirst('id = "'.$value['id'].'"');
+          //print_r($value);
+          if ( $model->save($value) ){
+            $dataResponse = get_object_vars($model);
+            //update
+            $this->response->setStatusCode(200, "OK");
+
+            $data = $model->read(array('id' => $value['id']));
+
+            $dataArray = $this->extractData($data,'one');
+            $finalData = $this->buildHAL($dataArray);
+            return $this->returnResponse($finalData);
+          }
+          else {
+            $errors = array();
+            foreach( $model->getMessages() as $message ) {
+              $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
+            }
+            $this->response->setJsonContent(array(
+            'status' => 'ERROR',
+            'messages' => $errors
+            ));
+          }
+        }
+      }//end foreach
+
+      return $this->response;
 
     }
 
@@ -727,7 +796,7 @@ class RestController extends \Phalcon\Mvc\Controller
 
                     $dataArray = $this->extractData($data,'one');
                     $finalData = $this->buildHAL($dataArray);
-                    return $this->returnResponse($finalData);                    
+                    return $this->returnResponse($finalData);
 /*                    $this->response->setJsonContent(array(
                         'status' => 'OK',
                         'data' => array_merge($value, $dataResponse) //merge form data with return db

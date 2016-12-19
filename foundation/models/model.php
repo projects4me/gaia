@@ -496,10 +496,11 @@ class Model extends \Phalcon\Mvc\Model
             if ($relations[$relationship]['type'] == 'hasManyToMany')
             {
                 // for a many-many relationship two joins are required
+                $relatedModel = $relations[$relationship]['relatedModel'];
                 $secondaryModel = $relations[$relationship]['secondaryModel'];
                 $relatedQuery = get_class($this).'.'.$relations[$relationship]['primaryKey'].
                                 ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['rhsKey'];
-                $secondaryQuery = $secondaryModel.'.'.$relations[$relationship]['secondaryKey'].
+                $secondaryQuery = $relationship.'.'.$relations[$relationship]['secondaryKey'].
                                 ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['lhsKey'];
 
                 $query->$join($relatedModel,$relatedQuery,$relationship.$relatedModel);
