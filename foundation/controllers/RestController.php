@@ -971,8 +971,10 @@ class RestController extends \Phalcon\Mvc\Controller
         if ($data instanceof Resultset)
         {
             $data->setHydrateMode(Resultset::HYDRATE_ARRAYS);
+
             $result = array();
             foreach($data as $values){
+              //print_r($values);
               foreach ($values as $attr => $value){
                 if (!isset($result[$values['id']])){
                   $result[$values['id']] = array();
@@ -999,6 +1001,7 @@ class RestController extends \Phalcon\Mvc\Controller
                   }
               }
             }
+            //die();
         }
         elseif (is_array ($data))
         {
@@ -1013,6 +1016,7 @@ class RestController extends \Phalcon\Mvc\Controller
         // do not allow passwords to be returned
         $this->removePassword($result);
 
+        $this->removeDuplicates($result);
 
         $count = 0;
 
@@ -1206,6 +1210,37 @@ class RestController extends \Phalcon\Mvc\Controller
                 unset($array[$key]);
             }
         }
+    }
+
+    /**
+     * If there are multiple hasMany relationships in the result of a query
+     * then we run into the issue of getting more rows with duplicate data even
+     * for the related entities this function is used to remove the duplicate
+     * entries before they are processes further
+     *
+     * @pram array $array
+     */
+    final private function removeDuplicates(array &$array)
+    {
+      foreach($array as $id => &$obj)
+      {
+        foreach($obj as $attr => &$data)
+        {
+          if (is_array($data) && isset($data['0']))
+          {
+            $temp = array();
+            foreach($data as $relatedIndex => &$relatedData)
+            {
+              if (isset($relatedData['id']))
+              {
+                $temp[$relatedData['id']] = $relatedData;
+                unset($data[$relatedIndex]);
+              }
+            }
+            $data = array_values(array_merge($data,$temp));
+          }
+        }
+      }
     }
 
 

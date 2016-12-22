@@ -250,6 +250,17 @@ $config['routes'] = array(
                   'PATCH',
                 ),
                 'identifier' => 'id',
+            ),
+            'vote' => array(
+                'path' => '/api/:version/vote',
+                'allowedMethods' => array(
+                  'GET',
+                  'POST',
+                  'PUT',
+                  'DELETE',
+                  'PATCH',
+                ),
+                'identifier' => 'id',
             )
         )
     ),
