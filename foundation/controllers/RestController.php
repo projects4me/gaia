@@ -834,7 +834,8 @@ class RestController extends \Phalcon\Mvc\Controller
         //delete if exists the object
         if ( $model!=false ){
             if ( $model->delete() == true ){
-                $this->response->setJsonContent(array('status' => "OK"));
+                $this->response->setJsonContent(array('data' => array('type' => strtolower($modelName),"id"=>$this->id)));
+                $this->response->setStatusCode(200, "OK");
             }else{
                $this->response->setStatusCode(409, "Conflict");
 
