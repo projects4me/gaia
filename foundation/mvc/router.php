@@ -125,7 +125,7 @@ class Router extends PhalconRouter\Router
                                 case 'DELETE':
                                 // Allow deletion of an entity
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
-                                $this->addDelete($path,array('controller'=> $module,'action' => 'delete'));
+                                $this->addDelete($path,array('controller'=> $module,'action' => 'delete', $moduleRoutes->identifier => '1'));
 
                                 // Allow deletion of a collection of resource
                                 $path = (($basepath[0] === '/')?'':'/').$basepath;

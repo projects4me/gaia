@@ -95,30 +95,10 @@ $models['Tag'] = array(
             'length' => '50',
             'null' => false,
         ),
-        'relatedTo' => array(
-            'name' => 'relatedTo',
-            'label' => 'LBL_COMMENTS_RELATED_TO',
-            'type' => 'varchar',
-            'length' => '20',
-            'null' => false,
-        ),
-        'relatedId' => array(
-            'name' => 'relatedId',
-            'label' => 'LBL_COMMENTS_RELATED_ID',
-            'type' => 'varchar',
-            'length' => '36',
-            'null' => false,
-        ),
-        'relatedName' => array(
-            'name' => 'relatedName',
-            'label' => 'LBL_COMMENTS_RELATED_NAME',
-            'type' => 'varchar',
-            'length' => '50',
-            'null' => true,
-        ),
     ),
     'indexes' => array(
         'id' => 'primary',
+        'tag' => 'unique'
     ),
     'foriegnKeys' => array(
 
@@ -145,7 +125,7 @@ $models['Tag'] = array(
           'relatedModel' => 'Tagged',
           'rhsKey' => 'tagId',
           'lhsKey' => 'relatedId',
-          'secondaryModel' => 'wiki',
+          'secondaryModel' => 'Wiki',
           'secondaryKey' => 'id',
           'condition' => 'Tagged.relatedTo = "wiki"'
         ),

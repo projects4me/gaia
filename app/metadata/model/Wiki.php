@@ -178,9 +178,15 @@ $models['Wiki'] = array(
           'relatedKey' => 'relatedId',
           'condition' => 'vote.relatedTo = "wiki"'
         ),
+        'tagged' => array(
+          'primaryKey' => 'id',
+          'relatedModel' => 'Tagged',
+          'relatedKey' => 'relatedId',
+          'condition' => 'tagged.relatedTo = "wiki"'
+        ),
       ),
       'hasManyToMany' => array(
-        'tagged' => array(
+        'tag' => array(
           'primaryKey' => 'id',
           'relatedModel' => 'Tagged',
           'rhsKey' => 'relatedId',

@@ -240,6 +240,15 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'tagged' => array(
+                'path' => '/api/:version/tagged',
+                'allowedMethods' => array(
+                  'GET',
+                  'POST',
+                  'DELETE',
+                ),
+                'identifier' => 'id',
+            ),
             'wiki' => array(
                 'path' => '/api/:version/wiki',
                 'allowedMethods' => array(
