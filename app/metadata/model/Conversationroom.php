@@ -134,10 +134,20 @@ $models['Conversationroom'] = array(
     ),
     'relationships' => array(
       'hasOne' => array(
-          'projects' => array(
+          'project' => array(
               'primaryKey' => 'projectId',
               'relatedModel' => 'Project',
               'relatedKey' => 'id',
+          ),
+          'createdBy' => array(
+            'primaryKey' => 'createdUser',
+            'relatedModel' => 'User',
+            'relatedKey' => 'id'
+          ),
+          'modifiedBy' => array(
+            'primaryKey' => 'modifiedUser',
+            'relatedModel' => 'User',
+            'relatedKey' => 'id'
           ),
       ),
       'hasMany' => array(
@@ -146,6 +156,12 @@ $models['Conversationroom'] = array(
               'relatedModel' => 'Comment',
               'relatedKey' => 'relatedId',
               'condition' => 'comments.relatedTo = "conversationrooms"'
+          ),
+          'votes' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Vote',
+            'relatedKey' => 'relatedId',
+            'condition' => 'votes.relatedTo = "conversationrooms"'
           ),
       ),
     ),
