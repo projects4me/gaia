@@ -134,19 +134,20 @@ class Migration extends PhalconMigration
                   if ($type == 'primary')
                   {
                       $name = $indexType = 'PRIMARY';
-
+                      $tableDescription['indexes'][] = new Index($name, array($field),$indexType);
                   }
                   else if ($type == 'unique')
                   {
                       $indexType = 'UNIQUE';
                       $name = $meta[$model]['tableName'].'_'.$field;
+                      $tableDescription['indexes'][] = new Index($name, array($field),$indexType);
                   }
                   else {
                       $indexType = 'INDEX';
                       $name = $meta[$model]['tableName'].'_'.$field;
+                      $tableDescription['indexes'][] = new Index($name, array($field));
                   }
 
-                  $tableDescription['indexes'][] = new Index($name, array($field));
       	}
 
         return $tableDescription;

@@ -1,10 +1,12 @@
-[![Latest Version](https://img.shields.io/packagist/v/phalcon/devtools.svg?style=flat-square)](https://github.com/phalcon/incubator/devtools)
-[![Total Downloads](https://img.shields.io/packagist/dt/phalcon/devtools.svg?style=flat-square)](https://packagist.org/packages/phalcon/devtools)
-[![Software License](https://img.shields.io/badge/license-BSD--3-brightgreen.svg?style=flat-square)](https://github.com/phalcon/phalcon-devtools/blob/master/docs/LICENSE.txt)
-
 # Phalcon Devtools
 
-![Webtools](http://static.phalconphp.com/img/webtools.png)
+[![Latest Version](https://img.shields.io/packagist/v/phalcon/devtools.svg?style=flat-square)][:devtools:]
+[![Software License](https://img.shields.io/badge/license-BSD--3-brightgreen.svg?style=flat-square)][:license:]
+[![Total Downloads](https://img.shields.io/packagist/dt/phalcon/devtools.svg?style=flat-square)][:packagist:]
+[![Daily Downloads](https://img.shields.io/packagist/dd/phalcon/devtools.svg?style=flat-square)][:packagist:]
+
+![Phalcon WebTools](https://cloud.githubusercontent.com/assets/1256298/18617851/b7d31558-7de2-11e6-83e0-30e5902af714.png)
+
 
 ## What's Phalcon?
 
@@ -17,8 +19,8 @@ with Phalcon framework.
 
 ## Requirements
 
-* PHP >= 5.3.9
-* Phalcon >= 2.0.0
+* PHP >= 5.5
+* Phalcon >= 3.0.0
 
 ## Installing via Composer
 
@@ -33,17 +35,17 @@ Create the composer.json file as follows:
 ```json
 {
     "require": {
-        "phalcon/devtools": "dev-master"
+        "phalcon/devtools": "~3.0.2"
     }
 }
 ```
 
-If you are still using Phalcon 1.3.x, create a composer.json with the following instead:
+If you are still using Phalcon 2.0.x, create a `composer.json` with the following instead:
 
 ```json
 {
     "require": {
-        "phalcon/devtools": "1.3.*@dev"
+        "phalcon/devtools": "^2.0"
     }
 }
 ```
@@ -52,13 +54,6 @@ Run the composer installer:
 
 ```bash
 php composer.phar install
-```
-
-Create a symbolic link to the phalcon.php script:
-
-```bash
-ln -s ~/devtools/phalcon.php /usr/bin/phalcon
-chmod ugo+x /usr/bin/phalcon
 ```
 
 ## Build `.phar`
@@ -90,7 +85,7 @@ cd phalcon-devtools
 ```
 
 This method requires a little bit more of setup. Probably the best way would be to symlink
-the phalcon.php to a directory in your PATH, so you can issue phalcon commands in each directory
+the `phalcon.php` to a directory in your `PATH`, so you can issue phalcon commands in each directory
 where a phalcon project resides.
 
 ```bash
@@ -103,13 +98,15 @@ chmod ugo+x /usr/bin/phalcon
 To get a list of available commands just execute following:
 
 ```bash
-$ phalcon commands help
+phalcon commands help
 ```
 
 This command should display something similar to:
 
-```bash
-Phalcon DevTools (2.0.8)
+```sh
+$ phalcon --help
+
+Phalcon DevTools (3.0.2)
 
 Help:
   Lists the commands available in Phalcon devtools
@@ -117,6 +114,7 @@ Help:
 Available commands:
   commands         (alias of: list, enumerate)
   controller       (alias of: create-controller)
+  module           (alias of: create-module)
   model            (alias of: create-model)
   all-models       (alias of: create-all-models)
   project          (alias of: create-project)
@@ -125,45 +123,27 @@ Available commands:
   webtools         (alias of: create-webtools)
 ```
 
-## Update WebTools from old version
-
-Please remove manually directories:
-
-* `public/css/bootstrap`
-* `public/css/codemirror`
-* `public/js/bootstrap`
-* `public/img/bootstrap`
-* `public/js/codemirror`
-* `public/js/jquery`
-
-and files:
-
-* `public/webtools.config.php`
-* `public/webtools.php`
-
-and just run form your project root:
-
-```bash
-$ phalcon webtools --action=enable
-```
-
 ## Database adapter
 
-Should add 'adapter' parameter in your db config file (if you use not Mysql database). For PostgreSql will be
+Should add `adapter` parameter in your `db` config file (if you use not MySQL database).
+
+For PostgreSQL it will be something like:
 
 ```php
 $config = [
-  "host"     => "localhost",
-  "dbname"   => "my_db_name",
-  "username" => "my_db_user",
-  "password" => "my_db_user_password",
-  "adapter"  => "Postgresql"
+  'host'     => 'localhost',
+  'dbname'   => 'my_db_name',
+  'username' => 'my_db_user',
+  'password' => 'my_db_user_password',
+  'adapter'  => 'Postgresql'
 ];
 ```
 
 ## License
 
-Phalcon Developer Tools is open source software licensed under the [New BSD License][1].
+Phalcon Developer Tools is open source software licensed under the [New BSD License][:license:].<br>
 © Phalcon Framework Team and contributors
 
-[1]: https://github.com/phalcon/phalcon-devtools/blob/master/docs/LICENSE.md
+[:packagist:]: https://packagist.org/packages/phalcon/devtools
+[:devtools:]: https://github.com/phalcon/phalcon-devtools
+[:license:]: https://github.com/phalcon/phalcon-devtools/blob/master/LICENSE.txt
