@@ -120,7 +120,7 @@ $models['Conversationroom'] = array(
             'label' => 'LBL_CONVERSATION_ROOMS_PROJECT_NAME',
             'type' => 'varchar',
             'length' => '255',
-            'null' => false,
+            'null' => true,
         ),
     ),
     'indexes' => array(
