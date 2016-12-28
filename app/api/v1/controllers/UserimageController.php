@@ -63,6 +63,11 @@ class UserimageController extends \Phalcon\Mvc\Controller
 
       $filePath = APP_PATH.DS.'filesystem'.DS.'img'.DS.'user'.DS.$id;
 
+      if (!file_exists($filePath))
+      {
+        $filePath = APP_PATH.DS.'public'.DS.'img'.DS.'Reddit.png';
+      }
+
       $data = fileHandler::readFile($filePath);
 
       $this->response->setStatusCode(200, "OK");
