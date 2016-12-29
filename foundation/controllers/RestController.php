@@ -1047,13 +1047,12 @@ class RestController extends \Phalcon\Mvc\Controller
                 if (isset($val['id'])) {
                   $jsonapi_org['data'][$count]['relationships'][$attr] = array();
                   $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                  $relatedModelKey = 'relatedModel';
                   if ($relationDefinition['type'] == 'hasManyToMany')
                   {
-                    $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower($relationDefinition['secondaryModel']);
+                    $relatedModelKey = 'secondaryModel';
                   }
-                  else {
-                    $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower($relationDefinition['relatedModel']);
-                  }
+                  $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower($relationDefinition[$relatedModelKey]);
                   $id = '';
                   $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['id'] = $val['id'];
                   $id = $val['id'];
@@ -1070,37 +1069,23 @@ class RestController extends \Phalcon\Mvc\Controller
                       $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx] = array();
                       $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
                       $relatedCount = 0;
-                      if ($relationDefinition['type'] == 'hasManyToMany')
-                      {
-                        $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition['secondaryModel']);
+                      $relatedModelKey = 'relatedModel';
+                      if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])){
+                        $relatedModelKey = 'secondaryModel';
                       }
-                      else {
-                        $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition['relatedModel']);
-                      }
+                      $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition[$relatedModelKey]);
                       $id = '';
                       $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
                       $id = $object['id'];
                       unset($object['id']);
 
                       $included['attributes'] = $object;
-                      $jsonapi_org['included'][($relationDefinition['relatedModel'].$id)] = $included;
+                      $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
                     }
                   }
                 }
               }
             }
-            /*
-            if ($modelName == 'conversationroom')
-            {
-              $jsonapi_org['data'][$count]['relationships']['comments'] = array(
-                'data' => array(
-                  'type' => 'comment',
-                ),
-                'links' => array(
-                  'related' => 'http://projects4me/api/v1/conversationroom/'.$jsonapi_org['data'][$count]['id'].'/comments'
-                )
-              );
-            }*/
             $count++;
           }
         }
@@ -1124,28 +1109,25 @@ class RestController extends \Phalcon\Mvc\Controller
                 }
               }
               else {
-                //print_r($attr);
-                //print_r($val);
                 // process relationships
                 if (isset($val['id'])) {
                   $included = array();
                   $jsonapi_org['data']['relationships'][$attr] = array();
                   $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
                   $relatedCount = 0;
+                  $relatedModelKey = 'relatedModel';
                   if ($relationDefinition['type'] == 'hasManyToMany')
                   {
-                    $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower($relationDefinition['secondaryModel']);
+                    $relatedModelKey = 'secondaryModel';
                   }
-                  else {
-                    $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower($relationDefinition['relatedModel']);
-                  }
+                  $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower($relationDefinition[$relatedModelKey]);
                   $id = '';
                   $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data']['id'] = $val['id'];
                   $id = $val['id'];
                   unset($val['id']);
 
                   $included['attributes'] = $val;
-                  $jsonapi_org['included'][($relationDefinition['relatedModel'].$id)] = $included;
+                  $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
                 }
                 else {
                   foreach($val as $idx => $object){
@@ -1154,20 +1136,19 @@ class RestController extends \Phalcon\Mvc\Controller
                       $jsonapi_org['data']['relationships'][$attr]['data'][$idx] = array();
                       $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
                       $relatedCount = 0;
+                      $relatedModelKey = 'relatedModel';
                       if ($relationDefinition['type'] == 'hasManyToMany')
                       {
-                        $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition['secondaryModel']);
+                        $relatedModelKey = 'secondaryModel';
                       }
-                      else {
-                        $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition['relatedModel']);
-                      }
+                      $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition[$relatedModelKey]);
                       $id = '';
                       $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
                       $id = $object['id'];
                       unset($object['id']);
 
                       $included['attributes'] = $object;
-                      $jsonapi_org['included'][($relationDefinition['relatedModel'].$id)] = $included;
+                      $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
                     }
                   }
                 }

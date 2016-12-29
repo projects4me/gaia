@@ -173,15 +173,19 @@ $models['Project'] = array(
                 'relatedModel' => 'Issue',
                 'relatedKey' => 'projectId',
             ),
-            'conversationRooms' => array(
+            'conversations' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => 'Conversationroom',
                 'relatedKey' => 'projectId',
-                //'condition' => 'conversationRooms.type = "projects"'
+            ),
+            'memberships' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Membership',
+                'relatedKey' => 'projectId',
             ),
         ),
-/*
         'hasManyToMany' => array(
+/*
             'Teams' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => 'ProjectsTeams',
@@ -190,14 +194,27 @@ $models['Project'] = array(
                 'secondaryModel' => 'Teams',
                 'secondaryKey' => 'id',
             ),
-            'Users' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'ProjectsRoles',
-                'rhsKey' => 'projectId',
-                'lhsKey' => 'userId',
-                'secondaryModel' => 'Users',
-                'secondaryKey' => 'id',
+*/
+            'members' => array(
+              'primaryKey' => 'id',
+              'relatedModel' => 'Membership',
+              'rhsKey' => 'projectId',
+              'lhsKey' => 'userId',
+              'secondaryModel' => 'User',
+              'secondaryKey' => 'id',
             ),
+            'roles' => array(
+              'primaryKey' => 'id',
+              'relatedModel' => 'Membership',
+              'rhsKey' => 'projectId',
+              'lhsKey' => 'roleId',
+              'secondaryModel' => 'Role',
+              'secondaryKey' => 'id',
+            ),
+
+
+
+/*
             'Roles' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => 'ProjectsRoles',
@@ -206,8 +223,9 @@ $models['Project'] = array(
                 'secondaryModel' => 'Roles',
                 'secondaryKey' => 'id',
             ),
-        )
 */
+        )
+
     ),
     'behaviors' => array(
         'aclBehavior',

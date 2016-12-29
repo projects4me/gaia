@@ -88,11 +88,11 @@ $models['Resource'] = array(
             ),
           ),
           'belongsTo' => array(
-            'childResources' => array(
+            'child' => array(
                 'primaryKey' => 'parentId',
                 'relatedModel' => 'Resource',
                 'relatedKey' => 'id',
-                'conditionExclusive' => 'Resources.lft BETWEEN ChildResources.lft AND ChildResources.rht',
+                'conditionExclusive' => 'Resource.lft BETWEEN child.lft AND child.rht',
                 'relType' => 'INNER'
             ),
         ),

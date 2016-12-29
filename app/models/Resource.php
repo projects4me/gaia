@@ -50,10 +50,10 @@ class Resource extends Model
      */
     public function getResource($entity){
       $params = array(
-          'fields' => array('ChildResources.*'),
-          'rels' => array('ChildResources'),
-          'where' => '(Resources.entity : '.$entity.')',
-          'sort' => 'ChildResources.lft',
+          'fields' => array('child.*'),
+          'rels' => array('child'),
+          'where' => '(Resource.entity : '.$entity.')',
+          'sort' => 'child.lft',
           'order' => 'DESC'
       );
 
