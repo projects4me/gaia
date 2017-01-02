@@ -912,7 +912,7 @@ class RestController extends \Phalcon\Mvc\Controller
         }
 
         $hal = $data;
-        $hal['meta']['count'] = count($data);
+        $hal['meta']['count'] = count($data['data']);
 
         $hal['meta']['_links']['self']['href'] = $query['_url'];
         if (!empty($self))
@@ -1161,20 +1161,6 @@ class RestController extends \Phalcon\Mvc\Controller
         {
           $jsonapi_org['included'] = array_values($jsonapi_org['included']);
         }
-
-
-/*
-        $jsonapi_org['data']['relationships']['comments'] = array(
-          'data' => array(
-            'type' => 'comments',
-          ),
-          'links' => array(
-            'related' => 'http://projects4me/api/v1/Conversationrooms/6240fcc25825-9d6a-c1c8-c518771d35c4/comments'
-          )
-        );
-*/
-
-
         $result = $jsonapi_org;
 
         return $result;
