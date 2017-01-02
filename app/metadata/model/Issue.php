@@ -211,6 +211,20 @@ $models['Issue'] = array(
               'relatedModel' => 'Project',
               'relatedKey' => 'id'
           ),
+        ),
+        'hasMany' => array(
+          'estimated' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Timelog',
+            'relatedKey' => 'issueId',
+            'condition' => 'estimated.context = "est"'
+          ),
+          'spent' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Timelog',
+            'relatedKey' => 'issueId',
+            'condition' => 'spent.context = "spent"'
+          ),
         )
     ),
 );

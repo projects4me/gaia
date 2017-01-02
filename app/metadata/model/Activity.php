@@ -99,6 +99,19 @@ $models['Activity'] = array(
 
     ),
     'relationships' => array(
+      'hasOne' => array(
+        'createdBy' => array(
+            'primaryKey' => 'createdUser',
+            'relatedModel' => 'User',
+            'relatedKey' => 'id'
+        ),
+        'project' => array(
+            'primaryKey' => 'relatedId',
+            'relatedModel' => 'Project',
+            'relatedKey' => 'id',
+            'condition' => 'Activity.relatedTo = "project"'
+        )
+      )
     ),
 );
 

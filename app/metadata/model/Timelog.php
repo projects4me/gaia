@@ -101,7 +101,15 @@ $models['Timelog'] = array(
            'type' => 'int',
            'length' => '5',
            'null' => true,
+       ),
+       'context' => array(
+           'name' => 'context',
+           'label' => 'LBL_TIME_LOGS_CONTEXT',
+           'type' => 'varchar',
+           'length' => '5',
+           'null' => false,
        )
+
     ),
     'indexes' => array(
         'id' => 'primary',

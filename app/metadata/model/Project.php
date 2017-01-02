@@ -183,6 +183,12 @@ $models['Project'] = array(
                 'relatedModel' => 'Membership',
                 'relatedKey' => 'projectId',
             ),
+            'activities' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Activity',
+                'relatedKey' => 'relatedId',
+                'condition' => 'activities.relatedTo = "project"',
+            ),
         ),
         'hasManyToMany' => array(
 /*
