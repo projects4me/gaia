@@ -147,6 +147,13 @@ $models['Milestone'] = array(
               'relatedModel' => 'Project',
               'relatedKey' => 'id'
           ),
+        ),
+        'hasMany' => array(
+          'issues' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Issue',
+            'relatedKey' => 'milestoneId',
+          ),
         )
     ),
 );

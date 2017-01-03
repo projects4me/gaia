@@ -211,6 +211,11 @@ $models['Issue'] = array(
               'relatedModel' => 'Project',
               'relatedKey' => 'id'
           ),
+          'milestone' => array(
+              'primaryKey' => 'milestoneId',
+              'relatedModel' => 'Milestone',
+              'relatedKey' => 'id'
+          ),
         ),
         'hasMany' => array(
           'estimated' => array(

@@ -87,6 +87,27 @@ $models['Activity'] = array(
             'type' => 'varchar',
             'length' => '15',
             'null' => false,
+        ),
+        'relatedActivity' => array(
+            'name' => 'relatedActivity',
+            'label' => 'LBL_ACTIVITIES_RELATED_ACTIVITY',
+            'type' => 'varchar',
+            'length' => '15',
+            'null' => true,
+        ),
+        'relatedActivityId' => array(
+            'name' => 'relatedActivityId',
+            'label' => 'LBL_ACTIVITIES_RELATED_ACTIVITY_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+        ),
+        'relatedActivityModule' => array(
+            'name' => 'relatedActivityModule',
+            'label' => 'LBL_ACTIVITIES_RELATED_ACTIVITY_MODULE',
+            'type' => 'varchar',
+            'length' => '15',
+            'null' => true,
         )
     ),
     'indexes' => array(

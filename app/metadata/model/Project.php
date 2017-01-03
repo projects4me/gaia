@@ -120,6 +120,13 @@ $models['Project'] = array(
             'null' => false,
             'length' => '15'
         ),
+        'budget' => array(
+            'name' => 'budget',
+            'label' => 'LBL_PROJECTS_BUDGET',
+            'type' => 'float',
+            'null' => true,
+            'length' => '11'
+        ),
         'type' => array(
             'name' => 'type',
             'label' => 'LBL_PROJECTS_TYPE',
@@ -168,70 +175,51 @@ $models['Project'] = array(
           ),
         ),
         'hasMany' => array(
-            'issues' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'Issue',
-                'relatedKey' => 'projectId',
-            ),
-            'conversations' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'Conversationroom',
-                'relatedKey' => 'projectId',
-            ),
-            'memberships' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'Membership',
-                'relatedKey' => 'projectId',
-            ),
-            'activities' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'Activity',
-                'relatedKey' => 'relatedId',
-                'condition' => 'activities.relatedTo = "project"',
-            ),
+          'issues' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Issue',
+            'relatedKey' => 'projectId',
+          ),
+          'conversations' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Conversationroom',
+            'relatedKey' => 'projectId',
+          ),
+          'memberships' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Membership',
+            'relatedKey' => 'projectId',
+          ),
+          'activities' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Activity',
+            'relatedKey' => 'relatedId',
+            'condition' => 'activities.relatedTo = "project"',
+          ),
+          'milestones' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Milestone',
+            'relatedKey' => 'projectId',
+          ),
         ),
         'hasManyToMany' => array(
-/*
-            'Teams' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'ProjectsTeams',
-                'rhsKey' => 'projectId',
-                'lhsKey' => 'teamId',
-                'secondaryModel' => 'Teams',
-                'secondaryKey' => 'id',
-            ),
-*/
-            'members' => array(
-              'primaryKey' => 'id',
-              'relatedModel' => 'Membership',
-              'rhsKey' => 'projectId',
-              'lhsKey' => 'userId',
-              'secondaryModel' => 'User',
-              'secondaryKey' => 'id',
-            ),
-            'roles' => array(
-              'primaryKey' => 'id',
-              'relatedModel' => 'Membership',
-              'rhsKey' => 'projectId',
-              'lhsKey' => 'roleId',
-              'secondaryModel' => 'Role',
-              'secondaryKey' => 'id',
-            ),
-
-
-
-/*
-            'Roles' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'ProjectsRoles',
-                'rhsKey' => 'projectId',
-                'lhsKey' => 'roleId',
-                'secondaryModel' => 'Roles',
-                'secondaryKey' => 'id',
-            ),
-*/
+          'members' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Membership',
+            'rhsKey' => 'projectId',
+            'lhsKey' => 'userId',
+            'secondaryModel' => 'User',
+            'secondaryKey' => 'id',
+          ),
+          'roles' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Membership',
+            'rhsKey' => 'projectId',
+            'lhsKey' => 'roleId',
+            'secondaryModel' => 'Role',
+            'secondaryKey' => 'id',
+          ),
         )
-
     ),
     'behaviors' => array(
         'aclBehavior',
