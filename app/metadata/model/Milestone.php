@@ -106,9 +106,9 @@ $models['Milestone'] = array(
             'length' => '25',
             'null' => false,
         ),
-        'type' => array(
-            'name' => 'type',
-            'label' => 'LBL_MILESTONES_TYPE',
+        'milestoneType' => array(
+            'name' => 'milestoneType',
+            'label' => 'LBL_MILESTONES_MILESTONE_TYPE',
             'type' => 'varchar',
             'length' => '25',
             'null' => false,
