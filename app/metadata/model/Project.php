@@ -120,9 +120,16 @@ $models['Project'] = array(
             'null' => false,
             'length' => '15'
         ),
-        'budget' => array(
-            'name' => 'budget',
-            'label' => 'LBL_PROJECTS_BUDGET',
+        'estimatedBudget' => array(
+            'name' => 'estimatedBudget',
+            'label' => 'LBL_PROJECTS_ESTIMATED_BUDGET',
+            'type' => 'float',
+            'null' => true,
+            'length' => '11'
+        ),
+        'spentBudget' => array(
+            'name' => 'spentBudget',
+            'label' => 'LBL_PROJECTS_SPENT_BUDGET',
             'type' => 'float',
             'null' => true,
             'length' => '11'

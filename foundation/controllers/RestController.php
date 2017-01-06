@@ -874,9 +874,9 @@ class RestController extends \Phalcon\Mvc\Controller
         $endPage = true;
         if ($limit != -1)
         {
-            if(isset($data[$limit]))
+            if(isset($data['data'][$limit]))
             {
-                unset($data[$limit]);
+                unset($data['data'][$limit]);
                 $endPage = false;
             }
 
