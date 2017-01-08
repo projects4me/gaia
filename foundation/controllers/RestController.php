@@ -867,27 +867,26 @@ class RestController extends \Phalcon\Mvc\Controller
      */
     protected function buildHAL(array $data,$limit=-1, $page=-1)
     {
-        $hal = array();
+        $hal = $data;
         $query = $this->request->getQuery();
         $self = $next = $prev = array();
 
         $endPage = true;
         if ($limit != -1)
         {
-            if(isset($data['data'][$limit]))
+            if(isset($hal['data'][$limit]))
             {
-                unset($data['data'][$limit]);
+                unset($hal['data'][$limit]);
                 $endPage = false;
             }
 
             if($page == -1)
-                $page = 0;
+                $page = 1;
             if (!isset($query['page']))
             {
                 $query['page'] = $page;
             }
         }
-
 
         foreach($query as $param => $value)
         {
@@ -911,22 +910,40 @@ class RestController extends \Phalcon\Mvc\Controller
             }
         }
 
-        $hal = $data;
+        /*
+        if ($limit != -1)
+        {
+          foreach($hal['data'] as $count => &$singleObj){
+              $pageOffset = ($page-1) + $count;
+              $singleObj['link']['self'] =
+          }
+        }
+        */
+
+
         $hal['meta']['count'] = count($data['data']);
 
-        $hal['meta']['_links']['self']['href'] = $query['_url'];
+        //$hal['meta']['_links']['self']['href'] = $query['_url'];
+        $hal['meta']['links']['self']['href'] = $query['_url'];
+        //$hal['links']['self']['href'] = $query['_url'];
         if (!empty($self))
         {
-            $hal['meta']['_links']['self']['href'] .= '?'.implode('&',$self);
+          //$hal['meta']['_links']['self']['href'] .= '?'.implode('&',$self);
+          $hal['meta']['links']['self']['href'] .= '?'.implode('&',$self);
+          //$hal['links']['self']['href'] .= '?'.implode('&',$self);
         }
         if (!empty($next) && !$endPage)
         {
-            $hal['meta']['_links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
+          //$hal['meta']['_links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
+          $hal['meta']['links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
+          //$hal['links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
         }
 
         if (!empty($prev) && $page > 1)
         {
-            $hal['meta']['_links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
+          //$hal['meta']['_links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
+          $hal['meta']['links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
+          //$hal['links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
         }
 
         return $hal;
