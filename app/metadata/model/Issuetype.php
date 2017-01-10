@@ -93,7 +93,14 @@ $models['Issuetype'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-        )
+        ),
+        'projectId' => array(
+            'name' => 'projectId',
+            'label' => 'LBL_ISSUE_TYPES_PROJECT',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => true,
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',

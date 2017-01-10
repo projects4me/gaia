@@ -181,27 +181,27 @@ $models['Issue'] = array(
     ),
     'relationships' => array(
         'hasOne' => array(
-          'assignee' => array(
+          'assignedTo' => array(
               'primaryKey' => 'assignee',
               'relatedModel' => 'User',
               'relatedKey' => 'id'
           ),
-          'createdUser' => array(
+          'createdBy' => array(
               'primaryKey' => 'createdUser',
               'relatedModel' => 'User',
               'relatedKey' => 'id'
           ),
-          'modifiedUser' => array(
+          'modifiedBy' => array(
               'primaryKey' => 'modifiedUser',
               'relatedModel' => 'User',
               'relatedKey' => 'id'
           ),
-          'owner' => array(
+          'ownedBy' => array(
               'primaryKey' => 'owner',
               'relatedModel' => 'User',
               'relatedKey' => 'id'
           ),
-          'reportedUser' => array(
+          'reportedBy' => array(
               'primaryKey' => 'reportedUser',
               'relatedModel' => 'User',
               'relatedKey' => 'id'
@@ -216,6 +216,16 @@ $models['Issue'] = array(
               'relatedModel' => 'Milestone',
               'relatedKey' => 'id'
           ),
+          'issuetype' => array(
+              'primaryKey' => 'typeId',
+              'relatedModel' => 'Issuetype',
+              'relatedKey' => 'id'
+          ),
+          'parentissue' => array(
+            'primaryKey' => 'parentId',
+            'relatedModel' => 'Issue',
+            'relatedKey' => 'id',
+          ),
         ),
         'hasMany' => array(
           'estimated' => array(
@@ -229,6 +239,23 @@ $models['Issue'] = array(
             'relatedModel' => 'Timelog',
             'relatedKey' => 'issueId',
             'condition' => 'spent.context = "spent"'
+          ),
+          'childissues' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Issue',
+            'relatedKey' => 'parentId',
+          ),
+          'comments' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Comment',
+            'relatedKey' => 'relatedId',
+            'condition' => 'comments.relatedTo = "issue"'
+          ),
+          'activities' => array(
+            'primaryKey' => 'id',
+            'relatedModel' => 'Activity',
+            'relatedKey' => 'relatedId',
+            'condition' => 'activities.relatedTo = "issue"',
           ),
         )
     ),
