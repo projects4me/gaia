@@ -270,6 +270,17 @@ $config['routes'] = array(
                   'PATCH',
                 ),
                 'identifier' => 'id',
+            ),
+            'upload' => array(
+                'path' => '/api/:version/upload',
+                'allowedMethods' => array(
+                  'GET',
+                  'POST',
+                  'PUT',
+                  'DELETE',
+                  'PATCH',
+                ),
+                'identifier' => 'id',
             )
         )
     ),
