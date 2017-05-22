@@ -45,13 +45,13 @@ $models['Upload'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_UPLOAD_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_UPLOAD_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'createdUser' => array(
             'name' => 'createdUser',

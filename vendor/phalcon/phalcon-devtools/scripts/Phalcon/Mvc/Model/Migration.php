@@ -19,10 +19,11 @@
 */
 
 namespace Phalcon\Mvc\Model;
+require_once "F:/wamp64/www/projects4me/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Utils.php";
 
 use Phalcon\Db;
 use Phalcon\Text;
-use Phalcon\Utils;
+use Phalcon\Utils as PhalconUtils;
 use DirectoryIterator;
 use Phalcon\Db\Column;
 use Phalcon\Migrations;
@@ -584,7 +585,7 @@ class Migration
      */
     public function morphTable($tableName, $definition)
     {
-        $defaultSchema = Utils::resolveDbSchema(self::$_databaseConfig);
+        $defaultSchema = PhalconUtils::resolveDbSchema(self::$_databaseConfig);
         $tableExists = self::$_connection->tableExists($tableName, $defaultSchema);
 
         if (isset($definition['columns'])) {
@@ -642,7 +643,23 @@ class Migration
                         }
 
                         if ($changed == true) {
-                            self::$_connection->modifyColumn($tableName, $tableColumn->getSchemaName(), $tableColumn, $tableColumn);
+                            try {
+                                self::$_connection->modifyColumn($tableName, $tableColumn->getSchemaName(), $tableColumn, $tableColumn);
+                            } catch (PDOException $e) {
+                                print "<pre>";
+                                print $tableName;
+                                print_r($tableColumn->getSchemaName());
+                                print_r($tableColumn);
+                                print_r($tableColumn);
+                                print "</pre></br>";
+                            } catch (Exception $e) {
+                                print "<pre>";
+                                print $tableName;
+                                print_r($tableColumn->getSchemaName());
+                                print_r($tableColumn);
+                                print_r($tableColumn);
+                                print "</pre></br>";
+                            }
                         }
                     }
                 }

@@ -3,7 +3,7 @@
   +------------------------------------------------------------------------+
   | Phalcon Framework                                                      |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2016 Phalcon Team (http://www.phalconphp.com)       |
+  | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
   | with this package in the file docs/LICENSE.txt.                        |
@@ -24,23 +24,15 @@ use Phalcon\Cache\Exception;
 use Phalcon\Cache\FrontendInterface;
 use Phalcon\Db;
 use Phalcon\Db\AdapterInterface as DbAdapterInterface;
-use Phalcon\Cache\Backend;
-use Phalcon\Cache\BackendInterface;
 
 /**
  * Phalcon\Cache\Backend\Database
- *
  * This backend uses a database as cache backend
- *
- * @package Phalcon\Cache\Backend
- * @property \Phalcon\Cache\FrontendInterface _frontend
  */
-class Database extends Backend implements BackendInterface
+class Database extends Prefixable
 {
-    use Prefixable;
-
     /**
-     * @var DbAdapterInterface
+     * @var \Phalcon\Db\AdapterInterface
      */
     protected $db = null;
 
@@ -50,28 +42,28 @@ class Database extends Backend implements BackendInterface
     protected $table = null;
 
     /**
-     * {@inheritdoc}
+     * Class constructor.
      *
-     * @param  FrontendInterface $frontend
-     * @param  array             $options
-     * @throws Exception
+     * @param  \Phalcon\Cache\FrontendInterface $frontend
+     * @param  array                            $options
+     * @throws \Phalcon\Cache\Exception
      */
-    public function __construct(FrontendInterface $frontend, array $options)
+    public function __construct(FrontendInterface $frontend, $options = array())
     {
-        if (!isset($options['db']) || !$options['db'] instanceof DbAdapterInterface) {
-            throw new Exception(
-                'Parameter "db" is required and it must be an instance of Phalcon\Acl\AdapterInterface'
-            );
+        if (!isset($options['db'])) {
+            throw new Exception("Parameter 'db' is required");
         }
 
-        if (!isset($options['table']) || empty($options['table']) || !is_string($options['table'])) {
-            throw new Exception("Parameter 'table' is required and it must be a non empty string");
+        if (!($options['db'] instanceof DbAdapterInterface)) {
+            throw new Exception("Parameter 'db' must implement Phalcon\\Db\\AdapterInterface");
+        }
+
+        if (!isset($options['table'])) {
+            throw new Exception("Parameter 'table' is required");
         }
 
         $this->db    = $options['db'];
-        $this->table = $this->db->escapeIdentifier($options['table']);
-
-        unset($options['db'], $options['table']);
+        $this->table = $options['table'];
 
         parent::__construct($frontend, $options);
     }
@@ -86,8 +78,8 @@ class Database extends Backend implements BackendInterface
     public function get($keyName, $lifetime = null)
     {
         $prefixedKey    = $this->getPrefixedIdentifier($keyName);
-        $sql            = "SELECT data, lifetime FROM {$this->table} WHERE key_name = ?";
-        $cache          = $this->db->fetchOne($sql, Db::FETCH_ASSOC, [$prefixedKey]);
+        $sql            = "SELECT data, lifetime FROM " . $this->table . " WHERE key_name = ?";
+        $cache          = $this->db->fetchOne($sql, Db::FETCH_ASSOC, array($prefixedKey));
         $this->_lastKey = $prefixedKey;
 
         if (!$cache) {
@@ -99,7 +91,7 @@ class Database extends Backend implements BackendInterface
 
         // Remove the cache if expired
         if ($cache['lifetime'] < time()) {
-            $this->db->execute("DELETE FROM {$this->table} WHERE key_name = ?", [$prefixedKey]);
+            $this->db->execute("DELETE FROM " . $this->table . " WHERE key_name = ?", array($prefixedKey));
 
             return null;
         }
@@ -110,10 +102,10 @@ class Database extends Backend implements BackendInterface
     /**
      * {@inheritdoc}
      *
-     * @param  string $keyName
-     * @param  string $content
-     * @param  int    $lifetime
-     * @param  bool   $stopBuffer
+     * @param  string                   $keyName
+     * @param  string                   $content
+     * @param  integer                  $lifetime
+     * @param  boolean                  $stopBuffer
      * @throws \Phalcon\Cache\Exception
      */
     public function save($keyName = null, $content = null, $lifetime = null, $stopBuffer = true)
@@ -144,23 +136,23 @@ class Database extends Backend implements BackendInterface
         $lifetime = time() + $lifetime;
 
         // Check if the cache already exist
-        $sql   = "SELECT data, lifetime FROM {$this->table} WHERE key_name = ?";
+        $sql   = "SELECT data, lifetime FROM " . $this->table . " WHERE key_name = ?";
         $cache = $this->db->fetchOne($sql, Db::FETCH_ASSOC, array($prefixedKey));
 
         if (!$cache) {
-            $this->db->execute("INSERT INTO {$this->table} VALUES (?, ?, ?)", [
+            $this->db->execute("INSERT INTO " . $this->table . " VALUES (?, ?, ?)", array(
                 $prefixedKey,
                 $frontend->beforeStore($cachedContent),
                 $lifetime
-            ]);
+            ));
         } else {
             $this->db->execute(
-                "UPDATE {$this->table} SET data = ?, lifetime = ? WHERE key_name = ?",
-                [
+                "UPDATE " . $this->table . " SET data = ?, lifetime = ? WHERE key_name = ?",
+                array(
                     $frontend->beforeStore($cachedContent),
                     $lifetime,
                     $prefixedKey
-                ]
+                )
             );
         }
 
@@ -179,19 +171,19 @@ class Database extends Backend implements BackendInterface
      * {@inheritdoc}
      *
      * @param  string  $keyName
-     * @return bool
+     * @return boolean
      */
     public function delete($keyName)
     {
         $prefixedKey = $this->getPrefixedIdentifier($keyName);
-        $sql         = "SELECT COUNT(*) AS rowcount FROM {$this->table} WHERE key_name = ?";
-        $row         = $this->db->fetchOne($sql, Db::FETCH_ASSOC, [$prefixedKey]);
+        $sql         = "SELECT COUNT(*) AS rowcount FROM " . $this->table . " WHERE key_name = ?";
+        $row         = $this->db->fetchOne($sql, Db::FETCH_ASSOC, array($prefixedKey));
 
         if (!$row['rowcount']) {
             return false;
         }
 
-        return $this->db->execute("DELETE FROM {$this->table} WHERE key_name = ?", [$prefixedKey]);
+        return $this->db->execute("DELETE FROM " . $this->table . " WHERE key_name = ?", array($prefixedKey));
     }
 
     /**
@@ -209,16 +201,16 @@ class Database extends Backend implements BackendInterface
         }
 
         if (!empty($prefix)) {
-            $sql = "SELECT key_name FROM {$this->table} WHERE key_name LIKE ? ORDER BY lifetime";
-            $rs  = $this->db->query($sql, [$prefix . '%']);
+            $sql = "SELECT key_name FROM " . $this->table . " WHERE key_name LIKE ? ORDER BY lifetime";
+            $rs  = $this->db->query($sql, array($prefix . '%'));
         } else {
-            $sql = "SELECT key_name FROM {$this->table} ORDER BY lifetime";
+            $sql = "SELECT key_name FROM " . $this->table . " ORDER BY lifetime";
             $rs  = $this->db->query($sql);
         }
 
         $rs->setFetchMode(Db::FETCH_ASSOC);
 
-        $keys = [];
+        $keys = array();
 
         while ($row = $rs->fetch()) {
             $keys[] = !empty($prefix) ? str_replace($prefix, '', $row['key_name']) : $row['key_name'];
@@ -232,13 +224,13 @@ class Database extends Backend implements BackendInterface
      *
      * @param  string  $keyName
      * @param  string  $lifetime
-     * @return bool
+     * @return boolean
      */
     public function exists($keyName = null, $lifetime = null)
     {
         $prefixedKey = $this->getPrefixedIdentifier($keyName);
-        $sql         = "SELECT lifetime FROM {$this->table} WHERE key_name = ?";
-        $cache       = $this->db->fetchOne($sql, Db::FETCH_ASSOC, [$prefixedKey]);
+        $sql         = "SELECT lifetime FROM " . $this->table . " WHERE key_name = ?";
+        $cache       = $this->db->fetchOne($sql, Db::FETCH_ASSOC, array($prefixedKey));
 
         if (!$cache) {
             return false;
@@ -246,7 +238,7 @@ class Database extends Backend implements BackendInterface
 
         // Remove the cache if expired
         if ($cache['lifetime'] < time()) {
-            $this->db->execute("DELETE FROM {$this->table} WHERE key_name = ?", [$prefixedKey]);
+            $this->db->execute("DELETE FROM " . $this->table . " WHERE key_name = ?", array($prefixedKey));
 
             return false;
         }
@@ -257,11 +249,11 @@ class Database extends Backend implements BackendInterface
     /**
      * {@inheritdoc}
      *
-     * @return bool
+     * @return boolean
      */
     public function flush()
     {
-        $this->db->execute("DELETE FROM {$this->table}");
+        $this->db->execute('DELETE FROM ' . $this->table);
 
         return true;
     }

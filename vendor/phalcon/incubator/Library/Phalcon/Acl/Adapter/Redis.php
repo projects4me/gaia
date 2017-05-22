@@ -3,7 +3,7 @@
   +------------------------------------------------------------------------+
   | Phalcon Framework                                                      |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2016 Phalcon Team (http://www.phalconphp.com)       |
+  | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
   | with this package in the file docs/LICENSE.txt.                        |
@@ -21,23 +21,24 @@ namespace Phalcon\Acl\Adapter;
 
 use Phalcon\Db;
 use Phalcon\Acl\Adapter;
+use Phalcon\Acl\AdapterInterface;
 use Phalcon\Acl\Exception;
 use Phalcon\Acl\Resource;
 use Phalcon\Acl;
 use Phalcon\Acl\Role;
-use Phalcon\Acl\RoleInterface;
 
 /**
  * Phalcon\Acl\Adapter\Database
  * Manages ACL lists in memory
  */
-class Redis extends Adapter
+class Redis extends Adapter implements AdapterInterface
 {
     /** @var bool  */
     protected $setNXAccess = true;
 
-    /** @var \Redis */
+    /** @var \Redis|\Predis\Client */
     protected $redis;
+
 
     public function __construct($redis = null)
     {
@@ -57,7 +58,6 @@ class Redis extends Adapter
 
     /**
      * {@inheritdoc}
-     *
      * Example:
      * <code>$acl->addRole(new Phalcon\Acl\Role('administrator'), 'consultor');</code>
      * <code>$acl->addRole('administrator', 'consultor');</code>
@@ -65,19 +65,14 @@ class Redis extends Adapter
      * @param  \Phalcon\Acl\Role|string $role
      * @param  string $accessInherits
      * @return boolean
-     * @throws \Phalcon\Acl\Exception
      */
     public function addRole($role, $accessInherits = null)
     {
-        if (is_string($role)) {
-            $role = new Role($role, ucwords($role) . ' Role');
+        if (!is_object($role)) {
+            $role = new Role($role, ucwords($role) . " Role");
         }
 
-        if (!$role instanceof RoleInterface) {
-            throw new Exception('Role must be either an string or implement RoleInterface');
-        }
-
-        $this->redis->hMset('roles', [$role->getName() => $role->getDescription()]);
+        $this->redis->hMset("roles", array($role->getName() => $role->getDescription()));
         $this->redis->sAdd("accessList:$role:*:{$this->getDefaultAction()}}", "*");
 
         if ($accessInherits) {
@@ -96,12 +91,9 @@ class Redis extends Adapter
      */
     public function addInherit($roleName, $roleToInherit)
     {
-        $exists = $this->redis->hGet('roles', $roleName);
-
+        $exists = $this->redis->hGet("roles", $roleName);
         if (!$exists) {
-            throw new Exception(
-                sprintf("Role '%s' does not exist in the role list", $roleName)
-            );
+            throw new Exception("Role '" . $roleName . "' does not exist in the role list");
         }
 
         $this->redis->sAdd("rolesInherits:$roleName", $roleToInherit);
@@ -205,7 +197,7 @@ class Redis extends Adapter
     /**
      * {@inheritdoc}
      *
-     * @return RoleInterface[]
+     * @return \Phalcon\Acl\Role[]
      */
     public function getRoles()
     {

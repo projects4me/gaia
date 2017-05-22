@@ -40,7 +40,7 @@ $config['database'] = array(
     "adapter"   => "Mysql",
     "host"      => "localhost",
     "username"  => "root",
-    "password"  => "123qwe",
+    "password"  => "",
     "dbname"    => "projects4me"
 );
 

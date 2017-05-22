@@ -75,7 +75,7 @@ $models['Oauthauthorizationcode'] = array(
            'label' => 'LBL_OAUTH_AUTHORIZATION_CODES_EXPIRES',
            'type' => 'datetime',
            'length' => '40',
-           'null' => false,
+           'null' => true,
        ),
     ),
     'indexes' => array(

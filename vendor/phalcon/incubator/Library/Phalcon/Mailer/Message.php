@@ -1,21 +1,17 @@
 <?php
-/*
-  +------------------------------------------------------------------------+
-  | Phalcon Framework                                                      |
-  +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2016 Phalcon Team (http://www.phalconphp.com)       |
-  +------------------------------------------------------------------------+
-  | This source file is subject to the New BSD License that is bundled     |
-  | with this package in the file docs/LICENSE.txt.                        |
-  |                                                                        |
-  | If you did not receive a copy of the license and are unable to         |
-  | obtain it through the world-wide-web, please send an email             |
-  | to license@phalconphp.com so we can send you a copy immediately.       |
-  +------------------------------------------------------------------------+
-  | Authors: Stanislav Kiryukhin <korsar.zn@gmail.com>                     |
-  +------------------------------------------------------------------------+
-*/
-
+/**
+ * Message.php 2014-08-31 04:50
+ * ----------------------------------------------
+ *
+ *
+ * @author      Stanislav Kiryukhin <korsar.zn@gmail.com>
+ * @copyright   Copyright (c) 2014, CKGroup.ru
+ *
+ * @version     0.0.1
+ * ----------------------------------------------
+ * All Rights Reserved.
+ * ----------------------------------------------
+ */
 namespace Phalcon\Mailer;
 
 /**
@@ -532,7 +528,7 @@ class Message
      * @see Phalcon\Mailer\Message::createAttachmentViaPath()
      * @see Phalcon\Mailer\Message::prepareAttachment()
      */
-    public function attachment($file, array $options = [])
+    public function attachment($file, Array $options = [])
     {
         $attachment = $this->createAttachmentViaPath($file);
         return $this->prepareAttachment($attachment, $options);
@@ -550,7 +546,7 @@ class Message
      * @see Phalcon\Mailer\Message::createAttachmentViaData()
      * @see Phalcon\Mailer\Message::prepareAttachment()
      */
-    public function attachmentData($data, $name, array $options = [])
+    public function attachmentData($data, $name, Array $options = [])
     {
         $attachment = $this->createAttachmentViaData($data, $name);
         return $this->prepareAttachment($attachment, $options);
@@ -662,7 +658,7 @@ class Message
      *
      * @see \Swift_Message::attach()
      */
-    protected function prepareAttachment(\Swift_Attachment $attachment, array $options = [])
+    protected function prepareAttachment(\Swift_Attachment $attachment, Array $options = [])
     {
         if (isset($options['mime'])) {
             $attachment->setContentType($options['mime']);

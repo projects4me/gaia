@@ -45,7 +45,7 @@ $models['Mention'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_MENTIONS_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'createdUser' => array(
             'name' => 'createdUser',

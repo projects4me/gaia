@@ -45,7 +45,7 @@ $models['Activity'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_ACTIVITIES_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
        'description' => array(
             'name' => 'description',

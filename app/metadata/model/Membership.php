@@ -45,7 +45,7 @@ $models['Membership'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_MEMBERSHIPS_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -58,7 +58,7 @@ $models['Membership'] = array(
             'name' => 'dateModified',
             'label' => 'LBL_MEMBERSHIPS_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',

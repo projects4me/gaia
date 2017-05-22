@@ -1,8 +1,9 @@
-# Phalcon\Queue\Beanstalk
+Phalcon\Queue\Beanstalk
+=======================
 
-Extended `Phalcon\Queue\Beanstalk` class that supports tubes prefixes, `pcntl-workers` and tubes stats.
+Extended Phalcon\Queue\Beanstalk class that supports tubes prefixes, pcntl-workers and tubes stats.
 
-Allows to use same `banstalkd` server to multiple projects.
+Allows to use same banstalkd server to multiple projects.
 
 First add some tasks to the queues:
 
@@ -19,10 +20,10 @@ class IndexController extends Controller
     {
         if ($this->request->isPost()) {
             // Connect to the queue
-            $beanstalk = new BeanstalkExtended([
+            $beanstalk = new BeanstalkExtended(array(
                 'host'   => '192.168.0.21',
                 'prefix' => 'project-name',
-            ]);
+            ));
 
             // Save the video info in database and send it to post-process
             $beanstalk->putInTube('processVideo', 4871);
@@ -35,10 +36,10 @@ class IndexController extends Controller
     public function deleteVideoAction()
     {
         // Connect to the queue
-        $beanstalk = new BeanstalkExtended([
+        $beanstalk = new BeanstalkExtended(array(
             'host'   => '192.168.0.21',
             'prefix' => 'project-name',
-        ]);
+        ));
 
         // Send the command to physical unlink to the queue
         $beanstalk->putInTube('deleteVideo', 4871);
@@ -60,14 +61,13 @@ use Phalcon\Queue\Beanstalk\Job;
 
 $host = '192.168.0.21';
 
-$beanstalk = new BeanstalkExtended([
+$beanstalk = new BeanstalkExtended(array(
     'host'   => $host,
     'prefix' => 'project-name',
-]);
+));
 
 $beanstalk->addWorker($host.'processVideo', function (Job $job) {
-    // Here we should collect the meta information,
-    // make the screenshots, convert the video to the FLV etc.
+    // Here we should collect the meta information, make the screenshots, convert the video to the FLV etc.
     $videoId = $job->getBody();
 
     // It's very important to send the right exit code!
@@ -75,8 +75,7 @@ $beanstalk->addWorker($host.'processVideo', function (Job $job) {
 });
 
 $beanstalk->addWorker($host.'deleteVideo', function (Job $job) {
-    // Here we should collect the meta information,
-    // make the screenshots, convert the video to the FLV etc.
+    // Here we should collect the meta information, make the screenshots, convert the video to the FLV etc.
     $videoId = $job->getBody();
 
     unlink('/var/www/data/' . $videoId . '.flv');
@@ -96,10 +95,10 @@ Simple console script that outputs tubes stats:
 use Phalcon\Queue\Beanstalk\Extended as BeanstalkExtended;
 
 $prefix    = 'project-name';
-$beanstalk = new BeanstalkExtended([
+$beanstalk = new BeanstalkExtended(array(
     'host'   => '192.168.0.21',
     'prefix' => $prefix,
-]);
+));
 
 foreach ($beanstalk->getTubes() as $tube) {
     if (0 === strpos($tube, $prefix)) {

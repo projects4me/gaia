@@ -1,5 +1,7 @@
 <?php
-use Phalcon\DI\FactoryDefault,
+
+use Phalcon\Di,
+    Phalcon\DI\FactoryDefault,
     Phalcon\Mvc\View,
     Phalcon\Mvc\Dispatcher,
     Phalcon\Mvc\Url as UrlResolver,
@@ -91,7 +93,7 @@ try {
     require_once(APP_PATH.'/foundation/libs/utility_functions.php');
     require_once(APP_PATH.'/foundation/controllers/RestController.php');
     //Create a DI
-    $di = new Phalcon\DI\FactoryDefault();
+    $di = new FactoryDefault();
 
     //Setup the view component
     $di->set('view', function(){
@@ -186,7 +188,7 @@ class executiontime
     protected $starttime;
     protected $lasttime;
 
-    public function executiontime()
+    public function __construct()
     {
         $this->starttime = $this->gettime();
         $this->lasttime = $this->gettime();

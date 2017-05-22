@@ -52,13 +52,13 @@ $models['Wiki'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_WIKI_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_WIKI_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'createdUser' => array(
             'name' => 'createdUser',

@@ -61,7 +61,7 @@ $models['Oauthrefreshtoken'] = array(
            'label' => 'LBL_OAUTH_REFRESH_TOKENS_EXPIRES',
            'type' => 'datetime',
            'length' => '40',
-           'null' => false,
+           'null' => true,
        ),
        'scope' => array(
            'name' => 'scope',

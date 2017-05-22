@@ -4,7 +4,7 @@
  +------------------------------------------------------------------------+
  | Phalcon Framework                                                      |
  +------------------------------------------------------------------------+
- | Copyright (c) 2011-2016 Phalcon Team (http://www.phalconphp.com)       |
+ | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
  +------------------------------------------------------------------------+
  | This source file is subject to the New BSD License that is bundled     |
  | with this package in the file docs/LICENSE.txt.                        |
@@ -93,9 +93,9 @@ class Extended extends ConsoleApp
         }
 
         foreach ($scannedTasksDir as $taskFile) {
-            $taskFileInfo = pathinfo($taskFile);
-            $taskClass = ($namespace ? $namespace . '\\' : '') . $taskFileInfo["filename"];
-            $taskName  = strtolower(str_replace('Task', '', $taskFileInfo["filename"]));
+            $taskClass = ($namespace ? $namespace . '\\' : '') . str_replace('.php', '', $taskFile);
+            $taskName  = strtolower(str_replace('Task', '', $taskClass));
+            $taskName  = trim($taskName, '\\');
 
             $this->documentation[$taskName] = array('description'=>array(''), 'actions'=>array());
 

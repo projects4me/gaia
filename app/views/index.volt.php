@@ -8,12 +8,12 @@
 
     
     <?php foreach ($cssFiles as $cssFile) { ?>
-    <link rel="stylesheet" href="<?php echo $cssFile; ?>">
+    <link rel="stylesheet" href="<?= $cssFile ?>">
     <?php } ?>
 
     
     <?php foreach ($jsFiles as $jsFile) { ?>
-    <script src="<?php echo $jsFile; ?>"></script>
+    <script src="<?= $jsFile ?>"></script>
     <?php } ?>
     
     <!--script src="/vendors/ember-i18n-3.1.1/lib/i18n.js"></script-->

@@ -52,13 +52,13 @@ $models['Project'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_PROJECTS_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_PROJECTS_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'createdUser' => array(
             'name' => 'createdUser',

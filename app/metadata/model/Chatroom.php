@@ -51,13 +51,13 @@ $models['Chatroom'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_CHAT_ROOMS_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_CHAT_ROOMS_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'createdUser' => array(
             'name' => 'createdUser',

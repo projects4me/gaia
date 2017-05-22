@@ -1,93 +1,94 @@
 <?php
-/*
-  +------------------------------------------------------------------------+
-  | Phalcon Framework                                                      |
-  +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2016 Phalcon Team (http://www.phalconphp.com)       |
-  +------------------------------------------------------------------------+
-  | This source file is subject to the New BSD License that is bundled     |
-  | with this package in the file docs/LICENSE.txt.                        |
-  |                                                                        |
-  | If you did not receive a copy of the license and are unable to         |
-  | obtain it through the world-wide-web, please send an email             |
-  | to license@phalconphp.com so we can send you a copy immediately.       |
-  +------------------------------------------------------------------------+
-  | Authors: Stephen Hoogendijk <stephen@tca0.nl>                          |
-  +------------------------------------------------------------------------+
-*/
-
+/**
+ * UnitTestCase.php
+ * Phalcon_Test_UnitTestCase
+ * Unit Test Helper
+ * PhalconPHP Framework
+ *
+ * @copyright (c) 2011-2015 Phalcon Team
+ * @link          http://www.phalconphp.com
+ * @author        Andres Gutierrez <andres@phalconphp.com>
+ * @author        Nikolaos Dimopoulos <nikos@phalconphp.com>
+ * @author        Stephen Hoogendijk <hoogendijk09@gmail.com>
+ *                The contents of this file are subject to the New BSD License that is
+ *                bundled with this package in the file docs/LICENSE.txt
+ *                If you did not receive a copy of the license and are unable to obtain it
+ *                through the world-wide-web, please send an email to license@phalconphp.com
+ *                so that we can send you a copy immediately.
+ */
 namespace Phalcon\Test;
 
-use Phalcon\Di\InjectionAwareInterface;
-use PHPUnit_Framework_TestCase as TestCase;
 use Phalcon\Config;
-use Phalcon\Di\FactoryDefault;
-use Phalcon\Di;
+use Phalcon\DI\FactoryDefault;
+use Phalcon\DI;
 use Phalcon\DiInterface;
 use Phalcon\Mvc\Url;
-use Phalcon\Escaper;
 
 /**
  * Class UnitTestCase
  *
  * @package Phalcon\Test
  */
-abstract class UnitTestCase extends TestCase implements InjectionAwareInterface
+abstract class UnitTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * Holds the configuration variables and other stuff
      * I can use the DI container but for tests like the Translate
      * we do not need the overhead
      *
-     * @var Config|null
+     * @var array
      */
-    protected $config;
+    protected $config = array();
 
     /**
-     * @var DiInterface
+     * @var \Phalcon\DiInterface
      */
     protected $di;
 
     /**
-     * This method is called before a test is executed.
+     * Sets the test up by loading the DI container and other stuff
+     *
+     * @author Nikos Dimopoulos <nikos@phalconphp.com>
+     * @since  2012-09-30
+     * @param  \Phalcon\DiInterface $di
+     * @param  \Phalcon\Config      $config
+     * @return void
      */
-    protected function setUp()
+    protected function setUp(DiInterface $di = null, Config $config = null)
     {
         $this->checkExtension('phalcon');
 
-        // Reset the DI container
-        Di::reset();
+        if (!is_null($config)) {
+            $this->config = $config;
+        }
 
-        // Instantiate a new DI container
-        $di = new Di();
+        if (is_null($di)) {
+            // Reset the DI container
+            DI::reset();
 
-        // Set the URL
-        $di->set(
-            'url',
-            function () {
-                $url = new Url();
-                $url->setBaseUri('/');
+            // Instantiate a new DI container
+            $di = new FactoryDefault();
 
-                return $url;
-            }
-        );
+            // Set the URL
+            $di->set(
+                'url',
+                function () {
+                    $url = new Url();
+                    $url->setBaseUri('/');
 
-        $di->set(
-            'escaper',
-            function () {
-                return new Escaper();
-            }
-        );
+                    return $url;
+                }
+            );
+
+            $di->set(
+                'escaper',
+                function () {
+                    return new \Phalcon\Escaper();
+                }
+            );
+        }
 
         $this->di = $di;
-    }
-
-    protected function tearDown()
-    {
-        $di = $this->getDI();
-        $di::reset();
-
-        parent::tearDown();
     }
 
     /**
@@ -117,6 +118,8 @@ abstract class UnitTestCase extends TestCase implements InjectionAwareInterface
     /**
      * Returns a unique file name
      *
+     * @author Nikos Dimopoulos <nikos@phalconphp.com>
+     * @since  2012-09-30
      * @param  string $prefix A prefix for the file
      * @param  string $suffix A suffix for the file
      * @return string
@@ -132,8 +135,10 @@ abstract class UnitTestCase extends TestCase implements InjectionAwareInterface
     /**
      * Removes a file from the system
      *
-     * @param string $path
-     * @param string $fileName
+     * @author Nikos Dimopoulos <nikos@phalconphp.com>
+     * @since  2012-09-30
+     * @param $path
+     * @param $fileName
      */
     protected function cleanFile($path, $fileName)
     {
@@ -148,58 +153,17 @@ abstract class UnitTestCase extends TestCase implements InjectionAwareInterface
     }
 
     /**
-     * Sets the Config object.
-     *
-     * @param Config $config
-     * @return $this
+     * @return \Phalcon\DiInterface
      */
-    public function setConfig(Config $config)
+    protected function getDI()
     {
-        $this->config = $config;
-
-        return $this;
-    }
-
-    /**
-     * Returns the Config object if any.
-     *
-     * @return null|Config
-     */
-    public function getConfig()
-    {
-        if (!$this->config instanceof Config && $this->getDI()->has('config')) {
-            return $this->getDI()->has('config');
-        }
-
-        return $this->config;
-    }
-
-    /**
-     * Sets the Dependency Injector.
-     *
-     * @see    Injectable::setDI
-     * @param  DiInterface $di
-     * @return $this
-     */
-    public function setDI(DiInterface $di)
-    {
-        $this->di = $di;
-
-        return $this;
-    }
-
-    /**
-     * Returns the internal Dependency Injector.
-     *
-     * @see    Injectable::getDI
-     * @return DiInterface
-     */
-    public function getDI()
-    {
-        if (!$this->di instanceof DiInterface) {
-            return Di::getDefault();
-        }
-
         return $this->di;
+    }
+
+    protected function tearDown()
+    {
+        $di = $this->getDI();
+        $di::reset();
+        parent::tearDown();
     }
 }

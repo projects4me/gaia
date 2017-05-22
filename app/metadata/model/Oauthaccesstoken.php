@@ -60,7 +60,7 @@ $models['Oauthaccesstoken'] = array(
            'label' => 'LBL_OAUTH_ACCESS_TOKENS_EXPIRES',
            'type' => 'datetime',
            'length' => '36',
-           'null' => false,
+           'null' => true,
        ),
        'scope' => array(
            'name' => 'scope',

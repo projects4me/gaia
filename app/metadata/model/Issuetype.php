@@ -52,13 +52,13 @@ $models['Issuetype'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_ISSUE_TYPES_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_ISSUE_TYPES_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'deleted' => array(
             'name' => 'deleted',

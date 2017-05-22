@@ -52,13 +52,13 @@ $models['Tag'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_TAG_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_TAG_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'deleted' => array(
             'name' => 'deleted',

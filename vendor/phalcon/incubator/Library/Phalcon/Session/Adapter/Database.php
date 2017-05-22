@@ -3,7 +3,7 @@
   +------------------------------------------------------------------------+
   | Phalcon Framework                                                      |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2016 Phalcon Team (http://www.phalconphp.com)       |
+  | Copyright (c) 2011-2012 Phalcon Team (http://www.phalconphp.com)       |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
   | with this package in the file docs/LICENSE.txt.                        |
@@ -23,7 +23,6 @@ use Phalcon\Db;
 use Phalcon\Session\Adapter;
 use Phalcon\Session\AdapterInterface;
 use Phalcon\Session\Exception;
-use Phalcon\Db\AdapterInterface as DbAdapter;
 
 /**
  * Phalcon\Session\Adapter\Database
@@ -32,54 +31,59 @@ use Phalcon\Db\AdapterInterface as DbAdapter;
 class Database extends Adapter implements AdapterInterface
 {
     /**
-     * @var DbAdapter
+     * Flag to check if session is destroyed.
+     *
+     * @var boolean
      */
-    protected $connection;
+    protected $isDestroyed = false;
 
     /**
      * {@inheritdoc}
      *
      * @param  array $options
-     * @throws Exception
+     *
+     * @throws \Phalcon\Session\Exception
      */
     public function __construct($options = null)
     {
-        if (!isset($options['db']) || !$options['db'] instanceof DbAdapter) {
-            throw new Exception(
-                'Parameter "db" is required and it must be an instance of Phalcon\Acl\AdapterInterface'
-            );
+        if (!isset($options['db'])) {
+            throw new Exception("The parameter 'db' is required");
         }
 
-        $this->connection = $options['db'];
-        unset($options['db']);
-
-        if (!isset($options['table']) || empty($options['table']) || !is_string($options['table'])) {
-            throw new Exception("Parameter 'table' is required and it must be a non empty string");
+        if (!isset($options['table'])) {
+            throw new Exception("The parameter 'table' is required");
         }
 
-        $columns = ['session_id', 'data', 'created_at', 'modified_at'];
-        foreach ($columns as $column) {
-            $oColumn = "column_$column";
-            if (!isset($options[$oColumn]) || !is_string($options[$oColumn]) || empty($options[$oColumn])) {
-                $options[$oColumn] = $column;
-            }
+        if (!isset($options['column_session_id'])) {
+            $options['column_session_id'] = 'session_id';
+        }
+
+        if (!isset($options['column_data'])) {
+            $options['column_data'] = 'data';
+        }
+
+        if (!isset($options['column_created_at'])) {
+            $options['column_created_at'] = 'created_at';
+        }
+
+        if (!isset($options['column_modified_at'])) {
+            $options['column_modified_at'] = 'modified_at';
         }
 
         parent::__construct($options);
 
         session_set_save_handler(
-            [$this, 'open'],
-            [$this, 'close'],
-            [$this, 'read'],
-            [$this, 'write'],
-            [$this, 'destroy'],
-            [$this, 'gc']
+            array($this, 'open'),
+            array($this, 'close'),
+            array($this, 'read'),
+            array($this, 'write'),
+            array($this, 'destroy'),
+            array($this, 'gc')
         );
     }
 
     /**
      * {@inheritdoc}
-     *
      * @return boolean
      */
     public function open()
@@ -89,7 +93,6 @@ class Database extends Adapter implements AdapterInterface
 
     /**
      * {@inheritdoc}
-     *
      * @return boolean
      */
     public function close()
@@ -99,27 +102,26 @@ class Database extends Adapter implements AdapterInterface
 
     /**
      * {@inheritdoc}
-     *
      * @param  string $sessionId
+     *
      * @return string
      */
     public function read($sessionId)
     {
-        $maxLifetime = (int) ini_get('session.gc_maxlifetime');
-
+        $maxlifetime = (int) ini_get('session.gc_maxlifetime');
         $options = $this->getOptions();
-        $row = $this->connection->fetchOne(
+        $row = $options['db']->fetchOne(
             sprintf(
                 'SELECT %s FROM %s WHERE %s = ? AND COALESCE(%s, %s) + %d >= ?',
-                $this->connection->escapeIdentifier($options['column_data']),
-                $this->connection->escapeIdentifier($options['table']),
-                $this->connection->escapeIdentifier($options['column_session_id']),
-                $this->connection->escapeIdentifier($options['column_modified_at']),
-                $this->connection->escapeIdentifier($options['column_created_at']),
-                $maxLifetime
+                $options['db']->escapeIdentifier($options['column_data']),
+                $options['db']->escapeIdentifier($options['table']),
+                $options['db']->escapeIdentifier($options['column_session_id']),
+                $options['db']->escapeIdentifier($options['column_modified_at']),
+                $options['db']->escapeIdentifier($options['column_created_at']),
+                $maxlifetime
             ),
             Db::FETCH_NUM,
-            [$sessionId, time()]
+            array($sessionId, time())
         );
 
         if (empty($row)) {
@@ -131,58 +133,61 @@ class Database extends Adapter implements AdapterInterface
 
     /**
      * {@inheritdoc}
-     *
      * @param  string $sessionId
      * @param  string $data
+     *
      * @return boolean
      */
     public function write($sessionId, $data)
     {
+        if ($this->isDestroyed || empty($data)) {
+            return false;
+        }
+
         $options = $this->getOptions();
-        $row = $this->connection->fetchOne(
+        $row = $options['db']->fetchOne(
             sprintf(
                 'SELECT COUNT(*) FROM %s WHERE %s = ?',
-                $this->connection->escapeIdentifier($options['table']),
-                $this->connection->escapeIdentifier($options['column_session_id'])
+                $options['db']->escapeIdentifier($options['table']),
+                $options['db']->escapeIdentifier($options['column_session_id'])
             ),
             Db::FETCH_NUM,
-            [$sessionId]
+            array($sessionId)
         );
 
         if (!empty($row) && intval($row[0]) > 0) {
-            return $this->connection->execute(
+            return $options['db']->execute(
                 sprintf(
                     'UPDATE %s SET %s = ?, %s = ? WHERE %s = ?',
-                    $this->connection->escapeIdentifier($options['table']),
-                    $this->connection->escapeIdentifier($options['column_data']),
-                    $this->connection->escapeIdentifier($options['column_modified_at']),
-                    $this->connection->escapeIdentifier($options['column_session_id'])
+                    $options['db']->escapeIdentifier($options['table']),
+                    $options['db']->escapeIdentifier($options['column_data']),
+                    $options['db']->escapeIdentifier($options['column_modified_at']),
+                    $options['db']->escapeIdentifier($options['column_session_id'])
                 ),
-                [$data, time(), $sessionId]
+                array($data, time(), $sessionId)
             );
         } else {
-            return $this->connection->execute(
+            return $options['db']->execute(
                 sprintf(
                     'INSERT INTO %s (%s, %s, %s, %s) VALUES (?, ?, ?, NULL)',
-                    $this->connection->escapeIdentifier($options['table']),
-                    $this->connection->escapeIdentifier($options['column_session_id']),
-                    $this->connection->escapeIdentifier($options['column_data']),
-                    $this->connection->escapeIdentifier($options['column_created_at']),
-                    $this->connection->escapeIdentifier($options['column_modified_at'])
+                    $options['db']->escapeIdentifier($options['table']),
+                    $options['db']->escapeIdentifier($options['column_session_id']),
+                    $options['db']->escapeIdentifier($options['column_data']),
+                    $options['db']->escapeIdentifier($options['column_created_at']),
+                    $options['db']->escapeIdentifier($options['column_modified_at'])
                 ),
-                [$sessionId, $data, time()]
+                array($sessionId, $data, time())
             );
         }
     }
 
     /**
      * {@inheritdoc}
-     *
      * @return boolean
      */
     public function destroy($session_id = null)
     {
-        if (!$this->isStarted()) {
+        if (!$this->isStarted() || $this->isDestroyed) {
             return true;
         }
 
@@ -190,18 +195,20 @@ class Database extends Adapter implements AdapterInterface
             $session_id = $this->getId();
         }
 
-        $this->_started = false;
+        $this->isDestroyed = true;
         $options = $this->getOptions();
-        $result = $this->connection->execute(
+        $result = $options['db']->execute(
             sprintf(
                 'DELETE FROM %s WHERE %s = ?',
-                $this->connection->escapeIdentifier($options['table']),
-                $this->connection->escapeIdentifier($options['column_session_id'])
+                $options['db']->escapeIdentifier($options['table']),
+                $options['db']->escapeIdentifier($options['column_session_id'])
             ),
-            [$session_id]
+            array($session_id)
         );
 
-        return $result && session_destroy();
+        session_regenerate_id();
+
+        return $result;
     }
 
     /**
@@ -214,15 +221,15 @@ class Database extends Adapter implements AdapterInterface
     {
         $options = $this->getOptions();
 
-        return $this->connection->execute(
+        return $options['db']->execute(
             sprintf(
                 'DELETE FROM %s WHERE COALESCE(%s, %s) + %d < ?',
-                $this->connection->escapeIdentifier($options['table']),
-                $this->connection->escapeIdentifier($options['column_modified_at']),
-                $this->connection->escapeIdentifier($options['column_created_at']),
+                $options['db']->escapeIdentifier($options['table']),
+                $options['db']->escapeIdentifier($options['column_modified_at']),
+                $options['db']->escapeIdentifier($options['column_created_at']),
                 $maxlifetime
             ),
-            [time()]
+            array(time())
         );
     }
 }

@@ -1,46 +1,36 @@
-# Phalcon\Acl\Factory
 
-## Phalcon\Acl\Factory\Memory
+Phalcon\Acl\Factory
+===================
 
-This factory is intended to be used to ease setup of `\Phalcon\Acl\Adapter\Memory`
-in case `\Phalcon\Config` or one of its adapters is used for configuration.
+Phalcon\Acl\Factory\Memory
+__________________________
+This factory is intended to be used to ease setup of \Phalcon\Acl\Adapter\Memory
+in case \Phalcon\Config or one of its adapters is used for configuration.
 
-To setup `acl` service in DI `service.php` file using `acl.ini` file:
-(example of structure and options in ini file can be found in [tests/_fixtures/Acl/acl.ini](tests/_fixtures/Acl/acl.ini)
-
+To setup acl service in DI service.php file using acl.ini file:
+(example of structure and options in ini file can be found in [tests/Phalcon\Acl\Factory\_fixtures\acl.ini](https://github.com/phalcon/incubator/blob/master/tests/Phalcon/Acl/Factory/_fixtures/acl.ini))
 
 ```php
-use Phalcon\Config\Adapter\Ini as ConfigIni;
-use Phalcon\Acl\Factory\Memory as AclMemory;
-
-$di->setShaerd(
-    'acl'
-    function () {
-        $config  = new ConfigIni(APP_PATH . '/config/acl.ini');
-        $factory = new AclMemory();
-        
-        // returns instance of \Phalcon\Acl\Adapter\Memory
-        // note the [acl] section in ini file
-        return $factory->create($config->get('acl'));
-    }
-);
+<?php
+$di['acl'] = function () {
+    $aclIniConfig = new \Phalcon\Config\Adapter\Ini(__DIR__ . '/acl.ini');
+    $factory = new \Phalcon\Acl\Factory\Memory();
+    // returns instance of \Phalcon\Acl\Adapter\Memory
+    return $factory->create($aclIniConfig->get('acl')); // note the [acl] section in ini file
+}
+?>
 ```
 
-To setup `acl` service in DI `service.php` file using `acl.php` (array) file:
-(example of structure and options in ini file can be found in [tests/_fixtures/Acl/acl.php](tests/_fixtures/Acl/acl.php)
+To setup acl service in DI service.php file using acl.php (array) file:
+(example of structure and options in ini file can be found in [tests/Phalcon\Acl\Factory\_fixtures\acl.php](https://github.com/phalcon/incubator/blob/master/tests/Phalcon/Acl/Factory/_fixtures/acl.php))
 
 ```php
-use Phalcon\Config;
-use Phalcon\Acl\Factory\Memory as AclMemory;
-
-$di->setShaerd(
-    'acl'
-    function () {
-        $config  = new Config(APP_PATH . '/config/acl.php');
-        $factory = new AclMemory();
-        
-        // returns instance of \Phalcon\Acl\Adapter\Memory
-        return $factory->create($config);
-    }
-);
+<?php
+$di['acl'] = function () use ($di) {
+    $aclPhpConfig = new \Phalcon\Config(include __DIR__ . '/acl.php');
+    $factory = new \Phalcon\Acl\Factory\Memory();
+    // returns instance of \Phalcon\Acl\Adapter\Memory
+    return $factory->create($aclPhpConfig);
+}
+?>
 ```
