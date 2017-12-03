@@ -1,14 +1,22 @@
 <?php
-/**
- * Phalcon Framework
- * This source file is subject to the New BSD License that is bundled
- * with this package in the file docs/LICENSE.txt.
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@phalconphp.com so we can send you a copy immediately.
- *
- * @author Nikita Vershinin <endeveit@gmail.com>
- */
+
+/*
+  +------------------------------------------------------------------------+
+  | Phalcon Framework                                                      |
+  +------------------------------------------------------------------------+
+  | Copyright (c) 2011-2016 Phalcon Team (https://www.phalconphp.com)      |
+  +------------------------------------------------------------------------+
+  | This source file is subject to the New BSD License that is bundled     |
+  | with this package in the file LICENSE.txt.                             |
+  |                                                                        |
+  | If you did not receive a copy of the license and are unable to         |
+  | obtain it through the world-wide-web, please send an email             |
+  | to license@phalconphp.com so we can send you a copy immediately.       |
+  +------------------------------------------------------------------------+
+  | Authors: Nikita Vershinin <endeveit@gmail.com>                         |
+  +------------------------------------------------------------------------+
+*/
+
 namespace Phalcon\Paginator\Pager;
 
 use Phalcon\Paginator\Pager;
@@ -61,7 +69,7 @@ class Layout
      * @link https://github.com/doctrine/doctrine1/blob/master/lib/Doctrine/Pager/Layout.php#L67
      * @var array
      */
-    protected $maskReplacements = array();
+    protected $maskReplacements = [];
 
     /**
      * Class constructor.
@@ -117,10 +125,10 @@ class Layout
     public function addMaskReplacement($oldMask, $newMask, $asValue = false)
     {
         if (($oldMask = trim($oldMask)) != 'page_number') {
-            $this->maskReplacements[$oldMask] = array(
+            $this->maskReplacements[$oldMask] = [
                 'newMask' => $newMask,
                 'asValue' => ($asValue === false) ? false : true
-            );
+            ];
         }
     }
 
@@ -144,7 +152,7 @@ class Layout
      * @param  array  $options
      * @return string
      */
-    public function getRendered(array $options = array())
+    public function getRendered(array $options = [])
     {
         $range = $this->range->getRange();
         $result = '';
@@ -175,7 +183,7 @@ class Layout
      * @param  array  $options
      * @return string
      */
-    protected function processPage(array $options = array())
+    protected function processPage(array $options = [])
     {
         if (!isset($this->maskReplacements['page']) && !isset($options['page'])) {
             $options['page'] = $options['page_number'];
@@ -189,7 +197,7 @@ class Layout
      * @param  array  $options
      * @return string
      */
-    protected function parseTemplate(array $options = array())
+    protected function parseTemplate(array $options = [])
     {
         $str = $this->parseUrlTemplate($options);
         $replacements = $this->parseReplacementsTemplate($options);
@@ -202,7 +210,7 @@ class Layout
      * @param  array  $options
      * @return string
      */
-    protected function parseUrlTemplate(array $options = array())
+    protected function parseUrlTemplate(array $options = [])
     {
         $str = '';
 
@@ -224,10 +232,10 @@ class Layout
      * @param  array  $options
      * @return string
      */
-    protected function parseReplacementsTemplate(array $options = array())
+    protected function parseReplacementsTemplate(array $options = [])
     {
         $options['url'] = $this->parseUrl($options);
-        $replacements = array();
+        $replacements = [];
 
         foreach ($options as $k => $v) {
             $replacements['{%' . $k . '}'] = $v;
@@ -241,11 +249,11 @@ class Layout
      * @param  array  $options
      * @return string
      */
-    protected function parseUrl(array $options = array())
+    protected function parseUrl(array $options = [])
     {
         $str = $this->parseMaskReplacements($this->urlMask);
 
-        $replacements = array();
+        $replacements = [];
 
         foreach ($options as $k => $v) {
             $replacements['{%' . $k . '}'] = $v;
@@ -261,7 +269,7 @@ class Layout
      */
     protected function parseMaskReplacements($str)
     {
-        $replacements = array();
+        $replacements = [];
 
         foreach ($this->maskReplacements as $k => $v) {
             $replacements['{%' . $k . '}'] = ($v['asValue'] === true) ? $v['newMask'] : '{%' . $v['newMask'] . '}';

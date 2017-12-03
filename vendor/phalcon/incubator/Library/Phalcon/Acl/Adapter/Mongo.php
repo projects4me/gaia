@@ -1,12 +1,13 @@
 <?php
+
 /*
   +------------------------------------------------------------------------+
   | Phalcon Framework                                                      |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
+  | Copyright (c) 2011-2016 Phalcon Team (https://www.phalconphp.com)      |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
-  | with this package in the file docs/LICENSE.txt.                        |
+  | with this package in the file LICENSE.txt.                             |
   |                                                                        |
   | If you did not receive a copy of the license and are unable to         |
   | obtain it through the world-wide-web, please send an email             |
@@ -20,17 +21,17 @@
 namespace Phalcon\Acl\Adapter;
 
 use Phalcon\Acl\Adapter;
-use Phalcon\Acl\AdapterInterface;
 use Phalcon\Acl\Exception;
 use Phalcon\Acl\Resource;
 use Phalcon\Acl;
 use Phalcon\Acl\Role;
+use Phalcon\Acl\RoleInterface;
 
 /**
  * Phalcon\Acl\Adapter\Mongo
  * Manages ACL lists using Mongo Collections
  */
-class Mongo extends Adapter implements AdapterInterface
+class Mongo extends Adapter
 {
     /**
      * @var array
@@ -38,9 +39,15 @@ class Mongo extends Adapter implements AdapterInterface
     protected $options;
 
     /**
+     * Default action for no arguments is allow
+     * @var int
+     */
+    protected $noArgumentsDefaultAction = Acl::ALLOW;
+
+    /**
      * Class constructor.
      *
-     * @param  array                  $options
+     * @param  array $options
      * @throws \Phalcon\Acl\Exception
      */
     public function __construct($options)
@@ -74,6 +81,7 @@ class Mongo extends Adapter implements AdapterInterface
 
     /**
      * {@inheritdoc}
+     *
      * Example:
      * <code>$acl->addRole(new Phalcon\Acl\Role('administrator'), 'consultor');</code>
      * <code>$acl->addRole('administrator', 'consultor');</code>
@@ -81,28 +89,33 @@ class Mongo extends Adapter implements AdapterInterface
      * @param  string  $role
      * @param  array   $accessInherits
      * @return boolean
+     * @throws \Phalcon\Acl\Exception
      */
     public function addRole($role, $accessInherits = null)
     {
-        if (!is_object($role)) {
-            $role = new Role($role);
+        if (is_string($role)) {
+            $role = new Role($role, ucwords($role) . ' Role');
+        }
+
+        if (!$role instanceof RoleInterface) {
+            throw new Exception('Role must be either an string or implement RoleInterface');
         }
 
         $roles = $this->getCollection('roles');
-        $exists = $roles->count(array('name' => $role->getName()));
+        $exists = $roles->count(['name' => $role->getName()]);
 
         if (!$exists) {
-            $roles->insert(array(
+            $roles->insert([
                 'name'        => $role->getName(),
                 'description' => $role->getDescription()
-            ));
+            ]);
 
-            $this->getCollection('accessList')->insert(array(
+            $this->getCollection('accessList')->insert([
                 'roles_name'     => $role->getName(),
                 'resources_name' => '*',
                 'access_name'    => '*',
                 'allowed'        => $this->_defaultAccess
-            ));
+            ]);
         }
 
         if ($accessInherits) {
@@ -115,13 +128,13 @@ class Mongo extends Adapter implements AdapterInterface
     /**
      * {@inheritdoc}
      *
-     * @param  string                 $roleName
-     * @param  string                 $roleToInherit
-     * @throws \Phalcon\Acl\Exception
+     * @param  string $roleName
+     * @param  string $roleToInherit
+     * @throws \BadMethodCallException
      */
     public function addInherit($roleName, $roleToInherit)
     {
-        // TODO: implement later
+        throw new \BadMethodCallException('Not implemented yet.');
     }
 
     /**
@@ -132,7 +145,7 @@ class Mongo extends Adapter implements AdapterInterface
      */
     public function isRole($roleName)
     {
-        return $this->getCollection('roles')->count(array('name' => $roleName)) > 0;
+        return $this->getCollection('roles')->count(['name' => $roleName]) > 0;
     }
 
     /**
@@ -143,19 +156,20 @@ class Mongo extends Adapter implements AdapterInterface
      */
     public function isResource($resourceName)
     {
-        return $this->getCollection('resources')->count(array('name' => $resourceName)) > 0;
+        return $this->getCollection('resources')->count(['name' => $resourceName]) > 0;
     }
 
     /**
      * {@inheritdoc}
+     *
      * Example:
      * <code>
      * //Add a resource to the the list allowing access to an action
      * $acl->addResource(new Phalcon\Acl\Resource('customers'), 'search');
      * $acl->addResource('customers', 'search');
      * //Add a resource  with an access list
-     * $acl->addResource(new Phalcon\Acl\Resource('customers'), array('create', 'search'));
-     * $acl->addResource('customers', array('create', 'search'));
+     * $acl->addResource(new Phalcon\Acl\Resource('customers'), ['create', 'search']);
+     * $acl->addResource('customers', ['create', 'search']);
      * </code>
      *
      * @param  \Phalcon\Acl\Resource $resource
@@ -170,12 +184,12 @@ class Mongo extends Adapter implements AdapterInterface
 
         $resources = $this->getCollection('resources');
 
-        $exists = $resources->count(array('name' => $resource->getName()));
+        $exists = $resources->count(['name' => $resource->getName()]);
         if (!$exists) {
-            $resources->insert(array(
+            $resources->insert([
                 'name'        => $resource->getName(),
                 'description' => $resource->getDescription()
-            ));
+            ]);
         }
 
         if ($accessList) {
@@ -188,8 +202,8 @@ class Mongo extends Adapter implements AdapterInterface
     /**
      * {@inheritdoc}
      *
-     * @param  string                 $resourceName
-     * @param  array|string           $accessList
+     * @param  string       $resourceName
+     * @param  array|string $accessList
      * @return boolean
      * @throws \Phalcon\Acl\Exception
      */
@@ -202,19 +216,19 @@ class Mongo extends Adapter implements AdapterInterface
         $resourcesAccesses = $this->getCollection('resourcesAccesses');
 
         if (!is_array($accessList)) {
-            $accessList = array($accessList);
+            $accessList = [$accessList];
         }
 
         foreach ($accessList as $accessName) {
-            $exists = $resourcesAccesses->count(array(
+            $exists = $resourcesAccesses->count([
                 'resources_name' => $resourceName,
                 'access_name'    => $accessName
-            ));
+            ]);
             if (!$exists) {
-                $resourcesAccesses->insert(array(
+                $resourcesAccesses->insert([
                     'resources_name' => $resourceName,
                     'access_name'    => $accessName
-                ));
+                ]);
             }
         }
 
@@ -228,7 +242,7 @@ class Mongo extends Adapter implements AdapterInterface
      */
     public function getResources()
     {
-        $resources = array();
+        $resources = [];
 
         foreach ($this->getCollection('resources')->find() as $row) {
             $resources[] = new Resource($row['name'], $row['description']);
@@ -240,11 +254,11 @@ class Mongo extends Adapter implements AdapterInterface
     /**
      * {@inheritdoc}
      *
-     * @return \Phalcon\Acl\Role[]
+     * @return RoleInterface[]
      */
     public function getRoles()
     {
-        $roles = array();
+        $roles = [];
 
         foreach ($this->getCollection('roles')->find() as $row) {
             $roles[] = new Role($row['name'], $row['description']);
@@ -261,17 +275,19 @@ class Mongo extends Adapter implements AdapterInterface
      */
     public function dropResourceAccess($resourceName, $accessList)
     {
+        throw new \BadMethodCallException('Not implemented yet.');
     }
 
     /**
      * {@inheritdoc}
+     *
      * You can use '*' as wildcard
      * Example:
      * <code>
      * //Allow access to guests to search on customers
      * $acl->allow('guests', 'customers', 'search');
      * //Allow access to guests to search or create on customers
-     * $acl->allow('guests', 'customers', array('search', 'create'));
+     * $acl->allow('guests', 'customers', ['search', 'create']);
      * //Allow access to any role to browse on products
      * $acl->allow('*', 'products', 'browse');
      * //Allow access to any role to browse on any resource
@@ -281,21 +297,23 @@ class Mongo extends Adapter implements AdapterInterface
      * @param string $roleName
      * @param string $resourceName
      * @param mixed  $access
+     * @param mixed $func
      */
-    public function allow($roleName, $resourceName, $access)
+    public function allow($roleName, $resourceName, $access, $func = null)
     {
         $this->allowOrDeny($roleName, $resourceName, $access, Acl::ALLOW);
     }
 
     /**
      * {@inheritdoc}
+     *
      * You can use '*' as wildcard
      * Example:
      * <code>
      * //Deny access to guests to search on customers
      * $acl->deny('guests', 'customers', 'search');
      * //Deny access to guests to search or create on customers
-     * $acl->deny('guests', 'customers', array('search', 'create'));
+     * $acl->deny('guests', 'customers', ['search', 'create']);
      * //Deny access to any role to browse on products
      * $acl->deny('*', 'products', 'browse');
      * //Deny access to any role to browse on any resource
@@ -305,15 +323,17 @@ class Mongo extends Adapter implements AdapterInterface
      * @param  string  $roleName
      * @param  string  $resourceName
      * @param  mixed   $access
+     * @param  mixed $func
      * @return boolean
      */
-    public function deny($roleName, $resourceName, $access)
+    public function deny($roleName, $resourceName, $access, $func = null)
     {
         $this->allowOrDeny($roleName, $resourceName, $access, Acl::DENY);
     }
 
     /**
      * {@inheritdoc}
+     *
      * Example:
      * <code>
      * //Does Andres have access to the customers resource to create?
@@ -325,16 +345,17 @@ class Mongo extends Adapter implements AdapterInterface
      * @param  string  $role
      * @param  string  $resource
      * @param  string  $access
+     * @param array    $parameters
      * @return boolean
      */
-    public function isAllowed($role, $resource, $access)
+    public function isAllowed($role, $resource, $access, array $parameters = null)
     {
         $accessList = $this->getCollection('accessList');
-        $access     = $accessList->findOne(array(
+        $access     = $accessList->findOne([
             'roles_name'     => $role,
             'resources_name' => $resource,
             'access_name'    => $access
-        ));
+        ]);
 
         if (is_array($access)) {
             return (bool) $access['allowed'];
@@ -343,16 +364,39 @@ class Mongo extends Adapter implements AdapterInterface
         /**
          * Check if there is an common rule for that resource
          */
-        $access = $accessList->findOne(array(
+        $access = $accessList->findOne([
             'roles_name'     => $role,
             'resources_name' => $resource,
             'access_name'    => '*'
-        ));
+        ]);
+
         if (is_array($access)) {
             return (bool) $access['allowed'];
         }
 
         return $this->_defaultAccess;
+    }
+
+    /**
+     * Returns the default ACL access level for no arguments provided
+     * in isAllowed action if there exists func for accessKey
+     *
+     * @return int
+     */
+    public function getNoArgumentsDefaultAction()
+    {
+        return $this->noArgumentsDefaultAction;
+    }
+
+    /**
+     * Sets the default access level for no arguments provided
+     * in isAllowed action if there exists func for accessKey
+     *
+     * @param int $defaultAccess Phalcon\Acl::ALLOW or Phalcon\Acl::DENY
+     */
+    public function setNoArgumentsDefaultAction($defaultAccess)
+    {
+        $this->noArgumentsDefaultAction = intval($defaultAccess);
     }
 
     /**
@@ -369,10 +413,10 @@ class Mongo extends Adapter implements AdapterInterface
     /**
      * Inserts/Updates a permission in the access list
      *
-     * @param  string                 $roleName
-     * @param  string                 $resourceName
-     * @param  string                 $accessName
-     * @param  integer                $action
+     * @param  string  $roleName
+     * @param  string  $resourceName
+     * @param  string  $accessName
+     * @param  integer $action
      * @return boolean
      * @throws \Phalcon\Acl\Exception
      */
@@ -381,10 +425,11 @@ class Mongo extends Adapter implements AdapterInterface
         /**
          * Check if the access is valid in the resource
          */
-        $exists = $this->getCollection('resourcesAccesses')->count(array(
+        $exists = $this->getCollection('resourcesAccesses')->count([
             'resources_name' => $resourceName,
             'access_name'    => $accessName
-        ));
+        ]);
+
         if (!$exists) {
             throw new Exception(
                 "Access '" . $accessName . "' does not exist in resource '" . $resourceName . "' in ACL"
@@ -393,18 +438,19 @@ class Mongo extends Adapter implements AdapterInterface
 
         $accessList = $this->getCollection('accessList');
 
-        $access = $accessList->findOne(array(
+        $access = $accessList->findOne([
             'roles_name'     => $roleName,
             'resources_name' => $resourceName,
             'access_name'    => $accessName
-        ));
+        ]);
+
         if (!$access) {
-            $accessList->insert(array(
+            $accessList->insert([
                 'roles_name'     => $roleName,
                 'resources_name' => $resourceName,
                 'access_name'    => $accessName,
                 'allowed'        => $action
-            ));
+            ]);
         } else {
             $access['allowed'] = $action;
             $accessList->save($access);
@@ -413,18 +459,19 @@ class Mongo extends Adapter implements AdapterInterface
         /**
          * Update the access '*' in access_list
          */
-        $exists = $accessList->count(array(
+        $exists = $accessList->count([
             'roles_name'     => $roleName,
             'resources_name' => $resourceName,
             'access_name'    => '*'
-        ));
+        ]);
+
         if (!$exists) {
-            $accessList->insert(array(
+            $accessList->insert([
                 'roles_name'     => $roleName,
                 'resources_name' => $resourceName,
                 'access_name'    => '*',
                 'allowed'        => $this->_defaultAccess
-            ));
+            ]);
         }
 
         return true;
@@ -433,10 +480,10 @@ class Mongo extends Adapter implements AdapterInterface
     /**
      * Inserts/Updates a permission in the access list
      *
-     * @param  string                 $roleName
-     * @param  string                 $resourceName
-     * @param  string                 $access
-     * @param  integer                $action
+     * @param  string  $roleName
+     * @param  string  $resourceName
+     * @param  string  $access
+     * @param  integer $action
      * @throws \Phalcon\Acl\Exception
      */
     protected function allowOrDeny($roleName, $resourceName, $access, $action)
@@ -446,7 +493,7 @@ class Mongo extends Adapter implements AdapterInterface
         }
 
         if (!is_array($access)) {
-            $access = array($access);
+            $access = [$access];
         }
 
         foreach ($access as $accessName) {

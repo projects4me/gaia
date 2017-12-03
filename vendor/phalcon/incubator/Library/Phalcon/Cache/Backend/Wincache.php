@@ -1,12 +1,13 @@
 <?php
+
 /*
   +------------------------------------------------------------------------+
   | Phalcon Framework                                                      |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
+  | Copyright (c) 2011-2016 Phalcon Team (https://www.phalconphp.com)      |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
-  | with this package in the file docs/LICENSE.txt.                        |
+  | with this package in the file LICENSE.txt.                             |
   |                                                                        |
   | If you did not receive a copy of the license and are unable to         |
   | obtain it through the world-wide-web, please send an email             |
@@ -20,14 +21,21 @@
 namespace Phalcon\Cache\Backend;
 
 use Phalcon\Cache\Exception;
+use Phalcon\Cache\Backend;
+use Phalcon\Cache\BackendInterface;
 
 /**
  * Phalcon\Cache\Backend\Wincache
  *
  * This backend uses wincache as cache backend
+ *
+ * @package Phalcon\Cache\Backend
+ * @property \Phalcon\Cache\FrontendInterface _frontend
  */
-class Wincache extends Prefixable
+class Wincache extends Backend implements BackendInterface
 {
+    use Prefixable;
+
     /**
      * {@inheritdoc}
      *
@@ -51,11 +59,13 @@ class Wincache extends Prefixable
     /**
      * {@inheritdoc}
      *
-     * @param  string                   $keyName
-     * @param  string                   $content
-     * @param  integer                  $lifetime
-     * @param  boolean                  $stopBuffer
-     * @throws \Phalcon\Cache\Exception
+     * @param  string $keyName
+     * @param  string $content
+     * @param  int    $lifetime
+     * @param  bool   $stopBuffer
+     * @return bool
+     *
+     * @throws Exception
      */
     public function save($keyName = null, $content = null, $lifetime = null, $stopBuffer = true)
     {
@@ -92,7 +102,11 @@ class Wincache extends Prefixable
             $ttl = $lifetime;
         }
 
-        wincache_ucache_set($lastKey, $preparedContent, $ttl);
+        $status = wincache_ucache_set($lastKey, $preparedContent, $ttl);
+
+        if (!$status) {
+            throw new Exception('Failed storing data by using wincache');
+        }
 
         $isBuffering = $frontend->isBuffering();
 
@@ -105,6 +119,8 @@ class Wincache extends Prefixable
         }
 
         $this->_started = false;
+
+        return $status;
     }
 
     /**
@@ -127,7 +143,7 @@ class Wincache extends Prefixable
     public function queryKeys($prefix = null)
     {
         $info    = wincache_ucache_info();
-        $entries = array();
+        $entries = [];
 
         if (!$prefix) {
             $prefix = $this->_prefix;

@@ -1,17 +1,22 @@
 <?php
-/**
- * Manager.php 2014-08-31 04:11
- * ----------------------------------------------
- *
- *
- * @author      Stanislav Kiryukhin <korsar.zn@gmail.com>
- * @copyright   Copyright (c) 2014, CKGroup.ru
- *
- * @version     0.0.1
- * ----------------------------------------------
- * All Rights Reserved.
- * ----------------------------------------------
- */
+
+/*
+  +------------------------------------------------------------------------+
+  | Phalcon Framework                                                      |
+  +------------------------------------------------------------------------+
+  | Copyright (c) 2011-2016 Phalcon Team (https://www.phalconphp.com)      |
+  +------------------------------------------------------------------------+
+  | This source file is subject to the New BSD License that is bundled     |
+  | with this package in the file LICENSE.txt.                             |
+  |                                                                        |
+  | If you did not receive a copy of the license and are unable to         |
+  | obtain it through the world-wide-web, please send an email             |
+  | to license@phalconphp.com so we can send you a copy immediately.       |
+  +------------------------------------------------------------------------+
+  | Authors: Stanislav Kiryukhin <korsar.zn@gmail.com>                     |
+  +------------------------------------------------------------------------+
+*/
+
 namespace Phalcon\Mailer;
 
 use Phalcon\Config;
@@ -20,6 +25,15 @@ use Phalcon\Mvc\View;
 
 /**
  * Class Manager
+ *
+ *  *<code>
+ * $mailer = \Phalcon\Mailer\Manager($config);
+ *
+ * if need to set view engines
+ * $mailer->setViewEngines([
+ *      '.phtml' => 'Phalcon\Mvc\View\Engine\Php'
+ * ]);
+ *</code>
  *
  * @package Phalcon\Manager
  */
@@ -44,6 +58,11 @@ class Manager extends Component
      * @var \Phalcon\Mvc\View\Simple
      */
     protected $view;
+
+    /**
+     * @var array
+     */
+    protected $viewEngines = null;
 
     /**
      * Create a new MailerManager component using $config for configuring
@@ -80,7 +99,7 @@ class Manager extends Component
         }
 
         if ($eventsManager) {
-            $eventsManager->fire('mailer:afterCreateMessage', $this, [$message]);
+            $eventsManager->fire('mailer:afterCreateMessage', $this, $message);
         }
 
         return $message;
@@ -138,6 +157,16 @@ class Manager extends Component
         } else {
             return $email;
         }
+    }
+
+    /**
+     * set value of $viewEngines
+     *
+     * @param array $engines
+     */
+    public function setViewEngines(array $engines)
+    {
+        $this->viewEngines = $engines;
     }
 
     /**
@@ -333,8 +362,8 @@ class Manager extends Component
             $view = $this->getDI()->get('\Phalcon\Mvc\View\Simple');
             $view->setViewsDir($viewsDir);
 
-            if ($engines = $viewApp->getRegisteredEngines()) {
-                $view->registerEngines($engines);
+            if ($this->viewEngines) {
+                $view->registerEngines($this->viewEngines);
             }
 
             $this->view = $view;

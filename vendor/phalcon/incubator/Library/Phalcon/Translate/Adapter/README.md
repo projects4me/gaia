@@ -9,31 +9,32 @@ You can use your database to store the translations, too.
 First of all, you need to up your database. To do this, use [DI][1] (in `/public/index.php`). Take a look:
 
 ```php
-// ...
+use Phalcon\Db\Adapter\Pdo\Mysql;
 
 $di->set('db', function() {
-	return new \Phalcon\Db\Adapter\Pdo\Mysql([
+	return new Mysql([
 		'host'     => 'localhost',
 		'username' => 'root',
 		'password' => 123456,
 		'dbname'   => 'application'
 	]);
 });
-
-// ...
 ```
 
 Then, you should get the translation through your `controller`. Put this on it:
 
 ```php
+use Phalcon\Translate\Adapter\Database;
+
 class IndexController extends \Phalcon\Mvc\Controller
 {
 	protected function _getTranslation()
 	{
-		return new Phalcon\Translate\Adapter\Database([
-		    'db'       => $this->di->get('db'), // Here we're getting the database from DI
-		    'table'    => 'translations', // The table that is storing the translations
-		    'language' => $this->request->getBestLanguage() // Now we're getting the best language for the user
+		return new Database([
+		    'db'                     => $this->di->get('db'), // Here we're getting the database from DI
+		    'table'                  => 'translations', // The table that is storing the translations
+		    'language'               => $this->request->getBestLanguage(), // Now we're getting the best language for the user
+		    'useIcuMessageFormatter' => true, // Optional, if need formatting message using ICU MessageFormatter
 		]);
 	}
 	
@@ -50,6 +51,11 @@ CREATE TABLE `translations` (
     `value` TEXT NOT NULL COLLATE 'utf8_bin',
     PRIMARY KEY (`id`)
 )
+```
+
+Optional create unique index
+```sql
+CREATE UNIQUE INDEX translations_language_key_name_unique_index ON translations (language, key_name);
 ```
 
 The columns are self-described, but pay attention to `language` — it's a column that stores the language
@@ -76,7 +82,7 @@ class IndexController extends \Phalcon\Mvc\Controller
 
 Then, just output the`phrase/sentence/word` in your view:
 
-```html+php
+```php
 <html>
 	<head>
 		<!-- ... -->
@@ -88,9 +94,43 @@ Then, just output the`phrase/sentence/word` in your view:
 ```
 
 Or, if you wish you can use [Volt][2]:
-```html+php
+```php
 <h1>{{ expression._("IndexPage_Hello_World") }}</h1>
 ```
+
+ICU MessageFormatter Example
+```php
+// Example plural message with key 'cats'
+// Peter has {nbCats, plural, =0{no cat} =1{a cat} other{# cats}}
+
+$this->_getTranslation()->_('cats', ['nbCats' => rand(0, 10)]);
+```
+
+## Mongo
+
+Implements a Mongo adapter for translations.
+
+A generic collection with a source to store the translations must be created and passed as a parameter.
+
+```php
+use MessageFormatter;
+use Phalcon\Translate\Adapter\Mongo;
+use My\Application\Collections\Translate;
+
+$fmt = new MessageFormatter(
+    "en_US",
+    "{0,number,integer} monkeys on {1,number,integer} trees make {2,number} monkeys per tree"
+);
+
+$translate = new Mongo([
+    'collection' => Translate::class,
+    'language'   => 'en',
+    'formatter'  => $fmt,
+]);
+
+echo $translate->t('application.title');
+```
+
 
 ## ResourceBundle
 
@@ -99,7 +139,9 @@ This adapter uses ResourceBundle as translation frontend.
 The extension [intl][3] must be installed in PHP.
 
 ```php
-$translate = new Phalcon\Translate\Adapter\ResourceBundle([
+use Phalcon\Translate\Adapter\ResourceBundle;
+
+$translate = new ResourceBundle([
     'bundle'   => '/path/to/bundle', // required
     'locale'   => 'en',              // required
     'fallback' => false              // optional, default - true

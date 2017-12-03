@@ -1,40 +1,39 @@
 <?php
-/**
- * FunctionalTestCase.php
- * Phalcon_Test_FunctionalTestCase
- * Functional Test Helper
- * PhalconPHP Framework
- *
- * @copyright (c) 2011-2012 Phalcon Team
- * @link          http://www.phalconphp.com
- * @author        Andres Gutierrez <andres@phalconphp.com>
- * @author        Nikolaos Dimopoulos <nikos@phalconphp.com>
- *                The contents of this file are subject to the New BSD License that is
- *                bundled with this package in the file docs/LICENSE.txt
- *                If you did not receive a copy of the license and are unable to obtain it
- *                through the world-wide-web, please send an email to license@phalconphp.com
- *                so that we can send you a copy immediately.
- */
+
+/*
+  +------------------------------------------------------------------------+
+  | Phalcon Framework                                                      |
+  +------------------------------------------------------------------------+
+  | Copyright (c) 2011-2016 Phalcon Team (https://www.phalconphp.com)      |
+  +------------------------------------------------------------------------+
+  | This source file is subject to the New BSD License that is bundled     |
+  | with this package in the file LICENSE.txt.                             |
+  |                                                                        |
+  | If you did not receive a copy of the license and are unable to         |
+  | obtain it through the world-wide-web, please send an email             |
+  | to license@phalconphp.com so we can send you a copy immediately.       |
+  +------------------------------------------------------------------------+
+  | Authors: Stephen Hoogendijk <stephen@tca0.nl>                          |
+  +------------------------------------------------------------------------+
+*/
+
 namespace Phalcon\Test;
 
 use Phalcon\Escaper as PhEscaper;
 use Phalcon\Mvc\Dispatcher as PhDispatcher;
 use Phalcon\Mvc\Application as PhApplication;
+use Phalcon\DiInterface;
 
 abstract class FunctionalTestCase extends ModelTestCase
 {
     protected $application;
 
     /**
-     * Sets the test up by loading the DI container and other stuff
-     *
-     * @param  \Phalcon\DiInterface $di
-     * @param  \Phalcon\Config      $config
-     * @return void
+     * This method is called before a test is executed.
      */
-    protected function setUp(\Phalcon\DiInterface $di = null, \Phalcon\Config $config = null)
+    protected function setUp()
     {
-        parent::setUp($di, $config);
+        parent::setUp();
 
         // Set the dispatcher
         $this->di->setShared(
@@ -43,7 +42,7 @@ abstract class FunctionalTestCase extends ModelTestCase
                 $dispatcher = new PhDispatcher();
                 $dispatcher->setControllerName('test');
                 $dispatcher->setActionName('empty');
-                $dispatcher->setParams(array());
+                $dispatcher->setParams([]);
 
                 return $dispatcher;
             }
@@ -56,7 +55,7 @@ abstract class FunctionalTestCase extends ModelTestCase
             }
         );
 
-        if ($this->di instanceof \Phalcon\DiInterface) {
+        if ($this->di instanceof DiInterface) {
             $this->application = new PhApplication($this->di);
         }
     }
@@ -71,10 +70,12 @@ abstract class FunctionalTestCase extends ModelTestCase
         $this->di->reset();
         $this->application = null;
 
-        $_SESSION = array();
-        $_GET = array();
-        $_POST = array();
-        $_COOKIE = array();
+        $_SESSION = [];
+        $_GET =  [];
+        $_POST = [];
+        $_COOKIE = [];
+        $_REQUEST = [];
+        $_FILES = [];
     }
 
     /**
@@ -91,14 +92,14 @@ abstract class FunctionalTestCase extends ModelTestCase
     /**
      * Assert that the last dispatched controller matches the given controller class name
      *
-     * @param  string                                        $expected The expected controller name
-     * @throws \PHPUnit_Framework_ExpectationFailedException
+     * @param  string $expected The expected controller name
+     * @throws \PHPUnit\Framework\ExpectationFailedException
      */
     public function assertController($expected)
     {
         $actual = $this->di->getShared('dispatcher')->getControllerName();
         if ($actual != $expected) {
-            throw new \PHPUnit_Framework_ExpectationFailedException(
+            throw new \PHPUnit\Framework\ExpectationFailedException(
                 sprintf(
                     'Failed asserting Controller name "%s", actual Controller name is "%s"',
                     $expected,
@@ -113,14 +114,14 @@ abstract class FunctionalTestCase extends ModelTestCase
     /**
      * Assert that the last dispatched action matches the given action name
      *
-     * @param  string                                        $expected The expected action name
-     * @throws \PHPUnit_Framework_ExpectationFailedException
+     * @param  string $expected The expected action name
+     * @throws \PHPUnit\Framework\ExpectationFailedException
      */
     public function assertAction($expected)
     {
         $actual = $this->di->getShared('dispatcher')->getActionName();
         if ($actual != $expected) {
-            throw new \PHPUnit_Framework_ExpectationFailedException(
+            throw new \PHPUnit\Framework\ExpectationFailedException(
                 sprintf(
                     'Failed asserting Action name "%s", actual Action name is "%s"',
                     $expected,
@@ -134,18 +135,18 @@ abstract class FunctionalTestCase extends ModelTestCase
     /**
      * Assert that the response headers contains the given array
      * <code>
-     * $expected = array('Content-Type' => 'application/json')
+     * $expected = ['Content-Type' => 'application/json']
      * </code>
      *
-     * @param  array                                         $expected The expected headers
-     * @throws \PHPUnit_Framework_ExpectationFailedException
+     * @param  array $expected The expected headers
+     * @throws \PHPUnit\Framework\ExpectationFailedException
      */
     public function assertHeader(array $expected)
     {
         foreach ($expected as $expectedField => $expectedValue) {
             $actualValue = $this->di->getShared('response')->getHeaders()->get($expectedField);
             if ($actualValue != $expectedValue) {
-                throw new \PHPUnit_Framework_ExpectationFailedException(
+                throw new \PHPUnit\Framework\ExpectationFailedException(
                     sprintf(
                         'Failed asserting "%s" has a value of "%s", actual "%s" header value is "%s"',
                         $expectedField,
@@ -162,8 +163,8 @@ abstract class FunctionalTestCase extends ModelTestCase
     /**
      * Asserts that the response code matches the given one
      *
-     * @param  string                                        $expected the expected response code
-     * @throws \PHPUnit_Framework_ExpectationFailedException
+     * @param  string $expected the expected response code
+     * @throws \PHPUnit\Framework\ExpectationFailedException
      */
     public function assertResponseCode($expected)
     {
@@ -175,7 +176,7 @@ abstract class FunctionalTestCase extends ModelTestCase
         $actualValue = $this->di->getShared('response')->getHeaders()->get('Status');
 
         if (empty($actualValue) || stristr($actualValue, $expected) === false) {
-            throw new \PHPUnit_Framework_ExpectationFailedException(
+            throw new \PHPUnit\Framework\ExpectationFailedException(
                 sprintf(
                     'Failed asserting response code is "%s", actual response status is "%s"',
                     $expected,
@@ -190,7 +191,7 @@ abstract class FunctionalTestCase extends ModelTestCase
     /**
      * Asserts that the dispatch is forwarded
      *
-     * @throws \PHPUnit_Framework_ExpectationFailedException
+     * @throws \PHPUnit\Framework\ExpectationFailedException
      */
     public function assertDispatchIsForwarded()
     {
@@ -199,7 +200,7 @@ abstract class FunctionalTestCase extends ModelTestCase
         $actual = $dispatcher->wasForwarded();
 
         if (!$actual) {
-            throw new \PHPUnit_Framework_ExpectationFailedException('Failed asserting dispatch was forwarded');
+            throw new \PHPUnit\Framework\ExpectationFailedException('Failed asserting dispatch was forwarded');
         }
 
         $this->assertTrue($actual);
@@ -208,19 +209,19 @@ abstract class FunctionalTestCase extends ModelTestCase
     /**
      * Assert location redirect
      *
-     * @param  string                                        $location
-     * @throws \PHPUnit_Framework_ExpectationFailedException
+     * @param  string $location
+     * @throws \PHPUnit\Framework\ExpectationFailedException
      */
     public function assertRedirectTo($location)
     {
         $actualLocation = $this->di->getShared('response')->getHeaders()->get('Location');
 
         if (!$actualLocation) {
-            throw new \PHPUnit_Framework_ExpectationFailedException('Failed asserting response caused a redirect');
+            throw new \PHPUnit\Framework\ExpectationFailedException('Failed asserting response caused a redirect');
         }
 
         if ($actualLocation !== $location) {
-            throw new \PHPUnit_Framework_ExpectationFailedException(sprintf(
+            throw new \PHPUnit\Framework\ExpectationFailedException(sprintf(
                 'Failed asserting response redirects to "%s". It redirects to "%s".',
                 $location,
                 $actualLocation

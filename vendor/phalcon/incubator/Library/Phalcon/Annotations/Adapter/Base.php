@@ -1,12 +1,13 @@
 <?php
+
 /*
   +------------------------------------------------------------------------+
   | Phalcon Framework                                                      |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
+  | Copyright (c) 2011-2016 Phalcon Team (https://www.phalconphp.com)      |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
-  | with this package in the file docs/LICENSE.txt.                        |
+  | with this package in the file LICENSE.txt.                             |
   |                                                                        |
   | If you did not receive a copy of the license and are unable to         |
   | obtain it through the world-wide-web, please send an email             |
@@ -22,7 +23,8 @@ use Phalcon\Annotations\Adapter;
 
 /**
  * \Phalcon\Annotations\Adapter\Base
- * Base class for \Phalcon\Annotations\Adapter\Memcached and other adapters.
+ *
+ * Base class for annotations adapters.
  *
  * @package Phalcon\Annotations\Adapter
  */
@@ -111,8 +113,7 @@ abstract class Base extends Adapter
     /**
      * Returns cache backend instance.
      *
-     * @abstract
-     * @@implements \Phalcon\Cache\BackendInterface
+     * @return \Phalcon\Cache\BackendInterface
      */
     abstract protected function getCacheBackend();
 }

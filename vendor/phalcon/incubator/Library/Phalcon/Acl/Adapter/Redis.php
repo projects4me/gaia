@@ -1,12 +1,13 @@
 <?php
+
 /*
   +------------------------------------------------------------------------+
   | Phalcon Framework                                                      |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
+  | Copyright (c) 2011-2016 Phalcon Team (https://www.phalconphp.com)      |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
-  | with this package in the file docs/LICENSE.txt.                        |
+  | with this package in the file LICENSE.txt.                             |
   |                                                                        |
   | If you did not receive a copy of the license and are unable to         |
   | obtain it through the world-wide-web, please send an email             |
@@ -19,26 +20,35 @@
 
 namespace Phalcon\Acl\Adapter;
 
-use Phalcon\Db;
-use Phalcon\Acl\Adapter;
-use Phalcon\Acl\AdapterInterface;
-use Phalcon\Acl\Exception;
-use Phalcon\Acl\Resource;
 use Phalcon\Acl;
 use Phalcon\Acl\Role;
+use Phalcon\Acl\Adapter;
+use Phalcon\Acl\Exception;
+use Phalcon\Acl\Resource;
+use Phalcon\Acl\RoleInterface;
 
 /**
- * Phalcon\Acl\Adapter\Database
- * Manages ACL lists in memory
+ * \Phalcon\Acl\Adapter\Redis
+ *
+ * Manages ACL lists in Redis Database
  */
-class Redis extends Adapter implements AdapterInterface
+class Redis extends Adapter
 {
-    /** @var bool  */
+    /**
+     * @var bool
+     */
     protected $setNXAccess = true;
 
-    /** @var \Redis|\Predis\Client */
+    /**
+     * @var \Redis
+     */
     protected $redis;
 
+    /**
+     * Default action for no arguments is allow
+     * @var int
+     */
+    protected $noArgumentsDefaultAction = Acl::ALLOW;
 
     public function __construct($redis = null)
     {
@@ -58,6 +68,7 @@ class Redis extends Adapter implements AdapterInterface
 
     /**
      * {@inheritdoc}
+     *
      * Example:
      * <code>$acl->addRole(new Phalcon\Acl\Role('administrator'), 'consultor');</code>
      * <code>$acl->addRole('administrator', 'consultor');</code>
@@ -65,14 +76,19 @@ class Redis extends Adapter implements AdapterInterface
      * @param  \Phalcon\Acl\Role|string $role
      * @param  string $accessInherits
      * @return boolean
+     * @throws \Phalcon\Acl\Exception
      */
     public function addRole($role, $accessInherits = null)
     {
-        if (!is_object($role)) {
-            $role = new Role($role, ucwords($role) . " Role");
+        if (is_string($role)) {
+            $role = new Role($role, ucwords($role) . ' Role');
         }
 
-        $this->redis->hMset("roles", array($role->getName() => $role->getDescription()));
+        if (!$role instanceof RoleInterface) {
+            throw new Exception('Role must be either an string or implement RoleInterface');
+        }
+
+        $this->redis->hMset('roles', [$role->getName() => $role->getDescription()]);
         $this->redis->sAdd("accessList:$role:*:{$this->getDefaultAction()}}", "*");
 
         if ($accessInherits) {
@@ -85,15 +101,46 @@ class Redis extends Adapter implements AdapterInterface
     /**
      * {@inheritdoc}
      *
+     * Example:
+     * //Administrator implicitly inherits all descendants of 'consultor' unless explicity set in an Array
+     * <code>$acl->addInherit('administrator', new Phalcon\Acl\Role('consultor'));</code>
+     * <code>$acl->addInherit('administrator', 'consultor');</code>
+     * <code>$acl->addInherit('administrator', ['consultor', 'poweruser']);</code>
+     *
      * @param  string $roleName
-     * @param  string $roleToInherit
+     * @param  \Phalcon\Acl\Role|string $roleToInherit
      * @throws \Phalcon\Acl\Exception
      */
     public function addInherit($roleName, $roleToInherit)
     {
-        $exists = $this->redis->hGet("roles", $roleName);
+        $exists = $this->redis->hGet('roles', $roleName);
+
         if (!$exists) {
-            throw new Exception("Role '" . $roleName . "' does not exist in the role list");
+            throw new Exception(
+                sprintf("Role '%s' does not exist in the role list", $roleName)
+            );
+        }
+
+        if ($roleToInherit instanceof Role) {
+            $roleToInherit = $roleToInherit->getName();
+        }
+
+        /**
+         * Deep inherits Explicit tests array, Implicit recurs through inheritance chain
+         */
+        if (is_array($roleToInherit)) {
+            foreach ($roleToInherit as $roleToInherit) {
+                $this->redis->sAdd("rolesInherits:$roleName", $roleToInherit);
+            }
+            return true;
+        }
+
+        if ($this->redis->exists("rolesInherits:$roleToInherit")) {
+            $deeperInherits = $this->redis->sGetMembers("rolesInherits:$roleToInherit");
+
+            foreach ($deeperInherits as $deeperInherit) {
+                $this->addInherit($roleName, $deeperInherit);
+            }
         }
 
         $this->redis->sAdd("rolesInherits:$roleName", $roleToInherit);
@@ -107,8 +154,8 @@ class Redis extends Adapter implements AdapterInterface
      * $acl->addResource(new Phalcon\Acl\Resource('customers'), 'search');
      * $acl->addResource('customers', 'search');
      * //Add a resource  with an access list
-     * $acl->addResource(new Phalcon\Acl\Resource('customers'), array('create', 'search'));
-     * $acl->addResource('customers', array('create', 'search'));
+     * $acl->addResource(new Phalcon\Acl\Resource('customers'), ['create', 'search']);
+     * $acl->addResource('customers', ['create', 'search']);
      * </code>
      *
      * @param  \Phalcon\Acl\Resource|string $resource
@@ -120,7 +167,7 @@ class Redis extends Adapter implements AdapterInterface
         if (!is_object($resource)) {
             $resource = new Resource($resource, ucwords($resource) . " Resource");
         }
-        $this->redis->hMset("resources", array($resource->getName() => $resource->getDescription()));
+        $this->redis->hMset("resources", [$resource->getName() => $resource->getDescription()]);
 
         if ($accessList) {
             return $this->addResourceAccess($resource->getName(), $accessList);
@@ -185,7 +232,7 @@ class Redis extends Adapter implements AdapterInterface
      */
     public function getResources()
     {
-        $resources = array();
+        $resources = [];
 
         foreach ($this->redis->hGetAll("resources") as $name => $desc) {
             $resources[] = new Resource($name, $desc);
@@ -197,11 +244,11 @@ class Redis extends Adapter implements AdapterInterface
     /**
      * {@inheritdoc}
      *
-     * @return \Phalcon\Acl\Role[]
+     * @return RoleInterface[]
      */
     public function getRoles()
     {
-        $roles = array();
+        $roles = [];
 
         foreach ($this->redis->hGetAll("roles") as $name => $desc) {
             $roles[] = new Role($name, $desc);
@@ -236,7 +283,7 @@ class Redis extends Adapter implements AdapterInterface
             $accessList = (array)$accessList;
         }
         array_unshift($accessList, "resourcesAccesses:$resource");
-        call_user_func_array(array($this->redis, 'sRem'), $accessList);
+        call_user_func_array([$this->redis, 'sRem'], $accessList);
     }
 
     /**
@@ -247,7 +294,7 @@ class Redis extends Adapter implements AdapterInterface
      * //Allow access to guests to search on customers
      * $acl->allow('guests', 'customers', 'search');
      * //Allow access to guests to search or create on customers
-     * $acl->allow('guests', 'customers', array('search', 'create'));
+     * $acl->allow('guests', 'customers', ['search', 'create']);
      * //Allow access to any role to browse on products
      * $acl->allow('*', 'products', 'browse');
      * //Allow access to any role to browse on any resource
@@ -257,8 +304,9 @@ class Redis extends Adapter implements AdapterInterface
      * @param string $role
      * @param string $resource
      * @param array|string $access
+     * @param mixed $func
      */
-    public function allow($role, $resource, $access)
+    public function allow($role, $resource, $access, $func = null)
     {
         if ($role !== '*' && $resource !== '*') {
             $this->allowOrDeny($role, $resource, $access, Acl::ALLOW);
@@ -313,7 +361,7 @@ class Redis extends Adapter implements AdapterInterface
      * //Deny access to guests to search on customers
      * $acl->deny('guests', 'customers', 'search');
      * //Deny access to guests to search or create on customers
-     * $acl->deny('guests', 'customers', array('search', 'create'));
+     * $acl->deny('guests', 'customers', ['search', 'create']);
      * //Deny access to any role to browse on products
      * $acl->deny('*', 'products', 'browse');
      * //Deny access to any role to browse on any resource
@@ -323,9 +371,9 @@ class Redis extends Adapter implements AdapterInterface
      * @param  string $roleName
      * @param  string $resourceName
      * @param  array|string $access
-     * @return boolean
+     * @param  mixed $func
      */
-    public function deny($role, $resource, $access)
+    public function deny($role, $resource, $access, $func = null)
     {
         if ($role === '*' || empty($role)) {
             $this->rolePermission($resource, $access, Acl::DENY);
@@ -349,10 +397,10 @@ class Redis extends Adapter implements AdapterInterface
      * @param string $role
      * @param string $resource
      * @param string $access
-     *
+     * @param array  $parameters
      * @return bool
      */
-    public function isAllowed($role, $resource, $access)
+    public function isAllowed($role, $resource, $access, array $parameters = null)
     {
         if ($this->redis->sIsMember("accessList:$role:$resource:" . Acl::ALLOW, $access)) {
             return Acl::ALLOW;
@@ -372,6 +420,28 @@ class Redis extends Adapter implements AdapterInterface
          */
 
         return $this->getDefaultAction();
+    }
+
+    /**
+     * Returns the default ACL access level for no arguments provided
+     * in isAllowed action if there exists func for accessKey
+     *
+     * @return int
+     */
+    public function getNoArgumentsDefaultAction()
+    {
+        return $this->noArgumentsDefaultAction;
+    }
+
+    /**
+     * Sets the default access level for no arguments provided
+     * in isAllowed action if there exists func for accessKey
+     *
+     * @param int $defaultAccess Phalcon\Acl::ALLOW or Phalcon\Acl::DENY
+     */
+    public function setNoArgumentsDefaultAction($defaultAccess)
+    {
+        $this->noArgumentsDefaultAction = intval($defaultAccess);
     }
 
     /**
@@ -399,7 +469,7 @@ class Redis extends Adapter implements AdapterInterface
         $accessList = "accessList:$roleName:$resourceName";
 
         // remove first if exists
-        foreach (array(1, 2) as $act) {
+        foreach ([1, 2] as $act) {
             $this->redis->sRem("$accessList:$act", $accessName);
             $this->redis->sRem("$accessList:$act", "*");
         }
