@@ -2,4 +2,3 @@ vendor/
 prometheus/
 hermes/
 *.log
-git 

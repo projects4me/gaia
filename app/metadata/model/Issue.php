@@ -5,8 +5,8 @@
  */
 
 $models['Issue'] = array(
-   'tableName' => 'issues',
-   'fields' => array(
+    'tableName' => 'issues',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_ISSUES_ID',
@@ -40,7 +40,7 @@ $models['Issue'] = array(
             'length' => '1',
             'null' => false,
         ),
-       'description' => array(
+        'description' => array(
             'name' => 'description',
             'label' => 'LBL_ISSUES_DESCRIPTION',
             'type' => 'text',
@@ -145,8 +145,8 @@ $models['Issue'] = array(
         ),
     ),
     'indexes' => array(
-      'id' => 'primary',
-      'issueNumber' => 'unique',
+        'id' => 'primary',
+        'issueNumber' => 'unique',
     ),
     'foriegnKeys' => array(
 
@@ -156,82 +156,88 @@ $models['Issue'] = array(
     ),
     'relationships' => array(
         'hasOne' => array(
-          'assignedTo' => array(
-              'primaryKey' => 'assignee',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
-          'createdBy' => array(
-              'primaryKey' => 'createdUser',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
-          'modifiedBy' => array(
-              'primaryKey' => 'modifiedUser',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
-          'ownedBy' => array(
-              'primaryKey' => 'owner',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
-          'reportedBy' => array(
-              'primaryKey' => 'reportedUser',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
-          'project' => array(
-              'primaryKey' => 'projectId',
-              'relatedModel' => 'Project',
-              'relatedKey' => 'id'
-          ),
-          'milestone' => array(
-              'primaryKey' => 'milestoneId',
-              'relatedModel' => 'Milestone',
-              'relatedKey' => 'id'
-          ),
-          'issuetype' => array(
-              'primaryKey' => 'typeId',
-              'relatedModel' => 'Issuetype',
-              'relatedKey' => 'id'
-          ),
-          'parentissue' => array(
-            'primaryKey' => 'parentId',
-            'relatedModel' => 'Issue',
-            'relatedKey' => 'id',
-          ),
+            'assignedTo' => array(
+                'primaryKey' => 'assignee',
+                'relatedModel' => 'User',
+                'relatedKey' => 'id'
+            ),
+            'createdBy' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => 'User',
+                'relatedKey' => 'id'
+            ),
+            'modifiedBy' => array(
+                'primaryKey' => 'modifiedUser',
+                'relatedModel' => 'User',
+                'relatedKey' => 'id'
+            ),
+            'ownedBy' => array(
+                'primaryKey' => 'owner',
+                'relatedModel' => 'User',
+                'relatedKey' => 'id'
+            ),
+            'reportedBy' => array(
+                'primaryKey' => 'reportedUser',
+                'relatedModel' => 'User',
+                'relatedKey' => 'id'
+            ),
+            'project' => array(
+                'primaryKey' => 'projectId',
+                'relatedModel' => 'Project',
+                'relatedKey' => 'id'
+            ),
+            'milestone' => array(
+                'primaryKey' => 'milestoneId',
+                'relatedModel' => 'Milestone',
+                'relatedKey' => 'id'
+            ),
+            'issuetype' => array(
+                'primaryKey' => 'typeId',
+                'relatedModel' => 'Issuetype',
+                'relatedKey' => 'id'
+            ),
+            'parentissue' => array(
+                'primaryKey' => 'parentId',
+                'relatedModel' => 'Issue',
+                'relatedKey' => 'id',
+            ),
         ),
         'hasMany' => array(
-          'estimated' => array(
-            'primaryKey' => 'id',
-            'relatedModel' => 'Timelog',
-            'relatedKey' => 'issueId',
-            'condition' => 'estimated.context = "est"'
-          ),
-          'spent' => array(
-            'primaryKey' => 'id',
-            'relatedModel' => 'Timelog',
-            'relatedKey' => 'issueId',
-            'condition' => 'spent.context = "spent"'
-          ),
-          'childissues' => array(
-            'primaryKey' => 'id',
-            'relatedModel' => 'Issue',
-            'relatedKey' => 'parentId',
-          ),
-          'comments' => array(
-            'primaryKey' => 'id',
-            'relatedModel' => 'Comment',
-            'relatedKey' => 'relatedId',
-            'condition' => 'comments.relatedTo = "issue"'
-          ),
-          'activities' => array(
-            'primaryKey' => 'id',
-            'relatedModel' => 'Activity',
-            'relatedKey' => 'relatedId',
-            'condition' => 'activities.relatedTo = "issue"',
-          ),
+            'estimated' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Timelog',
+                'relatedKey' => 'issueId',
+                'condition' => 'estimated.context = "est"'
+            ),
+            'spent' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Timelog',
+                'relatedKey' => 'issueId',
+                'condition' => 'spent.context = "spent"'
+            ),
+            'childissues' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Issue',
+                'relatedKey' => 'parentId',
+            ),
+            'comments' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Comment',
+                'relatedKey' => 'relatedId',
+                'condition' => 'comments.relatedTo = "issue"'
+            ),
+            'activities' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Activity',
+                'relatedKey' => 'relatedId',
+                'condition' => 'activities.relatedTo = "issue"',
+            ),
+            'files' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Upload',
+                'relatedKey' => 'relatedId',
+                'condition' => 'files.relatedTo = "issue"',
+            ),
         )
     ),
 );

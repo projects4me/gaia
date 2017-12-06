@@ -14,6 +14,13 @@ $models['Upload'] = array(
             'length' => '36',
             'null' => false,
         ),
+       'name' => array(
+           'name' => 'name',
+           'label' => 'LBL_UPLOAD_NAME',
+           'type' => 'varchar',
+           'length' => '255',
+           'null' => false,
+       ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_UPLOAD_DATE_CREATED',
