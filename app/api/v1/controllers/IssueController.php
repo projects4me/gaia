@@ -16,4 +16,9 @@ use Foundation\Mvc\RestController;
  */
 class IssueController extends RestController
 {
+    public $uses = array('Filethumb');
+
+
+
+
 }

@@ -5,8 +5,8 @@
  */
 
 $models['Upload'] = array(
-   'tableName' => 'uploads',
-   'fields' => array(
+    'tableName' => 'uploads',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_UPLOAD_ID',
@@ -14,13 +14,13 @@ $models['Upload'] = array(
             'length' => '36',
             'null' => false,
         ),
-       'name' => array(
-           'name' => 'name',
-           'label' => 'LBL_UPLOAD_NAME',
-           'type' => 'varchar',
-           'length' => '255',
-           'null' => false,
-       ),
+        'name' => array(
+            'name' => 'name',
+            'label' => 'LBL_UPLOAD_NAME',
+            'type' => 'varchar',
+            'length' => '255',
+            'null' => false,
+        ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_UPLOAD_DATE_CREATED',
@@ -95,6 +95,12 @@ $models['Upload'] = array(
             'type' => 'text',
             'null' => true,
         ),
+        'fileThumbnail' => array(
+            'name' => 'fileThumbnail',
+            'label' => 'LBL_UPLOAD_FILE_THUMBNAIL',
+            'type' => 'bool',
+            'null' => true,
+        ),
         'fileDestination' => array(
             'name' => 'fileDestination',
             'label' => 'LBL_UPLOAD_FILE_DESTINATION',
@@ -113,18 +119,18 @@ $models['Upload'] = array(
 
     ),
     'relationships' => array(
-      'hasOne' => array(
-        'createdBy' => array(
-          'primaryKey' => 'createdUser',
-          'relatedModel' => 'User',
-          'relatedKey' => 'id'
+        'hasOne' => array(
+            'createdBy' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => 'User',
+                'relatedKey' => 'id'
+            ),
+            'modifiedBy' => array(
+                'primaryKey' => 'modifiedUser',
+                'relatedModel' => 'User',
+                'relatedKey' => 'id'
+            ),
         ),
-        'modifiedBy' => array(
-          'primaryKey' => 'modifiedUser',
-          'relatedModel' => 'User',
-          'relatedKey' => 'id'
-        ),
-      ),
     ),
     'behaviors' => array(
         //'aclBehavior',
