@@ -9,19 +9,27 @@ use Phalcon\Di,
     Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter,
     Phalcon\Session\Adapter\Files as SessionAdapter,
     Phalcon\Translate\Adapter\NativeArray,
-    Phalcon\Logger\Adapter\File;
+    Phalcon\Logger,
+    Phalcon\Logger\Adapter\File as FileAdapter;
 
 error_reporting(E_ALL);
 define('APP_PATH', realpath('..'));
 define('DS', DIRECTORY_SEPARATOR);
 ini_set('display_errors',true);
 
+/**
+ * @todo Need a more appropriate place for this
+ */
+global $logger;
+$logger = new FileAdapter(APP_PATH.'/logs/application.log');
+$logger->setLogLevel(Logger::DEBUG);
 
 require APP_PATH.'/vendor/autoload.php';
 
 require '../foundation/controllers/component.php';
 require '../foundation/controllers/components/acl.php';
 require '../foundation/controllers/components/auditable.php';
+require '../app/api/v1/controllers/components/FilethumbComponent.php';
 
 // Allow from any origin
 if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -142,23 +150,23 @@ try {
  //       global $logger;
         $connection = new DbAdapter((array) $GLOBALS['settings']['database']);
         $eventsManager = new Phalcon\Events\Manager();
-        $logger = new \Phalcon\Logger\Adapter\File(APP_PATH . "/db.log");
+        $dblogger = new \Phalcon\Logger\Adapter\File(APP_PATH . "/db.log");
 //         print_r($logger);
         //Listen all the database events
-        $eventsManager->attach('db', function($event, $connection) use ($logger) {
+        $eventsManager->attach('db', function($event, $connection) use ($dblogger) {
 //            global $logger;
             if ($event->getType() == 'beforeQuery') {
                 $GLOBALS['timer']->diff();
                 $sqlVariables = $connection->getSQLVariables();
                 if (count($sqlVariables)) {
-                    $logger->log(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
+                    $dblogger->log(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
                 } else {
-                    $logger->log(print_r($connection->getSQLBindTypes(),1), \Phalcon\Logger::INFO);
+                    $dblogger->log(print_r($connection->getSQLBindTypes(),1), \Phalcon\Logger::INFO);
                 }
             }
             if ($event->getType() == 'afterQuery') {
-                $logger->log('Query execution time:'.($GLOBALS['timer']->diff()).' seconds', \Phalcon\Logger::INFO);
-                $logger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
+                $dblogger->log('Query execution time:'.($GLOBALS['timer']->diff()).' seconds', \Phalcon\Logger::INFO);
+                $dblogger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
             }
         });
 
