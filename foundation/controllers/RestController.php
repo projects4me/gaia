@@ -13,6 +13,11 @@ use Phalcon\Text;
 use function Foundation\create_guid as create_guid;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Foundation\metaManager;
+use \Phalcon\Events\EventsAwareInterface;
+use \Phalcon\Events\Manager as EventsManager;
+use \Phalcon\Events\ManagerInterface as EventsManagerInterface;
+use PHPUnit\Runner\Exception;
+use Zend\EventManager\EventManager;
 
 /**
  * The is the deafult controller used by foundation that provides the basic
@@ -28,7 +33,7 @@ use Foundation\metaManager;
  * @category REST, COntroller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class RestController extends \Phalcon\Mvc\Controller
+class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInterface
 {
 
     /**
@@ -118,7 +123,35 @@ class RestController extends \Phalcon\Mvc\Controller
 
     //protected $uses = array('acl','auditable');
 
+    /**
+     * @var array
+     */
     protected $components = array();
+
+    /**
+     * @var EventsManager
+     */
+    protected $eventsManager;
+
+    /**
+     * Standard setter function for the event manager
+     *
+     * @param EventsManagerInterface $eventsManager
+     */
+    public function setEventsManager(EventsManagerInterface $eventsManager)
+    {
+        $this->eventsManager = $eventsManager;
+    }
+
+    /**
+     * Standard getter function for event manager
+     *
+     * @return EventsManager
+     */
+    public function getEventsManager(): EventsManager
+    {
+        return $this->eventsManager;
+    }
 
     /**
      * @todo Add a way that will allow us to control the controllers and actions
@@ -138,14 +171,17 @@ class RestController extends \Phalcon\Mvc\Controller
 
         $this->id = $this->dispatcher->getParam("id");//id
         $this->relationship = $this->dispatcher->getParam("relationship");//relationship
-        if ($this->actionName != 'options')
+        if ($this->actionName != 'options') {
             $this->authorize();
+        }
     }
 
     /**
      * This function preloads the component classes for use later
      */
-    final private function loadComponents(){
+    final private function loadComponents()
+    {
+        $this->eventsManager = new EventsManager();
         if (!isset($this->components) || empty($this->components))
         {
             if (isset($this->uses) && !empty($this->uses))
@@ -154,6 +190,10 @@ class RestController extends \Phalcon\Mvc\Controller
                 {
                     $componentClass = '\\Foundation\\Mvc\\Controller\\Component\\'.strtolower($component).'Component';
                     $this->components[$component] = new $componentClass();
+                    $this->eventsManager->attach(
+                        'rest',
+                        $this->components[$component]
+                    );
                 }
             }
         }
@@ -163,62 +203,12 @@ class RestController extends \Phalcon\Mvc\Controller
      * The event handler that allows us to call multiple mixin behaviors before
      * executing the desired action
      *
-     * @todo Examine performance
-     * @todo preload the mixins
-     * @param type $dispatcher
+     * @param \Phalcon\Mvc\Dispatcher $dispatcher
      */
-    public function beforeExecuteRoute($dispatcher)
+    public function beforeExecuteRoute(\Phalcon\Mvc\Dispatcher $dispatcher)
     {
         $this->loadComponents();
-        $method = 'before'.\Phalcon\Text::camelize($dispatcher->getActionName());
-        if (isset($this->uses) && !empty($this->uses))
-        {
-            foreach($this->uses as $component)
-            {
-                if ($this->components[$component]->initialize())
-                {
-                    if (method_exists($this->components[$component],$method))
-                    {
-                        if (!($this->components[$component]->$method($this)))
-                        {
-                            throw new \Phalcon\Exception('Failed while executing the function '.$method.' for the Component::'.$component);
-                        }
-                    }
-                }
-                else
-                {
-                    throw new \Phalcon\Exception('Failed to initialize the Component::'.$component);
-                }
-            }
-        }
     }
-
-        /**
-     * The event handler that allows us to call multiple mixin behaviors before
-     * executing the desired action
-     *
-     * @todo Examine performance
-     * @todo preload the mixins
-     * @param type $dispatcher
-     */
-    public function afterExecuteRoute($dispatcher)
-    {
-        $method = 'after'.\Phalcon\Text::camelize($dispatcher->getActionName());
-        if (isset($this->uses) && !empty($this->uses))
-        {
-            foreach($this->uses as $component)
-            {
-                if (method_exists($this->components[$component],$method))
-                {
-                    if (!($this->components[$component]->$method($this)))
-                    {
-                        throw new \Exception('Failed while executing the function '.$method.' for the Component::'.$component);
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * Make currentUser available as global
      *
@@ -417,10 +407,14 @@ class RestController extends \Phalcon\Mvc\Controller
         $model = new $modelName;
 
         $data = $model->read($params);
-
         $dataArray = $this->extractData($data,'one');
-        $finalData = $this->buildHAL($dataArray);
-        return $this->returnResponse($finalData);
+        $this->finalData = $this->buildHAL($dataArray);
+
+        $something = $this->eventsManager->fire('rest:afterRead', $this);
+
+        print_r($this->finalData);
+        die();
+        return $this->returnResponse($this->finalData);
     }
 
 
