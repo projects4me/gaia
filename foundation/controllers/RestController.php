@@ -159,6 +159,9 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      */
     public function initialize()
     {
+        global $logger;
+
+        $logger->debug('Gaia.foundation.controllers.rest->initialize()');
         //set the language
         $this->setLanguage();
 
@@ -174,6 +177,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         if ($this->actionName != 'options') {
             $this->authorize();
         }
+        $logger->debug('-Gaia.foundation.controllers.rest->initialize()');
     }
 
     /**
@@ -181,11 +185,19 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      */
     final private function loadComponents()
     {
+        global $logger;
+
+        $logger->debug('Gaia.foundation.controllers.rest.loadComponents()');
+        $logger->debug($this->dispatcher->getControllerName().'->'.
+                        $this->dispatcher->getActionName());
+
         $this->eventsManager = new EventsManager();
         if (!isset($this->components) || empty($this->components))
         {
             if (isset($this->uses) && !empty($this->uses))
             {
+                $logger->debug(print_r($this->uses,1));
+
                 foreach($this->uses as $component)
                 {
                     $componentClass = '\\Foundation\\Mvc\\Controller\\Component\\'.strtolower($component).'Component';
@@ -197,6 +209,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                 }
             }
         }
+
+        $logger->debug('-Gaia.foundation.controllers.rest.loadComponents()');
     }
 
     /**
@@ -372,10 +386,13 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
     /**
      * Method Http accept: GET
-     * @return JSON Retrive data by id
+     * @return \Phalcon\http\Response Retrive data by id
      */
-    public function getAction(){
+    public function getAction()
+    {
+        global $logger;
 
+        $logger->debug('Gaia.foundation.controllers.rest->getAction');
         $modelName = $this->modelName;
 
         if (!(isset($this->id) && !empty($this->id)))
@@ -410,10 +427,10 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $dataArray = $this->extractData($data,'one');
         $this->finalData = $this->buildHAL($dataArray);
 
-        $something = $this->eventsManager->fire('rest:afterRead', $this);
+        $logger->debug('Firing afterRead event');
+        $this->eventsManager->fire('rest:afterRead', $this);
 
-        print_r($this->finalData);
-        die();
+        $logger->debug('-Gaia.foundation.controllers.rest->getAction');
         return $this->returnResponse($this->finalData);
     }
 
@@ -474,6 +491,10 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      */
     public function listAction()
     {
+        global $logger;
+
+        $logger->debug('Gaia.foundation.controllers.rest->listAction');
+
         $modelName = $this->modelName;
 
         /**
@@ -508,8 +529,13 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $data = $model->readAll($params);
 
         $dataArray = $this->extractData($data);
-        $finalData = $this->buildHAL($dataArray,--$limit,$page);
-        return $this->returnResponse($finalData);
+        $this->finalData = $this->buildHAL($dataArray,--$limit,$page);
+
+        $logger->debug('Firing afterRead event');
+        $this->eventsManager->fire('rest:afterRead', $this);
+
+        $logger->debug('-Gaia.foundation.controllers.rest->listAction');
+        return $this->returnResponse($this->finalData);
 
 /*        $identifier = 'projectId';
 

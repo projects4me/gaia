@@ -90,8 +90,18 @@ class UploadController extends RestController
 
                         $data = $model->read(array('id' => $new_id));
 
+
+                        //$thumbdata = 'data:'.$value['attributes']['fileMime'].';base64,'.base64_encode(file_get_contents($targetPath));
                         $dataArray = $this->extractData($data,'one');
                         $finalData = $this->buildHAL($dataArray);
+
+                        if ($thumbnail) {
+                            $thumbPath = APP_PATH . DS. 'filesystem'.DS.'uploads' . DS.
+                                "thumbnail/thumb_" . $finalData['data']['id']. '.jpg';
+
+                            $thumbdata = 'data:'.$_FILES['file']['type'].';base64,'.base64_encode(file_get_contents($thumbPath));
+                            $finalData['data']['attributes']['fileThumbnail'] = $thumbdata;
+                        }
 
                         $logger->debug("File with ID ".$new_id." uploaded, returning response");
 

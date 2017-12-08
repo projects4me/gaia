@@ -18,7 +18,4 @@ class IssueController extends RestController
 {
     public $uses = array('Filethumb');
 
-
-
-
 }

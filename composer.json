@@ -1,6 +1,6 @@
 {
   "require": {
-    "php": ">7.0",
+    "php": "",
     "ext-imagick": "*",
     "wisembly/elephant.io": "~3.0",
     "phalcon/incubator": "^3.1.1",
