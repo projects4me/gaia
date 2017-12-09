@@ -18,6 +18,81 @@ use function Foundation\create_guid as create_guid;
  */
 class UploadController extends RestController
 {
+
+    /**
+     * This is the get action, this function is being declared here in order to make sure
+     * that even if it is called nothing happens.
+     *
+     * @method getAction
+     */
+    function getAction()
+    {
+        global $logger;
+        $logger->debug("Gaia.Controllers.Upload->getAction");
+
+        $logger->debug("-Gaia.Controllers.Upload->getAction");
+    }
+
+
+    /**
+     * This is the delete action
+     *
+     * @method getAction
+     * @todo possibility have a recycle bin concept
+     * @todo have the thumbnail folder in the config
+     * @todo refactor
+     */
+    function deleteAction()
+    {
+        global $logger;
+        $logger->debug("Gaia.Controllers.Upload->deleteAction()");
+
+        // Fetch, handle and then call the deletion action
+        $modelName = $this->modelName;
+        $model = $modelName::findFirst('id = "'.$this->id.'"');
+
+        //delete if the object exists
+        if ( $model!=false ){
+
+            $id = $model->id;
+            $filePath = $model->filePath;
+            $thumbnail = $model->fileThumbnail;
+
+            if ( $model->delete() == true ) {
+
+                // remove the file
+                unlink($filePath);
+
+                // if thumbnail existed then remove that as well
+                if ($thumbnail)
+                {
+                    $thumbPath = APP_PATH . DS. 'filesystem'.DS.'uploads' . DS.
+                        "thumbnail/thumb_" . $id. '.jpg';
+                    unlink($thumbPath);
+                }
+
+
+                $this->response->setJsonContent(array('data' => array('type' => strtolower($modelName),"id"=>$this->id)));
+                $this->response->setStatusCode(200, "OK");
+            }else{
+                $this->response->setStatusCode(500, "Internal Server Error, could not delete the upload");
+
+                $errors = array();
+                foreach( $model->getMessages() as $message )
+                    $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
+
+                $this->response->setJsonContent(array('status' => "ERROR", 'messages' => $errors));
+            }
+        }else{
+            $this->response->setStatusCode(404, "Not found");
+            $this->response->setJsonContent(array('status' => "ERROR", 'messages' => array("These are not the records you are looking for!")));
+        }
+
+        return $this->response;
+
+        $logger->debug("-Gaia.Controllers.Upload->deleteAction()");
+    }
+
     /**
      *  This function is used to get the file and place that in the filesystem
      *
@@ -245,15 +320,5 @@ class UploadController extends RestController
 
         $logger->debug('-Gaia.Api.Controller.Upload->_generateThumb');
         return false;
-    }
-
-    /**
-     *  This function returns the uploaded file
-     *
-     *
-     */
-    function getAction()
-    {
-
     }
 }

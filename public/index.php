@@ -178,8 +178,8 @@ try {
     /**
      * @todo move the migration away to elsewhere
      */
-    require '../foundation/libs/migration/driver.php';
-    Foundation\Mvc\Model\Migration\Driver::migrate();
+    //require '../foundation/libs/migration/driver.php';
+    //Foundation\Mvc\Model\Migration\Driver::migrate();
     require '../foundation/libs/acl.php';
 
     //Handle the request

@@ -6,12 +6,12 @@
 
 namespace Foundation\Mvc;
 use Phalcon\Mvc\Model as PhalconModel;
-use Phalcon\Mvc\Model\Message;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
-use Phalcon\Mvc\Model\Validator\InclusionIn;
+//use Phalcon\Mvc\Model\Message;
+//use Phalcon\Mvc\Model\Validator\Uniqueness;
+//use Phalcon\Mvc\Model\Validator\InclusionIn;
 use Foundation\metaManager;
 use Phalcon\Mvc\Model\MetaData;
-use Phalcon\Text;
+//use Phalcon\Text;
 
 
 /**
@@ -24,7 +24,7 @@ use Phalcon\Text;
  * @category Model
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class Model extends \Phalcon\Mvc\Model
+class Model extends PhalconModel
 {
     protected $metadata;
 
@@ -167,7 +167,7 @@ class Model extends \Phalcon\Mvc\Model
     /**
      * This function returns relationship names for all relationships types or of the specidied type
      *
-     * @param string $type possible values are hasOne, hasMany, belongsTo and hasManyToMany
+     * @param mixed $type possible values are hasOne, hasMany, belongsTo and hasManyToMany
      * @return array
      */
     protected function getRelationships($type = false)
@@ -557,8 +557,9 @@ class Model extends \Phalcon\Mvc\Model
      * Note: Subqueries are also not allowed.
      * Note: Apostrophe must be preceded with \
      * @todo Allow : without spaces
-     * @param type $queryString
+     * @param string $statement
      * @return array
+     * @throws \Phalcon\Exception
      */
     public static function preProcessWhere($statement)
     {

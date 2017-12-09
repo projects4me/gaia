@@ -387,6 +387,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
     /**
      * Method Http accept: GET
      * @return \Phalcon\http\Response Retrive data by id
+     * @throws \Phalcon\Exception
      */
     public function getAction()
     {
@@ -438,6 +439,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
     /**
      * Method Http accept: GET
      * @return JSON Retrive all data, with and without relationship
+     * @throws \Phalcon\Exception
      */
     public function relatedAction()
     {
@@ -535,42 +537,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $this->eventsManager->fire('rest:afterRead', $this);
 
         $logger->debug('-Gaia.foundation.controllers.rest->listAction');
+
         return $this->returnResponse($this->finalData);
-
-/*        $identifier = 'projectId';
-
-
-        if (strtolower($modelName) === 'projects')
-        {
-            $identifier = 'id';
-        }
-
-
-        //data of more models (relationship)
-        if ( $this->relationship!=null ){
-            $data = $modelName::findFirst( $this->id );
-
-			$relationship = $this->relationship;
-
-			$data = $data->$relationship;
-
-        //data of one model
-        }else{
-            $query  = $modelName::query();
-            if ($this->projectAuthorization)
-            {
-                $conditions = array();
-                foreach ($this->accessibleProjects as $accessibleProject)
-                {
-                    $conditions[] = $identifier."='".$accessibleProject."'";
-                }
-                $condition = "(".implode(' OR ',$conditions).")";
-                $query->where($condition);
-            }
-            $data = $query->execute();
-
-        }
-*/
     }
 
     /**
@@ -579,7 +547,6 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      */
     public function putAction()
     {
-        print 'here';
         $data = array('error' => array('code' => 405, 'description' => 'Method not allowed'));
         return $this->returnResponse($data);
     }
