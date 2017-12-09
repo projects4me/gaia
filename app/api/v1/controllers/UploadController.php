@@ -20,17 +20,72 @@ class UploadController extends RestController
 {
 
     /**
-     * This is the get action, this function is being declared here in order to make sure
-     * that even if it is called nothing happens.
+     * Get method is not supported for upload
      *
      * @method getAction
      */
     function getAction()
     {
+        $data = array('error' => array('code' => 405, 'description' => 'Method not allowed'));
+        return $this->returnResponse($data);
+    }
+    /**
+     * This is the list action for uploads, it is used to either get the preview
+     * of the uploads or download them.
+     *
+     * @method listAction
+     */
+    function listAction()
+    {
         global $logger;
         $logger->debug("Gaia.Controllers.Upload->getAction");
 
+        $id = $this->request->get('id',null,null);
+        if (!(isset($id) && !empty($id)))
+        {
+            throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+        }
+
+        // Check if the user wants to download the files of not
+        $download = $this->request->get('download',null,false);
+        $timeZone = new \DateTimeZone('UTC');
+        $now = new \DateTime('now',$timeZone);
+
+        $model = new Upload;
+        $data = $model->read(['id' => $id]);
+        $dataArray = $this->extractData($data);
+        $this->finalData = $this->buildHAL($dataArray);
+
+        if ($download) {
+            // generate the downloadlink and return it along with the file data
+            $downloadLink = new Downloadtoken;
+
+            $expiry = new \DateTime('now',$timeZone);;
+            $expiry->add(new \DateInterval('PT10M'));
+
+            // Set the values for the model
+            $values = array(
+                'downloadToken' => create_guid(),
+                'dateCreated' => $now->format('Y-m-d H:i:s'),
+                'createdUser' => $GLOBALS['currentUser']->id,
+                'uploadId' => $this->finalData['data'][0]['id'],
+                'relatedId' => $this->finalData['data'][0]['attributes']['relatedId'],
+                'relatedTo' => $this->finalData['data'][0]['attributes']['relatedTo'],
+                'expires' => $expiry->format('Y-m-d H:i:s')
+            );
+
+            // Save
+
+            if ($downloadLink->save($values)){
+                $this->finalData['data'][0]['attributes']['downloadLink'] = $values['downloadToken'];
+            }
+        }
+
+
+        $this->eventsManager->fire('rest:afterRead', $this);
+
         $logger->debug("-Gaia.Controllers.Upload->getAction");
+        return $this->returnResponse($this->finalData);
     }
 
 

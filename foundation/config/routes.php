@@ -267,6 +267,11 @@ $config['routes'] = array(
             'path' => '/image',
             'controller' => 'userimage',
             'action' => 'get',
+        ),
+        'download' => array(
+            'path' => '/download',
+            'controller' => 'download',
+            'action' => 'get',
         )
     ),
     'system' => array(
