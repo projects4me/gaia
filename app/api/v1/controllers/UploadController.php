@@ -26,8 +26,37 @@ class UploadController extends RestController
      */
     function getAction()
     {
-        $data = array('error' => array('code' => 405, 'description' => 'Method not allowed'));
-        return $this->returnResponse($data);
+        global $logger;
+        $logger->debug("Gaia.Controllers.Upload->getAction");
+
+        if (!(isset($this->id) && !empty($this->id)))
+        {
+            throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+        }
+
+        $model = new Upload;
+        $data = $model->read(['id' => $this->id]);
+
+        if (isset($data[0]) and !empty($data[0]->id)) {
+            if (file_exists($data[0]->filePath)) {
+
+                $this->response->setStatusCode(200, "OK");
+                $this->response->setContentType($data[0]->fileType);
+                $this->response->setHeader("Expires", '0');
+                $this->response->setHeader("Content-Type", $data[0]->fileType);
+                $this->response->setHeader("Cache-Control", 'must-revalidate');
+                $this->response->setHeader("Content-Length", $data[0]->fileSize);
+                readfile($data[0]->filePath);
+            } else {
+                $this->response->setStatusCode(500, "Internal Server Error");
+            }
+        } else {
+            $this->response->setStatusCode(400, "Not Found");
+        }
+
+        $this->response->send();
+        $logger->debug("-Gaia.Controllers.Upload->getAction");
+        exit();
     }
     /**
      * This is the list action for uploads, it is used to either get the preview
@@ -38,7 +67,7 @@ class UploadController extends RestController
     function listAction()
     {
         global $logger;
-        $logger->debug("Gaia.Controllers.Upload->getAction");
+        $logger->debug("Gaia.Controllers.Upload->listAction");
 
         $id = $this->request->get('id',null,null);
         if (!(isset($id) && !empty($id)))
@@ -84,7 +113,7 @@ class UploadController extends RestController
 
         $this->eventsManager->fire('rest:afterRead', $this);
 
-        $logger->debug("-Gaia.Controllers.Upload->getAction");
+        $logger->debug("-Gaia.Controllers.Upload->listAction");
         return $this->returnResponse($this->finalData);
     }
 

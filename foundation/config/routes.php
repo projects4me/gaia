@@ -272,6 +272,11 @@ $config['routes'] = array(
             'path' => '/download',
             'controller' => 'download',
             'action' => 'get',
+        ),
+        'preview' => array(
+            'path' => '/preview',
+            'controller' => 'preview',
+            'action' => 'get',
         )
     ),
     'system' => array(
