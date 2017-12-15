@@ -72,7 +72,14 @@ $models['Downloadtoken'] = array(
                 'relatedModel' => 'Upload',
                 'relatedKey' => 'id',
                 'condition' => 'Downloadtoken.relatedTo = "issue"'
+            ),
+            'wikiUpload' => array(
+                'primaryKey' => 'uploadId',
+                'relatedModel' => 'Upload',
+                'relatedKey' => 'id',
+                'condition' => 'Downloadtoken.relatedTo = "wiki"'
             )
+
         )
     )
 );

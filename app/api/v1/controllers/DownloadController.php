@@ -53,10 +53,10 @@ class DownloadController extends \Phalcon\Mvc\Controller
             $now = new \DateTime('now',new \DateTimeZone('UTC'));
 
             $diffInSeconds = $now->getTimestamp() - $expiry->getTimestamp();
-
+            $uploadRel = ($data[0]->relatedTo).'Upload';
             // If the download link has not expired
             if ($diffInSeconds <= 0) {
-               $upload = $data[0]->issueUpload;
+               $upload = $data[0]->$uploadRel;
                 $logger->info("valid download token provided");
 
                 if (file_exists($upload->filePath)) {

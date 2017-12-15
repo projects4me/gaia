@@ -40,11 +40,25 @@ $models['Timelog'] = array(
            'length' => '36',
            'null' => false,
        ),
+       'createdUserName' => array(
+           'name' => 'createdUserName',
+           'label' => 'LBL_TIME_LOGS_CREATED_USER_NAME',
+           'type' => 'varchar',
+           'length' => '255',
+           'null' => false,
+       ),
        'modifiedUser' => array(
            'name' => 'modifiedUser',
            'label' => 'LBL_TIME_LOGS_MODIFIED_USER',
            'type' => 'varchar',
            'length' => '36',
+           'null' => false,
+       ),
+       'modifiedUserName' => array(
+           'name' => 'modifiedUserName',
+           'label' => 'LBL_TIME_LOGS_MODIFIED_USER_NAME',
+           'type' => 'varchar',
+           'length' => '255',
            'null' => false,
        ),
        'issueId' => array(
@@ -73,6 +87,18 @@ $models['Timelog'] = array(
            'label' => 'LBL_TIME_LOGS_DAYS',
            'type' => 'int',
            'length' => '5',
+           'null' => true,
+       ),
+       'description' => array(
+           'name' => 'description',
+           'label' => 'LBL_TIME_LOGS_DESCRIPTION',
+           'type' => 'text',
+           'null' => true,
+       ),
+       'spentOn' => array(
+           'name' => 'spentOn',
+           'label' => 'LBL_TIME_LOGS_SPENT_ON',
+           'type' => 'datetime',
            'null' => true,
        ),
        'context' => array(

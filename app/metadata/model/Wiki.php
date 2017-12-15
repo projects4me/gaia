@@ -5,8 +5,8 @@
  */
 
 $models['Wiki'] = array(
-   'tableName' => 'wiki',
-   'fields' => array(
+    'tableName' => 'wiki',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_WIKI_ID',
@@ -15,11 +15,11 @@ $models['Wiki'] = array(
             'null' => false,
         ),
         'name' => array(
-           'name' => 'name',
-           'label' => 'LBL_WIKI_NAME',
-           'type' => 'varchar',
-           'length' => '255',
-           'null' => false,
+            'name' => 'name',
+            'label' => 'LBL_WIKI_NAME',
+            'type' => 'varchar',
+            'length' => '255',
+            'null' => false,
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
@@ -120,55 +120,61 @@ $models['Wiki'] = array(
 
     ),
     'relationships' => array(
-      'belongsTo' => array(
-        'project' => array(
-          'primaryKey' => 'projectId',
-          'relatedModel' => 'Project',
-          'relatedKey' => 'id'
+        'belongsTo' => array(
+            'project' => array(
+                'primaryKey' => 'projectId',
+                'relatedModel' => 'Project',
+                'relatedKey' => 'id'
+            ),
+            'parent' => array(
+                'primaryKey' => 'parentId',
+                'relatedModel' => 'Wiki',
+                'relatedKey' => 'id'
+            )
         ),
-        'parent' => array(
-          'primaryKey' => 'parentId',
-          'relatedModel' => 'Wiki',
-          'relatedKey' => 'id'
+        'hasOne' => array(
+            'createdBy' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => 'User',
+                'relatedKey' => 'id'
+            ),
+            'modifiedBy' => array(
+                'primaryKey' => 'modifiedUser',
+                'relatedModel' => 'User',
+                'relatedKey' => 'id'
+            ),
+        ),
+        'hasMany' => array(
+            'vote' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Vote',
+                'relatedKey' => 'relatedId',
+                'condition' => 'vote.relatedTo = "wiki"'
+            ),
+            'tagged' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Tagged',
+                'relatedKey' => 'relatedId',
+                'condition' => 'tagged.relatedTo = "wiki"'
+            ),
+            'files' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Upload',
+                'relatedKey' => 'relatedId',
+                'condition' => 'files.relatedTo = "wiki"',
+            ),
+        ),
+        'hasManyToMany' => array(
+            'tag' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Tagged',
+                'rhsKey' => 'relatedId',
+                'lhsKey' => 'tagId',
+                'secondaryModel' => 'Tag',
+                'secondaryKey' => 'id',
+                'condition' => 'Tagged.relatedTo = "wiki"'
+            )
         )
-      ),
-      'hasOne' => array(
-        'createdBy' => array(
-          'primaryKey' => 'createdUser',
-          'relatedModel' => 'User',
-          'relatedKey' => 'id'
-        ),
-        'modifiedBy' => array(
-          'primaryKey' => 'modifiedUser',
-          'relatedModel' => 'User',
-          'relatedKey' => 'id'
-        ),
-      ),
-      'hasMany' => array(
-        'vote' => array(
-          'primaryKey' => 'id',
-          'relatedModel' => 'Vote',
-          'relatedKey' => 'relatedId',
-          'condition' => 'vote.relatedTo = "wiki"'
-        ),
-        'tagged' => array(
-          'primaryKey' => 'id',
-          'relatedModel' => 'Tagged',
-          'relatedKey' => 'relatedId',
-          'condition' => 'tagged.relatedTo = "wiki"'
-        ),
-      ),
-      'hasManyToMany' => array(
-        'tag' => array(
-          'primaryKey' => 'id',
-          'relatedModel' => 'Tagged',
-          'rhsKey' => 'relatedId',
-          'lhsKey' => 'tagId',
-          'secondaryModel' => 'Tag',
-          'secondaryKey' => 'id',
-          'condition' => 'Tagged.relatedTo = "wiki"'
-        )
-      )
     ),
     'behaviors' => array(
         'aclBehavior',

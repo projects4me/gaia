@@ -17,5 +17,5 @@
  */
 class WikiController extends RestController
 {
-  
+    public $uses = array('Filethumb');
 }
