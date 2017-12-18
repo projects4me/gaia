@@ -71,6 +71,9 @@ $models['Membership'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
+        'roleId' => 'index',
+        'projectId' => 'index',
+        'userId' => 'index',
     ),
     'foriegnKeys' => array(
 

@@ -5,8 +5,8 @@
  */
 
 $models['Conversationroom'] = array(
-   'tableName' => 'conversation_rooms',
-   'fields' => array(
+    'tableName' => 'conversation_rooms',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_CONVERSATION_ROOMS_ID',
@@ -40,7 +40,7 @@ $models['Conversationroom'] = array(
             'length' => '1',
             'null' => false,
         ),
-       'description' => array(
+        'description' => array(
             'name' => 'description',
             'label' => 'LBL_CONVERSATION_ROOMS_DESCRIPTION',
             'type' => 'text',
@@ -98,6 +98,7 @@ $models['Conversationroom'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
+        'projectId' => 'index',
     ),
     'foriegnKeys' => array(
 
@@ -106,37 +107,37 @@ $models['Conversationroom'] = array(
 
     ),
     'relationships' => array(
-      'hasOne' => array(
-          'project' => array(
-              'primaryKey' => 'projectId',
-              'relatedModel' => 'Project',
-              'relatedKey' => 'id',
-          ),
-          'createdBy' => array(
-            'primaryKey' => 'createdUser',
-            'relatedModel' => 'User',
-            'relatedKey' => 'id'
-          ),
-          'modifiedBy' => array(
-            'primaryKey' => 'modifiedUser',
-            'relatedModel' => 'User',
-            'relatedKey' => 'id'
-          ),
-      ),
-      'hasMany' => array(
-          'comments' => array(
-              'primaryKey' => 'id',
-              'relatedModel' => 'Comment',
-              'relatedKey' => 'relatedId',
-              'condition' => 'comments.relatedTo = "conversationrooms"'
-          ),
-          'votes' => array(
-            'primaryKey' => 'id',
-            'relatedModel' => 'Vote',
-            'relatedKey' => 'relatedId',
-            'condition' => 'votes.relatedTo = "conversationrooms"'
-          ),
-      ),
+        'hasOne' => array(
+            'project' => array(
+                'primaryKey' => 'projectId',
+                'relatedModel' => 'Project',
+                'relatedKey' => 'id',
+            ),
+            'createdBy' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => 'User',
+                'relatedKey' => 'id'
+            ),
+            'modifiedBy' => array(
+                'primaryKey' => 'modifiedUser',
+                'relatedModel' => 'User',
+                'relatedKey' => 'id'
+            ),
+        ),
+        'hasMany' => array(
+            'comments' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Comment',
+                'relatedKey' => 'relatedId',
+                'condition' => 'comments.relatedTo = "conversationrooms"'
+            ),
+            'votes' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Vote',
+                'relatedKey' => 'relatedId',
+                'condition' => 'votes.relatedTo = "conversationrooms"'
+            ),
+        ),
     ),
 );
 

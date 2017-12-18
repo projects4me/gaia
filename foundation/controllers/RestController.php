@@ -37,8 +37,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 {
 
     /**
-    * Model's name is registered from controller via parameter
-    */
+     * Model's name is registered from controller via parameter
+     */
     protected $modelName;
 
     /**
@@ -48,27 +48,27 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
     protected $model;
 
     /**
-    * Model's name of relationship model
-    */
+     * Model's name of relationship model
+     */
     protected $relationship=null;
 
     /**
-    * Name of controller is passed in parameter
-    */
+     * Name of controller is passed in parameter
+     */
     protected $controllerName;
 
     /**
-    * Name of action is passed in parameter
-    */
+     * Name of action is passed in parameter
+     */
     protected $actionName;
     /**
-    * Value of primary key field of model (passed in parameter)
-    */
+     * Value of primary key field of model (passed in parameter)
+     */
     protected $id;
 
     /**
-    * Parameters
-    */
+     * Parameters
+     */
     protected $params;
 
     /**
@@ -100,6 +100,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      * @var array
      */
     protected $accessibleProjects = array();
+
+    protected static $cachedMeta = array();
 
     /**
      * Acl Map
@@ -167,8 +169,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
         $this->response = new Response();
 
-    	//print_r($this->dispatcher->getParams());exit;
-  	    $this->controllerName = $this->dispatcher->getControllerName();//controller
+        //print_r($this->dispatcher->getParams());exit;
+        $this->controllerName = $this->dispatcher->getControllerName();//controller
         $this->actionName = $this->dispatcher->getActionName();//controller
         $this->modelName = \Phalcon\Text::camelize($this->controllerName);//model
 
@@ -189,7 +191,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
         $logger->debug('Gaia.foundation.controllers.rest.loadComponents()');
         $logger->debug($this->dispatcher->getControllerName().'->'.
-                        $this->dispatcher->getActionName());
+            $this->dispatcher->getActionName());
 
         $this->eventsManager = new EventsManager();
         if (!isset($this->components) || empty($this->components))
@@ -338,7 +340,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         if ( file_exists("../app/languages/".$bestLanguage.".php") ){
             require "../app/languages/".$bestLanguage.".php";
 
-        //if not exist best language find the first language existing
+            //if not exist best language find the first language existing
         }else{
             //search for the first existing language
             $cont = 0;
@@ -410,7 +412,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
         if ($modelName === 'User' && $this->id === 'me')
         {
-          $this->id = $GLOBALS['currentUser']->id;
+            $this->id = $GLOBALS['currentUser']->id;
         }
 
         $params = array(
@@ -567,70 +569,70 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      */
     public function patchAction()
     {
-      $modelName = $this->modelName;
-      $model = new $modelName();
+        $modelName = $this->modelName;
+        $model = new $modelName();
 
-      $util = new \Util();
-      $data = array();
+        $util = new \Util();
+        $data = array();
 
-      //get data
-      $temp = $util->objectToArray($this->request->getJsonRawBody());
+        //get data
+        $temp = $util->objectToArray($this->request->getJsonRawBody());
 
-      //verify if exist more than one element
-      if ($util->existSubArray($temp) )
-      {
-        if (isset($temp['data']['attributes']))
+        //verify if exist more than one element
+        if ($util->existSubArray($temp) )
         {
-          if (isset($temp['data']['id']) && !empty($temp['data']['id']))
-          {
-            $temp['data']['attributes']['id'] = $temp['data']['id'];
-          }
-          $data[] = $temp['data']['attributes'];
-        }
-        else {
-          $data = $temp;
-        }
-
-      }
-      else
-      {
-        $data[0] = $temp;
-      }
-
-
-      //scroll through the array data and make the action save/update
-      foreach ($data as $key => $value) {
-
-        //if have param then update
-        if ( isset($value['id']) ) {
-          //if passed by url
-          $model = $modelName::findFirst('id = "'.$value['id'].'"');
-          //print_r($value);
-          if ( $model->save($value) ){
-            $dataResponse = get_object_vars($model);
-            //update
-            $this->response->setStatusCode(200, "OK");
-
-            $data = $model->read(array('id' => $value['id']));
-
-            $dataArray = $this->extractData($data,'one');
-            $finalData = $this->buildHAL($dataArray);
-            return $this->returnResponse($finalData);
-          }
-          else {
-            $errors = array();
-            foreach( $model->getMessages() as $message ) {
-              $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
+            if (isset($temp['data']['attributes']))
+            {
+                if (isset($temp['data']['id']) && !empty($temp['data']['id']))
+                {
+                    $temp['data']['attributes']['id'] = $temp['data']['id'];
+                }
+                $data[] = $temp['data']['attributes'];
             }
-            $this->response->setJsonContent(array(
-            'status' => 'ERROR',
-            'messages' => $errors
-            ));
-          }
-        }
-      }//end foreach
+            else {
+                $data = $temp;
+            }
 
-      return $this->response;
+        }
+        else
+        {
+            $data[0] = $temp;
+        }
+
+
+        //scroll through the array data and make the action save/update
+        foreach ($data as $key => $value) {
+
+            //if have param then update
+            if ( isset($value['id']) ) {
+                //if passed by url
+                $model = $modelName::findFirst('id = "'.$value['id'].'"');
+                //print_r($value);
+                if ( $model->save($value) ){
+                    $dataResponse = get_object_vars($model);
+                    //update
+                    $this->response->setStatusCode(200, "OK");
+
+                    $data = $model->read(array('id' => $value['id']));
+
+                    $dataArray = $this->extractData($data,'one');
+                    $finalData = $this->buildHAL($dataArray);
+                    return $this->returnResponse($finalData);
+                }
+                else {
+                    $errors = array();
+                    foreach( $model->getMessages() as $message ) {
+                        $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
+                    }
+                    $this->response->setJsonContent(array(
+                        'status' => 'ERROR',
+                        'messages' => $errors
+                    ));
+                }
+            }
+        }//end foreach
+
+        return $this->response;
 
     }
 
@@ -705,24 +707,24 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         //verify if exist more than one element
         if ($util->existSubArray($temp) )
         {
-          if (isset($temp['data']['attributes']))
-          {
-            $data[] = $temp['data']['attributes'];
-          }
-          else {
-            $data = $temp;
-          }
+            if (isset($temp['data']['attributes']))
+            {
+                $data[] = $temp['data']['attributes'];
+            }
+            else {
+                $data = $temp;
+            }
 
         }
         else
         {
-          $data[0] = $temp;
+            $data[0] = $temp;
         }
 
         //scroll through the arraay data and make the action save/update
         foreach ($data as $key => $value) {
 
-             //verify if any value is date (CURRENT_DATE, CURRENT_DATETIME), if it was replace for current date
+            //verify if any value is date (CURRENT_DATE, CURRENT_DATETIME), if it was replace for current date
             foreach ($value as $k => $v) {
                 if ( $v=="CURRENT_DATE" ){
                     $now = new \DateTime();
@@ -747,7 +749,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                 //update
                 if ( isset($this->id) ){
                     $this->response->setJsonContent(array('status' => 'OK'));
-                //insert
+                    //insert
                 }else{
                     $dataResponse['id'] = $new_id;
                     $this->response->setStatusCode(201, "Created");
@@ -757,10 +759,10 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                     $dataArray = $this->extractData($data,'one');
                     $finalData = $this->buildHAL($dataArray);
                     return $this->returnResponse($finalData);
-/*                    $this->response->setJsonContent(array(
-                        'status' => 'OK',
-                        'data' => array_merge($value, $dataResponse) //merge form data with return db
-                    ));*/
+                    /*                    $this->response->setJsonContent(array(
+                                            'status' => 'OK',
+                                            'data' => array_merge($value, $dataResponse) //merge form data with return db
+                                        ));*/
                 }
 
             }else{
@@ -797,13 +799,13 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                 $this->response->setJsonContent(array('data' => array('type' => strtolower($modelName),"id"=>$this->id)));
                 $this->response->setStatusCode(200, "OK");
             }else{
-               $this->response->setStatusCode(409, "Conflict");
+                $this->response->setStatusCode(409, "Conflict");
 
-               $errors = array();
-               foreach( $model->getMessages() as $message )
+                $errors = array();
+                foreach( $model->getMessages() as $message )
                     $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
 
-               $this->response->setJsonContent(array('status' => "ERROR", 'messages' => $errors));
+                $this->response->setJsonContent(array('status' => "ERROR", 'messages' => $errors));
             }
         }else{
             $this->response->setStatusCode(409, "Conflict");
@@ -888,22 +890,22 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         //$hal['links']['self']['href'] = $query['_url'];
         if (!empty($self))
         {
-          //$hal['meta']['_links']['self']['href'] .= '?'.implode('&',$self);
-          $hal['meta']['links']['self']['href'] .= '?'.implode('&',$self);
-          //$hal['links']['self']['href'] .= '?'.implode('&',$self);
+            //$hal['meta']['_links']['self']['href'] .= '?'.implode('&',$self);
+            $hal['meta']['links']['self']['href'] .= '?'.implode('&',$self);
+            //$hal['links']['self']['href'] .= '?'.implode('&',$self);
         }
         if (!empty($next) && !$endPage)
         {
-          //$hal['meta']['_links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
-          $hal['meta']['links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
-          //$hal['links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
+            //$hal['meta']['_links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
+            $hal['meta']['links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
+            //$hal['links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
         }
 
         if (!empty($prev) && $page > 1)
         {
-          //$hal['meta']['_links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
-          $hal['meta']['links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
-          //$hal['links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
+            //$hal['meta']['_links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
+            $hal['meta']['links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
+            //$hal['links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
         }
 
         return $hal;
@@ -937,11 +939,11 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      */
     protected function extractData($data,$type = 'all',$relation=''){
 
-      $modelName = strtolower($this->modelName);
-      if (!empty($relation))
-      {
-        $modelName = strtolower($relation);
-      }
+        $modelName = strtolower($this->modelName);
+        if (!empty($relation))
+        {
+            $modelName = strtolower($relation);
+        }
         $jsonapi_org = array();
         $jsonapi_org['data'] = array();
         //print_r($data->toArray());
@@ -952,32 +954,32 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
             $result = array();
             foreach($data as $values){
-              //print_r($values);
-              foreach ($values as $attr => $value){
-                if (!isset($result[$values['id']])){
-                  $result[$values['id']] = array();
-                }
+                //print_r($values);
+                foreach ($values as $attr => $value){
+                    if (!isset($result[$values['id']])){
+                        $result[$values['id']] = array();
+                    }
 
-                  if (is_array($value))
-                  {
-                    $relDef = $this->getRelationshipMeta($this->modelName,$attr);
-                    if ($relDef['type'] == 'hasMany' || $relDef['type'] == 'hasManyToMany')
+                    if (is_array($value))
                     {
-                        if (!empty($value['id']))
+                        $relDef = $this->getRelationshipMeta($this->modelName,$attr);
+                        if ($relDef['type'] == 'hasMany' || $relDef['type'] == 'hasManyToMany')
                         {
-                          $result[$values['id']][$attr][] = $value;
+                            if (!empty($value['id']))
+                            {
+                                $result[$values['id']][$attr][] = $value;
+                            }
+                        }
+                        else
+                        {
+                            $result[$values['id']][$attr] = $value;
                         }
                     }
                     else
                     {
-                      $result[$values['id']][$attr] = $value;
+                        $result[$values['id']][$attr] = $value;
                     }
-                  }
-                  else
-                  {
-                    $result[$values['id']][$attr] = $value;
-                  }
-              }
+                }
             }
             //die();
         }
@@ -990,175 +992,179 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             $result = array();
         }
 
-
-        // do not allow passwords to be returned
-        $this->removePassword($result);
-
         $this->removeDuplicates($result);
 
         $count = 0;
 
         if ($type == 'all')
         {
-          // prepare the data for JSONAPI.org standard
-          foreach ($result as $object)
-          {
-            $jsonapi_org['data'][$count]['type'] = $modelName;
-
-            foreach($object as $attr => $val)
+            // prepare the data for JSONAPI.org standard
+            foreach ($result as $object)
             {
-              if (!is_array($val))
-              {
-                // process attributes
-                if ($attr == 'id')
+                $jsonapi_org['data'][$count]['type'] = $modelName;
+
+                foreach($object as $attr => $val)
                 {
-                  $jsonapi_org['data'][$count]['id'] = $val;
-                }
-                else {
-                  $jsonapi_org['data'][$count]['attributes'][$attr] = $val;
-                }
-              }
-              else {
-                // process relationships
-                $included = array();
-                if (isset($val['id'])) {
-                  $jsonapi_org['data'][$count]['relationships'][$attr] = array();
-                  $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
-                  $relatedModelKey = 'relatedModel';
-                  if ($relationDefinition['type'] == 'hasManyToMany')
-                  {
-                    $relatedModelKey = 'secondaryModel';
-                  }
-                  $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower($relationDefinition[$relatedModelKey]);
-                  $id = '';
-                  $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['id'] = $val['id'];
-                  $id = $val['id'];
-                  unset($val['id']);
-
-                  $included['attributes'] = $val;
-
-                  $jsonapi_org['included'][($this->modelName.$id)] = $included;
-                }
-                else {
-                  foreach($val as $idx => $object){
-                    if (isset($object['id'])) {
-                      $included = array();
-                      $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx] = array();
-                      $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
-                      $relatedCount = 0;
-                      $relatedModelKey = 'relatedModel';
-                      if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])){
-                        $relatedModelKey = 'secondaryModel';
-                      }
-                      $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition[$relatedModelKey]);
-                      $id = '';
-                      $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
-                      $id = $object['id'];
-                      unset($object['id']);
-
-                      $included['attributes'] = $object;
-                      $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
+                    if (!is_array($val))
+                    {
+                        // process attributes
+                        if ($attr == 'id')
+                        {
+                            $jsonapi_org['data'][$count]['id'] = $val;
+                        }
+                        else {
+                            $jsonapi_org['data'][$count]['attributes'][$attr] = $val;
+                        }
                     }
-                  }
+                    else {
+                        // process relationships
+                        $included = array();
+                        if (isset($val['id'])) {
+                            $jsonapi_org['data'][$count]['relationships'][$attr] = array();
+                            $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                            $relatedModelKey = 'relatedModel';
+                            if ($relationDefinition['type'] == 'hasManyToMany')
+                            {
+                                $relatedModelKey = 'secondaryModel';
+                            }
+                            $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower($relationDefinition[$relatedModelKey]);
+                            $id = '';
+                            $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['id'] = $val['id'];
+                            $id = $val['id'];
+                            unset($val['id']);
+
+                            $included['attributes'] = $val;
+
+                            $jsonapi_org['included'][($this->modelName.$id)] = $included;
+                        }
+                        else {
+                            foreach($val as $idx => $object){
+                                if (isset($object['id'])) {
+                                    $included = array();
+                                    $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx] = array();
+                                    $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                                    $relatedCount = 0;
+                                    $relatedModelKey = 'relatedModel';
+                                    if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])){
+                                        $relatedModelKey = 'secondaryModel';
+                                    }
+                                    $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition[$relatedModelKey]);
+                                    $id = '';
+                                    $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
+                                    $id = $object['id'];
+                                    unset($object['id']);
+
+                                    $included['attributes'] = $object;
+                                    $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
+                                }
+                            }
+                        }
+                    }
                 }
-              }
+                $count++;
             }
-            $count++;
-          }
         }
         else {
 
-          foreach ($result as $object)
-          {
-            $jsonapi_org['data']['type'] = strtolower($this->modelName);
-
-            foreach($object as $attr => $val)
+            foreach ($result as $object)
             {
-              if (!is_array($val))
-              {
-                // process attributes
-                if ($attr == 'id')
+                $jsonapi_org['data']['type'] = strtolower($this->modelName);
+
+                foreach($object as $attr => $val)
                 {
-                  $jsonapi_org['data']['id'] = $val;
-                }
-                else {
-                  $jsonapi_org['data']['attributes'][$attr] = $val;
-                }
-              }
-              else {
-                // process relationships
-                if (isset($val['id'])) {
-                  $included = array();
-                  $jsonapi_org['data']['relationships'][$attr] = array();
-                  $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
-                  $relatedCount = 0;
-                  $relatedModelKey = 'relatedModel';
-                  if ($relationDefinition['type'] == 'hasManyToMany')
-                  {
-                    $relatedModelKey = 'secondaryModel';
-                  }
-                  $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower($relationDefinition[$relatedModelKey]);
-                  $id = '';
-                  $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data']['id'] = $val['id'];
-                  $id = $val['id'];
-                  unset($val['id']);
-
-                  $included['attributes'] = $val;
-                  $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
-                }
-                else {
-                  foreach($val as $idx => $object){
-                    if (isset($object['id'])) {
-                      $included = array();
-                      $jsonapi_org['data']['relationships'][$attr]['data'][$idx] = array();
-                      $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
-                      $relatedCount = 0;
-                      $relatedModelKey = 'relatedModel';
-                      if ($relationDefinition['type'] == 'hasManyToMany')
-                      {
-                        $relatedModelKey = 'secondaryModel';
-                      }
-                      $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition[$relatedModelKey]);
-                      $id = '';
-                      $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
-                      $id = $object['id'];
-                      unset($object['id']);
-
-                      $included['attributes'] = $object;
-                      $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
+                    if (!is_array($val))
+                    {
+                        // process attributes
+                        if ($attr == 'id')
+                        {
+                            $jsonapi_org['data']['id'] = $val;
+                        }
+                        else {
+                            $jsonapi_org['data']['attributes'][$attr] = $val;
+                        }
                     }
-                  }
+                    else {
+                        // process relationships
+                        if (isset($val['id'])) {
+                            $included = array();
+                            $jsonapi_org['data']['relationships'][$attr] = array();
+                            $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                            $relatedCount = 0;
+                            $relatedModelKey = 'relatedModel';
+                            if ($relationDefinition['type'] == 'hasManyToMany')
+                            {
+                                $relatedModelKey = 'secondaryModel';
+                            }
+                            $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower($relationDefinition[$relatedModelKey]);
+                            $id = '';
+                            $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data']['id'] = $val['id'];
+                            $id = $val['id'];
+                            unset($val['id']);
+
+                            $included['attributes'] = $val;
+                            $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
+                        }
+                        else {
+                            foreach($val as $idx => $object){
+                                if (isset($object['id'])) {
+                                    $included = array();
+                                    $jsonapi_org['data']['relationships'][$attr]['data'][$idx] = array();
+                                    $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                                    $relatedCount = 0;
+                                    $relatedModelKey = 'relatedModel';
+                                    if ($relationDefinition['type'] == 'hasManyToMany')
+                                    {
+                                        $relatedModelKey = 'secondaryModel';
+                                    }
+                                    $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition[$relatedModelKey]);
+                                    $id = '';
+                                    $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
+                                    $id = $object['id'];
+                                    unset($object['id']);
+
+                                    $included['attributes'] = $object;
+                                    $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
+                                }
+                            }
+                        }
+                    }
                 }
-              }
+                $count++;
             }
-            $count++;
-          }
         }
         if(!empty($jsonapi_org['included']))
         {
-          $jsonapi_org['included'] = array_values($jsonapi_org['included']);
+            $jsonapi_org['included'] = array_values($jsonapi_org['included']);
         }
         $result = $jsonapi_org;
+
+        // do not allow passwords to be returned
+        $this->removePassword($result);
 
         return $result;
     }
 
     final private function getRelationshipMeta($modelName,$rel){
-      $modelMetadata = metaManager::getModelMeta($modelName);
-      $relatedMetadata = array();
-      foreach ($modelMetadata['relationships'] as $relationType => $related)
-      {
-        foreach ($related as $relName => $relDef)
-        {
-          if ($relName == $rel)
-          {
-            $relatedMetadata = $relDef;
-            $relatedMetadata['type'] = $relationType;
-            break 2;
-          }
+        if (isset(self::$cachedMeta[$modelName][$rel])) {
+            return self::$cachedMeta[$modelName][$rel];
         }
-      }
-      return $relatedMetadata;
+        $modelMetadata = metaManager::getModelMeta($modelName);
+
+        $relatedMetadata = array();
+        foreach ($modelMetadata['relationships'] as $relationType => $related)
+        {
+            foreach ($related as $relName => $relDef)
+            {
+                if ($relName == $rel)
+                {
+                    $relatedMetadata = $relDef;
+                    $relatedMetadata['type'] = $relationType;
+                    break 2;
+                }
+            }
+        }
+        self::$cachedMeta[$modelName][$rel] = $relatedMetadata;
+        return $relatedMetadata;
     }
 
     /**
@@ -1191,25 +1197,25 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      */
     final private function removeDuplicates(array &$array)
     {
-      foreach($array as $id => &$obj)
-      {
-        foreach($obj as $attr => &$data)
+        foreach($array as $id => &$obj)
         {
-          if (is_array($data) && isset($data['0']))
-          {
-            $temp = array();
-            foreach($data as $relatedIndex => &$relatedData)
+            foreach($obj as $attr => &$data)
             {
-              if (isset($relatedData['id']))
-              {
-                $temp[$relatedData['id']] = $relatedData;
-                unset($data[$relatedIndex]);
-              }
+                if (is_array($data) && isset($data['0']))
+                {
+                    $temp = array();
+                    foreach($data as $relatedIndex => &$relatedData)
+                    {
+                        if (isset($relatedData['id']))
+                        {
+                            $temp[$relatedData['id']] = $relatedData;
+                            unset($data[$relatedIndex]);
+                        }
+                    }
+                    $data = array_values(array_merge($data,$temp));
+                }
             }
-            $data = array_values(array_merge($data,$temp));
-          }
         }
-      }
     }
 
 

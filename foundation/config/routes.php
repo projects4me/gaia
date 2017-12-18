@@ -213,6 +213,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'savedsearch' => array(
+                'path' => '/api/:version/savedsearch',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'tagged' => array(
                 'path' => '/api/:version/tagged',
                 'allowedMethods' => array(
