@@ -15,7 +15,7 @@ $models['Savedsearch'] = array(
             'null' => false,
         ),
         'name' => array(
-            'name' => 'SAVED_SEARCHES',
+            'name' => 'name',
             'label' => 'LBL_SAVED_SEARCHES_NAME',
             'type' => 'varchar',
             'length' => '100',
@@ -47,7 +47,7 @@ $models['Savedsearch'] = array(
             'type' => 'bool',
             'null' => true,
         ),
-        'relateTO' => array(
+        'relatedTo' => array(
             'name' => 'relatedTo',
             'label' => 'LBL_SAVED_SEARCHES_RELATED_TO',
             'type' => 'varchar',

@@ -14,7 +14,7 @@ use Foundation\Mvc\Model;
  * @category Model
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class Tag extends Model
+class Savedsearch extends Model
 {
 
 }
