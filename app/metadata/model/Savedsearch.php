@@ -54,12 +54,20 @@ $models['Savedsearch'] = array(
             'length' => '15',
             'null' => false,
         ),
-        'query' => array(
-            'name' => 'query',
-            'label' => 'LBL_SAVED_SEARCHES_QUERY',
+        'searchquery' => array(
+            'name' => 'searchquery',
+            'label' => 'LBL_SAVED_SEARCHES_SEARCH_QUERY',
             'type' => 'text',
             'null' => false,
+        ),
+        'projectId' => array(
+            'name' => 'projectId',
+            'label' => 'LBL_SAVED_SEARCHES_PROJECT_ID',
+            'type' => 'char',
+            'length' => '36',
+            'null' => true
         )
+
     ),
     'indexes' => array(
         'id' => 'primary',
