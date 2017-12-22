@@ -5,8 +5,8 @@
  */
 
 $models['Membership'] = array(
-   'tableName' => 'memberships',
-   'fields' => array(
+    'tableName' => 'memberships',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_MEMBERSHIPS_ID',
@@ -65,7 +65,6 @@ $models['Membership'] = array(
             'name' => 'deleted',
             'label' => 'LBL_MEMBERSHIPS_DELETED',
             'type' => 'bool',
-            'length' => '1',
             'null' => false,
         )
     ),
@@ -75,7 +74,7 @@ $models['Membership'] = array(
         'projectId' => 'index',
         'userId' => 'index',
     ),
-    'foriegnKeys' => array(
+    'foreignKeys' => array(
 
     ) ,
     'triggers' => array(

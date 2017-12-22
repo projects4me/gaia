@@ -7,6 +7,14 @@
 
 use Foundation\Mvc\Model;
 
+/**
+ * Oauthscope Model
+ *
+ * @author Hammad Hassan <gollomer@gmail.com>
+ * @package Foundation
+ * @category Model
+ * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ */
 class Oauthscope extends Model
 {
 

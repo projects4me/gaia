@@ -6,6 +6,14 @@
 
 use Foundation\Mvc\Model;
 
+/**
+ * Downloadtoken Model
+ *
+ * @author Hammad Hassan <gollomer@gmail.com>
+ * @package Foundation
+ * @category Model
+ * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ */
 class Downloadtoken extends Model
 {
 
