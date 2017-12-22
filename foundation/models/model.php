@@ -30,15 +30,6 @@ class Model extends PhalconModel
 
     public $query;
 
-    public function initialize()
-    {
-        $this->metadata = metaManager::getModelMeta(get_class($this));
-
-        // Load the behaviors in the model as well
-        $this->loadBehavior();
-        $this->loadRelationships();
-    }
-
     public function loadBehavior()
     {
         // Load each of the relationship types one by one
@@ -133,9 +124,7 @@ class Model extends PhalconModel
      */
     public function metaData()
     {
-        $metadata = metaManager::getModelMeta(get_class($this));
-        $this->setSource($metadata['tableName']);
-        return $metadata;
+        return $this->metadata;
     }
 
     /**
@@ -147,6 +136,11 @@ class Model extends PhalconModel
     {
         $metadata = metaManager::getModelMeta(get_class($this));
         $this->setSource($metadata['tableName']);
+        $this->metadata = $metadata;
+
+        // Load the behaviors in the model as well
+        $this->loadBehavior();
+        $this->loadRelationships();
     }
 
     /**
@@ -195,7 +189,7 @@ class Model extends PhalconModel
      * support the default pagination, sorting, filtering and relationships
      *
      * @param array $params
-     * @return array
+     * @return \Phalcon\Mvc\Model\ResultsetInterface
      * @throws \Phalcon\Exception
      */
     public function read(array $params)
@@ -215,7 +209,6 @@ class Model extends PhalconModel
         {
             $params['rels'] = array();
         }
-
 
         //Verify the relationships
         foreach($params['rels'] as $relationship)
@@ -254,6 +247,8 @@ class Model extends PhalconModel
         $query = $this->setQuery($query,$params);
 
         $query->andWhere(get_class($this).".id = '".$params['id']."'");
+
+
 
         // process ACL and other behaviors before executing the query
         $data = $query->execute();

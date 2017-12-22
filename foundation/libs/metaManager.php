@@ -36,10 +36,9 @@ class metaManager
     public static function getModelMeta($model)
     {
         $metadata = fileHandler::readFile(APP_PATH.metaManager::basePath.'/model/'.$model.'.php');
-        
         $metadata = $metadata[$model];
         $fields = metaManager::parseFields($metadata);
-        
+
         $modelMeta = array(
             // Set the table name
             'tableName' => $fields['tableName'],
@@ -94,7 +93,7 @@ class metaManager
             'behaviors' => (isset($metadata['behaviors'])?$metadata['behaviors']:array())
             
         );
-        
+
         return $modelMeta;
     }
     
