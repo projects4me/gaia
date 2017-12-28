@@ -471,6 +471,11 @@ class Model extends PhalconModel
                 $secondaryQuery = $relationship.'.'.$relations[$relationship]['secondaryKey'].
                                 ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['lhsKey'];
 
+                if (isset($relations[$relationship]['condition']))
+                {
+                    $relatedQuery .= ' AND ('.$relations[$relationship]['condition'].')';
+                }
+
                 $query->$join($relatedModel,$relatedQuery,$relationship.$relatedModel);
                 $query->$join($secondaryModel,$secondaryQuery,$relationship);
             }

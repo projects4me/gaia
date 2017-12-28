@@ -63,6 +63,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'chatroom' => array(
+                'path' => '/api/:version/chatroom',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'converser' => array(
                 'path' => '/api/:version/converser',
                 'allowedMethods' => array(

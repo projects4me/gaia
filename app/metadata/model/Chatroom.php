@@ -5,8 +5,8 @@
  */
 
 $models['Chatroom'] = array(
-   'tableName' => 'chat_rooms',
-   'fields' => array(
+    'tableName' => 'chat_rooms',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_CHAT_ROOMS_ID',
@@ -55,9 +55,23 @@ $models['Chatroom'] = array(
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
-            'label' => 'LBL_ACTIVITIES_MODIFIED_USER_NAME',
+            'label' => 'LBL_CHAT_ROOMS_MODIFIED_USER_NAME',
             'type' => 'varchar',
             'length' => '50',
+            'null' => false,
+        ),
+        'status' => array(
+            'name' => 'status',
+            'label' => 'LBL_CHAT_ROOMS_MODIFIED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '15',
+            'null' => false,
+        ),
+        'type' => array(
+            'name' => 'type',
+            'label' => 'LBL_CHAT_ROOMS_TYPE',
+            'type' => 'varchar',
+            'length' => '15',
             'null' => false,
         ),
     ),
@@ -71,13 +85,34 @@ $models['Chatroom'] = array(
 
     ),
     'relationships' => array(
-      'hasMany' => array(
-          'Conversers' => array(
-              'primaryKey' => 'id',
-              'relatedModel' => 'Converser',
-              'relatedKey' => 'chatRoomId',
-          ),
-      ),
+        'hasMany' => array(
+            'comments' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Comment',
+                'relatedKey' => 'relatedId',
+                'condition' => 'comments.relatedTo = "chatrooms"'
+            ),
+        ),
+        'hasManyToMany' => array(
+            'ownedby' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Converser',
+                'rhsKey' => 'chatRoomId',
+                'lhsKey' => 'userId',
+                'secondaryModel' => 'User',
+                'secondaryKey' => 'id',
+                'condition' => 'Chatroom.createdUser = ownedbyConverser.userId'
+            ),
+            'conversers' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => 'Converser',
+                'rhsKey' => 'chatRoomId',
+                'lhsKey' => 'userId',
+                'secondaryModel' => 'User',
+                'secondaryKey' => 'id',
+                'condition' => 'Chatroom.createdUser != conversersConverser.userId'
+            ),
+        )
     ),
 );
 
