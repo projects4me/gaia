@@ -42,14 +42,14 @@ $models['Converser'] = array(
       'hasOne' => array(
           'chatroom' => array(
               'primaryKey' => 'chatRoomId',
-              'relatedModel' => 'Chatroom',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Chatroom',
               'relatedKey' => 'id',
           ),
       ),
       'hasMany' => array(
         'users' => array(
           'primaryKey' => 'userId',
-          'relatedModel' => 'User',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\User',
           'relatedKey' => 'id',
         ),
       )

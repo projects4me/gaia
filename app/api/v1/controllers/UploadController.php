@@ -4,7 +4,9 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-use Foundation\Mvc\RestController;
+namespace  Gaia\MVC\REST\Controllers;
+
+use Gaia\MVC\REST\Controllers\RestController;
 use function Foundation\create_guid as create_guid;
 
 /**

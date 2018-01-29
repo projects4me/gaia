@@ -110,30 +110,30 @@ $models['Conversationroom'] = array(
         'hasOne' => array(
             'project' => array(
                 'primaryKey' => 'projectId',
-                'relatedModel' => 'Project',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
                 'relatedKey' => 'id',
             ),
             'createdBy' => array(
                 'primaryKey' => 'createdUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
             'modifiedBy' => array(
                 'primaryKey' => 'modifiedUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
         ),
         'hasMany' => array(
             'comments' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Comment',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
                 'relatedKey' => 'relatedId',
                 'condition' => 'comments.relatedTo = "conversationrooms"'
             ),
             'votes' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Vote',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Vote',
                 'relatedKey' => 'relatedId',
                 'condition' => 'votes.relatedTo = "conversationrooms"'
             ),

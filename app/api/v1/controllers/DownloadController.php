@@ -4,6 +4,8 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
+namespace  Gaia\MVC\REST\Controllers;
+
 use Foundation\fileHandler;
 
 /**
@@ -37,15 +39,15 @@ class DownloadController extends \Phalcon\Mvc\Controller
         }
 
         $params = array(
-            'where' => '(Downloadtoken.downloadToken : '.$id.')',
-            'sort' => 'Downloadtoken.dateCreated',
+            'where' => '(\\Gaia\\MVC\\Models\\Downloadtoken.downloadToken : '.$id.')',
+            'sort' => '\\Gaia\\MVC\\Models\\Downloadtoken.dateCreated',
         );
 
-        $model = new Downloadtoken();
+        $model = new \Gaia\MVC\Models\Downloadtoken();
         $data = $model->readAll($params);
         if (isset($data[0]) && $data[0]->downloadToken) {
             $logger->info("Found the download token");
-            $downloadToken = Downloadtoken::find(
+            $downloadToken = \Gaia\MVC\Models\Downloadtoken::find(
                 "downloadToken = '".$data[0]->downloadToken."'"
             );
             // validate expiry

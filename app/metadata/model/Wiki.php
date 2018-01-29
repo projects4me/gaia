@@ -123,43 +123,43 @@ $models['Wiki'] = array(
         'belongsTo' => array(
             'project' => array(
                 'primaryKey' => 'projectId',
-                'relatedModel' => 'Project',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
                 'relatedKey' => 'id'
             ),
             'parent' => array(
                 'primaryKey' => 'parentId',
-                'relatedModel' => 'Wiki',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Wiki',
                 'relatedKey' => 'id'
             )
         ),
         'hasOne' => array(
             'createdBy' => array(
                 'primaryKey' => 'createdUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
             'modifiedBy' => array(
                 'primaryKey' => 'modifiedUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
         ),
         'hasMany' => array(
             'vote' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Vote',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Vote',
                 'relatedKey' => 'relatedId',
                 'condition' => 'vote.relatedTo = "wiki"'
             ),
             'tagged' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Tagged',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
                 'relatedKey' => 'relatedId',
-                'condition' => 'tagged.relatedTo = "wiki"'
+                'condition' => '\\Gaia\\MVC\\Models\\tagged.relatedTo = "wiki"'
             ),
             'files' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Upload',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Upload',
                 'relatedKey' => 'relatedId',
                 'condition' => 'files.relatedTo = "wiki"',
             ),
@@ -167,12 +167,12 @@ $models['Wiki'] = array(
         'hasManyToMany' => array(
             'tag' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Tagged',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
                 'rhsKey' => 'relatedId',
                 'lhsKey' => 'tagId',
-                'secondaryModel' => 'Tag',
+                'secondaryModel' => '\\Gaia\\MVC\\Models\\Tag',
                 'secondaryKey' => 'id',
-                'condition' => 'Tagged.relatedTo = "wiki"'
+                'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "wiki"'
             )
         )
     ),

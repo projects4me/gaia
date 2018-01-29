@@ -117,7 +117,7 @@ $models['User'] = array(
         'hasOne' => array(
             'dashboard' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Dashboard',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Dashboard',
                 'relatedKey' => 'userId'
             )
         ),

@@ -140,50 +140,50 @@ $models['Project'] = array(
         'hasOne' => array(
             'owner' => array(
                 'primaryKey' => 'assignee',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
             'createdBy' => array(
                 'primaryKey' => 'createdUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
             'modifiedBy' => array(
                 'primaryKey' => 'modifiedUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
         ),
         'hasMany' => array(
             'issues' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Issue',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'relatedKey' => 'projectId',
             ),
             'conversations' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Conversationroom',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
                 'relatedKey' => 'projectId',
             ),
             'memberships' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Membership',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
                 'relatedKey' => 'projectId',
             ),
             'activities' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Activity',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Activity',
                 'relatedKey' => 'relatedId',
                 'condition' => 'activities.relatedTo = "project"',
             ),
             'milestones' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Milestone',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Milestone',
                 'relatedKey' => 'projectId',
             ),
             'issuetypes' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Issuetype',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issuetype',
                 'relatedKey' => 'projectId',
                 'condition' => 'issuetypes.system = "0"',
             ),
@@ -191,18 +191,18 @@ $models['Project'] = array(
         'hasManyToMany' => array(
             'members' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Membership',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
                 'rhsKey' => 'projectId',
                 'lhsKey' => 'userId',
-                'secondaryModel' => 'User',
+                'secondaryModel' => '\\Gaia\\MVC\\Models\\User',
                 'secondaryKey' => 'id',
             ),
             'roles' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Membership',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
                 'rhsKey' => 'projectId',
                 'lhsKey' => 'roleId',
-                'secondaryModel' => 'Role',
+                'secondaryModel' => '\\Gaia\\MVC\\Models\\Role',
                 'secondaryKey' => 'id',
             ),
         )

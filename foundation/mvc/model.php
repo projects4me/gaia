@@ -5,6 +5,7 @@
  */
 
 namespace Foundation\Mvc;
+
 use Phalcon\Mvc\Model as PhalconModel;
 //use Phalcon\Mvc\Model\Message;
 //use Phalcon\Mvc\Model\Validator\Uniqueness;
@@ -134,7 +135,9 @@ class Model extends PhalconModel
      */
     public function onConstruct()
     {
-        $metadata = metaManager::getModelMeta(get_class($this));
+        $parts = explode('\\',get_class($this));
+        $modelName = end($parts);
+        $metadata = metaManager::getModelMeta($modelName);
         $this->setSource($metadata['tableName']);
         $this->metadata = $metadata;
 
@@ -269,8 +272,6 @@ class Model extends PhalconModel
     {
 
         $this->fireEvent("beforeRead");//->fire("model:beforeRead", $this);
-        //print_r($eventManager);
-        //die();
 
         // Get fields and relationships
         $moduleFields = $this->getFields();
@@ -512,8 +513,9 @@ class Model extends PhalconModel
 
     /**
      * The purpose of this function is parse the query string from a string to
-     * and array
+     * and array.
      *
+     * <pre>
      * Allowed operators
      *  AND         And
      *  OR          Or
@@ -533,29 +535,36 @@ class Model extends PhalconModel
      *  )           Statement ends
      *  ,           Multiple possible values
      *  '           String values
-     *
+     * </pre>
      * Every statement must be comprised of substatement, each enclosed with
      * parenthesis. Substatements can only be enjoined using AND or OR
      * This condition is applied to reduce complex parsing improving the overall
      * time for processing the where statements
      *
      * The input needs to have the following format
+     *
      * <code>
      *  ((Module.field CONTAINS data) AND (Module.field !: data))
      * </code>
+     *
      * Note: If CONTAINS is passed multiple values then all values must be encapsulated in single quotes '.
+     *
      * Otherwise there is no way to tell a string like "Yes,No" and "No, You don't" apart.
+     *
      * You can also encapsulate a string in single quotes and send it but if the delimiter ',' are foung in the input
      * then it will be treated as multiple values.
+     *
      * <code>
      *  (Module.field !BETWEEN rangeStart AND rangeEnd)
      * </code>
+     *
      * <code>
      *  ((Module.field CONTAINS data1,data2,data3) AND (Module.field <: data))
      * </code>
+     *
      * Note: Parenthesis are are allowed in a substatement.
      * Note: Subqueries are also not allowed.
-     * Note: Apostrophe must be preceded with \
+     * Note: Apostrophe must be preceded with \.
      * @todo Allow : without spaces
      * @param string $statement
      * @return array

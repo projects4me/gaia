@@ -4,7 +4,9 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-use Foundation\Mvc\Model;
+namespace Gaia\MVC\Models;
+
+use Foundation\MVC\Model;
 
 /**
  * Wiki Model

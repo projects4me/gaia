@@ -95,33 +95,33 @@ $models['Vote'] = array(
       'hasOne' => array(
         'createdBy' => array(
           'primaryKey' => 'createdUser',
-          'relatedModel' => 'User',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\User',
           'relatedKey' => 'id',
         ),
         'modifiedBy' => array(
           'primaryKey' => 'modifiedUser',
-          'relatedModel' => 'User',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\User',
           'relatedKey' => 'id',
         )
       ),
       'belongsTo' => array(
           'wiki' => array(
               'primaryKey' => 'relatedId',
-              'relatedModel' => 'Wiki',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Wiki',
               'relatedKey' => 'id',
-              'condition' => 'Vote.relatedTo = "wiki"'
+              'condition' => '\\Gaia\\MVC\\Models\\Vote.relatedTo = "wiki"'
           ),
           'comment' => array(
               'primaryKey' => 'relatedId',
-              'relatedModel' => 'Comment',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
               'relatedKey' => 'id',
-              'condition' => 'Vote.relatedTo = "comment"'
+              'condition' => '\\Gaia\\MVC\\Models\\Vote.relatedTo = "comment"'
           ),
           'conversationroom' => array(
               'primaryKey' => 'relatedId',
-              'relatedModel' => 'Conversationroom',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
               'relatedKey' => 'id',
-              'condition' => 'Vote.relatedTo = "conversationroom"'
+              'condition' => '\\Gaia\\MVC\\Models\\Vote.relatedTo = "conversationroom"'
           )
       ),
     ),

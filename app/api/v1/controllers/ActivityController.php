@@ -4,15 +4,15 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-use Foundation\Mvc\RestController;
+namespace  Gaia\MVC\REST\Controllers;
 
 /**
  * Activities Controller
  *
  * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation
- * @category Controller
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @package Gaia
+ * @category REST\Controller
+ * @license http://legal.projects4.me/LICENSE.txt AGPLv3 with attribution
  */
 class ActivityController extends RestController
 {

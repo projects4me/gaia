@@ -3,7 +3,7 @@
 /**
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
-namespace Foundation\Mvc;
+namespace Gaia\MVC\REST\Controllers;
 
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\Resultset;
@@ -18,6 +18,7 @@ use \Phalcon\Events\Manager as EventsManager;
 use \Phalcon\Events\ManagerInterface as EventsManagerInterface;
 use PHPUnit\Runner\Exception;
 use Zend\EventManager\EventManager;
+//use Gaia\MVC\Models;
 
 /**
  * The is the deafult controller used by foundation that provides the basic
@@ -165,19 +166,22 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
         $logger->debug('Gaia.foundation.controllers.rest->initialize()');
         //set the language
-        $this->setLanguage();
+        //$this->setLanguage();
 
         $this->response = new Response();
 
         //print_r($this->dispatcher->getParams());exit;
         $this->controllerName = $this->dispatcher->getControllerName();//controller
         $this->actionName = $this->dispatcher->getActionName();//controller
-        $this->modelName = \Phalcon\Text::camelize($this->controllerName);//model
+        $modelName = \Phalcon\Text::camelize($this->controllerName);
+        $namespace = 'Gaia\\MVC\\Models\\';
+        $this->modelName = $namespace . $modelName;//model
 
         $this->id = $this->dispatcher->getParam("id");//id
         $this->relationship = $this->dispatcher->getParam("relationship");//relationship
         if ($this->actionName != 'options') {
             $this->authorize();
+
         }
         $logger->debug('-Gaia.foundation.controllers.rest->initialize()');
     }
@@ -235,10 +239,10 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
     {
         global $currentUser;
         $token = str_replace('Bearer ','',$reuqest->headers['AUTHORIZATION']);
-        $oAuthAccessToken = \Oauthaccesstoken::findFirst(array("access_token='".$token."'"));
+        $oAuthAccessToken = \Gaia\MVC\Models\Oauthaccesstoken::findFirst(array("access_token='".$token."'"));
         if (isset($oAuthAccessToken->user_id))
         {
-            $currentUser = \User::findFirst("username ='".$oAuthAccessToken->user_id."'");
+            $currentUser = \Gaia\MVC\Models\User::findFirst("username ='".$oAuthAccessToken->user_id."'");
         }
         else
         {
@@ -328,6 +332,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         //get the best language and all languages
         $bestLanguage = $this->request->getBestLanguage();
         $languages = $this->request->getLanguages();
+        print_r($languages);
 
         //sort the languages for quality desc
         foreach ($languages as $key => $row) {
@@ -410,7 +415,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $fields = $this->request->get('fields',null,array());
         $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
 
-        if ($modelName === 'User' && $this->id === 'me')
+        if ($this->classWithoutNamespace($modelName) === 'User' && $this->id === 'me')
         {
             $this->id = $GLOBALS['currentUser']->id;
         }
@@ -1001,6 +1006,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             // prepare the data for JSONAPI.org standard
             foreach ($result as $object)
             {
+                $modelName = $this->classWithoutNamespace($this->modelName);
                 $jsonapi_org['data'][$count]['type'] = $modelName;
 
                 foreach($object as $attr => $val)
@@ -1021,13 +1027,13 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                         $included = array();
                         if (isset($val['id'])) {
                             $jsonapi_org['data'][$count]['relationships'][$attr] = array();
-                            $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                            $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
                             $relatedModelKey = 'relatedModel';
                             if ($relationDefinition['type'] == 'hasManyToMany')
                             {
                                 $relatedModelKey = 'secondaryModel';
                             }
-                            $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower($relationDefinition[$relatedModelKey]);
+                            $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
                             $id = '';
                             $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['id'] = $val['id'];
                             $id = $val['id'];
@@ -1042,13 +1048,13 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                                 if (isset($object['id'])) {
                                     $included = array();
                                     $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx] = array();
-                                    $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                                    $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
                                     $relatedCount = 0;
                                     $relatedModelKey = 'relatedModel';
                                     if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])){
                                         $relatedModelKey = 'secondaryModel';
                                     }
-                                    $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition[$relatedModelKey]);
+                                    $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
                                     $id = '';
                                     $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
                                     $id = $object['id'];
@@ -1068,7 +1074,9 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
             foreach ($result as $object)
             {
-                $jsonapi_org['data']['type'] = strtolower($this->modelName);
+
+                $modelName = $this->classWithoutNamespace($this->modelName);
+                $jsonapi_org['data']['type'] = strtolower($modelName);
 
                 foreach($object as $attr => $val)
                 {
@@ -1088,14 +1096,14 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                         if (isset($val['id'])) {
                             $included = array();
                             $jsonapi_org['data']['relationships'][$attr] = array();
-                            $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                            $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
                             $relatedCount = 0;
                             $relatedModelKey = 'relatedModel';
                             if ($relationDefinition['type'] == 'hasManyToMany')
                             {
                                 $relatedModelKey = 'secondaryModel';
                             }
-                            $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower($relationDefinition[$relatedModelKey]);
+                            $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
                             $id = '';
                             $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data']['id'] = $val['id'];
                             $id = $val['id'];
@@ -1109,14 +1117,14 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                                 if (isset($object['id'])) {
                                     $included = array();
                                     $jsonapi_org['data']['relationships'][$attr]['data'][$idx] = array();
-                                    $relationDefinition = $this->getRelationshipMeta($this->modelName,$attr);
+                                    $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
                                     $relatedCount = 0;
                                     $relatedModelKey = 'relatedModel';
                                     if ($relationDefinition['type'] == 'hasManyToMany')
                                     {
                                         $relatedModelKey = 'secondaryModel';
                                     }
-                                    $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower($relationDefinition[$relatedModelKey]);
+                                    $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
                                     $id = '';
                                     $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
                                     $id = $object['id'];
@@ -1168,7 +1176,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
     }
 
     /**
-     * This function is responsble for removing password from the result set
+     * This function is responsible for removing password from the result set
      *
      * @param array $array
      */
@@ -1218,5 +1226,14 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         }
     }
 
-
+    /**
+     * This function returns the name of a class without the namespace
+     * @param string $string
+     * @return string
+     */
+    final private function classWithoutNamespace(string $string) :string
+    {
+        $parts = explode('\\', $string);
+        return end($parts);
+    }
 }

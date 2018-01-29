@@ -4,7 +4,9 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-use Foundation\Mvc\RestController;
+namespace  Gaia\MVC\REST\Controllers;
+
+use Gaia\MVC\REST\Controllers\RestController;
 
 /**
  * This controller is used to provide API interface for OAuth 2.- based
@@ -33,7 +35,7 @@ class TokenController extends RestController
      */
     public function postAction() {
         // Populate data from the request
-        $request = OAuth2\Request::createFromGlobals();
+        $request = \OAuth2\Request::createFromGlobals();
         
         // Allow exceptions for the our application so as to make it easy for 
         // ember-data integration. For the rest the default implementation 

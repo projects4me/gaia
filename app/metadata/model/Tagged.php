@@ -49,26 +49,26 @@ $models['Tagged'] = array(
       'hasMany' => array(
           'tag' => array(
               'primaryKey' => 'tagId',
-              'relatedModel' => 'Tag',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Tag',
               'relatedKey' => 'id'
           ),
           'project' => array(
               'primaryKey' => 'relatedId',
-              'relatedModel' => 'Project',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
               'relatedKey' => 'id',
-              'condition' => 'Tagged.relatedTo = "project"'
+              'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "project"'
           ),
           'issue' => array(
               'primaryKey' => 'relatedId',
-              'relatedModel' => 'Issue',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
               'relatedKey' => 'id',
-              'condition' => 'Tagged.relatedTo = "issue"'
+              'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "issue"'
           ),
           'wiki' => array(
               'primaryKey' => 'relatedId',
-              'relatedModel' => 'Wiki',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Wiki',
               'relatedKey' => 'id',
-              'condition' => 'Tagged.relatedTo = "wiki"'
+              'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "wiki"'
           ),
         ),
     ),

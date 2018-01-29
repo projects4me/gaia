@@ -122,12 +122,12 @@ $models['Upload'] = array(
         'hasOne' => array(
             'createdBy' => array(
                 'primaryKey' => 'createdUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
             'modifiedBy' => array(
                 'primaryKey' => 'modifiedUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
         ),

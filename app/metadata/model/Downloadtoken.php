@@ -69,15 +69,15 @@ $models['Downloadtoken'] = array(
         'hasOne' => array(
             'issueUpload' => array(
                 'primaryKey' => 'uploadId',
-                'relatedModel' => 'Upload',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Upload',
                 'relatedKey' => 'id',
-                'condition' => 'Downloadtoken.relatedTo = "issue"'
+                'condition' => '\\Gaia\\MVC\\Models\\Downloadtoken.relatedTo = "issue"'
             ),
             'wikiUpload' => array(
                 'primaryKey' => 'uploadId',
-                'relatedModel' => 'Upload',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Upload',
                 'relatedKey' => 'id',
-                'condition' => 'Downloadtoken.relatedTo = "wiki"'
+                'condition' => '\\Gaia\\MVC\\Models\\Downloadtoken.relatedTo = "wiki"'
             )
 
         )

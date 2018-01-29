@@ -74,7 +74,7 @@ $models['Role'] = array(
         'hasMany' => array(
             'permissions' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Permission',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Permission',
                 'relatedKey' => 'roleId',
             ),
         ),

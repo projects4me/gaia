@@ -83,42 +83,42 @@ $models['Tag'] = array(
       'hasOne' => array(
         'createdBy' => array(
           'primaryKey' => 'createdUser',
-          'relatedModel' => 'User',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\User',
           'relatedKey' => 'id',
         ),
         'modifiedBy' => array(
           'primaryKey' => 'modifiedUser',
-          'relatedModel' => 'User',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\User',
           'relatedKey' => 'id',
         )
       ),
       'hasManyToMany' => array(
         'wiki' => array(
           'primaryKey' => 'id',
-          'relatedModel' => 'Tagged',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
           'rhsKey' => 'tagId',
           'lhsKey' => 'relatedId',
-          'secondaryModel' => 'Wiki',
+          'secondaryModel' => '\\Gaia\\MVC\\Models\\Wiki',
           'secondaryKey' => 'id',
-          'condition' => 'Tagged.relatedTo = "wiki"'
+          'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "wiki"'
         ),
         'issue' => array(
           'primaryKey' => 'id',
-          'relatedModel' => 'Tagged',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
           'rhsKey' => 'tagId',
           'lhsKey' => 'relatedId',
-          'secondaryModel' => 'Issue',
+          'secondaryModel' => '\\Gaia\\MVC\\Models\\Issue',
           'secondaryKey' => 'id',
-          'condition' => 'Tagged.relatedTo = "issue"'
+          'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "issue"'
         ),
         'project' => array(
           'primaryKey' => 'id',
-          'relatedModel' => 'Tagged',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
           'rhsKey' => 'tagId',
           'lhsKey' => 'relatedId',
-          'secondaryModel' => 'Project',
+          'secondaryModel' => '\\Gaia\\MVC\\Models\\Project',
           'secondaryKey' => 'id',
-          'condition' => 'Tagged.relatedTo = "project"'
+          'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "project"'
         )
       )
     ),

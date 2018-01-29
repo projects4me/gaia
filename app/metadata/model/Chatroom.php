@@ -88,7 +88,7 @@ $models['Chatroom'] = array(
         'hasMany' => array(
             'comments' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Comment',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
                 'relatedKey' => 'relatedId',
                 'condition' => 'comments.relatedTo = "chatrooms"'
             ),
@@ -96,21 +96,21 @@ $models['Chatroom'] = array(
         'hasManyToMany' => array(
             'ownedby' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Converser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Converser',
                 'rhsKey' => 'chatRoomId',
                 'lhsKey' => 'userId',
-                'secondaryModel' => 'User',
+                'secondaryModel' => '\\Gaia\\MVC\\Models\\User',
                 'secondaryKey' => 'id',
-                'condition' => 'Chatroom.createdUser = ownedbyConverser.userId'
+                'condition' => '\\Gaia\\MVC\\Models\\Chatroom.createdUser = ownedbyConverser.userId'
             ),
             'conversers' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Converser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Converser',
                 'rhsKey' => 'chatRoomId',
                 'lhsKey' => 'userId',
-                'secondaryModel' => 'User',
+                'secondaryModel' => '\\Gaia\\MVC\\Models\\User',
                 'secondaryKey' => 'id',
-                'condition' => 'Chatroom.createdUser != conversersConverser.userId'
+                'condition' => '\\Gaia\\MVC\\Models\\Chatroom.createdUser != conversersConverser.userId'
             ),
         )
     ),

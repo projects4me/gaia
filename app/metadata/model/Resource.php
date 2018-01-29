@@ -56,14 +56,14 @@ $models['Resource'] = array(
         'hasMany' => array(
             'permissions' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Permission',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Permission',
                 'relatedKey' => 'resourceId',
             ),
           ),
           'belongsTo' => array(
             'child' => array(
                 'primaryKey' => 'parentId',
-                'relatedModel' => 'Resource',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Resource',
                 'relatedKey' => 'id',
                 'conditionExclusive' => 'Resource.lft BETWEEN child.lft AND child.rht',
                 'relType' => 'INNER'

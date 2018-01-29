@@ -158,83 +158,83 @@ $models['Issue'] = array(
         'hasOne' => array(
             'assignedTo' => array(
                 'primaryKey' => 'assignee',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
             'createdBy' => array(
                 'primaryKey' => 'createdUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
             'modifiedBy' => array(
                 'primaryKey' => 'modifiedUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
             'ownedBy' => array(
                 'primaryKey' => 'owner',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
             'reportedBy' => array(
                 'primaryKey' => 'reportedUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
             'project' => array(
                 'primaryKey' => 'projectId',
-                'relatedModel' => 'Project',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
                 'relatedKey' => 'id'
             ),
             'milestone' => array(
                 'primaryKey' => 'milestoneId',
-                'relatedModel' => 'Milestone',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Milestone',
                 'relatedKey' => 'id'
             ),
             'issuetype' => array(
                 'primaryKey' => 'typeId',
-                'relatedModel' => 'Issuetype',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issuetype',
                 'relatedKey' => 'id'
             ),
             'parentissue' => array(
                 'primaryKey' => 'parentId',
-                'relatedModel' => 'Issue',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'relatedKey' => 'id',
             ),
         ),
         'hasMany' => array(
             'estimated' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Timelog',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Timelog',
                 'relatedKey' => 'issueId',
                 'condition' => 'estimated.context = "est"'
             ),
             'spent' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Timelog',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Timelog',
                 'relatedKey' => 'issueId',
                 'condition' => 'spent.context = "spent"'
             ),
             'childissues' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Issue',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'relatedKey' => 'parentId',
             ),
             'comments' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Comment',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
                 'relatedKey' => 'relatedId',
                 'condition' => 'comments.relatedTo = "issue"'
             ),
             'activities' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Activity',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Activity',
                 'relatedKey' => 'relatedId',
                 'condition' => 'activities.relatedTo = "issue"',
             ),
             'files' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Upload',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Upload',
                 'relatedKey' => 'relatedId',
                 'condition' => 'files.relatedTo = "issue"',
             ),

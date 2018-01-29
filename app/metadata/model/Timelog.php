@@ -123,17 +123,17 @@ $models['Timelog'] = array(
         'hasOne' => array(
             'issue' => array(
                 'primaryKey' => 'issueId',
-                'relatedModel' => 'Issue',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'relatedKey' => 'id'
             ),
             'createdUser' => array(
                 'primaryKey' => 'createdUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
             'modifiedUser' => array(
                 'primaryKey' => 'modifiedUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
         ),

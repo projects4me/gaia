@@ -286,6 +286,7 @@ $config['routes'] = array(
             'action' => 'index',
         ),
         'image' => array(
+
             'path' => '/image',
             'controller' => 'userimage',
             'action' => 'get',

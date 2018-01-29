@@ -82,7 +82,7 @@ $models['Savedsearch'] = array(
         'hasOne' => array(
             'createdBy' => array(
                 'primaryKey' => 'createdUser',
-                'relatedModel' => 'User',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id',
             )
         )

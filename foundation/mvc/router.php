@@ -5,6 +5,7 @@
  */
 
 namespace Foundation\Mvc;
+
 use Phalcon\Mvc as PhalconRouter;
 
 /**
@@ -33,6 +34,7 @@ class Router extends PhalconRouter\Router
 
         // Removing extra slashed
         $this->removeExtraSlashes(true);
+        $this->setDefaultNamespace('\\Gaia\\MVC\\REST\\Controllers');
 
         //print_r($settings);
         // Travese all the route types

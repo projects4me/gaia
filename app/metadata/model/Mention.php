@@ -68,25 +68,25 @@ $models['Mention'] = array(
         'hasOne' => array(
           'createdUser' => array(
               'primaryKey' => 'createdUser',
-              'relatedModel' => 'User',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\User',
               'relatedKey' => 'id'
           ),
           'user' => array(
               'primaryKey' => 'userId',
-              'relatedModel' => 'User',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\User',
               'relatedKey' => 'id'
           ),
           'comment' => array(
               'primaryKey' => 'relatedId',
-              'relatedModel' => 'Comment',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
               'relatedKey' => 'id',
-              'condition' => 'Mentions.relatedTo="Comments"'
+              'condition' => '\\Gaia\\MVC\\Models\\Mentions.relatedTo="Comments"'
           ),
           'activity' => array(
               'primaryKey' => 'relatedId',
-              'relatedModel' => 'Activity',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Activity',
               'relatedKey' => 'id',
-              'condition' => 'Mentions.relatedTo="Activities"'
+              'condition' => '\\Gaia\\MVC\\Models\\Mentions.relatedTo="Activities"'
           )
         )
     ),

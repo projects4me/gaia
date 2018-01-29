@@ -102,31 +102,31 @@ $models['Comment'] = array(
       'hasOne' => array(
         'createdBy' => array(
           'primaryKey' => 'createdUser',
-          'relatedModel' => 'User',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\User',
           'relatedKey' => 'id',
         ),
         'modifiedBy' => array(
           'primaryKey' => 'modifiedUser',
-          'relatedModel' => 'User',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\User',
           'relatedKey' => 'id',
         ),
         'conversationRoom' => array(
           'primaryKey' => 'relatedId',
-          'relatedModel' => 'Conversationroom',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
           'relatedKey' => 'id',
-          'condition' => 'Comment.relatedTo = "conversationrooms"'
+          'condition' => '\\Gaia\\MVC\\Models\\Comment.relatedTo = "conversationrooms"'
         ),
         'chatRoom' => array(
           'primaryKey' => 'relatedId',
-          'relatedModel' => 'Chatroom',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\Chatroom',
           'relatedKey' => 'id',
-          'condition' => 'Comment.relatedTo = "chatrooms"'
+          'condition' => '\\Gaia\\MVC\\Models\\Comment.relatedTo = "chatrooms"'
         ),
         'issue' => array(
           'primaryKey' => 'relatedId',
-          'relatedModel' => 'Issue',
+          'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
           'relatedKey' => 'id',
-          'condition' => 'Comment.relatedTo = "issues"'
+          'condition' => '\\Gaia\\MVC\\Models\\Comment.relatedTo = "issues"'
         ),
       ),
     ),

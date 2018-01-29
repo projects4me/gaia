@@ -96,14 +96,14 @@ $models['Activity'] = array(
       'hasOne' => array(
         'createdBy' => array(
             'primaryKey' => 'createdUser',
-            'relatedModel' => 'User',
+            'relatedModel' => '\\Gaia\\MVC\\Models\\User',
             'relatedKey' => 'id'
         ),
         'project' => array(
             'primaryKey' => 'relatedId',
-            'relatedModel' => 'Project',
+            'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
             'relatedKey' => 'id',
-            'condition' => 'Activity.relatedTo = "project"'
+            'condition' => '\\Gaia\\MVC\\Models\\Activity.relatedTo = "project"'
         )
       )
     ),

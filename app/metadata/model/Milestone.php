@@ -107,24 +107,24 @@ $models['Milestone'] = array(
         'hasOne' => array(
           'createdUser' => array(
               'primaryKey' => 'createdUser',
-              'relatedModel' => 'User',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\User',
               'relatedKey' => 'id'
           ),
           'modifiedUser' => array(
               'primaryKey' => 'modifiedUser',
-              'relatedModel' => 'User',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\User',
               'relatedKey' => 'id'
           ),
           'project' => array(
               'primaryKey' => 'projectId',
-              'relatedModel' => 'Project',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
               'relatedKey' => 'id'
           ),
         ),
         'hasMany' => array(
           'issues' => array(
             'primaryKey' => 'id',
-            'relatedModel' => 'Issue',
+            'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
             'relatedKey' => 'milestoneId',
           ),
         )
