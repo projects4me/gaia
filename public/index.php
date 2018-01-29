@@ -10,7 +10,8 @@ use Phalcon\Di,
     Phalcon\Session\Adapter\Files as SessionAdapter,
     Phalcon\Translate\Adapter\NativeArray,
     Phalcon\Logger,
-    Phalcon\Logger\Adapter\File as FileAdapter;
+    Phalcon\Logger\Adapter\File as FileAdapter,
+    Gaia\MVC\REST\Controllers;
 
 error_reporting(E_ALL);
 define('APP_PATH', realpath('..'));
@@ -73,11 +74,19 @@ try {
 
     //Register an autoloader
     $loader = new \Phalcon\Loader();
+
+    $loader->registerNamespaces(
+        [
+            "Gaia\\MVC\\REST\\Controllers" => APP_PATH.'/app/api/'.$apiVersion.'/controllers/',
+            "Gaia\\MVC\\Models" => APP_PATH. '/app/models/'
+        ]
+    );
+
     $loader->registerDirs(array(
         APP_PATH.'/foundation/controllers/',
         APP_PATH.'/foundation/libs/',
         APP_PATH.'/app/api/'.$apiVersion.'/controllers/',
-        APP_PATH.'/app/models/',
+//        APP_PATH.'/app/models/',
         APP_PATH.'/app/models/Behaviors',
         APP_PATH.'/config/',
         APP_PATH.'/vendor/',
@@ -122,7 +131,7 @@ try {
         return $url;
     });
 
-    require_once APP_PATH.'/foundation/models/model.php';
+    require_once APP_PATH.'/foundation/mvc/model.php';
     require_once APP_PATH.'/foundation/libs/fileHandler.php';
 
     require_once APP_PATH.'/foundation/libs/metaManager.php';
