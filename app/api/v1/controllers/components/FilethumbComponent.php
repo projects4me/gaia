@@ -1,6 +1,6 @@
 <?php
 
-namespace Foundation\Mvc\Controller\Component;
+namespace Gaia\MVC\REST\Controllers\Components;
 
 use \Phalcon\Events\Event as Event;
 

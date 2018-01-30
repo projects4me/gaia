@@ -6,9 +6,6 @@
 
 namespace Gaia\MVC\Models;
 
-use Foundation\MVC\Model;
-
-
 /**
  * Resource Model
  *

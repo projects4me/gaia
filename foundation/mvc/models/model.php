@@ -4,7 +4,7 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Foundation\Mvc;
+namespace Gaia\MVC\Models;
 
 use Phalcon\Mvc\Model as PhalconModel;
 //use Phalcon\Mvc\Model\Message;
@@ -45,7 +45,8 @@ class Model extends PhalconModel
         {
             foreach($this->metadata['behaviors'] as $behavior)
             {
-                $this->addBehavior(new $behavior);
+                $behaviorClass = '\\Gaia\\MVC\\Models\\Behaviors\\' . $behavior;
+                $this->addBehavior(new $behaviorClass);
             }
         }
     }

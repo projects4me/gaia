@@ -206,7 +206,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
                 foreach($this->uses as $component)
                 {
-                    $componentClass = '\\Foundation\\Mvc\\Controller\\Component\\'.strtolower($component).'Component';
+                    $componentClass = '\\Gaia\\MVC\\REST\\Controllers\\Components\\'.strtolower($component).'Component';
                     $this->components[$component] = new $componentClass();
                     $this->eventsManager->attach(
                         'rest',

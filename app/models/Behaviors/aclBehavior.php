@@ -4,6 +4,8 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
+namespace Gaia\MVC\Models\Behaviors;
+
 use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\BehaviorInterface;
 use Phalcon\Mvc\Model\Behavior;
@@ -22,7 +24,7 @@ class aclBehavior extends Behavior implements BehaviorInterface
      * @param Phalcon\Mvc\ModelInterface $model
      * @return mixed
      */
-    public function notify($eventType, Phalcon\Mvc\ModelInterface $model)
+    public function notify($eventType, \Phalcon\Mvc\ModelInterface $model)
     {
         if (method_exists($this, $eventType))
         {

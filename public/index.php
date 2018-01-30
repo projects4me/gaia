@@ -27,9 +27,9 @@ $logger->setLogLevel(Logger::DEBUG);
 
 require APP_PATH.'/vendor/autoload.php';
 
-require '../foundation/controllers/component.php';
-require '../foundation/controllers/components/acl.php';
-require '../foundation/controllers/components/auditable.php';
+require '../foundation/mvc/controllers/component.php';
+require '../foundation/mvc/controllers/components/acl.php';
+require '../foundation/mvc/controllers/components/auditable.php';
 require '../app/api/v1/controllers/components/FilethumbComponent.php';
 
 // Allow from any origin
@@ -108,7 +108,7 @@ try {
 */
     require_once(APP_PATH.'/app/models/Behaviors/aclBehavior.php');
     require_once(APP_PATH.'/foundation/libs/utility_functions.php');
-    require_once(APP_PATH.'/foundation/controllers/RestController.php');
+    require_once(APP_PATH.'/foundation/mvc/controllers/RestController.php');
     //Create a DI
     $di = new FactoryDefault();
 
@@ -131,7 +131,7 @@ try {
         return $url;
     });
 
-    require_once APP_PATH.'/foundation/mvc/model.php';
+    require_once APP_PATH.'/foundation/mvc/models/model.php';
     require_once APP_PATH.'/foundation/libs/fileHandler.php';
 
     require_once APP_PATH.'/foundation/libs/metaManager.php';
@@ -145,7 +145,7 @@ try {
     // @todo - add actions route
     $di->set('router', function(){
         require_once APP_PATH.'/foundation/mvc/router.php';
-        $router = new Foundation\Mvc\Router();
+        $router = new Gaia\MVC\Router();
         $router->init();
 //        print "<pre>";
 //        print_r($router);
