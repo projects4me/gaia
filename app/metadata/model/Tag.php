@@ -100,7 +100,7 @@ $models['Tag'] = array(
           'lhsKey' => 'relatedId',
           'secondaryModel' => '\\Gaia\\MVC\\Models\\Wiki',
           'secondaryKey' => 'id',
-          'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "wiki"'
+          'condition' => 'Tagged.relatedTo = "wiki"'
         ),
         'issue' => array(
           'primaryKey' => 'id',
@@ -109,7 +109,7 @@ $models['Tag'] = array(
           'lhsKey' => 'relatedId',
           'secondaryModel' => '\\Gaia\\MVC\\Models\\Issue',
           'secondaryKey' => 'id',
-          'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "issue"'
+          'condition' => 'Tagged.relatedTo = "issue"'
         ),
         'project' => array(
           'primaryKey' => 'id',
@@ -118,7 +118,7 @@ $models['Tag'] = array(
           'lhsKey' => 'relatedId',
           'secondaryModel' => '\\Gaia\\MVC\\Models\\Project',
           'secondaryKey' => 'id',
-          'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "project"'
+          'condition' => 'Tagged.relatedTo = "project"'
         )
       )
     ),

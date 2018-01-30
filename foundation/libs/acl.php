@@ -35,7 +35,7 @@ class Acl{
         {
             if (isset($userId) && !empty($userId))
             {
-                $ProjectsRoles = \Membership::find(array("projectId = '".$projectId."' AND userId='".$userId."'"));
+                $ProjectsRoles = \Gaia\MVC\Models\Membership::find(array("projectId = '".$projectId."' AND userId='".$userId."'"));
                 foreach($ProjectsRoles as $ProjectRole)
                 {
                     $permission = self::roleHasAccess($ProjectRole->roleId, $resource, $control);
@@ -64,7 +64,7 @@ class Acl{
 
         if (isset($userId) && !empty($userId))
         {
-            $ProjectsRoles = \Membership::find(array("userId='".$userId."'"));
+            $ProjectsRoles = \Gaia\MVC\Models\Membership::find(array("userId='".$userId."'"));
             foreach($ProjectsRoles as $ProjectRole)
             {
                 $permission = self::roleHasAccess($ProjectRole->roleId, $resource, $control);
@@ -90,7 +90,7 @@ class Acl{
         $access = 0;
         if (isset($roleId) && !empty($roleId))
         {
-            $Resource = new \Resource();
+            $Resource = new \Gaia\MVC\Models\Resource();
             $Resources = $Resource->getResource($resource);
 
             // If the resrouce exists then check for the permissions
@@ -99,7 +99,7 @@ class Acl{
                 $controlField = '_'.$control;
 
                 // First check out the permissions for the resource directly
-                $Permission = \Permission::findFirst(array("resourceId='".($ResourceRow->id)."' AND roleId='".$roleId."'"));
+                $Permission = \Gaia\MVC\Models\Permission::findFirst(array("resourceId='".($ResourceRow->id)."' AND roleId='".$roleId."'"));
                 if (isset($Permission->id))
                 {
                     $permission = (int) $Permission->$controlField;

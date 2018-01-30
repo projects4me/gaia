@@ -103,7 +103,7 @@ $models['Activity'] = array(
             'primaryKey' => 'relatedId',
             'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
             'relatedKey' => 'id',
-            'condition' => '\\Gaia\\MVC\\Models\\Activity.relatedTo = "project"'
+            'condition' => 'Activity.relatedTo = "project"'
         )
       )
     ),

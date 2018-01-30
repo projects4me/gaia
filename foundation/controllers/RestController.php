@@ -967,7 +967,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
                     if (is_array($value))
                     {
-                        $relDef = $this->getRelationshipMeta($this->modelName,$attr);
+                        $relDef = $this->getRelationshipMeta($this->classWithoutNamespace($this->modelName),$attr);
                         if ($relDef['type'] == 'hasMany' || $relDef['type'] == 'hasManyToMany')
                         {
                             if (!empty($value['id']))

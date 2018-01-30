@@ -109,19 +109,19 @@ $models['Vote'] = array(
               'primaryKey' => 'relatedId',
               'relatedModel' => '\\Gaia\\MVC\\Models\\Wiki',
               'relatedKey' => 'id',
-              'condition' => '\\Gaia\\MVC\\Models\\Vote.relatedTo = "wiki"'
+              'condition' => 'Vote.relatedTo = "wiki"'
           ),
           'comment' => array(
               'primaryKey' => 'relatedId',
               'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
               'relatedKey' => 'id',
-              'condition' => '\\Gaia\\MVC\\Models\\Vote.relatedTo = "comment"'
+              'condition' => 'Vote.relatedTo = "comment"'
           ),
           'conversationroom' => array(
               'primaryKey' => 'relatedId',
               'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
               'relatedKey' => 'id',
-              'condition' => '\\Gaia\\MVC\\Models\\Vote.relatedTo = "conversationroom"'
+              'condition' => 'Vote.relatedTo = "conversationroom"'
           )
       ),
     ),

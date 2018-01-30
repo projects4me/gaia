@@ -114,19 +114,19 @@ $models['Comment'] = array(
           'primaryKey' => 'relatedId',
           'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
           'relatedKey' => 'id',
-          'condition' => '\\Gaia\\MVC\\Models\\Comment.relatedTo = "conversationrooms"'
+          'condition' => 'Comment.relatedTo = "conversationrooms"'
         ),
         'chatRoom' => array(
           'primaryKey' => 'relatedId',
           'relatedModel' => '\\Gaia\\MVC\\Models\\Chatroom',
           'relatedKey' => 'id',
-          'condition' => '\\Gaia\\MVC\\Models\\Comment.relatedTo = "chatrooms"'
+          'condition' => 'Comment.relatedTo = "chatrooms"'
         ),
         'issue' => array(
           'primaryKey' => 'relatedId',
           'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
           'relatedKey' => 'id',
-          'condition' => '\\Gaia\\MVC\\Models\\Comment.relatedTo = "issues"'
+          'condition' => 'Comment.relatedTo = "issues"'
         ),
       ),
     ),

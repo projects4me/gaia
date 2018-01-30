@@ -31,6 +31,13 @@ class Model extends PhalconModel
 
     public $query;
 
+    /**
+     * The alias of the current model
+     *
+     * @var modelAlias
+     */
+    protected $modelAlias;
+
     public function loadBehavior()
     {
         // Load each of the relationship types one by one
@@ -137,6 +144,8 @@ class Model extends PhalconModel
     {
         $parts = explode('\\',get_class($this));
         $modelName = end($parts);
+        $this->modelAlias = $modelName;
+
         $metadata = metaManager::getModelMeta($modelName);
         $this->setSource($metadata['tableName']);
         $this->metadata = $metadata;
@@ -156,7 +165,7 @@ class Model extends PhalconModel
         $fields = $this->metadata[MetaData::MODELS_ATTRIBUTES];
         foreach ($fields as &$field)
         {
-            $field = get_class($this).'.'.$field;
+            $field = $this->modelAlias.'.'.$field;
         }
         return $fields;
     }
@@ -245,11 +254,12 @@ class Model extends PhalconModel
             $params['fields'] = array_merge($moduleFields,$relationshipFields);
         }
 
-        $query = $this->query();
+        $query = $this->modelsManager->createBuilder();
+        $query->andWhere($this->modelAlias.".id = '".$params['id']."'");
+
         // get the query
         $query = $this->setQuery($query,$params);
 
-        $query->andWhere(get_class($this).".id = '".$params['id']."'");
 
 
 
@@ -328,7 +338,8 @@ class Model extends PhalconModel
             $params['fields'] = array_merge($moduleFields,$relationshipFields);
         }
 
-        $this->query = $this->query();
+        $this->query = $this->modelsManager->createBuilder();
+
         // get the query
         $this->query = $this->setQuery($this->query,$params);
 
@@ -376,13 +387,13 @@ class Model extends PhalconModel
             $params['fields'] = $related.'.*';
         }
 
-        $query = $this->query();
+        $query = $this->modelsManager->createBuilder();
+
+        $query->andWhere($this->modelAlias.".id = '".$params['id']."'");
 
 
         // get the query
         $query = $this->setQuery($query,$params);
-
-        $query->andWhere(get_class($this).".id = '".$params['id']."'");
 
         // process ACL and other behaviors before executing the query
         $data = $query->execute();
@@ -399,10 +410,13 @@ class Model extends PhalconModel
      * @return \Phalcon\Mvc\Model\Criteria
      * @throws \Phalcon\Exception
      */
-    protected function setQuery(\Phalcon\Mvc\Model\Criteria $query,array $params)
+    protected function setQuery($query,array $params)
     {
         // fetch all the relationships
         $relations = $this->getRelationships();
+        $modelName = get_class($this);
+
+        $query->from([$this->modelAlias => $modelName]);
 
         // setup the passed columns
         $query->columns($params['fields']);
@@ -410,15 +424,15 @@ class Model extends PhalconModel
         // if sorting is requested then set it up
         if (isset($params['sort']) && !empty($params['sort']))
         {
-          // if order is requested the use otherwise use the default one
-          if (isset($params['order']) && !empty($params['order']))
-          {
-              $query->orderBy($params['sort'].' '.$params['order']);
-          }
-          else
-          {
-              $query->orderBy($params['sort']);
-          }
+            // if order is requested the use otherwise use the default one
+            if (isset($params['order']) && !empty($params['order']))
+            {
+                $query->orderBy($params['sort'].' '.$params['order']);
+            }
+            else
+            {
+                $query->orderBy($params['sort']);
+            }
         }
 
         // if pagination params are set then set them up
@@ -454,11 +468,11 @@ class Model extends PhalconModel
             // otherwise use the leftJoin as the default
             if (isset($relations[$relationship]['relType']))
             {
-              $join = \Phalcon\Text::lower($relations[$relationship]['relType'])."Join";
+                $join = \Phalcon\Text::lower($relations[$relationship]['relType'])."Join";
             }
             else
             {
-              $join = 'leftJoin';
+                $join = 'leftJoin';
             }
 
             // based on the metadata setup the joins in order to fetch relationships
@@ -467,10 +481,11 @@ class Model extends PhalconModel
                 // for a many-many relationship two joins are required
                 $relatedModel = $relations[$relationship]['relatedModel'];
                 $secondaryModel = $relations[$relationship]['secondaryModel'];
-                $relatedQuery = get_class($this).'.'.$relations[$relationship]['primaryKey'].
-                                ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['rhsKey'];
+
+                $relatedQuery = $this->modelAlias.'.'.$relations[$relationship]['primaryKey'].
+                    ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['rhsKey'];
                 $secondaryQuery = $relationship.'.'.$relations[$relationship]['secondaryKey'].
-                                ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['lhsKey'];
+                    ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['lhsKey'];
 
                 if (isset($relations[$relationship]['condition']))
                 {
@@ -487,27 +502,27 @@ class Model extends PhalconModel
                 // If an exclusive condition is defined then use that
                 if (isset($relations[$relationship]['conditionExclusive']))
                 {
-                  $relatedQuery = $relations[$relationship]['conditionExclusive'];
-                  $query->$join($relatedModel,$relatedQuery,$relationship);
+                    $relatedQuery = $relations[$relationship]['conditionExclusive'];
+                    $query->$join($relatedModel,$relatedQuery,$relationship);
                 }
                 else
                 {
-                  $relatedQuery = get_class($this).'.'.$relations[$relationship]['primaryKey'].
-                                  ' = '.$relationship.'.'.$relations[$relationship]['relatedKey'];
+                    $relatedQuery = $this->modelAlias.'.'.$relations[$relationship]['primaryKey'].
+                        ' = '.$relationship.'.'.$relations[$relationship]['relatedKey'];
 
-                  // if a condition is set in the metadat then use it
-                  if (isset($relations[$relationship]['condition']))
-                  {
-                    $relatedQuery .= ' AND '.$relations[$relationship]['condition'];
-                  }
+                    // if a condition is set in the metadat then use it
+                    if (isset($relations[$relationship]['condition']))
+                    {
+                        $relatedQuery .= ' AND '.$relations[$relationship]['condition'];
+                    }
 
-                  // for each relationship apply the relationship joins
-                  $query->$join($relatedModel,$relatedQuery,$relationship);
+                    // for each relationship apply the relationship joins
+                    $query->$join($relatedModel,$relatedQuery,$relationship);
                 }
             }
         }
 
-        return $query;
+        return $query->getQuery();
     }
 
 
@@ -583,7 +598,7 @@ class Model extends PhalconModel
         if(substr_count($statement, '(') != substr_count($statement, ')'))
         {
             $errorStr = 'Invalid query, please refer to the guides. '.
-            'Please check the paranthesis in the query.';
+                'Please check the paranthesis in the query.';
             if (substr_count($statement, '(') > substr_count($statement, ')'))
             {
                 $errorStr .= 'You have forgotten ")"';
@@ -711,20 +726,20 @@ class Model extends PhalconModel
 
                 $query = str_replace($substatement, $translatedStatement, $query);
 
-                   // make sure that we were able to parse all substatements
+                // make sure that we were able to parse all substatements
                 if (!$translatedStatement)
                 {
                     throw new \Phalcon\Exception('Invalid query, please check the guides. '.
-                    'Most common issues are extra spaces and invalid operators, '.
-                    'please note that "=" is not allowed use ":" instead. '.
-                    'Possible issue in '.$substatement);
+                        'Most common issues are extra spaces and invalid operators, '.
+                        'please note that "=" is not allowed use ":" instead. '.
+                        'Possible issue in '.$substatement);
                 }
             }
         }
         else
         {
             throw new \Phalcon\Exception('Invalid query, please refer to guides. '.
-            'Query must have atleast one substatement eclosed in parenthesis.');
+                'Query must have atleast one substatement eclosed in parenthesis.');
         }
 
         return $query;

@@ -101,7 +101,7 @@ $models['Chatroom'] = array(
                 'lhsKey' => 'userId',
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\User',
                 'secondaryKey' => 'id',
-                'condition' => '\\Gaia\\MVC\\Models\\Chatroom.createdUser = ownedbyConverser.userId'
+                'condition' => 'Chatroom.createdUser = ownedbyConverser.userId'
             ),
             'conversers' => array(
                 'primaryKey' => 'id',
@@ -110,7 +110,7 @@ $models['Chatroom'] = array(
                 'lhsKey' => 'userId',
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\User',
                 'secondaryKey' => 'id',
-                'condition' => '\\Gaia\\MVC\\Models\\Chatroom.createdUser != conversersConverser.userId'
+                'condition' => 'Chatroom.createdUser != conversersConverser.userId'
             ),
         )
     ),

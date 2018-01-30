@@ -80,13 +80,13 @@ $models['Mention'] = array(
               'primaryKey' => 'relatedId',
               'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
               'relatedKey' => 'id',
-              'condition' => '\\Gaia\\MVC\\Models\\Mentions.relatedTo="Comments"'
+              'condition' => 'Mentions.relatedTo="Comments"'
           ),
           'activity' => array(
               'primaryKey' => 'relatedId',
               'relatedModel' => '\\Gaia\\MVC\\Models\\Activity',
               'relatedKey' => 'id',
-              'condition' => '\\Gaia\\MVC\\Models\\Mentions.relatedTo="Activities"'
+              'condition' => 'Mentions.relatedTo="Activities"'
           )
         )
     ),

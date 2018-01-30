@@ -56,19 +56,19 @@ $models['Tagged'] = array(
               'primaryKey' => 'relatedId',
               'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
               'relatedKey' => 'id',
-              'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "project"'
+              'condition' => 'Tagged.relatedTo = "project"'
           ),
           'issue' => array(
               'primaryKey' => 'relatedId',
               'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
               'relatedKey' => 'id',
-              'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "issue"'
+              'condition' => 'Tagged.relatedTo = "issue"'
           ),
           'wiki' => array(
               'primaryKey' => 'relatedId',
               'relatedModel' => '\\Gaia\\MVC\\Models\\Wiki',
               'relatedKey' => 'id',
-              'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "wiki"'
+              'condition' => 'Tagged.relatedTo = "wiki"'
           ),
         ),
     ),

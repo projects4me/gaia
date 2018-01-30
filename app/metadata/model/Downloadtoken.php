@@ -71,13 +71,13 @@ $models['Downloadtoken'] = array(
                 'primaryKey' => 'uploadId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Upload',
                 'relatedKey' => 'id',
-                'condition' => '\\Gaia\\MVC\\Models\\Downloadtoken.relatedTo = "issue"'
+                'condition' => 'Downloadtoken.relatedTo = "issue"'
             ),
             'wikiUpload' => array(
                 'primaryKey' => 'uploadId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Upload',
                 'relatedKey' => 'id',
-                'condition' => '\\Gaia\\MVC\\Models\\Downloadtoken.relatedTo = "wiki"'
+                'condition' => 'Downloadtoken.relatedTo = "wiki"'
             )
 
         )

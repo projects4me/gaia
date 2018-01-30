@@ -155,7 +155,7 @@ $models['Wiki'] = array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
                 'relatedKey' => 'relatedId',
-                'condition' => '\\Gaia\\MVC\\Models\\tagged.relatedTo = "wiki"'
+                'condition' => 'tagged.relatedTo = "wiki"'
             ),
             'files' => array(
                 'primaryKey' => 'id',
@@ -172,7 +172,7 @@ $models['Wiki'] = array(
                 'lhsKey' => 'tagId',
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\Tag',
                 'secondaryKey' => 'id',
-                'condition' => '\\Gaia\\MVC\\Models\\Tagged.relatedTo = "wiki"'
+                'condition' => 'Tagged.relatedTo = "wiki"'
             )
         )
     ),
