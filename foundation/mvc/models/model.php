@@ -7,18 +7,14 @@
 namespace Gaia\MVC\Models;
 
 use Phalcon\Mvc\Model as PhalconModel;
-//use Phalcon\Mvc\Model\Message;
-//use Phalcon\Mvc\Model\Validator\Uniqueness;
-//use Phalcon\Mvc\Model\Validator\InclusionIn;
 use Foundation\metaManager;
 use Phalcon\Mvc\Model\MetaData;
-//use Phalcon\Text;
 
 
 /**
- * This class is the base model in the foundation framework and is used to
+ * This class is the base model in the the application and is used to
  * overwrite the default functionality of Phalcon\Mvc\Model in order to
- * introdcude manual meta-data extensions along with other changes
+ * introduce manual meta-data extensions along with other changes
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation\Mvc
@@ -27,17 +23,35 @@ use Phalcon\Mvc\Model\MetaData;
  */
 class Model extends PhalconModel
 {
+    /**
+     * This is the model metadata
+     *
+     * @var $metadata
+     * @type array
+     */
     protected $metadata;
 
+    /**
+     * This is the query for this model, we are using this to allow behaviors to make changes if required
+     *
+     * @var $query
+     * @type \Phalcon\Mvc\Model\Query\Builder
+     */
     public $query;
 
     /**
      * The alias of the current model
      *
-     * @var modelAlias
+     * @var $modelAlias
      */
     protected $modelAlias;
 
+    /**
+     * This function is used in order to load the different behaviors that this model is
+     * set to use
+     *
+     * @return void
+     */
     public function loadBehavior()
     {
         // Load each of the relationship types one by one
@@ -52,8 +66,9 @@ class Model extends PhalconModel
     }
 
     /**
-     * This function is responsibles for loading all the relationships defined
-     * in the model meta data
+     * This function is responsible for loading all the relationships defined in the model's metadata
+     *
+     * @return void
      */
     protected function loadRelationships()
     {
@@ -138,8 +153,10 @@ class Model extends PhalconModel
 
     /**
      * For some reason the tableName being set in the function metaData gets
-     * overridden so we are seting the table again when the object is being
+     * overridden so we are setting the table again when the object is being
      * constructed
+     *
+     * @return void
      */
     public function onConstruct()
     {
@@ -172,7 +189,7 @@ class Model extends PhalconModel
     }
 
     /**
-     * This function returns relationship names for all relationships types or of the specidied type
+     * This function returns relationship names for all relationships types or of the specified type
      *
      * @param mixed $type possible values are hasOne, hasMany, belongsTo and hasManyToMany
      * @return array
@@ -204,6 +221,7 @@ class Model extends PhalconModel
      * @param array $params
      * @return \Phalcon\Mvc\Model\ResultsetInterface
      * @throws \Phalcon\Exception
+     * @todo remove the relationship preload to all
      */
     public function read(array $params)
     {
@@ -404,9 +422,10 @@ class Model extends PhalconModel
 
     /**
      * Prepare the query for the model
-     * Any behavior that must chage the query can attach the 'after' event
+     * Any behavior that must change the query can attach the 'after' event
      * with this function
      *
+     * @param array $query
      * @param array $params
      * @return \Phalcon\Mvc\Model\Criteria
      * @throws \Phalcon\Exception

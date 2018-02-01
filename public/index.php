@@ -28,7 +28,6 @@ $logger->setLogLevel(Logger::DEBUG);
 require APP_PATH.'/vendor/autoload.php';
 
 require '../foundation/mvc/controllers/component.php';
-require '../foundation/mvc/controllers/components/acl.php';
 require '../foundation/mvc/controllers/components/auditable.php';
 require '../app/api/v1/controllers/components/FilethumbComponent.php';
 

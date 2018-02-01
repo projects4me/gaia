@@ -11,7 +11,6 @@ use Gaia\MVC\REST\Controllers\RestController;
 /**
  * Wiki controller
  *
- *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
  * @category Controller
@@ -19,5 +18,10 @@ use Gaia\MVC\REST\Controllers\RestController;
  */
 class WikiController extends RestController
 {
+    /**
+     * This components used by this controller
+     *
+     * @var array $uses
+     */
     public $uses = array('Filethumb');
 }

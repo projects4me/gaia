@@ -4,20 +4,22 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Foundation;
+namespace Gaia\Libraries;
 
 use Phalcon\Mvc\Model\Query as Query;
 
 /**
- * @todo Fill in Documentation and fix namespace
+ * We are using this class in order to provide a basic Access control mechanism
+ *
+ * @class Acl
  */
 class Acl{
 
     /**
-     * Check is the user has access to a particular resrouce within the domain
+     * Check is the user has access to a particular resource within the domain
      * of a certain project
      *
-     * Also allowing the possibilty of having one user associated with one
+     * Also allowing the possibility of having one user associated with one
      * project with multiple roles
      *
      * @param string $userId
@@ -53,10 +55,10 @@ class Acl{
     /**
      * Get all the projects that the user has access to
      *
-     * @param type $userId
-     * @param type $resource
-     * @param type $control
-     * @return type
+     * @param string $userId
+     * @param object $resource
+     * @param string $control
+     * @return array $projects
      */
     public static function getProjects($userId,$resource,$control)
     {
@@ -80,10 +82,10 @@ class Acl{
     /**
      * check if a role has access to a particular control
      *
-     * @param type $roleId
-     * @param type $resource
-     * @param type $control
-     * @return type
+     * @param string $roleId
+     * @param object $resource
+     * @param string $control
+     * @return int
      */
     public static function roleHasAccess($roleId,$resource,$control='read')
     {
@@ -93,7 +95,7 @@ class Acl{
             $Resource = new \Gaia\MVC\Models\Resource();
             $Resources = $Resource->getResource($resource);
 
-            // If the resrouce exists then check for the permissions
+            // If the resource exists then check for the permissions
             foreach ($Resources as $ResourceRow)
             {
                 $controlField = '_'.$control;

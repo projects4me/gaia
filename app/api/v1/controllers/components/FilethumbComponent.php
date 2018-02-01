@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ */
+
 namespace Gaia\MVC\REST\Controllers\Components;
 
 use \Phalcon\Events\Event as Event;
@@ -8,7 +12,7 @@ use \Phalcon\Events\Event as Event;
  * Class filethumbComponent
  *
  * @class filethumbComponent
- * @package Foundation\Mvc\Controller\Component
+ * @package Gaia\MVC\REST\Controllers\Components
  */
 class filethumbComponent
 {

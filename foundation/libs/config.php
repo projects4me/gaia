@@ -23,6 +23,11 @@ require_once APP_PATH.'/foundation/libs/fileHandler.php';
  */
 class Config
 {
+    /**
+     * The configuration array
+     *
+     * @var $config
+     */
     protected $config;
     
     /**

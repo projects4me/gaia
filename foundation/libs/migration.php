@@ -6,9 +6,11 @@
 
 namespace Foundation\Mvc\Model;
 
-// In the project we do not need to use the phalcon-dev elsewhere therefore we
-// do not want to include the phalcon-devtool in the application bootstrap using
-// dependency injector so avoid extra load
+/**
+ * In the project we do not need to use the phalcon-dev anywhere other than this file
+ * therefore we are not including the phalcon-devtool in the application bootstrap using
+ * dependency injector to help avoid extra load
+ */
 require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Mvc/Model/Migration.php';
 require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Migrations.php';
 
@@ -41,6 +43,7 @@ class Migration extends PhalconMigration
      * again so this function get the metadata from the files and sets them up
      *
      * @todo get table engines and collation from the model meta and system config
+     * @param $model
      */
     public function up($model)
     {

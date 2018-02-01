@@ -6,7 +6,7 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Foundation\fileHandler;
+use Gaia\MVC\Models\Downloadtoken;
 
 /**
  * Preview controller
@@ -23,6 +23,7 @@ class PreviewController extends \Phalcon\Mvc\Controller
     /**
      * Retrieve the user and image and return
      *
+     * @param string $id
      * @return mixed
      * @throws \Phalcon\Exception
      */

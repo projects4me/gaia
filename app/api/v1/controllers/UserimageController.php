@@ -24,8 +24,10 @@ class UserimageController extends \Phalcon\Mvc\Controller
      * Retrieve the user and image and return
      *
      * @method getAction
+     * @param string $id
      * @todo Handle validation
      * @todo Generate Image
+     * @throws \Phalcon\Exception
      */
     public function getAction($id){
 

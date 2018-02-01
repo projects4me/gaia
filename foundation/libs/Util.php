@@ -3,12 +3,20 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
+namespace Gaia\Libraries;
+
+/**
+ * This class is used to contain the application wide Utility functions
+ *
+ * @class Util
+ */
 class Util {
 
 	/**
-	 * Converte um objeto para array
-	 * @param  object $d Objeto a ser convertido
-	 * @return array    Array convertido
+	 * Convert an object into an array
+     *
+	 * @param  object $d Object to be converted
+	 * @return array The converted array
 	 */		
     public function objectToArray($d) {
         if (is_object($d))
@@ -18,21 +26,26 @@ class Util {
     }
 
     /**
-     * Converter array para objeto
-     * @param  array $d Array a ser convertido
-     * @return object Objeto convertido     
+     * Convert an array to an abject
+     *
+     * @param  array $d Array to be converted
+     * @return object The converted object
      */
     public function arrayToObject($d) {
         return is_array($d) ? (object) array_map(__METHOD__, $d) : $d;
     }
 
     /**
-     * extrai os valores de uma chave de subarrays/subobjetos
-     * @param  array/object  $coleção de dados para ser extraido os dados
-     * @param  string $index nome do idenficador da chave do qual é para extrair os dados
-     * @return array -> array com os dados da posição procurada
+     * This function is used to extract valued form an array or object
+     *
+     * @param mixed $collection
+     * @param mixed $index
+     * @return array
+    /**
+
      */
-    public function getDataFromArray($collection, $index){
+    public function getDataFromArray(mixed $collection, mixed $index) :array
+    {
     	$data = array();
     	foreach ($collection as $key => $value) {
     		if ( is_object($value)  )
@@ -57,7 +70,17 @@ class Util {
         return false;
     }
 
-
-
+    /**
+     * This function extracts the namespace from a class name and returns it
+     *
+     * @param string $className
+     * @return string $className without namespace
+     * @todo change the model and REST controller to use this
+     */
+    public static function classWithoutNamespace(string $className) :string
+    {
+        $parts = explode('\\', $className);
+        return end($parts);
+    }
 }
 ?>

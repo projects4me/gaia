@@ -6,18 +6,21 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Gaia\MVC\REST\Controllers\RestController;
-
 /**
  * Issues Controller
  *
  * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation
+ * @package Gaia\MVC\REST\Controllers;
  * @category Controller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class IssueController extends RestController
 {
+    /**
+     * This components that this controller uses
+     *
+     * @var $uses
+     * @type array
+     */
     public $uses = array('Filethumb');
-
 }

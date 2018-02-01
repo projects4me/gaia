@@ -18,6 +18,8 @@ class Resource extends Model
 {
     /**
      * Method getResources
+     *
+     * @param string $entity
      * @return List of Resources
      */
     public function getResource($entity){

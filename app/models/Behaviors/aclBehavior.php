@@ -19,12 +19,13 @@ use Phalcon\Mvc\Model\Behavior;
 class aclBehavior extends Behavior implements BehaviorInterface
 {
     /**
-     * 
+     * This function is used to notify
+     *
      * @param string $eventType
-     * @param Phalcon\Mvc\ModelInterface $model
+     * @param ModelInterface $model
      * @return mixed
      */
-    public function notify($eventType, \Phalcon\Mvc\ModelInterface $model)
+    public function notify($eventType, ModelInterface $model)
     {
         if (method_exists($this, $eventType))
         {
@@ -33,9 +34,10 @@ class aclBehavior extends Behavior implements BehaviorInterface
     }
 
     /**
-     * 
-     * @param Phalcon\Mvc\ModelInterface $model
-     * @return Phalcon\Mvc\ModelInterface
+     * This function is called before the creation of a model
+     *
+     * @param ModelInterface $model
+     * @return ModelInterface
      */
     protected function beforeCreate(&$model)
     {
@@ -48,9 +50,10 @@ class aclBehavior extends Behavior implements BehaviorInterface
     }
 
     /**
-     * 
-     * @param Phalcon\Mvc\ModelInterface $model
-     * @return Phalcon\Mvc\Model\Criteria
+     * This function is called before a query is executed
+     *
+     * @param ModelInterface $model
+     * @return void
      */
     protected function beforeQuery($model)
     {

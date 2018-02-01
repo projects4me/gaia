@@ -6,14 +6,13 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Foundation\fileHandler;
+use \Gaia\MVC\Models\Downloadtoken;
 
 /**
  * Download controller
  *
- *
  * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation
+ * @package Gaia\MVC\REST\Controllers
  * @category Controller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
@@ -21,9 +20,9 @@ class DownloadController extends \Phalcon\Mvc\Controller
 {
 
     /**
-     * retrive the user and image and return
+     * Retrieve the user and image and return
      *
-     * @return Image
+     * @param string $id
      * @todo Handle validation
      * @todo Generate Image
      * @throws \Phalcon\Exception
@@ -43,11 +42,11 @@ class DownloadController extends \Phalcon\Mvc\Controller
             'sort' => '\\Gaia\\MVC\\Models\\Downloadtoken.dateCreated',
         );
 
-        $model = new \Gaia\MVC\Models\Downloadtoken();
+        $model = new Downloadtoken();
         $data = $model->readAll($params);
         if (isset($data[0]) && $data[0]->downloadToken) {
             $logger->info("Found the download token");
-            $downloadToken = \Gaia\MVC\Models\Downloadtoken::find(
+            $downloadToken = Downloadtoken::find(
                 "downloadToken = '".$data[0]->downloadToken."'"
             );
             // validate expiry

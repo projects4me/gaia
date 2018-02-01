@@ -3,35 +3,29 @@
 /**
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
+
 namespace Gaia\MVC\REST\Controllers;
 
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\Resultset;
-use Phalcon\DI;
-use Phalcon\Mvc\Dispatcher;
-use Phalcon\Text;
 use function Foundation\create_guid as create_guid;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Foundation\metaManager;
 use \Phalcon\Events\EventsAwareInterface;
 use \Phalcon\Events\Manager as EventsManager;
 use \Phalcon\Events\ManagerInterface as EventsManagerInterface;
-use PHPUnit\Runner\Exception;
-use Zend\EventManager\EventManager;
-//use Gaia\MVC\Models;
 
 /**
- * The is the deafult controller used by foundation that provides the basic
+ * The is the default controller used by this application. It provides the basic
  * implementation of REST function, e.g. GET, POST, PATCH, DELETE and OPTIONS.
  *
- * The default functionality support a custome implementation of HAL
+ * The default functionality support a custom implementation of HAL
  *
  * Supports only JSON, OAUTH, ACL, Mixin Implementation (Components)
  *
- *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
- * @category REST, COntroller
+ * @category REST, Controller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInterface
@@ -39,74 +33,97 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
     /**
      * Model's name is registered from controller via parameter
+     * @var string $modelName
      */
     protected $modelName;
 
     /**
      * Model object in question
-     * @var mixed
+     * @var \Phalcon\Mvc\ModelInterface $model
      */
     protected $model;
 
     /**
      * Model's name of relationship model
+     *
+     * @var string $relationship
      */
     protected $relationship=null;
 
     /**
      * Name of controller is passed in parameter
+     *
+     * @var string $controllerName
      */
     protected $controllerName;
 
     /**
      * Name of action is passed in parameter
+     *
+     * @var string $actionName
      */
     protected $actionName;
+
     /**
      * Value of primary key field of model (passed in parameter)
+     *
+     * @var string $id
      */
     protected $id;
 
     /**
      * Parameters
+     *
+     * @var mixed $params
      */
     protected $params;
 
     /**
      * Response object
-     * @var Phalcon\Http\Response
+     *
+     * @var Phalcon\Http\Response $response
      */
     protected $response;
 
     /**
      * Language's messages
-     * @var array
+     *
+     * @var array $language
      */
     protected $language;
 
     /**
      * Authorization flag
-     * @var bool
+     *
+     * @var bool $authorization
      */
     protected $authorization = true;
 
     /**
      * Project authorization flag
-     * @var bool
+     *
+     * @var bool $projectAuthorization
      */
     protected $projectAuthorization = false;
 
     /**
      * Accessible projects list
-     * @var array
+     *
+     * @var array $accessibleProjects
      */
     protected $accessibleProjects = array();
 
+    /**
+     * This is the cached metadata
+     *
+     * @var array $cachedMeta
+     */
     protected static $cachedMeta = array();
 
     /**
      * Acl Map
-     * @var array
+     *
+     * @var array $aclMap
      */
     protected $aclMap = array(
         'get' => 'read',
@@ -120,19 +137,24 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
     /**
      * System level flag
-     * @var bool
+     *
+     * @var bool $systemLevel
      */
     protected $systemLevel = false;
 
     //protected $uses = array('acl','auditable');
 
     /**
-     * @var array
+     * The components used by this controller
+
+     * @var array $components
      */
     protected $components = array();
 
     /**
-     * @var EventsManager
+     * The event manager that we are using in order to extend functionality using components
+     *
+     * @var EventsManager $eventsManager
      */
     protected $eventsManager;
 
@@ -157,8 +179,11 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
     }
 
     /**
-     * @todo Add a way that will allow us to control the controllers and actions
-     * exempted from Authorization
+     * This function is called by Phalcon once it is created the controller object
+     * This function must not be overridden by a child controller without calling
+     * it first.
+     *
+     * @todo Add a way that will allow us to control the controllers and actions exempted from Authorization
      */
     public function initialize()
     {
@@ -188,6 +213,9 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
     /**
      * This function preloads the component classes for use later
+     *
+     * @return void
+     *
      */
     final private function loadComponents()
     {
@@ -254,6 +282,11 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         }
     }
 
+    /**
+     * This function is used to authorize the current request
+     *
+     * @return void
+     */
     private function authorize()
     {
         global $currentUser;
@@ -577,7 +610,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $modelName = $this->modelName;
         $model = new $modelName();
 
-        $util = new \Util();
+        $util = new \Gaia\Libraries\Util();
         $data = array();
 
         //get data
@@ -828,9 +861,12 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
     }
 
     /**
+     * This function builds the custom HAL data
      *
      * @param array $data
-     * @return string
+     * @param int $limit
+     * @param int $page
+     * @return array $hal
      */
     protected function buildHAL(array $data,$limit=-1, $page=-1)
     {
@@ -937,8 +973,11 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
     /**
      * Extract collection data to json
-     * @param  Objcet     data object collecion with data
-     * @return JSON       data in JSON
+     *
+     * @param  object $data object collection with data
+     * @param  string $type How many entities are expected
+     * @param  string $relation
+     * @return string $data
      * @todo optimize the code
      * @todo build HAL within
      */
@@ -1152,6 +1191,13 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         return $result;
     }
 
+    /**
+     * This function is used to retrieve the relationship metadata for a model
+     *
+     * @param string $modelName
+     * @param string $rel
+     * @return array
+     */
     final private function getRelationshipMeta($modelName,$rel){
         if (isset(self::$cachedMeta[$modelName][$rel])) {
             return self::$cachedMeta[$modelName][$rel];
@@ -1201,7 +1247,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      * for the related entities this function is used to remove the duplicate
      * entries before they are processes further
      *
-     * @pram array $array
+     * @param array $array
+     * @return void
      */
     final private function removeDuplicates(array &$array)
     {
