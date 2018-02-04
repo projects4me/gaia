@@ -8,9 +8,9 @@ namespace Gaia\MVC\REST\Controllers;
 
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\Resultset;
-use function Foundation\create_guid as create_guid;
+use function Gaia\Libraries\Utils\create_guid as create_guid;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
-use Foundation\metaManager;
+use Gaia\Libraries\Meta\Manager as metaManager;
 use \Phalcon\Events\EventsAwareInterface;
 use \Phalcon\Events\Manager as EventsManager;
 use \Phalcon\Events\ManagerInterface as EventsManagerInterface;
@@ -293,7 +293,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
         if ($this->authorization)
         {
-            require_once APP_PATH.'/foundation/libs/oAuthServer.php';
+            require_once APP_PATH.'/foundation/libs/authorization/oAuthServer.php';
             $reuqest = \OAuth2\Request::createFromGlobals();
             if (!$server->verifyResourceRequest($reuqest)) {
                 $server->getResponse()->send();

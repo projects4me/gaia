@@ -4,11 +4,10 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Foundation\Mvc\Model\Migration;
+namespace Gaia\Libraries\Meta\Migration;
 
-use Foundation\metaManager;
-use Foundation\fileHandler;
-use Foundation\Mvc\Model\Migration as foundationMigration;
+use Gaia\Libraries\Meta\Manager as metaManager;
+use Gaia\Libraries\Meta\Migration as foundationMigration;
 
 /**
  * This class is responsible for synchronizing the database by using the

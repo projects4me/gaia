@@ -7,7 +7,7 @@
 namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\MVC\REST\Controllers\RestController;
-use function Foundation\create_guid as create_guid;
+use function Gaia\Libraries\Utils\create_guid as create_guid;
 
 /**
  * Upload controller

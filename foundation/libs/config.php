@@ -4,9 +4,10 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Foundation;
+namespace Gaia\Libraries;
+
 use Phalcon\Config as PhalconConfig;
-require_once APP_PATH.'/foundation/libs/fileHandler.php';
+use Gaia\Libraries\file\Handler as fileHandler;
 
 /**
  * This is the config class in the foundation package. The class manages the

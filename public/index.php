@@ -11,25 +11,29 @@ use Phalcon\Di,
     Phalcon\Translate\Adapter\NativeArray,
     Phalcon\Logger,
     Phalcon\Logger\Adapter\File as FileAdapter,
-    Gaia\MVC\REST\Controllers;
+    Gaia\Libraries\Utils\executiontime,
+    Gaia\Libraries\Meta\Migration\Driver as migrationDriver;
 
+/**
+ * Error Reporting
+ * @todo Remove before publishing
+ */
 error_reporting(E_ALL);
+ini_set('display_errors',true);
+
+// Setup the application constants
 define('APP_PATH', realpath('..'));
 define('DS', DIRECTORY_SEPARATOR);
-ini_set('display_errors',true);
+
+require APP_PATH . '/autoload.php';
 
 /**
  * @todo Need a more appropriate place for this
  */
+
 global $logger;
 $logger = new FileAdapter(APP_PATH.'/logs/application.log');
 $logger->setLogLevel(Logger::DEBUG);
-
-require APP_PATH.'/vendor/autoload.php';
-
-require '../foundation/mvc/controllers/component.php';
-require '../foundation/mvc/controllers/components/auditable.php';
-require '../app/api/v1/controllers/components/FilethumbComponent.php';
 
 // Allow from any origin
 if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -59,55 +63,6 @@ try {
 
     $timer = new executiontime();
 
-    $request = new \Phalcon\Http\Request();
-    $appVersions = include('../version.php');
-    $apiVersion = $appVersions['apiVersion'];
-    // if api version is available in the request then load it
-    /**
-     * @todo add more validation
-     */
-    if (preg_match('@api/?(v[^/]+)@',$request->getURI(),$matches))
-    {
-        $apiVersion = $matches[1];
-    }
-
-    //Register an autoloader
-    $loader = new \Phalcon\Loader();
-
-    $loader->registerNamespaces(
-        [
-            "Gaia\\MVC\\REST\\Controllers" => APP_PATH.'/app/api/'.$apiVersion.'/controllers/',
-            "Gaia\\MVC\\Models" => APP_PATH. '/app/models/'
-        ]
-    );
-
-    $loader->registerDirs(array(
-        APP_PATH.'/foundation/controllers/',
-        APP_PATH.'/foundation/libs/',
-        APP_PATH.'/app/api/'.$apiVersion.'/controllers/',
-//        APP_PATH.'/app/models/',
-        APP_PATH.'/app/models/Behaviors',
-        APP_PATH.'/config/',
-        APP_PATH.'/vendor/',
-    ))->register();
-
-    /*
-    print "<pre>";
-    $regDirs = $loader->getDirs();
-    print_r($regDirs);
-
-    $loader->registerDirs(array(
-        APP_PATH.'/app/models/v1/',
-    ))->register();
-
-    $classes = $loader->getClasses();
-    print "<pre>";
-    print_r($loader);
-    print "</pre>";
-*/
-    require_once(APP_PATH.'/app/models/Behaviors/aclBehavior.php');
-    require_once(APP_PATH.'/foundation/libs/utility_functions.php');
-    require_once(APP_PATH.'/foundation/mvc/controllers/RestController.php');
     //Create a DI
     $di = new FactoryDefault();
 
@@ -130,20 +85,13 @@ try {
         return $url;
     });
 
-    require_once APP_PATH.'/foundation/mvc/models/model.php';
-    require_once APP_PATH.'/foundation/libs/fileHandler.php';
-
-    require_once APP_PATH.'/foundation/libs/metaManager.php';
-    require_once APP_PATH.'/foundation/libs/migration.php';
 
     // @todo - set in di
-    require_once APP_PATH.'/foundation/libs/config.php';
-    $config = new \Foundation\Config();
+    $config = new \Gaia\Libraries\Config();
     $config->init();
 
     // @todo - add actions route
     $di->set('router', function(){
-        require_once APP_PATH.'/foundation/mvc/router.php';
         $router = new Gaia\MVC\Router();
         $router->init();
 //        print "<pre>";
@@ -186,9 +134,7 @@ try {
     /**
      * @todo move the migration away to elsewhere
      */
-    require '../foundation/libs/migration/driver.php';
-    Foundation\Mvc\Model\Migration\Driver::migrate();
-    require '../foundation/libs/acl.php';
+    migrationDriver::migrate();
 
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);
@@ -199,31 +145,3 @@ try {
 }
 
 
-class executiontime
-{
-    protected $starttime;
-    protected $lasttime;
-
-    public function __construct()
-    {
-        $this->starttime = $this->gettime();
-        $this->lasttime = $this->gettime();
-    }
-
-    public function tillnow()
-    {
-        return ($this->gettime() - $this->starttime);
-    }
-    public function diff()
-    {
-        $lasttime = ($this->gettime() - $this->lasttime);
-        $this->lasttime = $this->gettime();
-        return $lasttime;
-    }
-
-    private function gettime()
-    {
-        $mtime = explode(" ",microtime());
-        return $mtime[1] + $mtime[0];
-    }
-}

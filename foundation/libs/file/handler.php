@@ -4,7 +4,7 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Foundation;
+namespace Gaia\Libraries\File;
 
 /**
  * This class is used for basic filing operations. Foundation applications rely
@@ -12,7 +12,7 @@ namespace Foundation;
  * class provides functions that helps to retireve the data stored
  * 
  */
-class fileHandler
+class Handler
 {
     /**
      * This function will read all the files in the given $folder and will

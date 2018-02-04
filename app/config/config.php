@@ -28,8 +28,8 @@ return new \Phalcon\Config(array(
 
 */
 
-require_once 'foundation/libs/config.php';
-$config = new \Foundation\Config();
+require_once APP_PATH.'/foundation/libs/config.php';
+$config = new \Gaia\Libraries\Config();
 $config->init();
 
 return $GLOBALS['settings'];

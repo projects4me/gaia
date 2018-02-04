@@ -4,7 +4,7 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Foundation\Mvc\Model;
+namespace Gaia\Libraries\Meta;
 
 /**
  * In the project we do not need to use the phalcon-dev anywhere other than this file
@@ -17,8 +17,8 @@ require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Migratio
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
 use Phalcon\Mvc\Model\Migration as PhalconMigration;
-use Foundation\fileHandler as fileHandler;
-use Foundation\metaManager as metaManager;
+use Gaia\Libraries\File\Handler as fileHandler;
+use Gaia\Libraries\Meta\Manager as metaManager;
 
 /**
  * This class is responsible for synchronizing the database by using the

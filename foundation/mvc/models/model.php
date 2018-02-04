@@ -7,9 +7,12 @@
 namespace Gaia\MVC\Models;
 
 use Phalcon\Mvc\Model as PhalconModel;
-use Foundation\metaManager;
+use Gaia\Libraries\Meta\Manager as metaManager;
 use Phalcon\Mvc\Model\MetaData;
 
+/**
+ * 1
+ */
 
 /**
  * This class is the base model in the the application and is used to

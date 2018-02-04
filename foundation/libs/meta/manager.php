@@ -4,9 +4,11 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Foundation;
+namespace Gaia\Libraries\Meta;
+
 use Phalcon\Db\Column;
 use Phalcon\Mvc\Model\MetaData;
+use Gaia\Libraries\file\Handler as fileHandler;
 
 /**
  * This class is used for the metadata storage, retrival and maintenance.
@@ -21,7 +23,7 @@ use Phalcon\Mvc\Model\MetaData;
  * @category metaManager
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
   */
-class metaManager
+class Manager
 {
     
     const basePath = '/app/metadata';
@@ -35,9 +37,9 @@ class metaManager
      */
     public static function getModelMeta($model)
     {
-        $metadata = fileHandler::readFile(APP_PATH.metaManager::basePath.'/model/'.$model.'.php');
+        $metadata = fileHandler::readFile(APP_PATH.self::basePath.'/model/'.$model.'.php');
         $metadata = $metadata[$model];
-        $fields = metaManager::parseFields($metadata);
+        $fields = self::parseFields($metadata);
 
         $modelMeta = array(
             // Set the table name
@@ -100,9 +102,9 @@ class metaManager
     /**
      * This function parses the data from the metadata array
      * 
-     * @param type $metadata
-     * @param type $type
-     * @return type
+     * @param array $metadata
+     * @param string $type
+     * @return array
      */
     private static function parseFields($metadata,$type='attributes')
     {
@@ -114,7 +116,7 @@ class metaManager
             // Add all the fields in the attributes array
             $data['attributes'][] = $field;
             
-            // Sort out the primary and non primary fiedsl
+            // Sort out the primary and non primary fields
             if(isset($metadata['indexes'][$field]) && $metadata['indexes'][$field] == 'primary') {
                 $data['primary'][] = $field;
                 $data['id'] = $field;
@@ -129,10 +131,10 @@ class metaManager
             }
             
             // set the field type
-            $data['type'][$field] = metaManager::getFieldType($properties['type']);
+            $data['type'][$field] = self::getFieldType($properties['type']);
 
             // set the field data bind type
-            $data['bind'][$field] = metaManager::getBindType($properties['type']);
+            $data['bind'][$field] = self::getBindType($properties['type']);
             
             // if default value is set in metadata then set it
             if (isset($properties['default']))

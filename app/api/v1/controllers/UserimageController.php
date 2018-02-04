@@ -6,7 +6,7 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Foundation\fileHandler;
+use Gaia\Libraries\File\Handler as fileHandler;
 
 /**
  * User Image controller
