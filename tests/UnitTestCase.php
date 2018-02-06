@@ -30,9 +30,7 @@ abstract class UnitTestCase extends PhalconTestCase
         $di = DI::getDefault();
 
         // Get any DI components here. If you have a config, be sure to pass it to the parent
-
         parent::setUp($di);
-        print "Called";
         $this->_loaded = true;
     }
 

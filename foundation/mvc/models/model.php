@@ -9,6 +9,7 @@ namespace Gaia\MVC\Models;
 use Phalcon\Mvc\Model as PhalconModel;
 use Gaia\Libraries\Meta\Manager as metaManager;
 use Phalcon\Mvc\Model\MetaData;
+use Gaia\Libraries\Utils\Util;
 
 /**
  * 1
@@ -163,8 +164,7 @@ class Model extends PhalconModel
      */
     public function onConstruct()
     {
-        $parts = explode('\\',get_class($this));
-        $modelName = end($parts);
+        $modelName = $this->getModelName();
         $this->modelAlias = $modelName;
 
         $metadata = metaManager::getModelMeta($modelName);
@@ -174,6 +174,11 @@ class Model extends PhalconModel
         // Load the behaviors in the model as well
         $this->loadBehavior();
         $this->loadRelationships();
+    }
+
+    public function getModelName()
+    {
+        return Util::classWithoutNamespace(get_class($this));
     }
 
     /**
@@ -621,7 +626,7 @@ class Model extends PhalconModel
         if(substr_count($statement, '(') != substr_count($statement, ')'))
         {
             $errorStr = 'Invalid query, please refer to the guides. '.
-                'Please check the paranthesis in the query.';
+                'Please check the parenthesis in the query. ';
             if (substr_count($statement, '(') > substr_count($statement, ')'))
             {
                 $errorStr .= 'You have forgotten ")"';
@@ -762,7 +767,7 @@ class Model extends PhalconModel
         else
         {
             throw new \Phalcon\Exception('Invalid query, please refer to guides. '.
-                'Query must have atleast one substatement eclosed in parenthesis.');
+                'Query must have at least one sub-statement enclosed in parenthesis.');
         }
 
         return $query;

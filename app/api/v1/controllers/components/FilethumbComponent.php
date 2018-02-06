@@ -14,7 +14,7 @@ use \Phalcon\Events\Event as Event;
  * @class filethumbComponent
  * @package Gaia\MVC\REST\Controllers\Components
  */
-class filethumbComponent
+class FilethumbComponent
 {
     /**
      * Before the response is sent we check if the files exists, if so then we

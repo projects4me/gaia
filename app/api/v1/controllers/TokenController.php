@@ -48,7 +48,7 @@ class TokenController extends RestController
         }
         
         // include OAuth2 Server object
-        require_once APP_PATH.'/foundation/libs/oAuthServer.php';
+        require_once APP_PATH.'/foundation/libs/authorization/oAuthServer.php';
         
         // Handle a request for an OAuth2.0 Access Token and send the response to the client
         $response = $server->handleTokenRequest($request);

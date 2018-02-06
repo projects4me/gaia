@@ -11,6 +11,7 @@ use Phalcon\Mvc\Model\Resultset;
 use function Gaia\Libraries\Utils\create_guid as create_guid;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Gaia\Libraries\Meta\Manager as metaManager;
+use Gaia\Libraries\Security\Acl;
 use \Phalcon\Events\EventsAwareInterface;
 use \Phalcon\Events\Manager as EventsManager;
 use \Phalcon\Events\ManagerInterface as EventsManagerInterface;
@@ -234,7 +235,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
                 foreach($this->uses as $component)
                 {
-                    $componentClass = '\\Gaia\\MVC\\REST\\Controllers\\Components\\'.strtolower($component).'Component';
+                    $componentClass = '\\Gaia\\MVC\\REST\\Controllers\\Components\\'.$component.'Component';
                     $this->components[$component] = new $componentClass();
                     $this->eventsManager->attach(
                         'rest',
@@ -317,7 +318,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
                     if (isset($data[0]->$identifier))
                     {
-                        $permission = \Foundation\Acl::hasProjectAccess($currentUser->id, $this->controllerName, $this->aclMap[$this->actionName], $data[0]->$identifier);
+                        $permission = Acl::hasProjectAccess($currentUser->id, $this->controllerName, $this->aclMap[$this->actionName], $data[0]->$identifier);
                         if ($permission != 0)
                         {
                             $projects[] = $data[0]->$identifier;
@@ -326,7 +327,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                 }
                 else
                 {
-                    $projects = \Foundation\Acl::getProjects($currentUser->id, $this->controllerName, $this->aclMap[$this->actionName]);
+                    $projects = Acl::getProjects($currentUser->id, $this->controllerName, $this->aclMap[$this->actionName]);
                 }
 
                 if (empty($projects))
@@ -344,7 +345,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             }
             elseif($this->systemLevel)
             {
-                $permission = \Foundation\Acl::roleHasAccess('1', "Controllers.".$this->controllerName, $this->aclMap[$this->actionName]);
+                $permission = Acl::roleHasAccess('1', "Controllers.".$this->controllerName, $this->aclMap[$this->actionName]);
 
                 if ($permission == 0)
                 {
