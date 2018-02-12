@@ -15,13 +15,25 @@ namespace Gaia\Libraries\File;
 class Handler
 {
     /**
+     * This is the dependency injector used by this class
+     *
+     * @var \Phalcon\DiInterface
+     */
+    protected $di;
+
+    public function __construct(\Phalcon\DiInterface $di)
+    {
+        $this->di = $di;
+    }
+
+    /**
      * This function will read all the files in the given $folder and will
      * return all them merged in an array.
      * 
      * @param string $folder
      * @return array
      */
-    public static function readFolder($folder){
+    public function readFolder($folder){
         $data = array();
         if (is_dir($folder)){
             $files = array();
@@ -50,7 +62,7 @@ class Handler
      * @param string $path
      * @return array
      */
-    public static function readFile($path)
+    public function readFile($path)
     {
         if (file_exists($path))
             return include $path;

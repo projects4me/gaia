@@ -8,6 +8,7 @@ use Phalcon\DI\FactoryDefault;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Logger;
 use Phalcon\Logger\Adapter\File as FileAdapter;
+use Phalcon\Mvc\Model\Manager as ModelsManager;
 
 ini_set('display_errors',1);
 error_reporting(E_ALL);
@@ -58,5 +59,12 @@ $di->set('db', function () {
     $connection->setEventsManager($eventsManager);
     return $connection;
 });
+
+$di->set(
+    "modelsManager",
+    function() {
+        return new ModelsManager();
+    }
+);
 
 DI::setDefault($di);

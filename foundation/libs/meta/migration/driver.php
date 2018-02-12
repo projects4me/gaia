@@ -7,7 +7,7 @@
 namespace Gaia\Libraries\Meta\Migration;
 
 use Gaia\Libraries\Meta\Manager as metaManager;
-use Gaia\Libraries\Meta\Migration as foundationMigration;
+use Gaia\Libraries\Meta\Migration as metaMigration;
 
 /**
  * This class is responsible for synchronizing the database by using the
@@ -23,20 +23,39 @@ use Gaia\Libraries\Meta\Migration as foundationMigration;
 class Driver
 {
     /**
+     * The dependency injector used by this class
+     *
+     * @var \Phalcon\DiInterface $di
+     */
+    protected $di;
+
+    /**
+     * Driver constructor.
+     *
+     * @param \Phalcon\DiInterface $di
+     */
+    public function __construct(\Phalcon\DiInterface $di)
+    {
+        $this->di = $di;
+    }
+
+
+    /**
      * This function traverses model metadata directory and attempts to run
      * migration for all the models defined
      * 
      * @todo Allow migration for a single model
-     * @return array Sucess or Error
+     * @return array Success or Error
      */
-    public static function migrate()
+    public function migrate()
     {
         $result = array();
         try {
             // Set the metadata directory
             $migrationsDir = APP_PATH.metaManager::basePath.'/model';
+
             // setup the database using global settings
-            foundationMigration::setup($GLOBALS['settings']->database);
+            metaMigration::setup($GLOBALS['settings']->database);
 
             // iterate through all the model metadata defined in the system
             $iterator = new \DirectoryIterator($migrationsDir);
@@ -45,7 +64,7 @@ class Driver
                     if (preg_match('/\.php$/', $fileinfo->getFilename())) {
                         $model = str_replace('.php', '', basename($fileinfo->getFilename()));
                         $result[$model] = 'Failed to migrate '.$model;
-                        foundationMigration::migrateModel($model);
+                        $this->di->get('metaMigration')->migrateModel($model);
                         $result[$model] = $model." migrated successfully";
                     }
                 }

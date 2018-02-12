@@ -25,8 +25,24 @@ use Gaia\Libraries\file\Handler as fileHandler;
   */
 class Manager
 {
-    
+    /**
+     * This is the dependency injector used for this class
+     * @var \Phalcon\DiInterface $di
+     */
+    protected $di;
+
     const basePath = '/app/metadata';
+
+    /**
+     * Manager constructor.
+     *
+     * @param \Phalcon\DiInterface $di
+     */
+    public function __construct(\Phalcon\DiInterface $di)
+    {
+        $this->di = $di;
+    }
+
     /**
      * This function get the model metadata stored for the application and
      * returns it. This class uses Phalcon Model Data
@@ -35,7 +51,7 @@ class Manager
      * @param string $model
      * @return array
      */
-    public static function getModelMeta($model)
+    public function getModelMeta($model)
     {
         $metadata = fileHandler::readFile(APP_PATH.self::basePath.'/model/'.$model.'.php');
         $metadata = $metadata[$model];
@@ -103,10 +119,9 @@ class Manager
      * This function parses the data from the metadata array
      * 
      * @param array $metadata
-     * @param string $type
      * @return array
      */
-    private static function parseFields($metadata,$type='attributes')
+    public function parseFields($metadata)
     {
         // The application default values
         $data = array('default'=>array());
@@ -151,7 +166,7 @@ class Manager
      * @param string $type
      * @return integer
      */
-    public static function getFieldType($type)
+    public function getFieldType($type)
     {
         $dbType = '';
         switch ($type)
@@ -209,7 +224,7 @@ class Manager
      * @param string $type
      * @return integer
      */
-    public static function getBindType($type)
+    public function getBindType($type)
     {
         $bindType = '';
         switch ($type)

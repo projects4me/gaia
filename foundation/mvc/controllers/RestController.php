@@ -15,6 +15,7 @@ use Gaia\Libraries\Security\Acl;
 use \Phalcon\Events\EventsAwareInterface;
 use \Phalcon\Events\Manager as EventsManager;
 use \Phalcon\Events\ManagerInterface as EventsManagerInterface;
+use Gaia\Libraries\Utils\Util;
 
 /**
  * The is the default controller used by this application. It provides the basic
@@ -433,7 +434,6 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
     public function getAction()
     {
         global $logger;
-
         $logger->debug('Gaia.foundation.controllers.rest->getAction');
         $modelName = $this->modelName;
 
@@ -737,7 +737,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $modelName = $this->modelName;
         $model = new $modelName();
 
-        $util = new \Util();
+        $util = new Util();
         $data = array();
 
         //get data

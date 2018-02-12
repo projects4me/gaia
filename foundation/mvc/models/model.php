@@ -186,7 +186,7 @@ class Model extends PhalconModel
      *
      * @return array
      */
-    protected function getFields()
+    public function getFields()
     {
         $fields = $this->metadata[MetaData::MODELS_ATTRIBUTES];
         foreach ($fields as &$field)

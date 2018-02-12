@@ -14,6 +14,9 @@ use Phalcon\Di,
     Gaia\Libraries\Utils\executiontime,
     Gaia\Libraries\Meta\Migration\Driver as migrationDriver;
 
+use Gaia\Libraries\Test\something;
+
+
 /**
  * Error Reporting
  * @todo Remove before publishing
@@ -87,8 +90,8 @@ try {
 
 
     // @todo - set in di
-    $config = new \Gaia\Libraries\Config();
-    $config->init();
+//    $config = new \Gaia\Libraries\Config();
+//    $config->init();
 
     // @todo - add actions route
     $di->set('router', function(){
@@ -131,10 +134,36 @@ try {
         return $connection;
     });
 
+    $di->set(
+        'metaManager',
+        new \Gaia\Libraries\Meta\Manager($di)
+    );
+
+    $di->set(
+        'metaMigration',
+        new \Gaia\Libraries\Meta\Migration($di)
+    );
+
+    $di->set(
+        'migrationDriver',
+        new \Gaia\Libraries\Meta\Migration\Driver($di)
+    );
+
+    $di->set(
+        'fileHandler',
+        new \Gaia\Libraries\File\Handler($di)
+    );
+
+    $di->set(
+        'config',
+        new \Gaia\Libraries\Config($di)
+    );
+
+
     /**
      * @todo move the migration away to elsewhere
      */
-    migrationDriver::migrate();
+    $di->get('migrationDriver')->migrate();
 
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);
@@ -143,5 +172,3 @@ try {
 } catch(\Phalcon\Exception $e) {
      echo "PhalconException: ", $e->getMessage();
 }
-
-

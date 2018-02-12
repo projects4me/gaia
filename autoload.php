@@ -24,16 +24,19 @@ require APP_PATH.'/vendor/autoload.php';
 
 require_once(APP_PATH.'/app/models/Behaviors/aclBehavior.php');
 
-require_once(APP_PATH.'/foundation/libs/utils/utility_functions.php');
 require_once APP_PATH.'/foundation/libs/file/handler.php';
+
 require_once APP_PATH.'/foundation/libs/meta/manager.php';
 require_once APP_PATH.'/foundation/libs/meta/migration.php';
-require_once APP_PATH.'/foundation/libs/config.php';
-require_once APP_PATH.'/foundation/libs/utils/executiontime.php';
-require_once APP_PATH.'/foundation/libs/utils/Util.php';
 require_once(APP_PATH.'/foundation/libs/meta/migration/driver.php');
-require_once(APP_PATH.'/foundation/libs/security/acl.php');
 
+require_once APP_PATH.'/foundation/libs/config.php';
+
+require_once APP_PATH.'/foundation/libs/utils/executiontime.php';
+require_once(APP_PATH.'/foundation/libs/utils/utility_functions.php');
+require_once APP_PATH.'/foundation/libs/utils/Util.php';
+
+require_once(APP_PATH.'/foundation/libs/security/acl.php');
 
 $request = new \Phalcon\Http\Request();
 $appVersions = include(APP_PATH.'/version.php');

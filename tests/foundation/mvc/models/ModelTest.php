@@ -5,8 +5,10 @@
 
 namespace Tests\Gaia\MVC\Models;
 
-use Gaia\MVC\Models\Model;
+use Gaia\MVC\Models\Model as Model;
+use Gaia\Libraries\Meta\Manager as metaManager;
 use Phalcon;
+use Phalcon\Mvc\Model\Manager as ModelsManager;
 
 /**
  * Class ModelTest
@@ -20,10 +22,16 @@ class ModelTest extends \UnitTestCase
      * @param Phalcon\DiInterface|null $di
      * @param Phalcon\Config|null $config
      */
-    public function setUp(Phalcon\DiInterface $di = null, Phalcon\Config $config = null)
-    {
-        parent::setUp($di, $config);
-    }
+//    public function setUp(\Phalcon\DiInterface $di = null, \Phalcon\Config $config = null)
+//    {
+//        $di->set(
+//            "modelsManager",
+//            function() {
+//                return new ModelsManager();
+//            }
+//        );
+//        parent::setUp($di, $config);
+//    }
 
     /**
      * @param $statement
@@ -83,19 +91,17 @@ class ModelTest extends \UnitTestCase
         );
     }
 
+    public function testLoadBehavior(){
+        $this->loadModel();
+
+
+    }
+
     protected function loadModel()
     {
-        $sampleModel = $this->getMockBuilder(Model::class)
-            ->setMethods(['getModelName'])
-            ->getMock();
-
-        $sampleModel->method('getModelName')
-            ->will('Sample');
-
-
-        $sampleModel = $this->getMockBuilder(\Gaia\Libraries\Meta\Manager::class)
-            ->setMethods(['getModelMeta'])
-            ->getMock();
+        $model = $this->createMock(Model::class);
+        $model->method('getModelName')
+            ->willReturn('Sample');
 
         $meta = array
         (
@@ -151,8 +157,13 @@ class ModelTest extends \UnitTestCase
             )
         );
 
-        $sampleModel->method('getModelMeta')
-            ->will($meta);
+        $metaManger = $this->createMock(\Gaia\Libraries\Meta\Manager::class);
+
+        $metaManger->method('getModelMeta')
+            ->willReturn($meta);
+
+        $f = $model->getFields();
+        print_r($f);
 
     }
 

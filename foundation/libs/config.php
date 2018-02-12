@@ -7,7 +7,6 @@
 namespace Gaia\Libraries;
 
 use Phalcon\Config as PhalconConfig;
-use Gaia\Libraries\file\Handler as fileHandler;
 
 /**
  * This is the config class in the foundation package. The class manages the
@@ -24,6 +23,25 @@ use Gaia\Libraries\file\Handler as fileHandler;
  */
 class Config
 {
+
+    /**
+     * This is the dependency injector used by this class
+     *
+     * @var \Phalcon\DiInterface $di
+     */
+    protected $di;
+
+    /**
+     * Config constructor.
+     *
+     * @param \Phalcon\DiInterface $di
+     */
+    public function __construct(\Phalcon\DiInterface $di)
+    {
+        $this->di = $di;
+        $this->init();
+    }
+
     /**
      * The configuration array
      *
@@ -62,9 +80,9 @@ class Config
      * @return array default configurations
      * @todo merge all the files in folder to one files in future
      */
-    protected function loadDefault(){
+    public function loadDefault(){
         // Loading all the files in foundation/config/
-        return fileHandler::readFolder(APP_PATH.'/foundation/config/');
+        return $this->di->get('fileHandler')->readFolder(APP_PATH.'/foundation/config/');
     }
     
     /**
@@ -74,9 +92,9 @@ class Config
      * @return array custom configurations
      * @todo merge all the files in folder to one files in future
      */
-    protected function loadCustom(){
+    public function loadCustom(){
         // Loading all the files in config/
-        return fileHandler::readFolder(APP_PATH.'/config/');        
+        return $this->di->get('fileHandler')->readFolder(APP_PATH.'/config/');
     }
     
 

@@ -35,6 +35,23 @@ class Migration extends PhalconMigration
 {
 
     /**
+     * The dependency injector used by this class
+     *
+     * @var \Phalcon\DiInterface $di
+     */
+    protected $di;
+
+    /**
+     * Migration constructor.
+     *
+     * @param \Phalcon\DiInterface $di
+     */
+    public function __construct(\Phalcon\DiInterface $di)
+    {
+        $this->di = $di;
+    }
+
+    /**
      * This function is responsible for synchronizing the database using the
      * metadata. As per the Phalcon Dev Tools this function is to be implemented
      * in the individual files in app\migrations. However, since in this
@@ -80,7 +97,7 @@ class Migration extends PhalconMigration
     private function getMetaData($model)
     {
         // Read the metadata from the file
-        $meta = fileHandler::readFile(APP_PATH.metaManager::basePath.'/model/'.$model.'.php');
+        $meta = $this->di->get('fileHandler')->readFile(APP_PATH.metaManager::basePath.'/model/'.$model.'.php');
 
         // Initialize the array to be filled in
         $tableDescription = array(
@@ -93,7 +110,7 @@ class Migration extends PhalconMigration
       	foreach($meta[$model]['fields'] as $field => $schema)
       	{
                   $fieldOptions = array();
-                  $fieldOptions['type'] = metaManager::getFieldType($schema['type']);
+                  $fieldOptions['type'] = $this->di->get('metaManager')->getFieldType($schema['type']);
                   if (isset($schema['length']))
                       $fieldOptions['size'] = $schema['length'];
                   $fieldOptions['notNull'] = !$schema['null'];
@@ -138,9 +155,9 @@ class Migration extends PhalconMigration
      *
      * @param string $model model name to be migrated
      */
-    public static function migrateModel($model)
+    public function migrateModel($model)
     {
-        $migration = new Migration();
+        $migration = new Migration($this->di);
         $migration->up($model);
     }
 }
