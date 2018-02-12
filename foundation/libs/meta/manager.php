@@ -53,9 +53,9 @@ class Manager
      */
     public function getModelMeta($model)
     {
-        $metadata = fileHandler::readFile(APP_PATH.self::basePath.'/model/'.$model.'.php');
+        $metadata = $this->di->get('fileHandler')->readFile(APP_PATH.self::basePath.'/model/'.$model.'.php');
         $metadata = $metadata[$model];
-        $fields = self::parseFields($metadata);
+        $fields = $this->parseFields($metadata);
 
         $modelMeta = array(
             // Set the table name
@@ -146,10 +146,10 @@ class Manager
             }
             
             // set the field type
-            $data['type'][$field] = self::getFieldType($properties['type']);
+            $data['type'][$field] = $this->getFieldType($properties['type']);
 
             // set the field data bind type
-            $data['bind'][$field] = self::getBindType($properties['type']);
+            $data['bind'][$field] = $this->getBindType($properties['type']);
             
             // if default value is set in metadata then set it
             if (isset($properties['default']))

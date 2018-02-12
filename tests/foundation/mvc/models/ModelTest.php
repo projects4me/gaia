@@ -6,33 +6,13 @@
 namespace Tests\Gaia\MVC\Models;
 
 use Gaia\MVC\Models\Model as Model;
-use Gaia\Libraries\Meta\Manager as metaManager;
-use Phalcon;
-use Phalcon\Mvc\Model\Manager as ModelsManager;
+use Gaia\MVC\Models\Sample;
 
 /**
  * Class ModelTest
  */
 class ModelTest extends \UnitTestCase
 {
-
-    /**
-     * This function is used to setup a mocked model
-     *
-     * @param Phalcon\DiInterface|null $di
-     * @param Phalcon\Config|null $config
-     */
-//    public function setUp(\Phalcon\DiInterface $di = null, \Phalcon\Config $config = null)
-//    {
-//        $di->set(
-//            "modelsManager",
-//            function() {
-//                return new ModelsManager();
-//            }
-//        );
-//        parent::setUp($di, $config);
-//    }
-
     /**
      * @param $statement
      * @param $query
@@ -92,16 +72,13 @@ class ModelTest extends \UnitTestCase
     }
 
     public function testLoadBehavior(){
-        $this->loadModel();
-
+        $model = $this->loadModel();
+        print_r(var_dump($model));
 
     }
 
     protected function loadModel()
     {
-        $model = $this->createMock(Model::class);
-        $model->method('getModelName')
-            ->willReturn('Sample');
 
         $meta = array
         (
@@ -161,9 +138,23 @@ class ModelTest extends \UnitTestCase
 
         $metaManger->method('getModelMeta')
             ->willReturn($meta);
-
-        $f = $model->getFields();
-        print_r($f);
+        $this->getDI()->set('metaManager',$metaManger);
+        $this->getDI()->set(
+            'modelsManager',
+            function()
+            {
+                return new \Phalcon\Mvc\Model\Manager();
+            }
+        );
+//        $model = $this->createMock(Model::class);
+//        $model->method('getModelName')
+//            ->willReturn('Sample');
+//
+//        $this->getDI()->set('metaManager',$metaManger);
+//
+//        $f = $model->getFields();
+        require_once(dirname(__FILE__).'/Sample.php');
+        return new \Gaia\MVC\Models\Sample();
 
     }
 

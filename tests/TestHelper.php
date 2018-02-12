@@ -24,11 +24,27 @@ global $logger;
 $logger = new FileAdapter(APP_PATH.'/logs/application.log');
 $logger->setLogLevel(Logger::DEBUG);
 
-$config = new \Gaia\Libraries\Config();
-$config->init();
 
 $di = new FactoryDefault();
 DI::reset();
+
+$di->set(
+    'fileHandler',
+    new \Gaia\Libraries\File\Handler($di)
+);
+
+$di->set(
+    'config',
+    new \Gaia\Libraries\Config($di)
+);
+
+$di->set(
+    'modelsManager',
+    function()
+    {
+        return new \Phalcon\Mvc\Model\Manager();
+    }
+);
 
 // Add any needed services to the DI here
 $di->set('db', function () {
@@ -59,12 +75,5 @@ $di->set('db', function () {
     $connection->setEventsManager($eventsManager);
     return $connection;
 });
-
-$di->set(
-    "modelsManager",
-    function() {
-        return new ModelsManager();
-    }
-);
 
 DI::setDefault($di);

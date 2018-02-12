@@ -52,7 +52,7 @@ class Model extends PhalconModel
 
     /**
      * This function is used in order to load the different behaviors that this model is
-     * set to use
+     * set to use.
      *
      * @return void
      */
@@ -167,7 +167,7 @@ class Model extends PhalconModel
         $modelName = $this->getModelName();
         $this->modelAlias = $modelName;
 
-        $metadata = metaManager::getModelMeta($modelName);
+        $metadata = $this->getDI()->get('metaManager')->getModelMeta($modelName);
         $this->setSource($metadata['tableName']);
         $this->metadata = $metadata;
 
@@ -281,7 +281,7 @@ class Model extends PhalconModel
             $params['fields'] = array_merge($moduleFields,$relationshipFields);
         }
 
-        $query = $this->modelsManager->createBuilder();
+        $query = $this->getDI()->get('modelsManager')->createBuilder();
         $query->andWhere($this->modelAlias.".id = '".$params['id']."'");
 
         // get the query
@@ -365,7 +365,7 @@ class Model extends PhalconModel
             $params['fields'] = array_merge($moduleFields,$relationshipFields);
         }
 
-        $this->query = $this->modelsManager->createBuilder();
+        $this->query = $this->getDI()->get('modelsManager')->createBuilder();
 
         // get the query
         $this->query = $this->setQuery($this->query,$params);
@@ -414,7 +414,7 @@ class Model extends PhalconModel
             $params['fields'] = $related.'.*';
         }
 
-        $query = $this->modelsManager->createBuilder();
+        $query = $this->getDI()->get('modelsManager')->createBuilder();
 
         $query->andWhere($this->modelAlias.".id = '".$params['id']."'");
 

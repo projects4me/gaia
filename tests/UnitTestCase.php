@@ -10,27 +10,21 @@ use Phalcon\Test\UnitTestCase as PhalconTestCase;
 abstract class UnitTestCase extends PhalconTestCase
 {
     /**
-     * @var \Voice\Cache
-     */
-    protected $_cache;
-
-    /**
-     * @var \Phalcon\Config
-     */
-    protected $_config;
-
-    /**
      * @var bool
      */
     private $_loaded = false;
 
-    public function setUp(Phalcon\DiInterface $di = NULL, Phalcon\Config $config = NULL)
+    public function setUp()
     {
+        parent::setUp();
+
         // Load any additional services that might be required during testing
-        $di = DI::getDefault();
+        $di = Di::getDefault();
 
         // Get any DI components here. If you have a config, be sure to pass it to the parent
-        parent::setUp($di);
+
+        $this->setDi($di);
+
         $this->_loaded = true;
     }
 

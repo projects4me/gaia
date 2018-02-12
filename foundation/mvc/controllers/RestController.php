@@ -1203,7 +1203,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         if (isset(self::$cachedMeta[$modelName][$rel])) {
             return self::$cachedMeta[$modelName][$rel];
         }
-        $modelMetadata = metaManager::getModelMeta($modelName);
+        $modelMetadata = $this->di->get('metaManager')->getModelMeta($modelName);
 
         $relatedMetadata = array();
         foreach ($modelMetadata['relationships'] as $relationType => $related)
