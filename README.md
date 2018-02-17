@@ -1,4 +1,4 @@
-### Project Code Name : Foundation
+### Project Code Name : Projects4Me
 ### Date Created : 19th March, 2015
 
 Foundation is the base framework with the idea to create complex web application using gui.
