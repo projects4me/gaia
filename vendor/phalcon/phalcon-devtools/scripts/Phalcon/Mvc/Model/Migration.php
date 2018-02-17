@@ -19,7 +19,7 @@
 */
 
 namespace Phalcon\Mvc\Model;
-require_once "/home/ubuntu/PhpstormProjects/projects4me/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Utils.php";
+require_once "/home/ubuntu/PhpstormProjects/gaia/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Utils.php";
 
 use Phalcon\Db;
 use Phalcon\Text;
