@@ -1,4 +1,5 @@
 vendor/
 prometheus/
 hermes/
+docs/
 *.log

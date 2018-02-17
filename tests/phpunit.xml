@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+  -->
+
 <phpunit bootstrap="./TestHelper.php"
          backupGlobals="false"
          backupStaticAttributes="false"
@@ -13,4 +17,17 @@
     <testsuite name="Phalcon - Testsuite">
         <directory>./</directory>
     </testsuite>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <!--directory suffix=".php">../app/api</directory>
+            <directory suffix=".php">../app/models</directory-->
+            <directory suffix=".php">../foundation</directory>
+            <exclude>
+                <directory suffix=".php">../foundation/config</directory>
+                <file>../foundation/libs/authorization/oAuthServer.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+
 </phpunit>

@@ -37,28 +37,6 @@ There are two ways this behavior can work: one tree per table and multiple trees
 The mode is selected based on the value of `hasManyRoots` option that is `false` by default meaning single tree mode.
 In multiple trees mode you can set `rootAttribute` option to match existing field in the table storing the tree.
 
-### Example schema
-
-```sql
-CREATE TABLE `categories` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(128) NOT NULL,
-  `description` TEXT DEFAULT NULL,
-  `root` INT UNSIGNED DEFAULT NULL,
-  `lft` INT UNSIGNED NOT NULL,
-  `rgt` INT UNSIGNED NOT NULL,
-  `level` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `category_coordinates` (`lft`,`rgt`,`root`),
-  KEY `category_root` (`root`),
-  KEY `category_lft` (`lft`),
-  KEY `category_lft_root` (`lft`, `root`),
-  KEY `category_rgt` (`rgt`),
-  KEY `category_rgt_root` (`rgt`, `root`),
-  KEY `category_level` (`level`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-```
-
 ### Selecting from a tree
 
 In the following we'll use an example model Category with the following in its DB:
@@ -380,20 +358,6 @@ for ($i = $level; $i; $i--) {
 }
 ```
 
-Or just:
-
-```php
-$order = 'lft'; // or 'root, lft' for multiple trees
-$categories = Categories::find(['order' => $order]);
-
-$result = [];
-foreach ($categories as $category) {
-    $result[] = str_repeat(' ', ($category->level - 1) * 5) . $category->name;
-}
-
-echo print_r($result, true), PHP_EOL;
-```
-
 ## Blameable
 
 ```php
@@ -409,20 +373,80 @@ class Products extends Phalcon\Mvc\Model
 ```sql
 CREATE TABLE `audit` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_name` VARCHAR(32) NOT NULL,
-  `model_name` VARCHAR(32) NOT NULL,
+  `user_name` VARCHAR(255) NOT NULL,
+  `model_name` VARCHAR(255) NOT NULL,
   `ipaddress` CHAR(15) NOT NULL,
   `type` CHAR(1) NOT NULL, /* C=Create/U=Update */
   `created_at` DATETIME NOT NULL,
+  `primary_key` TEXT DEFAULT NULL, /* for BC reasons */
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `audit_detail` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `audit_id` BIGINT NOT NULL,
-  `field_name` VARCHAR(32) NOT NULL,
-  `old_value` VARCHAR(32) DEFAULT NULL,
-  `new_value` VARCHAR(32) NOT NULL,
+  `field_name` VARCHAR(255) NOT NULL,
+  `old_value` TEXT DEFAULT NULL,
+  `new_value` TEXT NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
+
+This is an example structure, please fit fields to suit your needs. By default incubator provides needed classes for Blameable behavior, however if you would 
+want to use your own classes you can do it by implementing `AuditDetailInterface` and 
+`AuditInterface` and setting them in constructor:
+
+```php
+use Phalcon\Mvc\Model\Behavior\Blameable;
+
+public function initialize()
+{
+    $this->addBehavior(
+        new Blameable(
+            [
+                'auditClass'       => MyAudit::class,
+                'auditDetailClass' => MyAuditDetail::class
+            ]
+        )
+    );
+}
+```
+
+Also by default `Audit` class will look for userName key in session for getting user name.
+You can change this behavior by:
+
+```php
+use Phalcon\Mvc\Model\Behavior\Blameable;
+
+public function initialize()
+{
+    $this->addBehavior(
+        new Blameable(
+            [
+                'userCallback' => function(Phalcon\DiInterface $di) {
+                    // your custom code to return user name
+                }
+            ]
+        )
+    );
+}
+```
+
+If you have snapshot update disabled(`phalcon.orm.update_snapshot_on_save = 0`) then you need
+pass option `snapshotUpdatingDisabled` to `Blameable` constructor:
+
+```php
+use Phalcon\Mvc\Model\Behavior\Blameable;
+
+public function initialize()
+{
+    $this->addBehavior(
+        new Blameable(
+            [
+                'snapshotUpdatingDisabled' => true
+            ]
+        )
+    );
+}
+```
+

@@ -1,12 +1,13 @@
 <?php
+
 /*
   +------------------------------------------------------------------------+
   | Phalcon Framework                                                      |
   +------------------------------------------------------------------------+
-  | Copyright (c) 2011-2016 Phalcon Team (http://www.phalconphp.com)       |
+  | Copyright (c) 2011-2016 Phalcon Team (https://www.phalconphp.com)      |
   +------------------------------------------------------------------------+
   | This source file is subject to the New BSD License that is bundled     |
-  | with this package in the file docs/LICENSE.txt.                        |
+  | with this package in the file LICENSE.txt.                             |
   |                                                                        |
   | If you did not receive a copy of the license and are unable to         |
   | obtain it through the world-wide-web, please send an email             |
@@ -66,7 +67,7 @@ class Message
      * Set the from address of this message.
      *
      * You may pass an array of addresses if this message is from multiple people.
-     * Example: array('receiver@domain.org', 'other@domain.org' => 'A name')
+     * Example: ['receiver@domain.org', 'other@domain.org' => 'A name']
      *
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
@@ -102,7 +103,7 @@ class Message
      * Set the reply-to address of this message.
      *
      * You may pass an array of addresses if replies will go to multiple people.
-     * Example: array('receiver@domain.org', 'other@domain.org' => 'A name')
+     * Example: ['receiver@domain.org', 'other@domain.org' => 'A name']
      *
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
@@ -138,7 +139,7 @@ class Message
      * Set the to addresses of this message.
      *
      * If multiple recipients will receive the message an array should be used.
-     * Example: array('receiver@domain.org', 'other@domain.org' => 'A name')
+     * Example: ['receiver@domain.org', 'other@domain.org' => 'A name']
      *
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
@@ -174,7 +175,7 @@ class Message
      * Set the Cc addresses of this message.
      *
      * If multiple recipients will receive the message an array should be used.
-     * Example: array('receiver@domain.org', 'other@domain.org' => 'A name')
+     * Example: ['receiver@domain.org', 'other@domain.org' => 'A name']
      *
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
@@ -210,7 +211,7 @@ class Message
      * Set the Bcc addresses of this message.
      *
      * If multiple recipients will receive the message an array should be used.
-     * Example: array('receiver@domain.org', 'other@domain.org' => 'A name')
+     * Example: ['receiver@domain.org', 'other@domain.org' => 'A name']
      *
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
@@ -772,7 +773,7 @@ class Message
      */
     protected function normalizeEmail($email)
     {
-        if (is_array($email)) {
+        if (is_array($email) || $email instanceof \Traversable) {
             $emails = [];
 
             foreach ($email as $k => $v) {

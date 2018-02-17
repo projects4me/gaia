@@ -1,39 +1,12 @@
 <?php
 
-/*
- * Projects4Me Community Edition is an open source project management software
- * developed by PROJECTS4ME Inc. Copyright (C) 2015-2016 PROJECTS4ME Inc.
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 (GNU AGPL v3) as
- * published be the Free Software Foundation with the addition of the following
- * permission added to Section 15 as permitted in Section 7(a): FOR ANY PART OF
- * THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY PROJECTS4ME Inc.,
- * Projects4Me DISCLAIMS THE WARRANTY OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU AGPL v3 for more details.
- *
- * You should have received a copy of the GNU AGPL v3 along with this program;
- * if not, see http://www.gnu.org/licenses or write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- * You can contact PROJECTS4ME, Inc. at email address contact@projects4.me.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU AGPL v3.
- *
- * In accordance with Section 7(b) of the GNU AGPL v3, these Appropriate Legal
- * Notices must retain the display of the "Powered by Projects4Me" logo. If the
- * display of the logo is not reasonably feasible for technical reasons, the
- * Appropriate Legal Notices must display the words "Powered by Projects4Me".
+/**
+ * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
 $models['Issue'] = array(
-   'tableName' => 'issues',
-   'fields' => array(
+    'tableName' => 'issues',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_ISSUES_ID',
@@ -52,13 +25,13 @@ $models['Issue'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_ISSUES_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_ISSUES_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -67,7 +40,7 @@ $models['Issue'] = array(
             'length' => '1',
             'null' => false,
         ),
-       'description' => array(
+        'description' => array(
             'name' => 'description',
             'label' => 'LBL_ISSUES_DESCRIPTION',
             'type' => 'text',
@@ -113,7 +86,8 @@ $models['Issue'] = array(
             'label' => 'LBL_ISSUES_ISSUE_NUMBER',
             'type' => 'int',
             'length' => '11',
-            'null' => false,
+            'autoIncrement' => 'true',
+            'null' => true,
         ),
         'endDate' => array(
             'name' => 'endDate',
@@ -172,6 +146,7 @@ $models['Issue'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
+        'issueNumber' => 'unique',
     ),
     'foriegnKeys' => array(
 
@@ -181,36 +156,88 @@ $models['Issue'] = array(
     ),
     'relationships' => array(
         'hasOne' => array(
-          'assignee' => array(
-              'primaryKey' => 'assignee',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
-          'createdUser' => array(
-              'primaryKey' => 'createdUser',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
-          'modifiedUser' => array(
-              'primaryKey' => 'modifiedUser',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
-          'owner' => array(
-              'primaryKey' => 'owner',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
-          'reportedUser' => array(
-              'primaryKey' => 'reportedUser',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
-          'project' => array(
-              'primaryKey' => 'projectId',
-              'relatedModel' => 'Project',
-              'relatedKey' => 'id'
-          ),
+            'assignedTo' => array(
+                'primaryKey' => 'assignee',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'createdBy' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'modifiedBy' => array(
+                'primaryKey' => 'modifiedUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'ownedBy' => array(
+                'primaryKey' => 'owner',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'reportedBy' => array(
+                'primaryKey' => 'reportedUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'project' => array(
+                'primaryKey' => 'projectId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
+                'relatedKey' => 'id'
+            ),
+            'milestone' => array(
+                'primaryKey' => 'milestoneId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Milestone',
+                'relatedKey' => 'id'
+            ),
+            'issuetype' => array(
+                'primaryKey' => 'typeId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issuetype',
+                'relatedKey' => 'id'
+            ),
+            'parentissue' => array(
+                'primaryKey' => 'parentId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
+                'relatedKey' => 'id',
+            ),
+        ),
+        'hasMany' => array(
+            'estimated' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Timelog',
+                'relatedKey' => 'issueId',
+                'condition' => 'estimated.context = "est"'
+            ),
+            'spent' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Timelog',
+                'relatedKey' => 'issueId',
+                'condition' => 'spent.context = "spent"'
+            ),
+            'childissues' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
+                'relatedKey' => 'parentId',
+            ),
+            'comments' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
+                'relatedKey' => 'relatedId',
+                'condition' => 'comments.relatedTo = "issue"'
+            ),
+            'activities' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Activity',
+                'relatedKey' => 'relatedId',
+                'condition' => 'activities.relatedTo = "issue"',
+            ),
+            'files' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Upload',
+                'relatedKey' => 'relatedId',
+                'condition' => 'files.relatedTo = "issue"',
+            ),
         )
     ),
 );

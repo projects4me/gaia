@@ -1,4 +1,7 @@
 <?php
+/**
+ * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ */
 
 defined('APP_PATH') || define('APP_PATH', realpath('.'));
 /*
@@ -25,8 +28,8 @@ return new \Phalcon\Config(array(
 
 */
 
-require_once 'foundation/libs/config.php';
-$config = new \Foundation\Config();
+require_once APP_PATH.'/foundation/libs/config.php';
+$config = new \Gaia\Libraries\Config();
 $config->init();
 
 return $GLOBALS['settings'];

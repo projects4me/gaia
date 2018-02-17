@@ -1,10 +1,18 @@
 {
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/gollomer/phpDocumentor2"
+    }
+  ],
   "require": {
+    "php": "7.*",
+    "ext-imagick": "*",
     "wisembly/elephant.io": "~3.0",
-    "phalcon/incubator": "^2.0",
+    "phalcon/incubator": "^3.1.1",
     "phpdocumentor/phpdocumentor":"2.*",
-    "phpunit/phpunit": "5.2.*",
+    "phpunit/phpunit": "6.1.*",
     "bshaffer/oauth2-server-php": "~1.8",
-    "phalcon/devtools": ">=2.0.10"
+    "phalcon/devtools": ">=3.1.1"
   }
 }

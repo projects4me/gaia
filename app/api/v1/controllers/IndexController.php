@@ -1,44 +1,30 @@
 <?php
 
-/* 
- * Projects4Me Community Edition is an open source project management software 
- * developed by PROJECTS4ME Inc. Copyright (C) 2015-2016 PROJECTS4ME Inc.
- * 
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 (GNU AGPL v3) as
- * published be the Free Software Foundation with the addition of the following 
- * permission added to Section 15 as permitted in Section 7(a): FOR ANY PART OF 
- * THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY PROJECTS4ME Inc., 
- * Projects4Me DISCLAIMS THE WARRANTY OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT 
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU AGPL v3 for more details.
- * 
- * You should have received a copy of the GNU AGPL v3 along with this program; 
- * if not, see http://www.gnu.org/licenses or write to the Free Software 
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- * 
- * You can contact PROJECTS4ME, Inc. at email address contact@projects4.me.
- * 
- * The interactive user interfaces in modified source and object code versions 
- * of this program must display Appropriate Legal Notices, as required under 
- * Section 5 of the GNU AGPL v3.
- * 
- * In accordance with Section 7(b) of the GNU AGPL v3, these Appropriate Legal 
- * Notices must retain the display of the "Powered by Projects4Me" logo. If the 
- * display of the logo is not reasonably feasible for technical reasons, the 
- * Appropriate Legal Notices must display the words "Powered by Projects4Me".
+/**
+ * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
+namespace Gaia\MVC\REST\Controllers;
+
+/**
+ * This controller is used to load the application, we are using this controller to load the
+ * Prometheus application
+ *
+ * @class IndexController
+ */
 class IndexController extends \Phalcon\Mvc\Controller
 {
 
+    /**
+     * This function is used to load the prometheus application
+     *
+     * @throws \Phalcon\Exception
+     */
     public function indexAction()
     {
         global $settings;
         
-        // Basec on the environment load the required files
+        // Based on the environment, load the required files
         
         // If the environment is development then load all the javascripts
         // otherwise load the combined production files
@@ -58,9 +44,9 @@ class IndexController extends \Phalcon\Mvc\Controller
             case 'qa':
                 // load all the js files from public js
                 $jsFiles = $cssFiles = array();
-                $Directory = new RecursiveDirectoryIterator(APP_PATH.'/public/libs');
-                $Iterator = new RecursiveIteratorIterator($Directory);
-                $Regex = new RegexIterator($Iterator, '/^.+\.js$/i', RecursiveRegexIterator::GET_MATCH);
+                $Directory = new \RecursiveDirectoryIterator(APP_PATH.'/public/libs');
+                $Iterator = new \RecursiveIteratorIterator($Directory);
+                $Regex = new \RegexIterator($Iterator, '/^.+\.js$/i', \RecursiveRegexIterator::GET_MATCH);
                 foreach($Regex as $jsfile)
                 {
                     /**
@@ -71,9 +57,9 @@ class IndexController extends \Phalcon\Mvc\Controller
                 }
                 sort($jsFiles);
 
-                $Directory = new RecursiveDirectoryIterator(APP_PATH.'/public/foundation');
-                $Iterator = new RecursiveIteratorIterator($Directory);
-                $Regex = new RegexIterator($Iterator, '/^.+\.js$/i', RecursiveRegexIterator::GET_MATCH);
+                $Directory = new \RecursiveDirectoryIterator(APP_PATH.'/public/foundation');
+                $Iterator = new \RecursiveIteratorIterator($Directory);
+                $Regex = new \RegexIterator($Iterator, '/^.+\.js$/i', \RecursiveRegexIterator::GET_MATCH);
                 foreach($Regex as $jsfile)
                 {
                     /**
@@ -83,9 +69,9 @@ class IndexController extends \Phalcon\Mvc\Controller
                     $jsFiles[] = $path;
                 }
 
-                $Directory = new RecursiveDirectoryIterator(APP_PATH.'/public/app');
-                $Iterator = new RecursiveIteratorIterator($Directory);
-                $Regex = new RegexIterator($Iterator, '/^.+\.js$/i', RecursiveRegexIterator::GET_MATCH);
+                $Directory = new \RecursiveDirectoryIterator(APP_PATH.'/public/app');
+                $Iterator = new \RecursiveIteratorIterator($Directory);
+                $Regex = new \RegexIterator($Iterator, '/^.+\.js$/i', \RecursiveRegexIterator::GET_MATCH);
                 foreach($Regex as $jsfile)
                 {
                     /**
@@ -99,9 +85,9 @@ class IndexController extends \Phalcon\Mvc\Controller
                 /**
                  * @todo Create function that will help load the file path names
                  */
-                $Directory = new RecursiveDirectoryIterator(APP_PATH.'/public/css');
-                $Iterator = new RecursiveIteratorIterator($Directory);
-                $Regex = new RegexIterator($Iterator, '/^.+\.css$/i', RecursiveRegexIterator::GET_MATCH);
+                $Directory = new \RecursiveDirectoryIterator(APP_PATH.'/public/css');
+                $Iterator = new \RecursiveIteratorIterator($Directory);
+                $Regex = new \RegexIterator($Iterator, '/^.+\.css$/i', \RecursiveRegexIterator::GET_MATCH);
                 foreach($Regex as $cssfile)
                 {
                     /**

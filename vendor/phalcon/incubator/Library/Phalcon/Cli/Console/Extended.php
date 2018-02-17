@@ -1,21 +1,21 @@
 <?php
 
 /*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2016 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Sebastian Arrubia <sarrubia@gmail.com>                        |
- +------------------------------------------------------------------------+
- */
+  +------------------------------------------------------------------------+
+  | Phalcon Framework                                                      |
+  +------------------------------------------------------------------------+
+  | Copyright (c) 2011-2016 Phalcon Team (https://www.phalconphp.com)      |
+  +------------------------------------------------------------------------+
+  | This source file is subject to the New BSD License that is bundled     |
+  | with this package in the file LICENSE.txt.                             |
+  |                                                                        |
+  | If you did not receive a copy of the license and are unable to         |
+  | obtain it through the world-wide-web, please send an email             |
+  | to license@phalconphp.com so we can send you a copy immediately.       |
+  +------------------------------------------------------------------------+
+  | Authors: Sebastian Arrubia <sarrubia@gmail.com>                        |
+  +------------------------------------------------------------------------+
+*/
 
 namespace Phalcon\Cli\Console;
 
@@ -32,7 +32,7 @@ use Phalcon\Annotations\Adapter\Memory as MemoryAdapter;
 class Extended extends ConsoleApp
 {
     private $tasksDir = '';
-    private $documentation = array();
+    private $documentation = [];
 
     /**
      * Handle the whole command-line tasks
@@ -44,12 +44,12 @@ class Extended extends ConsoleApp
      */
     public function handle(array $arguments = null)
     {
-        if (isset($arguments['task']) && in_array($arguments['task'], array('-h', '--help', 'help'))) {
+        if (isset($arguments['task']) && in_array($arguments['task'], ['-h', '--help', 'help'])) {
             $this->setTasksDir();
             $this->createHelp();
             $this->showHelp();
             return;
-        } elseif (isset($arguments['action']) && in_array($arguments['action'], array('-h', '--help', 'help'))) {
+        } elseif (isset($arguments['action']) && in_array($arguments['action'], ['-h', '--help', 'help'])) {
             $this->setTasksDir();
             $this->createHelp();
             $this->showTaskHelp($arguments['task']);
@@ -75,7 +75,7 @@ class Extended extends ConsoleApp
 
     private function createHelp()
     {
-        $scannedTasksDir = array_diff(scandir($this->tasksDir), array('..', '.'));
+        $scannedTasksDir = array_diff(scandir($this->tasksDir), ['..', '.']);
 
         $config = $this->getDI()->get('config');
         $dispatcher = $this->getDI()->getShared('dispatcher');
@@ -97,7 +97,7 @@ class Extended extends ConsoleApp
             $taskClass = ($namespace ? $namespace . '\\' : '') . $taskFileInfo["filename"];
             $taskName  = strtolower(str_replace('Task', '', $taskFileInfo["filename"]));
 
-            $this->documentation[$taskName] = array('description'=>array(''), 'actions'=>array());
+            $this->documentation[$taskName] = ['description' => [''], 'actions' => []];
 
             $reflector = $reader->get($taskClass);
 
@@ -128,7 +128,7 @@ class Extended extends ConsoleApp
 
                 $actionName = strtolower(str_replace('Action', '', $action));
 
-                $this->documentation[$taskName]['actions'][$actionName]=array();
+                $this->documentation[$taskName]['actions'][$actionName] = [];
 
                 $actionAnnotations = $collection->getAnnotations();
 

@@ -1,64 +1,37 @@
 <?php
 
-/*
- * Projects4Me Community Edition is an open source project management software
- * developed by PROJECTS4ME Inc. Copyright (C) 2015-2016 PROJECTS4ME Inc.
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Affero General Public License version 3 (GNU AGPL v3) as
- * published be the Free Software Foundation with the addition of the following
- * permission added to Section 15 as permitted in Section 7(a): FOR ANY PART OF
- * THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY PROJECTS4ME Inc.,
- * Projects4Me DISCLAIMS THE WARRANTY OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU AGPL v3 for more details.
- *
- * You should have received a copy of the GNU AGPL v3 along with this program;
- * if not, see http://www.gnu.org/licenses or write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- * You can contact PROJECTS4ME, Inc. at email address contact@projects4.me.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU AGPL v3.
- *
- * In accordance with Section 7(b) of the GNU AGPL v3, these Appropriate Legal
- * Notices must retain the display of the "Powered by Projects4Me" logo. If the
- * display of the logo is not reasonably feasible for technical reasons, the
- * Appropriate Legal Notices must display the words "Powered by Projects4Me".
+/**
+ * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
 $models['Project'] = array(
-   'tableName' => 'projects',
-   'fields' => array(
+    'tableName' => 'projects',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
-            'label' => 'LBL_PROJECTSS_ID',
+            'label' => 'LBL_PROJECTS_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
         'name' => array(
-           'name' => 'name',
-           'label' => 'LBL_PROJECTS_NAME',
-           'type' => 'varchar',
-           'length' => '255',
-           'null' => false,
+            'name' => 'name',
+            'label' => 'LBL_PROJECTS_NAME',
+            'type' => 'varchar',
+            'length' => '255',
+            'null' => false,
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_PROJECTS_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_PROJECTS_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -120,6 +93,20 @@ $models['Project'] = array(
             'null' => false,
             'length' => '15'
         ),
+        'estimatedBudget' => array(
+            'name' => 'estimatedBudget',
+            'label' => 'LBL_PROJECTS_ESTIMATED_BUDGET',
+            'type' => 'float',
+            'null' => true,
+            'length' => '11'
+        ),
+        'spentBudget' => array(
+            'name' => 'spentBudget',
+            'label' => 'LBL_PROJECTS_SPENT_BUDGET',
+            'type' => 'float',
+            'null' => true,
+            'length' => '11'
+        ),
         'type' => array(
             'name' => 'type',
             'label' => 'LBL_PROJECTS_TYPE',
@@ -150,64 +137,75 @@ $models['Project'] = array(
 
     ),
     'relationships' => array(
-      'hasOne' => array(
-          'owner' => array(
-              'primaryKey' => 'assignee',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
-          'createdBy' => array(
-              'primaryKey' => 'createdUser',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
-          'modifiedBy' => array(
-              'primaryKey' => 'modifiedUser',
-              'relatedModel' => 'User',
-              'relatedKey' => 'id'
-          ),
+        'hasOne' => array(
+            'owner' => array(
+                'primaryKey' => 'assignee',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'createdBy' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'modifiedBy' => array(
+                'primaryKey' => 'modifiedUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
         ),
         'hasMany' => array(
             'issues' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Issue',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'relatedKey' => 'projectId',
             ),
-            'conversationRooms' => array(
+            'conversations' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'Conversationroom',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
                 'relatedKey' => 'projectId',
-                //'condition' => 'conversationRooms.type = "projects"'
+            ),
+            'memberships' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
+                'relatedKey' => 'projectId',
+            ),
+            'activities' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Activity',
+                'relatedKey' => 'relatedId',
+                'condition' => 'activities.relatedTo = "project"',
+            ),
+            'milestones' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Milestone',
+                'relatedKey' => 'projectId',
+            ),
+            'issuetypes' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issuetype',
+                'relatedKey' => 'projectId',
+                'condition' => 'issuetypes.system = "0"',
             ),
         ),
-/*
         'hasManyToMany' => array(
-            'Teams' => array(
+            'members' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'ProjectsTeams',
-                'rhsKey' => 'projectId',
-                'lhsKey' => 'teamId',
-                'secondaryModel' => 'Teams',
-                'secondaryKey' => 'id',
-            ),
-            'Users' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => 'ProjectsRoles',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
                 'rhsKey' => 'projectId',
                 'lhsKey' => 'userId',
-                'secondaryModel' => 'Users',
+                'secondaryModel' => '\\Gaia\\MVC\\Models\\User',
                 'secondaryKey' => 'id',
             ),
-            'Roles' => array(
+            'roles' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => 'ProjectsRoles',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
                 'rhsKey' => 'projectId',
                 'lhsKey' => 'roleId',
-                'secondaryModel' => 'Roles',
+                'secondaryModel' => '\\Gaia\\MVC\\Models\\Role',
                 'secondaryKey' => 'id',
             ),
         )
-*/
     ),
     'behaviors' => array(
         'aclBehavior',

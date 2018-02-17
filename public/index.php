@@ -1,5 +1,7 @@
 <?php
-use Phalcon\DI\FactoryDefault,
+
+use Phalcon\Di,
+    Phalcon\DI\FactoryDefault,
     Phalcon\Mvc\View,
     Phalcon\Mvc\Dispatcher,
     Phalcon\Mvc\Url as UrlResolver,
@@ -7,32 +9,49 @@ use Phalcon\DI\FactoryDefault,
     Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter,
     Phalcon\Session\Adapter\Files as SessionAdapter,
     Phalcon\Translate\Adapter\NativeArray,
-    Phalcon\Logger\Adapter\File;
+    Phalcon\Logger,
+    Phalcon\Logger\Adapter\File as FileAdapter,
+    Gaia\Libraries\Utils\executiontime,
+    Gaia\Libraries\Meta\Migration\Driver as migrationDriver;
 
+use Gaia\Libraries\Test\something;
+
+
+/**
+ * Error Reporting
+ * @todo Remove before publishing
+ */
 error_reporting(E_ALL);
-define('APP_PATH', realpath('..'));
-define('DS', DIRECTORY_SEPARATOR);
 ini_set('display_errors',true);
 
+// Setup the application constants
+define('APP_PATH', realpath('..'));
+define('DS', DIRECTORY_SEPARATOR);
 
-require APP_PATH.'/vendor/autoload.php';
+require APP_PATH . '/autoload.php';
 
-require '../foundation/controllers/component.php';
-require '../foundation/controllers/components/acl.php';
-require '../foundation/controllers/components/auditable.php';
+/**
+ * @todo Need a more appropriate place for this
+ */
+
+global $logger;
+$logger = new FileAdapter(APP_PATH.'/logs/application.log');
+$logger->setLogLevel(Logger::DEBUG);
 
 // Allow from any origin
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
     header('Access-Control-Allow-Credentials: true');
     header('Access-Control-Max-Age: 86400');    // cache for 1 day
+    header('Access-Control-Allow-Headers: Accept, Accept-CH, Accept-Charset, Accept-Datetime, Accept-Encoding, Accept-Ext, Accept-Features, Accept-Language, Accept-Params, Accept-Ranges, Access-Control-Allow-Credentials, Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Expose-Headers, Access-Control-Max-Age, Access-Control-Request-Headers, Access-Control-Request-Method, Age, Allow, Alternates, Authentication-Info, Authorization, C-Ext, C-Man, C-Opt, C-PEP, C-PEP-Info, CONNECT, Cache-Control, Compliance, Connection, Content-Base, Content-Disposition, Content-Encoding, Content-ID, Content-Language, Content-Length, Content-Location, Content-MD5, Content-Range, Content-Script-Type, Content-Security-Policy, Content-Style-Type, Content-Transfer-Encoding, Content-Type, Content-Version, Cookie, Cost, DAV, DELETE, DNT, DPR, Date, Default-Style, Delta-Base, Depth, Derived-From, Destination, Differential-ID, Digest, ETag, Expect, Expires, Ext, From, GET, GetProfile, HEAD, HTTP-date, Host, IM, If, If-Match, If-Modified-Since, If-None-Match, If-Range, If-Unmodified-Since, Keep-Alive, Label, Last-Event-ID, Last-Modified, Link, Location, Lock-Token, MIME-Version, Man, Max-Forwards, Media-Range, Message-ID, Meter, Negotiate, Non-Compliance, OPTION, OPTIONS, OWS, Opt, Optional, Ordering-Type, Origin, Overwrite, P3P, PEP, PICS-Label, POST, PUT, Pep-Info, Permanent, Position, Pragma, ProfileObject, Protocol, Protocol-Query, Protocol-Request, Proxy-Authenticate, Proxy-Authentication-Info, Proxy-Authorization, Proxy-Features, Proxy-Instruction, Public, RWS, Range, Referer, Refresh, Resolution-Hint, Resolver-Location, Retry-After, Safe, Sec-Websocket-Extensions, Sec-Websocket-Key, Sec-Websocket-Origin, Sec-Websocket-Protocol, Sec-Websocket-Version, Security-Scheme, Server, Set-Cookie, Set-Cookie2, SetProfile, SoapAction, Status, Status-URI, Strict-Transport-Security, SubOK, Subst, Surrogate-Capability, Surrogate-Control, TCN, TE, TRACE, Timeout, Title, Trailer, Transfer-Encoding, UA-Color, UA-Media, UA-Pixels, UA-Resolution, UA-Windowpixels, URI, Upgrade, User-Agent, Variant-Vary, Vary, Version, Via, Viewport-Width, WWW-Authenticate, Want-Digest, Warning, Width, X-Content-Duration, X-Content-Security-Policy, X-Content-Type-Options, X-CustomHeader, X-DNSPrefetch-Control, X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto, X-Frame-Options, X-Modified, X-OTHER, X-PING, X-PINGOTHER, X-Powered-By, X-Requested-With');    // cache for 1 day
+    header('Access-Control-Expose-Headers: Accept, Accept-CH, Accept-Charset, Accept-Datetime, Accept-Encoding, Accept-Ext, Accept-Features, Accept-Language, Accept-Params, Accept-Ranges, Access-Control-Allow-Credentials, Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Expose-Headers, Access-Control-Max-Age, Access-Control-Request-Headers, Access-Control-Request-Method, Age, Allow, Alternates, Authentication-Info, Authorization, C-Ext, C-Man, C-Opt, C-PEP, C-PEP-Info, CONNECT, Cache-Control, Compliance, Connection, Content-Base, Content-Disposition, Content-Encoding, Content-ID, Content-Language, Content-Length, Content-Location, Content-MD5, Content-Range, Content-Script-Type, Content-Security-Policy, Content-Style-Type, Content-Transfer-Encoding, Content-Type, Content-Version, Cookie, Cost, DAV, DELETE, DNT, DPR, Date, Default-Style, Delta-Base, Depth, Derived-From, Destination, Differential-ID, Digest, ETag, Expect, Expires, Ext, From, GET, GetProfile, HEAD, HTTP-date, Host, IM, If, If-Match, If-Modified-Since, If-None-Match, If-Range, If-Unmodified-Since, Keep-Alive, Label, Last-Event-ID, Last-Modified, Link, Location, Lock-Token, MIME-Version, Man, Max-Forwards, Media-Range, Message-ID, Meter, Negotiate, Non-Compliance, OPTION, OPTIONS, OWS, Opt, Optional, Ordering-Type, Origin, Overwrite, P3P, PEP, PICS-Label, POST, PUT, Pep-Info, Permanent, Position, Pragma, ProfileObject, Protocol, Protocol-Query, Protocol-Request, Proxy-Authenticate, Proxy-Authentication-Info, Proxy-Authorization, Proxy-Features, Proxy-Instruction, Public, RWS, Range, Referer, Refresh, Resolution-Hint, Resolver-Location, Retry-After, Safe, Sec-Websocket-Extensions, Sec-Websocket-Key, Sec-Websocket-Origin, Sec-Websocket-Protocol, Sec-Websocket-Version, Security-Scheme, Server, Set-Cookie, Set-Cookie2, SetProfile, SoapAction, Status, Status-URI, Strict-Transport-Security, SubOK, Subst, Surrogate-Capability, Surrogate-Control, TCN, TE, TRACE, Timeout, Title, Trailer, Transfer-Encoding, UA-Color, UA-Media, UA-Pixels, UA-Resolution, UA-Windowpixels, URI, Upgrade, User-Agent, Variant-Vary, Vary, Version, Via, Viewport-Width, WWW-Authenticate, Want-Digest, Warning, Width, X-Content-Duration, X-Content-Security-Policy, X-Content-Type-Options, X-CustomHeader, X-DNSPrefetch-Control, X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto, X-Frame-Options, X-Modified, X-OTHER, X-PING, X-PINGOTHER, X-Powered-By, X-Requested-With');    // cache for 1 day
 }
 
 // Access-Control headers are received during OPTIONS requests
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+        header("Access-Control-Allow-Methods: GET, POST, PATCH, OPTIONS, DELETE");
 
     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
         header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
@@ -49,49 +68,8 @@ try {
 
     $timer = new executiontime();
 
-    $request = new \Phalcon\Http\Request();
-    $appVersions = include('../version.php');
-    $apiVersion = $appVersions['apiVersion'];
-    // if api version is available in the request then load it
-    /**
-     * @todo add more validation
-     */
-    if (preg_match('@api/?(v[^/]+)@',$request->getURI(),$matches))
-    {
-        $apiVersion = $matches[1];
-    }
-
-    //Register an autoloader
-    $loader = new \Phalcon\Loader();
-    $loader->registerDirs(array(
-        APP_PATH.'/foundation/controllers/',
-        APP_PATH.'/foundation/libs/',
-        APP_PATH.'/app/api/'.$apiVersion.'/controllers/',
-        APP_PATH.'/app/models/',
-        APP_PATH.'/app/models/Behaviors',
-        APP_PATH.'/config/',
-        APP_PATH.'/vendor/',
-    ))->register();
-
-    /*
-    print "<pre>";
-    $regDirs = $loader->getDirs();
-    print_r($regDirs);
-
-    $loader->registerDirs(array(
-        APP_PATH.'/app/models/v1/',
-    ))->register();
-
-    $classes = $loader->getClasses();
-    print "<pre>";
-    print_r($loader);
-    print "</pre>";
-*/
-    require_once(APP_PATH.'/app/models/Behaviors/aclBehavior.php');
-    require_once(APP_PATH.'/foundation/libs/utility_functions.php');
-    require_once(APP_PATH.'/foundation/controllers/RestController.php');
     //Create a DI
-    $di = new Phalcon\DI\FactoryDefault();
+    $di = new FactoryDefault();
 
     //Setup the view component
     $di->set('view', function(){
@@ -112,21 +90,14 @@ try {
         return $url;
     });
 
-    require_once APP_PATH.'/foundation/models/model.php';
-    require_once APP_PATH.'/foundation/libs/fileHandler.php';
-
-    require_once APP_PATH.'/foundation/libs/metaManager.php';
-    require_once APP_PATH.'/foundation/libs/migration.php';
 
     // @todo - set in di
-    require_once APP_PATH.'/foundation/libs/config.php';
-    $config = new \Foundation\Config();
-    $config->init();
+//    $config = new \Gaia\Libraries\Config();
+//    $config->init();
 
     // @todo - add actions route
     $di->set('router', function(){
-        require_once APP_PATH.'/foundation/mvc/router.php';
-        $router = new Foundation\Mvc\Router();
+        $router = new Gaia\MVC\Router();
         $router->init();
 //        print "<pre>";
 //        print_r($router);
@@ -140,23 +111,23 @@ try {
  //       global $logger;
         $connection = new DbAdapter((array) $GLOBALS['settings']['database']);
         $eventsManager = new Phalcon\Events\Manager();
-        $logger = new \Phalcon\Logger\Adapter\File(APP_PATH . "/db.log");
+        $dblogger = new \Phalcon\Logger\Adapter\File(APP_PATH . "/db.log");
 //         print_r($logger);
         //Listen all the database events
-        $eventsManager->attach('db', function($event, $connection) use ($logger) {
+        $eventsManager->attach('db', function($event, $connection) use ($dblogger) {
 //            global $logger;
             if ($event->getType() == 'beforeQuery') {
                 $GLOBALS['timer']->diff();
                 $sqlVariables = $connection->getSQLVariables();
                 if (count($sqlVariables)) {
-                    $logger->log(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
+                    $dblogger->log(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
                 } else {
-                    $logger->log(print_r($connection->getSQLBindTypes(),1), \Phalcon\Logger::INFO);
+                    $dblogger->log(print_r($connection->getSQLBindTypes(),1), \Phalcon\Logger::INFO);
                 }
             }
             if ($event->getType() == 'afterQuery') {
-                $logger->log('Query execution time:'.($GLOBALS['timer']->diff()).' seconds', \Phalcon\Logger::INFO);
-                $logger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
+                $dblogger->log('Query execution time:'.($GLOBALS['timer']->diff()).' seconds', \Phalcon\Logger::INFO);
+                $dblogger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
             }
         });
 
@@ -165,12 +136,36 @@ try {
         return $connection;
     });
 
+    $di->set(
+        'metaManager',
+        new \Gaia\Libraries\Meta\Manager($di)
+    );
+
+    $di->set(
+        'metaMigration',
+        new \Gaia\Libraries\Meta\Migration($di)
+    );
+
+    $di->set(
+        'migrationDriver',
+        new \Gaia\Libraries\Meta\Migration\Driver($di)
+    );
+
+    $di->set(
+        'fileHandler',
+        new \Gaia\Libraries\File\Handler($di)
+    );
+
+    $di->set(
+        'config',
+        new \Gaia\Libraries\Config($di)
+    );
+
+
     /**
      * @todo move the migration away to elsewhere
      */
-    require '../foundation/libs/migration/driver.php';
-    Foundation\Mvc\Model\Migration\Driver::migrate();
-    require '../foundation/libs/acl.php';
+    $di->get('migrationDriver')->migrate();
 
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);
@@ -178,34 +173,4 @@ try {
 
 } catch(\Phalcon\Exception $e) {
      echo "PhalconException: ", $e->getMessage();
-}
-
-
-class executiontime
-{
-    protected $starttime;
-    protected $lasttime;
-
-    public function executiontime()
-    {
-        $this->starttime = $this->gettime();
-        $this->lasttime = $this->gettime();
-    }
-
-    public function tillnow()
-    {
-        return ($this->gettime() - $this->starttime);
-    }
-    public function diff()
-    {
-        $lasttime = ($this->gettime() - $this->lasttime);
-        $this->lasttime = $this->gettime();
-        return $lasttime;
-    }
-
-    private function gettime()
-    {
-        $mtime = explode(" ",microtime());
-        return $mtime[1] + $mtime[0];
-    }
 }

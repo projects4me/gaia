@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * This code can calculate the number of trailing zeroes
+ * in the factorial of a number
+ */
+
+
+function calZeroes($number)
+{
+
+   print 'Number of zeroes in '.$number.' : ';
+
+   /**
+    * @var numZeroes
+    */
+   $numZeroes = 0;
+
+   while ($number >= 4)
+   {
+      $temp = $number;
+      while($temp%5 == 0)
+      {
+         $temp = $temp/5;
+         $numZeroes++;
+      }
+
+      $number--;
+   }
+
+   return $numZeroes;
+}
+
+print calZeroes(4);
+print "\r\n";
+
+print calZeroes(5);
+print "\r\n";
+
+print calZeroes(9);
+print "\r\n";
+
+print calZeroes(10);
+print "\r\n";
+
+print calZeroes(14);
+print "\r\n";
+
+print calZeroes(15);
+print "\r\n";
+
+print calZeroes(24);
+print "\r\n";
+
+print calZeroes(25);
+print "\r\n";
+
+print calZeroes(26);
+print "\r\n";
+
+?>
