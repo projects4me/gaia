@@ -73,7 +73,7 @@ class ModelTest extends \UnitTestCase
 
     public function testLoadBehavior(){
         $model = $this->loadModel();
-        print_r(var_dump($model));
+        //print_r(var_dump($model));
 
     }
 

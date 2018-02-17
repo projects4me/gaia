@@ -44,9 +44,9 @@ class IndexController extends \Phalcon\Mvc\Controller
             case 'qa':
                 // load all the js files from public js
                 $jsFiles = $cssFiles = array();
-                $Directory = new RecursiveDirectoryIterator(APP_PATH.'/public/libs');
-                $Iterator = new RecursiveIteratorIterator($Directory);
-                $Regex = new RegexIterator($Iterator, '/^.+\.js$/i', RecursiveRegexIterator::GET_MATCH);
+                $Directory = new \RecursiveDirectoryIterator(APP_PATH.'/public/libs');
+                $Iterator = new \RecursiveIteratorIterator($Directory);
+                $Regex = new \RegexIterator($Iterator, '/^.+\.js$/i', \RecursiveRegexIterator::GET_MATCH);
                 foreach($Regex as $jsfile)
                 {
                     /**
@@ -57,9 +57,9 @@ class IndexController extends \Phalcon\Mvc\Controller
                 }
                 sort($jsFiles);
 
-                $Directory = new RecursiveDirectoryIterator(APP_PATH.'/public/foundation');
-                $Iterator = new RecursiveIteratorIterator($Directory);
-                $Regex = new RegexIterator($Iterator, '/^.+\.js$/i', RecursiveRegexIterator::GET_MATCH);
+                $Directory = new \RecursiveDirectoryIterator(APP_PATH.'/public/foundation');
+                $Iterator = new \RecursiveIteratorIterator($Directory);
+                $Regex = new \RegexIterator($Iterator, '/^.+\.js$/i', \RecursiveRegexIterator::GET_MATCH);
                 foreach($Regex as $jsfile)
                 {
                     /**
@@ -69,9 +69,9 @@ class IndexController extends \Phalcon\Mvc\Controller
                     $jsFiles[] = $path;
                 }
 
-                $Directory = new RecursiveDirectoryIterator(APP_PATH.'/public/app');
-                $Iterator = new RecursiveIteratorIterator($Directory);
-                $Regex = new RegexIterator($Iterator, '/^.+\.js$/i', RecursiveRegexIterator::GET_MATCH);
+                $Directory = new \RecursiveDirectoryIterator(APP_PATH.'/public/app');
+                $Iterator = new \RecursiveIteratorIterator($Directory);
+                $Regex = new \RegexIterator($Iterator, '/^.+\.js$/i', \RecursiveRegexIterator::GET_MATCH);
                 foreach($Regex as $jsfile)
                 {
                     /**
@@ -85,9 +85,9 @@ class IndexController extends \Phalcon\Mvc\Controller
                 /**
                  * @todo Create function that will help load the file path names
                  */
-                $Directory = new RecursiveDirectoryIterator(APP_PATH.'/public/css');
-                $Iterator = new RecursiveIteratorIterator($Directory);
-                $Regex = new RegexIterator($Iterator, '/^.+\.css$/i', RecursiveRegexIterator::GET_MATCH);
+                $Directory = new \RecursiveDirectoryIterator(APP_PATH.'/public/css');
+                $Iterator = new \RecursiveIteratorIterator($Directory);
+                $Regex = new \RegexIterator($Iterator, '/^.+\.css$/i', \RecursiveRegexIterator::GET_MATCH);
                 foreach($Regex as $cssfile)
                 {
                     /**
