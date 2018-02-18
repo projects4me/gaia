@@ -1,4 +1,5 @@
-Gaia is the core component of Projects4Me
+Gaia is the server side component of Projects4Me and is available under the
+same license.
 
 Projects4Me is a commercial open source project management software
 developed by PROJECTS4ME Copyright (C) 2015-2018 PROJECTS4ME.
@@ -7,8 +8,8 @@ This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Affero General Public License version 3 (GNU AGPL v3) as
 published be the Free Software Foundation with the addition of the following
 permission added to Section 15 as permitted in Section 7(a): FOR ANY PART OF
-THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY PROJECTS4ME Inc.,
-Projects4Me DISCLAIMS THE WARRANTY OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+THE COVERED WORK IN WHICH THE COPYRIGHT IS OWNED BY PROJECTS4ME, Projects4Me
+DISCLAIMS THE WARRANTY OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
 
 This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -18,7 +19,7 @@ You should have received a copy of the GNU AGPL v3 along with this program;
 if not, see http://www.gnu.org/licenses or write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-You can contact PROJECTS4ME, Inc. at email address contact@projects4.me.
+You can contact PROJECTS4ME, at email address hammad@projects4.me.
 
 The interactive user interfaces in modified source and object code versions
 of this program must display Appropriate Legal Notices, as required under
