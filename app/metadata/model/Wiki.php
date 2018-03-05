@@ -172,7 +172,7 @@ $models['Wiki'] = array(
                 'lhsKey' => 'tagId',
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\Tag',
                 'secondaryKey' => 'id',
-                'condition' => 'Tagged.relatedTo = "wiki"'
+                'condition' => 'tagged.relatedTo = "wiki"'
             )
         )
     ),

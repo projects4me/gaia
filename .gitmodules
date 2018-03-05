@@ -1,6 +1,0 @@
-[submodule "prometheus"]
-	path = prometheus
-	url = git@github.com:gollomer/prometheus.git
-[submodule "hermes"]
-	path = hermes
-	url = git@github.com:gollomer/hermes

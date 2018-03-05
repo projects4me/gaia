@@ -165,7 +165,7 @@ try {
     /**
      * @todo move the migration away to elsewhere
      */
-    $di->get('migrationDriver')->migrate();
+    //$di->get('migrationDriver')->migrate();
 
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);

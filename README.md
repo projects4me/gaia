@@ -1,49 +1,46 @@
-### Project Code Name : Projects4Me
-### Date Created : 19th March, 2015
+# Gaia
 
-Foundation is the base framework with the idea to create complex web application using gui.
-Even in the most complex application the foundation of each component remains the same mostly what changes is the link of the one functionality with the other
-Foundation is a framework built on top of Bootstrap, Emberjs and phalcon.
+[![Maintainability](https://api.codeclimate.com/v1/badges/dbe2ca5d0427744da7a5/maintainability)](https://codeclimate.com/github/projects4me/gaia/maintainability)
+[![bitHound Overall Score](https://www.bithound.io/github/projects4me/gaia/badges/score.svg)](https://www.bithound.io/github/projects4me/gaia)
+[![Dependency Status](https://beta.gemnasium.com/badges/github.com/projects4me/gaia.svg)](https://beta.gemnasium.com/projects/github.com/projects4me/gaia)
+[![Build Status](https://travis-ci.org/projects4me/gaia.svg?branch=master)](https://travis-ci.org/projects4me/gaia)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/dbe2ca5d0427744da7a5/test_coverage)](https://codeclimate.com/github/projects4me/gaia/test_coverage)
 
-In any system there are the following basic components
-* Data
-* Business Logic
-* View
+Gaia is the server side component of Projects4Me. It manages the data, exposes the REST API and performs the maintenance
+tasks on the application. 
 
-MVC design pattern was created in order to solve this problem with the Models handling the data, Controllers handling the business logic and the Views controlling the UI
-Although this is completely correct and this pattern allows creation of extremely extensible, robust and easily maintainable the problem is that most of the frameworks
-only supports this design pattern in one programing language, in Web-Application being created in the this era have partial business logic and the complete view layer
-in the browsers. At the moment there are many excellent frameworks in JavaScript, CSS, PHP and Database layers but what is missing is a framework that allows users to
-control all the aspects of the application via an interface.
+Gaia is created keeping performance in mind. In order to minimize the memory and CPU footprint it is created on top
+of PhalconPHP. The decision to build the platform on top of PhalconPHP was not for performance sake alone, in the later
+phases on the application customization options will be introduced. This change will require the application to be
+built on a very modular approach making most of the application extensible. Since PhalconPHP is extremely modular in its
+design, more so than most of the other frameworks, it was the best choice to build the application in.
 
-One application that kind of comes close to this concept is Apigility which allows the creation of API via an interface created in JavaScript, SugarCRM 7 is also an application
-that comes close to this concept.
+# Installation
 
-### The Goal
- Foundation should let you create a medium level application in one hours.
-### Target Application
- [Projects 4 Me](http://www.projects4.me/)
-### Type
- PJC - PHP, Javascript, CSS
+# Contributions
 
-#### Considerations
-1. Speed - There should be no comprise in the speed on the application, this might seem a bit too ambitious however if you implement the system correctly it is possible
-2. Scalability - A base framework that allows creation of complex is a failure if it does not allow extension easily, inspiration  CakePHP, Zend, SugarCRM and Maya
+# License
+Gaia is the server side component of Projects4Me and is available under the same license
 
-## Frameworks 
+Projects4Me is a commercial open source project management software developed by PROJECTS4ME Copyright (C) 2015-2018 
+PROJECTS4ME.
 
-#### Chosen
-1. Bootstrap - By distributing a page in columns bootstrap give the best structure to provide pragmatically generating dynamic view
-2. Emberjs - With extensive control on the navigation and the pages and being served in the browsers a front end is required to control the views
-3. Phalcon - Being the fastest PHP framework being a C extension and loosely coupled phalcon is the best framework for this application
-4. Grunt - The build procedure will be written through grunt
-5. Less - For extensive CSS styling 
-6. Selenium - To be used for automated test cases
-7. PHP Docs - For PHP documentation Generation
-8. JS Docs - For JavaScript documentation generation
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU Affero General Public 
+License version 3 (GNU AGPL v3) as published be the Free Software Foundation with the addition of the following 
+permission added to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK IN WHICH THE COPYRIGHT IS 
+OWNED BY PROJECTS4ME., Projects4Me DISCLAIMS THE WARRANTY OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
 
-#### Under consideration
-1. Doctrine - I would like to have support most of the major relational and document NoSQL database
-2. Jenkins - To be used for build management
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU AGPL v3 for more details.
 
+You should have received a copy of the GNU AGPL v3 along with this program; if not, see http://www.gnu.org/licenses or 
+write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+You can contact PROJECTS4ME, at email address hammad@projects4.me.
+
+The interactive user interfaces in modified source and object code versions of this program must display Appropriate 
+Legal Notices, as required under Section 5 of the GNU AGPL v3.
+
+In accordance with Section 7(b) of the GNU AGPL v3, these Appropriate Legal Notices must retain the display of the 
+"Powered by Projects4Me" logo. If the display of the logo is not reasonably feasible for technical reasons, the 
+Appropriate Legal Notices must display the words "Powered by Projects4Me".
