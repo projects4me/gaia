@@ -611,7 +611,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $modelName = $this->modelName;
         $model = new $modelName();
 
-        $util = new \Gaia\Libraries\Util();
+        $util = new \Gaia\Libraries\Utils\Util();
         $data = array();
 
         //get data
@@ -638,7 +638,6 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             $data[0] = $temp;
         }
 
-
         //scroll through the array data and make the action save/update
         foreach ($data as $key => $value) {
 
@@ -646,8 +645,10 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             if ( isset($value['id']) ) {
                 //if passed by url
                 $model = $modelName::findFirst('id = "'.$value['id'].'"');
+
                 //print_r($value);
                 if ( $model->save($value) ){
+                    $this->eventsManager->fire('rest:afterUpdate', $this, $model);
                     $dataResponse = get_object_vars($model);
                     //update
                     $this->response->setStatusCode(200, "OK");

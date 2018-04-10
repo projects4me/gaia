@@ -23,6 +23,7 @@
 require APP_PATH.'/vendor/autoload.php';
 
 require_once(APP_PATH.'/app/models/Behaviors/aclBehavior.php');
+require_once(APP_PATH.'/foundation/mvc/models/Behaviors/auditBehavior.php');
 
 require_once APP_PATH.'/foundation/libs/file/handler.php';
 

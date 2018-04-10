@@ -102,6 +102,12 @@ $models['User'] = array(
             'length' => '25',
             'null' => true,
         ),
+        'education' => array(
+            'name' => 'education',
+            'label' => 'LBL_USERS_EDUCATION',
+            'type' => 'text',
+            'null' => true,
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -121,6 +127,25 @@ $models['User'] = array(
                 'relatedKey' => 'userId'
             )
         ),
+        'hasMany' => array(
+            'tagged' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
+                'relatedKey' => 'relatedId',
+                'condition' => 'tagged.relatedTo = "user"'
+            ),
+        ),
+        'hasManyToMany' => array(
+            'skills' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
+                'rhsKey' => 'relatedId',
+                'lhsKey' => 'tagId',
+                'secondaryModel' => '\\Gaia\\MVC\\Models\\Tag',
+                'secondaryKey' => 'id',
+                'condition' => 'skillsTagged.relatedTo = "user"'
+            )
+        )
     ),
 );
 

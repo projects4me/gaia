@@ -240,6 +240,9 @@ $models['Issue'] = array(
             ),
         )
     ),
+    'behaviors' => array(
+        'auditBehavior',
+    ),
 );
 
 return $models;

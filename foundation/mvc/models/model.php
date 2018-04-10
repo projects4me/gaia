@@ -51,6 +51,20 @@ class Model extends PhalconModel
     protected $modelAlias;
 
     /**
+     * This flag maintains if the model was changed.
+     *
+     * @var $isChanged
+     */
+    public $isChanged = false;
+
+    /**
+     * The audit information of a change was made in th model
+     *
+     * @var $audit
+     */
+    public $audit;
+
+    /**
      * This function is used in order to load the different behaviors that this model is
      * set to use.
      *
@@ -174,6 +188,8 @@ class Model extends PhalconModel
         // Load the behaviors in the model as well
         $this->loadBehavior();
         $this->loadRelationships();
+
+        $this->keepSnapshots(true);
     }
 
     public function getModelName()
@@ -508,19 +524,20 @@ class Model extends PhalconModel
             {
                 // for a many-many relationship two joins are required
                 $relatedModel = $relations[$relationship]['relatedModel'];
+                $relatedModelAlias = Util::classWithoutNamespace($relatedModel);
                 $secondaryModel = $relations[$relationship]['secondaryModel'];
 
                 $relatedQuery = $this->modelAlias.'.'.$relations[$relationship]['primaryKey'].
-                    ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['rhsKey'];
+                    ' = '.$relationship.$relatedModelAlias.'.'.$relations[$relationship]['rhsKey'];
                 $secondaryQuery = $relationship.'.'.$relations[$relationship]['secondaryKey'].
-                    ' = '.$relationship.$relatedModel.'.'.$relations[$relationship]['lhsKey'];
+                    ' = '.$relationship.$relatedModelAlias.'.'.$relations[$relationship]['lhsKey'];
 
                 if (isset($relations[$relationship]['condition']))
                 {
                     $relatedQuery .= ' AND ('.$relations[$relationship]['condition'].')';
                 }
 
-                $query->$join($relatedModel,$relatedQuery,$relationship.$relatedModel);
+                $query->$join($relatedModel,$relatedQuery,$relationship.$relatedModelAlias);
                 $query->$join($secondaryModel,$secondaryQuery,$relationship);
             }
             else
