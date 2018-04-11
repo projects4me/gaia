@@ -34,10 +34,8 @@ class IssueactivitiesComponent
             if (isset($model->audit['status'])){
                 $oldStatus = ucwords(Text::humanize($model->audit['status']['old']));
                 $newStatus = ucwords(Text::humanize($model->audit['status']['new']));
-                $now = new \DateTime();
                 $activity = new Activity();
                 $activity->id = create_guid();
-                $activity->dateCreated = $now->format('Y-m-d H:i:s');
                 $activity->description = "Status changed from '".$oldStatus."' to '".$newStatus."'";
                 $activity->createdUser = $currentUser->id;
                 $activity->relatedTo = 'issue';
@@ -64,10 +62,8 @@ class IssueactivitiesComponent
 
         $logger->debug($model->id);
         if (isset($model->id)){
-            $now = new \DateTime();
             $activity = new Activity();
             $activity->id = create_guid();
-            $activity->dateCreated = $now->format('Y-m-d H:i:s');
             $activity->description = 'Issue created';
             $activity->createdUser = $currentUser->id;
             $activity->relatedTo = 'issue';

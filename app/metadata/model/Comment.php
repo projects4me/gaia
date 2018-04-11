@@ -5,8 +5,8 @@
  */
 
 $models['Comment'] = array(
-   'tableName' => 'comments',
-   'fields' => array(
+    'tableName' => 'comments',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_COMMENTS_ID',
@@ -33,7 +33,7 @@ $models['Comment'] = array(
             'length' => '1',
             'null' => false,
         ),
-       'comment' => array(
+        'comment' => array(
             'name' => 'comment',
             'label' => 'LBL_COMMENTS_DESCRIPTION',
             'type' => 'text',
@@ -99,36 +99,41 @@ $models['Comment'] = array(
 
     ),
     'relationships' => array(
-      'hasOne' => array(
-        'createdBy' => array(
-          'primaryKey' => 'createdUser',
-          'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-          'relatedKey' => 'id',
+        'hasOne' => array(
+            'createdBy' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id',
+            ),
+            'modifiedBy' => array(
+                'primaryKey' => 'modifiedUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id',
+            ),
+            'conversationRoom' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
+                'relatedKey' => 'id',
+                'condition' => 'Comment.relatedTo = "conversationrooms"'
+            ),
+            'chatRoom' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Chatroom',
+                'relatedKey' => 'id',
+                'condition' => 'Comment.relatedTo = "chatrooms"'
+            ),
+            'issue' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
+                'relatedKey' => 'id',
+                'condition' => 'Comment.relatedTo = "issues"'
+            ),
         ),
-        'modifiedBy' => array(
-          'primaryKey' => 'modifiedUser',
-          'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-          'relatedKey' => 'id',
-        ),
-        'conversationRoom' => array(
-          'primaryKey' => 'relatedId',
-          'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
-          'relatedKey' => 'id',
-          'condition' => 'Comment.relatedTo = "conversationrooms"'
-        ),
-        'chatRoom' => array(
-          'primaryKey' => 'relatedId',
-          'relatedModel' => '\\Gaia\\MVC\\Models\\Chatroom',
-          'relatedKey' => 'id',
-          'condition' => 'Comment.relatedTo = "chatrooms"'
-        ),
-        'issue' => array(
-          'primaryKey' => 'relatedId',
-          'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
-          'relatedKey' => 'id',
-          'condition' => 'Comment.relatedTo = "issues"'
-        ),
-      ),
+    ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
     ),
 );
 

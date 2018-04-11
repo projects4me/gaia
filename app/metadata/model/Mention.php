@@ -5,8 +5,8 @@
  */
 
 $models['Mention'] = array(
-   'tableName' => 'mentions',
-   'fields' => array(
+    'tableName' => 'mentions',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_MENTIONS_ID',
@@ -66,29 +66,33 @@ $models['Mention'] = array(
     ),
     'relationships' => array(
         'hasOne' => array(
-          'createdUser' => array(
-              'primaryKey' => 'createdUser',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-              'relatedKey' => 'id'
-          ),
-          'user' => array(
-              'primaryKey' => 'userId',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-              'relatedKey' => 'id'
-          ),
-          'comment' => array(
-              'primaryKey' => 'relatedId',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
-              'relatedKey' => 'id',
-              'condition' => 'Mentions.relatedTo="Comments"'
-          ),
-          'activity' => array(
-              'primaryKey' => 'relatedId',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\Activity',
-              'relatedKey' => 'id',
-              'condition' => 'Mentions.relatedTo="Activities"'
-          )
+            'createdUser' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'user' => array(
+                'primaryKey' => 'userId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'comment' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
+                'relatedKey' => 'id',
+                'condition' => 'Mentions.relatedTo="Comments"'
+            ),
+            'activity' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Activity',
+                'relatedKey' => 'id',
+                'condition' => 'Mentions.relatedTo="Activities"'
+            )
         )
+    ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
     ),
 );
 

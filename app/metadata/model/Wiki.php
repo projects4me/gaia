@@ -178,6 +178,9 @@ $models['Wiki'] = array(
     ),
     'behaviors' => array(
         'aclBehavior',
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
     ),
 );
 

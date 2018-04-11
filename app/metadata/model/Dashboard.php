@@ -59,6 +59,11 @@ $models['Dashboard'] = array(
     'relationships' => array(
 
     ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+    ),
 );
 
 return $models;

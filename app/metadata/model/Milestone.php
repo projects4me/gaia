@@ -5,8 +5,8 @@
  */
 
 $models['Milestone'] = array(
-   'tableName' => 'milestones',
-   'fields' => array(
+    'tableName' => 'milestones',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_MILESTONES_ID',
@@ -40,7 +40,7 @@ $models['Milestone'] = array(
             'length' => '1',
             'null' => false,
         ),
-       'description' => array(
+        'description' => array(
             'name' => 'description',
             'label' => 'LBL_MILESTONES_DESCRIPTION',
             'type' => 'text',
@@ -105,29 +105,34 @@ $models['Milestone'] = array(
     ),
     'relationships' => array(
         'hasOne' => array(
-          'createdUser' => array(
-              'primaryKey' => 'createdUser',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-              'relatedKey' => 'id'
-          ),
-          'modifiedUser' => array(
-              'primaryKey' => 'modifiedUser',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-              'relatedKey' => 'id'
-          ),
-          'project' => array(
-              'primaryKey' => 'projectId',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
-              'relatedKey' => 'id'
-          ),
+            'createdUser' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'modifiedUser' => array(
+                'primaryKey' => 'modifiedUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'project' => array(
+                'primaryKey' => 'projectId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
+                'relatedKey' => 'id'
+            ),
         ),
         'hasMany' => array(
-          'issues' => array(
-            'primaryKey' => 'id',
-            'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
-            'relatedKey' => 'milestoneId',
-          ),
+            'issues' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
+                'relatedKey' => 'milestoneId',
+            ),
         )
+    ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
     ),
 );
 

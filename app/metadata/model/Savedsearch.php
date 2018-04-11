@@ -87,6 +87,11 @@ $models['Savedsearch'] = array(
             )
         )
     ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+    ),
+
 );
 
 return $models;

@@ -5,8 +5,8 @@
  */
 
 $models['Activity'] = array(
-   'tableName' => 'activities',
-   'fields' => array(
+    'tableName' => 'activities',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_ACTIVITIES_ID',
@@ -20,7 +20,7 @@ $models['Activity'] = array(
             'type' => 'datetime',
             'null' => true,
         ),
-       'description' => array(
+        'description' => array(
             'name' => 'description',
             'label' => 'LBL_ACTIVITIES_DESCRIPTION',
             'type' => 'text',
@@ -93,19 +93,22 @@ $models['Activity'] = array(
 
     ),
     'relationships' => array(
-      'hasOne' => array(
-        'createdBy' => array(
-            'primaryKey' => 'createdUser',
-            'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-            'relatedKey' => 'id'
-        ),
-        'project' => array(
-            'primaryKey' => 'relatedId',
-            'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
-            'relatedKey' => 'id',
-            'condition' => 'Activity.relatedTo = "project"'
+        'hasOne' => array(
+            'createdBy' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'project' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
+                'relatedKey' => 'id',
+                'condition' => 'Activity.relatedTo = "project"'
+            )
         )
-      )
+    ),
+    'behaviors' => array(
+        'dateCreatedBehavior',
     ),
 );
 

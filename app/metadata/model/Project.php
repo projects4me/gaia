@@ -209,6 +209,9 @@ $models['Project'] = array(
     ),
     'behaviors' => array(
         'aclBehavior',
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
     ),
 );
 

@@ -5,8 +5,8 @@
  */
 
 $models['Vote'] = array(
-   'tableName' => 'votes',
-   'fields' => array(
+    'tableName' => 'votes',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_VOTE_ID',
@@ -92,39 +92,45 @@ $models['Vote'] = array(
 
     ),
     'relationships' => array(
-      'hasOne' => array(
-        'createdBy' => array(
-          'primaryKey' => 'createdUser',
-          'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-          'relatedKey' => 'id',
+        'hasOne' => array(
+            'createdBy' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id',
+            ),
+            'modifiedBy' => array(
+                'primaryKey' => 'modifiedUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id',
+            )
         ),
-        'modifiedBy' => array(
-          'primaryKey' => 'modifiedUser',
-          'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-          'relatedKey' => 'id',
-        )
-      ),
-      'belongsTo' => array(
-          'wiki' => array(
-              'primaryKey' => 'relatedId',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\Wiki',
-              'relatedKey' => 'id',
-              'condition' => 'Vote.relatedTo = "wiki"'
-          ),
-          'comment' => array(
-              'primaryKey' => 'relatedId',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
-              'relatedKey' => 'id',
-              'condition' => 'Vote.relatedTo = "comment"'
-          ),
-          'conversationroom' => array(
-              'primaryKey' => 'relatedId',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
-              'relatedKey' => 'id',
-              'condition' => 'Vote.relatedTo = "conversationroom"'
-          )
-      ),
+        'belongsTo' => array(
+            'wiki' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Wiki',
+                'relatedKey' => 'id',
+                'condition' => 'Vote.relatedTo = "wiki"'
+            ),
+            'comment' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
+                'relatedKey' => 'id',
+                'condition' => 'Vote.relatedTo = "comment"'
+            ),
+            'conversationroom' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
+                'relatedKey' => 'id',
+                'condition' => 'Vote.relatedTo = "conversationroom"'
+            )
+        ),
     ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+    ),
+
 );
 
 return $models;

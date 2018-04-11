@@ -138,6 +138,12 @@ $models['Timelog'] = array(
             ),
         ),
     ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+    ),
+
 );
 
 return $models;

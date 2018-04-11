@@ -242,6 +242,8 @@ $models['Issue'] = array(
     ),
     'behaviors' => array(
         'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
     ),
 );
 

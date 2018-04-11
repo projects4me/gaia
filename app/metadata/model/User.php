@@ -147,6 +147,12 @@ $models['User'] = array(
             )
         )
     ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+    ),
+
 );
 
 return $models;

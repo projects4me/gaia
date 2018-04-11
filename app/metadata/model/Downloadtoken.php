@@ -81,7 +81,11 @@ $models['Downloadtoken'] = array(
             )
 
         )
-    )
+    ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+    ),
 );
 
 return $models;

@@ -5,61 +5,61 @@
  */
 
 $models['Role'] = array(
-   'tableName' => 'roles',
-   'fields' => array(
-       'id' => array(
-           'name' => 'id',
-           'label' => 'LBL_ROLES_ID',
-           'type' => 'varchar',
-           'length' => '36',
-           'null' => false,
-       ),
-       'name' => array(
-           'name' => 'name',
-           'label' => 'LBL_ROLES_NAME',
-           'type' => 'varchar',
-           'length' => '50',
-           'null' => false,
-       ),
-       'dateCreated' => array(
-           'name' => 'dateCreated',
-           'label' => 'LBL_ROLES_DATE_CREATED',
-           'type' => 'datetime',
-           'null' => true,
-       ),
-       'dateModified' => array(
-           'name' => 'dateModified',
-           'label' => 'LBL_ROLES_DATE_MODIFIED',
-           'type' => 'datetime',
-           'null' => true,
-       ),
-       'deleted' => array(
-           'name' => 'deleted',
-           'label' => 'LBL_ROLES_DELETED',
-           'type' => 'bool',
-           'length' => '1',
-           'null' => false,
-       ),
-      'description' => array(
-           'name' => 'description',
-           'label' => 'LBL_ROLES_DESCRIPTION',
-           'type' => 'text',
-           'null' => true,
-       ),
-       'createdUser' => array(
-           'name' => 'createdUser',
-           'label' => 'LBL_ROLES_CREATED_USER',
-           'type' => 'varchar',
-           'length' => '36',
-           'null' => false,
-       ),
-       'modifiedUser' => array(
-           'name' => 'modifiedUser',
-           'label' => 'LBL_ROLES_MODIFIED_USER',
-           'type' => 'varchar',
-           'length' => '36',
-           'null' => false,
-       )
+    'tableName' => 'roles',
+    'fields' => array(
+        'id' => array(
+            'name' => 'id',
+            'label' => 'LBL_ROLES_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'name' => array(
+            'name' => 'name',
+            'label' => 'LBL_ROLES_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
+        'dateCreated' => array(
+            'name' => 'dateCreated',
+            'label' => 'LBL_ROLES_DATE_CREATED',
+            'type' => 'datetime',
+            'null' => true,
+        ),
+        'dateModified' => array(
+            'name' => 'dateModified',
+            'label' => 'LBL_ROLES_DATE_MODIFIED',
+            'type' => 'datetime',
+            'null' => true,
+        ),
+        'deleted' => array(
+            'name' => 'deleted',
+            'label' => 'LBL_ROLES_DELETED',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+        ),
+        'description' => array(
+            'name' => 'description',
+            'label' => 'LBL_ROLES_DESCRIPTION',
+            'type' => 'text',
+            'null' => true,
+        ),
+        'createdUser' => array(
+            'name' => 'createdUser',
+            'label' => 'LBL_ROLES_CREATED_USER',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'modifiedUser' => array(
+            'name' => 'modifiedUser',
+            'label' => 'LBL_ROLES_MODIFIED_USER',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        )
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -79,6 +79,12 @@ $models['Role'] = array(
             ),
         ),
     ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+    ),
+
 );
 
 return $models;

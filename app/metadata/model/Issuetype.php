@@ -5,8 +5,8 @@
  */
 
 $models['Issuetype'] = array(
-   'tableName' => 'issue_types',
-   'fields' => array(
+    'tableName' => 'issue_types',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_ISSUE_TYPES_ID',
@@ -40,7 +40,7 @@ $models['Issuetype'] = array(
             'length' => '1',
             'null' => false,
         ),
-       'description' => array(
+        'description' => array(
             'name' => 'description',
             'label' => 'LBL_ISSUE_TYPES_DESCRIPTION',
             'type' => 'text',
@@ -85,6 +85,11 @@ $models['Issuetype'] = array(
 
     ),
     'relationships' => array(
+    ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
     ),
 );
 

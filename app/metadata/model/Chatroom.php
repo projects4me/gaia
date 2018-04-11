@@ -114,6 +114,11 @@ $models['Chatroom'] = array(
             ),
         )
     ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+    ),
 );
 
 return $models;
