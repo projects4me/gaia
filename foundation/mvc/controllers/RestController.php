@@ -717,8 +717,9 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             }
             $updatedData = $model->cloneResult($model, $temp);
             $updatedData->setTransaction($transaction);
-            if(!$updatedData->save())
-            {
+            if ($updatedData->save()) {
+                $this->eventsManager->fire('rest:afterUpdate', $this, $updatedData);
+            } else {
                 $data = array('error' => array('code' => 400, 'description' => 'Unable to save '.$temp['id'].', all changes reverted'));
                 $transaction->rollback("Patched failed for ".$temp['id']);
                 return $this->returnResponse($data);
@@ -735,6 +736,9 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      */
     public function postAction()
     {
+        global $logger;
+        $logger->debug('Gaia.foundation.controllers.rest->postAction');
+
         $modelName = $this->modelName;
         $model = new $modelName();
 
@@ -785,6 +789,9 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             }
             //print_r($value);
             if ( $model->save($value) ){
+                $logger->debug('Firing afterCreate Event');
+                $model->id = $new_id;
+                $this->eventsManager->fire('rest:afterCreate', $this, $model);
                 $dataResponse = get_object_vars($model);
                 //update
                 if ( isset($this->id) ){
@@ -818,6 +825,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
 
         }//end foreach
+
+        $logger->debug('-Gaia.foundation.controllers.rest->postAction');
 
         return $this->response;
     }
