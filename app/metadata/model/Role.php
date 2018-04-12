@@ -53,13 +53,27 @@ $models['Role'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_ROLES_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
             'label' => 'LBL_ROLES_MODIFIED_USER',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
-        )
+        ),
+        'modifiedUserName' => array(
+            'name' => 'modifiedUserName',
+            'label' => 'LBL_ROLES_MODIFIED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -83,6 +97,8 @@ $models['Role'] = array(
         'auditBehavior',
         'dateCreatedBehavior',
         'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior'
     ),
 
 );

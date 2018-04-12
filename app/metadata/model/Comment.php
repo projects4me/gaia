@@ -134,6 +134,8 @@ $models['Comment'] = array(
         'auditBehavior',
         'dateCreatedBehavior',
         'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior'
     ),
 );
 

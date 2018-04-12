@@ -40,11 +40,25 @@ $models['Upload'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_UPLOAD_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
             'label' => 'LBL_UPLOAD_MODIFIED_USER',
             'type' => 'varchar',
             'length' => '36',
+            'null' => false,
+        ),
+        'modifiedUserName' => array(
+            'name' => 'modifiedUserName',
+            'label' => 'LBL_UPLOAD_MODIFIED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
             'null' => false,
         ),
         'status' => array(
@@ -136,6 +150,8 @@ $models['Upload'] = array(
         'auditBehavior',
         'dateCreatedBehavior',
         'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior'
     ),
 );
 

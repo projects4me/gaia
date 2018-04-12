@@ -53,11 +53,25 @@ $models['Milestone'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_MILESTONES_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
             'label' => 'LBL_MILESTONES_MODIFIED_USER',
             'type' => 'varchar',
             'length' => '36',
+            'null' => false,
+        ),
+        'modifiedUserName' => array(
+            'name' => 'modifiedUserName',
+            'label' => 'LBL_MILESTONES_MODIFIED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
             'null' => false,
         ),
         'endDate' => array(
@@ -133,6 +147,8 @@ $models['Milestone'] = array(
         'auditBehavior',
         'dateCreatedBehavior',
         'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior'
     ),
 );
 

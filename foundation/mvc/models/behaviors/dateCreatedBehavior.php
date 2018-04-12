@@ -41,7 +41,7 @@ class dateCreatedBehavior extends Behavior implements BehaviorInterface
      * @param ModelInterface $model
      * @return ModelInterface
      */
-    protected function beforeUpdate(&$model)
+    protected function beforeValidationOnUpdate(&$model)
     {
         if ($model->isChanged) {
             if (isset($model->audit['dateCreated'])){
@@ -56,7 +56,7 @@ class dateCreatedBehavior extends Behavior implements BehaviorInterface
      * @param ModelInterface $model
      * @return ModelInterface
      */
-    protected function beforeCreate(&$model)
+    protected function beforeValidationOnCreate(&$model)
     {
         $model->dateCreated = gmdate('Y-m-d H:i:s');
     }

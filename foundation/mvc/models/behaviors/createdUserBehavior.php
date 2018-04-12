@@ -12,11 +12,11 @@ use Phalcon\Mvc\Model\Behavior;
 
 
 /**
- * This behavior serves the purpose of maintaining the date modified date timestamp.
+ * This behavior serves the purpose of maintaining the created user information.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  */
-class dateModifiedBehavior extends Behavior implements BehaviorInterface
+class createdUserBehavior extends Behavior implements BehaviorInterface
 {
     /**
      * This function is called whenever an event is triggered
@@ -42,7 +42,24 @@ class dateModifiedBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeValidationOnUpdate(&$model)
     {
-        $model->dateModified = gmdate('Y-m-d H:i:s');
+        global $currentUser;
+
+        if ($model->isChanged) {
+            if (isset($model->audit['createdUser'])){
+                $model->createdUser = $model->audit['createdUser']['old'];
+            }
+            if (isset($model->audit['createdUserName'])){
+                $model->createdUserName = $model->audit['createdUserName']['old'];
+            }
+        }
+
+        if (empty($model->createdUser)) {
+            $model->createdUser = $currentUser->id;
+        }
+        if (empty($model->createdUserName)) {
+            $model->createdUserName = $currentUser->name;
+        }
+
     }
 
     /**
@@ -53,7 +70,10 @@ class dateModifiedBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeValidationOnCreate(&$model)
     {
-        $model->dateModified = gmdate('Y-m-d H:i:s');
+        global $currentUser;
+
+        $model->createdUser = $currentUser->id;
+        $model->createdUserName = $currentUser->name;
     }
 
 }

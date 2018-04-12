@@ -181,6 +181,8 @@ $models['Wiki'] = array(
         'auditBehavior',
         'dateCreatedBehavior',
         'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior'
     ),
 );
 

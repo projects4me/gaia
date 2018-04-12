@@ -26,22 +26,19 @@ class IssueactivitiesComponent
      */
     public function afterUpdate(Event $event, $controller, $model)
     {
-        global $logger, $currentUser;
+        global $logger;
         $logger->debug('Gaia.Controller.Component.Issueactivities::afterUpdate()');
 
         if ($model->isChanged) {
-
             if (isset($model->audit['status'])){
                 $oldStatus = ucwords(Text::humanize($model->audit['status']['old']));
                 $newStatus = ucwords(Text::humanize($model->audit['status']['new']));
                 $activity = new Activity();
                 $activity->id = create_guid();
                 $activity->description = "Status changed from '".$oldStatus."' to '".$newStatus."'";
-                $activity->createdUser = $currentUser->id;
                 $activity->relatedTo = 'issue';
                 $activity->relatedId = $model->id;
                 $activity->type = 'updated';
-                $activity->createdUserName = $currentUser->name;
                 $activity->save();
             }
         }
@@ -57,7 +54,7 @@ class IssueactivitiesComponent
      */
     public function afterCreate(Event $event, $controller, $model)
     {
-        global $logger, $currentUser;
+        global $logger;
         $logger->debug('Gaia.Controller.Component.Issueactivities::afterCreate()');
 
         $logger->debug($model->id);
@@ -65,11 +62,9 @@ class IssueactivitiesComponent
             $activity = new Activity();
             $activity->id = create_guid();
             $activity->description = 'Issue created';
-            $activity->createdUser = $currentUser->id;
             $activity->relatedTo = 'issue';
             $activity->relatedId = $model->id;
             $activity->type = 'created';
-            $activity->createdUserName = $currentUser->name;
             $activity->save();
         }
 

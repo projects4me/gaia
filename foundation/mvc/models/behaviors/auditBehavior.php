@@ -58,7 +58,6 @@ class auditBehavior extends Behavior implements BehaviorInterface
             $model->audit = $audit;
         }
 
-        return $model;
     }
 
 }

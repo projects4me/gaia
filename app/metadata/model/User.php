@@ -53,11 +53,25 @@ $models['User'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_USERS_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
             'label' => 'LBL_USERS_MODIFIED_USER',
             'type' => 'varchar',
             'length' => '36',
+            'null' => false,
+        ),
+        'modifiedUserName' => array(
+            'name' => 'modifiedUserName',
+            'label' => 'LBL_USERS_MODIFIED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
             'null' => false,
         ),
         'username' => array(
@@ -151,6 +165,8 @@ $models['User'] = array(
         'auditBehavior',
         'dateCreatedBehavior',
         'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior'
     ),
 
 );

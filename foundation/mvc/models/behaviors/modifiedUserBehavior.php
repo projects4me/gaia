@@ -12,11 +12,11 @@ use Phalcon\Mvc\Model\Behavior;
 
 
 /**
- * This behavior serves the purpose of maintaining the date modified date timestamp.
+ * This behavior serves the purpose of maintaining the modified user information.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  */
-class dateModifiedBehavior extends Behavior implements BehaviorInterface
+class modifiedUserBehavior extends Behavior implements BehaviorInterface
 {
     /**
      * This function is called whenever an event is triggered
@@ -42,7 +42,10 @@ class dateModifiedBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeValidationOnUpdate(&$model)
     {
-        $model->dateModified = gmdate('Y-m-d H:i:s');
+        global $currentUser;
+
+        $model->modifiedUser = $currentUser->id;
+        $model->modifiedUserName = $currentUser->name;
     }
 
     /**
@@ -53,7 +56,12 @@ class dateModifiedBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeValidationOnCreate(&$model)
     {
-        $model->dateModified = gmdate('Y-m-d H:i:s');
+        global $currentUser, $logger;
+
+        $model->modifiedUser = $currentUser->id;
+        $model->modifiedUserName = $currentUser->name;
+
+        $logger->debug($model->modifiedUserName);
     }
 
 }

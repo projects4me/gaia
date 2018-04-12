@@ -27,6 +27,13 @@ $models['Mention'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_MENTIONS_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'relatedTo' => array(
             'name' => 'relatedTo',
             'label' => 'LBL_MENTIONS_RELATED_TO',
@@ -93,6 +100,7 @@ $models['Mention'] = array(
     'behaviors' => array(
         'auditBehavior',
         'dateCreatedBehavior',
+        'createdUserBehavior'
     ),
 );
 

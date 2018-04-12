@@ -27,6 +27,13 @@ $models['Membership'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_MEMBERSHIPS_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_MEMBERSHIPS_DATE_MODIFIED',
@@ -38,6 +45,13 @@ $models['Membership'] = array(
             'label' => 'LBL_MEMBERSHIPS_MODIFIED_USER',
             'type' => 'varchar',
             'length' => '36',
+            'null' => false,
+        ),
+        'modifiedUserName' => array(
+            'name' => 'modifiedUserName',
+            'label' => 'LBL_MEMBERSHIPS_MODIFIED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
             'null' => false,
         ),
         'roleId' => array(
@@ -86,6 +100,8 @@ $models['Membership'] = array(
         'auditBehavior',
         'dateCreatedBehavior',
         'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior'
     ),
 );
 

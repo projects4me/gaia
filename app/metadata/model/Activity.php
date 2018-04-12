@@ -108,8 +108,10 @@ $models['Activity'] = array(
         )
     ),
     'behaviors' => array(
-        'dateCreatedBehavior',
-    ),
+        'auditBehavior',
+        'createdUserBehavior',
+        'dateCreatedBehavior'
+    )
 );
 
 return $models;
