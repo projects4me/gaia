@@ -36,19 +36,11 @@ class Model extends PhalconModel
     protected $metadata;
 
     /**
-     * This is the query for this model, we are using this to allow behaviors to make changes if required
-     *
-     * @var $query
-     * @type \Phalcon\Mvc\Model\Query\Builder
-     */
-    public $query;
-
-    /**
      * The alias of the current model
      *
      * @var $modelAlias
      */
-    protected $modelAlias;
+    public $modelAlias;
 
     /**
      * This flag maintains if the model was changed.
@@ -63,6 +55,14 @@ class Model extends PhalconModel
      * @var $audit
      */
     public $audit;
+
+    /**
+     * This is the query for this model, we are using this to allow behaviors to make changes if required
+     *
+     * @var $_query
+     * @type \Phalcon\Mvc\Model\Query\Builder
+     */
+    public $_query;
 
     /**
      * This function is used in order to load the different behaviors that this model is
@@ -297,18 +297,17 @@ class Model extends PhalconModel
             $params['fields'] = array_merge($moduleFields,$relationshipFields);
         }
 
-        $query = $this->getDI()->get('modelsManager')->createBuilder();
-        $query->andWhere($this->modelAlias.".id = '".$params['id']."'");
+        $this->_query = $this->getDI()->get('modelsManager')->createBuilder();
+        $this->_query->andWhere($this->modelAlias.".id = '".$params['id']."'");
+        $this->fireEvent("beforeQuery");
 
         // get the query
-        $query = $this->setQuery($query,$params);
-
-
+        $this->_query = $this->setQuery($this->_query,$params);
 
 
         // process ACL and other behaviors before executing the query
-        $data = $query->execute();
-
+        $data = $this->_query->execute();
+        $this->_query = null;
         return $data;
     }
 
@@ -381,18 +380,15 @@ class Model extends PhalconModel
             $params['fields'] = array_merge($moduleFields,$relationshipFields);
         }
 
-        $this->query = $this->getDI()->get('modelsManager')->createBuilder();
-
-        // get the query
-        $this->query = $this->setQuery($this->query,$params);
+        $this->_query = $this->getDI()->get('modelsManager')->createBuilder();
 
         $this->fireEvent("beforeQuery");
-
-
+        // get the query
+        $this->_query = $this->setQuery($this->_query,$params);
 
         // process ACL and other behaviors before executing the query
-        $data = $this->query->execute();
-
+        $data = $this->_query->execute();
+        $this->_query = null;
         return $data;
     }
 
@@ -415,7 +411,7 @@ class Model extends PhalconModel
 
         if (!isset($modelRelations[$related]) || empty($modelRelations[$related]))
         {
-            throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
+            throw new \Phalcon\Exception('Relationship '.$related." not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
         }
 
         $params['rels'] = array($related);
@@ -430,16 +426,18 @@ class Model extends PhalconModel
             $params['fields'] = $related.'.*';
         }
 
-        $query = $this->getDI()->get('modelsManager')->createBuilder();
+        $this->_query = $this->getDI()->get('modelsManager')->createBuilder();
 
-        $query->andWhere($this->modelAlias.".id = '".$params['id']."'");
+        $this->_query->andWhere($this->modelAlias.".id = '".$params['id']."'");
 
+        $this->fireEvent("beforeQuery");
 
         // get the query
-        $query = $this->setQuery($query,$params);
+        $this->_query = $this->setQuery($this->_query,$params);
 
         // process ACL and other behaviors before executing the query
-        $data = $query->execute();
+        $data = $this->_query->execute();
+        $this->_query = null;
 
         return $data;
     }
@@ -496,7 +494,13 @@ class Model extends PhalconModel
         if (isset($params['where']) && !empty($params['where']))
         {
             $where = self::preProcessWhere($params['where']);
-            $query->where($where);
+            $GLOBALS['logger']->debug(print_r($query->getWhere(),1));
+            if (empty($query->getWhere())) {
+                $query->where($where);
+            } else {
+                $query->andWhere($where);
+            }
+
         }
 
         // setup all the clauses related to relationships
@@ -566,6 +570,8 @@ class Model extends PhalconModel
                 }
             }
         }
+
+        $GLOBALS['logger']->debug($query->getPhql());
 
         return $query->getQuery();
     }

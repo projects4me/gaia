@@ -39,6 +39,7 @@ $models['Issuetype'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
         'description' => array(
             'name' => 'description',
@@ -105,7 +106,8 @@ $models['Issuetype'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 );
 

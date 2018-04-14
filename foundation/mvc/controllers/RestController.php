@@ -842,10 +842,14 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
         $model = $modelName::findFirst('id = "'.$this->id.'"');
 
+        $GLOBALS['logger']->debug('Deleting a record');
+        $GLOBALS['logger']->debug($model->id);
+        $GLOBALS['logger']->debug($model->deleted);
+
         //delete if exists the object
         if ( $model!=false ){
             if ( $model->delete() == true ){
-                $this->response->setJsonContent(array('data' => array('type' => strtolower($modelName),"id"=>$this->id)));
+                $this->response->setJsonContent(array('data' => array('type' => $this->classWithoutNamespace($modelName),"id"=>$this->id)));
                 $this->response->setStatusCode(200, "OK");
             }else{
                 $this->response->setStatusCode(409, "Conflict");

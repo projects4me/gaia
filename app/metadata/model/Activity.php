@@ -54,6 +54,14 @@ $models['Activity'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'deleted' => array(
+            'name' => 'deleted',
+            'label' => 'LBL_ACTIVITIES_DELETED',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+            'default' => 0
+        ),
         'type' => array(
             'name' => 'type',
             'label' => 'LBL_ACTIVITIES_TYPE',
@@ -110,8 +118,9 @@ $models['Activity'] = array(
     'behaviors' => array(
         'auditBehavior',
         'createdUserBehavior',
-        'dateCreatedBehavior'
-    )
+        'dateCreatedBehavior',
+        'softDeleteBehavior'
+   )
 );
 
 return $models;

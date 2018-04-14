@@ -39,6 +39,7 @@ $models['User'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
         'description' => array(
             'name' => 'description',
@@ -166,7 +167,8 @@ $models['User'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 
 );

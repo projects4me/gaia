@@ -67,6 +67,7 @@ $models['Wiki'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
         'status' => array(
             'name' => 'status',
@@ -182,7 +183,8 @@ $models['Wiki'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 );
 

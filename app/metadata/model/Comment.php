@@ -32,6 +32,7 @@ $models['Comment'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
         'comment' => array(
             'name' => 'comment',
@@ -135,7 +136,8 @@ $models['Comment'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 );
 

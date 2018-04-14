@@ -34,6 +34,14 @@ $models['Mention'] = array(
             'length' => '50',
             'null' => false,
         ),
+        'deleted' => array(
+            'name' => 'deleted',
+            'label' => 'LBL_MENTIONS_DELETED',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+            'default' => 0
+        ),
         'relatedTo' => array(
             'name' => 'relatedTo',
             'label' => 'LBL_MENTIONS_RELATED_TO',
@@ -100,7 +108,8 @@ $models['Mention'] = array(
     'behaviors' => array(
         'auditBehavior',
         'dateCreatedBehavior',
-        'createdUserBehavior'
+        'createdUserBehavior',
+        'softDeleteBehavior'
     ),
 );
 

@@ -39,6 +39,7 @@ $models['Milestone'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
         'description' => array(
             'name' => 'description',
@@ -148,7 +149,8 @@ $models['Milestone'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 );
 

@@ -107,44 +107,48 @@ class Migration extends PhalconMigration
         );
 
         // Traverse through the fields and process them
-      	foreach($meta[$model]['fields'] as $field => $schema)
-      	{
-                  $fieldOptions = array();
-                  $fieldOptions['type'] = $this->di->get('metaManager')->getFieldType($schema['type']);
-                  if (isset($schema['length']))
-                      $fieldOptions['size'] = $schema['length'];
-                  $fieldOptions['notNull'] = !$schema['null'];
-                  if (isset($schema['autoIncrement'])){
-                      $fieldOptions['autoIncrement'] = $schema['autoIncrement'];
-                  }
+        foreach($meta[$model]['fields'] as $field => $schema)
+        {
+            $fieldOptions = array();
+            $fieldOptions['type'] = $this->di->get('metaManager')->getFieldType($schema['type']);
+            if (isset($schema['length']))
+                $fieldOptions['size'] = $schema['length'];
+            $fieldOptions['notNull'] = !$schema['null'];
+            if (isset($schema['autoIncrement'])){
+                $fieldOptions['autoIncrement'] = $schema['autoIncrement'];
+            }
 
-                  $tableDescription['columns'][] = new Column($schema['name'],$fieldOptions);
-      	}
+            if (isset($schema['default'])){
+                $fieldOptions['default'] = $schema['default'];
+            }
+
+            $tableDescription['columns'][] = new Column($schema['name'],$fieldOptions);
+        }
 
         // Traverse through the indexes and process them
         foreach($meta[$model]['indexes'] as $field => $type)
-      	{
-                  // need to be able to recognize all types of indexes
-                  $indexType = '';
-                  $name = '';
-                  if ($type == 'primary')
-                  {
-                      $name = $indexType = 'PRIMARY';
-                      $tableDescription['indexes'][] = new Index($name, array($field),$indexType);
-                  }
-                  else if ($type == 'unique')
-                  {
-                      $indexType = 'UNIQUE';
-                      $name = $meta[$model]['tableName'].'_'.$field;
-                      $tableDescription['indexes'][] = new Index($name, array($field),$indexType);
-                  }
-                  else {
-                      $indexType = 'INDEX';
-                      $name = $meta[$model]['tableName'].'_'.$field;
-                      $tableDescription['indexes'][] = new Index($name, array($field));
-                  }
+        {
+            // need to be able to recognize all types of indexes
+            $indexType = '';
+            $name = '';
+            if ($type == 'primary')
+            {
+                $name = $indexType = 'PRIMARY';
+                $tableDescription['indexes'][] = new Index($name, array($field),$indexType);
+            }
+            else if ($type == 'unique')
+            {
+                $indexType = 'UNIQUE';
+                $name = $meta[$model]['tableName'].'_'.$field;
+                $tableDescription['indexes'][] = new Index($name, array($field),$indexType);
+            }
+            else {
+                $indexType = 'INDEX';
+                $name = $meta[$model]['tableName'].'_'.$field;
+                $tableDescription['indexes'][] = new Index($name, array($field));
+            }
 
-      	}
+        }
 
         return $tableDescription;
     }

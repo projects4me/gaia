@@ -39,6 +39,7 @@ $models['Tag'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -127,7 +128,8 @@ $models['Tag'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 
 );

@@ -35,10 +35,11 @@ $models['Conversationroom'] = array(
         ),
         'deleted' => array(
             'name' => 'deleted',
-            'label' => 'LBL_ISSUE_TYPES_DELETED',
+            'label' => 'LBL_CONVERSATION_ROOMS_DELETED',
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
         'description' => array(
             'name' => 'description',
@@ -144,7 +145,8 @@ $models['Conversationroom'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 );
 

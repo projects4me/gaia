@@ -60,6 +60,14 @@ $models['Chatroom'] = array(
             'length' => '50',
             'null' => false,
         ),
+        'deleted' => array(
+            'name' => 'deleted',
+            'label' => 'LBL_CHAT_ROOMS_DELETED',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+            'default' => 0
+        ),
         'status' => array(
             'name' => 'status',
             'label' => 'LBL_CHAT_ROOMS_MODIFIED_USER_NAME',
@@ -119,7 +127,8 @@ $models['Chatroom'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 );
 

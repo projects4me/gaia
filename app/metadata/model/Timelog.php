@@ -32,6 +32,7 @@ $models['Timelog'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -143,7 +144,8 @@ $models['Timelog'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 
 );
