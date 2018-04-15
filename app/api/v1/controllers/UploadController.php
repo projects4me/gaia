@@ -21,6 +21,7 @@ use function Gaia\Libraries\Utils\create_guid as create_guid;
 class UploadController extends RestController
 {
 
+    public $uses = array('Fileattachment');
     /**
      * Get method is not supported for upload
      *
@@ -145,7 +146,7 @@ class UploadController extends RestController
             $thumbnail = $model->fileThumbnail;
 
             if ( $model->delete() == true ) {
-
+                $this->eventsManager->fire('rest:afterDelete', $this, $model);
                 // remove the file
                 unlink($filePath);
 
@@ -208,9 +209,6 @@ class UploadController extends RestController
                 $modelName = $this->modelName;
                 $model = new $modelName();
 
-                $timeZone = new \DateTimeZone('UTC');
-                $now = new \DateTime('now',$timeZone);
-
                 $thumbnail = false;
                 // If the uploaded file is an image then generate a thumbnail for it
                 if ($this->_isImage($targetFile)) {
@@ -223,10 +221,6 @@ class UploadController extends RestController
                 $value = array(
                     'id' => $new_id,
                     'name' => $_FILES['file']['name'],
-                    'dateCreated' => $now->format('Y-m-d H:i:s'),
-                    'dateModified' => $now->format('Y-m-d H:i:s'),
-                    'createdUser' => $GLOBALS['currentUser']->id,
-                    'modifiedUser' => $GLOBALS['currentUser']->id,
                     'status' => 'uploaded',
                     'relatedId' => $_REQUEST['relatedId'],
                     'relatedTo' => $_REQUEST['relatedTo'],
@@ -239,6 +233,7 @@ class UploadController extends RestController
                 );
 
                 if ($model->save($value)) {
+                    $this->eventsManager->fire('rest:afterCreate', $this, $model);
                     // if we were able to save the model then send the OK status
                     $dataResponse = get_object_vars($model);
                     //update

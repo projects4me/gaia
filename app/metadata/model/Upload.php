@@ -61,14 +61,6 @@ $models['Upload'] = array(
             'length' => '50',
             'null' => false,
         ),
-        'deleted' => array(
-            'name' => 'deleted',
-            'label' => 'LBL_UPLOAD_DELETED',
-            'type' => 'bool',
-            'length' => '1',
-            'null' => false,
-            'default' => 0
-        ),
         'status' => array(
             'name' => 'status',
             'label' => 'LBL_UPLOAD_STATUS',
@@ -160,7 +152,6 @@ $models['Upload'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
     ),
 );
 
