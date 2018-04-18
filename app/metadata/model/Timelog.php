@@ -127,12 +127,12 @@ $models['Timelog'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'relatedKey' => 'id'
             ),
-            'createdUser' => array(
+            'createdBy' => array(
                 'primaryKey' => 'createdUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
-            'modifiedUser' => array(
+            'modifiedBy' => array(
                 'primaryKey' => 'modifiedUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'

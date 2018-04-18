@@ -849,6 +849,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         //delete if exists the object
         if ( $model!=false ){
             if ( $model->delete() == true ){
+                $this->eventsManager->fire('rest:afterDelete', $this, $model);
                 $this->response->setJsonContent(array('data' => array('type' => $this->classWithoutNamespace($modelName),"id"=>$this->id)));
                 $this->response->setStatusCode(200, "OK");
             }else{
