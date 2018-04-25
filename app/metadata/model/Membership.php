@@ -74,12 +74,6 @@ $models['Membership'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
-        ),
-        'deleted' => array(
-            'name' => 'deleted',
-            'label' => 'LBL_MEMBERSHIPS_DELETED',
-            'type' => 'bool',
-            'null' => false,
         )
     ),
     'indexes' => array(
