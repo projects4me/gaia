@@ -16,5 +16,12 @@ namespace Gaia\MVC\Models;
  */
 class Conversationroom extends Model
 {
-
+    public function afterCreate()
+    {
+        if (!empty($this->issueId)){
+            $issue = Issue::findFirst("id = '".$this->issueId."'");
+            $issue->conversationRoomId = $this->newId;
+            $issue->save();
+        }
+    }
 }

@@ -7,8 +7,8 @@
 namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\MVC\REST\Controllers\RestController;
-use ElephantIO\Client,
-ElephantIO\Engine\SocketIO\Version1X;
+use ElephantIO\Client;
+use ElephantIO\Engine\SocketIO\Version2X;
 
 
 
@@ -47,7 +47,7 @@ class ConversationroomController extends RestController
       $tenant = 'abc';
 
       // Establish a connection with Hermes
-      $client = new Client(new Version1X($host));
+      $client = new Client(new Version2X($host));
       $client->initialize();
 
       // Using the namespace of Gaia create the room and register the current user to it

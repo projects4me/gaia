@@ -158,6 +158,13 @@ $models['Issue'] = array(
             'length' => '36',
             'null' => true,
         ),
+        'conversationRoomId' => array(
+            'name' => 'conversationRoomId',
+            'label' => 'LBL_ISSUES_CONVERSATION_ROOM',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -216,6 +223,11 @@ $models['Issue'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'relatedKey' => 'id',
             ),
+            'conversationroom' => array(
+                'primaryKey' => 'conversationRoomId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
+                'relatedKey' => 'id',
+            ),
         ),
         'hasMany' => array(
             'estimated' => array(
@@ -236,10 +248,10 @@ $models['Issue'] = array(
                 'relatedKey' => 'parentId',
             ),
             'comments' => array(
-                'primaryKey' => 'id',
+                'primaryKey' => 'conversationRoomId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
                 'relatedKey' => 'relatedId',
-                'condition' => 'comments.relatedTo = "issue"'
+                'condition' => 'comments.relatedTo = "conversationrooms"'
             ),
             'activities' => array(
                 'primaryKey' => 'id',

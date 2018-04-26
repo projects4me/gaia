@@ -785,6 +785,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             else
             {
                 $new_id = create_guid();
+                $model->newId = $new_id;
                 $value['id'] = $new_id;
             }
             //print_r($value);

@@ -65,6 +65,13 @@ class Model extends PhalconModel
     public $_query;
 
     /**
+     * This is the new id that is being inserted in the system
+     * 
+     * @var $newId
+     */
+    public $newId;
+
+    /**
      * This function is used in order to load the different behaviors that this model is
      * set to use.
      *

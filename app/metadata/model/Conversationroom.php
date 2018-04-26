@@ -96,6 +96,13 @@ $models['Conversationroom'] = array(
             'length' => '255',
             'null' => true,
         ),
+        'issueId' => array(
+            'name' => 'issueId',
+            'label' => 'LBL_CONVERSATION_ROOMS_ISSUE',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -112,6 +119,11 @@ $models['Conversationroom'] = array(
             'project' => array(
                 'primaryKey' => 'projectId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
+                'relatedKey' => 'id',
+            ),
+            'issue' => array(
+                'primaryKey' => 'issueId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'relatedKey' => 'id',
             ),
             'createdBy' => array(
