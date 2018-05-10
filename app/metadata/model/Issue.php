@@ -234,13 +234,13 @@ $models['Issue'] = array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Timelog',
                 'relatedKey' => 'issueId',
-                'condition' => 'estimated.context = "est"'
+                'condition' => 'estimated.context = "est" AND estimated.deleted = "0"'
             ),
             'spent' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Timelog',
                 'relatedKey' => 'issueId',
-                'condition' => 'spent.context = "spent"'
+                'condition' => 'spent.context = "spent" AND spent.deleted = "0"'
             ),
             'childissues' => array(
                 'primaryKey' => 'id',
