@@ -77,5 +77,10 @@ $loader->registerClasses(
     ]
 );
 
+$loader->registerDirs(
+    [
+        __DIR__ . '/foundation/tasks',
+    ]
+);
 
 $loader->register();

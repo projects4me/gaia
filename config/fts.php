@@ -36,12 +36,9 @@
  * This file contains the database configurations
  */
 
-$config['database'] = array(
-    "adapter"   => "Mysql",
-    "host"      => "localhost",
-    "username"  => "root",
-    "password"  => "1",
-    "dbname"    => "projects4me"
+$config['fts'] = array(
+    "host"      => "localhost:9200",
+    "index"    => "projects4me"
 );
 
 return $config;
