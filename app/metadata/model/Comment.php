@@ -6,6 +6,7 @@
 
 $models['Comment'] = array(
     'tableName' => 'comments',
+    'fts' => true,
     'fields' => array(
         'id' => array(
             'name' => 'id',
@@ -19,12 +20,14 @@ $models['Comment'] = array(
             'label' => 'LBL_COMMENTS_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_COMMENTS_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => false
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -39,6 +42,7 @@ $models['Comment'] = array(
             'label' => 'LBL_COMMENTS_DESCRIPTION',
             'type' => 'text',
             'null' => true,
+            'fts' => false
         ),
         'createdUser' => array(
             'name' => 'createdUser',

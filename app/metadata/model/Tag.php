@@ -6,6 +6,7 @@
 
 $models['Tag'] = array(
     'tableName' => 'tags',
+    'fts' => false,
     'fields' => array(
         'id' => array(
             'name' => 'id',
@@ -13,6 +14,7 @@ $models['Tag'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'fts' => true
         ),
         'tag' => array(
             'name' => 'tag',
@@ -20,18 +22,21 @@ $models['Tag'] = array(
             'type' => 'varchar',
             'length' => '100',
             'null' => true,
+            'fts' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_TAG_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_TAG_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'deleted' => array(
             'name' => 'deleted',

@@ -6,6 +6,7 @@
 
 $models['Chatroom'] = array(
     'tableName' => 'chat_rooms',
+    'fts' => false,
     'fields' => array(
         'id' => array(
             'name' => 'id',
@@ -19,18 +20,21 @@ $models['Chatroom'] = array(
             'label' => 'LBL_CHAT_ROOMS_SUBJECT',
             'type' => 'text',
             'null' => false,
+            'fts' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_CHAT_ROOMS_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_CHAT_ROOMS_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -74,6 +78,7 @@ $models['Chatroom'] = array(
             'type' => 'varchar',
             'length' => '15',
             'null' => false,
+            'fts' => true
         ),
         'type' => array(
             'name' => 'type',
@@ -81,6 +86,7 @@ $models['Chatroom'] = array(
             'type' => 'varchar',
             'length' => '15',
             'null' => false,
+            'fts' => true
         ),
     ),
     'indexes' => array(

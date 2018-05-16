@@ -6,6 +6,7 @@
 
 $models['User'] = array(
     'tableName' => 'users',
+    'fts' => false,
     'fields' => array(
         'id' => array(
             'name' => 'id',
@@ -20,18 +21,21 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'fts' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_USERS_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_USERS_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -46,6 +50,7 @@ $models['User'] = array(
             'label' => 'LBL_USERS_DESCRIPTION',
             'type' => 'text',
             'null' => true,
+            'fts' => true
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -95,6 +100,7 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
+            'fts' => true
         ),
         'status' => array(
             'name' => 'status',
@@ -102,6 +108,7 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '25',
             'null' => true,
+            'fts' => true
         ),
         'title' => array(
             'name' => 'title',
@@ -109,6 +116,7 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '100',
             'null' => true,
+            'fts' => true
         ),
         'phone' => array(
             'name' => 'phone',
@@ -116,12 +124,14 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '25',
             'null' => true,
+            'fts' => true
         ),
         'education' => array(
             'name' => 'education',
             'label' => 'LBL_USERS_EDUCATION',
             'type' => 'text',
             'null' => true,
+            'fts' => true
         ),
     ),
     'indexes' => array(

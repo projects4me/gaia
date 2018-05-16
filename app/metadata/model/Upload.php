@@ -6,6 +6,7 @@
 
 $models['Upload'] = array(
     'tableName' => 'uploads',
+    'fts' => false,
     'fields' => array(
         'id' => array(
             'name' => 'id',
@@ -20,18 +21,21 @@ $models['Upload'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
+            'fts' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_UPLOAD_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_UPLOAD_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -67,6 +71,7 @@ $models['Upload'] = array(
             'type' => 'varchar',
             'length' => '15',
             'null' => false,
+            'fts' => true
         ),
         'relatedId' => array(
             'name' => 'relatedId',
@@ -88,6 +93,7 @@ $models['Upload'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => true,
+            'fts' => true
         ),
         'fileSize' => array(
             'name' => 'fileSize',
@@ -95,6 +101,7 @@ $models['Upload'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => true,
+            'fts' => true
         ),
         'fileMime' => array(
             'name' => 'fileMime',

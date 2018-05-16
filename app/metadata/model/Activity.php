@@ -6,6 +6,7 @@
 
 $models['Activity'] = array(
     'tableName' => 'activities',
+    'fts' => true,
     'fields' => array(
         'id' => array(
             'name' => 'id',
@@ -19,12 +20,14 @@ $models['Activity'] = array(
             'label' => 'LBL_ACTIVITIES_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'description' => array(
             'name' => 'description',
             'label' => 'LBL_ACTIVITIES_DESCRIPTION',
             'type' => 'text',
             'null' => true,
+            'fts' => true
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -60,7 +63,8 @@ $models['Activity'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'fts' => true
         ),
         'type' => array(
             'name' => 'type',
@@ -68,6 +72,7 @@ $models['Activity'] = array(
             'type' => 'varchar',
             'length' => '15',
             'null' => false,
+            'fts' => true
         ),
         'relatedActivity' => array(
             'name' => 'relatedActivity',

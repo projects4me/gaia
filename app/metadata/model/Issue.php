@@ -6,6 +6,7 @@
 
 $models['Issue'] = array(
     'tableName' => 'issues',
+    'fts' => false,
     'fields' => array(
         'id' => array(
             'name' => 'id',
@@ -20,18 +21,21 @@ $models['Issue'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
+            'fts' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_ISSUES_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_ISSUES_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -46,6 +50,7 @@ $models['Issue'] = array(
             'label' => 'LBL_ISSUES_DESCRIPTION',
             'type' => 'text',
             'null' => true,
+            'fts' => true
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -103,18 +108,21 @@ $models['Issue'] = array(
             'length' => '11',
             'autoIncrement' => 'true',
             'null' => true,
+            'fts' => true
         ),
         'endDate' => array(
             'name' => 'endDate',
             'label' => 'LBL_ISSUES_END_DATE',
             'type' => 'date',
             'null' => true,
+            'fts' => true
         ),
         'startDate' => array(
             'name' => 'startDate',
             'label' => 'LBL_ISSUES_START_DATE',
             'type' => 'date',
             'null' => true,
+            'fts' => true
         ),
         'status' => array(
             'name' => 'status',
@@ -122,6 +130,7 @@ $models['Issue'] = array(
             'type' => 'varchar',
             'length' => '25',
             'null' => false,
+            'fts' => true
         ),
         'typeId' => array(
             'name' => 'typeId',
@@ -136,6 +145,7 @@ $models['Issue'] = array(
             'type' => 'varchar',
             'length' => '25',
             'null' => false,
+            'fts' => true
         ),
         'projectId' => array(
             'name' => 'projectId',

@@ -6,6 +6,7 @@
 
 $models['Project'] = array(
     'tableName' => 'projects',
+    'fts' => false,
     'fields' => array(
         'id' => array(
             'name' => 'id',
@@ -20,18 +21,21 @@ $models['Project'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
+            'fts' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_PROJECTS_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_PROJECTS_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -81,65 +85,75 @@ $models['Project'] = array(
             'label' => 'LBL_PROJECTS_DESCRIPTION',
             'type' => 'text',
             'null' => true,
+            'fts' => true
         ),
         'startDate' => array(
             'name' => 'startDate',
             'label' => 'LBL_PROJECTS_START_DATE',
             'type' => 'date',
             'null' => true,
+            'fts' => true
         ),
         'endDate' => array(
             'name' => 'endDate',
             'label' => 'LBL_PROJECTS_END_DATE',
             'type' => 'date',
             'null' => true,
+            'fts' => true
         ),
         'shortCode' => array(
             'name' => 'shortCode',
             'label' => 'LBL_PROJECTS_SHORT_CODE',
             'type' => 'varchar',
             'null' => false,
-            'length' => '50'
+            'length' => '50',
+            'fts' => true
         ),
         'status' => array(
             'name' => 'status',
             'label' => 'LBL_PROJECTS_STATUS',
             'type' => 'varchar',
             'null' => false,
-            'length' => '15'
+            'length' => '15',
+            'fts' => true
         ),
         'estimatedBudget' => array(
             'name' => 'estimatedBudget',
             'label' => 'LBL_PROJECTS_ESTIMATED_BUDGET',
             'type' => 'float',
             'null' => true,
-            'length' => '11'
+            'length' => '11',
+            'fts' => true
         ),
         'spentBudget' => array(
             'name' => 'spentBudget',
             'label' => 'LBL_PROJECTS_SPENT_BUDGET',
             'type' => 'float',
             'null' => true,
-            'length' => '11'
+            'length' => '11',
+            'fts' => true
         ),
         'type' => array(
             'name' => 'type',
             'label' => 'LBL_PROJECTS_TYPE',
             'type' => 'varchar',
             'null' => false,
-            'length' => '15'
+            'length' => '15',
+            'fts' => true
         ),
         'scope' => array(
             'name' => 'scope',
             'label' => 'LBL_PROJECTS_SCOPE',
             'type' => 'text',
             'null' => true,
+            'fts' => true
         ),
         'vision' => array(
             'name' => 'vision',
             'label' => 'LBL_PROJECTS_VISION',
             'type' => 'text',
             'null' => true,
+            'fts' => true
         ),
     ),
     'indexes' => array(

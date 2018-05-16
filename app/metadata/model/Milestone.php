@@ -6,6 +6,7 @@
 
 $models['Milestone'] = array(
     'tableName' => 'milestones',
+    'fts' => false,
     'fields' => array(
         'id' => array(
             'name' => 'id',
@@ -20,18 +21,21 @@ $models['Milestone'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
+            'fts' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_MILESTONES_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_MILESTONES_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -46,6 +50,7 @@ $models['Milestone'] = array(
             'label' => 'LBL_MILESTONES_DESCRIPTION',
             'type' => 'text',
             'null' => true,
+            'fts' => true
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -80,12 +85,14 @@ $models['Milestone'] = array(
             'label' => 'LBL_MILESTONES_END_DATE',
             'type' => 'date',
             'null' => true,
+            'fts' => true
         ),
         'startDate' => array(
             'name' => 'startDate',
             'label' => 'LBL_MILESTONES_START_DATE',
             'type' => 'date',
             'null' => true,
+            'fts' => true
         ),
         'status' => array(
             'name' => 'status',
@@ -93,6 +100,7 @@ $models['Milestone'] = array(
             'type' => 'varchar',
             'length' => '25',
             'null' => false,
+            'fts' => true
         ),
         'milestoneType' => array(
             'name' => 'milestoneType',
@@ -100,6 +108,7 @@ $models['Milestone'] = array(
             'type' => 'varchar',
             'length' => '25',
             'null' => false,
+            'fts' => true
         ),
         'projectId' => array(
             'name' => 'projectId',
