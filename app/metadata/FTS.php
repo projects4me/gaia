@@ -22,7 +22,9 @@ $mappings = array(
                 'properties' => array(
                     'subject' => array(
                         'model' => 'issue.subject',
-                        'type' => 'text'
+                        'type' => 'text',
+                        "copy_to" => "fulltext",
+                        "analyzer" => "autocomplete",
                     ),
                     'issueNumber' => array(
                         'model' => 'issue.issueNumber',
@@ -30,19 +32,24 @@ $mappings = array(
                     ),
                 ),
             ),
-            'conversations' => array(
-                'model' => 'conversationroom',
+            'wiki' => array(
+                'model' => 'wiki',
                 'type' => 'nested',
                 'properties' => array(
                     'subject' => array(
-                        'model' => 'conversationroom.subject',
+                        'model' => 'wiki.name',
                         'type' => 'text'
                     ),
                     'description' => array(
-                        'model' => 'converstaionroom.description',
+                        'model' => 'wiki.markUp',
                         'type' => 'text'
                     ),
                 ),
+            ),
+            "fulltext" => array(
+                "analyzer" => "autocomplete",
+                //"search_analyzer" => "standard",
+                "type" => "text"
             ),
         ),
     ),

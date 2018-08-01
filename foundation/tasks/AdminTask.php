@@ -94,6 +94,27 @@ class AdminTask extends Task
         $params = [
             'index' => $settings['index'],
             'body' => array(
+                "settings" => array(
+                    "analysis" => array(
+                        "filter" => array(
+                            "autocomplete_filter" => array(
+                                "type" => "edge_ngram",
+                                "min_gram" =>  1,
+                                "max_gram" => 20
+                            )
+                        ),
+                        "analyzer" => array(
+                            "autocomplete" => array(
+                                "type" => "custom",
+                                "tokenizer" => "standard",
+                                "filter" => array(
+                                    "lowercase",
+                                    "autocomplete_filter"
+                                )
+                            )
+                        )
+                    ),
+                ),
                 'mappings' => $mappings
             )
         ];
