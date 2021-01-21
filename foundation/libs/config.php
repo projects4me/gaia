@@ -36,7 +36,7 @@ class Config
      *
      * @param \Phalcon\DiInterface $di
      */
-    public function __construct(\Phalcon\DiInterface $di)
+    public function __construct(\Phalcon\Di\FactoryDefault $di)
     {
         $this->di = $di;
         $this->init();

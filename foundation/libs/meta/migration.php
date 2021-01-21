@@ -11,12 +11,12 @@ namespace Gaia\Libraries\Meta;
  * therefore we are not including the phalcon-devtool in the application bootstrap using
  * dependency injector to help avoid extra load
  */
-require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Mvc/Model/Migration.php';
-require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Migrations.php';
+// require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Mvc/Model/Migration.php';
+// require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Migrations.php';
 
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
-use Phalcon\Mvc\Model\Migration as PhalconMigration;
+use Phalcon\Migrations\Migrations as PhalconMigration;
 use Gaia\Libraries\File\Handler as fileHandler;
 use Gaia\Libraries\Meta\Manager as metaManager;
 
@@ -46,7 +46,7 @@ class Migration extends PhalconMigration
      *
      * @param \Phalcon\DiInterface $di
      */
-    public function __construct(\Phalcon\DiInterface $di)
+    public function __construct(\Phalcon\Di\FactoryDefault $di)
     {
         $this->di = $di;
     }

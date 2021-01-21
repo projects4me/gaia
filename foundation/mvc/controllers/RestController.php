@@ -165,7 +165,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      *
      * @param EventsManagerInterface $eventsManager
      */
-    public function setEventsManager(EventsManagerInterface $eventsManager)
+    public function setEventsManager(EventsManagerInterface $eventsManager): void
     {
         $this->eventsManager = $eventsManager;
     }
@@ -175,7 +175,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      *
      * @return EventsManager
      */
-    public function getEventsManager(): EventsManager
+    public function getEventsManager(): EventsManagerInterface
     {
         return $this->eventsManager;
     }
