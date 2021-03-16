@@ -3,3 +3,5 @@ prometheus/
 hermes/
 docs/
 *.log
+config/database.php
+composer.lock
