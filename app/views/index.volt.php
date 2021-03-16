@@ -5,19 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Projects 4 Me</title>
-
-    
-    <?php foreach ($cssFiles as $cssFile) { ?>
-    <link rel="stylesheet" href="<?= $cssFile ?>">
-    <?php } ?>
-
-    
-    <?php foreach ($jsFiles as $jsFile) { ?>
-    <script src="<?= $jsFile ?>"></script>
-    <?php } ?>
-    
-    <!--script src="/vendors/ember-i18n-3.1.1/lib/i18n.js"></script-->
-    <script src="/vendors/carhartl-jquery-cookie/jquery.cookie.js"></script>
 </head>
+
+<body>
+    <h1>Welcome to Gaia::Projects4Me</h1>
+    <p>If you are looking for the application UI please download and install the project <a href="https://github.com/projects4me/prometheus" target="_blank">Prometheus</a>.</p>
+</body>
 
 </html>
