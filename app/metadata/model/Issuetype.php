@@ -5,8 +5,8 @@
  */
 
 $models['Issuetype'] = array(
-   'tableName' => 'issue_types',
-   'fields' => array(
+    'tableName' => 'issue_types',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_ISSUE_TYPES_ID',
@@ -39,8 +39,9 @@ $models['Issuetype'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
-       'description' => array(
+        'description' => array(
             'name' => 'description',
             'label' => 'LBL_ISSUE_TYPES_DESCRIPTION',
             'type' => 'text',
@@ -53,9 +54,23 @@ $models['Issuetype'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_ISSUE_TYPES_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
             'label' => 'LBL_ISSUE_TYPES_MODIFIED_USER',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'modifiedUserName' => array(
+            'name' => 'modifiedUserName',
+            'label' => 'LBL_ISSUE_TYPES_MODIFIED_USER_NAME',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
@@ -85,6 +100,14 @@ $models['Issuetype'] = array(
 
     ),
     'relationships' => array(
+    ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 );
 

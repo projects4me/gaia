@@ -21,6 +21,13 @@ $models['Downloadtoken'] = array(
             'length' => '36',
             'null' => true,
         ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_DOWNLOAD_TOKEN_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => true,
+        ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_DOWNLOAD_TOKEN_DATE_CREATED',
@@ -81,7 +88,13 @@ $models['Downloadtoken'] = array(
             )
 
         )
-    )
+    ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior'
+    ),
 );
 
 return $models;

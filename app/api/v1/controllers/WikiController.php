@@ -24,4 +24,5 @@ class WikiController extends RestController
      * @var array $uses
      */
     public $uses = array('Filethumb');
+
 }

@@ -32,6 +32,7 @@ $models['Timelog'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -126,18 +127,27 @@ $models['Timelog'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'relatedKey' => 'id'
             ),
-            'createdUser' => array(
+            'createdBy' => array(
                 'primaryKey' => 'createdUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
-            'modifiedUser' => array(
+            'modifiedBy' => array(
                 'primaryKey' => 'modifiedUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
         ),
     ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
+    ),
+
 );
 
 return $models;

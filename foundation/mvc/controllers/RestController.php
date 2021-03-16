@@ -165,7 +165,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      *
      * @param EventsManagerInterface $eventsManager
      */
-    public function setEventsManager(EventsManagerInterface $eventsManager)
+    public function setEventsManager(EventsManagerInterface $eventsManager): void
     {
         $this->eventsManager = $eventsManager;
     }
@@ -175,7 +175,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      *
      * @return EventsManager
      */
-    public function getEventsManager(): EventsManager
+    public function getEventsManager(): EventsManagerInterface
     {
         return $this->eventsManager;
     }
@@ -611,7 +611,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $modelName = $this->modelName;
         $model = new $modelName();
 
-        $util = new \Gaia\Libraries\Util();
+        $util = new \Gaia\Libraries\Utils\Util();
         $data = array();
 
         //get data
@@ -638,7 +638,6 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             $data[0] = $temp;
         }
 
-
         //scroll through the array data and make the action save/update
         foreach ($data as $key => $value) {
 
@@ -646,8 +645,10 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             if ( isset($value['id']) ) {
                 //if passed by url
                 $model = $modelName::findFirst('id = "'.$value['id'].'"');
+
                 //print_r($value);
                 if ( $model->save($value) ){
+                    $this->eventsManager->fire('rest:afterUpdate', $this, $model);
                     $dataResponse = get_object_vars($model);
                     //update
                     $this->response->setStatusCode(200, "OK");
@@ -716,8 +717,9 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             }
             $updatedData = $model->cloneResult($model, $temp);
             $updatedData->setTransaction($transaction);
-            if(!$updatedData->save())
-            {
+            if ($updatedData->save()) {
+                $this->eventsManager->fire('rest:afterUpdate', $this, $updatedData);
+            } else {
                 $data = array('error' => array('code' => 400, 'description' => 'Unable to save '.$temp['id'].', all changes reverted'));
                 $transaction->rollback("Patched failed for ".$temp['id']);
                 return $this->returnResponse($data);
@@ -734,8 +736,12 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      */
     public function postAction()
     {
+        global $logger;
+        $logger->debug('Gaia.foundation.controllers.rest->postAction');
+
         $modelName = $this->modelName;
         $model = new $modelName();
+        $logger->debug('ModelCreated');
 
         $util = new Util();
         $data = array();
@@ -762,7 +768,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
         //scroll through the arraay data and make the action save/update
         foreach ($data as $key => $value) {
-
+            $logger->debug('Inside ForEach');
             //verify if any value is date (CURRENT_DATE, CURRENT_DATETIME), if it was replace for current date
             foreach ($value as $k => $v) {
                 if ( $v=="CURRENT_DATE" ){
@@ -772,6 +778,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                     $now = new \DateTime();
                     $value[$k] =  $now->format('Y-m-d H:i:s');
                 }
+                $logger->debug('Setting date and time');
             }
 
             //if have param then update
@@ -780,14 +787,19 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             else
             {
                 $new_id = create_guid();
+                $model->newId = $new_id;
                 $value['id'] = $new_id;
             }
-            //print_r($value);
+            $model->assign($value);
             if ( $model->save($value) ){
+                $logger->debug('Firing afterCreate Event');
+                $model->id = $new_id;
+                $this->eventsManager->fire('rest:afterCreate', $this, $model);
                 $dataResponse = get_object_vars($model);
                 //update
-                if ( isset($this->id) ){
+                if (isset($this->id) ){
                     $this->response->setJsonContent(array('status' => 'OK'));
+                    $logger->debug('Status is OK');
                     //insert
                 }else{
                     $dataResponse['id'] = $new_id;
@@ -798,17 +810,13 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                     $dataArray = $this->extractData($data,'one');
                     $finalData = $this->buildHAL($dataArray);
                     return $this->returnResponse($finalData);
-                    /*                    $this->response->setJsonContent(array(
-                                            'status' => 'OK',
-                                            'data' => array_merge($value, $dataResponse) //merge form data with return db
-                                        ));*/
                 }
 
             }else{
                 $errors = array();
                 foreach( $model->getMessages() as $message )
                     $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
-
+                    $logger->error($errors);
                 $this->response->setJsonContent(array(
                     'status' => 'ERROR',
                     'messages' => $errors
@@ -817,6 +825,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
 
         }//end foreach
+
+        $logger->debug('-Gaia.foundation.controllers.rest->postAction');
 
         return $this->response;
     }
@@ -832,10 +842,15 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
         $model = $modelName::findFirst('id = "'.$this->id.'"');
 
+        $GLOBALS['logger']->debug('Deleting a record');
+        $GLOBALS['logger']->debug($model->id);
+        $GLOBALS['logger']->debug($model->deleted);
+
         //delete if exists the object
         if ( $model!=false ){
             if ( $model->delete() == true ){
-                $this->response->setJsonContent(array('data' => array('type' => strtolower($modelName),"id"=>$this->id)));
+                $this->eventsManager->fire('rest:afterDelete', $this, $model);
+                $this->response->setJsonContent(array('data' => array('type' => $this->classWithoutNamespace($modelName),"id"=>$this->id)));
                 $this->response->setStatusCode(200, "OK");
             }else{
                 $this->response->setStatusCode(409, "Conflict");

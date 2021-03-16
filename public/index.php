@@ -10,9 +10,10 @@ use Phalcon\Di,
     Phalcon\Session\Adapter\Files as SessionAdapter,
     Phalcon\Translate\Adapter\NativeArray,
     Phalcon\Logger,
-    Phalcon\Logger\Adapter\File as FileAdapter,
+    Phalcon\Logger\Adapter\Stream as StreamAdapter,
     Gaia\Libraries\Utils\executiontime,
-    Gaia\Libraries\Meta\Migration\Driver as migrationDriver;
+    Gaia\Libraries\Meta\Migration\Driver as migrationDriver,
+    Phalcon\Mvc\Model\Behavior;
 
 use Gaia\Libraries\Test\something;
 
@@ -35,7 +36,13 @@ require APP_PATH . '/autoload.php';
  */
 
 global $logger;
-$logger = new FileAdapter(APP_PATH.'/logs/application.log');
+$loggerAdapter = new StreamAdapter(APP_PATH.'/logs/application.log');
+$logger = new Logger(
+    'applicationlog',
+    [
+        'local'   => $loggerAdapter,
+    ]
+);
 $logger->setLogLevel(Logger::DEBUG);
 
 // Allow from any origin
@@ -90,44 +97,41 @@ try {
         return $url;
     });
 
-
     // @todo - set in di
-//    $config = new \Gaia\Libraries\Config();
-//    $config->init();
-
     // @todo - add actions route
     $di->set('router', function(){
         $router = new Gaia\MVC\Router();
         $router->init();
-//        print "<pre>";
-//        print_r($router);
-//        print "</pre>";die();
         return $router;
     });
 
 
     // Set up the database service
     $di->set('db', function () {
- //       global $logger;
-        $connection = new DbAdapter((array) $GLOBALS['settings']['database']);
+        $connection = new DbAdapter($GLOBALS['settings']['database']->toArray());
         $eventsManager = new Phalcon\Events\Manager();
-        $dblogger = new \Phalcon\Logger\Adapter\File(APP_PATH . "/db.log");
-//         print_r($logger);
+        $dbLoggerAdapter = new StreamAdapter(APP_PATH . "/logs/db.log");
+        $dblogger = new Logger(
+            'dblog',
+            [
+                'local'   => $dbLoggerAdapter,
+            ]
+        );
+        $dblogger = $dblogger->setLogLevel(Logger::DEBUG);
         //Listen all the database events
         $eventsManager->attach('db', function($event, $connection) use ($dblogger) {
-//            global $logger;
             if ($event->getType() == 'beforeQuery') {
                 $GLOBALS['timer']->diff();
                 $sqlVariables = $connection->getSQLVariables();
                 if (count($sqlVariables)) {
-                    $dblogger->log(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
+                    $dblogger->debug(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables));
                 } else {
-                    $dblogger->log(print_r($connection->getSQLBindTypes(),1), \Phalcon\Logger::INFO);
+                    $dblogger->debug(print_r($connection->getSQLBindTypes(),1));
                 }
             }
             if ($event->getType() == 'afterQuery') {
-                $dblogger->log('Query execution time:'.($GLOBALS['timer']->diff()).' seconds', \Phalcon\Logger::INFO);
-                $dblogger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
+                $dblogger->debug('Query execution time:'.($GLOBALS['timer']->diff()).' seconds');
+                $dblogger->debug($connection->getSQLStatement());
             }
         });
 
@@ -165,11 +169,10 @@ try {
     /**
      * @todo move the migration away to elsewhere
      */
-    //$di->get('migrationDriver')->migrate();
 
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);
-    echo $app->handle()->getContent();
+    echo $app->handle($_SERVER["REQUEST_URI"])->getContent();
 
 } catch(\Phalcon\Exception $e) {
      echo "PhalconException: ", $e->getMessage();

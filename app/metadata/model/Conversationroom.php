@@ -6,6 +6,7 @@
 
 $models['Conversationroom'] = array(
     'tableName' => 'conversation_rooms',
+    'fts' => false,
     'fields' => array(
         'id' => array(
             'name' => 'id',
@@ -20,31 +21,36 @@ $models['Conversationroom'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
+            'fts' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_CONVERSATION_ROOMS_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_CONVERSATION_ROOMS_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'deleted' => array(
             'name' => 'deleted',
-            'label' => 'LBL_ISSUE_TYPES_DELETED',
+            'label' => 'LBL_CONVERSATION_ROOMS_DELETED',
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
         'description' => array(
             'name' => 'description',
             'label' => 'LBL_CONVERSATION_ROOMS_DESCRIPTION',
             'type' => 'text',
             'null' => true,
+            'fts' => true
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -80,6 +86,7 @@ $models['Conversationroom'] = array(
             'type' => 'varchar',
             'length' => '15',
             'null' => false,
+            'fts' => true
         ),
         'projectId' => array(
             'name' => 'projectId',
@@ -93,6 +100,13 @@ $models['Conversationroom'] = array(
             'label' => 'LBL_CONVERSATION_ROOMS_PROJECT_NAME',
             'type' => 'varchar',
             'length' => '255',
+            'null' => true,
+        ),
+        'issueId' => array(
+            'name' => 'issueId',
+            'label' => 'LBL_CONVERSATION_ROOMS_ISSUE',
+            'type' => 'varchar',
+            'length' => '36',
             'null' => true,
         ),
     ),
@@ -111,6 +125,11 @@ $models['Conversationroom'] = array(
             'project' => array(
                 'primaryKey' => 'projectId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
+                'relatedKey' => 'id',
+            ),
+            'issue' => array(
+                'primaryKey' => 'issueId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'relatedKey' => 'id',
             ),
             'createdBy' => array(
@@ -138,6 +157,14 @@ $models['Conversationroom'] = array(
                 'condition' => 'votes.relatedTo = "conversationrooms"'
             ),
         ),
+    ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 );
 

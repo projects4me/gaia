@@ -6,6 +6,7 @@
 
 $models['Issue'] = array(
     'tableName' => 'issues',
+    'fts' => false,
     'fields' => array(
         'id' => array(
             'name' => 'id',
@@ -20,18 +21,21 @@ $models['Issue'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
+            'fts' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_ISSUES_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_ISSUES_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -39,18 +43,27 @@ $models['Issue'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
         'description' => array(
             'name' => 'description',
             'label' => 'LBL_ISSUES_DESCRIPTION',
             'type' => 'text',
             'null' => true,
+            'fts' => true
         ),
         'createdUser' => array(
             'name' => 'createdUser',
             'label' => 'LBL_ISSUES_CREATED_USER',
             'type' => 'varchar',
             'length' => '36',
+            'null' => false,
+        ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_ISSUES_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
             'null' => false,
         ),
         'owner' => array(
@@ -81,6 +94,13 @@ $models['Issue'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'modifiedUserName' => array(
+            'name' => 'modifiedUserName',
+            'label' => 'LBL_ISSUES_MODIFIED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'issueNumber' => array(
             'name' => 'issueNumber',
             'label' => 'LBL_ISSUES_ISSUE_NUMBER',
@@ -88,18 +108,21 @@ $models['Issue'] = array(
             'length' => '11',
             'autoIncrement' => 'true',
             'null' => true,
+            'fts' => true
         ),
         'endDate' => array(
             'name' => 'endDate',
             'label' => 'LBL_ISSUES_END_DATE',
             'type' => 'date',
             'null' => true,
+            'fts' => true
         ),
         'startDate' => array(
             'name' => 'startDate',
             'label' => 'LBL_ISSUES_START_DATE',
             'type' => 'date',
             'null' => true,
+            'fts' => true
         ),
         'status' => array(
             'name' => 'status',
@@ -107,6 +130,7 @@ $models['Issue'] = array(
             'type' => 'varchar',
             'length' => '25',
             'null' => false,
+            'fts' => true
         ),
         'typeId' => array(
             'name' => 'typeId',
@@ -121,6 +145,7 @@ $models['Issue'] = array(
             'type' => 'varchar',
             'length' => '25',
             'null' => false,
+            'fts' => true
         ),
         'projectId' => array(
             'name' => 'projectId',
@@ -139,6 +164,13 @@ $models['Issue'] = array(
         'parentId' => array(
             'name' => 'parentId',
             'label' => 'LBL_ISSUES_PARENT',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+        ),
+        'conversationRoomId' => array(
+            'name' => 'conversationRoomId',
+            'label' => 'LBL_ISSUES_CONVERSATION_ROOM',
             'type' => 'varchar',
             'length' => '36',
             'null' => true,
@@ -201,19 +233,24 @@ $models['Issue'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'relatedKey' => 'id',
             ),
+            'conversationroom' => array(
+                'primaryKey' => 'conversationRoomId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
+                'relatedKey' => 'id',
+            ),
         ),
         'hasMany' => array(
             'estimated' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Timelog',
                 'relatedKey' => 'issueId',
-                'condition' => 'estimated.context = "est"'
+                'condition' => 'estimated.context = "est" AND estimated.deleted = "0"'
             ),
             'spent' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Timelog',
                 'relatedKey' => 'issueId',
-                'condition' => 'spent.context = "spent"'
+                'condition' => 'spent.context = "spent" AND spent.deleted = "0"'
             ),
             'childissues' => array(
                 'primaryKey' => 'id',
@@ -221,10 +258,10 @@ $models['Issue'] = array(
                 'relatedKey' => 'parentId',
             ),
             'comments' => array(
-                'primaryKey' => 'id',
+                'primaryKey' => 'conversationRoomId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
                 'relatedKey' => 'relatedId',
-                'condition' => 'comments.relatedTo = "issue"'
+                'condition' => 'comments.relatedTo = "conversationrooms"'
             ),
             'activities' => array(
                 'primaryKey' => 'id',
@@ -239,6 +276,14 @@ $models['Issue'] = array(
                 'condition' => 'files.relatedTo = "issue"',
             ),
         )
+    ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 );
 

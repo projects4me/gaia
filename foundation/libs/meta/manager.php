@@ -38,7 +38,7 @@ class Manager
      *
      * @param \Phalcon\DiInterface $di
      */
-    public function __construct(\Phalcon\DiInterface $di)
+    public function __construct(\Phalcon\Di\FactoryDefault $di)
     {
         $this->di = $di;
     }
@@ -88,15 +88,13 @@ class Manager
             MetaData::MODELS_DATA_TYPES_BIND => $fields['bind'],
 
             // Fields that must be ignored from INSERT SQL statements
-            MetaData::MODELS_AUTOMATIC_DEFAULT_INSERT => array(
-            ),
+            MetaData::MODELS_AUTOMATIC_DEFAULT_INSERT => array(),//$fields['default'],
 
             // Fields that must be ignored from UPDATE SQL statements
-            MetaData::MODELS_AUTOMATIC_DEFAULT_UPDATE => array(
-            ),
+            MetaData::MODELS_AUTOMATIC_DEFAULT_UPDATE => array(),//$fields['default'],
 
             // Default values for columns
-            MetaData::MODELS_DEFAULT_VALUES => $fields['default'],
+            MetaData::MODELS_DEFAULT_VALUES => array(),//$fields['default'],
 
             // Fields that allow empty strings
             MetaData::MODELS_EMPTY_STRING_VALUES => array(
@@ -152,8 +150,10 @@ class Manager
             $data['bind'][$field] = $this->getBindType($properties['type']);
             
             // if default value is set in metadata then set it
-            if (isset($properties['default']))
-                $data['bind'][$field] = $properties['default'];
+            if (isset($properties['default'])) {
+                //$data['bind'][$field] = $properties['default'];
+                $data['default'][$field] = $properties['default'];
+            }
             
         }
         return $data;

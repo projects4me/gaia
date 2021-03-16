@@ -5,8 +5,9 @@
  */
 
 $models['Activity'] = array(
-   'tableName' => 'activities',
-   'fields' => array(
+    'tableName' => 'activities',
+    'fts' => true,
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_ACTIVITIES_ID',
@@ -19,12 +20,14 @@ $models['Activity'] = array(
             'label' => 'LBL_ACTIVITIES_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
-       'description' => array(
+        'description' => array(
             'name' => 'description',
             'label' => 'LBL_ACTIVITIES_DESCRIPTION',
             'type' => 'text',
             'null' => true,
+            'fts' => true
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -54,12 +57,22 @@ $models['Activity'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'deleted' => array(
+            'name' => 'deleted',
+            'label' => 'LBL_ACTIVITIES_DELETED',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+            'default' => 0,
+            'fts' => true
+        ),
         'type' => array(
             'name' => 'type',
             'label' => 'LBL_ACTIVITIES_TYPE',
             'type' => 'varchar',
             'length' => '15',
             'null' => false,
+            'fts' => true
         ),
         'relatedActivity' => array(
             'name' => 'relatedActivity',
@@ -93,20 +106,26 @@ $models['Activity'] = array(
 
     ),
     'relationships' => array(
-      'hasOne' => array(
-        'createdBy' => array(
-            'primaryKey' => 'createdUser',
-            'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-            'relatedKey' => 'id'
-        ),
-        'project' => array(
-            'primaryKey' => 'relatedId',
-            'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
-            'relatedKey' => 'id',
-            'condition' => 'Activity.relatedTo = "project"'
+        'hasOne' => array(
+            'createdBy' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'project' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
+                'relatedKey' => 'id',
+                'condition' => 'Activity.relatedTo = "project"'
+            )
         )
-      )
     ),
+    'behaviors' => array(
+        'auditBehavior',
+        'createdUserBehavior',
+        'dateCreatedBehavior',
+        'softDeleteBehavior'
+   )
 );
 
 return $models;

@@ -11,12 +11,12 @@ namespace Gaia\Libraries\Meta;
  * therefore we are not including the phalcon-devtool in the application bootstrap using
  * dependency injector to help avoid extra load
  */
-require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Mvc/Model/Migration.php';
-require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Migrations.php';
+// require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Mvc/Model/Migration.php';
+// require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Migrations.php';
 
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
-use Phalcon\Mvc\Model\Migration as PhalconMigration;
+use Phalcon\Migrations\Migrations as PhalconMigration;
 use Gaia\Libraries\File\Handler as fileHandler;
 use Gaia\Libraries\Meta\Manager as metaManager;
 
@@ -46,7 +46,7 @@ class Migration extends PhalconMigration
      *
      * @param \Phalcon\DiInterface $di
      */
-    public function __construct(\Phalcon\DiInterface $di)
+    public function __construct(\Phalcon\Di\FactoryDefault $di)
     {
         $this->di = $di;
     }
@@ -107,44 +107,48 @@ class Migration extends PhalconMigration
         );
 
         // Traverse through the fields and process them
-      	foreach($meta[$model]['fields'] as $field => $schema)
-      	{
-                  $fieldOptions = array();
-                  $fieldOptions['type'] = $this->di->get('metaManager')->getFieldType($schema['type']);
-                  if (isset($schema['length']))
-                      $fieldOptions['size'] = $schema['length'];
-                  $fieldOptions['notNull'] = !$schema['null'];
-                  if (isset($schema['autoIncrement'])){
-                      $fieldOptions['autoIncrement'] = $schema['autoIncrement'];
-                  }
+        foreach($meta[$model]['fields'] as $field => $schema)
+        {
+            $fieldOptions = array();
+            $fieldOptions['type'] = $this->di->get('metaManager')->getFieldType($schema['type']);
+            if (isset($schema['length']))
+                $fieldOptions['size'] = $schema['length'];
+            $fieldOptions['notNull'] = !$schema['null'];
+            if (isset($schema['autoIncrement'])){
+                $fieldOptions['autoIncrement'] = $schema['autoIncrement'];
+            }
 
-                  $tableDescription['columns'][] = new Column($schema['name'],$fieldOptions);
-      	}
+            if (isset($schema['default'])){
+                $fieldOptions['default'] = $schema['default'];
+            }
+
+            $tableDescription['columns'][] = new Column($schema['name'],$fieldOptions);
+        }
 
         // Traverse through the indexes and process them
         foreach($meta[$model]['indexes'] as $field => $type)
-      	{
-                  // need to be able to recognize all types of indexes
-                  $indexType = '';
-                  $name = '';
-                  if ($type == 'primary')
-                  {
-                      $name = $indexType = 'PRIMARY';
-                      $tableDescription['indexes'][] = new Index($name, array($field),$indexType);
-                  }
-                  else if ($type == 'unique')
-                  {
-                      $indexType = 'UNIQUE';
-                      $name = $meta[$model]['tableName'].'_'.$field;
-                      $tableDescription['indexes'][] = new Index($name, array($field),$indexType);
-                  }
-                  else {
-                      $indexType = 'INDEX';
-                      $name = $meta[$model]['tableName'].'_'.$field;
-                      $tableDescription['indexes'][] = new Index($name, array($field));
-                  }
+        {
+            // need to be able to recognize all types of indexes
+            $indexType = '';
+            $name = '';
+            if ($type == 'primary')
+            {
+                $name = $indexType = 'PRIMARY';
+                $tableDescription['indexes'][] = new Index($name, array($field),$indexType);
+            }
+            else if ($type == 'unique')
+            {
+                $indexType = 'UNIQUE';
+                $name = $meta[$model]['tableName'].'_'.$field;
+                $tableDescription['indexes'][] = new Index($name, array($field),$indexType);
+            }
+            else {
+                $indexType = 'INDEX';
+                $name = $meta[$model]['tableName'].'_'.$field;
+                $tableDescription['indexes'][] = new Index($name, array($field));
+            }
 
-      	}
+        }
 
         return $tableDescription;
     }

@@ -22,5 +22,5 @@ class IssueController extends RestController
      * @var $uses
      * @type array
      */
-    public $uses = array('Filethumb');
+    public $uses = array('Filethumb','Issueactivities');
 }

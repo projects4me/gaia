@@ -18,4 +18,9 @@ use Gaia\MVC\REST\Controllers\RestController;
  */
 class TimelogController extends RestController
 {
+    /**
+     * The components that are used by Timelog Controller
+     * @var array $uses
+     */
+    public $uses = array('Timelogged');
 }

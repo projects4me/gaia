@@ -46,6 +46,14 @@ $models['Dashboard'] = array(
             'type' => 'text',
             'null' => true,
         ),
+        'deleted' => array(
+            'name' => 'deleted',
+            'label' => 'LBL_DASHBOARD_DELETED',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+            'default' => 0
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -58,6 +66,12 @@ $models['Dashboard'] = array(
     ),
     'relationships' => array(
 
+    ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+        'softDeleteBehavior'
     ),
 );
 

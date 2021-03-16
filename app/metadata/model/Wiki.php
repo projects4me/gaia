@@ -6,6 +6,7 @@
 
 $models['Wiki'] = array(
     'tableName' => 'wiki',
+    'fts' => false,
     'fields' => array(
         'id' => array(
             'name' => 'id',
@@ -20,18 +21,21 @@ $models['Wiki'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
+            'fts' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_WIKI_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_WIKI_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => true,
+            'fts' => true
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -67,6 +71,7 @@ $models['Wiki'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'default' => 0
         ),
         'status' => array(
             'name' => 'status',
@@ -74,6 +79,7 @@ $models['Wiki'] = array(
             'type' => 'varchar',
             'length' => '15',
             'null' => false,
+            'fts' => true
         ),
         'locked' => array(
             'name' => 'locked',
@@ -81,6 +87,7 @@ $models['Wiki'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
+            'fts' => true
         ),
         'upvotes' => array(
             'name' => 'upvotes',
@@ -101,6 +108,7 @@ $models['Wiki'] = array(
             'label' => 'LBL_WIKI_MARK_UP',
             'type' => 'text',
             'null' => false,
+            'fts' => true
         ),
         'parentId' => array(
             'name' => 'parentId',
@@ -178,6 +186,12 @@ $models['Wiki'] = array(
     ),
     'behaviors' => array(
         'aclBehavior',
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
 );
 

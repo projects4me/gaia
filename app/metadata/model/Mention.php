@@ -5,8 +5,8 @@
  */
 
 $models['Mention'] = array(
-   'tableName' => 'mentions',
-   'fields' => array(
+    'tableName' => 'mentions',
+    'fields' => array(
         'id' => array(
             'name' => 'id',
             'label' => 'LBL_MENTIONS_ID',
@@ -26,6 +26,21 @@ $models['Mention'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+        ),
+        'createdUserName' => array(
+            'name' => 'createdUserName',
+            'label' => 'LBL_MENTIONS_CREATED_USER_NAME',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
+        'deleted' => array(
+            'name' => 'deleted',
+            'label' => 'LBL_MENTIONS_DELETED',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+            'default' => 0
         ),
         'relatedTo' => array(
             'name' => 'relatedTo',
@@ -66,29 +81,35 @@ $models['Mention'] = array(
     ),
     'relationships' => array(
         'hasOne' => array(
-          'createdUser' => array(
-              'primaryKey' => 'createdUser',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-              'relatedKey' => 'id'
-          ),
-          'user' => array(
-              'primaryKey' => 'userId',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-              'relatedKey' => 'id'
-          ),
-          'comment' => array(
-              'primaryKey' => 'relatedId',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
-              'relatedKey' => 'id',
-              'condition' => 'Mentions.relatedTo="Comments"'
-          ),
-          'activity' => array(
-              'primaryKey' => 'relatedId',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\Activity',
-              'relatedKey' => 'id',
-              'condition' => 'Mentions.relatedTo="Activities"'
-          )
+            'createdUser' => array(
+                'primaryKey' => 'createdUser',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'user' => array(
+                'primaryKey' => 'userId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'comment' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Comment',
+                'relatedKey' => 'id',
+                'condition' => 'Mentions.relatedTo="Comments"'
+            ),
+            'activity' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Activity',
+                'relatedKey' => 'id',
+                'condition' => 'Mentions.relatedTo="Activities"'
+            )
         )
+    ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'createdUserBehavior',
+        'softDeleteBehavior'
     ),
 );
 

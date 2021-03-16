@@ -41,6 +41,14 @@ $models['Savedsearch'] = array(
             'length' => '100',
             'null' => false,
         ),
+        'deleted' => array(
+            'name' => 'deleted',
+            'label' => 'LBL_SAVED_SEARCHES_DELETED',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+            'default' => 0
+        ),
         'public' => array(
             'name' => 'public',
             'label' => 'LBL_SAVED_SEARCHES_PUBLIC',
@@ -87,6 +95,13 @@ $models['Savedsearch'] = array(
             )
         )
     ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'createdUserBehavior',
+        'softDeleteBehavior'
+    ),
+
 );
 
 return $models;
