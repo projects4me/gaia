@@ -189,7 +189,7 @@ class UploadController extends RestController
     function postAction()
     {
         global $logger;
-
+        
         // Fetch the store path from a configuration
         $storeFolder = 'filesystem'.DS.'uploads';
 
@@ -231,7 +231,8 @@ class UploadController extends RestController
                     'fileDestination' => 'filesystem',
                     'fileThumbnail' => $thumbnail
                 );
-
+                $model->assign($value);
+                $model->save();
                 if ($model->save($value)) {
                     $this->eventsManager->fire('rest:afterCreate', $this, $model);
                     // if we were able to save the model then send the OK status

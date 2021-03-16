@@ -60,7 +60,27 @@ class MysqlExtended extends Mysql
     public function getSqlExpression(array $expression, $escapeChar = null, $bindCounts = null)
     {
         if ($expression["type"] == 'functionCall') {
-            switch (strtoupper($expression["name"])) {
+            $expressionName = strtoupper($expression["name"]);
+
+            switch ($expressionName) {
+                case 'TIMESTAMPDIFF':
+                    $timeUnit = substr($expression["arguments"][0]['value'], 1, -1);
+                    $allowedTimeUnits = [
+                        "MICROSECOND", "SECOND", "MINUTE", "HOUR", "DAY", "WEEK", "MONTH", "QUARTER", "YEAR"
+                    ];
+
+                    if (count($expression["arguments"]) != 3) {
+                        throw new Exception($expressionName . ' requires 3 parameters');
+                    }
+
+                    if (!in_array($timeUnit, $allowedTimeUnits)) {
+                        throw new Exception($expressionName . ' unit is not supported');
+                    }
+
+                    return $expressionName . '(' . $timeUnit . ', ' .
+                        $this->getSqlExpression($expression["arguments"][1]) . ', ' .
+                        $this->getSqlExpression($expression["arguments"][2]) . ')';
+
                 case 'DATE_INTERVAL':
                     if (count($expression["arguments"]) != 2) {
                         throw new Exception('DATE_INTERVAL requires 2 parameters');
@@ -127,6 +147,22 @@ class MysqlExtended extends Mysql
 
                     return $this->getSqlExpression($expression['arguments'][0]) .
                     ' REGEXP (' . $this->getSqlExpression($expression['arguments'][1]) . ')';
+                    break;
+
+                case 'JSON_EXTRACT':
+                    if (count($expression["arguments"]) < 2) {
+                        throw new Exception('JSON_EXTRACT requires 2 parameters');
+                    }
+
+                    $arguments = [];
+                    $length = count($expression["arguments"]);
+                    for ($i = 0; $i < $length; $i++) {
+                        $arguments[] = $i === 0 ?
+                            $this->getSqlExpression($expression["arguments"][$i]) :
+                            $expression["arguments"][$i]['value'];
+                    }
+
+                    return 'JSON_EXTRACT(' . join(', ', $arguments) . ')';
                     break;
             }
         }

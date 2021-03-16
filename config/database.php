@@ -37,11 +37,12 @@
  */
 
 $config['database'] = array(
-    "adapter"   => "Mysql",
-    "host"      => "localhost",
-    "username"  => "root",
-    "password"  => "1",
-    "dbname"    => "projects4me"
+    'adapter'     => 'Mysql',
+    'host'        => 'localhost',
+    'username'    => 'nouman',
+    'password'    => 'Rolus889',
+    'dbname'      => 'pr4m',
+    'charset'     => 'utf8',
 );
 
 return $config;

@@ -97,51 +97,41 @@ try {
         return $url;
     });
 
-
     // @todo - set in di
-//    $config = new \Gaia\Libraries\Config();
-//    $config->init();
-
     // @todo - add actions route
     $di->set('router', function(){
         $router = new Gaia\MVC\Router();
         $router->init();
-//        print "<pre>";
-//        print_r($router);
-//        print "</pre>";die();
         return $router;
     });
 
 
     // Set up the database service
     $di->set('db', function () {
- //       global $logger;
-        var_dump($GLOBALS['settings']['database']->toArray());
         $connection = new DbAdapter($GLOBALS['settings']['database']->toArray());
         $eventsManager = new Phalcon\Events\Manager();
-        $dbLoggerAdapter = new StreamAdapter(APP_PATH . "/db.log");
+        $dbLoggerAdapter = new StreamAdapter(APP_PATH . "/logs/db.log");
         $dblogger = new Logger(
             'dblog',
             [
                 'local'   => $dbLoggerAdapter,
             ]
         );
-//         print_r($logger);
+        $dblogger = $dblogger->setLogLevel(Logger::DEBUG);
         //Listen all the database events
         $eventsManager->attach('db', function($event, $connection) use ($dblogger) {
-//            global $logger;
             if ($event->getType() == 'beforeQuery') {
                 $GLOBALS['timer']->diff();
                 $sqlVariables = $connection->getSQLVariables();
                 if (count($sqlVariables)) {
-                    $dblogger->log(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
+                    $dblogger->debug(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables));
                 } else {
-                    $dblogger->log(print_r($connection->getSQLBindTypes(),1), \Phalcon\Logger::INFO);
+                    $dblogger->debug(print_r($connection->getSQLBindTypes(),1));
                 }
             }
             if ($event->getType() == 'afterQuery') {
-                $dblogger->log('Query execution time:'.($GLOBALS['timer']->diff()).' seconds', \Phalcon\Logger::INFO);
-                $dblogger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
+                $dblogger->debug('Query execution time:'.($GLOBALS['timer']->diff()).' seconds');
+                $dblogger->debug($connection->getSQLStatement());
             }
         });
 
@@ -179,7 +169,6 @@ try {
     /**
      * @todo move the migration away to elsewhere
      */
-    // $di->get('migrationDriver')->migrate();
 
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);

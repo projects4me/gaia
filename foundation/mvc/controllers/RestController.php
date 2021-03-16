@@ -741,6 +741,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
         $modelName = $this->modelName;
         $model = new $modelName();
+        $logger->debug('ModelCreated');
 
         $util = new Util();
         $data = array();
@@ -767,7 +768,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
         //scroll through the arraay data and make the action save/update
         foreach ($data as $key => $value) {
-
+            $logger->debug('Inside ForEach');
             //verify if any value is date (CURRENT_DATE, CURRENT_DATETIME), if it was replace for current date
             foreach ($value as $k => $v) {
                 if ( $v=="CURRENT_DATE" ){
@@ -777,6 +778,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                     $now = new \DateTime();
                     $value[$k] =  $now->format('Y-m-d H:i:s');
                 }
+                $logger->debug('Setting date and time');
             }
 
             //if have param then update
@@ -788,15 +790,16 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                 $model->newId = $new_id;
                 $value['id'] = $new_id;
             }
-            //print_r($value);
+            $model->assign($value);
             if ( $model->save($value) ){
                 $logger->debug('Firing afterCreate Event');
                 $model->id = $new_id;
                 $this->eventsManager->fire('rest:afterCreate', $this, $model);
                 $dataResponse = get_object_vars($model);
                 //update
-                if ( isset($this->id) ){
+                if (isset($this->id) ){
                     $this->response->setJsonContent(array('status' => 'OK'));
+                    $logger->debug('Status is OK');
                     //insert
                 }else{
                     $dataResponse['id'] = $new_id;
@@ -807,17 +810,13 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                     $dataArray = $this->extractData($data,'one');
                     $finalData = $this->buildHAL($dataArray);
                     return $this->returnResponse($finalData);
-                    /*                    $this->response->setJsonContent(array(
-                                            'status' => 'OK',
-                                            'data' => array_merge($value, $dataResponse) //merge form data with return db
-                                        ));*/
                 }
 
             }else{
                 $errors = array();
                 foreach( $model->getMessages() as $message )
                     $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
-
+                    $logger->error($errors);
                 $this->response->setJsonContent(array(
                     'status' => 'ERROR',
                     'messages' => $errors

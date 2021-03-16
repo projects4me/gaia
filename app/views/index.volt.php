@@ -1,13 +1,3 @@
-<?php
-/**
- * This is the application template
- *
- * @package template
- */
-
-1==1;
-
-?>
 <!DOCTYPE html>
 <html lang="en" data-framework="emberjs">
 <head>

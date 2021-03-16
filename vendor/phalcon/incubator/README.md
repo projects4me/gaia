@@ -19,7 +19,7 @@ The code in this repository is written in PHP.
 Install Composer in a common location or in your project:
 
 ```bash
-curl -s http://getcomposer.org/installer | php
+curl -s https://getcomposer.org/installer | php
 ```
 
 Then create the `composer.json` file as follows:
@@ -27,7 +27,7 @@ Then create the `composer.json` file as follows:
 ```json
 {
     "require": {
-        "phalcon/incubator": "^3.2"
+        "phalcon/incubator": "^3.4"
     }
 }
 ```
@@ -52,13 +52,13 @@ $ php composer.phar install
 
 Just clone the repository in a common location or inside your project:
 
-```
+```bash
 git clone https://github.com/phalcon/incubator.git
 ```
 
-For a specific git branch (eg 2.0.13) please use:
+For a specific git branch (eg `2.0.13`) please use:
 
-```
+```bash
 git clone -b 2.0.13 git@github.com:phalcon/incubator.git
 ```
 
@@ -68,12 +68,13 @@ Add or register the following namespace strategy to your `Phalcon\Loader` in ord
 to load classes from the incubator repository:
 
 ```php
-
 $loader = new Phalcon\Loader();
 
-$loader->registerNamespaces([
-    'Phalcon' => '/path/to/incubator/Library/Phalcon/'
-]);
+$loader->registerNamespaces(
+    [
+        'Phalcon' => '/path/to/incubator/Library/Phalcon/',
+    ]
+);
 
 $loader->register();
 ```
@@ -93,4 +94,4 @@ See [INDEX.md](INDEX.md).
 ## License
 
 Incubator is open-sourced software licensed under the [New BSD License](https://github.com/phalcon/incubator/blob/master/LICENSE.txt).<br>
-© 2011-2016, Phalcon Framework Team
+© 2011-2018, Phalcon Framework Team
