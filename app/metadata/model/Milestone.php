@@ -129,12 +129,12 @@ $models['Milestone'] = array(
     ),
     'relationships' => array(
         'hasOne' => array(
-            'createdUser' => array(
+            'createdBy' => array(
                 'primaryKey' => 'createdUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
-            'modifiedUser' => array(
+            'modifiedBy' => array(
                 'primaryKey' => 'modifiedUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
