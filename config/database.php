@@ -42,7 +42,7 @@ $config['database'] = array(
     'username'    => 'nouman',
     'password'    => 'Rolus889',
     'dbname'      => 'pr4m',
-    'charset'     => 'utf8',
+    'charset'     => 'utf8mb4',
 );
 
 return $config;
