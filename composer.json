@@ -20,6 +20,11 @@
     "bshaffer/oauth2-server-php": "~1.8",
     "phalcon/devtools": ">=4.0.3",
     "elasticsearch/elasticsearch": "~6.0",
-    "monolog/monolog": "~1.0"
+    "monolog/monolog": "~1.0",
+    "ext-mbstring": "*",
+    "ext-curl": "*",
+    "psr": "*",
+    "xml": "*",
+    "pdo_mysql": "*"
   }
 }
