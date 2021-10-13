@@ -647,6 +647,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                 $model = $modelName::findFirst('id = "'.$value['id'].'"');
 
                 //print_r($value);
+                $model->assign($value);
                 if ( $model->save($value) ){
                     $this->eventsManager->fire('rest:afterUpdate', $this, $model);
                     $dataResponse = get_object_vars($model);
