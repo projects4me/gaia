@@ -8,7 +8,8 @@ namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\MVC\REST\Controllers\RestController;
 use function Gaia\Libraries\Utils\create_guid as create_guid;
-
+use Gaia\MVC\Models\Upload;
+use Gaia\MVC\Models\Downloadtoken;
 /**
  * Upload controller
  *
@@ -107,8 +108,8 @@ class UploadController extends RestController
             );
 
             // Save
-
-            if ($downloadLink->save($values)){
+            $downloadLink->assign($values);
+            if ($downloadLink->save()){
                 $this->finalData['data'][0]['attributes']['downloadLink'] = $values['downloadToken'];
             }
         }
