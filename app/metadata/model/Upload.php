@@ -91,7 +91,7 @@ $models['Upload'] = array(
             'name' => 'fileType',
             'label' => 'LBL_UPLOAD_FILE_TYPE',
             'type' => 'varchar',
-            'length' => '36',
+            'length' => '100',
             'null' => true,
             'fts' => true
         ),
@@ -107,7 +107,7 @@ $models['Upload'] = array(
             'name' => 'fileMime',
             'label' => 'LBL_UPLOAD_FILE_MIME',
             'type' => 'varchar',
-            'length' => '36',
+            'length' => '100',
             'null' => true,
         ),
         'filePath' => array(
