@@ -6,8 +6,7 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use \Gaia\MVC\Models\Downloadtoken;
-
+use Gaia\MVC\Models\Downloadtoken;
 /**
  * Download controller
  *
@@ -38,11 +37,11 @@ class DownloadController extends \Phalcon\Mvc\Controller
         }
 
         $params = array(
-            'where' => '(\\Gaia\\MVC\\Models\\Downloadtoken.downloadToken : '.$id.')',
-            'sort' => '\\Gaia\\MVC\\Models\\Downloadtoken.dateCreated',
+            'where' => '(Downloadtoken.downloadToken : '.$id.')',
+            'sort' => 'Downloadtoken.dateCreated',
         );
 
-        $model = new Downloadtoken();
+        $model = new Downloadtoken;
         $data = $model->readAll($params);
         if (isset($data[0]) && $data[0]->downloadToken) {
             $logger->info("Found the download token");
