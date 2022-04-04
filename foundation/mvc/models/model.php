@@ -12,10 +12,6 @@ use Phalcon\Mvc\Model\MetaData;
 use Gaia\Libraries\Utils\Util;
 
 /**
- * 1
- */
-
-/**
  * This class is the base model in the the application and is used to
  * overwrite the default functionality of Phalcon\Mvc\Model in order to
  * introduce manual meta-data extensions along with other changes
@@ -470,6 +466,12 @@ class Model extends PhalconModel
         // setup the passed columns
         $query->columns($params['fields']);
 
+        // if grouping is requested then set it up 
+        if(isset($params['groupBy']) && !empty($params['groupBy']))
+        {
+            $query->groupBy([$params['groupBy']]);
+        }
+        
         // if sorting is requested then set it up
         if (isset($params['sort']) && !empty($params['sort']))
         {
