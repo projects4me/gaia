@@ -553,6 +553,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $query = $this->request->get('query',null,'');
         $sort = $this->request->get('sort',null,'');
         $order = $this->request->get('order',null,'DESC');
+        $groupBy = $this->request->get('group',null,array());
 
         $fields = $this->request->get('fields',null,array());
 
@@ -565,7 +566,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             'sort' => $sort,
             'order' => $order,
             'limit'=> $limit,
-            'offset' => $offset
+            'offset' => $offset,
+            'groupBy' => $groupBy
         );
 
         $model = new $modelName;
