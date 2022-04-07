@@ -461,8 +461,21 @@ class Model extends PhalconModel
         $relations = $this->getRelationships();
         $modelName = get_class($this);
 
-        $query->from([$this->modelAlias => $modelName]);
+        // prepare count statement
+        if(isset($params['count']) && !empty($params['count']))
+        {
+            $countStatement = explode("as", $params['count']);
+            $count = 'COUNT('.$countStatement[0].') as'.$countStatement[1];
+            array_push($params['fields'], $count);
+        }
 
+        // if HAVING clause is requested then set it up
+        if(isset($params['having']) && !empty($params['having']))
+        {
+            $query->having($params['having']);
+        }
+
+        $query->from([$this->modelAlias => $modelName]);
         // setup the passed columns
         $query->columns($params['fields']);
 
