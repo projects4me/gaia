@@ -463,6 +463,19 @@ class Model extends PhalconModel
 
         $query->from([$this->modelAlias => $modelName]);
 
+        // Check if user has requested "id", if not then set it.
+        if(is_array($params['rels']) && !in_array("{$this->modelAlias}.id", $params['fields'])) {
+            
+            // if rels is given and id without its module is given e.g 'Module.id' is
+            // not given then delete that id field and create 'Module.id' field
+            $idIndex = array_search('id', $params['fields']);
+            if($idIndex) {
+                unset($params['fields'][$idIndex]);
+            }
+            
+            array_push($params['fields'], "{$this->modelAlias}.id");
+        }
+
         // setup the passed columns
         $query->columns($params['fields']);
 
