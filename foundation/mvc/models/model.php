@@ -76,10 +76,8 @@ class Model extends PhalconModel
     public function loadBehavior()
     {
         // Load each of the relationship types one by one
-        if (isset($this->metadata['behaviors']) && !empty($this->metadata['behaviors']))
-        {
-            foreach($this->metadata['behaviors'] as $behavior)
-            {
+        if (isset($this->metadata['behaviors']) && !empty($this->metadata['behaviors'])) {
+            foreach ($this->metadata['behaviors'] as $behavior) {
                 $behaviorClass = '\\Gaia\\MVC\\Models\\Behaviors\\' . $behavior;
                 $this->addBehavior(new $behaviorClass);
             }
@@ -94,10 +92,8 @@ class Model extends PhalconModel
     protected function loadRelationships()
     {
         // Load each of the relationship types one by one
-        if (isset($this->metadata['relationships']['hasOne']))
-        {
-            foreach($this->metadata['relationships']['hasOne'] as $alias => $relationship)
-            {
+        if (isset($this->metadata['relationships']['hasOne'])) {
+            foreach ($this->metadata['relationships']['hasOne'] as $alias => $relationship) {
                 $this->hasOne(
                     $relationship['primaryKey'],
                     $relationship['relatedModel'],
@@ -110,10 +106,8 @@ class Model extends PhalconModel
         }
 
         // Load each of the relationship types one by many
-        if (isset($this->metadata['relationships']['hasMany']))
-        {
-            foreach($this->metadata['relationships']['hasMany'] as $alias => $relationship)
-            {
+        if (isset($this->metadata['relationships']['hasMany'])) {
+            foreach ($this->metadata['relationships']['hasMany'] as $alias => $relationship) {
                 $this->hasMany(
                     $relationship['primaryKey'],
                     $relationship['relatedModel'],
@@ -126,10 +120,8 @@ class Model extends PhalconModel
         }
 
         // Load each of the relationship types many by one
-        if (isset($this->metadata['relationships']['belongsTo']))
-        {
-            foreach($this->metadata['relationships']['belongsTo'] as $alias => $relationship)
-            {
+        if (isset($this->metadata['relationships']['belongsTo'])) {
+            foreach ($this->metadata['relationships']['belongsTo'] as $alias => $relationship) {
                 $this->belongsTo(
                     $relationship['primaryKey'],
                     $relationship['relatedModel'],
@@ -142,10 +134,8 @@ class Model extends PhalconModel
         }
 
         // Load each of the relationship types many by many
-        if (isset($this->metadata['relationships']['hasManyToMany']))
-        {
-            foreach($this->metadata['relationships']['hasManyToMany'] as $alias => $relationship)
-            {
+        if (isset($this->metadata['relationships']['hasManyToMany'])) {
+            foreach ($this->metadata['relationships']['hasManyToMany'] as $alias => $relationship) {
                 $this->hasManyToMany(
                     $relationship['primaryKey'],
                     $relationship['relatedModel'],
@@ -208,9 +198,8 @@ class Model extends PhalconModel
     public function getFields()
     {
         $fields = $this->metadata[MetaData::MODELS_ATTRIBUTES];
-        foreach ($fields as &$field)
-        {
-            $field = $this->modelAlias.'.'.$field;
+        foreach ($fields as &$field) {
+            $field = $this->modelAlias . '.' . $field;
         }
         return $fields;
     }
@@ -225,13 +214,10 @@ class Model extends PhalconModel
     {
         $relations = array();
 
-        foreach($this->metadata['relationships'] as $relType => $relationships)
-        {
-            foreach($relationships as $name => $data)
-            {
+        foreach ($this->metadata['relationships'] as $relType => $relationships) {
+            foreach ($relationships as $name => $data) {
 
-                if (!$type || $type == $relType)
-                {
+                if (!$type || $type == $relType) {
                     $data['type'] = $relType;
                     $relations[$name] = $data;
                 }
@@ -255,57 +241,44 @@ class Model extends PhalconModel
         // Get fields and relationships
         $moduleFields = $this->getFields();
         $relationshipFields = array();
-        $relations = array_merge($this->getRelationships('hasOne'),$this->getRelationships('belongsTo'));
+        $relations = array_merge($this->getRelationships('hasOne'), $this->getRelationships('belongsTo'));
         $relations = $this->getRelationships();
 
         // Prepare the default joins
-        if(!isset($params['rels']) || (isset($params['rels']) && empty($params['rels'])))
-        {
+        if (!isset($params['rels']) || (isset($params['rels']) && empty($params['rels']))) {
             $params['rels'] = array_keys($relations);
-        }
-        else if (isset($params['rels'][0]) && $params['rels'][0] == 'none')
-        {
+        } else if (isset($params['rels'][0]) && $params['rels'][0] == 'none') {
             $params['rels'] = array();
         }
 
         //Verify the relationships
-        foreach($params['rels'] as $relationship)
-        {
-            if (!isset($relations[$relationship]) || empty($relations[$relationship]))
-            {
-                throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
+        foreach ($params['rels'] as $relationship) {
+            if (!isset($relations[$relationship]) || empty($relations[$relationship])) {
+                throw new \Phalcon\Exception('Relationship ' . $relationship . " not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
             }
 
-            if (!(isset($params['fields']) && !empty($params['fields'])))
-            {
-                $relationshipFields[] = $relationship.'.*';
-            }
-            else
-            {
-                if (!in_array($relationship.'.*', $params['fields']))
-                {
-                    $relationshipFields[] = $relationship.'.*';
+            if (!(isset($params['fields']) && !empty($params['fields']))) {
+                $relationshipFields[] = $relationship . '.*';
+            } else {
+                if (!in_array($relationship . '.*', $params['fields'])) {
+                    $relationshipFields[] = $relationship . '.*';
                 }
             }
-
         }
 
         // Set the fields
-        if (isset($params['fields']) && !empty($params['fields']))
-        {
-            $params['fields'] = array_merge($params['fields'],$relationshipFields);
-        }
-        else
-        {
-            $params['fields'] = array_merge($moduleFields,$relationshipFields);
+        if (isset($params['fields']) && !empty($params['fields'])) {
+            $params['fields'] = array_merge($params['fields'], $relationshipFields);
+        } else {
+            $params['fields'] = array_merge($moduleFields, $relationshipFields);
         }
 
         $this->_query = $this->getDI()->get('modelsManager')->createBuilder();
-        $this->_query->andWhere($this->modelAlias.".id = '".$params['id']."'");
+        $this->_query->andWhere($this->modelAlias . ".id = '" . $params['id'] . "'");
         $this->fireEvent("beforeQuery");
 
         // get the query
-        $this->_query = $this->setQuery($this->_query,$params);
+        $this->_query = $this->setQuery($this->_query, $params);
 
 
         // process ACL and other behaviors before executing the query
@@ -326,68 +299,55 @@ class Model extends PhalconModel
     public function readAll(array $params)
     {
 
-        $this->fireEvent("beforeRead");//->fire("model:beforeRead", $this);
+        $this->fireEvent("beforeRead"); //->fire("model:beforeRead", $this);
 
         // Get fields and relationships
         $moduleFields = $this->getFields();
         $relationshipFields = array();
-        $relations = array_merge($this->getRelationships('hasOne'),$this->getRelationships('belongsTo'));
+        $relations = array_merge($this->getRelationships('hasOne'), $this->getRelationships('belongsTo'));
         $relations = $this->getRelationships();
         $userDefinedRelations = true;
 
         // Prepare the default joins
-        if(!isset($params['rels']) || (isset($params['rels']) && empty($params['rels'])))
-        {
+        if (!isset($params['rels']) || (isset($params['rels']) && empty($params['rels']))) {
             $params['rels'] = array_keys($relations);
-        }
-        else if (isset($params['rels'][0]) && $params['rels'][0] == 'none')
-        {
+        } else if (isset($params['rels'][0]) && $params['rels'][0] == 'none') {
             $params['rels'] = array();
         }
 
-        if(isset($params['fields']) && !empty($params['fields']))
-        {
-            if(!is_array($params['fields']))
-                $params['fields'] = explode (',', $params['fields']);
+        if (isset($params['fields']) && !empty($params['fields'])) {
+            if (!is_array($params['fields'])) {
+                $params['fields'] = explode(',', $params['fields']);
+            }
         }
 
         //Verify the relationships
-        foreach($params['rels'] as $relationship)
-        {
-            if (!isset($relations[$relationship]) || empty($relations[$relationship]))
-            {
-                throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
+        foreach ($params['rels'] as $relationship) {
+            if (!isset($relations[$relationship]) || empty($relations[$relationship])) {
+                throw new \Phalcon\Exception('Relationship ' . $relationship . " not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
             }
 
-            if (!(isset($params['fields']) && !empty($params['fields'])))
-            {
-                $relationshipFields[] = $relationship.'.*';
-            }
-            else
-            {
-                if (!in_array($relationship.'.*', $params['fields']))
-                {
-                    $relationshipFields[] = $relationship.'.*';
+            if (!(isset($params['fields']) && !empty($params['fields']))) {
+                $relationshipFields[] = $relationship . '.*';
+            } else {
+                if (!in_array($relationship . '.*', $params['fields'])) {
+                    $relationshipFields[] = $relationship . '.*';
                 }
             }
-
         }
 
         // Set the fields
-        if (isset($params['fields']) && !empty($params['fields']))
-        {
-            $params['fields'] = array_merge($params['fields'],$relationshipFields);
-        }
-        else
-        {
-            $params['fields'] = array_merge($moduleFields,$relationshipFields);
+        if (isset($params['fields']) && !empty($params['fields'])) {
+            $params['fields'] = array_merge($params['fields'], $relationshipFields);
+        } else {
+            $params['fields'] = array_merge($moduleFields, $relationshipFields);
         }
 
         $this->_query = $this->getDI()->get('modelsManager')->createBuilder();
 
         $this->fireEvent("beforeQuery");
         // get the query
-        $this->_query = $this->setQuery($this->_query,$params);
+        $this->_query = $this->setQuery($this->_query, $params);
 
         // process ACL and other behaviors before executing the query
         $data = $this->_query->execute();
@@ -412,37 +372,55 @@ class Model extends PhalconModel
 
         //$relation = $modelRelations[$related];
 
-        if (!isset($modelRelations[$related]) || empty($modelRelations[$related]))
-        {
-            throw new \Phalcon\Exception('Relationship '.$related." not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
+        if (!isset($modelRelations[$related]) || empty($modelRelations[$related])) {
+            throw new \Phalcon\Exception('Relationship ' . $related . " not found. Please check spellings or refer to the guides. one-many and many-many are not supported in this call.");
         }
 
         $params['rels'] = array($related);
 
         // Set the fields
-        if (isset($params['fields']) && !empty($params['fields']))
-        {
+        if (isset($params['fields']) && !empty($params['fields'])) {
             $params['fields'] = $params['fields'];
-        }
-        else
-        {
-            $params['fields'] = $related.'.*';
+        } else {
+            $params['fields'] = $related . '.*';
         }
 
         $this->_query = $this->getDI()->get('modelsManager')->createBuilder();
 
-        $this->_query->andWhere($this->modelAlias.".id = '".$params['id']."'");
+        $this->_query->andWhere($this->modelAlias . ".id = '" . $params['id'] . "'");
 
         $this->fireEvent("beforeQuery");
 
         // get the query
-        $this->_query = $this->setQuery($this->_query,$params);
+        $this->_query = $this->setQuery($this->_query, $params);
 
         // process ACL and other behaviors before executing the query
         $data = $this->_query->execute();
         $this->_query = null;
 
         return $data;
+    }
+
+    /**
+     * If we want to do some work before setting up query, then we have to put that 
+     * logic inside this function and call that function in setQuery method.
+     *
+     * @param array $params
+     */
+    protected function beforeSetQuery(array &$params)
+    {
+        // Check if user has requested "id", if not then set it.
+        if (is_array($params['rels']) && !in_array("{$this->modelAlias}.id", $params['fields'])) {
+
+            // if rels is given and id without its module is given e.g 'Module.id' is
+            // not given then delete that id field and create 'Module.id' field
+            $idIndex = array_search('id', $params['fields']);
+            if ($idIndex) {
+                unset($params['fields'][$idIndex]);
+            }
+
+            array_push($params['fields'], "{$this->modelAlias}.id");
+        }
     }
 
     /**
@@ -455,12 +433,15 @@ class Model extends PhalconModel
      * @return \Phalcon\Mvc\Model\Criteria
      * @throws \Phalcon\Exception
      */
-    protected function setQuery($query,array $params)
+    protected function setQuery($query, array $params)
     {
         // fetch all the relationships
         $relations = $this->getRelationships();
         $modelName = get_class($this);
 
+        $this->beforeSetQuery($params);
+
+        $query->from([$this->modelAlias => $modelName]);
         // prepare count statement
         if(isset($params['count']) && !empty($params['count']))
         {
@@ -480,115 +461,91 @@ class Model extends PhalconModel
         $query->columns($params['fields']);
 
         // if grouping is requested then set it up 
-        if(isset($params['groupBy']) && !empty($params['groupBy']))
-        {
+        if (isset($params['groupBy']) && !empty($params['groupBy'])) {
             $query->groupBy([$params['groupBy']]);
         }
-        
+
         // if sorting is requested then set it up
-        if (isset($params['sort']) && !empty($params['sort']))
-        {
+        if (isset($params['sort']) && !empty($params['sort'])) {
             // if order is requested the use otherwise use the default one
-            if (isset($params['order']) && !empty($params['order']))
-            {
-                $query->orderBy($params['sort'].' '.$params['order']);
-            }
-            else
-            {
+            if (isset($params['order']) && !empty($params['order'])) {
+                $query->orderBy($params['sort'] . ' ' . $params['order']);
+            } else {
                 $query->orderBy($params['sort']);
             }
         }
 
         // if pagination params are set then set them up
-        if (isset($params['limit']) && !empty($params['limit']))
-        {
-            if (isset($params['offset']) && !empty($params['offset']))
-            {
+        if (isset($params['limit']) && !empty($params['limit'])) {
+            if (isset($params['offset']) && !empty($params['offset'])) {
                 $query->limit($params['limit'], $params['offset']);
-            }
-            else
-            {
+            } else {
                 $query->limit($params['limit']);
             }
         }
 
         // if condition is requested then set it up
-        if (isset($params['where']) && !empty($params['where']))
-        {
+        if (isset($params['where']) && !empty($params['where'])) {
             $where = self::preProcessWhere($params['where']);
-            $GLOBALS['logger']->debug(print_r($query->getWhere(),1));
+            $GLOBALS['logger']->debug(print_r($query->getWhere(), 1));
             if (empty($query->getWhere())) {
                 $query->where($where);
             } else {
                 $query->andWhere($where);
             }
-
         }
 
         // setup all the clauses related to relationships
-        foreach($params['rels'] as $relationship)
-        {
+        foreach ($params['rels'] as $relationship) {
             //check Many-Many and hasMany as well
-            if (!isset($relations[$relationship]) || empty($relations[$relationship]))
-            {
-                throw new \Phalcon\Exception('Relationship '.$relationship." not found. Please check spellings or refer to the guides.");
+            if (!isset($relations[$relationship]) || empty($relations[$relationship])) {
+                throw new \Phalcon\Exception('Relationship ' . $relationship . " not found. Please check spellings or refer to the guides.");
             }
 
             // If hte relationtype is defined in the meta data then use that
             // otherwise use the leftJoin as the default
-            if (isset($relations[$relationship]['relType']))
-            {
-                $join = \Phalcon\Text::lower($relations[$relationship]['relType'])."Join";
-            }
-            else
-            {
+            if (isset($relations[$relationship]['relType'])) {
+                $join = \Phalcon\Text::lower($relations[$relationship]['relType']) . "Join";
+            } else {
                 $join = 'leftJoin';
             }
 
             // based on the metadata setup the joins in order to fetch relationships
-            if ($relations[$relationship]['type'] == 'hasManyToMany')
-            {
+            if ($relations[$relationship]['type'] == 'hasManyToMany') {
                 // for a many-many relationship two joins are required
                 $relatedModel = $relations[$relationship]['relatedModel'];
                 $relatedModelAlias = Util::classWithoutNamespace($relatedModel);
                 $secondaryModel = $relations[$relationship]['secondaryModel'];
 
-                $relatedQuery = $this->modelAlias.'.'.$relations[$relationship]['primaryKey'].
-                    ' = '.$relationship.$relatedModelAlias.'.'.$relations[$relationship]['rhsKey'];
-                $secondaryQuery = $relationship.'.'.$relations[$relationship]['secondaryKey'].
-                    ' = '.$relationship.$relatedModelAlias.'.'.$relations[$relationship]['lhsKey'];
+                $relatedQuery = $this->modelAlias . '.' . $relations[$relationship]['primaryKey'] .
+                    ' = ' . $relationship . $relatedModelAlias . '.' . $relations[$relationship]['rhsKey'];
+                $secondaryQuery = $relationship . '.' . $relations[$relationship]['secondaryKey'] .
+                    ' = ' . $relationship . $relatedModelAlias . '.' . $relations[$relationship]['lhsKey'];
 
-                if (isset($relations[$relationship]['condition']))
-                {
-                    $relatedQuery .= ' AND ('.$relations[$relationship]['condition'].')';
+                if (isset($relations[$relationship]['condition'])) {
+                    $relatedQuery .= ' AND (' . $relations[$relationship]['condition'] . ')';
                 }
 
-                $query->$join($relatedModel,$relatedQuery,$relationship.$relatedModelAlias);
-                $query->$join($secondaryModel,$secondaryQuery,$relationship);
-            }
-            else
-            {
+                $query->$join($relatedModel, $relatedQuery, $relationship . $relatedModelAlias);
+                $query->$join($secondaryModel, $secondaryQuery, $relationship);
+            } else {
                 $relatedModel = $relations[$relationship]['relatedModel'];
 
                 // If an exclusive condition is defined then use that
-                if (isset($relations[$relationship]['conditionExclusive']))
-                {
+                if (isset($relations[$relationship]['conditionExclusive'])) {
                     $relatedQuery = $relations[$relationship]['conditionExclusive'];
-                    $query->$join($relatedModel,$relatedQuery,$relationship);
-                }
-                else
-                {
-                    $relatedQuery = $this->modelAlias.'.'.$relations[$relationship]['primaryKey'].
-                        ' = '.$relationship.'.'.$relations[$relationship]['relatedKey'];
+                    $query->$join($relatedModel, $relatedQuery, $relationship);
+                } else {
+                    $relatedQuery = $this->modelAlias . '.' . $relations[$relationship]['primaryKey'] .
+                        ' = ' . $relationship . '.' . $relations[$relationship]['relatedKey'];
 
                     // if a condition is set in the metadat then use it
-                    if (isset($relations[$relationship]['condition']))
-                    {
-                        $relatedQuery .= ' AND '.$relations[$relationship]['condition'];
+                    if (isset($relations[$relationship]['condition'])) {
+                        $relatedQuery .= ' AND ' . $relations[$relationship]['condition'];
                     }
 
                     // for each relationship apply the relationship joins
-                    $query->$join($relatedModel,$relatedQuery,$relationship);
+                    $query->$join($relatedModel, $relatedQuery, $relationship);
                 }
             }
         }
@@ -668,131 +625,115 @@ class Model extends PhalconModel
         $query = $statement;
 
         // ensure that the parenthesis are well formed
-        if(substr_count($statement, '(') != substr_count($statement, ')'))
-        {
-            $errorStr = 'Invalid query, please refer to the guides. '.
+        if (substr_count($statement, '(') != substr_count($statement, ')')) {
+            $errorStr = 'Invalid query, please refer to the guides. ' .
                 'Please check the parenthesis in the query. ';
-            if (substr_count($statement, '(') > substr_count($statement, ')'))
-            {
+            if (substr_count($statement, '(') > substr_count($statement, ')')) {
                 $errorStr .= 'You have forgotten ")"';
-            }
-            else
-            {
+            } else {
                 $errorStr .= 'You have forgotten "("';
             }
             throw new \Phalcon\Exception($errorStr);
         }
         // extract all the substatments based on parenthesis
         $expression = '@\([^(]*[^)]\)@';
-        if (preg_match_all($expression,$statement,$matches))
-        {
+        if (preg_match_all($expression, $statement, $matches)) {
             $substatements = $matches[0];
-            foreach($substatements as $substatement)
-            {
+            foreach ($substatements as $substatement) {
                 // Check for :,<,>,<:,>: in the string, if found then process
                 // ignoring the spaces
 
-                if (preg_match('@NULL|EMPTY@', $substatement))
-                {
-                    $valueOffset = strlen($substatement)-2;
-                }
-                else
-                {
+                if (preg_match('@NULL|EMPTY@', $substatement)) {
+                    $valueOffset = strlen($substatement) - 2;
+                } else {
                     // Get the position for the second space in a substatement
-                    $valueOffset = strpos($substatement, ' ',(strpos($substatement, ' ')+1));
+                    $valueOffset = strpos($substatement, ' ', (strpos($substatement, ' ') + 1));
                 }
-                $value = substr($substatement, $valueOffset,(strlen($substatement)-$valueOffset-1));
+                $value = substr($substatement, $valueOffset, (strlen($substatement) - $valueOffset - 1));
 
-                list($field,$operator) = explode(' ',substr($substatement, 1,$valueOffset));
+                list($field, $operator) = explode(' ', substr($substatement, 1, $valueOffset));
 
                 // Trim three components of the substatement
                 $operator = strtoupper(trim($operator));
                 $field = trim($field);
                 $value = trim($value);
-                $value = trim($value,"'");
+                $value = trim($value, "'");
                 $translatedStatement = '';
                 // parse based on the operator
-                switch ($operator)
-                {
+                switch ($operator) {
                     case ':':
-                        $translatedStatement = "(".$field." = '".$value."')";
+                        $translatedStatement = "(" . $field . " = '" . $value . "')";
                         break;
                     case '!:':
-                        $translatedStatement = "(".$field." != '".$value."')";
+                        $translatedStatement = "(" . $field . " != '" . $value . "')";
                         break;
                     case '>':
-                        $translatedStatement = "(".$field." > '".$value."')";
+                        $translatedStatement = "(" . $field . " > '" . $value . "')";
                         break;
                     case '<':
-                        $translatedStatement = "(".$field." < '".$value."')";
+                        $translatedStatement = "(" . $field . " < '" . $value . "')";
                         break;
                     case '>:':
-                        $translatedStatement = "(".$field." >= '".$value."')";
+                        $translatedStatement = "(" . $field . " >= '" . $value . "')";
                         break;
                     case '<:':
-                        $translatedStatement = "(".$field." <= '".$value."')";
+                        $translatedStatement = "(" . $field . " <= '" . $value . "')";
                         break;
                     case 'CONTAINS':
-                        if (preg_match("@','@",$value))
-                        {
-                            $translatedStatement = "(".$field." IN ('".$value."'))";
-                        }
-                        else
-                        {
-                            $translatedStatement = "(".$field." LIKE '%".$value."%')";
+                        if (preg_match("@','@", $value)) {
+                            $translatedStatement = "(" . $field . " IN ('" . $value . "'))";
+                        } else {
+                            $translatedStatement = "(" . $field . " LIKE '%" . $value . "%')";
                         }
                         break;
                     case 'STARTS':
-                        $translatedStatement = "(".$field." LIKE '".$value."%')";
+                        $translatedStatement = "(" . $field . " LIKE '" . $value . "%')";
                         break;
                     case 'ENDS':
-                        $translatedStatement = "(".$field." LIKE '%".$value."')";
+                        $translatedStatement = "(" . $field . " LIKE '%" . $value . "')";
                         break;
                     case '!CONTAINS':
-                        if (preg_match("@','@",$value))
-                        {
-                            $translatedStatement = "(".$field." NOT IN ('".$value."'))";
-                        }
-                        else
-                        {
-                            $translatedStatement = "(".$field." NOT LIKE '%".$value."%')";
+                        if (preg_match("@','@", $value)) {
+                            $translatedStatement = "(" . $field . " NOT IN ('" . $value . "'))";
+                        } else {
+                            $translatedStatement = "(" . $field . " NOT LIKE '%" . $value . "%')";
                         }
                         break;
                     case '!STARTS':
-                        $translatedStatement = "(".$field." NOT LIKE '".$value."%')";
+                        $translatedStatement = "(" . $field . " NOT LIKE '" . $value . "%')";
                         break;
                     case '!ENDS':
-                        $translatedStatement = "(".$field." NOT LIKE '%".$value."')";
+                        $translatedStatement = "(" . $field . " NOT LIKE '%" . $value . "')";
                         break;
                     case 'NULL':
-                        $translatedStatement = "(".$field." IS NULL)";
+                        $translatedStatement = "(" . $field . " IS NULL)";
                         break;
                     case '!NULL':
-                        $translatedStatement = "(".$field." IS NOT NULL)";
+                        $translatedStatement = "(" . $field . " IS NOT NULL)";
                         break;
                     case 'EMPTY':
-                        $translatedStatement = "(".$field." = '')";
+                        $translatedStatement = "(" . $field . " = '')";
                         break;
                     case '!EMPTY':
-                        $translatedStatement = "(".$field." != '')";
+                        $translatedStatement = "(" . $field . " != '')";
                         break;
                     case 'BETWEEN':
-                        list($upper,$lower) = explode(' AND ',$value);
-                        $upper = trim($upper,"'");
+                        list($upper, $lower) = explode(' AND ', $value);
+                        $upper = trim($upper, "'");
                         $upper = trim($upper);
-                        $lower = trim($lower,"'");
+                        $lower = trim($lower, "'");
                         $lower = trim($lower);
-                        $translatedStatement = "(".$field." BETWEEN '".$upper."' AND '".$lower."')";
+                        $translatedStatement = "(" . $field . " BETWEEN '" . $upper . "' AND '" . $lower . "')";
                         break;
                     case '!BETWEEN':
-                        list($upper,$lower) = explode(' AND ',$value);
-                        $upper = trim($upper,"'");
+                        list($upper, $lower) = explode(' AND ', $value);
+                        $upper = trim($upper, "'");
                         $upper = trim($upper);
-                        $lower = trim($lower,"'");
+                        $lower = trim($lower, "'");
                         $lower = trim($lower);
-                        $translatedStatement = "(!(".$field." BETWEEN '".$upper."' AND '".$lower."'))";
+                        $translatedStatement = "(!(" . $field . " BETWEEN '" . $upper . "' AND '" . $lower . "'))";
                         break;
-                    default :
+                    default:
                         $translatedStatement = false;
                         break;
                 }
@@ -800,18 +741,15 @@ class Model extends PhalconModel
                 $query = str_replace($substatement, $translatedStatement, $query);
 
                 // make sure that we were able to parse all substatements
-                if (!$translatedStatement)
-                {
-                    throw new \Phalcon\Exception('Invalid query, please check the guides. '.
-                        'Most common issues are extra spaces and invalid operators, '.
-                        'please note that "=" is not allowed use ":" instead. '.
-                        'Possible issue in '.$substatement);
+                if (!$translatedStatement) {
+                    throw new \Phalcon\Exception('Invalid query, please check the guides. ' .
+                        'Most common issues are extra spaces and invalid operators, ' .
+                        'please note that "=" is not allowed use ":" instead. ' .
+                        'Possible issue in ' . $substatement);
                 }
             }
-        }
-        else
-        {
-            throw new \Phalcon\Exception('Invalid query, please refer to guides. '.
+        } else {
+            throw new \Phalcon\Exception('Invalid query, please refer to guides. ' .
                 'Query must have at least one sub-statement enclosed in parenthesis.');
         }
 
