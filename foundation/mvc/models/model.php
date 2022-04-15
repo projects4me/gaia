@@ -524,6 +524,13 @@ class Model extends PhalconModel
 
                 if (isset($relations[$relationship]['condition'])) {
                     $relatedQuery .= ' AND (' . $relations[$relationship]['condition'] . ')';
+                } else if (isset($relations[$relationship]['rhsConditionExclusive'])) {
+                    $relatedQuery = $relations[$relationship]['rhsConditionExclusive'];
+                }
+
+                //If an exclusive condition for secondary model is defined then use that
+                if(isset($relations[$relationship]['lhsConditionExclusive'])) {
+                    $secondaryQuery = $relations[$relationship]['lhsConditionExclusive'];
                 }
 
                 $query->$join($relatedModel, $relatedQuery, $relationship . $relatedModelAlias);
@@ -534,7 +541,6 @@ class Model extends PhalconModel
                 // If an exclusive condition is defined then use that
                 if (isset($relations[$relationship]['conditionExclusive'])) {
                     $relatedQuery = $relations[$relationship]['conditionExclusive'];
-                    $query->$join($relatedModel, $relatedQuery, $relationship);
                 } else {
                     $relatedQuery = $this->modelAlias . '.' . $relations[$relationship]['primaryKey'] .
                         ' = ' . $relationship . '.' . $relations[$relationship]['relatedKey'];
@@ -543,10 +549,9 @@ class Model extends PhalconModel
                     if (isset($relations[$relationship]['condition'])) {
                         $relatedQuery .= ' AND ' . $relations[$relationship]['condition'];
                     }
-
-                    // for each relationship apply the relationship joins
-                    $query->$join($relatedModel, $relatedQuery, $relationship);
                 }
+                // for each relationship apply the relationship joins to phalcon query object
+                $query->$join($relatedModel, $relatedQuery, $relationship);
             }
         }
 
