@@ -164,11 +164,11 @@ $models['User'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
                 'relatedKey' => 'userId'
             ),
-            'userProjects' => array(
+            'projectMemberships' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
                 'relatedKey' => 'projectId',
-                'conditionExclusive' => 'memberships.projectId = userProjects.projectId'
+                'conditionExclusive' => 'memberships.projectId = projectMemberships.projectId'
             ),
             'fellowMembers' => array(
                 'primaryKey' => 'id',
