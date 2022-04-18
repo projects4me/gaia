@@ -443,16 +443,14 @@ class Model extends PhalconModel
 
         $query->from([$this->modelAlias => $modelName]);
         // prepare count statement
-        if(isset($params['count']) && !empty($params['count']))
-        {
+        if (isset($params['count']) && !empty($params['count'])) {
             $countStatement = explode("as", $params['count']);
-            $count = 'COUNT('.$countStatement[0].') as'.$countStatement[1];
+            $count = 'COUNT(' . $countStatement[0] . ') as' . $countStatement[1];
             array_push($params['fields'], $count);
         }
 
         // if HAVING clause is requested then set it up
-        if(isset($params['having']) && !empty($params['having']))
-        {
+        if (isset($params['having']) && !empty($params['having'])) {
             $query->having($params['having']);
         }
 
@@ -517,20 +515,25 @@ class Model extends PhalconModel
                 $relatedModelAlias = Util::classWithoutNamespace($relatedModel);
                 $secondaryModel = $relations[$relationship]['secondaryModel'];
 
-                $relatedQuery = $this->modelAlias . '.' . $relations[$relationship]['primaryKey'] .
-                    ' = ' . $relationship . $relatedModelAlias . '.' . $relations[$relationship]['rhsKey'];
-                $secondaryQuery = $relationship . '.' . $relations[$relationship]['secondaryKey'] .
-                    ' = ' . $relationship . $relatedModelAlias . '.' . $relations[$relationship]['lhsKey'];
-
-                if (isset($relations[$relationship]['condition'])) {
-                    $relatedQuery .= ' AND (' . $relations[$relationship]['condition'] . ')';
-                } else if (isset($relations[$relationship]['rhsConditionExclusive'])) {
+                //If an exclusive condition for related model is defined then use that
+                if (isset($relations[$relationship]['rhsConditionExclusive'])) {
                     $relatedQuery = $relations[$relationship]['rhsConditionExclusive'];
+                } else {
+                    $relatedQuery = $this->modelAlias . '.' . $relations[$relationship]['primaryKey'] .
+                        ' = ' . $relationship . $relatedModelAlias . '.' . $relations[$relationship]['rhsKey'];
                 }
 
                 //If an exclusive condition for secondary model is defined then use that
-                if(isset($relations[$relationship]['lhsConditionExclusive'])) {
+                if (isset($relations[$relationship]['lhsConditionExclusive'])) {
                     $secondaryQuery = $relations[$relationship]['lhsConditionExclusive'];
+                } else {
+                    $secondaryQuery = $relationship . '.' . $relations[$relationship]['secondaryKey'] .
+                        ' = ' . $relationship . $relatedModelAlias . '.' . $relations[$relationship]['lhsKey'];
+                }
+                
+                // if a condition is set in the metadata then use it
+                if (isset($relations[$relationship]['condition'])) {
+                    $relatedQuery .= ' AND (' . $relations[$relationship]['condition'] . ')';
                 }
 
                 $query->$join($relatedModel, $relatedQuery, $relationship . $relatedModelAlias);
@@ -544,11 +547,11 @@ class Model extends PhalconModel
                 } else {
                     $relatedQuery = $this->modelAlias . '.' . $relations[$relationship]['primaryKey'] .
                         ' = ' . $relationship . '.' . $relations[$relationship]['relatedKey'];
+                }
 
-                    // if a condition is set in the metadat then use it
-                    if (isset($relations[$relationship]['condition'])) {
-                        $relatedQuery .= ' AND ' . $relations[$relationship]['condition'];
-                    }
+                // if a condition is set in the metadata then use it
+                if (isset($relations[$relationship]['condition'])) {
+                    $relatedQuery .= ' AND ' . $relations[$relationship]['condition'];
                 }
                 // for each relationship apply the relationship joins to phalcon query object
                 $query->$join($relatedModel, $relatedQuery, $relationship);
