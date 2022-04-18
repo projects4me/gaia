@@ -174,7 +174,7 @@ $models['User'] = array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'userId',
-                'conditionExclusive' => 'fellowMembers.id = userProjects.userId'
+                'conditionExclusive' => 'fellowMembers.id = projectMemberships.userId'
             )
         ), 
         'hasManyToMany' => array(
