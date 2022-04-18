@@ -159,7 +159,24 @@ $models['User'] = array(
                 'relatedKey' => 'relatedId',
                 'condition' => 'tagged.relatedTo = "user"'
             ),
-        ),
+            'memberships' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
+                'relatedKey' => 'userId'
+            ),
+            'projectMemberships' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
+                'relatedKey' => 'projectId',
+                'conditionExclusive' => 'memberships.projectId = projectMemberships.projectId'
+            ),
+            'fellowMembers' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'userId',
+                'conditionExclusive' => 'fellowMembers.id = projectMemberships.userId'
+            )
+        ), 
         'hasManyToMany' => array(
             'skills' => array(
                 'primaryKey' => 'id',
@@ -169,6 +186,14 @@ $models['User'] = array(
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\Tag',
                 'secondaryKey' => 'id',
                 'condition' => 'skillsTagged.relatedTo = "user"'
+            ),
+            'projects' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
+                'rhsKey' => 'userId',
+                'lhsKey' => 'projectId',
+                'secondaryModel' => '\\Gaia\\MVC\\Models\\Project',
+                'secondaryKey' => 'id'
             )
         )
     ),
