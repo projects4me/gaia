@@ -101,7 +101,7 @@ class Acl{
                 $controlField = '_'.$control;
 
                 // First check out the permissions for the resource directly
-                $Permission = \Gaia\MVC\Models\Permission::findFirst(array("resourceId='".($ResourceRow->id)."' AND roleId='".$roleId."'"));
+                $Permission = \Gaia\MVC\Models\Permission::findFirst(array("resourceId='".($ResourceRow->child->id)."' AND roleId='".$roleId."'"));
                 if (isset($Permission->id))
                 {
                     $permission = (int) $Permission->$controlField;
