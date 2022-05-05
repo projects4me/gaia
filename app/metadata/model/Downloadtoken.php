@@ -59,7 +59,7 @@ $models['Downloadtoken'] = array(
             'name' => 'expires',
             'label' => 'LBL_DOWNLOAD_TOKEN_EXPIRES',
             'type' => 'datetime',
-            'length' => '36',
+            'length' => '6',
             'null' => true,
         )
     ),
