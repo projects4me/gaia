@@ -276,6 +276,26 @@ $config['routes'] = array(
                   'PATCH',
                 ),
                 'identifier' => 'id',
+            ),
+            'badge' => array(
+                'path' => '/api/:version/badge',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH'
+                )
+            ),
+            'scoreboard' => array(
+                'path' => '/api/:version/scoreboard',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH'
+                )
             )
         )
     ),
