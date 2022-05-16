@@ -4,6 +4,8 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
+use function PHPSTORM_META\map;
+
 $models['User'] = array(
     'tableName' => 'users',
     'fts' => false,
@@ -130,6 +132,46 @@ $models['User'] = array(
             'name' => 'education',
             'label' => 'LBL_USERS_EDUCATION',
             'type' => 'text',
+            'null' => true,
+            'fts' => true
+        ),
+        'skype_url' => array(
+            'name' => 'skype_url',
+            'label' => 'LBL_USERS_SKYPE_URL',
+            'type' => 'varchar',
+            'length' => '100',
+            'null' => true,
+            'fts' => true
+        ),
+        'github_url' => array(
+            'name' => 'github_url',
+            'label' => 'LBL_USERS_GITHUB_URL',
+            'type' => 'varchar',
+            'length' => '100',
+            'null' => true,
+            'fts' => true
+        ),
+        'gitlab_url' => array(
+            'name' => 'gitlab_url',
+            'label' => 'LBL_USERS_GITLAB_URL',
+            'type' => 'varchar',
+            'length' => '100',
+            'null' => true,
+            'fts' => true
+        ),
+        'linkedin_url' => array(
+            'name' => 'linkedin_url',
+            'label' => 'LBL_USERS_LINKEDIN_URL',
+            'type' => 'varchar',
+            'length' => '100',
+            'null' => true,
+            'fts' => true
+        ),
+        'slack_url' => array(
+            'name' => 'slack_url',
+            'label' => 'LBL_USERS_SLACK_URL',
+            'type' => 'varchar',
+            'length' => '100',
             'null' => true,
             'fts' => true
         ),
