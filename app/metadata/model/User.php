@@ -133,40 +133,40 @@ $models['User'] = array(
             'null' => true,
             'fts' => true
         ),
-        'skype_url' => array(
-            'name' => 'skype_url',
+        'skypeUrl' => array(
+            'name' => 'skypeUrl',
             'label' => 'LBL_USERS_SKYPE_URL',
             'type' => 'varchar',
             'length' => '100',
             'null' => true,
             'fts' => true
         ),
-        'github_url' => array(
-            'name' => 'github_url',
+        'githubUrl' => array(
+            'name' => 'githubUrl',
             'label' => 'LBL_USERS_GITHUB_URL',
             'type' => 'varchar',
             'length' => '100',
             'null' => true,
             'fts' => true
         ),
-        'gitlab_url' => array(
-            'name' => 'gitlab_url',
+        'gitlabUrl' => array(
+            'name' => 'gitlabUrl',
             'label' => 'LBL_USERS_GITLAB_URL',
             'type' => 'varchar',
             'length' => '100',
             'null' => true,
             'fts' => true
         ),
-        'linkedin_url' => array(
-            'name' => 'linkedin_url',
+        'linkedinUrl' => array(
+            'name' => 'linkedinUrl',
             'label' => 'LBL_USERS_LINKEDIN_URL',
             'type' => 'varchar',
             'length' => '100',
             'null' => true,
             'fts' => true
         ),
-        'slack_url' => array(
-            'name' => 'slack_url',
+        'slackUrl' => array(
+            'name' => 'slackUrl',
             'label' => 'LBL_USERS_SLACK_URL',
             'type' => 'varchar',
             'length' => '100',
