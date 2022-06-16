@@ -173,6 +173,14 @@ $models['User'] = array(
             'null' => true,
             'fts' => true
         ),
+        'skills' => array(
+            'name' => 'skills',
+            'label' => 'LBL_USERS_SKILLS',
+            'type' => 'varchar',
+            'length' => '200',
+            'null' => true,
+            'fts' => true
+        )
     ),
     'indexes' => array(
         'id' => 'primary',
