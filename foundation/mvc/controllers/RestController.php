@@ -448,7 +448,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $include = ($this->request->get('include'))?(explode(',',$this->request->get('include'))):array();
         $fields = $this->request->get('fields',null,array());
         $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
-
+        $rels = array_merge($rels, $include);
+        
         if ($this->classWithoutNamespace($modelName) === 'User' && $this->id === 'me')
         {
             $this->id = $GLOBALS['currentUser']->id;
@@ -461,7 +462,6 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             'where' => $query,
             'sort' => $sort,
             'order' => $order,
-            'include' => $include
         );
 
         $model = new $modelName;
