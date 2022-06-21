@@ -91,19 +91,27 @@ $models['Scoreboard'] = array(
     'foriegnKeys' => array(),
     'triggers' => array(),
     'relationships' => array(
+        'hasOne' => array(
+            'userBadgeLevel' => array(
+                'primaryKey' => 'badgeId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Badgelevel',
+                'relatedKey' => 'badgeId',
+                'conditionExclusive' => 'Scoreboard.badgeId = userBadgeLevel.badgeId AND 
+                                         Scoreboard.score > userBadgeLevel.min_criteria AND
+                                         Scoreboard.score < userBadgeLevel.max_criteria'
+            ),
+            'userBadge' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Badge',
+                'relatedKey' => 'id',
+                'conditionExclusive' => 'userBadge.id = userBadgeLevel.badgeId'
+            )
+        ),
         'hasMany' => array(
             'users' => array(
                 'primaryKey' => 'userId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id',
-            ),
-            'userBadges' => array(
-                'primaryKey' => 'badgeId',
-                'relatedModel' => '\\Gaia\\MVC\\Models\\Badgelevel',
-                'relatedKey' => 'badgeId',
-                'conditionExclusive' => 'Scoreboard.badgeId = userBadges.badgeId AND 
-                                         Scoreboard.score > userBadges.min_criteria AND
-                                         Scoreboard.score < userBadges.max_criteria'
             )
         )
     ),

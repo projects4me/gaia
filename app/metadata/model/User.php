@@ -223,6 +223,12 @@ $models['User'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'userId',
                 'conditionExclusive' => 'fellowMembers.id = projectMemberships.userId'
+            ),
+            'badges' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Badge',
+                'relatedKey' => 'id',
+                'conditionExclusive' => 'badgeLevelsScoreboard.badgeId = badges.id'
             )
         ), 
         'hasManyToMany' => array(
@@ -242,6 +248,17 @@ $models['User'] = array(
                 'lhsKey' => 'projectId',
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\Project',
                 'secondaryKey' => 'id'
+            ),
+            'badgeLevels' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Scoreboard',
+                'rhsKey' => 'userId',
+                'lhsKey' => 'badgeId',
+                'secondaryModel' => '\\Gaia\\MVC\\Models\\Badgelevel',
+                'secondaryKey' => 'badgeId',
+                'lhsConditionExclusive' => 'badgeLevelsScoreboard.score >= badgeLevels.min_criteria
+                                            AND badgeLevelsScoreboard.score <= badgeLevels.max_criteria
+                                            AND badgeLevels.badgeId = badgeLevelsScoreboard.badgeId' 
             )
         )
     ),
