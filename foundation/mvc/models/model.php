@@ -245,8 +245,11 @@ class Model extends PhalconModel
         $relations = $this->getRelationships();
 
         // Prepare the default joins
-        if (!isset($params['rels']) || (isset($params['rels']) && empty($params['rels']))) {
-            $params['rels'] = array_keys($relations);
+        if (!isset($params['rels']) || (isset($params['rels']) && empty($params['rels'])) || (isset($params['include']))) {
+            if (isset($params['include'])) {
+                $params['rels'] = $params['include'];
+            } else
+                $params['rels'] = array_keys($relations);
         } else if (isset($params['rels'][0]) && $params['rels'][0] == 'none') {
             $params['rels'] = array();
         }
