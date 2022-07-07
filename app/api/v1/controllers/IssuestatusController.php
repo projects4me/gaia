@@ -11,7 +11,7 @@ use Gaia\MVC\REST\Controllers\RestController;
 /**
  * IssueTypes Controller
  *
- * @author Hammad Hassan <gollomer@gmail.com>
+ * @author Rana Nouman <ranamnouman@yahoo.com>
  * @package Foundation
  * @category Controller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
