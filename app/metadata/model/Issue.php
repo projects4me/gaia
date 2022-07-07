@@ -124,17 +124,16 @@ $models['Issue'] = array(
             'null' => true,
             'fts' => true
         ),
-        'status' => array(
-            'name' => 'status',
-            'label' => 'LBL_ISSUES_STATUS',
-            'type' => 'varchar',
-            'length' => '25',
-            'null' => false,
-            'fts' => true
-        ),
         'typeId' => array(
             'name' => 'typeId',
             'label' => 'LBL_ISSUES_TYPE',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'statusId' => array(
+            'name' => 'statusId',
+            'label' => 'LBL_ISSUES_STATUS',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
@@ -238,6 +237,11 @@ $models['Issue'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
                 'relatedKey' => 'id',
             ),
+            'issuestatus' => array(
+                'primaryKey' => 'statusId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issuestatus',
+                'relatedKey' => 'id'
+            )
         ),
         'hasMany' => array(
             'estimated' => array(
