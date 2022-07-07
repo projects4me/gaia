@@ -216,6 +216,12 @@ $models['Project'] = array(
                 'relatedKey' => 'projectId',
                 'condition' => 'issuetypes.system = "0"',
             ),
+            'issuestatuses' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issuestatus',
+                'relatedKey' => 'projectId',
+                'condition' => 'issuestatuses.system = "0"'
+            )
         ),
         'hasManyToMany' => array(
             'members' => array(
