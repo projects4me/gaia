@@ -216,11 +216,11 @@ $config['routes'] = array(
             'tag' => array(
                 'path' => '/api/:version/tag',
                 'allowedMethods' => array(
-                  'GET',
-                  'POST',
-                  'PUT',
-                  'DELETE',
-                  'PATCH',
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
                 ),
                 'identifier' => 'id',
             ),
@@ -238,42 +238,42 @@ $config['routes'] = array(
             'tagged' => array(
                 'path' => '/api/:version/tagged',
                 'allowedMethods' => array(
-                  'GET',
-                  'POST',
-                  'DELETE',
+                    'GET',
+                    'POST',
+                    'DELETE',
                 ),
                 'identifier' => 'id',
             ),
             'wiki' => array(
                 'path' => '/api/:version/wiki',
                 'allowedMethods' => array(
-                  'GET',
-                  'POST',
-                  'PUT',
-                  'DELETE',
-                  'PATCH',
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
                 ),
                 'identifier' => 'id',
             ),
             'vote' => array(
                 'path' => '/api/:version/vote',
                 'allowedMethods' => array(
-                  'GET',
-                  'POST',
-                  'PUT',
-                  'DELETE',
-                  'PATCH',
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
                 ),
                 'identifier' => 'id',
             ),
             'upload' => array(
                 'path' => '/api/:version/upload',
                 'allowedMethods' => array(
-                  'GET',
-                  'POST',
-                  'PUT',
-                  'DELETE',
-                  'PATCH',
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
                 ),
                 'identifier' => 'id',
             ),
@@ -296,7 +296,18 @@ $config['routes'] = array(
                     'DELETE',
                     'PATCH'
                 )
-            )
+            ),
+            'issuestatus' => array(
+                'path' => '/api/:version/issuestatus',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
         )
     ),
     'app' => array(
