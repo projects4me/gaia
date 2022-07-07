@@ -237,6 +237,11 @@ $models['Issue'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
                 'relatedKey' => 'id',
             ),
+            'issuestatus' => array(
+                'primaryKey' => 'statusId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issuestatus',
+                'relatedKey' => 'id'
+            )
         ),
         'hasMany' => array(
             'estimated' => array(
