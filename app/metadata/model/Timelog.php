@@ -145,7 +145,8 @@ $models['Timelog'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'timeSpentBehavior'
     ),
 
 );
