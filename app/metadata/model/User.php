@@ -180,6 +180,15 @@ $models['User'] = array(
             'length' => '200',
             'null' => true,
             'fts' => true
+        ),
+        'timeSpent' => array(
+            'name' => 'timeSpent',
+            'label' => 'LBL_USERS_TIME_SPENT',
+            'type' => 'int',
+            'length' => '255',
+            'null' => true,
+            'fts' => true,
+            'default' => 0
         )
     ),
     'indexes' => array(
