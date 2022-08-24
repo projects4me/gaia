@@ -155,6 +155,14 @@ $models['Project'] = array(
             'null' => true,
             'fts' => true
         ),
+        'done' => array(
+            'name' => 'done',
+            'label' => 'LBL_PROJECTS_DONE',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+            'default' => 0
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',

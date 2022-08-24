@@ -16,7 +16,7 @@ namespace Gaia\Libraries\Meta;
 
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
-use Phalcon\Migrations\Migrations as PhalconMigration;
+use Phalcon\Migrations\Mvc\Model\Migration as PhalconMigration;
 use Gaia\Libraries\File\Handler as fileHandler;
 use Gaia\Libraries\Meta\Manager as metaManager;
 
