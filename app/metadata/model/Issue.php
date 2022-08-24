@@ -131,12 +131,19 @@ $models['Issue'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'status' => array(
+            'name' => 'status',
+            'label' => 'LBL_ISSUES_STATUS',
+            'type' => 'varchar',
+            'length' => '12',
+            'null' => true
+        ),
         'statusId' => array(
             'name' => 'statusId',
             'label' => 'LBL_ISSUES_STATUS',
             'type' => 'varchar',
             'length' => '36',
-            'null' => false,
+            'null' => true,
         ),
         'priority' => array(
             'name' => 'priority',
@@ -217,7 +224,7 @@ $models['Issue'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
                 'relatedKey' => 'id'
             ),
-            'milestone' => array(
+            'issuemilestone' => array(
                 'primaryKey' => 'milestoneId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Milestone',
                 'relatedKey' => 'id'
