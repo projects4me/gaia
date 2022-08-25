@@ -341,14 +341,12 @@ class Model extends PhalconModel
         }
 
         // Set the fields
-        if (isset($params['fields']) && !empty($params['fields']) && $params['addRelFields']) {
-            $params['fields'] = array_merge($params['fields'], $relationshipFields);
-        } else if ($params['addRelFields']) {
-            $params['fields'] = array_merge($moduleFields, $relationshipFields);
+        if (isset($params['fields']) && !empty($params['fields'])) {
+            $params['fields'] = $params['fields'];
         } else if (!$params['addRelFields']) {
-            if(empty($params['fields'])){
-                $params['fields'] = $moduleFields;
-            }
+            $params['fields'] = $moduleFields;
+        } else {
+            $params['fields'] = array_merge($moduleFields, $relationshipFields);
         }
 
         $this->_query = $this->getDI()->get('modelsManager')->createBuilder();
