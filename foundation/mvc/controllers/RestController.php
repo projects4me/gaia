@@ -558,7 +558,6 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $count = $this->request->get('count',null,'');
         $having = $this->request->get('having',null,'');
         $fields = $this->request->get('fields',null,array());
-
         $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
 
         $params = array(
@@ -1060,6 +1059,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         }
 
         $this->removeDuplicates($result);
+        $addRelsData = filter_var($this->request->get('addRelsData', null, true), FILTER_VALIDATE_BOOLEAN);
 
         $count = 0;
 
@@ -1087,43 +1087,45 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                     else {
                         // process relationships
                         $included = array();
-                        if (isset($val['id'])) {
-                            $jsonapi_org['data'][$count]['relationships'][$attr] = array();
-                            $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
-                            $relatedModelKey = 'relatedModel';
-                            if ($relationDefinition['type'] == 'hasManyToMany')
-                            {
-                                $relatedModelKey = 'secondaryModel';
+                        if($addRelsData) {
+                            if (isset($val['id']) && $addRelsData) {
+                                $jsonapi_org['data'][$count]['relationships'][$attr] = array();
+                                $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
+                                $relatedModelKey = 'relatedModel';
+                                if ($relationDefinition['type'] == 'hasManyToMany')
+                                {
+                                    $relatedModelKey = 'secondaryModel';
+                                }
+                                $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
+                                $id = '';
+                                $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['id'] = $val['id'];
+                                $id = $val['id'];
+                                unset($val['id']);
+
+                                $included['attributes'] = $val;
+
+                                $jsonapi_org['included'][($this->modelName.$id)] = $included;
                             }
-                            $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
-                            $id = '';
-                            $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['id'] = $val['id'];
-                            $id = $val['id'];
-                            unset($val['id']);
+                            else {
+                                foreach($val as $idx => $object){
+                                    if (isset($object['id'])) {
+                                        $included = array();
+                                        $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx] = array();
+                                        $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
+                                        $relatedCount = 0;
+                                        $relatedModelKey = 'relatedModel';
+                                        if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])){
+                                            $relatedModelKey = 'secondaryModel';
+                                        }
+                                        $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
+                                        $id = '';
+                                        $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
+                                        $id = $object['id'];
+                                        unset($object['id']);
 
-                            $included['attributes'] = $val;
-
-                            $jsonapi_org['included'][($this->modelName.$id)] = $included;
-                        }
-                        else {
-                            foreach($val as $idx => $object){
-                                if (isset($object['id'])) {
-                                    $included = array();
-                                    $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx] = array();
-                                    $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
-                                    $relatedCount = 0;
-                                    $relatedModelKey = 'relatedModel';
-                                    if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])){
-                                        $relatedModelKey = 'secondaryModel';
+                                        $included['attributes'] = $object;
+                                        $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
                                     }
-                                    $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
-                                    $id = '';
-                                    $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
-                                    $id = $object['id'];
-                                    unset($object['id']);
-
-                                    $included['attributes'] = $object;
-                                    $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
                                 }
                             }
                         }
@@ -1155,45 +1157,47 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                     }
                     else {
                         // process relationships
-                        if (isset($val['id'])) {
-                            $included = array();
-                            $jsonapi_org['data']['relationships'][$attr] = array();
-                            $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
-                            $relatedCount = 0;
-                            $relatedModelKey = 'relatedModel';
-                            if ($relationDefinition['type'] == 'hasManyToMany')
-                            {
-                                $relatedModelKey = 'secondaryModel';
+                        if($addRelsData) {
+                            if (isset($val['id'])) {
+                                $included = array();
+                                $jsonapi_org['data']['relationships'][$attr] = array();
+                                $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
+                                $relatedCount = 0;
+                                $relatedModelKey = 'relatedModel';
+                                if ($relationDefinition['type'] == 'hasManyToMany')
+                                {
+                                    $relatedModelKey = 'secondaryModel';
+                                }
+                                $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
+                                $id = '';
+                                $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data']['id'] = $val['id'];
+                                $id = $val['id'];
+                                unset($val['id']);
+
+                                $included['attributes'] = $val;
+                                $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
                             }
-                            $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
-                            $id = '';
-                            $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data']['id'] = $val['id'];
-                            $id = $val['id'];
-                            unset($val['id']);
+                            else {
+                                foreach($val as $idx => $object){
+                                    if (isset($object['id'])) {
+                                        $included = array();
+                                        $jsonapi_org['data']['relationships'][$attr]['data'][$idx] = array();
+                                        $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
+                                        $relatedCount = 0;
+                                        $relatedModelKey = 'relatedModel';
+                                        if ($relationDefinition['type'] == 'hasManyToMany')
+                                        {
+                                            $relatedModelKey = 'secondaryModel';
+                                        }
+                                        $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
+                                        $id = '';
+                                        $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
+                                        $id = $object['id'];
+                                        unset($object['id']);
 
-                            $included['attributes'] = $val;
-                            $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
-                        }
-                        else {
-                            foreach($val as $idx => $object){
-                                if (isset($object['id'])) {
-                                    $included = array();
-                                    $jsonapi_org['data']['relationships'][$attr]['data'][$idx] = array();
-                                    $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
-                                    $relatedCount = 0;
-                                    $relatedModelKey = 'relatedModel';
-                                    if ($relationDefinition['type'] == 'hasManyToMany')
-                                    {
-                                        $relatedModelKey = 'secondaryModel';
+                                        $included['attributes'] = $object;
+                                        $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
                                     }
-                                    $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
-                                    $id = '';
-                                    $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
-                                    $id = $object['id'];
-                                    unset($object['id']);
-
-                                    $included['attributes'] = $object;
-                                    $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
                                 }
                             }
                         }
