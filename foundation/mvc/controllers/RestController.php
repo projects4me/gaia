@@ -449,6 +449,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $fields = $this->request->get('fields',null,array());
         $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
         $rels = array_merge($rels, $include);
+        $addRelFields = filter_var($this->request->get('addRelFields', null, true), FILTER_VALIDATE_BOOLEAN);
         
         if ($this->classWithoutNamespace($modelName) === 'User' && $this->id === 'me')
         {
@@ -462,6 +463,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             'where' => $query,
             'sort' => $sort,
             'order' => $order,
+            'addRelFields' => $addRelFields
         );
 
         $model = new $modelName;
@@ -558,7 +560,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $count = $this->request->get('count',null,'');
         $having = $this->request->get('having',null,'');
         $fields = $this->request->get('fields',null,array());
-
+        $addRelFields = filter_var($this->request->get('addRelFields', null, true), FILTER_VALIDATE_BOOLEAN);
         $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
 
         $params = array(
@@ -571,7 +573,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             'offset' => $offset,
             'groupBy' => $groupBy,
             'count' => $count,
-            'having' => $having
+            'having' => $having,
+            'addRelFields' => $addRelFields
         );
 
         $model = new $modelName;
