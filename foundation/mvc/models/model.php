@@ -267,10 +267,14 @@ class Model extends PhalconModel
         }
 
         // Set the fields
-        if (isset($params['fields']) && !empty($params['fields'])) {
+        if (isset($params['fields']) && !empty($params['fields']) && $params['addRelFields']) {
             $params['fields'] = array_merge($params['fields'], $relationshipFields);
-        } else {
+        } else if ($params['addRelFields']) {
             $params['fields'] = array_merge($moduleFields, $relationshipFields);
+        } else if (!$params['addRelFields']) {
+            if(empty($params['fields'])){
+                $params['fields'] = $moduleFields;
+            }
         }
 
         $this->_query = $this->getDI()->get('modelsManager')->createBuilder();
@@ -337,10 +341,14 @@ class Model extends PhalconModel
         }
 
         // Set the fields
-        if (isset($params['fields']) && !empty($params['fields'])) {
+        if (isset($params['fields']) && !empty($params['fields']) && $params['addRelFields']) {
             $params['fields'] = array_merge($params['fields'], $relationshipFields);
-        } else {
+        } else if ($params['addRelFields']) {
             $params['fields'] = array_merge($moduleFields, $relationshipFields);
+        } else if (!$params['addRelFields']) {
+            if(empty($params['fields'])){
+                $params['fields'] = $moduleFields;
+            }
         }
 
         $this->_query = $this->getDI()->get('modelsManager')->createBuilder();
