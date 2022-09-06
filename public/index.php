@@ -167,7 +167,7 @@ try {
 
     $di->set(
         'dialectFactory',
-        new \Gaia\Db\Factory\DialectFactory($di)
+        new \Gaia\Db\Factory\DialectFactory($di, $GLOBALS['settings']['database']['adapter'])
     );
 
     $di->set(
