@@ -165,10 +165,22 @@ try {
         new \Gaia\Libraries\Config($di)
     );
 
+    $di->set(
+        'dialectFactory',
+        new \Gaia\Db\Factory\DialectFactory($di)
+    );
+
+    $di->set(
+        'dialect',
+        $di->get('dialectFactory')->getDialect()
+    );
+
 
     /**
      * @todo move the migration away to elsewhere
+     * 
      */
+    // $di->get('migrationDriver')->migrate();
 
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);
