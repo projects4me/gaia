@@ -17,7 +17,7 @@ $models['Usertimespent'] = array(
             'null' => false,
         ),
         'totalMinutes' => array(
-            'name' => 'total_minutes',
+            'name' => 'totalMinutes',
             'type' => 'varchar',
             'null' => false,
         )
