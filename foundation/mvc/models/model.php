@@ -269,7 +269,7 @@ class Model extends PhalconModel
         // Set the fields
         if (isset($params['fields']) && !empty($params['fields'])) {
             $params['fields'] = $params['fields'];
-        } else if (!$params['addRelFields']) {
+        } else if (isset($params['addRelFields']) && empty($params['addRelFields'])) {
             $params['fields'] = $moduleFields;
         } else {
             $params['fields'] = array_merge($moduleFields, $relationshipFields);
@@ -341,7 +341,7 @@ class Model extends PhalconModel
         // Set the fields
         if (isset($params['fields']) && !empty($params['fields'])) {
             $params['fields'] = $params['fields'];
-        } else if (!$params['addRelFields']) {
+        } else if (isset($params['addRelFields']) && empty($params['addRelFields'])) {
             $params['fields'] = $moduleFields;
         } else {
             $params['fields'] = array_merge($moduleFields, $relationshipFields);

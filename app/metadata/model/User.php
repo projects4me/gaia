@@ -207,6 +207,11 @@ $models['User'] = array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Dashboard',
                 'relatedKey' => 'userId'
+            ),
+            'timeSpent' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Usertimespent',
+                'relatedKey' => 'id'
             )
         ),
         'hasMany' => array(

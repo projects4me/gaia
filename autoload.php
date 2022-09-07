@@ -61,7 +61,9 @@ $loader->registerNamespaces(
         "Gaia\\MVC\\REST\\Controllers" => APP_PATH.'/app/api/'.$apiVersion.'/controllers/',
         "Gaia\\MVC\\REST\\Controllers\\Components" => APP_PATH.'/app/api/'.$apiVersion.'/controllers/components/',
         "Gaia\\MVC\\Models\\Behaviors" => APP_PATH.'/foundation/mvc/models/behaviors/',
-        "Gaia\\MVC\\Models" => APP_PATH. '/app/models/'
+        "Gaia\\MVC\\Models" => APP_PATH. '/app/models/',
+        "Gaia\\Db\\Factory" => APP_PATH. '/foundation/mvc/db/factory/',
+        "Gaia\\Db\\Dialect" => APP_PATH. '/foundation/mvc/db/dialect/'
     ]
 );
 
