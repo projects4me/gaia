@@ -190,7 +190,7 @@ $models['Issue'] = array(
 
     ) ,
     'triggers' => array(
-        'add_issue_status' => array(
+        'addIssueStatus' => array(
             'triggerName' => 'add_issue_status',
             'eventType' => 'BEFORE INSERT',
             'statement' => 'NEW.status = (select name from issues_statuses
