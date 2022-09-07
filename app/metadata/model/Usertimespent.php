@@ -6,7 +6,7 @@
 
 $models['Usertimespent'] = array(
     'tableName' => 'user_time_spent',
-    'viewSql' => 'SELECT SUM((tl.days * 8 * 60) + (tl.hours * 60) + tl.minutes) as total_minutes, u.id as id from users u 
+    'viewSql' => 'SELECT SUM((tl.days * 8 * 60) + (tl.hours * 60) + tl.minutes) as totalMinutes, u.id as id from users u 
                   join issues i on u.id = i.createdUser 
                   join time_logs tl on tl.issueId = i.id GROUP BY u.name',
     'isView' => true,
@@ -16,7 +16,7 @@ $models['Usertimespent'] = array(
             'type' => 'varchar',
             'null' => false,
         ),
-        'total_minutes' => array(
+        'totalMinutes' => array(
             'name' => 'total_minutes',
             'type' => 'varchar',
             'null' => false,
