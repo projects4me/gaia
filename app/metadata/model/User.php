@@ -212,6 +212,11 @@ $models['User'] = array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Usertimespent',
                 'relatedKey' => 'id'
+            ),
+            'openClosedProject' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Useropenclosedproject',
+                'relatedKey' => 'id'
             )
         ),
         'hasMany' => array(
