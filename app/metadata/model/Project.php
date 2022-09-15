@@ -155,6 +155,14 @@ $models['Project'] = array(
             'null' => true,
             'fts' => true
         ),
+        'done' => array(
+            'name' => 'done',
+            'label' => 'LBL_PROJECTS_DONE',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+            'default' => 0
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -216,6 +224,12 @@ $models['Project'] = array(
                 'relatedKey' => 'projectId',
                 'condition' => 'issuetypes.system = "0"',
             ),
+            'issuestatuses' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issuestatus',
+                'relatedKey' => 'projectId',
+                'condition' => 'issuestatuses.system = "0"'
+            )
         ),
         'hasManyToMany' => array(
             'members' => array(

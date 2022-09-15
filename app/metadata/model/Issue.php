@@ -124,20 +124,26 @@ $models['Issue'] = array(
             'null' => true,
             'fts' => true
         ),
-        'status' => array(
-            'name' => 'status',
-            'label' => 'LBL_ISSUES_STATUS',
-            'type' => 'varchar',
-            'length' => '25',
-            'null' => false,
-            'fts' => true
-        ),
         'typeId' => array(
             'name' => 'typeId',
             'label' => 'LBL_ISSUES_TYPE',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+        ),
+        'status' => array(
+            'name' => 'status',
+            'label' => 'LBL_ISSUES_STATUS',
+            'type' => 'varchar',
+            'length' => '12',
+            'null' => true
+        ),
+        'statusId' => array(
+            'name' => 'statusId',
+            'label' => 'LBL_ISSUES_STATUS',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
         ),
         'priority' => array(
             'name' => 'priority',
@@ -184,7 +190,12 @@ $models['Issue'] = array(
 
     ) ,
     'triggers' => array(
-
+        'addIssueStatus' => array(
+            'triggerName' => 'add_issue_status',
+            'eventType' => 'BEFORE INSERT',
+            'statement' => 'NEW.status = (select name from issues_statuses
+                            is2 where is2.id = NEW.statusId);'
+        )
     ),
     'relationships' => array(
         'hasOne' => array(
@@ -218,7 +229,7 @@ $models['Issue'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
                 'relatedKey' => 'id'
             ),
-            'milestone' => array(
+            'issuemilestone' => array(
                 'primaryKey' => 'milestoneId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Milestone',
                 'relatedKey' => 'id'
@@ -238,6 +249,11 @@ $models['Issue'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
                 'relatedKey' => 'id',
             ),
+            'issuestatus' => array(
+                'primaryKey' => 'statusId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issuestatus',
+                'relatedKey' => 'id'
+            )
         ),
         'hasMany' => array(
             'estimated' => array(

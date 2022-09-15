@@ -16,8 +16,7 @@ namespace Gaia\Libraries\Meta;
 
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
-use Phalcon\Migrations\Migrations as PhalconMigration;
-use Gaia\Libraries\File\Handler as fileHandler;
+use Phalcon\Migrations\Mvc\Model\Migration as PhalconMigration;
 use Gaia\Libraries\Meta\Manager as metaManager;
 
 /**
@@ -64,12 +63,38 @@ class Migration extends PhalconMigration
      */
     public function up($model)
     {
-        // Get the entity name from the Mirgation files
-        //$entity = $this->getModelName();
+        // Get the definitions of table/view from the meta data
+        $meta = $this->getMetaData($model);
 
-        // Get the table definitions from the meta data
-        $tableDefinition = $this->getMetaData($model);
+        //check whether meta is for table or View
+        isset($meta[$model]['isView']) ? $this->migrateView($meta[$model]) : $this->migrateTable($model, $meta);
+    }
 
+    /**
+     * This function is responsible for migrating sql views according to the 
+     * meta data of model.
+     * 
+     * @param $meta
+     */
+    private function migrateView($meta)
+    {
+        $this::$connection->execute($this->di->get('dialect')->createView($meta['tableName'], $meta['viewSql']));
+    }
+
+    /**
+     * This function is responsible for migrating sql tables according to the 
+     * meta data of model. It first call migrateTrigger function in order to migrate
+     * the triggers associated with that table. After that it call prepareTableDefinition
+     * function in order to get Table definition that Phalcon's morphTable want to migrate
+     * a table.
+     * 
+     * @param $model
+     * @param $meta 
+     */
+    private function migrateTable($model, $meta)
+    {
+        $this->migrateTriggers($model, $meta);
+        $tableDefinition = $this->prepareTableDefinition($model, $meta);
         // Sync the table in the database
         $this->morphTable(
             $tableDefinition['tableName'],
@@ -87,6 +112,39 @@ class Migration extends PhalconMigration
     }
 
     /**
+     * This function is responsible for migrating triggers, attached to a specific
+     * table. It checks whether trigger exist or not, if it not exists than it will
+     * create a new one.
+     * 
+     * @param $model
+     * @param $meta 
+     */
+    private function migrateTriggers($model, $meta)
+    {
+        $triggerQuery = $this->di->get('dialect')->listTriggers($meta[$model]['tableName']);
+
+        //array of available triggers on given table
+        $listOfTriggers = $this::$connection->query($triggerQuery)->fetchAll();
+        $triggerExists = false;
+
+        foreach ($meta[$model]['triggers'] as $schema) {
+
+            //Find out whether same named trigger exists or not in listOfTriggers array
+            foreach ($listOfTriggers as $triggerRow) {
+                if ($triggerRow['Trigger'] == $schema['triggerName']) {
+                    $triggerExists = true;
+                }
+            }
+
+            //if trigger isn't exists then create.
+            if (!$triggerExists) {
+                $query = $this->di->get('dialect')->createTrigger($meta[$model]['tableName'], $schema);
+                $this::$connection->execute($query);
+            }
+        }
+    }
+
+    /**
      * This function is responsible for reading the individual metadata from
      * the application and process it for this class
      *
@@ -94,11 +152,8 @@ class Migration extends PhalconMigration
      * @param string $model
      * @return array
      */
-    private function getMetaData($model)
+    private function prepareTableDefinition($model, $meta)
     {
-        // Read the metadata from the file
-        $meta = $this->di->get('fileHandler')->readFile(APP_PATH.metaManager::basePath.'/model/'.$model.'.php');
-
         // Initialize the array to be filled in
         $tableDescription = array(
             'tableName' => $meta[$model]['tableName'],
@@ -107,50 +162,54 @@ class Migration extends PhalconMigration
         );
 
         // Traverse through the fields and process them
-        foreach($meta[$model]['fields'] as $field => $schema)
-        {
+        foreach ($meta[$model]['fields'] as $field => $schema) {
             $fieldOptions = array();
             $fieldOptions['type'] = $this->di->get('metaManager')->getFieldType($schema['type']);
             if (isset($schema['length']))
                 $fieldOptions['size'] = $schema['length'];
             $fieldOptions['notNull'] = !$schema['null'];
-            if (isset($schema['autoIncrement'])){
+            if (isset($schema['autoIncrement'])) {
                 $fieldOptions['autoIncrement'] = $schema['autoIncrement'];
             }
 
-            if (isset($schema['default'])){
+            if (isset($schema['default'])) {
                 $fieldOptions['default'] = $schema['default'];
             }
 
-            $tableDescription['columns'][] = new Column($schema['name'],$fieldOptions);
+            $tableDescription['columns'][] = new Column($schema['name'], $fieldOptions);
         }
 
         // Traverse through the indexes and process them
-        foreach($meta[$model]['indexes'] as $field => $type)
-        {
+        foreach ($meta[$model]['indexes'] as $field => $type) {
             // need to be able to recognize all types of indexes
             $indexType = '';
             $name = '';
-            if ($type == 'primary')
-            {
+            if ($type == 'primary') {
                 $name = $indexType = 'PRIMARY';
-                $tableDescription['indexes'][] = new Index($name, array($field),$indexType);
-            }
-            else if ($type == 'unique')
-            {
+                $tableDescription['indexes'][] = new Index($name, array($field), $indexType);
+            } else if ($type == 'unique') {
                 $indexType = 'UNIQUE';
-                $name = $meta[$model]['tableName'].'_'.$field;
-                $tableDescription['indexes'][] = new Index($name, array($field),$indexType);
-            }
-            else {
+                $name = $meta[$model]['tableName'] . '_' . $field;
+                $tableDescription['indexes'][] = new Index($name, array($field), $indexType);
+            } else {
                 $indexType = 'INDEX';
-                $name = $meta[$model]['tableName'].'_'.$field;
+                $name = $meta[$model]['tableName'] . '_' . $field;
                 $tableDescription['indexes'][] = new Index($name, array($field));
             }
-
         }
 
         return $tableDescription;
+    }
+
+    /**
+     * This function returns metadata of given model.
+     *
+     * @param $model
+     * @return array
+     */
+    private function getMetaData($model)
+    {
+        return $this->di->get('fileHandler')->readFile(APP_PATH . metaManager::basePath . '/model/' . $model . '.php');
     }
 
     /**

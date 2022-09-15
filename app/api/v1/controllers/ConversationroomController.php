@@ -36,25 +36,25 @@ class ConversationroomController extends RestController
     // Call the parent so that the Conversation room can be saved
     $response = parent::postAction();
 
-    // If the Conversation room was saved then add it to Hermes
-    if ($response->getStatusCode() == '201 Created')
-    {
+    // // If the Conversation room was saved then add it to Hermes
+    // if ($response->getStatusCode() == '201 Created')
+    // {
 
-      // Todo- link
-      $host = 'http://localhost:3000';
+    //   // Todo- link
+    //   $host = 'http://localhost:3000';
 
-      // The tenant id - Must be initialized in the bootstrap
-      $tenant = 'abc';
+    //   // The tenant id - Must be initialized in the bootstrap
+    //   $tenant = 'abc';
 
-      // Establish a connection with Hermes
-      $client = new Client(new Version2X($host));
-      $client->initialize();
+    //   // Establish a connection with Hermes
+    //   $client = new Client(new Version2X($host));
+    //   $client->initialize();
 
-      // Using the namespace of Gaia create the room and register the current user to it
-      $client->of('/gaia');
-      $client->emit('createRoom', ['room'=>json_decode($response->getContent())->data->id,'tenant'=>$tenant,'user'=>$GLOBALS['currentUser']->id]);
-      $client->close();
-    }
+    //   // Using the namespace of Gaia create the room and register the current user to it
+    //   $client->of('/gaia');
+    //   $client->emit('createRoom', ['room'=>json_decode($response->getContent())->data->id,'tenant'=>$tenant,'user'=>$GLOBALS['currentUser']->id]);
+    //   $client->close();
+    // }
     return $response;
   }
 }
