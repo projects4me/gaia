@@ -49,4 +49,16 @@ class Mysql
     {
         return "CREATE OR REPLACE VIEW {$tableName} AS {$viewSql};";
     }
+
+    /**
+     * This function returns sql to create function.
+     *
+     * @return string
+     */
+    public function createFunction($functionName, $parameters, $returnType, $statement)
+    {
+        return "CREATE FUNCTION {$functionName}($parameters)
+                RETURNS {$returnType} DETERMINISTIC
+                {$statement}";
+    }    
 }
