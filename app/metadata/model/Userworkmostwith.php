@@ -4,14 +4,10 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-$models['Usertimespent'] = array(
-    'tableName' => 'user_time_spent',
-    'viewSql' => 'SELECT UUID() as id, 
-                  SUM((tl.days * 8 * 60) + (tl.hours * 60) + tl.minutes) as totalMinutes, u.id as userId from users u 
-                  join issues i on u.id = i.createdUser
-                  join time_logs tl on tl.issueId = i.id
-                  where tl.deleted = "0"
-                  GROUP BY u.id',
+$models['Userworkmostwith'] = array(
+    'tableName' => 'user_works_most_with',
+    'viewSql' => 'SELECT u2.id as id ,u.id as userId, u2.name as name, u2.title as title from users u left join users u2 on "1" = checkUserWorkWithOthers(u.id, u2.id)
+                  GROUP BY CONCAT(u.id,u2.id)',
     'isView' => true,
     'fields' => array(
         'id' => array(
@@ -23,9 +19,14 @@ $models['Usertimespent'] = array(
             'name' => 'userId',
             'type' => 'varchar',
             'null' => false,
-        ),        
-        'totalMinutes' => array(
-            'name' => 'totalMinutes',
+        ),
+        'name' => array(
+            'name' => 'name',
+            'type' => 'varchar',
+            'null' => false,
+        ),
+        'title' => array(
+            'name' => 'title',
             'type' => 'varchar',
             'null' => false,
         )

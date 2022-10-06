@@ -39,6 +39,7 @@ $models['Oauthscope'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array()
 );
 
 return $models;

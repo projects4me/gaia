@@ -67,6 +67,7 @@ $models['Oauthclient'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array()
 );
 
 return $models;

@@ -98,6 +98,7 @@ $models['Activity'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
+        'relatedId' => 'INDEX'
     ),
     'foriegnKeys' => array(
 
@@ -105,6 +106,7 @@ $models['Activity'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
             'createdBy' => array(

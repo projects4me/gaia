@@ -85,6 +85,7 @@ $models['Tag'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
             'createdBy' => array(

@@ -185,6 +185,7 @@ $models['Issue'] = array(
     'indexes' => array(
         'id' => 'primary',
         'issueNumber' => 'unique',
+        'projectId' => 'INDEX'
     ),
     'foriegnKeys' => array(
 
@@ -193,10 +194,11 @@ $models['Issue'] = array(
         'addIssueStatus' => array(
             'triggerName' => 'add_issue_status',
             'eventType' => 'BEFORE INSERT',
-            'statement' => 'NEW.status = (select name from issues_statuses
+            'statement' => 'NEW.status = (select name from issue_statuses
                             is2 where is2.id = NEW.statusId);'
         )
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
             'assignedTo' => array(

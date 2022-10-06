@@ -85,6 +85,7 @@ $models['Role'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasMany' => array(
             'permissions' => array(

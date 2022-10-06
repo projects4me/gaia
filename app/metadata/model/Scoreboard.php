@@ -90,6 +90,7 @@ $models['Scoreboard'] = array(
     ),
     'foriegnKeys' => array(),
     'triggers' => array(),
+    'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
             'userBadgeLevel' => array(

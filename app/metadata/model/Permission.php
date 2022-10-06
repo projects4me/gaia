@@ -73,6 +73,7 @@ $models['Permission'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
         'belongsTo' => array(
             'resources' => array(

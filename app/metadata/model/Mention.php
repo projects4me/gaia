@@ -79,6 +79,7 @@ $models['Mention'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
             'createdUser' => array(

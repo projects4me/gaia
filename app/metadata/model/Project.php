@@ -173,6 +173,7 @@ $models['Project'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
             'owner' => array(

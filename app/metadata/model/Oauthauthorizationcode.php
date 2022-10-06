@@ -60,6 +60,7 @@ $models['Oauthauthorizationcode'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array()
 );
 
 return $models;

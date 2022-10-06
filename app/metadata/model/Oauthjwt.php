@@ -38,6 +38,7 @@ $models['Oauthjwt'] = array(
     'triggers' => array(
         
     ),
+    'functions' => array()
 );
 
 return $models;
