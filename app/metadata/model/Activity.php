@@ -104,7 +104,17 @@ $models['Activity'] = array(
 
     ) ,
     'triggers' => array(
-
+        'addLastActivityDate' => array(
+            'triggerName' => 'add_last_activity_date',
+            'eventType' => 'AFTER INSERT',
+            'statement' => 'BEGIN
+                                IF NEW.relatedTo = "issue" THEN
+                                UPDATE issues i SET i.lastActivityDate = NEW.dateCreated where i.id = NEW.relatedId;
+                                ELSEIF NEW.relatedTo = "project" THEN
+                                UPDATE projects p SET p.lastActivityDate = NEW.dateCreated where p.id = NEW.relatedId;
+                                END IF;
+                            END'
+        )
     ),
     'functions' => array(),
     'relationships' => array(
