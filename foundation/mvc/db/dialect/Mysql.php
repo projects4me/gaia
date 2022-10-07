@@ -31,13 +31,13 @@ class Mysql
     }
 
     /**
-     * This function returns sql to list triggers.
+     * This function returns sql to check whether trigger exists or not.
      *
      * @return string
      */
-    public function listTriggers($tableName)
+    public function showTrigger($tableName, $triggerName)
     {
-        return "SHOW TRIGGERS like '{$tableName}'";
+        return "select * from INFORMATION_SCHEMA.TRIGGERS where EVENT_OBJECT_TABLE='{$tableName}' AND TRIGGER_NAME = '{$triggerName}'";
     }
 
     /**
@@ -49,6 +49,16 @@ class Mysql
     {
         return "CREATE OR REPLACE VIEW {$tableName} AS {$viewSql};";
     }
+
+    /**
+     * This function returns sql to check whether function exists or not.
+     *
+     * @return string
+     */
+    public function showFunction($functionName)
+    {
+        return "SHOW FUNCTION STATUS where name = '{$functionName}'";;
+    }    
 
     /**
      * This function returns sql to create function.

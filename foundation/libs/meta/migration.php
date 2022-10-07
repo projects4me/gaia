@@ -126,23 +126,12 @@ class Migration extends PhalconMigration
      */
     private function migrateTriggers($model, $meta)
     {
-        $triggerQuery = $this->di->get('dialect')->listTriggers($meta[$model]['tableName']);
-
-        //array of available triggers on given table
-        $listOfTriggers = $this::$connection->query($triggerQuery)->fetchAll();
-        $triggerExists = false;
-
         foreach ($meta[$model]['triggers'] as $schema) {
+            $triggerExistsQuery = $this->di->get('dialect')->showTrigger($meta[$model]['tableName'], $schema['triggerName']);
+            $result = $this::$connection->query($triggerExistsQuery)->fetch();
 
-            //Find out whether same named trigger exists or not in listOfTriggers array
-            foreach ($listOfTriggers as $triggerRow) {
-                if ($triggerRow['Trigger'] == $schema['triggerName']) {
-                    $triggerExists = true;
-                }
-            }
-
-            //if trigger isn't exists then create.
-            if (!$triggerExists) {
+            //if trigger doesn't exists, then create.
+            if ($result['TRIGGER_NAME'] == '') {
                 $query = $this->di->get('dialect')->createTrigger($meta[$model]['tableName'], $schema);
                 $this::$connection->execute($query);
             }
@@ -159,8 +148,14 @@ class Migration extends PhalconMigration
     private function migrateFunctions($model, $meta)
     {
         foreach ($meta[$model]['functions'] as $schema) {
-            $query = $this->di->get('dialect')->createFunction($schema['functionName'], $schema['parameters'], $schema['returnType'], $schema['statement']);
-            $this::$connection->execute($query);
+            $functionExistsQuery = $this->di->get('dialect')->showFunction($schema['functionName']);
+            $result = $this::$connection->query($functionExistsQuery)->fetch();
+
+            //if function doesn't exists, then create.
+            if ($result['Name'] == '') {
+                $query = $this->di->get('dialect')->createFunction($schema['functionName'], $schema['parameters'], $schema['returnType'], $schema['statement']);
+                $this::$connection->execute($query);
+            }
         }
     }
 
