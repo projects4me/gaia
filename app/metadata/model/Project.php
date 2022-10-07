@@ -39,7 +39,7 @@ $models['Project'] = array(
         ),
         'lastActivityDate' => array(
             'name' => 'lastActivityDate',
-            'label' => 'LBL_ISSUES_LAST_ACTIVITY_DATE',
+            'label' => 'LBL_PROJECTS_LAST_ACTIVITY_DATE',
             'type' => 'datetime',
             'null' => true,
             'fts' => true
