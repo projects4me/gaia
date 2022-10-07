@@ -113,7 +113,7 @@ $models['Activity'] = array(
                                 ELSEIF NEW.relatedTo = "project" THEN
                                 UPDATE projects p SET p.lastActivityDate = NEW.dateCreated where p.id = NEW.relatedId;
                                 END IF;
-                            END'
+                            END;'
         )
     ),
     'functions' => array(),

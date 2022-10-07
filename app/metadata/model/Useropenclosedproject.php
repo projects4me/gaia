@@ -12,7 +12,7 @@ $models['Useropenclosedproject'] = array(
                 sum(case when p.done = "1" then 1 else 0 end) as closedProjects,
                 m.userId as userId from projects p 
                 inner join memberships m on m.projectId = p.id
-                GROUP BY m.userId',
+                GROUP BY m.userId;',
     'isView' => true,
     'fields' => array(
         'id' => array(

@@ -8,7 +8,7 @@ $models['Usercollaboration'] = array(
     'tableName' => 'user_collaborations',
     'viewSql' => 'SELECT UUID() as id, FLOOR(POWER(COUNT(c.id), "0.5") * 13) as collaboration, u.id as userId from comments c 
                 left join users u on u.id = c.createdUser where CAST(NOW() AS DATE) = CAST(c.dateCreated as DATE)
-                GROUP BY u.id',
+                GROUP BY u.id;',
     'isView' => true,
     'fields' => array(
         'id' => array(

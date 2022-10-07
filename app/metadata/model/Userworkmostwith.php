@@ -7,7 +7,7 @@
 $models['Userworkmostwith'] = array(
     'tableName' => 'user_works_most_with',
     'viewSql' => 'SELECT u2.id as id ,u.id as userId, u2.name as name, u2.title as title from users u left join users u2 on "1" = checkUserWorkWithOthers(u.id, u2.id)
-                  GROUP BY CONCAT(u.id,u2.id)',
+                  GROUP BY CONCAT(u.id,u2.id);',
     'isView' => true,
     'fields' => array(
         'id' => array(

@@ -11,7 +11,7 @@ $models['Usertimespent'] = array(
                   join issues i on u.id = i.createdUser
                   join time_logs tl on tl.issueId = i.id
                   where tl.deleted = "0"
-                  GROUP BY u.id',
+                  GROUP BY u.id;',
     'isView' => true,
     'fields' => array(
         'id' => array(

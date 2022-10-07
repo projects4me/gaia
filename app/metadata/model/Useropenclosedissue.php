@@ -13,7 +13,7 @@ $models['Useropenclosedissue'] = array(
                 u.id as userId from issues i
                 left join users u on u.id = i.createdUser 
                 left join issue_statuses is2 on is2.id = i.statusId
-                GROUP BY u.id',
+                GROUP BY u.id;',
     'isView' => true,
     'fields' => array(
         'id' => array(

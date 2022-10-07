@@ -16,7 +16,7 @@ $models['Userlatestproject'] = array(
                             inner join memberships m on "1"  = checkProjectIsLatest(m.userId, p.id) AND m.projectId = p.id
                             ORDER BY m.userId DESC) t1) t2
                 inner join activities a2 on a2.relatedId = t2.id AND a2.relatedTo ="project" AND a2.createdUser = t2.userId
-                GROUP BY CONCAT (t2.userId, t2.membershipId)',
+                GROUP BY CONCAT (t2.userId, t2.membershipId);',
     'isView' => true,
     'fields' => array(
         'id' => array(
