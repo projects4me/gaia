@@ -27,7 +27,7 @@ class Mysql
         return "CREATE TRIGGER {$schema['triggerName']} 
                 {$schema['eventType']} on {$tableName}
                 FOR EACH ROW 
-                    SET {$schema['statement']}";
+                    {$schema['statement']}";
     }
 
     /**
