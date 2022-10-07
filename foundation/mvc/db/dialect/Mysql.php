@@ -47,7 +47,7 @@ class Mysql
      */
     public function createView($tableName, $viewSql)
     {
-        return "CREATE OR REPLACE VIEW {$tableName} AS {$viewSql};";
+        return "CREATE OR REPLACE VIEW {$tableName} AS {$viewSql}";
     }
 
     /**
@@ -57,7 +57,7 @@ class Mysql
      */
     public function showFunction($functionName)
     {
-        return "SHOW FUNCTION STATUS where name = '{$functionName}'";;
+        return "SHOW FUNCTION STATUS where name = '{$functionName}'";
     }    
 
     /**
