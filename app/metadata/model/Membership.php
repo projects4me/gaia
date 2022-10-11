@@ -20,6 +20,13 @@ $models['Membership'] = array(
             'type' => 'datetime',
             'null' => true,
         ),
+        'lastActivityDate' => array(
+            'name' => 'lastActivityDate',
+            'label' => 'LBL_MEMBERSHIPS_LAST_ACTIVITY_DATE',
+            'type' => 'datetime',
+            'null' => true,
+            'fts' => true
+        ),
         'createdUser' => array(
             'name' => 'createdUser',
             'label' => 'LBL_MEMBERSHIPS_CREATED_USER',
