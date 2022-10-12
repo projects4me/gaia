@@ -6,11 +6,11 @@
 
 $models['Userlatestissue'] = array(
     'tableName' => 'user_latest_issues',
-    'viewSql' => 'SELECT t.*,a.dateCreated as lastActivityDate, p.shortCode as projectShortCode from 
-                    (select i.id, i.subject, i.issueNumber, i.status, i.projectId, i.createdUser as userId, i.dateCreated from issues i where "1" = checkIssueIsLatest(i.createdUser, i.id) 
-                    ) t left join activities a on a.relatedId = t.id AND a.relatedTo = "issue" AND a.createdUser = t.userId
-                    left join projects p on p.id = t.projectId
-                  GROUP BY CONCAT(t.userId,t.id)',
+    'viewSql' => 'SELECT IssueSubQuery.*,Activity.dateCreated as lastActivityDate, Project.shortCode as projectShortCode from 
+                    (select Issue.id, Issue.subject, Issue.issueNumber, Issue.status, Issue.projectId, Issue.createdUser as userId, Issue.dateCreated from issues as Issue where "1" = checkIssueIsLatest(Issue.createdUser, Issue.id) 
+                    ) IssueSubQuery left join activities as Activity on Activity.relatedId = IssueSubQuery.id AND Activity.relatedTo = "issue" AND Activity.createdUser = IssueSubQuery.userId
+                    left join projects as Project on Project.id = IssueSubQuery.projectId
+                  GROUP BY CONCAT(IssueSubQuery.userId,IssueSubQuery.id)',
     'isView' => true,
     'fields' => array(
         'id' => array(
@@ -75,27 +75,27 @@ $models['Userlatestissue'] = array(
                                 createdUser VARCHAR(36)
                                 );
                                 select * from (SELECT @temp1 := IF(COUNT(t.id) = 1,1,0) as temp from
-                                (select i.id FROM temp_issues i
-                                where i.id = issueId) t 
+                                (select Issue.id FROM temp_issues i
+                                where Issue.id = issueId) t 
                                 where t.id = issueId) t2 into @myvar;
                                 IF @temp1 = 0 THEN
                                 select * from (SELECT @temp2 := IF(COUNT(t.id) = 1,1,0) as temp from
-                                (select i.id FROM issues i
-                                left join activities a on a.relatedId = i.id and a.relatedTo = "issue"
-                                where i.createdUser = userId
-                                GROUP BY CONCAT(i.createdUser, i.id)
-                                ORDER BY a.dateCreated DESC LIMIT 5) t 
+                                (select Issue.id FROM issues i
+                                left join activities a on Activity.relatedId = Issue.id and Activity.relatedTo = "issue"
+                                where Issue.createdUser = userId
+                                GROUP BY CONCAT(Issue.createdUser, Issue.id)
+                                ORDER BY Activity.dateCreated DESC LIMIT 5) t 
                                 where t.id = issueId) t2 into @myvar2;
                                 ELSEIF @temp1 = 1 THEN
                                 SET	@temp2 = 1;
                                 END IF;
                                 IF @temp2 = 1 AND @temp1 != 1 THEN 
                                 INSERT INTO temp_issues (id, createdUser)
-                                select i.id,i.createdUser FROM issues i
-                                left join activities a on a.relatedId = i.id and a.relatedTo = "issue"
-                                where i.createdUser = userId
-                                GROUP BY CONCAT(i.createdUser, i.id)
-                                ORDER BY a.dateCreated DESC LIMIT 5;
+                                select Issue.id,Issue.createdUser FROM issues i
+                                left join activities a on Activity.relatedId = Issue.id and Activity.relatedTo = "issue"
+                                where Issue.createdUser = userId
+                                GROUP BY CONCAT(Issue.createdUser, Issue.id)
+                                ORDER BY Activity.dateCreated DESC LIMIT 5;
                                 END IF;
                                 RETURN @temp2;
                             END;'

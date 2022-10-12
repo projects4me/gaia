@@ -6,17 +6,17 @@
 
 $models['Userlatestproject'] = array(
     'tableName' => 'user_latest_projects',
-    'viewSql' => 'SELECT t2.*, a2.dateCreated as lastActivityDate from 
+    'viewSql' => 'SELECT SubQuery2.*, Activity.dateCreated as lastActivityDate from 
                     (select * from 
-                        (select m.userId, p.id as id, m.createdUser, m.id as membershipId,
-                            (select COUNT(i.id) from issues i where i.projectId = m.projectId) as totalIssues,
-                            (select COUNT(i.id) as totalIssues from issues i left join issue_statuses is2 on is2.id = i.statusId where i.projectId = m.projectId AND is2.done="1") as closedIssues,
-                            p.description, p.status, p.name, p.shortCode
-                            from projects p
-                            inner join memberships m on "1"  = checkProjectIsLatest(m.userId, p.id) AND m.projectId = p.id
-                            ORDER BY m.userId DESC) t1) t2
-                inner join activities a2 on a2.relatedId = t2.id AND a2.relatedTo ="project" AND a2.createdUser = t2.userId
-                GROUP BY CONCAT (t2.userId, t2.membershipId);',
+                        (select Membership.userId, Project.id as id, Membership.createdUser, Membership.id as membershipId,
+                            (select COUNT(Issue.id) from issues as Issue where Issue.projectId = Membership.projectId) as totalIssues,
+                            (select COUNT(Issue.id) as totalIssues from issues as Issue left join issue_statuses as IssueStatuses on IssueStatuses.id = Issue.statusId where Issue.projectId = Membership.projectId AND IssueStatuses.done="1") as closedIssues,
+                            Project.description, Project.status, Project.name, Project.shortCode
+                            from projects as Project
+                            inner join memberships as Membership on "1"  = checkProjectIsLatest(Membership.userId, Project.id) AND Membership.projectId = Project.id
+                            ORDER BY Membership.userId DESC) SubQuery1) SubQuery2
+                inner join activities as Activity on Activity.relatedId = SubQuery2.id AND Activity.relatedTo ="project" AND Activity.createdUser = SubQuery2.userId
+                GROUP BY CONCAT (SubQuery2.userId, SubQuery2.membershipId);',
     'isView' => true,
     'fields' => array(
         'id' => array(

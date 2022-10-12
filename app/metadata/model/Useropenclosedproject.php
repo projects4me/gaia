@@ -8,11 +8,11 @@ $models['Useropenclosedproject'] = array(
     'tableName' => 'user_open_closed_projects',
     'viewSql' => 'SELECT 
                 UUID() as id,
-                sum(case when p.done = "0" then 1 else 0 end) as openProjects,
-                sum(case when p.done = "1" then 1 else 0 end) as closedProjects,
-                m.userId as userId from projects p 
-                inner join memberships m on m.projectId = p.id
-                GROUP BY m.userId;',
+                sum(case when Project.done = "0" then 1 else 0 end) as openProjects,
+                sum(case when Project.done = "1" then 1 else 0 end) as closedProjects,
+                Membership.userId as userId from projects as Project 
+                inner join memberships as Membership on Membership.projectId = Project.id
+                GROUP BY Membership.userId;',
     'isView' => true,
     'fields' => array(
         'id' => array(

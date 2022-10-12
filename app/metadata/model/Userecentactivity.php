@@ -6,9 +6,9 @@
 
 $models['Userecentactivity'] = array(
     'tableName' => 'user_activities',
-    'viewSql' => 'SELECT a.id, u.id as userId, u.name as createdUserName, a.relatedTo, a.relatedId, a.type, a.dateCreated, a.relatedActivity, a.relatedActivityId, relatedActivityModule, i.projectId as projectId
-                from users u left join activities a on "1" = checkActivityIsLatest(u.id, a.id)
-                left join issues i on i.id = a.relatedId AND a.relatedTo = "issue";',
+    'viewSql' => 'SELECT Activity.id, User.id as userId, User.name as createdUserName, Activity.relatedTo, Activity.relatedId, Activity.type, Activity.dateCreated, Activity.relatedActivity, Activity.relatedActivityId, relatedActivityModule, Issue.projectId as projectId
+                from users as User left join activities as Activity on "1" = checkActivityIsLatest(User.id, Activity.id)
+                left join issues as Issue on Issue.id = Activity.relatedId AND Activity.relatedTo = "issue";',
     'isView' => true,
     'fields' => array(
         'id' => array(
@@ -78,12 +78,12 @@ $models['Userecentactivity'] = array(
             'functionName' => 'checkActivityIsLatest',
             'returnType' => 'INT(1)',
             'parameters' => 'userId VARCHAR(36), activityId VARCHAR(36)',
-            'statement' => 'RETURN (SELECT IF(COUNT(t2.id) = 1,1,0) as temp from
+            'statement' => 'RETURN (SELECT IF(COUNT(SubQuery2.id) = 1,1,0) as temp from
                                 (select * from 
-                                (select a.id from users u left join activities a on a.createdUser = u.id where u.id = userId
-                                ORDER BY a.dateCreated
-                                DESC LIMIT 5) t
-                            where t.id = activityId) t2);'
+                                (select Activity.id from users u left join activities as Activity on Activity.createdUser = User.id where User.id = userId
+                                ORDER BY Activity.dateCreated
+                                DESC LIMIT 5) SubQuery1
+                            where SubQuery1.id = activityId) SubQuery2);'
         )
     )
 );

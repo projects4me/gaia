@@ -7,13 +7,13 @@
 $models['Useropenclosedissue'] = array(
     'tableName' => 'user_open_closed_issues',
     'viewSql' => 'SELECT 
-                sum(case when is2.done="0" then 1 else 0 end) as openIssues,
-                sum(case when is2.done="1" then 1 else 0 end) as closedIssues,
+                sum(case when IssueStatuses.done="0" then 1 else 0 end) as openIssues,
+                sum(case when IssueStatuses.done="1" then 1 else 0 end) as closedIssues,
                 UUID() as id,
-                u.id as userId from issues i
-                left join users u on u.id = i.createdUser 
-                left join issue_statuses is2 on is2.id = i.statusId
-                GROUP BY u.id;',
+                User.id as userId from issues as Issue
+                left join users as User on User.id = Issue.createdUser 
+                left join issue_statuses as IssueStatuses on IssueStatuses.id = Issue.statusId
+                GROUP BY User.id;',
     'isView' => true,
     'fields' => array(
         'id' => array(
