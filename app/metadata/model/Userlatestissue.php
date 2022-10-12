@@ -74,25 +74,25 @@ $models['Userlatestissue'] = array(
                                 id VARCHAR(36),
                                 createdUser VARCHAR(36)
                                 );
-                                select * from (SELECT @temp1 := IF(COUNT(t.id) = 1,1,0) as temp from
-                                (select Issue.id FROM temp_issues i
-                                where Issue.id = issueId) t 
-                                where t.id = issueId) t2 into @myvar;
+                                select * from (SELECT @temp1 := IF(COUNT(SubQuery1.id) = 1,1,0) as temp from
+                                (select Issue.id FROM temp_issues as Issue
+                                where Issue.id = issueId) SubQuery1 
+                                where SubQuery1.id = issueId) SubQuery2 into @myvar;
                                 IF @temp1 = 0 THEN
-                                select * from (SELECT @temp2 := IF(COUNT(t.id) = 1,1,0) as temp from
-                                (select Issue.id FROM issues i
-                                left join activities a on Activity.relatedId = Issue.id and Activity.relatedTo = "issue"
+                                select * from (SELECT @temp2 := IF(COUNT(SubQuery1.id) = 1,1,0) as temp from
+                                (select Issue.id FROM issues as Issue
+                                left join activities as Activity on Activity.relatedId = Issue.id and Activity.relatedTo = "issue"
                                 where Issue.createdUser = userId
                                 GROUP BY CONCAT(Issue.createdUser, Issue.id)
-                                ORDER BY Activity.dateCreated DESC LIMIT 5) t 
-                                where t.id = issueId) t2 into @myvar2;
+                                ORDER BY Activity.dateCreated DESC LIMIT 5) SubQuery3 
+                                where SubQuery3.id = issueId) SubQuery4 into @myvar2;
                                 ELSEIF @temp1 = 1 THEN
                                 SET	@temp2 = 1;
                                 END IF;
                                 IF @temp2 = 1 AND @temp1 != 1 THEN 
                                 INSERT INTO temp_issues (id, createdUser)
-                                select Issue.id,Issue.createdUser FROM issues i
-                                left join activities a on Activity.relatedId = Issue.id and Activity.relatedTo = "issue"
+                                select Issue.id,Issue.createdUser FROM issues as Issue
+                                left join activities as Activity on Activity.relatedId = Issue.id and Activity.relatedTo = "issue"
                                 where Issue.createdUser = userId
                                 GROUP BY CONCAT(Issue.createdUser, Issue.id)
                                 ORDER BY Activity.dateCreated DESC LIMIT 5;
