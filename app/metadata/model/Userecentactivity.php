@@ -6,9 +6,9 @@
 
 $models['Userecentactivity'] = array(
     'tableName' => 'user_activities',
-    'viewSql' => 'SELECT a.id, u.id as userId, u.name as createdUserName, a.relatedTo, a.relatedId, a.type, a.dateCreated, a.relatedActivity, a.relatedActivityId, relatedActivityModule,
-                 (select i.projectId from issues i where i.id = a.relatedId AND a.relatedTo = "issue") as projectId 
-                from users u inner join activities a on "1" = checkActivityIsLatest(u.id, a.id);',
+    'viewSql' => 'SELECT a.id, u.id as userId, u.name as createdUserName, a.relatedTo, a.relatedId, a.type, a.dateCreated, a.relatedActivity, a.relatedActivityId, relatedActivityModule, i.projectId as projectId
+                from users u inner join activities a on "1" = checkActivityIsLatest(u.id, a.id)
+                inner join issues i on i.id = a.relatedId AND a.relatedTo = "issue";',
     'isView' => true,
     'fields' => array(
         'id' => array(
@@ -78,7 +78,7 @@ $models['Userecentactivity'] = array(
             'functionName' => 'checkActivityIsLatest',
             'returnType' => 'INT(1)',
             'parameters' => 'userId VARCHAR(36), activityId VARCHAR(36)',
-            'statement' => '(SELECT IF(COUNT(t2.id) = 1,1,0) as temp from
+            'statement' => 'RETURN (SELECT IF(COUNT(t2.id) = 1,1,0) as temp from
                                 (select * from 
                                 (select a.id from users u left join activities a on a.createdUser = u.id where u.id = userId
                                 ORDER BY a.dateCreated
