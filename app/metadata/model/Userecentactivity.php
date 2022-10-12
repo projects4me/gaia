@@ -73,7 +73,19 @@ $models['Userecentactivity'] = array(
     ),
     'foriegnKeys' => array(),
     'triggers' => array(),
-    'functions' => array()
+    'functions' => array(
+        'checkActivityIsLatest' => array(
+            'functionName' => 'checkActivityIsLatest',
+            'returnType' => 'INT(1)',
+            'parameters' => 'userId VARCHAR(36), activityId VARCHAR(36)',
+            'statement' => '(SELECT IF(COUNT(t2.id) = 1,1,0) as temp from
+                                (select * from 
+                                (select a.id from users u left join activities a on a.createdUser = u.id where u.id = userId
+                                ORDER BY a.dateCreated
+                                DESC LIMIT 5) t
+                            where t.id = activityId) t2);'
+        )
+    )
 );
 
 return $models;
