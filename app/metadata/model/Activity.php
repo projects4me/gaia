@@ -98,7 +98,9 @@ $models['Activity'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
-        'relatedId' => 'INDEX'
+        'relatedId' => 'INDEX',
+        'relatedTo' => 'INDEX',
+        'createdUser' => 'INDEX'
     ),
     'foriegnKeys' => array(
 
