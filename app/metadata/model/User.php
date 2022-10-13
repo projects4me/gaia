@@ -221,6 +221,11 @@ $models['User'] = array(
                 'relatedKey' => 'relatedId',
                 'condition' => 'tagged.relatedTo = "user"'
             ),
+            'latestIssues' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Userlatestissue',
+                'relatedKey' => 'userId'
+            ),
             'memberships' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
@@ -282,7 +287,8 @@ $models['User'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'userDefinedVariableBehavior'
     ),
 
 );
