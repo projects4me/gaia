@@ -6,11 +6,9 @@
 
 $models['Userlatestissue'] = array(
     'tableName' => 'user_latest_issues',
-    'viewSql' => 'SELECT IssueSubQuery.*,Activity.dateCreated as lastActivityDate, Project.shortCode as projectShortCode from 
-                    (select Issue.id, Issue.subject, Issue.issueNumber, Issue.status, Issue.projectId, Issue.createdUser as userId, Issue.dateCreated from issues as Issue where "1" = checkIssueIsLatest(Issue.createdUser, Issue.id) 
-                    ) IssueSubQuery left join activities as Activity on Activity.relatedId = IssueSubQuery.id AND Activity.relatedTo = "issue" AND Activity.createdUser = IssueSubQuery.userId
-                    left join projects as Project on Project.id = IssueSubQuery.projectId
-                  GROUP BY CONCAT(IssueSubQuery.userId,IssueSubQuery.id)',
+    'viewSql' => 'select i.*,a.createdUser as userId from issues i inner join activities a on a.relatedId = i.id AND a.relatedTo = "issue" AND a.createdUser = i.createdUser
+                  where i.createdUser = getValueToCompare()
+                  ORDER BY a.dateCreated DESC LIMIT 5;',
     'isView' => true,
     'fields' => array(
         'id' => array(
@@ -28,11 +26,6 @@ $models['Userlatestissue'] = array(
             'type' => 'varchar',
             'null' => false,
         ),
-        'projectShortCode' => array(
-            'name' => 'projectShortCode',
-            'type' => 'varchar',
-            'null' => false,
-        ),
         'status' => array(
             'name' => 'status',
             'type' => 'varchar',
@@ -40,11 +33,6 @@ $models['Userlatestissue'] = array(
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
-            'type' => 'varchar',
-            'null' => false,
-        ),
-        'lastActivityDate' => array(
-            'name' => 'lastActivityDate',
             'type' => 'varchar',
             'null' => false,
         ),
@@ -65,40 +53,11 @@ $models['Userlatestissue'] = array(
     'foriegnKeys' => array(),
     'triggers' => array(),
     'functions' => array(
-        'checkIssueIsLatest' => array(
-            'functionName' => 'checkIssueIsLatest',
-            'returnType' => 'INT(1)',
-            'parameters' => 'userId VARCHAR(36), issueId VARCHAR(36)',
-            'statement' => 'BEGIN
-                                create TEMPORARY TABLE IF NOT EXISTS temp_issues (
-                                id VARCHAR(36),
-                                createdUser VARCHAR(36)
-                                );
-                                select * from (SELECT @temp1 := IF(COUNT(SubQuery1.id) = 1,1,0) as temp from
-                                (select Issue.id FROM temp_issues as Issue
-                                where Issue.id = issueId) SubQuery1 
-                                where SubQuery1.id = issueId) SubQuery2 into @myvar;
-                                IF @temp1 = 0 THEN
-                                select * from (SELECT @temp2 := IF(COUNT(SubQuery1.id) = 1,1,0) as temp from
-                                (select Issue.id FROM issues as Issue
-                                left join activities as Activity on Activity.relatedId = Issue.id and Activity.relatedTo = "issue"
-                                where Issue.createdUser = userId
-                                GROUP BY CONCAT(Issue.createdUser, Issue.id)
-                                ORDER BY Activity.dateCreated DESC LIMIT 5) SubQuery3 
-                                where SubQuery3.id = issueId) SubQuery4 into @myvar2;
-                                ELSEIF @temp1 = 1 THEN
-                                SET	@temp2 = 1;
-                                END IF;
-                                IF @temp2 = 1 AND @temp1 != 1 THEN 
-                                INSERT INTO temp_issues (id, createdUser)
-                                select Issue.id,Issue.createdUser FROM issues as Issue
-                                left join activities as Activity on Activity.relatedId = Issue.id and Activity.relatedTo = "issue"
-                                where Issue.createdUser = userId
-                                GROUP BY CONCAT(Issue.createdUser, Issue.id)
-                                ORDER BY Activity.dateCreated DESC LIMIT 5;
-                                END IF;
-                                RETURN @temp2;
-                            END;'
+        'getValueToCompare' => array(
+            'functionName' => 'getValueToCompare',
+            'returnType' => 'VARCHAR(36) CHARSET utf8',
+            'parameters' => '',
+            'statement' => 'return @variable'
         )
     )
 );
