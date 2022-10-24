@@ -6,9 +6,12 @@
 
 $models['Userlatestissue'] = array(
     'tableName' => 'user_latest_issues',
-    'viewSql' => 'select i.*,a.createdUser as userId from issues i inner join activities a on a.relatedId = i.id AND a.relatedTo = "issue" AND a.createdUser = i.createdUser
-                  where i.createdUser = getValueToCompare()
-                  ORDER BY a.dateCreated DESC LIMIT 5;',
+    'viewSql' => 'SELECT Issue.id as id, Issue.subject as subject, Issue.issueNumber as issueNumber, Issue.status as status, Issue.lastActivityDate as lastActivityDate, Issue.createdUser as userId, Issue.projectId as projectId, Project.shortCode as projectShortCode
+                  from issues as Issue 
+                  left join projects as Project on Issue.projectId = Project.id
+                  where Issue.createdUser = getValueToCompare()
+                  GROUP BY Issue.id
+                  ORDER BY Issue.lastActivityDate DESC LIMIT 5;',
     'isView' => true,
     'fields' => array(
         'id' => array(
@@ -31,8 +34,13 @@ $models['Userlatestissue'] = array(
             'type' => 'varchar',
             'null' => false,
         ),
-        'dateCreated' => array(
-            'name' => 'dateCreated',
+        'projectShortCode' => array(
+            'name' => 'projectShortCode',
+            'type' => 'varchar',
+            'null' => false,
+        ),
+        'lastActivityDate' => array(
+            'name' => 'lastActivityDate',
             'type' => 'varchar',
             'null' => false,
         ),
@@ -52,14 +60,7 @@ $models['Userlatestissue'] = array(
     ),
     'foriegnKeys' => array(),
     'triggers' => array(),
-    'functions' => array(
-        'getValueToCompare' => array(
-            'functionName' => 'getValueToCompare',
-            'returnType' => 'VARCHAR(36) CHARSET utf8',
-            'parameters' => '',
-            'statement' => 'return @variable'
-        )
-    )
+    'functions' => array()
 );
 
 return $models;

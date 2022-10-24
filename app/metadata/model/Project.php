@@ -37,13 +37,6 @@ $models['Project'] = array(
             'null' => true,
             'fts' => true
         ),
-        'lastActivityDate' => array(
-            'name' => 'lastActivityDate',
-            'label' => 'LBL_PROJECTS_LAST_ACTIVITY_DATE',
-            'type' => 'datetime',
-            'null' => true,
-            'fts' => true
-        ),
         'createdUser' => array(
             'name' => 'createdUser',
             'label' => 'LBL_PROJECTS_CREATED_USER',

@@ -100,7 +100,8 @@ $models['Activity'] = array(
         'id' => 'primary',
         'relatedId' => 'INDEX',
         'relatedTo' => 'INDEX',
-        'createdUser' => 'INDEX'
+        'createdUser' => 'INDEX',
+        'dateCreated' => 'INDEX'
     ),
     'foriegnKeys' => array(
 
@@ -113,7 +114,7 @@ $models['Activity'] = array(
                                 IF NEW.relatedTo = "issue" THEN
                                 UPDATE issues i SET i.lastActivityDate = NEW.dateCreated where i.id = NEW.relatedId;
                                 ELSEIF NEW.relatedTo = "project" THEN
-                                UPDATE projects p SET p.lastActivityDate = NEW.dateCreated where p.id = NEW.relatedId;
+                                UPDATE memberships m SET m.lastActivityDate = NEW.dateCreated where m.projectId = NEW.relatedId AND m.userId = NEW.createdUser;
                                 END IF;
                             END;'
         )

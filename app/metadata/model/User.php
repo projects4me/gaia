@@ -192,7 +192,14 @@ $models['User'] = array(
     'triggers' => array(
 
     ),
-    'functions' => array(),
+    'functions' => array(
+        'getValueToCompare' => array(
+            'functionName' => 'getValueToCompare',
+            'returnType' => 'VARCHAR(36) CHARSET utf8',
+            'parameters' => '',
+            'statement' => 'return @modelId'
+        )
+    ),
     'relationships' => array(
         'hasOne' => array(
             'dashboard' => array(

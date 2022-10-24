@@ -6,17 +6,13 @@
 
 $models['Userlatestproject'] = array(
     'tableName' => 'user_latest_projects',
-    'viewSql' => 'SELECT SubQuery2.*, Activity.dateCreated as lastActivityDate from 
-                    (select * from 
-                        (select Membership.userId, Project.id as id, Membership.createdUser, Membership.id as membershipId,
-                            (select COUNT(Issue.id) from issues as Issue where Issue.projectId = Membership.projectId) as totalIssues,
-                            (select COUNT(Issue.id) as totalIssues from issues as Issue left join issue_statuses as IssueStatuses on IssueStatuses.id = Issue.statusId where Issue.projectId = Membership.projectId AND IssueStatuses.done="1") as closedIssues,
-                            Project.description, Project.status, Project.name, Project.shortCode
-                            from projects as Project
-                            inner join memberships as Membership on "1"  = checkProjectIsLatest(Membership.userId, Project.id) AND Membership.projectId = Project.id
-                            ORDER BY Membership.userId DESC) SubQuery1) SubQuery2
-                inner join activities as Activity on Activity.relatedId = SubQuery2.id AND Activity.relatedTo ="project" AND Activity.createdUser = SubQuery2.userId
-                GROUP BY CONCAT (SubQuery2.userId, SubQuery2.membershipId);',
+    'viewSql' => 'SELECT Membership.userId, Project.id as id, Project.name as name, Project.description as description, Project.status as status, Membership.lastActivityDate as lastActivityDate, Project.shortCode as shortCode,
+                    (select COUNT(Issue.id) from issues as Issue where Issue.projectId = Project.id) as totalIssues,
+                    (select COUNT(Issue.id) as totalIssues from issues as Issue left join issue_statuses as IssueStatus on IssueStatus.id = Issue.statusId where Issue.projectId = Project.id AND IssueStatus.done="1") as closedIssues
+                    from projects as Project inner join memberships as Membership on Membership.projectId = Project.id AND Membership.userId = getValueToCompare()
+                  where Membership.createdUser = getValueToCompare()
+                  GROUP BY Project.id
+                  ORDER BY Membership.lastActivityDate DESC LIMIT 5;',
     'isView' => true,
     'fields' => array(
         'id' => array(

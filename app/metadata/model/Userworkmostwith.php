@@ -6,8 +6,13 @@
 
 $models['Userworkmostwith'] = array(
     'tableName' => 'user_works_most_with',
-    'viewSql' => 'SELECT User2.id as id ,User.id as userId, User2.name as name, User2.title as title from users as User left join users as User2 on "1" = checkUserWorkWithOthers(User.id, User2.id)
-                  GROUP BY CONCAT(User.id,User2.id);',
+    'viewSql' => 'SELECT Membership1.userId as userId, Membership2.userId as id, User.name as name, User.title as title, COUNT(Membership2.id) as occurenceOfUser from projects as Project 
+                  left join memberships as Membership1 on Membership1.projectId = Project.id
+                  left join memberships as Membership2 on Membership2.projectId = Membership1.projectId  AND Membership2.userId != getValueToCompare()
+                  left join users as User on User.id = Membership2.userId 
+                  where Membership1.userId = getValueToCompare()
+                  GROUP BY Membership2.userId 
+                  ORDER BY occurenceOfUser DESC LIMIT 3',
     'isView' => true,
     'fields' => array(
         'id' => array(
@@ -27,6 +32,11 @@ $models['Userworkmostwith'] = array(
         ),
         'title' => array(
             'name' => 'title',
+            'type' => 'varchar',
+            'null' => false,
+        ),
+        'occurenceOfUser' => array(
+            'name' => 'occurenceOfUser',
             'type' => 'varchar',
             'null' => false,
         )

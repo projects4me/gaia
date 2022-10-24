@@ -6,9 +6,11 @@
 
 $models['Userecentactivity'] = array(
     'tableName' => 'user_activities',
-    'viewSql' => 'SELECT Activity.id, User.id as userId, User.name as createdUserName, Activity.relatedTo, Activity.relatedId, Activity.type, Activity.dateCreated, Activity.relatedActivity, Activity.relatedActivityId, relatedActivityModule, Issue.projectId as projectId
-                from users as User left join activities as Activity on "1" = checkActivityIsLatest(User.id, Activity.id)
-                left join issues as Issue on Issue.id = Activity.relatedId AND Activity.relatedTo = "issue";',
+    'viewSql' => 'SELECT Activity.id, User.id as userId, User.name as createdUserName, Activity.relatedTo, Activity.relatedId, Activity.type, Activity.dateCreated, Activity.relatedActivity, Activity.relatedActivityId, relatedActivityModule, Issue.projectId, Issue.issueNumber
+                    from users as User left join activities as Activity on Activity.createdUser = getValueToCompare()
+                    left join issues as Issue on Issue.id = Activity.relatedId AND Activity.relatedTo = "issue" AND Issue.createdUser = getValueToCompare() 
+                  where User.id = getValueToCompare()
+                  ORDER BY Activity.dateCreated DESC LIMIT 5;',
     'isView' => true,
     'fields' => array(
         'id' => array(
@@ -61,6 +63,11 @@ $models['Userecentactivity'] = array(
             'type' => 'varchar',
             'null' => false,
         ),
+        'issueNumber' => array(
+            'name' => 'issueNumber',
+            'type' => 'varchar',
+            'null' => false,
+        ),
         'createdUserName' => array(
             'name' => 'createdUserName',
             'type' => 'varchar',
@@ -73,19 +80,7 @@ $models['Userecentactivity'] = array(
     ),
     'foriegnKeys' => array(),
     'triggers' => array(),
-    'functions' => array(
-        'checkActivityIsLatest' => array(
-            'functionName' => 'checkActivityIsLatest',
-            'returnType' => 'INT(1)',
-            'parameters' => 'userId VARCHAR(36), activityId VARCHAR(36)',
-            'statement' => 'RETURN (SELECT IF(COUNT(SubQuery2.id) = 1,1,0) as temp from
-                                (select * from 
-                                (select Activity.id from users u left join activities as Activity on Activity.createdUser = User.id where User.id = userId
-                                ORDER BY Activity.dateCreated
-                                DESC LIMIT 5) SubQuery1
-                            where SubQuery1.id = activityId) SubQuery2);'
-        )
-    )
+    'functions' => array()
 );
 
 return $models;
