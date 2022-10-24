@@ -315,7 +315,7 @@ $models['User'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior',
-        'userDefinedVariableBehavior'
+        'modelIdentifierBehavior'
     ),
 
 );
