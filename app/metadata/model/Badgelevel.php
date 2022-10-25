@@ -103,6 +103,7 @@ $models['Badgelevel'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
 
     ),

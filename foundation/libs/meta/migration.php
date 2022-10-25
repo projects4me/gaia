@@ -66,8 +66,12 @@ class Migration extends PhalconMigration
         // Get the definitions of table/view from the meta data
         $meta = $this->getMetaData($model);
 
+        // before migrating table or views, let's migrate functions. Because table or views use
+        // functions. So migrating functions is required first.
+        $this->migrateFunctions($model, $meta);
+
         //check whether meta is for table or View
-        isset($meta[$model]['isView']) ? $this->migrateView($meta[$model]) : $this->migrateTable($model, $meta);
+        isset($meta[$model]['isView']) ? $this->migrateView($model, $meta) : $this->migrateTable($model, $meta);
     }
 
     /**
@@ -76,9 +80,9 @@ class Migration extends PhalconMigration
      * 
      * @param $meta
      */
-    private function migrateView($meta)
+    private function migrateView($model, $meta)
     {
-        $this::$connection->execute($this->di->get('dialect')->createView($meta['tableName'], $meta['viewSql']));
+        $this::$connection->execute($this->di->get('dialect')->createView($meta[$model]['tableName'], $meta[$model]['viewSql']));
     }
 
     /**
@@ -93,7 +97,6 @@ class Migration extends PhalconMigration
      */
     private function migrateTable($model, $meta)
     {
-        $this->migrateTriggers($model, $meta);
         $tableDefinition = $this->prepareTableDefinition($model, $meta);
         // Sync the table in the database
         $this->morphTable(
@@ -109,6 +112,8 @@ class Migration extends PhalconMigration
                 )
             )
         );
+
+        $this->migrateTriggers($model, $meta);
     }
 
     /**
@@ -121,24 +126,41 @@ class Migration extends PhalconMigration
      */
     private function migrateTriggers($model, $meta)
     {
-        $triggerQuery = $this->di->get('dialect')->listTriggers($meta[$model]['tableName']);
-
-        //array of available triggers on given table
-        $listOfTriggers = $this::$connection->query($triggerQuery)->fetchAll();
-        $triggerExists = false;
-
         foreach ($meta[$model]['triggers'] as $schema) {
+            $triggerExistsQuery = $this->di->get('dialect')->showTrigger($meta[$model]['tableName']);
+            $triggers = $this::$connection->query($triggerExistsQuery)->fetchAll();
+            $triggerExists = false;
 
-            //Find out whether same named trigger exists or not in listOfTriggers array
-            foreach ($listOfTriggers as $triggerRow) {
-                if ($triggerRow['Trigger'] == $schema['triggerName']) {
+            foreach($triggers as $trigger) {
+                if((in_array($schema['triggerName'], $trigger))) {
                     $triggerExists = true;
                 }
             }
 
-            //if trigger isn't exists then create.
+            //if trigger doesn't exists, then create.
             if (!$triggerExists) {
                 $query = $this->di->get('dialect')->createTrigger($meta[$model]['tableName'], $schema);
+                $this::$connection->execute($query);
+            }
+        }
+    }
+
+    /**
+     * This function is responsible for migrating functions that will be used by 
+     * tables or views.
+     * 
+     * @param $model
+     * @param $meta 
+     */
+    private function migrateFunctions($model, $meta)
+    {
+        foreach ($meta[$model]['functions'] as $schema) {
+            $functionExistsQuery = $this->di->get('dialect')->showFunction($schema['functionName']);
+            $result = $this::$connection->query($functionExistsQuery)->fetch();
+
+            //if function doesn't exists, then create.
+            if ($result['Name'] == '') {
+                $query = $this->di->get('dialect')->createFunction($schema['functionName'], $schema['parameters'], $schema['returnType'], $schema['statement']);
                 $this::$connection->execute($query);
             }
         }

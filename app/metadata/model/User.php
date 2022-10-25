@@ -180,15 +180,6 @@ $models['User'] = array(
             'length' => '200',
             'null' => true,
             'fts' => true
-        ),
-        'timeSpent' => array(
-            'name' => 'timeSpent',
-            'label' => 'LBL_USERS_TIME_SPENT',
-            'type' => 'int',
-            'length' => '10',
-            'null' => true,
-            'fts' => true,
-            'default' => 0
         )
     ),
     'indexes' => array(
@@ -201,6 +192,14 @@ $models['User'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(
+        'getModelId' => array(
+            'functionName' => 'getModelId',
+            'returnType' => 'VARCHAR(36) CHARSET utf8',
+            'parameters' => '',
+            'statement' => 'return @modelId'
+        )
+    ),
     'relationships' => array(
         'hasOne' => array(
             'dashboard' => array(
@@ -211,7 +210,22 @@ $models['User'] = array(
             'timeSpent' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Usertimespent',
-                'relatedKey' => 'id'
+                'relatedKey' => 'userId'
+            ),
+            'openClosedProject' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Useropenclosedproject',
+                'relatedKey' => 'userId'
+            ),
+            'openClosedIssue' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Useropenclosedissue',
+                'relatedKey' => 'userId'
+            ),
+            'collaboration' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Usercollaboration',
+                'relatedKey' => 'userId'
             )
         ),
         'hasMany' => array(
@@ -220,6 +234,11 @@ $models['User'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
                 'relatedKey' => 'relatedId',
                 'condition' => 'tagged.relatedTo = "user"'
+            ),
+            'latestIssues' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Userlatestissue',
+                'relatedKey' => 'userId'
             ),
             'memberships' => array(
                 'primaryKey' => 'id',
@@ -243,7 +262,27 @@ $models['User'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Badge',
                 'relatedKey' => 'id',
                 'conditionExclusive' => 'badgeLevelsScoreboard.badgeId = badges.id'
-            )
+            ),
+            'latestProjects' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Userlatestproject',
+                'relatedKey' => 'userId'
+            ),
+            'latestIssues' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Userlatestissue',
+                'relatedKey' => 'userId'
+            ),
+            'mostWorkedMembers' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Userworkmostwith',
+                'relatedKey' => 'userId'
+            ),
+            'recentActivities' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Userecentactivity',
+                'relatedKey' => 'userId'
+            )            
         ), 
         'hasManyToMany' => array(
             'skills' => array(
@@ -282,7 +321,8 @@ $models['User'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'modelIdentifierBehavior'
     ),
 
 );

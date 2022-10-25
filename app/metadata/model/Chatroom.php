@@ -98,6 +98,7 @@ $models['Chatroom'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasMany' => array(
             'comments' => array(

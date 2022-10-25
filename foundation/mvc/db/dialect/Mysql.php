@@ -27,15 +27,15 @@ class Mysql
         return "CREATE TRIGGER {$schema['triggerName']} 
                 {$schema['eventType']} on {$tableName}
                 FOR EACH ROW 
-                    SET {$schema['statement']}";
+                    {$schema['statement']}";
     }
 
     /**
-     * This function returns sql to list triggers.
+     * This function returns sql to check whether trigger exists or not.
      *
      * @return string
      */
-    public function listTriggers($tableName)
+    public function showTrigger($tableName)
     {
         return "SHOW TRIGGERS like '{$tableName}'";
     }
@@ -47,6 +47,28 @@ class Mysql
      */
     public function createView($tableName, $viewSql)
     {
-        return "CREATE OR REPLACE VIEW {$tableName} AS {$viewSql};";
+        return "CREATE OR REPLACE VIEW {$tableName} AS {$viewSql}";
     }
+
+    /**
+     * This function returns sql to check whether function exists or not.
+     *
+     * @return string
+     */
+    public function showFunction($functionName)
+    {
+        return "SHOW FUNCTION STATUS where name = '{$functionName}'";
+    }    
+
+    /**
+     * This function returns sql to create function.
+     *
+     * @return string
+     */
+    public function createFunction($functionName, $parameters, $returnType, $statement)
+    {
+        return "CREATE FUNCTION {$functionName}($parameters)
+                RETURNS {$returnType} DETERMINISTIC
+                {$statement}";
+    }    
 }

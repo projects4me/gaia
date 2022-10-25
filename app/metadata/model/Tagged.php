@@ -45,6 +45,7 @@ $models['Tagged'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
       'hasMany' => array(
           'tag' => array(

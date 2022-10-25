@@ -37,6 +37,13 @@ $models['Issue'] = array(
             'null' => true,
             'fts' => true
         ),
+        'lastActivityDate' => array(
+            'name' => 'lastActivityDate',
+            'label' => 'LBL_ISSUES_LAST_ACTIVITY_DATE',
+            'type' => 'datetime',
+            'null' => true,
+            'fts' => true
+        ),
         'deleted' => array(
             'name' => 'deleted',
             'label' => 'LBL_ISSUES_DELETED',
@@ -185,6 +192,7 @@ $models['Issue'] = array(
     'indexes' => array(
         'id' => 'primary',
         'issueNumber' => 'unique',
+        'projectId' => 'INDEX'
     ),
     'foriegnKeys' => array(
 
@@ -193,10 +201,11 @@ $models['Issue'] = array(
         'addIssueStatus' => array(
             'triggerName' => 'add_issue_status',
             'eventType' => 'BEFORE INSERT',
-            'statement' => 'NEW.status = (select name from issues_statuses
+            'statement' => 'SET NEW.status = (select name from issue_statuses
                             is2 where is2.id = NEW.statusId);'
         )
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
             'assignedTo' => array(

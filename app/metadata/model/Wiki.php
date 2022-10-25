@@ -127,6 +127,7 @@ $models['Wiki'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
         'belongsTo' => array(
             'project' => array(

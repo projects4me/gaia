@@ -106,6 +106,7 @@ $models['Issuestatus'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
     ),
     'behaviors' => array(

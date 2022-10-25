@@ -120,6 +120,7 @@ $models['Conversationroom'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
             'project' => array(

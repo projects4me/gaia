@@ -4,14 +4,11 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-$models['Usertimespent'] = array(
-    'tableName' => 'user_time_spent',
-    'viewSql' => 'SELECT UUID() as id, 
-                  SUM((Timelog.days * 8 * 60) + (Timelog.hours * 60) + Timelog.minutes) as totalMinutes, User.id as userId from users as User 
-                  join issues as Issue on User.id = Issue.createdUser
-                  join time_logs as Timelog on Timelog.issueId = Issue.id
-                  where Timelog.deleted = "0"
-                  GROUP BY User.id;',
+$models['Usercollaboration'] = array(
+    'tableName' => 'user_collaborations',
+    'viewSql' => 'SELECT UUID() as id, FLOOR(POWER(COUNT(Comment.id), "0.5") * 13) as collaboration, User.id as userId from comments as Comment 
+                left join users as User on User.id = Comment.createdUser where CAST(UTC_TIMESTAMP() AS DATE) = CAST(Comment.dateCreated as DATE)
+                GROUP BY User.id;',
     'isView' => true,
     'fields' => array(
         'id' => array(
@@ -23,10 +20,10 @@ $models['Usertimespent'] = array(
             'name' => 'userId',
             'type' => 'varchar',
             'null' => false,
-        ),        
-        'totalMinutes' => array(
-            'name' => 'totalMinutes',
-            'type' => 'varchar',
+        ),
+        'collaboration' => array(
+            'name' => 'collaboration',
+            'type' => 'int',
             'null' => false,
         )
     ),

@@ -120,6 +120,7 @@ $models['Timelog'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
             'issue' => array(
@@ -145,8 +146,7 @@ $models['Timelog'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior',
-        'timeSpentBehavior'
+        'softDeleteBehavior'
     ),
 
 );

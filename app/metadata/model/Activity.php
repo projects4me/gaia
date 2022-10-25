@@ -98,13 +98,28 @@ $models['Activity'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
+        'relatedId' => 'INDEX',
+        'relatedTo' => 'INDEX',
+        'createdUser' => 'INDEX',
+        'dateCreated' => 'INDEX'
     ),
     'foriegnKeys' => array(
 
     ) ,
     'triggers' => array(
-
+        'addLastActivityDate' => array(
+            'triggerName' => 'add_last_activity_date',
+            'eventType' => 'AFTER INSERT',
+            'statement' => 'BEGIN
+                                IF NEW.relatedTo = "issue" THEN
+                                UPDATE issues as Issue SET Issue.lastActivityDate = NEW.dateCreated where Issue.id = NEW.relatedId;
+                                ELSEIF NEW.relatedTo = "project" THEN
+                                UPDATE memberships as Membership SET Membership.lastActivityDate = NEW.dateCreated where Membership.projectId = NEW.relatedId AND Membership.userId = NEW.createdUser;
+                                END IF;
+                            END;'
+        )
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
             'createdBy' => array(

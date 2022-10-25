@@ -82,6 +82,7 @@ $models['Badge'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasMany' => array(
             'levels' => array(

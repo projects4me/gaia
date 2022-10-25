@@ -53,6 +53,7 @@ $models['Oauthrefreshtoken'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array()
 );
 
 return $models;

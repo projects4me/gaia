@@ -96,6 +96,8 @@ $models['Comment'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
+        'dateCreated' => 'INDEX',
+        'createdUser' => 'INDEX'
     ),
     'foriegnKeys' => array(
 
@@ -103,6 +105,7 @@ $models['Comment'] = array(
     'triggers' => array(
 
     ),
+    'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
             'createdBy' => array(

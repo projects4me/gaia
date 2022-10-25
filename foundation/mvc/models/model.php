@@ -68,6 +68,13 @@ class Model extends PhalconModel
     public $newId;
 
     /**
+     * This is the id of model being requested by user.
+     * 
+     * @var $newId
+     */    
+    public $id;
+
+    /**
      * This function is used in order to load the different behaviors that this model is
      * set to use.
      *
@@ -352,6 +359,8 @@ class Model extends PhalconModel
         $this->fireEvent("beforeQuery");
         // get the query
         $this->_query = $this->setQuery($this->_query, $params);
+        
+        $this->fireEvent("afterQuery");
 
         // process ACL and other behaviors before executing the query
         $data = $this->_query->execute();
@@ -488,7 +497,7 @@ class Model extends PhalconModel
 
         // if condition is requested then set it up
         if (isset($params['where']) && !empty($params['where'])) {
-            $where = self::preProcessWhere($params['where']);
+            $where = $this->preProcessWhere($params['where']);
             $GLOBALS['logger']->debug(print_r($query->getWhere(), 1));
             if (empty($query->getWhere())) {
                 $query->where($where);
@@ -627,7 +636,7 @@ class Model extends PhalconModel
      * @return array
      * @throws \Phalcon\Exception
      */
-    public static function preProcessWhere($statement)
+    public function preProcessWhere($statement)
     {
         // Parsing ideology is simples, first extract all the sub statements
         // Then replace them in the queryString to get the exact
@@ -670,6 +679,11 @@ class Model extends PhalconModel
                 $field = trim($field);
                 $value = trim($value);
                 $value = trim($value, "'");
+
+                if($field == "{$this->modelAlias}.id") {
+                    $this->id = $value;
+                }
+
                 $translatedStatement = '';
                 // parse based on the operator
                 switch ($operator) {
