@@ -9,7 +9,7 @@ $models['Userlatestissue'] = array(
     'viewSql' => 'SELECT Issue.id as id, Issue.subject as subject, Issue.issueNumber as issueNumber, Issue.status as status, Issue.lastActivityDate as lastActivityDate, Issue.createdUser as userId, Issue.projectId as projectId, Project.shortCode as projectShortCode
                   from issues as Issue 
                   left join projects as Project on Issue.projectId = Project.id
-                  where Issue.createdUser = getValueToCompare()
+                  where Issue.createdUser = getModelId()
                   GROUP BY Issue.id
                   ORDER BY Issue.lastActivityDate DESC LIMIT 5;',
     'isView' => true,

@@ -193,8 +193,8 @@ $models['User'] = array(
 
     ),
     'functions' => array(
-        'getValueToCompare' => array(
-            'functionName' => 'getValueToCompare',
+        'getModelId' => array(
+            'functionName' => 'getModelId',
             'returnType' => 'VARCHAR(36) CHARSET utf8',
             'parameters' => '',
             'statement' => 'return @modelId'
