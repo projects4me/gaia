@@ -35,9 +35,9 @@ class Mysql
      *
      * @return string
      */
-    public function showTrigger($tableName, $triggerName)
+    public function showTrigger($tableName)
     {
-        return "select * from INFORMATION_SCHEMA.TRIGGERS where EVENT_OBJECT_TABLE='{$tableName}' AND TRIGGER_NAME = '{$triggerName}'";
+        return "SHOW TRIGGERS like '{$tableName}'";
     }
 
     /**

@@ -127,11 +127,18 @@ class Migration extends PhalconMigration
     private function migrateTriggers($model, $meta)
     {
         foreach ($meta[$model]['triggers'] as $schema) {
-            $triggerExistsQuery = $this->di->get('dialect')->showTrigger($meta[$model]['tableName'], $schema['triggerName']);
-            $result = $this::$connection->query($triggerExistsQuery)->fetch();
+            $triggerExistsQuery = $this->di->get('dialect')->showTrigger($meta[$model]['tableName']);
+            $triggers = $this::$connection->query($triggerExistsQuery)->fetchAll();
+            $triggerExists = false;
+
+            foreach($triggers as $trigger) {
+                if((in_array($schema['triggerName'], $trigger))) {
+                    $triggerExists = true;
+                }
+            }
 
             //if trigger doesn't exists, then create.
-            if ($result['TRIGGER_NAME'] == '') {
+            if (!$triggerExists) {
                 $query = $this->di->get('dialect')->createTrigger($meta[$model]['tableName'], $schema);
                 $this::$connection->execute($query);
             }

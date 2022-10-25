@@ -112,9 +112,9 @@ $models['Activity'] = array(
             'eventType' => 'AFTER INSERT',
             'statement' => 'BEGIN
                                 IF NEW.relatedTo = "issue" THEN
-                                UPDATE issues i SET i.lastActivityDate = NEW.dateCreated where i.id = NEW.relatedId;
+                                UPDATE issues as Issue SET Issue.lastActivityDate = NEW.dateCreated where Issue.id = NEW.relatedId;
                                 ELSEIF NEW.relatedTo = "project" THEN
-                                UPDATE memberships m SET m.lastActivityDate = NEW.dateCreated where m.projectId = NEW.relatedId AND m.userId = NEW.createdUser;
+                                UPDATE memberships as Membership SET Membership.lastActivityDate = NEW.dateCreated where Membership.projectId = NEW.relatedId AND Membership.userId = NEW.createdUser;
                                 END IF;
                             END;'
         )
