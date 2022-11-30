@@ -13,10 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: rananoman/gaia:1.0.0
-      env:
-        DROPLET_KEY: ${{ secrets.DOKEY }}
-        HOST: ${{ secrets.DOHOST }}
-        USER: ${{ secrets.DOUSER }}
     steps:
     - name: Checkout to Repository
       uses: actions/checkout@v3
@@ -28,13 +24,6 @@ jobs:
         key: ${{ secrets.DOKEY }}
 
         script: |
-          ls -l
-    # - name: Deploy to digital ocean droplet
-    #   run: |
-    #     touch droplet_key
-    #     echo "$DROPLET_KEY" > droplet_key
-    #     composer install 
-    #     chmod 600 droplet_key
-    #     scp -i droplet_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -rp 
-    #     app/ config/ db/ filesystem/ foundation/ public/ vendor/ composer.json
-    #     "$USER"@"$HOST":/home/web/gaia/
+          cd ${{ secrets.GAIA_PATH }}
+          # git pull origin dev
+          # composer install
