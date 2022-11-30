@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  gaia:
+    container_name: gaia
+    build: .
+    volumes:
+      - gaia:/var/www/html
+    ports:
+      - '8080:80'
+    expose:
+      - '80'
+    depends_on:
+      - mysql
+    links:
+      - mysql
+
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: pr4m
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: nouman
+      MYSQL_PASSWORD: nouman
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    ports:
+      - '3306:3306'
+    command: --sql_mode=""
+    volumes:
+     - ./db/Dump20221124.sql:/docker-entrypoint-initdb.d/Dump20221124.sql
+     - mysql_db:/var/lib/mysql
+
+volumes:
+  mysql_db:
+  gaia:
