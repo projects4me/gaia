@@ -26,9 +26,9 @@ jobs:
         host: ${{ secrets.DOHOST }}
         username: ${{ secrets.DOUSER }}
         key: ${{ secrets.DOKEY }}
+        
         script: |
-          cd /home/web/gaia/
-          ls
+          ls -l
     # - name: Deploy to digital ocean droplet
     #   run: |
     #     touch droplet_key
