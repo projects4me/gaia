@@ -25,6 +25,6 @@
     "ext-curl": "*",
     "ext-psr": "*",
     "ext-xml": "*",
-    "pdo_mysql": "*"
+    "ext-pdo_mysql": "*"
   }
 }
