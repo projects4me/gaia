@@ -3,10 +3,6 @@ name: Deploy gaia
 on:
   pull_request:
     types: [closed]
-
-  push:
-    branches:
-      - 'ci/cd'
       
 jobs:
   Deploy:
