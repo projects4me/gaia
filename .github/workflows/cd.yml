@@ -21,12 +21,12 @@ jobs:
     - name: Checkout to Repository
       uses: actions/checkout@v3
     - name: deploy gaia
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v0.1.2
       with:
         host: ${{ secrets.DOHOST }}
         username: ${{ secrets.DOUSER }}
         key: ${{ secrets.DOKEY }}
-        
+
         script: |
           ls -l
     # - name: Deploy to digital ocean droplet
