@@ -28,7 +28,7 @@ jobs:
         key: ${{ secrets.DOKEY }}
         script: |
           git pull
-          composer install      
+          ls
     # - name: Deploy to digital ocean droplet
     #   run: |
     #     touch droplet_key
