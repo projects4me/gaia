@@ -27,7 +27,7 @@ jobs:
         username: ${{ secrets.DOUSER }}
         key: ${{ secrets.DOKEY }}
         script: |
-          git pull
+          cd /home/web/gaia/
           ls
     # - name: Deploy to digital ocean droplet
     #   run: |
