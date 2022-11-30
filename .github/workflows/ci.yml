@@ -5,8 +5,8 @@ on:
     types: [opened]
 
 jobs:
-  Test:
 
+  Test:
     runs-on: ubuntu-latest
     container:
       image: rananoman/gaia:1.0.0
