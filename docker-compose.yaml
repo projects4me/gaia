@@ -15,7 +15,7 @@ services:
       - mysql
 
   mysql:
-    container_name: mysql
+    container_name: mysql_dev
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: pr4m
