@@ -1,10 +1,10 @@
 version: "3.9"
 services:
   gaia:
-    container_name: gaia
+    container_name: gaia_dev
     build: .
     volumes:
-      - gaia:/var/www/html
+      - ./:/var/www/html
     ports:
       - '8080:80'
     expose:
@@ -20,8 +20,8 @@ services:
     environment:
       MYSQL_DATABASE: pr4m
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: nouman
-      MYSQL_PASSWORD: nouman
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     ports:
