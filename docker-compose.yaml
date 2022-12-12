@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   gaia:
-    container_name: gaia_dev
+    container_name: gaia-dev
     build: .
     volumes:
       - ./:/var/www/html
@@ -15,7 +15,7 @@ services:
       - mysql
 
   mysql:
-    container_name: mysql_dev
+    container_name: mysql-dev
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: pr4m
