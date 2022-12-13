@@ -19,4 +19,5 @@ jobs:
     - name: Run test cases
       run: |
         cd tests
+        composer install
         phpunit
