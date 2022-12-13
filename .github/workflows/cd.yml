@@ -1,4 +1,4 @@
-name: Deploy gaia
+name: Deploy Gaia Dev
 
 on:
   pull_request:
