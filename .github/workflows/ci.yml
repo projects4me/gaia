@@ -37,7 +37,7 @@ jobs:
       run: |
         composer install
 
-    - name: Run test cases
+    - name: Run test Cases
       run: |
         cd tests
         phpunit
