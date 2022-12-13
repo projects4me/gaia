@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  Test:
+  Build-and-Test:
     runs-on: ubuntu-latest
     container:
       image: rananoman/gaia:1.0.0
@@ -40,7 +40,6 @@ jobs:
     - name: Run test Cases
       run: |
         cd tests
-        php -v
         phpunit --coverage-html /__w/gaia/gaia/coverage
 
     - name: Upload Code coverage report
