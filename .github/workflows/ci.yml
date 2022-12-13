@@ -3,9 +3,6 @@ name: Run Gaia test cases
 on:
   pull_request:
     types: [opened]
-  push:
-    branches:
-      - ci/cd
 
 jobs:
 
