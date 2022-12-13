@@ -24,7 +24,6 @@
     "ext-mbstring": "*",
     "ext-curl": "*",
     "ext-psr": "*",
-    "ext-xml": "*",
     "ext-pdo_mysql": "*"
   }
 }
