@@ -1,0 +1,26 @@
+name: Deploy Gaia Dev
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+
+  Deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: rananoman/gaia:1.0.0
+    steps:
+    - name: Checkout to Repository
+      uses: actions/checkout@v3
+    - name: deploy gaia
+      uses: appleboy/ssh-action@v0.1.2
+      with:
+        host: ${{ secrets.DOHOST }}
+        username: ${{ secrets.DOUSER }}
+        key: ${{ secrets.DOKEY }}
+
+        script: |
+          cd ${{ secrets.GAIA_PATH }}
+          git pull origin dev
+          composer install
