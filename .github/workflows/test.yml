@@ -1,0 +1,24 @@
+name: Run Gaia test cases
+
+on:
+  pull_request:
+    types: [opened]
+  push:
+    branches:
+      - ci/cd
+
+jobs:
+
+  Test:
+    runs-on: ubuntu-latest
+    container:
+      image: rananoman/gaia:1.0.0
+    steps:
+    - name: Watch change in composer.json
+      id: watch-composer-json
+      uses: tj-actions/changed-files@v32
+      with:
+          files: "composer.json"
+
+    - name: Check files
+      run: ls
