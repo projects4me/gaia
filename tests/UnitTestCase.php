@@ -4,10 +4,8 @@
  */
 
 use Phalcon\DI;
-use Phalcon\Test\UnitTestCase as PhalconTestCase;
 
-
-abstract class UnitTestCase extends PhalconTestCase
+abstract class UnitTestCase
 {
     /**
      * @var bool

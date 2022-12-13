@@ -7,7 +7,7 @@ use Phalcon\DI;
 use Phalcon\DI\FactoryDefault;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Logger;
-use Phalcon\Logger\Adapter\File as FileAdapter;
+use Phalcon\Logger\Adapter\Stream as StreamAdapter;
 use Phalcon\Mvc\Model\Manager as ModelsManager;
 
 ini_set('display_errors',1);
@@ -21,7 +21,13 @@ require APP_PATH . '/autoload.php';
 require APP_PATH . '/tests/UnitTestCase.php';
 
 global $logger;
-$logger = new FileAdapter(APP_PATH.'/logs/application.log');
+$loggerAdapter = new StreamAdapter(APP_PATH.'/logs/application.log');
+$logger = new Logger(
+    'applicationlog',
+    [
+        'local'   => $loggerAdapter,
+    ]
+);
 $logger->setLogLevel(Logger::DEBUG);
 
 
