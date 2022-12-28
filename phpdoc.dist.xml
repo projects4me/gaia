@@ -9,7 +9,7 @@
   </transformer>
   <files>
     <directory>./app</directory>
-    <directory>./foundation</directory>
+    <directory>./core</directory>
   </files>
   <transformations>
     <template name="clean"/>

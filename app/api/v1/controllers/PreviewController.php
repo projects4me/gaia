@@ -6,7 +6,7 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Gaia\MVC\Models\Downloadtoken;
+use Gaia\Core\MVC\REST\Controllers\RestController;
 
 /**
  * Preview controller

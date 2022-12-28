@@ -6,6 +6,8 @@
 
 namespace Gaia\MVC\Models;
 
+use Gaia\Core\MVC\Models\Model;
+
 /**
  * Time Spent on Issues by user.
  *

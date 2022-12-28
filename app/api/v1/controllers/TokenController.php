@@ -6,7 +6,7 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Gaia\MVC\REST\Controllers\RestController;
+use Gaia\Core\MVC\REST\Controllers\RestController;
 
 /**
  * This controller is used to provide API interface for OAuth 2.- based
@@ -48,7 +48,7 @@ class TokenController extends RestController
         }
         
         // include OAuth2 Server object
-        require_once APP_PATH.'/foundation/libs/authorization/oAuthServer.php';
+        require_once APP_PATH.'/core/libs/authorization/oAuthServer.php';
         
         // Handle a request for an OAuth2.0 Access Token and send the response to the client
         $response = $server->handleTokenRequest($request);

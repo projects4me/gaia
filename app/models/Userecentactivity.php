@@ -6,6 +6,8 @@
 
 namespace Gaia\MVC\Models;
 
+use Gaia\Core\MVC\Models\Model;
+
 /**
  * Recent Activities of User.
  *
