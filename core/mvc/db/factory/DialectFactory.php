@@ -10,7 +10,7 @@ namespace Gaia\Db\Factory;
  * This class uses factory design pattern in order to create an dialect
  * object on runtime.
  *
- * @author Rana Nouman <ranamnouman@yahoo.com>
+ * @author Rana Nouman <ranamnouman@gmail.com>
  * @package Foundation\Mvc\Db\Factory
  * @category DialectFactory
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3

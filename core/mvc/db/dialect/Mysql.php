@@ -10,7 +10,7 @@ namespace Gaia\Db\Dialect;
  * This class is responsible to create sql expressions that are used by
  * MYSQL RDBMS.
  *
- * @author Rana Nouman <ranamnouman@yahoo.com>
+ * @author Rana Nouman <ranamnouman@gmail.com>
  * @package Foundation\Mvc\Db\Dialect
  * @category Mysql
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
