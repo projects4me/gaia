@@ -82,5 +82,10 @@ class Util {
         $parts = explode('\\', $className);
         return end($parts);
     }
+
+    public static function convertToCamelCase($string) 
+    {
+        return ucwords($string);
+    }
 }
 ?>
