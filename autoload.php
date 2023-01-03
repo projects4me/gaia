@@ -52,7 +52,6 @@ if (preg_match('@api/?(v[^/]+)@',$request->getURI(),$matches))
     $apiVersion = $matches[1];
 }
 
-
 //Register an autoloader
 $loader = new \Phalcon\Loader();
 
@@ -65,16 +64,14 @@ $loader->registerNamespaces(
         "Gaia\\Db\\Factory" => APP_PATH. '/core/mvc/db/factory/',
         "Gaia\\Db\\Dialect" => APP_PATH. '/core/mvc/db/dialect/',
         "Gaia\\Core\\MVC\\Models" => APP_PATH. '/core/mvc/models/',
-        "Gaia\\Core\\MVC\\REST\\Controllers" => APP_PATH. '/core/mvc/controllers/'
+        "Gaia\\Core\\MVC\\Models\\Relationships" => APP_PATH. '/core/mvc/models/relationships',
+        "Gaia\\Core\\MVC\\REST\\Controllers" => APP_PATH. '/core/mvc/controllers/',
+        "Gaia\\Core\\MVC\\Models\\Relationships\\Factory" => APP_PATH. '/core/mvc/models/relationships/factory',
     ]
 );
 
-
-//require_once(APP_PATH.'/core/mvc/controllers/components/auditable.php');
-
 $loader->registerClasses(
     [
-        // 'Gaia\\Core\\MVC\\Models\\Query' => APP_PATH.'/core/mvc/models/query.php',
         'Gaia\\MVC\\Router' => APP_PATH.'/core/mvc/router.php',
     ]
 );
