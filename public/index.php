@@ -31,6 +31,9 @@ define('DS', DIRECTORY_SEPARATOR);
 
 require APP_PATH . '/autoload.php';
 
+// putenv('XHGUI_MONGO_HOST=mongodb://xhgui:27017');
+// require_once('/usr/local/src/xhgui/external/header.php');
+
 /**
  * @todo Need a more appropriate place for this
  */
@@ -173,6 +176,11 @@ try {
     $di->set(
         'dialect',
         $di->get('dialectFactory')->getDialect()
+    );
+
+    $di->set(
+        'relationshipFactory',
+        new \Gaia\Core\MVC\Models\Relationships\Factory\RelationshipFactory($di)
     );
 
 

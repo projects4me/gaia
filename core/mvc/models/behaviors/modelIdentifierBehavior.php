@@ -14,7 +14,7 @@ use Phalcon\Mvc\Model\Behavior;
 /**
  * This behavior creates a new user defined variable that will be used by view in where clause as an identifier for model.
  *
- * @author Rana Nouman <ranamnouman@yahoo.com>
+ * @author Rana Nouman <ranamnouman@gmail.com>
  */
 class modelIdentifierBehavior extends Behavior implements BehaviorInterface
 {
@@ -40,6 +40,6 @@ class modelIdentifierBehavior extends Behavior implements BehaviorInterface
     protected function afterQuery($model)
     {
         $GLOBALS['logger']->debug("Setting up new user defined variable");
-        $model->getReadConnection()->query("select @modelId:= '{$model->id}'");
+        $model->getReadConnection()->query("select @modelId:= '{$model->query->modelId}'");
     }
 }
