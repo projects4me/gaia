@@ -6,6 +6,8 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
+use Gaia\Core\MVC\REST\Controllers\RestController;
+
 /**
  * Activities Controller
  *

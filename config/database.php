@@ -38,9 +38,9 @@
 
 $config['database'] = array(
     'adapter'     => 'Mysql',
-    'host'        => 'localhost',
+    'host'        => 'mysql',
     'username'    => 'nouman',
-    'password'    => 'Rolus889',
+    'password'    => 'nouman',
     'dbname'      => 'pr4m',
     'charset'     => 'utf8mb4',
 );

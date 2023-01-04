@@ -6,7 +6,7 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Gaia\MVC\REST\Controllers\RestController;
+use Gaia\Core\MVC\REST\Controllers\RestController;
 use ElephantIO\Client;
 use ElephantIO\Engine\SocketIO\Version2X;
 

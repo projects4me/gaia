@@ -6,7 +6,7 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Gaia\MVC\REST\Controllers\RestController;
+use Gaia\Core\MVC\REST\Controllers\RestController;
 
 /**
  * TimeLogs Controller

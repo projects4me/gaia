@@ -6,12 +6,12 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Gaia\MVC\REST\Controllers\RestController;
+use Gaia\Core\MVC\REST\Controllers\RestController;
 
 /**
  * Badge Controller
  *
- * @author Rana Nouman <ranamnouman@yahoo.com>
+ * @author Rana Nouman <ranamnouman@gmail.com>
  * @package Foundation
  * @category Controller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3

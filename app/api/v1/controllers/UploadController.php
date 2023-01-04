@@ -6,7 +6,7 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Gaia\MVC\REST\Controllers\RestController;
+use Gaia\Core\MVC\REST\Controllers\RestController;
 use function Gaia\Libraries\Utils\create_guid as create_guid;
 use Gaia\MVC\Models\Upload;
 use Gaia\MVC\Models\Downloadtoken;

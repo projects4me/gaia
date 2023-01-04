@@ -27,7 +27,7 @@ defined('APP_PATH') || define('APP_PATH', realpath('.'));
 // ));
 
 
-require_once APP_PATH.'/foundation/libs/config.php';
+require_once APP_PATH.'/core/libs/config.php';
 $config = new \Gaia\Libraries\Config();
 $config->init();
 
