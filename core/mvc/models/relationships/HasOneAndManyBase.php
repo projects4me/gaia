@@ -10,7 +10,7 @@ namespace Gaia\Core\MVC\Models\Relationships;
  * This class is base for hasOne, HasMany and belongsTo relationships.
  *
  * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Foundation\Core\Mvc\Models\Relationships
+ * @package Foundation\Core\MVC\Models\Relationships
  * @category HasOneAndManyBase
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */

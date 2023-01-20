@@ -12,7 +12,7 @@ use Gaia\Libraries\Utils\Util;
  * This class represents HasManyToMany relationship.
  *
  * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Foundation\Core\Mvc\Models\Relationships
+ * @package Foundation\Core\MVC\Models\Relationships
  * @category HasManyToMany
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
