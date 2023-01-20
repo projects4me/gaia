@@ -31,7 +31,6 @@ namespace Gaia\Core\MVC\Models;
  */
 class Relationship
 {
-
     /**
      * The name of relationships that are related to current model.
      * 
