@@ -200,6 +200,8 @@ class Model extends PhalconModel
      */
     public function readRelated(array $params)
     {
+        $this->typeOfQueryToPerform = 'prepareReadQuery';
+
         $related = $params['related'];
         $params['rels'] = array($related);
 
@@ -211,14 +213,14 @@ class Model extends PhalconModel
             $params['fields'] = $related . '.*';
         }
 
-        $this->query = $this->getQuery($this->modelAlias);
-        $this->fireEvent("beforeQuery");
-        $this->query->prepareReadQuery($this->getModelPath(), $params);
-        $this->fireEvent("afterQuery");
-        $phalconQuery = $this->query->getPhalconQuery();
-        $data = $phalconQuery->execute();
+        $this->baseModelQuery = $this->getQuery($this->modelAlias);
+        $this->di->set('baseModelQuery', $this->baseModelQuery);
 
-        return $data;
+        // $this->fireEvent("beforeQuery");
+
+        $this->executeBaseModel($params);
+
+        return $this->resultSets;
     }
 
     /**
