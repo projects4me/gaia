@@ -303,7 +303,7 @@ class Model extends PhalconModel
     public function executeBaseModel($params)
     {
         $this->baseModelQuery->{ $this->typeOfQueryToPerform}($this->getModelPath(), $params);
-        // $this->fireEvent("afterQuery");
+        $this->fireEvent("afterQuery");
 
         //execute base model query
         $phalconQuery = $this->baseModelQuery->getPhalconQuery();
