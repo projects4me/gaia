@@ -21,7 +21,7 @@ use Gaia\Core\MVC\Models\Model;
      * Flag decides whether to execute hasManyToMany relationship queries
      * separately or not.
      * 
-     * @var $splitQueries
+     * @var bool
      */
     public $splitQueries = true;
 }

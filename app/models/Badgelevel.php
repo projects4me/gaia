@@ -22,7 +22,7 @@ class Badgelevel extends Model
      * Flag decides whether to execute hasManyToMany relationship queries
      * separately or not.
      * 
-     * @var $splitQueries
+     * @var bool
      */
     public $splitQueries = true;
 }
