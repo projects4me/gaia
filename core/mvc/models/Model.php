@@ -73,6 +73,11 @@ class Model extends PhalconModel
     public $resultSets;
 
     /**
+     * This is type of query to be performed on model. e.g prepareReadAllQuery or prepareReadQuery.
+     */
+    public $typeOfQueryToPerform = null;
+
+    /**
      * This function is used in order to load the different behaviors that this model is
      * set to use.
      *
@@ -138,23 +143,58 @@ class Model extends PhalconModel
      * support the default pagination, sorting, filtering and relationships
      *
      * @param array $params
-     * @return \Phalcon\Mvc\Model\ResultsetsInterface
+     * @return array
      * @throws \Phalcon\Exception
      * @todo remove the relationship preload to all
      */
     public function read(array $params)
     {
-        $this->query = $this->getQuery($this->modelAlias);
+        // $this->fireEvent("beforeRead");
+        $this->typeOfQueryToPerform = 'prepareReadQuery';
 
-        $this->fireEvent("beforeQuery");
-        $this->query->prepareReadQuery($this->getModelPath(), $params);
+        $this->baseModelQuery = $this->getQuery($this->modelAlias);
+        $this->di->set('baseModelQuery', $this->baseModelQuery);
+        $this->bootstrapRelationship($params);
+        $this->bootstrapQueryClauses($params);
 
-        $this->fireEvent("afterQuery");
+        if ($this->splitQueries) {
+            //these are the relationship types required to join with base model.
+            $requiredRelationships = ['hasOne', 'hasMany'];
 
-        $phalconQuery = $this->query->getPhalconQuery();
-        $data = $phalconQuery->execute();
+            //check if many-to-many relationships are filtered
+            if ($this->baseModelQuery->checkRelIsFiltered()) {
+                $rels = $this->baseModelQuery->clause->getFilteredRels();
+                foreach ($rels as $relName => $meta) {
+                    $this->resultSets[$relName] = $this->executeHasManyWithClause($relName, $meta);
+                }
+            }
 
-        return $data;
+            $this->relationship->setRequiredRelationships($requiredRelationships);
+            $this->relationship->setRelationshipFields($params);
+            $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
+            $this->executeBaseModel($params);
+
+            /**
+             * extract base model ids, that will be used as an input in remaining 
+             * many-to-many rels
+             */
+            $baseModelIds = DataExtractor::extractModelIds($this->resultSets['baseModel']);
+
+            //execute remaining many-many relationships (rels without any clause)
+            foreach ($this->relationship->hasManyToMany as $relName) {
+                $relMeta = $this->relationship->getRelationship($relName);
+                $this->resultSets[$relName] = $this->executeHasManyWithOutClause($relName, $baseModelIds, $relMeta);
+            }
+        }
+        else {
+            $this->relationship->setRelationshipFields($params);
+            $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
+            $this->executeBaseModel($params);
+        }
+
+        // $this->fireEvent("afterQuery");
+
+        return $this->resultSets;
     }
 
     /**
@@ -169,6 +209,7 @@ class Model extends PhalconModel
     public function readAll(array $params)
     {
         $this->fireEvent("beforeRead");
+        $this->typeOfQueryToPerform = 'prepareReadAllQuery';
 
         $this->baseModelQuery = $this->getQuery($this->modelAlias);
         $this->di->set('baseModelQuery', $this->baseModelQuery);
@@ -223,7 +264,7 @@ class Model extends PhalconModel
      */
     public function executeBaseModel($params)
     {
-        $this->baseModelQuery->prepareReadAllQuery($this->getModelPath(), $params);
+        $this->baseModelQuery->{ $this->typeOfQueryToPerform}($this->getModelPath(), $params);
         // $this->fireEvent("afterQuery");
 
         //execute base model query
@@ -315,7 +356,7 @@ class Model extends PhalconModel
         $result = $this->executeHasManyRel($relName, $meta);
         //extract related ids and set it to original where clause
         $ids = DataExtractor::extractRelIds($this->di->get('relQuery')->newRelatedAlias, $result, $meta['rhsKey']);
-        $this->baseModelQuery->clause->updateBaseWhere($ids, $meta, $this->modelAlias);
+        $this->baseModelQuery->clause->updateBaseWhereWithIds($ids, $meta, $this->modelAlias);
         $index = array_search($relName, $this->relationship->hasManyToMany);
         unset($this->relationship->hasManyToMany[$index]);
         return $result;

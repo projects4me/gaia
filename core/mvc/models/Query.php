@@ -20,7 +20,7 @@ use Gaia\Core\MVC\Models\Query\Clause;
  * ```php
  * 
  * $query = new \Gaia\Core\MVC\Models\Query();
- * $query->prepareReadQuery($this->getModelPath(), $params);
+ * $query->prepareReadQuery($this->getmodelNamespace(), $params);
  * $phalconQuery = $query->getPhalconQuery() // getPhalconQuery() function will return Query object of Phalcon.
  * $data = $phalconQuery->execute();
  * 
@@ -93,41 +93,41 @@ class Query
      * in query builder if a model with an "id" is requested. Then it calls prepareSelectQuery 
      * function in order to create a query.
      * 
-     * @param string $modelPath path of the model.
+     * @param string $modelNamespace namespace of the model.
      * @param array $params Array of requested params.
      */
-    public function prepareReadQuery($modelPath, $params)
+    public function prepareReadQuery($modelNamespace, $params)
     {
         $this->modelId = $params['id'];
-        $this->queryBuilder->andWhere($this->modelAlias . ".id = '" . $params['id'] . "'");
-        $this->prepareSelectQuery($modelPath, $params);
+        $this->clause->updateBaseWhereWithId($modelNamespace, $this->modelId);
+        $this->prepareSelectQuery($modelNamespace, $params);
     }
 
     /**
      * This function is used to prepare select query for collection of model.
      *
-     * @param string $modelPath path of the model.
+     * @param string $modelNamespace namespace of the model.
      * @param array $params Array of requested params.
      */
-    public function prepareReadAllQuery($modelPath, $params)
+    public function prepareReadAllQuery($modelNamespace, $params)
     {
-        $this->prepareSelectQuery($modelPath, $params);
+        $this->prepareSelectQuery($modelNamespace, $params);
     }
 
     /**
      * This function is responsible to prepare select query for the model.
      *
-     * @param string $modelPath path of the model.
+     * @param string $modelNamespace namespace of the model.
      * @param array $params Array of requested params.
      */
-    public function prepareSelectQuery($modelPath, $params)
+    public function prepareSelectQuery($modelNamespace, $params)
     {
         $this->di->set('currentQueryBuilder', $this->queryBuilder);
 
         $this->setFieldsForQuery($params);
         $this->beforePrepareQuery($params);
 
-        $this->queryBuilder->from([$this->modelAlias => $modelPath]);
+        $this->queryBuilder->from([$this->modelAlias => $modelNamespace]);
         // prepare count statement
         if (isset($params['count']) && !empty($params['count'])) {
             $countStatement = explode("as", $params['count']);
@@ -164,8 +164,12 @@ class Query
         $this->clause = $this->di->get('queryClause');
         $this->clause->prepareWhere($params['where']);
         $this->clause->prepareOrderBy($params['sort'], $params['order']);
-        $this->clause->prepareGroupBy($params['groupBy']);
-        $this->clause->prepareHaving($params['having']);
+
+        //set these clauses when only when list of models are requested.
+        if ($this->modelId) {
+            $this->clause->prepareGroupBy($params['groupBy']);
+            $this->clause->prepareHaving($params['having']);
+        }
     }
 
     /**

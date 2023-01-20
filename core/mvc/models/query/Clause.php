@@ -434,7 +434,7 @@ class Clause
      * @param array $relMeta Metadata of relationship.
      * @param array $baseModel Alias of base model.
      */
-    public function updateBaseWhere($ids, $relMeta, $baseModel)
+    public function updateBaseWhereWithIds($ids, $relMeta, $baseModel)
     {
         $key = "{$baseModel}.{$relMeta['primaryKey']}";
 
@@ -446,6 +446,17 @@ class Clause
         else {
             $this->where = $statementToBeReplaced;
         }
+    }
+
+    /**
+     * This function is used to update where clause when user want to get model having specific id.
+     * 
+     * @param string $modelNamespace Namespace of model.
+     * @param string $id Identifier of model.
+     */
+    public function updateBaseWhereWithId($modelNamespace, $id) {
+        $modelName = Util::extractClassFromNamespace($modelNamespace);
+        $this->where = "{$modelName}.id = '{$id}'";
     }
 
     /**
