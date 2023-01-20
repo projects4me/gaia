@@ -3,6 +3,7 @@
 use Phalcon\Cli\Task;
 use Elasticsearch\ClientBuilder;
 use Phalcon\Mvc\Model\Resultset;
+use Gaia\Libraries\Utils\Util;
 
 class AdminTask extends Task
 {
@@ -252,7 +253,7 @@ class AdminTask extends Task
 
                     if (is_array($value))
                     {
-                        $relDef = $this->getRelationshipMeta($this->classWithoutNamespace($this->modelName),$attr);
+                        $relDef = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName),$attr);
                         if ($relDef['type'] == 'hasMany' || $relDef['type'] == 'hasManyToMany')
                         {
                             if (!empty($value['id']))
@@ -289,7 +290,7 @@ class AdminTask extends Task
         // prepare the data for JSONAPI.org standard
         foreach ($result as $object)
         {
-            $modelNameRaw = $this->classWithoutNamespace($this->modelName);
+            $modelNameRaw = Util::extractClassFromNamespace($this->modelName);
             $modelName = strtolower($this->modelName);
 
             $modelMainKeys = array_keys($mappings[$modelName]['properties']);
@@ -319,7 +320,7 @@ class AdminTask extends Task
                             if ($relationDefinition['type'] == 'hasManyToMany') {
                                 $relatedModelKey = 'secondaryModel';
                             }
-                            $relatedModelName = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
+                            $relatedModelName = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
                             $resultSet[$modelName][$count][$relatedModelName] = array();
                             $id = $val['id'];
                             unset($val['id']);
@@ -335,7 +336,7 @@ class AdminTask extends Task
                                     if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])) {
                                         $relatedModelKey = 'secondaryModel';
                                     }
-                                    $relatedModelName = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
+                                    $relatedModelName = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
                                     $i = array_search($relatedModelName, $modelMainKeys);
                                     $rel = $modelMainKeysRaw[$i];
                                     $relatedModelKeys = array_keys($mappings[$modelName]['properties'][$rel]['properties']);
@@ -428,18 +429,6 @@ class AdminTask extends Task
         );
 
         return $def;
-    }
-
-
-    /**
-     * This function returns the name of a class without the namespace
-     * @param string $string
-     * @return string
-     */
-    final private function classWithoutNamespace(string $string) :string
-    {
-        $parts = explode('\\', $string);
-        return end($parts);
     }
 
     /**
