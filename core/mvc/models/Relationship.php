@@ -34,42 +34,42 @@ class Relationship
     /**
      * The name of relationships that are related to current model.
      * 
-     * @var array $modelRelationships
+     * @var array
      */
     public $modelRelationships = [];
 
     /**
      * The name of relationships of type ManyToMany.
      * 
-     * @var array $hasManyToMany
+     * @var array
      */
     public $hasManyToMany = [];
 
     /**
      * The name of relationships of type OneToMany.
      * 
-     * @var array $hasMany
+     * @var array
      */
     public $hasMany = [];
 
     /**
      * The name of relationships of type OneToOne.
      * 
-     * @var array $oneToOne
+     * @var array
      */
     public $hasOne = [];
 
     /**
      * The name of relationships of type ManyToOne.
      * 
-     * @var array $belongsTo
+     * @var array
      */
     public $belongsTo = [];
 
     /**
      * This contains array of relationship fields.
      * 
-     * @var array $relationshipFields
+     * @var array
      */
     public $relationshipFields = [];
 
@@ -79,7 +79,7 @@ class Relationship
      * can be "hasOne" and "hasMany". By default these are set to all three types of
      * relationships.
      * 
-     * @var array $requiredRelationshipTypes
+     * @var array
      */
     public $requiredRelationshipTypes = ['hasOne', 'hasMany', 'hasManyToMany'];
 

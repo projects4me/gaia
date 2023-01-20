@@ -19,7 +19,6 @@ use Phalcon\Mvc\Model\Resultset;
  */
 class DataExtractor
 {
-
     /**
      * This function is used to extract base model ids.
      * 

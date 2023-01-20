@@ -36,14 +36,14 @@ class Query
     /**
      * This is the id of model being requested by user.
      * 
-     * @var $modelId
+     * @var string
      */
     public $modelId;
 
     /**
      * Phalcon query builder.
      * 
-     * @var $queryBuilder
+     * @var \Phalcon\Mvc\Model\Query\Builder
      */
     protected $queryBuilder;
 
@@ -57,12 +57,14 @@ class Query
     /**
      * Alias of model.
      *
-     * @var string $modelAlias
+     * @var string
      */
     public $modelAlias;
 
     /**
      * This is the new alias for related model.
+     * 
+     * @var string
      */
     public $newRelatedAlias;
 

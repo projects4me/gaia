@@ -27,53 +27,56 @@ class Model extends PhalconModel
     /**
      * This is the model metadata
      *
-     * @var $metadata
-     * @type array
+     * @var array
      */
     protected $metadata;
 
     /**
      * The alias of the current model
      *
-     * @var $modelAlias
+     * @var string
      */
     public $modelAlias;
 
     /**
      * This flag maintains if the model was changed.
      *
-     * @var $isChanged
+     * @var bool
      */
     public $isChanged = false;
 
     /**
      * The audit information of a change was made in th model
      *
-     * @var $audit
+     * @var
      */
     public $audit;
 
     /**
      * This is the query for this model, we are using this to allow behaviors to make changes if required.
      *
-     * @var \Gaia\Core\MVC\Models\Query $query
+     * @var \Gaia\Core\MVC\Models\Query
      */
     public $baseModelQuery;
 
     /**
      * This is the new id that is being inserted in the system.
      * 
-     * @var $newId
+     * @var string
      */
     public $newId;
 
     /**
      * This contains array of result on executing a query.
+     * 
+     * @var array
      */
     public $resultSets;
 
     /**
      * This is type of query to be performed on model. e.g prepareReadAllQuery or prepareReadQuery.
+     * 
+     * @var string
      */
     public $typeOfQueryToPerform = null;
 
