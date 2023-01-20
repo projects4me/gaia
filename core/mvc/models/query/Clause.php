@@ -454,7 +454,7 @@ class Clause
      * 
      * @param array $baseModelIds Ids of the base model.
      * @param array $relMeta Metadata of relationship.
-     * @param array $relName Name of relationship.
+     * @param string $relName Name of relationship.
      */
     public function updateRelatedWhere($baseModelIds, $relMeta, $relName)
     {
