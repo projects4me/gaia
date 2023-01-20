@@ -31,7 +31,8 @@ class HasOneAndManyBase
         // If an exclusive condition is defined then use that
         if (isset($relationshipMeta['conditionExclusive'])) {
             $relatedQuery = $relationshipMeta['conditionExclusive'];
-        } else {
+        }
+        else {
             $relatedQuery = $modelAlias . '.' . $relationshipMeta['primaryKey'] .
                 ' = ' . $relationshipName . '.' . $relationshipMeta['relatedKey'];
         }
@@ -41,7 +42,7 @@ class HasOneAndManyBase
             $relatedQuery .= ' AND ' . $relationshipMeta['condition'];
         }
         // for each relationship apply the relationship joins to phalcon query object
-        $queryBuilder = $this->di->get('queryBuilder');
+        $queryBuilder = $this->di->get('currentQueryBuilder');
         $queryBuilder->join($relatedModel, $relatedQuery, $relationshipName, $joinType);
     }
 }
