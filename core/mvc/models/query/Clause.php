@@ -51,6 +51,13 @@ class Clause
     public $groupBy = null;
 
     /**
+     * This is HAVING clause of a query.
+     *
+     * @var string
+     */
+    public $having = null;
+
+    /**
      * This flag represents whether hasManyToMany relationships are filtered 
      * by user or not.
      *
@@ -125,158 +132,161 @@ class Clause
      */
     public function prepareWhere($statement)
     {
-        /** 
-         * Parsing ideology is simples, first extract all the sub statements
-         * Then replace them in the queryString to get the exact
-         * \Phalcon\Mvc\Model compatible statement
-         */
+        //first condition
+        if (isset($statement) && !empty($statement)) {
+            /** 
+             * Parsing ideology is simples, first extract all the sub statements
+             * Then replace them in the queryString to get the exact
+             * \Phalcon\Mvc\Model compatible statement
+             */
 
-        $baseModelQuery = $this->di->get('baseModelQuery');
+            $baseModelQuery = $this->di->get('baseModelQuery');
 
-        //retain original statement
-        $this->where = $statement;
+            //retain original statement
+            $this->where = $statement;
 
-        // ensure that the parenthesis are well formed
-        if (substr_count($statement, '(') != substr_count($statement, ')')) {
-            $errorStr = 'Invalid query, please refer to the guides. ' .
-                'Please check the parenthesis in the query. ';
-            if (substr_count($statement, '(') > substr_count($statement, ')')) {
-                $errorStr .= 'You have forgotten ")"';
+            // ensure that the parenthesis are well formed
+            if (substr_count($statement, '(') != substr_count($statement, ')')) {
+                $errorStr = 'Invalid query, please refer to the guides. ' .
+                    'Please check the parenthesis in the query. ';
+                if (substr_count($statement, '(') > substr_count($statement, ')')) {
+                    $errorStr .= 'You have forgotten ")"';
+                }
+                else {
+                    $errorStr .= 'You have forgotten "("';
+                }
+                throw new \Phalcon\Exception($errorStr);
+            }
+            // extract all the substatments based on parenthesis
+            $expression = '@\([^(]*[^)]\)@';
+            if (preg_match_all($expression, $statement, $matches)) {
+                $substatements = $matches[0];
+                foreach ($substatements as $substatement) {
+                    // Check for :,<,>,<:,>: in the string, if found then process
+                    // ignoring the spaces
+
+                    if (preg_match('@NULL|EMPTY@', $substatement)) {
+                        $valueOffset = strlen($substatement) - 2;
+                    }
+                    else {
+                        // Get the position for the second space in a substatement
+                        $valueOffset = strpos($substatement, ' ', (strpos($substatement, ' ') + 1));
+                    }
+                    $value = substr($substatement, $valueOffset, (strlen($substatement) - $valueOffset - 1));
+
+                    list($field, $operator) = explode(' ', substr($substatement, 1, $valueOffset));
+
+                    // Trim three components of the substatement
+                    $operator = strtoupper(trim($operator));
+                    $field = trim($field);
+                    $value = trim($value);
+                    $value = trim($value, "'");
+
+                    if ($field == "{$baseModelQuery->modelAlias}.id") {
+                        $baseModelQuery->modelId = $value;
+                    }
+
+                    $translatedStatement = '';
+                    // parse based on the operator
+                    switch ($operator) {
+                        case ':':
+                            $translatedStatement = "(" . $field . " = '" . $value . "')";
+                            break;
+                        case '!:':
+                            $translatedStatement = "(" . $field . " != '" . $value . "')";
+                            break;
+                        case '>':
+                            $translatedStatement = "(" . $field . " > '" . $value . "')";
+                            break;
+                        case '<':
+                            $translatedStatement = "(" . $field . " < '" . $value . "')";
+                            break;
+                        case '>:':
+                            $translatedStatement = "(" . $field . " >= '" . $value . "')";
+                            break;
+                        case '<:':
+                            $translatedStatement = "(" . $field . " <= '" . $value . "')";
+                            break;
+                        case 'CONTAINS':
+                            if (preg_match("@','@", $value)) {
+                                $translatedStatement = "(" . $field . " IN ('" . $value . "'))";
+                            }
+                            else {
+                                $translatedStatement = "(" . $field . " LIKE '%" . $value . "%')";
+                            }
+                            break;
+                        case 'STARTS':
+                            $translatedStatement = "(" . $field . " LIKE '" . $value . "%')";
+                            break;
+                        case 'ENDS':
+                            $translatedStatement = "(" . $field . " LIKE '%" . $value . "')";
+                            break;
+                        case '!CONTAINS':
+                            if (preg_match("@','@", $value)) {
+                                $translatedStatement = "(" . $field . " NOT IN ('" . $value . "'))";
+                            }
+                            else {
+                                $translatedStatement = "(" . $field . " NOT LIKE '%" . $value . "%')";
+                            }
+                            break;
+                        case '!STARTS':
+                            $translatedStatement = "(" . $field . " NOT LIKE '" . $value . "%')";
+                            break;
+                        case '!ENDS':
+                            $translatedStatement = "(" . $field . " NOT LIKE '%" . $value . "')";
+                            break;
+                        case 'NULL':
+                            $translatedStatement = "(" . $field . " IS NULL)";
+                            break;
+                        case '!NULL':
+                            $translatedStatement = "(" . $field . " IS NOT NULL)";
+                            break;
+                        case 'EMPTY':
+                            $translatedStatement = "(" . $field . " = '')";
+                            break;
+                        case '!EMPTY':
+                            $translatedStatement = "(" . $field . " != '')";
+                            break;
+                        case 'BETWEEN':
+                            list($upper, $lower) = explode(' AND ', $value);
+                            $upper = trim($upper, "'");
+                            $upper = trim($upper);
+                            $lower = trim($lower, "'");
+                            $lower = trim($lower);
+                            $translatedStatement = "(" . $field . " BETWEEN '" . $upper . "' AND '" . $lower . "')";
+                            break;
+                        case '!BETWEEN':
+                            list($upper, $lower) = explode(' AND ', $value);
+                            $upper = trim($upper, "'");
+                            $upper = trim($upper);
+                            $lower = trim($lower, "'");
+                            $lower = trim($lower);
+                            $translatedStatement = "(!(" . $field . " BETWEEN '" . $upper . "' AND '" . $lower . "'))";
+                            break;
+                        default:
+                            $translatedStatement = false;
+                            break;
+                    }
+
+                    $this->where = str_replace($substatement, $translatedStatement, $this->where);
+
+                    // make sure that we were able to parse all substatements
+                    if (!$translatedStatement) {
+                        throw new \Phalcon\Exception('Invalid query, please check the guides. ' .
+                            'Most common issues are extra spaces and invalid operators, ' .
+                            'please note that "=" is not allowed use ":" instead. ' .
+                            'Possible issue in ' . $substatement);
+                    }
+                    else {
+                        $this->prepareRelatedWhere($translatedStatement, $field);
+                    }
+                }
             }
             else {
-                $errorStr .= 'You have forgotten "("';
+                throw new \Phalcon\Exception('Invalid query, please refer to guides. ' .
+                    'Query must have at least one sub-statement enclosed in parenthesis.');
             }
-            throw new \Phalcon\Exception($errorStr);
-        }
-        // extract all the substatments based on parenthesis
-        $expression = '@\([^(]*[^)]\)@';
-        if (preg_match_all($expression, $statement, $matches)) {
-            $substatements = $matches[0];
-            foreach ($substatements as $substatement) {
-                // Check for :,<,>,<:,>: in the string, if found then process
-                // ignoring the spaces
-
-                if (preg_match('@NULL|EMPTY@', $substatement)) {
-                    $valueOffset = strlen($substatement) - 2;
-                }
-                else {
-                    // Get the position for the second space in a substatement
-                    $valueOffset = strpos($substatement, ' ', (strpos($substatement, ' ') + 1));
-                }
-                $value = substr($substatement, $valueOffset, (strlen($substatement) - $valueOffset - 1));
-
-                list($field, $operator) = explode(' ', substr($substatement, 1, $valueOffset));
-
-                // Trim three components of the substatement
-                $operator = strtoupper(trim($operator));
-                $field = trim($field);
-                $value = trim($value);
-                $value = trim($value, "'");
-
-                if ($field == "{$baseModelQuery->modelAlias}.id") {
-                    $baseModelQuery->modelId = $value;
-                }
-
-                $translatedStatement = '';
-                // parse based on the operator
-                switch ($operator) {
-                    case ':':
-                        $translatedStatement = "(" . $field . " = '" . $value . "')";
-                        break;
-                    case '!:':
-                        $translatedStatement = "(" . $field . " != '" . $value . "')";
-                        break;
-                    case '>':
-                        $translatedStatement = "(" . $field . " > '" . $value . "')";
-                        break;
-                    case '<':
-                        $translatedStatement = "(" . $field . " < '" . $value . "')";
-                        break;
-                    case '>:':
-                        $translatedStatement = "(" . $field . " >= '" . $value . "')";
-                        break;
-                    case '<:':
-                        $translatedStatement = "(" . $field . " <= '" . $value . "')";
-                        break;
-                    case 'CONTAINS':
-                        if (preg_match("@','@", $value)) {
-                            $translatedStatement = "(" . $field . " IN ('" . $value . "'))";
-                        }
-                        else {
-                            $translatedStatement = "(" . $field . " LIKE '%" . $value . "%')";
-                        }
-                        break;
-                    case 'STARTS':
-                        $translatedStatement = "(" . $field . " LIKE '" . $value . "%')";
-                        break;
-                    case 'ENDS':
-                        $translatedStatement = "(" . $field . " LIKE '%" . $value . "')";
-                        break;
-                    case '!CONTAINS':
-                        if (preg_match("@','@", $value)) {
-                            $translatedStatement = "(" . $field . " NOT IN ('" . $value . "'))";
-                        }
-                        else {
-                            $translatedStatement = "(" . $field . " NOT LIKE '%" . $value . "%')";
-                        }
-                        break;
-                    case '!STARTS':
-                        $translatedStatement = "(" . $field . " NOT LIKE '" . $value . "%')";
-                        break;
-                    case '!ENDS':
-                        $translatedStatement = "(" . $field . " NOT LIKE '%" . $value . "')";
-                        break;
-                    case 'NULL':
-                        $translatedStatement = "(" . $field . " IS NULL)";
-                        break;
-                    case '!NULL':
-                        $translatedStatement = "(" . $field . " IS NOT NULL)";
-                        break;
-                    case 'EMPTY':
-                        $translatedStatement = "(" . $field . " = '')";
-                        break;
-                    case '!EMPTY':
-                        $translatedStatement = "(" . $field . " != '')";
-                        break;
-                    case 'BETWEEN':
-                        list($upper, $lower) = explode(' AND ', $value);
-                        $upper = trim($upper, "'");
-                        $upper = trim($upper);
-                        $lower = trim($lower, "'");
-                        $lower = trim($lower);
-                        $translatedStatement = "(" . $field . " BETWEEN '" . $upper . "' AND '" . $lower . "')";
-                        break;
-                    case '!BETWEEN':
-                        list($upper, $lower) = explode(' AND ', $value);
-                        $upper = trim($upper, "'");
-                        $upper = trim($upper);
-                        $lower = trim($lower, "'");
-                        $lower = trim($lower);
-                        $translatedStatement = "(!(" . $field . " BETWEEN '" . $upper . "' AND '" . $lower . "'))";
-                        break;
-                    default:
-                        $translatedStatement = false;
-                        break;
-                }
-
-                $this->where = str_replace($substatement, $translatedStatement, $this->where);
-
-                // make sure that we were able to parse all substatements
-                if (!$translatedStatement) {
-                    throw new \Phalcon\Exception('Invalid query, please check the guides. ' .
-                        'Most common issues are extra spaces and invalid operators, ' .
-                        'please note that "=" is not allowed use ":" instead. ' .
-                        'Possible issue in ' . $substatement);
-                }
-                else {
-                    $this->prepareRelatedWhere($translatedStatement, $field);
-                }
-            }
-        }
-        else {
-            throw new \Phalcon\Exception('Invalid query, please refer to guides. ' .
-                'Query must have at least one sub-statement enclosed in parenthesis.');
-        }
+        } // first condition ends here..
     }
 
     /**
@@ -306,6 +316,13 @@ class Clause
                 $this->orderBy = "{$orderBy['field']}{$orderBy['order']}";
             }
 
+        }
+    }
+
+    public function prepareHaving($having)
+    {
+        if (isset($having) && !empty($having)) {
+            $this->having = $having;
         }
     }
 

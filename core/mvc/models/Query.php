@@ -8,6 +8,8 @@ namespace Gaia\Core\MVC\Models;
 
 use Gaia\Core\MVC\Models\Relationship;
 use Phalcon\Mvc\Model\MetaData;
+use Gaia\Libraries\Utils\Util;
+use Gaia\Core\MVC\Models\Query\Clause;
 
 /**
  * This class prepares phalcon supported queries (PHQL) by the given metadata.
@@ -57,7 +59,12 @@ class Query
      *
      * @var string $modelAlias
      */
-    protected $modelAlias;
+    public $modelAlias;
+
+    /**
+     * This is the new alias for related model.
+     */
+    public $newRelatedAlias;
 
     /**
      * Query constructor.
@@ -69,8 +76,16 @@ class Query
     {
         $this->di = $di;
         $this->queryBuilder = $this->di->get('modelsManager')->createBuilder();
+        $this->clause = $this->getQueryClause();
         $this->modelAlias = $modelAlias;
-        $this->di->set('queryBuilder', $this->queryBuilder);
+        $this->di->set('currentQueryBuilder', $this->queryBuilder);
+        $this->di->set('queryClause', $this->clause);
+    }
+
+    public function getQueryClause()
+    {
+        $clause = new Clause($this->di);
+        return $clause;
     }
 
     /**
@@ -107,14 +122,7 @@ class Query
      */
     public function prepareSelectQuery($modelPath, $params)
     {
-        $metadata = $this->di->get('metaManager')->getModelMeta($this->modelAlias);
-        
-        //setup relationship in query builder
-        $this->relationship = new Relationship($this->di);
-        $this->relationship->prepareDefaultRels($params);
-        $this->relationship->loadRelationships($metadata['relationships']);
-        $this->relationship->verifyRelationships($params);
-        $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
+        $this->di->set('currentQueryBuilder', $this->queryBuilder);
 
         $this->setFieldsForQuery($params);
         $this->beforePrepareQuery($params);
@@ -127,51 +135,37 @@ class Query
             array_push($params['fields'], $count);
         }
 
-        // if HAVING clause is requested then set it up
-        if (isset($params['having']) && !empty($params['having'])) {
-            $this->queryBuilder->having($params['having']);
-        }
-
-        $this->queryBuilder->from([$this->modelAlias => $modelPath]);
-        // setup the passed columns
         $this->queryBuilder->columns($params['fields']);
-
-        // if grouping is requested then set it up 
-        if (isset($params['groupBy']) && !empty($params['groupBy'])) {
-            $this->queryBuilder->groupBy([$params['groupBy']]);
-        }
-
-        // if sorting is requested then set it up
-        if (isset($params['sort']) && !empty($params['sort'])) {
-            // if order is requested the use otherwise use the default one
-            if (isset($params['order']) && !empty($params['order'])) {
-                $this->queryBuilder->orderBy($params['sort'] . ' ' . $params['order']);
-            } else {
-                $this->queryBuilder->orderBy($params['sort']);
-            }
-        }
+        $this->queryBuilder->groupBy($this->clause->groupBy);
+        $this->queryBuilder->orderBy($this->clause->orderBy);
+        $this->queryBuilder->where($this->clause->where);
+        $this->queryBuilder->having($this->clause->having);
 
         // if pagination params are set then set them up
         if (isset($params['limit']) && !empty($params['limit'])) {
             if (isset($params['offset']) && !empty($params['offset'])) {
                 $this->queryBuilder->limit($params['limit'], $params['offset']);
-            } else {
+            }
+            else {
                 $this->queryBuilder->limit($params['limit']);
             }
         }
 
-        // if condition is requested then set it up
-        if (isset($params['where']) && !empty($params['where'])) {
-            $where = $this->preProcessWhere($params['where'], $this->modelAlias);
-            $GLOBALS['logger']->debug(print_r($this->queryBuilder->getWhere(), 1));
-            if (empty($this->queryBuilder->getWhere())) {
-                $this->queryBuilder->where($where);
-            } else {
-                $this->queryBuilder->andWhere($where);
-            }
-        }
-
         $GLOBALS['logger']->debug($this->queryBuilder->getPhql());
+    }
+
+    /**
+     * This function call clause class functions in order to prepare clauses for query.
+     * 
+     * @param $params 
+     */
+    public function prepareClauses($params)
+    {
+        $this->clause = $this->di->get('queryClause');
+        $this->clause->prepareWhere($params['where']);
+        $this->clause->prepareOrderBy($params['sort'], $params['order']);
+        $this->clause->prepareGroupBy($params['groupBy']);
+        $this->clause->prepareHaving($params['having']);
     }
 
     /**
@@ -180,17 +174,18 @@ class Query
      * relationship fields (if rels are given), are retrieved from database. 
      *
      * @param array $params Array of requested params.
-     * @return array
      */
     public function setFieldsForQuery(&$params)
     {
         $moduleFields = $this->getModelFields();
         if (isset($params['fields']) && !empty($params['fields'])) {
             $params['fields'] = $params['fields'];
-        } else if (isset($params['addRelFields']) && empty($params['addRelFields'])) {
+        }
+        else if (isset($params['addRelFields']) && empty($params['addRelFields'])) {
             $params['fields'] = $moduleFields;
-        } else {
-            $params['fields'] = array_merge($moduleFields, $this->relationship->relationshipFields);
+        }
+        else {
+            $params['fields'] = array_merge($moduleFields, $this->di->get('relationship')->relationshipFields);
         }
     }
 
@@ -232,211 +227,6 @@ class Query
     }
 
     /**
-     * The purpose of this function is parse the query string from a string to
-     * and array.
-     *
-     * <pre>
-     * Allowed operators
-     *  AND         And
-     *  OR          Or
-     *  BETWEEN     Between
-     *  :           Equals to, = is not allowed for friendly URL parsing
-     *  <           Less than
-     *  >           Greater than
-     *  <:          Less than or equals to
-     *  >:          Grater than or equals to
-     *  CONTAINS    Contains, acts as IN for CSVs and LIKE %% otherwise
-     *  STARTS      Starts with
-     *  ENDS        Ends with
-     *  NULL        Is NULL
-     *  EMPTY       Is empty
-     *  !           Not, no space allowed after it
-     *  (           Statement starts
-     *  )           Statement ends
-     *  ,           Multiple possible values
-     *  '           String values
-     * </pre>
-     * Every statement must be comprised of substatement, each enclosed with
-     * parenthesis. Substatements can only be enjoined using AND or OR
-     * This condition is applied to reduce complex parsing improving the overall
-     * time for processing the where statements
-     *
-     * The input needs to have the following format
-     *
-     * <code>
-     *  ((Module.field CONTAINS data) AND (Module.field !: data))
-     * </code>
-     *
-     * Note: If CONTAINS is passed multiple values then all values must be encapsulated in single quotes '.
-     *
-     * Otherwise there is no way to tell a string like "Yes,No" and "No, You don't" apart.
-     *
-     * You can also encapsulate a string in single quotes and send it but if the delimiter ',' are foung in the input
-     * then it will be treated as multiple values.
-     *
-     * <code>
-     *  (Module.field !BETWEEN rangeStart AND rangeEnd)
-     * </code>
-     *
-     * <code>
-     *  ((Module.field CONTAINS data1,data2,data3) AND (Module.field <: data))
-     * </code>
-     *
-     * Note: Parenthesis are are allowed in a substatement.
-     * Note: Subqueries are also not allowed.
-     * Note: Apostrophe must be preceded with \.
-     * @todo Allow : without spaces
-     * @param string $statement
-     * @return array
-     * @throws \Phalcon\Exception
-     */
-    public function preProcessWhere($statement)
-    {
-        // Parsing ideology is simples, first extract all the sub statements
-        // Then replace them in the queryString to get the exact
-        //  \Phalcon\Mvc\Model compatible statement
-
-        // process using another variable to retain the original statement
-        $query = $statement;
-
-        // ensure that the parenthesis are well formed
-        if (substr_count($statement, '(') != substr_count($statement, ')')) {
-            $errorStr = 'Invalid query, please refer to the guides. ' .
-                'Please check the parenthesis in the query. ';
-            if (substr_count($statement, '(') > substr_count($statement, ')')) {
-                $errorStr .= 'You have forgotten ")"';
-            } else {
-                $errorStr .= 'You have forgotten "("';
-            }
-            throw new \Phalcon\Exception($errorStr);
-        }
-        // extract all the substatments based on parenthesis
-        $expression = '@\([^(]*[^)]\)@';
-        if (preg_match_all($expression, $statement, $matches)) {
-            $substatements = $matches[0];
-            foreach ($substatements as $substatement) {
-                // Check for :,<,>,<:,>: in the string, if found then process
-                // ignoring the spaces
-
-                if (preg_match('@NULL|EMPTY@', $substatement)) {
-                    $valueOffset = strlen($substatement) - 2;
-                } else {
-                    // Get the position for the second space in a substatement
-                    $valueOffset = strpos($substatement, ' ', (strpos($substatement, ' ') + 1));
-                }
-                $value = substr($substatement, $valueOffset, (strlen($substatement) - $valueOffset - 1));
-
-                list($field, $operator) = explode(' ', substr($substatement, 1, $valueOffset));
-
-                // Trim three components of the substatement
-                $operator = strtoupper(trim($operator));
-                $field = trim($field);
-                $value = trim($value);
-                $value = trim($value, "'");
-
-                if ($field == "{$this->modelAlias}.id") {
-                    $this->modelId = $value;
-                }
-
-                $translatedStatement = '';
-                // parse based on the operator
-                switch ($operator) {
-                    case ':':
-                        $translatedStatement = "(" . $field . " = '" . $value . "')";
-                        break;
-                    case '!:':
-                        $translatedStatement = "(" . $field . " != '" . $value . "')";
-                        break;
-                    case '>':
-                        $translatedStatement = "(" . $field . " > '" . $value . "')";
-                        break;
-                    case '<':
-                        $translatedStatement = "(" . $field . " < '" . $value . "')";
-                        break;
-                    case '>:':
-                        $translatedStatement = "(" . $field . " >= '" . $value . "')";
-                        break;
-                    case '<:':
-                        $translatedStatement = "(" . $field . " <= '" . $value . "')";
-                        break;
-                    case 'CONTAINS':
-                        if (preg_match("@','@", $value)) {
-                            $translatedStatement = "(" . $field . " IN ('" . $value . "'))";
-                        } else {
-                            $translatedStatement = "(" . $field . " LIKE '%" . $value . "%')";
-                        }
-                        break;
-                    case 'STARTS':
-                        $translatedStatement = "(" . $field . " LIKE '" . $value . "%')";
-                        break;
-                    case 'ENDS':
-                        $translatedStatement = "(" . $field . " LIKE '%" . $value . "')";
-                        break;
-                    case '!CONTAINS':
-                        if (preg_match("@','@", $value)) {
-                            $translatedStatement = "(" . $field . " NOT IN ('" . $value . "'))";
-                        } else {
-                            $translatedStatement = "(" . $field . " NOT LIKE '%" . $value . "%')";
-                        }
-                        break;
-                    case '!STARTS':
-                        $translatedStatement = "(" . $field . " NOT LIKE '" . $value . "%')";
-                        break;
-                    case '!ENDS':
-                        $translatedStatement = "(" . $field . " NOT LIKE '%" . $value . "')";
-                        break;
-                    case 'NULL':
-                        $translatedStatement = "(" . $field . " IS NULL)";
-                        break;
-                    case '!NULL':
-                        $translatedStatement = "(" . $field . " IS NOT NULL)";
-                        break;
-                    case 'EMPTY':
-                        $translatedStatement = "(" . $field . " = '')";
-                        break;
-                    case '!EMPTY':
-                        $translatedStatement = "(" . $field . " != '')";
-                        break;
-                    case 'BETWEEN':
-                        list($upper, $lower) = explode(' AND ', $value);
-                        $upper = trim($upper, "'");
-                        $upper = trim($upper);
-                        $lower = trim($lower, "'");
-                        $lower = trim($lower);
-                        $translatedStatement = "(" . $field . " BETWEEN '" . $upper . "' AND '" . $lower . "')";
-                        break;
-                    case '!BETWEEN':
-                        list($upper, $lower) = explode(' AND ', $value);
-                        $upper = trim($upper, "'");
-                        $upper = trim($upper);
-                        $lower = trim($lower, "'");
-                        $lower = trim($lower);
-                        $translatedStatement = "(!(" . $field . " BETWEEN '" . $upper . "' AND '" . $lower . "'))";
-                        break;
-                    default:
-                        $translatedStatement = false;
-                        break;
-                }
-
-                $query = str_replace($substatement, $translatedStatement, $query);
-
-                // make sure that we were able to parse all substatements
-                if (!$translatedStatement) {
-                    throw new \Phalcon\Exception('Invalid query, please check the guides. ' .
-                        'Most common issues are extra spaces and invalid operators, ' .
-                        'please note that "=" is not allowed use ":" instead. ' .
-                        'Possible issue in ' . $substatement);
-                }
-            }
-        } else {
-            throw new \Phalcon\Exception('Invalid query, please refer to guides. ' .
-                'Query must have at least one sub-statement enclosed in parenthesis.');
-        }
-
-        return $query;
-    }
-
-    /**
      * This function returns query builder of Phalcon.
      *
      * @return \Phalcon\Mvc\Model\Query\Builder
@@ -454,5 +244,64 @@ class Query
     public function getPhalconQuery()
     {
         return $this->queryBuilder->getQuery();
+    }
+
+    /**
+     * This function checks whether user filtered hasManyToMany relationships or not.
+     * 
+     * @return bool
+     */
+    public function checkRelIsFiltered()
+    {
+        return $this->clause->filterHasManyToMany;
+    }
+
+    /**
+     * This function is responsible for preparation of related query of type hasManyToMany.
+     * 
+     * @param string $relName Name of relationship.
+     * @param string $meta Metadata of relationship.
+     */
+    public function prepareManyToMany($relName, $meta)
+    {
+        $meta['relatedKey'] = $meta['lhsKey'];
+        $relatedModel = Util::extractClassFromNamespace($meta['relatedModel']);
+
+        /**
+         * concatenating relName e.g skills with relatedModel e.g Tagged => skillsTagged that will be used as an
+         * alias in JOIN.
+         */
+        $this->newRelatedAlias = "{$relName}{$relatedModel}";
+
+        /**extracting modelAlias from model path for quering in it.
+         * e.g \\Gaia\\MVC\\Models\\Tag --> Tag **/
+        $modelAlias = Util::extractClassFromNamespace($meta['secondaryModel']);
+
+        $this->queryBuilder->from([$modelAlias => $meta['secondaryModel']]);
+
+        //setting both model fields
+        $this->queryBuilder->columns(["{$modelAlias}.*", "{$this->newRelatedAlias}.*"]);
+
+        $relationship = new \Gaia\Core\MVC\Models\Relationships\HasMany($this->di);
+
+        $this->di->set('currentQueryBuilder', $this->queryBuilder);
+
+        $relationship->prepareJoin($this->newRelatedAlias, $meta, $modelAlias, 'left');
+
+        //Clauses of related models are already set on preparing clauses for base model.
+        if (isset($meta['where']) && !empty($meta['where'])) {
+            $this->queryBuilder->where($meta['where']);
+        }
+        else if ($this->clause->where) {
+            $this->queryBuilder->where($this->clause->where);
+        }
+
+        if (isset($meta['groupBy']) && !empty($meta['groupBy'])) {
+            $this->queryBuilder->groupBy([$meta['groupBy']]);
+        }
+
+        if (isset($meta['orderBy']) && !empty($meta['orderBy'])) {
+            $this->queryBuilder->orderBy([$meta['orderBy']]);
+        }
     }
 }
