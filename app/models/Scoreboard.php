@@ -18,5 +18,11 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Scoreboard extends Model
 {
-
+    /**
+     * Flag decides whether to execute hasManyToMany relationship queries
+     * separately or not.
+     * 
+     * @var $splitQueries
+     */
+    public $splitQueries = true;
 }

@@ -18,6 +18,14 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Conversationroom extends Model
 {
+    /**
+     * Flag decides whether to execute hasManyToMany relationship queries
+     * separately or not.
+     * 
+     * @var $splitQueries
+     */
+    public $splitQueries = true;
+    
     public function afterCreate()
     {
         if (!empty($this->issueId)){
