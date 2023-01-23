@@ -320,6 +320,11 @@ class Clause
         }
     }
 
+    /**
+     * This function prepare HAVING clause.
+     * 
+     * @param string $having Model field.
+     */
     public function prepareHaving($having)
     {
         if (isset($having) && !empty($having)) {
