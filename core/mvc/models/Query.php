@@ -266,18 +266,19 @@ class Query
      * This function is responsible for preparation of related query of type hasManyToMany.
      * 
      * @param string $relName Name of relationship.
-     * @param string $meta Metadata of relationship.
+     * @param array $meta Metadata of relationship.
      */
     public function prepareManyToMany($relName, $meta)
     {
         $meta['relatedKey'] = $meta['lhsKey'];
-        $relatedModel = Util::extractClassFromNamespace($meta['relatedModel']);
+        $relatedModelName = Util::extractClassFromNamespace($meta['relatedModel']);
+        $baseModelRelationship = $this->di->get('relationship');
 
         /**
          * concatenating relName e.g skills with relatedModel e.g Tagged => skillsTagged that will be used as an
          * alias in JOIN.
          */
-        $this->newRelatedAlias = "{$relName}{$relatedModel}";
+        $this->newRelatedAlias = "{$relName}{$relatedModelName}";
 
         /**extracting modelAlias from model path for quering in it.
          * e.g \\Gaia\\MVC\\Models\\Tag --> Tag **/
@@ -285,8 +286,14 @@ class Query
 
         $this->queryBuilder->from([$modelAlias => $meta['secondaryModel']]);
 
-        //setting both model fields
-        $this->queryBuilder->columns(["{$modelAlias}.*", "{$this->newRelatedAlias}.*"]);
+        //check if user requested some fields from that relationship or not
+        $relationshipFields = $baseModelRelationship->relationshipFields[$relName];
+        if ($relationshipFields) {
+            $this->queryBuilder->columns($relationshipFields);
+        }
+        else {
+            $this->queryBuilder->columns(["{$modelAlias}.*", "{$this->newRelatedAlias}.*"]);
+        }
 
         $relationship = new \Gaia\Core\MVC\Models\Relationships\HasMany($this->di);
 

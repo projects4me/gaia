@@ -297,6 +297,7 @@ class Clause
      */
     public function prepareOrderBy($sort, $order)
     {
+        $relationship = $this->di->get('relationship');
         // if sorting is requested then set it up
         if (isset($sort) && !empty($sort)) {
             $orderBy['field'] = $sort;
@@ -307,7 +308,7 @@ class Clause
 
             $result = extract($this->checkHasManyToMany($orderBy['field']));
             if ($result && $this->filterHasManyToMany) {
-                $relField = $this->changeAliasOfRel($relMeta, $relField);
+                $relField = $relationship->changeAliasOfRel($relMeta, $relField);
 
                 $relMeta['orderBy'] = "{$relField}{$orderBy['order']}";
                 $this->filteredRels[$relName] = $relMeta;
@@ -333,12 +334,13 @@ class Clause
      */
     public function prepareGroupBy($groupBy)
     {
+        $relationship = $this->di->get('relationship');
         if (isset($groupBy) && !empty($groupBy)) {
 
             //by extracting, we'll get $relMeta, $relName and $relField
             $result = extract($this->checkHasManyToMany($groupBy));
             if ($result && $this->filterHasManyToMany) {
-                $relField = $this->changeAliasOfRel($relMeta, $relField);
+                $relField = $relationship->changeAliasOfRel($relMeta, $relField);
 
                 //currently handling only one groupBy clause
                 $relMeta['groupBy'] = $relField;
@@ -360,13 +362,14 @@ class Clause
      */
     public function prepareRelatedWhere($translatedStatement, $field)
     {
+        $relationship = $this->di->get('relationship');
         //by extracting, we'll get $relMeta, $relName and $relField
         $result = extract($this->checkHasManyToMany($field));
 
         if ($result && $this->filterHasManyToMany) {
 
             //change 
-            $relField = $this->changeAliasOfRel($relMeta, $relField);
+            $relField = $relationship->changeAliasOfRel($relMeta, $relField);
 
             $statement = str_replace($field, $relField, $translatedStatement);
 
@@ -384,19 +387,6 @@ class Clause
             }
             $this->filteredRels[$relName] = $relMeta;
         }
-    }
-
-    /**
-     * This function change alias of relationship from a given query. 
-     * e.g "skills.name : Emberjs" query for User model is requested so, it will change skills.name to Tag.name.
-     * 
-     * @param array $relMeta Metadata of relationship.
-     * @param array $field Field of relationship.
-     * 
-     */
-    public function changeAliasOfRel($relMeta, $field)
-    {
-        return Util::extractClassFromNamespace($relMeta['secondaryModel']) . '.' . $field;
     }
 
     /**
@@ -454,7 +444,8 @@ class Clause
      * @param string $modelNamespace Namespace of model.
      * @param string $id Identifier of model.
      */
-    public function updateBaseWhereWithId($modelNamespace, $id) {
+    public function updateBaseWhereWithId($modelNamespace, $id)
+    {
         $modelName = Util::extractClassFromNamespace($modelNamespace);
         $this->where = "{$modelName}.id = '{$id}'";
     }

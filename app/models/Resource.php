@@ -18,30 +18,32 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Resource extends Model
 {
-    /**
-     * Flag decides whether to execute hasManyToMany relationship queries
-     * separately or not.
-     * 
-     * @var bool
-     */
+  /**
+   * Flag decides whether to execute hasManyToMany relationship queries
+   * separately or not.
+   * 
+   * @var bool
+   */
   public $splitQueries = true;
 
-    /**
-     * Method getResources
-     *
-     * @param string $entity
-     * @return List of Resources
-     */
-    public function getResource($entity){
-      $params = array(
-          'fields' => array('child.*'),
-          'rels' => array('child'),
-          'where' => '(Resource.entity : '.$entity.')',
-          'sort' => 'child.lft',
-          'order' => 'DESC'
-      );
+  /**
+   * Method getResources
+   *
+   * @param string $entity
+   * @return List of Resources
+   */
+  public function getResource($entity)
+  {
+    $params = array(
+      'fields' => array('child.*'),
+      'rels' => array('child'),
+      'where' => '(Resource.entity : ' . $entity . ')',
+      'sort' => 'child.lft',
+      'order' => 'DESC'
+    );
 
-      return $this->readAll($params);
-    }
+    $data = $this->readAll($params);
+    return $data['baseModel'];
+  }
 
 }

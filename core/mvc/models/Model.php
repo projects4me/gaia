@@ -235,7 +235,7 @@ class Model extends PhalconModel
     {
         if ($this->splitQueries) {
             //these are the relationship types required to join with base model.
-            $requiredRelationships = ['hasOne', 'hasMany'];
+            $requiredRelationships = ['hasOne', 'hasMany', 'belongsTo'];
 
             //check if many-to-many relationships are filtered
             if ($this->baseModelQuery->checkRelIsFiltered()) {
@@ -245,8 +245,9 @@ class Model extends PhalconModel
                 }
             }
 
+            //execute base model
             $this->relationship->setRequiredRelationships($requiredRelationships);
-            $this->relationship->setRelationshipFields($params);
+            $this->relationship->setRelationshipFields($params, $this->splitQueries);
             $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
             $this->executeBaseModel($params);
 
@@ -263,7 +264,7 @@ class Model extends PhalconModel
             }
         }
         else {
-            $this->relationship->setRelationshipFields($params);
+            $this->relationship->setRelationshipFields($params, $this->splitQueries);
             $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
             $this->executeBaseModel($params);
         }

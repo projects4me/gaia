@@ -24,7 +24,7 @@ class Conversationroom extends Model
      * 
      * @var bool
      */
-    public $splitQueries = true;
+    public $splitQueries = false;
     
     public function afterCreate()
     {

@@ -428,7 +428,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $sort = $this->request->get('sort', null, '');
         $order = $this->request->get('order', null, 'DESC');
         $include = ($this->request->get('include')) ? (explode(',', $this->request->get('include'))) : array();
-        $fields = $this->request->get('fields', null, array());
+        $fields = ($this->request->get('fields')) ? (explode(',', $this->request->get('fields'))) : array();
         $rels = ($this->request->get('rels')) ? (explode(',', $this->request->get('rels'))) : array();
         $rels = array_merge($rels, $include);
         $addRelFields = filter_var($this->request->get('addRelFields', null, true), FILTER_VALIDATE_BOOLEAN);
@@ -539,7 +539,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $groupBy = $this->request->get('group', null, array());
         $count = $this->request->get('count', null, '');
         $having = $this->request->get('having', null, '');
-        $fields = $this->request->get('fields', null, array());
+        $fields = ($this->request->get('fields')) ? (explode(',', $this->request->get('fields'))) : array();
         $addRelFields = filter_var($this->request->get('addRelFields', null, true), FILTER_VALIDATE_BOOLEAN);
         $rels = ($this->request->get('rels')) ? (explode(',', $this->request->get('rels'))) : array();
 
@@ -1172,63 +1172,116 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * This function is used to extract hasManyToMany relationships and set each of 
      * related data to its base model.
      * 
+     * @todo Find some other solution instead of matching Resultset type.
      * @param array $data Array containing relationship result sets.
      * @param array $result Array of result that(currently) contains basemodel data.  
      */
     private function extractManyToManyRelationships($data, &$result)
     {
-        $relatedModel = [];
-
         //iterate many-many relationships
         foreach ($data as $relName => $relData) {
 
             //now extract and merge many-to-many with base model
             $relData->setHydrateMode(Resultset::HYDRATE_ARRAYS);
 
-            //iterate each relationship
-            foreach ($relData as $models) {
-                $relMeta = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
+            $type = explode("\\", get_class($relData));
+            $type = end($type);
 
-                //iterate both models of relationship
-                foreach ($models as $modelName => $values) {
-                    $relatedModelName = Util::extractClassFromNamespace($relMeta['secondaryModel']);
-                    $lhsKey = $relMeta['lhsKey'];
-                    $rhsKey = $relMeta['rhsKey'];
-
-                    // iterate model attributes
-                    foreach ($values as $key => $value) {
-                        if ($relatedModelName == $modelName) {
-
-                            /**
-                             * If members of "project" model is requested then we have to get
-                             * values for "User" model (Secondary model in many-to-many). So dump 
-                             * values for User model on basis of ids. e.g:
-                             * ['1' => [User_attributes],
-                             *  '2' => [User_attributes]
-                             * ]
-                             */
-                            $relatedModel[$values['id']][$key] = $value;
-                        }
-                    }
-
-                    /**
-                     * By keeping the above scenario of given members of project. Now we have to
-                     * check whether the "$result" have given project or not. This if will work for
-                     * relatedModel (Membership) where rhsKey is "projectId" and $values will be
-                     * "Membership" model.
-                     */
-                    if ($result[$values[$rhsKey]]) {
-                        /**
-                         * if project is available then get User from $relatedModel using "lhsKey" which is userId.
-                         */
-
-                        $secondaryModel = $relatedModel[$values[$lhsKey]];
-                        $result[$values[$rhsKey]][$relName][] = $secondaryModel;
-                    }
-                }
+            //this is used when User has not requested fields related to hasManyToMany relationship.
+            if ($type == "Complex") {
+                $this->setAllRelatedFieldsToBaseModel($result, $relData, $relName);
+            }
+            //this is used when User requested fields related to hasManyToMany relationship.
+            else if ($type == "Simple") {
+                $this->setSomeRelatedFieldsToBaseModel($result, $relData, $relName);
             }
         }
 
+    }
+
+    /**
+     * This function is used to set related data to base model with all related fields.
+     * 
+     * @param array $result Array of result that(currently) contains basemodel data.
+     * @param array $relData Relationship result from database.
+     * @param string $relName Name of the relationship.
+     */
+    public function setAllRelatedFieldsToBaseModel(&$result, $relData, $relName)
+    {
+        $relatedModel = [];
+        $relMeta = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
+
+        //iterate each relationship
+        foreach ($relData as $models) {
+
+            //iterate both models of relationship
+            foreach ($models as $modelName => $values) {
+                $relatedModelName = Util::extractClassFromNamespace($relMeta['secondaryModel']);
+                $lhsKey = $relMeta['lhsKey'];
+                $rhsKey = $relMeta['rhsKey'];
+
+                // iterate model attributes
+                foreach ($values as $key => $value) {
+                    if ($relatedModelName == $modelName) {
+
+                        /**
+                         * If members of "project" model is requested then we have to get
+                         * values for "User" model (Secondary model in many-to-many). So dump 
+                         * values for User model on basis of ids. e.g:
+                         * ['1' => [User_attributes],
+                         *  '2' => [User_attributes]
+                         * ]
+                         */
+                        $relatedModel[$values['id']][$key] = $value;
+                    }
+                }
+
+                /**
+                 * By keeping the above scenario of given members of project. Now we have to
+                 * check whether the "$result" have given project or not. This if will work for
+                 * relatedModel (Membership) where rhsKey => "projectId" and $values will be
+                 * "Membership" model.
+                 */
+                if ($result[$values[$rhsKey]]) {
+                    /**
+                     * if project is available then get User from $relatedModel using "lhsKey" which is userId.
+                     */
+                    $secondaryModel = $relatedModel[$values[$lhsKey]];
+                    $result[$values[$rhsKey]][$relName][] = $secondaryModel;
+                }
+            }
+        }
+    }
+
+    /**
+     * This function is used to set related data to base model with some requested related fields. In this
+     * we'll get result set in a form of scalar field, not as a object representing model. 
+     * 
+     * @param array $result Array of result that(currently) contains basemodel data.
+     * @param array $relData Relationship result from database.
+     * @param string $relName Name of the relationship.
+     */
+    public function setSomeRelatedFieldsToBaseModel(&$result, $relData, $relName)
+    {
+        $relatedModel = [];
+        $relMeta = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
+
+        foreach ($relData as $model) {
+            $lhsKey = $relMeta['lhsKey'];
+            $rhsKey = $relMeta['rhsKey'];
+
+            // iterate model attributes
+            foreach ($model as $key => $value) {
+
+                //we shouldn't have to pass middle table information to user, that's why this check is created. 
+                ($key != $lhsKey && $key != $rhsKey) && ($relatedModel[$model['id']][$key] = $value);
+            }
+
+            if ($result[$model[$rhsKey]]) {
+                $secondaryModel = $relatedModel[$model[$lhsKey]];
+                $result[$model[$rhsKey]][$relName][] = $secondaryModel;
+            }
+        }
     }
 
     /**

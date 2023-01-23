@@ -24,5 +24,5 @@ class Project extends Model
      * 
      * @var bool
      */
-    public $splitQueries = true;
+    public $splitQueries = false;
 }
