@@ -234,8 +234,10 @@ class Relationship
     {
         foreach ($requestedRels as $relationshipName) {
 
-            // If the relationtype is defined in the meta data then use that
-            // otherwise use the leftJoin as the default
+            /**
+             * If the relationtype is defined in the meta data then use that.
+             * Otherwise use the leftJoin as the default
+             */
             if (isset($this->modelRelationships[$relationshipName]['relType'])) {
                 $joinType = \Phalcon\Text::lower($this->modelRelationships[$relationshipName]['relType']);
             }
