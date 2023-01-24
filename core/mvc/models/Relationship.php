@@ -152,6 +152,7 @@ class Relationship
     public function setRelationshipFields(&$params, $splitQuery)
     {
         if (isset($params['fields']) && !empty($params['fields'])) {
+
             //if query split is true then split relationship fields according to requiredRelationshipTypes
             if ($splitQuery) {
                 $fields = $params['fields'];
@@ -205,10 +206,25 @@ class Relationship
                 }
             }
         }
+
         // if fields are not set than set default fields ".*"
         else {
             foreach ($params['rels'] as $relationshipName) {
-                $this->relationshipFields[] = $relationshipName . '.*';
+
+                /**
+                 * If user has not requested fields and splitQuery is true then only set fields for the type that are required.
+                 * e.g if requiredRelationships => ['hasOne','hasMany'] then set fields for those relationships have these types. 
+                 */
+                if ($splitQuery) {
+                    if (in_array($this->modelRelationships[$relationshipName]['type'], $this->requiredRelationshipTypes)) {
+                        $this->relationshipFields[] = $relationshipName . '.*';
+                    }
+                }
+
+                // If user has not requested fields and splitQuery is false then this condition will work
+                else {
+                    $this->relationshipFields[] = $relationshipName . '.*';
+                }
             }
         }
     }
