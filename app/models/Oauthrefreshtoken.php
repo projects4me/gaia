@@ -18,11 +18,5 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Oauthrefreshtoken extends Model
 {
-    /**
-     * Flag decides whether to execute hasManyToMany relationship queries
-     * separately or not.
-     * 
-     * @var bool
-     */
-    public $splitQueries = true;
+    
 }

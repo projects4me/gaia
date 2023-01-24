@@ -24,5 +24,5 @@ class User extends Model
      * 
      * @var bool
      */
-    public $splitQueries = true;
+    public $splitQueries = false;
 }

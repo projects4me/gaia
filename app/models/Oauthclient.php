@@ -17,11 +17,5 @@ use Gaia\Core\MVC\Models\Model;
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */class Oauthclient extends Model
 {
-    /**
-     * Flag decides whether to execute hasManyToMany relationship queries
-     * separately or not.
-     * 
-     * @var bool
-     */
-    public $splitQueries = true;
+    
 }

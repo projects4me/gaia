@@ -81,6 +81,14 @@ class Model extends PhalconModel
     public $typeOfQueryToPerform = null;
 
     /**
+     * Flag decides whether to execute hasManyToMany relationship queries
+     * separately or not.
+     * 
+     * @var bool
+     */
+    public $splitQueries = true;
+
+    /**
      * This function is used in order to load the different behaviors that this model is
      * set to use.
      *
