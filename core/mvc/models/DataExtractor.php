@@ -10,7 +10,6 @@ use Phalcon\Mvc\Model\Resultset;
 
 /**
  * This class is used extract data set having different types.
- * 
  *
  * @author Rana Nouman <ranamnouman@gmail.com>
  * @package Core\Mvc\Models
@@ -31,6 +30,7 @@ class DataExtractor
         foreach ($models as $model) {
             $ids[] = $model['id'];
         }
+
         return $ids;
     }
 
@@ -50,12 +50,10 @@ class DataExtractor
             foreach ($data as $values) {
                 foreach ($values as $attr => $value) {
                     if ($attr == $relName) {
-
                         //extract "modelId" from result of related
                         if ($value[$key]) {
                             $ids[] = $value[$key];
-                        }
-                        else if ($value['relatedId']) {
+                        } else if ($value['relatedId']) {
                             $ids[] = $value['relatedId'];
                         }
                     }
