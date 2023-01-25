@@ -61,7 +61,7 @@ class Clause
      * This flag represents whether hasManyToMany relationships are filtered 
      * by user or not.
      *
-     * @var string
+     * @var bool
      */
     public $filterHasManyToMany = false;
 
