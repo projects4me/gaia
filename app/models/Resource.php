@@ -29,7 +29,7 @@ class Resource extends Model
     $params = array(
       'fields' => array('child.*'),
       'rels' => array('child'),
-      'where' => '(Resource.entity : ' . $entity . ')',
+      'where' => '(Resource.entity : '.$entity.')',
       'sort' => 'child.lft',
       'order' => 'DESC'
     );

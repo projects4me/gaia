@@ -22,7 +22,7 @@ class User extends Model
      * Flag decides whether to execute hasManyToMany relationship queries
      * separately or not.
      * 
-     * @var bool
+     * @var boolean
      */
     public $splitQueries = false;
 }
