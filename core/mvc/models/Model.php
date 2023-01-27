@@ -7,7 +7,6 @@
 namespace Gaia\Core\MVC\Models;
 
 use Phalcon\Mvc\Model as PhalconModel;
-use Phalcon\Mvc\Model\MetaData;
 use Gaia\Libraries\Utils\Util;
 use Gaia\Core\MVC\Models\Query;
 use Gaia\Core\MVC\Models\DataExtractor;
@@ -61,32 +60,32 @@ class Model extends PhalconModel
 
     /**
      * This is the new id that is being inserted in the system.
-     * 
+     *
      * @var string
      */
     public $newId;
 
     /**
      * This contains array of result on executing a query.
-     * 
+     *
      * @var array
      */
-    public $resultSets;
+    protected $resultSets;
 
     /**
      * This is type of query to be performed on model. e.g prepareReadAllQuery or prepareReadQuery.
-     * 
+     *
      * @var string
      */
-    public $typeOfQueryToPerform = null;
+    protected $typeOfQueryToPerform = null;
 
     /**
      * Flag decides whether to execute hasManyToMany relationship queries
      * separately or not.
-     * 
+     *
      * @var bool
      */
-    public $splitQueries = true;
+    protected $splitQueries = true;
 
     /**
      * This function is used in order to load the different behaviors that this model is
@@ -168,7 +167,7 @@ class Model extends PhalconModel
         $this->bootstrapRelationship($params);
         $this->bootstrapQueryClauses($params);
 
-        $this->executeSingleOrMultipleQueries($params);
+        $this->executeQuery($params);
 
         return $this->resultSets;
     }
@@ -192,7 +191,7 @@ class Model extends PhalconModel
         $this->bootstrapRelationship($params);
         $this->bootstrapQueryClauses($params);
 
-        $this->executeSingleOrMultipleQueries($params);
+        $this->executeQuery($params);
 
         return $this->resultSets;
     }
@@ -216,8 +215,7 @@ class Model extends PhalconModel
         // Set the fields
         if (isset($params['fields']) && !empty($params['fields'])) {
             $params['fields'] = $params['fields'];
-        }
-        else {
+        } else {
             $params['fields'] = $related . '.*';
         }
 
@@ -233,13 +231,13 @@ class Model extends PhalconModel
 
     /**
      * This function is called inside read or readAll method in order to perform queries. If
-     * splitQueries flag is set to true and there are clauses for related model having type of 
+     * splitQueries flag is set to true and there are clauses for related model having type of
      * hasManyToMany, then those related models are fetched first and then base model. After that
      * the remaining related models (hasManyToMany) are fetched.
-     * 
+     *
      * @param array @params
      */
-    public function executeSingleOrMultipleQueries($params)
+    public function executeQuery($params)
     {
         if ($this->splitQueries) {
             //these are the relationship types required to join with base model.
@@ -260,7 +258,7 @@ class Model extends PhalconModel
             $this->executeBaseModel($params);
 
             /**
-             * extract base model ids, that will be used as an input in remaining 
+             * extract base model ids, that will be used as an input in remaining
              * many-to-many rels
              */
             $baseModelIds = DataExtractor::extractModelIds($this->resultSets['baseModel']);
@@ -270,8 +268,7 @@ class Model extends PhalconModel
                 $relMeta = $this->relationship->getRelationship($relName);
                 $this->resultSets[$relName] = $this->executeHasManyWithOutClause($relName, $baseModelIds, $relMeta);
             }
-        }
-        else {
+        } else {
             $this->relationship->setRelationshipFields($params, $this->splitQueries);
             $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
             $this->executeBaseModel($params);
@@ -280,7 +277,7 @@ class Model extends PhalconModel
 
     /**
      * This function is used to load all kind of things related to Relationship of a base model.
-     * 
+     *
      * @param array $params
      */
     public function bootstrapRelationship($params)
@@ -296,7 +293,7 @@ class Model extends PhalconModel
 
     /**
      * This function loads all requested clauses.
-     * 
+     *
      * @param array $params
      */
     public function bootstrapQueryClauses($params)
@@ -306,7 +303,7 @@ class Model extends PhalconModel
 
     /**
      * This function executes base model.
-     * 
+     *
      * @param array $params
      */
     public function executeBaseModel($params)
@@ -322,7 +319,7 @@ class Model extends PhalconModel
 
     /**
      * This function executes related model of type hasManyToMany.
-     * 
+     *
      * @param string $relName Name of relationship.
      * @param array $baseModelIds Ids of base model (queried first).
      * @param array $relMeta Metadata of relationship.
@@ -336,7 +333,7 @@ class Model extends PhalconModel
 
     /**
      * This function executes related model of type hasManyToMany that have clauses.
-     * 
+     *
      * @param string $relName Name of relationship.
      * @param array $meta Metdata of relationship.
      * @return array
@@ -354,7 +351,7 @@ class Model extends PhalconModel
 
     /**
      * This function executes related model of type hasManyToMany.
-     * 
+     *
      * @param string $relName Name of relationship.
      * @param array $meta Metadata of relationship.
      * @param array $baseModelIds Ids of base model (queried first).
@@ -395,8 +392,8 @@ class Model extends PhalconModel
     }
 
     /**
-     * This function return new Relationship object. 
-     * 
+     * This function return new Relationship object.
+     *
      * @return \Gaia\Core\MVC\Models\Relationship
      */
     public function getRelationship()
