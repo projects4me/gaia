@@ -382,13 +382,15 @@ class Clause
             $precedingWhere = (isset($this->filteredRels[$relName]['where']) && !empty($this->filteredRels[$relName]['where']))
                 ? ($this->filteredRels[$relName]['where']) : null;
             if ($precedingWhere) {
-                $originalWhere = $this->filteredRels[$relName]['originalWhere'];
-                $relMeta['originalWhere'] = "{$originalWhere} AND {$translatedStatement}";
+                //pushing previously added conditions of relationship.
+                $relMeta['originalWhere'] = $this->filteredRels[$relName]['originalWhere'];
+                //push new condition of relationship
+                $relMeta['originalWhere'][] = $translatedStatement;
                 $relMeta['where'] = "{$precedingWhere} AND {$statement}";
             }
             else {
                 $relMeta['where'] = $statement;
-                $relMeta['originalWhere'] = $translatedStatement;
+                $relMeta['originalWhere'][] = $translatedStatement;
             }
             $this->filteredRels[$relName] = $relMeta;
         }
@@ -436,7 +438,14 @@ class Clause
         $statementToBeReplaced = $this->prepareINStatement($key, $ids);
 
         if (isset($relMeta['originalWhere'])) {
-            $this->where = str_replace($relMeta['originalWhere'], $statementToBeReplaced, $this->where);
+
+            /**
+             * if there are multiple where conditions for same relationship than replace
+             * those conditions.
+             */
+            foreach ($relMeta['originalWhere'] as $originalWhereClause) {
+                $this->where = str_replace($originalWhereClause, $statementToBeReplaced, $this->where);
+            }
         }
         else {
             $this->where = $statementToBeReplaced;
