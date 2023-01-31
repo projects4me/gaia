@@ -252,6 +252,7 @@ class Model extends PhalconModel
             }
 
             //execute base model
+            $this->di->set('currentQueryBuilder', $this->baseModelQuery->getPhalconQueryBuilder());
             $this->relationship->setRequiredRelationships($requiredRelationships);
             $this->relationship->setRelationshipFields($params, $this->splitQueries);
             $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
@@ -269,6 +270,7 @@ class Model extends PhalconModel
                 $this->resultSets[$relName] = $this->executeHasManyWithOutClause($relName, $baseModelIds, $relMeta);
             }
         } else {
+            $this->di->set('currentQueryBuilder', $this->baseModelQuery);
             $this->relationship->setRelationshipFields($params, $this->splitQueries);
             $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
             $this->executeBaseModel($params);
