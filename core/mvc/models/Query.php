@@ -159,7 +159,7 @@ class Query
     /**
      * This function call clause class functions in order to prepare clauses for query.
      * 
-     * @param $params 
+     * @param $params
      */
     public function prepareClauses($params)
     {
@@ -290,8 +290,7 @@ class Query
         $relationshipFields = $baseModelRelationship->relationshipFields[$relName];
         if ($relationshipFields) {
             $this->queryBuilder->columns($relationshipFields);
-        }
-        else {
+        } else {
             $this->queryBuilder->columns(["{$modelAlias}.*", "{$this->newRelatedAlias}.*"]);
         }
 
@@ -304,17 +303,8 @@ class Query
         //Clauses of related models are already set on preparing clauses for base model.
         if (isset($meta['where']) && !empty($meta['where'])) {
             $this->queryBuilder->where($meta['where']);
-        }
-        else if ($this->clause->where) {
+        } elseif ($this->clause->where) {
             $this->queryBuilder->where($this->clause->where);
-        }
-
-        if (isset($meta['groupBy']) && !empty($meta['groupBy'])) {
-            $this->queryBuilder->groupBy([$meta['groupBy']]);
-        }
-
-        if (isset($meta['orderBy']) && !empty($meta['orderBy'])) {
-            $this->queryBuilder->orderBy([$meta['orderBy']]);
         }
     }
 }
