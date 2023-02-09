@@ -365,6 +365,37 @@ class Clause
     }
 
     /**
+     * This function prepare IN statement that will be used in WHERE clause.
+     * 
+     * 
+     * @param string $key Name of field.
+     * @param array $ids Array of ids.
+     * @return string Prepared IN Statament.
+     */
+    private function prepareINStatement($key, $ids)
+    {
+        //preparing IN statement
+        $inStatement = "({$key} IN(";
+
+        if ($ids != null) {
+            foreach ($ids as $id) {
+                $inStatement .= "'{$id}',";
+            }
+            //remove last ',' from string
+            $inStatement = substr($inStatement, 0, -1);
+
+            //closing brackets
+            $inStatement .= "))";
+        }
+        else {
+            //closing bracket if there are no ids
+            $inStatement .= '""))';
+        }
+
+        return $inStatement;
+    }
+
+    /**
      * This function updates base model WHERE clause. This is used when query splitting is enabled and we got
      * a result set for hasManyToMany relationship.
      * 
@@ -419,36 +450,5 @@ class Clause
         $key = "{$relName}{$relatedModel}.{$relMeta['rhsKey']}";
 
         $this->where = $this->prepareINStatement($key, $baseModelIds);
-    }
-
-    /**
-     * This function prepare IN statement that will be used in WHERE clause.
-     * 
-     * 
-     * @param string $key Name of field.
-     * @param array $ids Array of ids.
-     * @return string Prepared IN Statament.
-     */
-    private function prepareINStatement($key, $ids)
-    {
-        //preparing IN statement
-        $inStatement = "({$key} IN(";
-
-        if ($ids != null) {
-            foreach ($ids as $id) {
-                $inStatement .= "'{$id}',";
-            }
-            //remove last ',' from string
-            $inStatement = substr($inStatement, 0, -1);
-
-            //closing brackets
-            $inStatement .= "))";
-        }
-        else {
-            //closing bracket if there are no ids
-            $inStatement .= '""))';
-        }
-
-        return $inStatement;
     }
 }

@@ -272,32 +272,6 @@ class Model extends PhalconModel
     }
 
     /**
-     * This function is used to load all kind of things related to Relationship of a base model.
-     *
-     * @param array $params
-     */
-    protected function bootstrapRelationship($params)
-    {
-        $this->relationship = $this->getRelationship();
-        $this->di->set('relationship', $this->relationship);
-        $metadata = $this->di->get('metaManager')->getModelMeta($this->modelAlias);
-        $this->relationship->prepareDefaultRels($params);
-        $this->relationship->loadRelationships($metadata['relationships']);
-        $this->relationship->verifyRelationships($params['rels']);
-        $this->relationship->loadRequestedRelationships($params['rels']);
-    }
-
-    /**
-     * This function loads all requested clauses.
-     *
-     * @param array $params
-     */
-    protected function bootstrapQueryClauses($params)
-    {
-        $this->query->prepareClauses($params);
-    }
-
-    /**
      * This function executes base model.
      *
      */
@@ -307,7 +281,6 @@ class Model extends PhalconModel
         $phalconQuery = $this->query->getPhalconQuery();
         $this->resultSets['baseModel'] = $phalconQuery->execute();
     }
-
 
     /**
      * This function executes related model of type hasManyToMany.
@@ -364,6 +337,32 @@ class Model extends PhalconModel
         $phalconQuery = $relQuery->getPhalconQuery();
         $result = $phalconQuery->execute();
         return $result;
+    }
+
+    /**
+     * This function is used to load all kind of things related to Relationship of a base model.
+     *
+     * @param array $params
+     */
+    protected function bootstrapRelationship($params)
+    {
+        $this->relationship = $this->getRelationship();
+        $this->di->set('relationship', $this->relationship);
+        $metadata = $this->di->get('metaManager')->getModelMeta($this->modelAlias);
+        $this->relationship->prepareDefaultRels($params);
+        $this->relationship->loadRelationships($metadata['relationships']);
+        $this->relationship->verifyRelationships($params['rels']);
+        $this->relationship->loadRequestedRelationships($params['rels']);
+    }
+
+    /**
+     * This function loads all requested clauses.
+     *
+     * @param array $params
+     */
+    protected function bootstrapQueryClauses($params)
+    {
+        $this->query->prepareClauses($params);
     }
 
     /**
@@ -441,7 +440,7 @@ class Model extends PhalconModel
             break;
         }
 
-        return true;
+        return $checksPassed;
     }
 
     /**

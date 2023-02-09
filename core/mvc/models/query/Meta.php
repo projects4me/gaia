@@ -6,6 +6,15 @@
 
 namespace Gaia\Core\MVC\Models\Query;
 
+/**
+ * This class represents the metadata of the requested query.
+ * 
+ *
+ * @author Rana Nouman <ranamnouman@gmail.com>
+ * @package Core\Mvc\Models\Query
+ * @category Meta
+ * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ */
 class Meta
 {
     /**
@@ -185,25 +194,6 @@ class Meta
     }
 
     /**
-     * This function loads all aggregate functions used by fields.
-     * 
-     * @param array $params User requested params.
-     */
-    protected function loadAggregateFunctions($params)
-    {
-        $aggregateFunctions = ["COUNT", "AVG", "SUM", "MAX", "MIN"];
-
-        foreach ($params['fields'] as $field) {
-            if (preg_match_all("/[A-z]+(?=[(])/", $field, $matches)) {
-                $aggregateFunction = strtoupper($matches[0][0]);
-                if (in_array($aggregateFunction, $aggregateFunctions)) {
-                    $this->aggregateFunctions[] = $aggregateFunction;
-                }
-            }
-        }
-    }
-
-    /**
      * This function load all the operators used in where clause.
      * 
      * @param string $where
@@ -223,6 +213,25 @@ class Meta
         $regex = '@(\w+)(?!.*\1)@';
         preg_match_all($regex, $whereWithOutConditions, $matches);
         $this->operators = $matches[0] ? $matches[0] : array();
+    }
+
+    /**
+     * This function loads all aggregate functions used by fields.
+     * 
+     * @param array $params User requested params.
+     */
+    protected function loadAggregateFunctions($params)
+    {
+        $aggregateFunctions = ["COUNT", "AVG", "SUM", "MAX", "MIN"];
+
+        foreach ($params['fields'] as $field) {
+            if (preg_match_all("/[A-z]+(?=[(])/", $field, $matches)) {
+                $aggregateFunction = strtoupper($matches[0][0]);
+                if (in_array($aggregateFunction, $aggregateFunctions)) {
+                    $this->aggregateFunctions[] = $aggregateFunction;
+                }
+            }
+        }
     }
 
     /**
@@ -294,7 +303,7 @@ class Meta
     /**
      * This function is used to extract modelName from a given field.
      * 
-     * @param string $field2
+     * @param string $field
      * @return string
      */
     private function extractModelName($field)
