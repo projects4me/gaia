@@ -39,14 +39,14 @@ class Clause
     /**
      * This is ORDER BY clause of a query.
      *
-     * @var string
+     * @var array
      */
     public $orderBy = null;
 
     /**
      * This is GROUP BY clause of a query.
      *
-     * @var string
+     * @var array
      */
     public $groupBy = null;
 
@@ -56,21 +56,6 @@ class Clause
      * @var string
      */
     public $having = null;
-
-    /**
-     * This flag represents whether hasManyToMany relationships are filtered 
-     * by user or not.
-     *
-     * @var bool
-     */
-    public $filterHasManyToMany = false;
-
-    /**
-     * This contains array of relationships which user filtered.
-     *
-     * @var array
-     */
-    protected $filteredRels = [];
 
     /**
      * The purpose of this function is parse the query string from a string to
@@ -140,7 +125,7 @@ class Clause
              * \Phalcon\Mvc\Model compatible statement
              */
 
-            $baseModelQuery = $this->di->get('baseModelQuery');
+            $query = $this->di->get('query');
 
             //retain original statement
             $this->where = $statement;
@@ -182,8 +167,8 @@ class Clause
                     $value = trim($value);
                     $value = trim($value, "'");
 
-                    if ($field == "{$baseModelQuery->modelAlias}.id") {
-                        $baseModelQuery->modelId = $value;
+                    if ($field == "{$query->modelAlias}.id") {
+                        $query->modelId = $value;
                     }
 
                     $translatedStatement = '';
@@ -269,16 +254,12 @@ class Clause
                     }
 
                     $this->where = str_replace($substatement, $translatedStatement, $this->where);
-
                     // make sure that we were able to parse all substatements
                     if (!$translatedStatement) {
                         throw new \Phalcon\Exception('Invalid query, please check the guides. ' .
                             'Most common issues are extra spaces and invalid operators, ' .
                             'please note that "=" is not allowed use ":" instead. ' .
                             'Possible issue in ' . $substatement);
-                    }
-                    else {
-                        $this->prepareRelatedWhere($translatedStatement, $field);
                     }
                 }
             }
@@ -297,7 +278,6 @@ class Clause
      */
     public function prepareOrderBy($sort, $order)
     {
-        $relationship = $this->di->get('relationship');
         // if sorting is requested then set it up
         if (isset($sort) && !empty($sort)) {
             $orderBy['field'] = $sort;
@@ -306,17 +286,7 @@ class Clause
             // if order is requested then use, otherwise use the default (DESC)
             (isset($order) && !empty($order)) && ($orderBy['order'] = " {$order}");
 
-            $result = extract($this->checkHasManyToMany($orderBy['field']));
-            if ($result && $this->filterHasManyToMany) {
-                $relField = $relationship->changeAliasOfRel($relMeta, $relField);
-
-                $relMeta['orderBy'] = "{$relField}{$orderBy['order']}";
-                $this->filteredRels[$relName] = $relMeta;
-            }
-            else {
-                $this->orderBy = "{$orderBy['field']}{$orderBy['order']}";
-            }
-
+            $this->orderBy = "{$orderBy['field']}{$orderBy['order']}";
         }
     }
 
@@ -339,88 +309,59 @@ class Clause
      */
     public function prepareGroupBy($groupBy)
     {
-        $relationship = $this->di->get('relationship');
         if (isset($groupBy) && !empty($groupBy)) {
-
-            //by extracting, we'll get $relMeta, $relName and $relField
-            $result = extract($this->checkHasManyToMany($groupBy));
-            if ($result && $this->filterHasManyToMany) {
-                $relField = $relationship->changeAliasOfRel($relMeta, $relField);
-
-                //currently handling only one groupBy clause
-                $relMeta['groupBy'] = $relField;
-                $this->filteredRels[$relName] = $relMeta;
-            }
-            else {
-                $this->groupBy = [$groupBy];
-            }
+            $this->groupBy = [$groupBy];
         }
     }
 
     /**
-     * This function prepare WHERE clause for related query. This is used when user query on
-     * hasManyToMany relationship.
+     * This function prepare WHERE clause for related query.
      * 
-     * @param string $translatedStatement Statement which is translated by prepareWhere() function. 
-     * e.g statement that contains ':' => '=' conversion.
-     * @param string $field Field of which user query.
+     * @param array $relationships Array of hasManyToMany relationships.
      */
-    public function prepareRelatedWhere($translatedStatement, $field)
+    public function prepareRelatedWhere($relationships)
     {
         $relationship = $this->di->get('relationship');
-        //by extracting, we'll get $relMeta, $relName and $relField
-        $result = extract($this->checkHasManyToMany($field));
+        $rels = [];
 
-        if ($result && $this->filterHasManyToMany) {
+        preg_match_all('@\([^(]*[^)]\)@', $this->where, $matches);
+        $whereConditions = $matches[0];
+        foreach ($whereConditions as $whereCondition) {
+            //regex for extracting model or rel name
+            $regex = "/(?<=[(])[A-z]+/";
+            preg_match($regex, $whereCondition, $relName);
 
-            //change 
-            $relField = $relationship->changeAliasOfRel($relMeta, $relField);
+            //regex for extracting field by removing '(' ')' brackets
+            $regex = '/(?<=[(])[A-z]+[.][A-z]+/';
+            preg_match($regex, $whereCondition, $field);
 
-            $statement = str_replace($field, $relField, $translatedStatement);
+            if (in_array($relName[0], $relationships)) {
+                $result = extract($relationship->getHasManyToManyRel($field[0]));
+                if ($result) {
+                    $relField = $relationship->changeAliasOfRel($relMeta, $relField);
 
-            //This work is for mutiple where conditions on same relationship.
-            $precedingWhere = (isset($this->filteredRels[$relName]['where']) && !empty($this->filteredRels[$relName]['where']))
-                ? ($this->filteredRels[$relName]['where']) : null;
-            if ($precedingWhere) {
-                //pushing previously added conditions of relationship.
-                $relMeta['originalWhere'] = $this->filteredRels[$relName]['originalWhere'];
-                //push new condition of relationship
-                $relMeta['originalWhere'][] = $translatedStatement;
-                $relMeta['where'] = "{$precedingWhere} AND {$statement}";
-            }
-            else {
-                $relMeta['where'] = $statement;
-                $relMeta['originalWhere'][] = $translatedStatement;
-            }
-            $this->filteredRels[$relName] = $relMeta;
-        }
-    }
+                    $statement = str_replace($field[0], $relField, $whereCondition);
 
-    /**
-     * This function checks whether the of given field is for hasManyToMany relationship or not.
-     * 
-     */
-    public function checkHasManyToMany($field)
-    {
-        //First check whether the field is for model or not (either related or model is requested).
-        $fieldParts = explode('.', $field);
-        if ($this->di->get('baseModelQuery')->modelAlias != $fieldParts[0]) {
-
-            /**
-             * explode on '.' basis to get model or relationship name from field
-             * e.g projects?query=(members.name : Rana Nouman) and members is a many-many relationship 
-             * of projects. So variable $modelOrRelName will contain ["members"].
-             */
-            $relationship = $this->di->get('relationship')->getRelationship($fieldParts[0]);
-            if ($relationship['type'] == 'hasManyToMany') {
-                $this->filterHasManyToMany = true;
-                return ["relMeta" => $relationship, "relName" => $fieldParts[0], "relField" => $fieldParts[1]];
+                    //This work is for mutiple where conditions on same relationship.
+                    $precedingWhere = (isset($rels[$relName]['where']) && !empty($rels[$relName]['where']))
+                        ? ($rels[$relName]['where']) : null;
+                    if ($precedingWhere) {
+                        //pushing previously added conditions of relationship.
+                        $relMeta['originalWhere'] = $rels[$relName]['originalWhere'];
+                        //push new condition of relationship
+                        $relMeta['originalWhere'][] = $whereCondition;
+                        $relMeta['where'] = "{$precedingWhere} AND {$statement}";
+                    }
+                    else {
+                        $relMeta['where'] = $statement;
+                        $relMeta['originalWhere'][] = $whereCondition;
+                    }
+                    $rels[$relName] = $relMeta;
+                }
             }
         }
-        else {
-            return array();
-        }
 
+        return $rels;
     }
 
     /**
@@ -509,15 +450,5 @@ class Clause
         }
 
         return $inStatement;
-    }
-
-    /**
-     * This function returns list of filtered relationships.
-     * 
-     * @return array 
-     */
-    public function getFilteredRels()
-    {
-        return $this->filteredRels;
     }
 }

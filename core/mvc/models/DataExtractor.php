@@ -48,13 +48,28 @@ class DataExtractor
         if ($data instanceof Resultset) {
             $data->setHydrateMode(Resultset::HYDRATE_ARRAYS);
             foreach ($data as $values) {
-                foreach ($values as $attr => $value) {
-                    if ($attr == $relName) {
-                        //extract "modelId" from result of related
-                        if ($value[$key]) {
-                            $ids[] = $value[$key];
-                        } else if ($value['relatedId']) {
-                            $ids[] = $value['relatedId'];
+                /**
+                 * If no fields are requested then we'll get two models (for hasManyToMany).
+                 * We only have to deal with that model which contains relatedId.
+                 */
+                if ($values[$relName]) {
+                    $relatedModel = $values[$relName];
+
+                    if ($relatedModel[$key]) {
+                        $ids[] = $relatedModel[$key];
+                    }
+                    elseif ($relatedModel['relatedId']) {
+                        $ids[] = $relatedModel['relatedId'];
+                    }
+                }
+                else {
+                    //if some fields are requested then we'll get data as scalar values.
+                    foreach ($values as $attr => $value) {
+                        if ($attr == $key) {
+                            $ids[] = $value;
+                        }
+                        else if ($attr == 'relatedId') {
+                            $ids[] = $value;
                         }
                     }
                 }
@@ -62,4 +77,5 @@ class DataExtractor
         }
         return $ids;
     }
+
 }

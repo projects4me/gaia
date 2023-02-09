@@ -10,6 +10,7 @@ use Phalcon\Mvc\Model as PhalconModel;
 use Gaia\Libraries\Utils\Util;
 use Gaia\Core\MVC\Models\Query;
 use Gaia\Core\MVC\Models\DataExtractor;
+use Gaia\Core\MVC\Models\Query\Meta as QueryMeta;
 
 /**
  * This class is the base model in the the application and is used to
@@ -56,7 +57,7 @@ class Model extends PhalconModel
      *
      * @var \Gaia\Core\MVC\Models\Query
      */
-    public $baseModelQuery;
+    public $query;
 
     /**
      * This is the new id that is being inserted in the system.
@@ -73,19 +74,19 @@ class Model extends PhalconModel
     protected $resultSets;
 
     /**
-     * This is type of query to be performed on model. e.g prepareReadAllQuery or prepareReadQuery.
-     *
-     * @var string
-     */
-    protected $typeOfQueryToPerform = null;
-
-    /**
      * Flag decides whether to execute hasManyToMany relationship queries
      * separately or not.
      *
      * @var bool
      */
     protected $splitQueries = true;
+
+    /**
+     * This is type of query to be performed on model. e.g prepareReadAllQuery or prepareReadQuery.
+     *
+     * @var string
+     */
+    protected $typeOfQueryToPerform = null;
 
     /**
      * This function is used in order to load the different behaviors that this model is
@@ -124,7 +125,7 @@ class Model extends PhalconModel
      */
     public function onConstruct()
     {
-        $modelName = $this->getModelName();
+        $modelName = Util::extractClassFromNamespace(get_class($this));
         $this->modelAlias = $modelName;
 
         $metadata = $this->getDI()->get('metaManager')->getModelMeta($modelName);
@@ -135,16 +136,6 @@ class Model extends PhalconModel
         $this->loadBehavior();
 
         $this->keepSnapshots(true);
-    }
-
-    /**
-     * This function returns model name.
-     *
-     * @return string
-     */
-    public function getModelName()
-    {
-        return Util::extractClassFromNamespace(get_class($this));
     }
 
     /**
@@ -159,14 +150,14 @@ class Model extends PhalconModel
      */
     public function read(array $params)
     {
-        // $this->fireEvent("beforeRead");
         $this->typeOfQueryToPerform = 'prepareReadQuery';
+        $this->instantiateQuery($params);
+        $this->di->set('currentQueryBuilder', $this->query->getPhalconQueryBuilder());
 
-        $this->baseModelQuery = $this->getQuery($this->modelAlias);
-        $this->di->set('baseModelQuery', $this->baseModelQuery);
-        $this->bootstrapRelationship($params);
-        $this->bootstrapQueryClauses($params);
+        $this->relationship->setRelationshipFields($params, false);
+        $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
 
+        $this->query->prepareReadQuery($this->getModelPath(), $params);
         $this->executeQuery($params);
 
         return $this->resultSets;
@@ -186,10 +177,13 @@ class Model extends PhalconModel
         $this->fireEvent("beforeRead");
         $this->typeOfQueryToPerform = 'prepareReadAllQuery';
 
-        $this->baseModelQuery = $this->getQuery($this->modelAlias);
-        $this->di->set('baseModelQuery', $this->baseModelQuery);
-        $this->bootstrapRelationship($params);
-        $this->bootstrapQueryClauses($params);
+        $this->instantiateQuery($params);
+        $this->di->set('currentQueryBuilder', $this->query->getPhalconQueryBuilder());
+
+        $this->relationship->setRelationshipFields($params, false);
+        $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
+
+        $this->query->prepareReadAllQuery($this->getModelPath(), $params);
 
         $this->executeQuery($params);
 
@@ -207,24 +201,22 @@ class Model extends PhalconModel
      */
     public function readRelated(array $params)
     {
-        $this->typeOfQueryToPerform = 'prepareReadQuery';
-
         $related = $params['related'];
         $params['rels'] = array($related);
 
         // Set the fields
         if (isset($params['fields']) && !empty($params['fields'])) {
             $params['fields'] = $params['fields'];
-        } else {
+        }
+        else {
             $params['fields'] = $related . '.*';
         }
 
-        $this->baseModelQuery = $this->getQuery($this->modelAlias);
-        $this->di->set('baseModelQuery', $this->baseModelQuery);
+        $this->instantiateQuery($params);
 
-        // $this->fireEvent("beforeQuery");
-
-        $this->executeBaseModel($params);
+        $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
+        $this->query->prepareReadQuery($this->getModelPath(), $params);
+        $this->executeModel();
 
         return $this->resultSets;
     }
@@ -235,45 +227,47 @@ class Model extends PhalconModel
      * hasManyToMany, then those related models are fetched first and then base model. After that
      * the remaining related models (hasManyToMany) are fetched.
      *
-     * @param array @params
+     * @param array $params
      */
     public function executeQuery($params)
     {
-        if ($this->splitQueries) {
-            //these are the relationship types required to join with base model.
-            $requiredRelationships = ['hasOne', 'hasMany', 'belongsTo'];
+        $this->splitQueries = ($this->passSplittingChecks($params, $this->query)) ?: false;
 
-            //check if many-to-many relationships are filtered
-            if ($this->baseModelQuery->checkRelIsFiltered()) {
-                $rels = $this->baseModelQuery->clause->getFilteredRels();
-                foreach ($rels as $relName => $meta) {
-                    $this->resultSets[$relName] = $this->executeHasManyWithClause($relName, $meta);
+        if ($this->splitQueries) {
+            $this->instantiateQuery($params);
+            $hasManyToManyRels = $this->relationship->getRelationshipsAccordingToType('hasManyToMany');
+
+            $filteredRels = $this->query->clause->prepareRelatedWhere($hasManyToManyRels);
+            foreach ($filteredRels as $relName => $meta) {
+                $this->resultSets[$relName] = $this->executeHasManyWithClause($relName, $meta, $hasManyToManyRels);
+            }
+
+            //**Executing Base Model **/
+            $requiredRelationships = ['hasOne', 'hasMany', 'belongsTo'];
+            $this->di->set('currentQueryBuilder', $this->query->getPhalconQueryBuilder());
+            $this->relationship->setRequiredRelationships($requiredRelationships);
+            $this->relationship->setRelationshipFields($params, true);
+            $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
+            $this->query->{ $this->typeOfQueryToPerform}($this->getModelPath(), $params);
+            $this->executeModel();
+
+            //If hasManyToMany relationships are left behind then execute.
+            if ($hasManyToManyRels) {
+                /**
+                 * extract base model ids, that will be used as an input in remaining
+                 * many-to-many rels
+                 */
+                $baseModelIds = DataExtractor::extractModelIds($this->resultSets['baseModel']);
+
+                //execute remaining many-many relationships (rels without any clause)
+                foreach ($hasManyToManyRels as $relName) {
+                    $relMeta = $this->relationship->getRelationship($relName);
+                    $this->resultSets[$relName] = $this->executeHasManyWithOutClause($relName, $baseModelIds, $relMeta);
                 }
             }
-
-            //execute base model
-            $this->di->set('currentQueryBuilder', $this->baseModelQuery->getPhalconQueryBuilder());
-            $this->relationship->setRequiredRelationships($requiredRelationships);
-            $this->relationship->setRelationshipFields($params, $this->splitQueries);
-            $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
-            $this->executeBaseModel($params);
-
-            /**
-             * extract base model ids, that will be used as an input in remaining
-             * many-to-many rels
-             */
-            $baseModelIds = DataExtractor::extractModelIds($this->resultSets['baseModel']);
-
-            //execute remaining many-many relationships (rels without any clause)
-            foreach ($this->relationship->hasManyToMany as $relName) {
-                $relMeta = $this->relationship->getRelationship($relName);
-                $this->resultSets[$relName] = $this->executeHasManyWithOutClause($relName, $baseModelIds, $relMeta);
-            }
-        } else {
-            $this->di->set('currentQueryBuilder', $this->baseModelQuery);
-            $this->relationship->setRelationshipFields($params, $this->splitQueries);
-            $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
-            $this->executeBaseModel($params);
+        }
+        else {
+            $this->executeModel();
         }
     }
 
@@ -282,15 +276,15 @@ class Model extends PhalconModel
      *
      * @param array $params
      */
-    public function bootstrapRelationship($params)
+    protected function bootstrapRelationship($params)
     {
         $this->relationship = $this->getRelationship();
         $this->di->set('relationship', $this->relationship);
         $metadata = $this->di->get('metaManager')->getModelMeta($this->modelAlias);
         $this->relationship->prepareDefaultRels($params);
         $this->relationship->loadRelationships($metadata['relationships']);
-        $this->relationship->loadRequestedRelationships($params['rels']);
         $this->relationship->verifyRelationships($params['rels']);
+        $this->relationship->loadRequestedRelationships($params['rels']);
     }
 
     /**
@@ -298,23 +292,19 @@ class Model extends PhalconModel
      *
      * @param array $params
      */
-    public function bootstrapQueryClauses($params)
+    protected function bootstrapQueryClauses($params)
     {
-        $this->baseModelQuery->prepareClauses($params);
+        $this->query->prepareClauses($params);
     }
 
     /**
      * This function executes base model.
      *
-     * @param array $params
      */
-    public function executeBaseModel($params)
+    protected function executeModel()
     {
-        $this->baseModelQuery->{ $this->typeOfQueryToPerform}($this->getModelPath(), $params);
         $this->fireEvent("afterQuery");
-
-        //execute base model query
-        $phalconQuery = $this->baseModelQuery->getPhalconQuery();
+        $phalconQuery = $this->query->getPhalconQuery();
         $this->resultSets['baseModel'] = $phalconQuery->execute();
     }
 
@@ -327,7 +317,7 @@ class Model extends PhalconModel
      * @param array $relMeta Metadata of relationship.
      * @return array
      */
-    public function executeHasManyWithOutClause($relName, $baseModelIds, $relMeta)
+    protected function executeHasManyWithOutClause($relName, $baseModelIds, $relMeta)
     {
         $result = $this->executeHasManyRel($relName, $relMeta, $baseModelIds, true);
         return $result;
@@ -338,16 +328,20 @@ class Model extends PhalconModel
      *
      * @param string $relName Name of relationship.
      * @param array $meta Metdata of relationship.
+     * @param array $hasManyToManyRels Array of relationships of type hasManyToMany.
      * @return array
      */
-    public function executeHasManyWithClause($relName, $meta)
+    protected function executeHasManyWithClause($relName, $meta, &$hasManyToManyRels)
     {
         $result = $this->executeHasManyRel($relName, $meta);
+
         //extract related ids and set it to original where clause
         $ids = DataExtractor::extractRelIds($this->di->get('relQuery')->newRelatedAlias, $result, $meta['rhsKey']);
-        $this->baseModelQuery->clause->updateBaseWhereWithIds($ids, $meta, $this->modelAlias);
-        $index = array_search($relName, $this->relationship->hasManyToMany);
-        unset($this->relationship->hasManyToMany[$index]);
+        $this->query->clause->updateBaseWhereWithIds($ids, $meta, $this->modelAlias);
+
+        $index = array_search($relName, $hasManyToManyRels);
+        unset($hasManyToManyRels[$index]);
+
         return $result;
     }
 
@@ -361,7 +355,7 @@ class Model extends PhalconModel
      * related model or not. True is required on related model execution without any clauses.
      * @return array
      */
-    public function executeHasManyRel($relName, $meta, $baseModelIds = null, $prepareWhere = false)
+    protected function executeHasManyRel($relName, $meta, $baseModelIds = null, $prepareWhere = false)
     {
         $relQuery = $this->getQuery($relName);
         $this->di->set('relQuery', $relQuery);
@@ -370,6 +364,84 @@ class Model extends PhalconModel
         $phalconQuery = $relQuery->getPhalconQuery();
         $result = $phalconQuery->execute();
         return $result;
+    }
+
+    /**
+     * This function creates new query and sets up relationships and clauses on that query.
+     * 
+     * @param array $params
+     */
+    protected function instantiateQuery($params)
+    {
+        $this->query = $this->getQuery($this->modelAlias, $params['id']);
+        $this->di->set('query', $this->query);
+        $this->fireEvent("beforeQuery");
+        $this->bootstrapRelationship($params);
+        $this->bootstrapQueryClauses($params);
+    }
+
+    /**
+     * This function verify all checks for splitting of a query.
+     * 
+     * @param array $params
+     * @param \Gaia\Core\MVC\Models\Query $query
+     * @return boolean
+     */
+    protected function passSplittingChecks($params, $query)
+    {
+        $queryMeta = $this->getQueryMeta();
+        $queryMeta->loadQueryMeta($params, $this->query);
+
+        $checksPassed = false;
+
+        //Total Checks => 6
+        while (true) {
+            /**
+             * Check if total number of requested rels are less then 3 and total number of
+             * hasManyToMany rels are greater then 4.
+             * If these conditions met then we can split the query.
+             */
+            if ($queryMeta->getTotalNumberOfRelationship() <= 3 && $queryMeta->getTotalHasManyToManyRels() > 4) {
+                $checksPassed = true;
+            }
+            else {
+                break;
+            }
+
+            //Check if there is any OR condition used in where clause.
+            if (in_array("OR", $queryMeta->getOperators())) {
+                $checksPassed = false;
+                break;
+            }
+
+            //Check if sorting is applied on some models or not.
+            if ($queryMeta->checkQueryHasSort()) {
+                $checksPassed = false;
+                break;
+            }
+
+            //Check if grouping is applied on some models or not.
+            if ($queryMeta->checkQueryHasGroupBy()) {
+                $checksPassed = false;
+                break;
+            }
+
+            //Check if aggregate functions are applied on fields or not.
+            if ($queryMeta->checkQueryHasAggregateFunctions()) {
+                $checksPassed = false;
+                break;
+            }
+
+            //Check if there is any exclusive conditions used in join by model.
+            if ($queryMeta->checkQueryHasExclusiveConditions()) {
+                $checksPassed = false;
+                break;
+            }
+
+            break;
+        }
+
+        return true;
     }
 
     /**
@@ -385,11 +457,13 @@ class Model extends PhalconModel
     /**
      * This function return new Query object.
      *
+     * @param string $modelName
+     * @param string $id
      * @return \Gaia\Core\MVC\Models\Query
      */
-    public function getQuery($modelName)
+    public function getQuery($modelName, $id = null)
     {
-        $query = new Query($this->getDI(), $modelName);
+        $query = new Query($this->getDI(), $modelName, $id);
         return $query;
     }
 
@@ -403,4 +477,16 @@ class Model extends PhalconModel
         $relationship = new Relationship($this->getDI());
         return $relationship;
     }
+
+    /**
+     * This function return new Query Metadata object.
+     *
+     * @return \Gaia\Core\MVC\Models\Query\Meta
+     */
+    public function getQueryMeta()
+    {
+        $queryMeta = new QueryMeta($this->getDI());
+        return $queryMeta;
+    }
+
 }

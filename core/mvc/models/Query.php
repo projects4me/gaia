@@ -6,7 +6,6 @@
 
 namespace Gaia\Core\MVC\Models;
 
-use Gaia\Core\MVC\Models\Relationship;
 use Phalcon\Mvc\Model\MetaData;
 use Gaia\Libraries\Utils\Util;
 use Gaia\Core\MVC\Models\Query\Clause;
@@ -69,17 +68,30 @@ class Query
     public $newRelatedAlias;
 
     /**
+     * This is used in order to handle whether we have to set
+     * fields for base model or not.
+     */
+    public $setModelFields = true;
+
+    /**
+     * This contains all the clauses related to query.
+     */
+    public $clause;
+
+    /**
      * Query constructor.
      *
      * @param \Phalcon\DiInterface  $di
      * @param string $modelAlias Alias of Model.
+     * @param string $id Model identifier.
      */
-    function __construct(\Phalcon\Di\FactoryDefault $di, $modelAlias)
+    function __construct(\Phalcon\Di\FactoryDefault $di, $modelAlias, $id)
     {
         $this->di = $di;
         $this->queryBuilder = $this->di->get('modelsManager')->createBuilder();
         $this->clause = $this->getQueryClause();
         $this->modelAlias = $modelAlias;
+        $this->modelId = $id;
         $this->di->set('currentQueryBuilder', $this->queryBuilder);
         $this->di->set('queryClause', $this->clause);
     }
@@ -100,7 +112,6 @@ class Query
      */
     public function prepareReadQuery($modelNamespace, $params)
     {
-        $this->modelId = $params['id'];
         $this->clause->updateBaseWhereWithId($modelNamespace, $this->modelId);
         $this->prepareSelectQuery($modelNamespace, $params);
     }
@@ -168,7 +179,7 @@ class Query
         $this->clause->prepareOrderBy($params['sort'], $params['order']);
 
         //set these clauses when only when list of models are requested.
-        if ($this->modelId) {
+        if (!$this->modelId) {
             $this->clause->prepareGroupBy($params['groupBy']);
             $this->clause->prepareHaving($params['having']);
         }
@@ -184,14 +195,16 @@ class Query
     public function setFieldsForQuery(&$params)
     {
         $moduleFields = $this->getModelFields();
+        $relationship = $this->di->get('relationship');
+
         if (isset($params['fields']) && !empty($params['fields'])) {
             $params['fields'] = $params['fields'];
         }
         else if (isset($params['addRelFields']) && empty($params['addRelFields'])) {
             $params['fields'] = $moduleFields;
         }
-        else {
-            $params['fields'] = array_merge($moduleFields, $this->di->get('relationship')->relationshipFields);
+        else if ($this->setModelFields) {
+            $params['fields'] = array_merge($moduleFields, $relationship->getRelationshipFields());
         }
     }
 
@@ -287,10 +300,11 @@ class Query
         $this->queryBuilder->from([$modelAlias => $meta['secondaryModel']]);
 
         //check if user requested some fields from that relationship or not
-        $relationshipFields = $baseModelRelationship->relationshipFields[$relName];
+        $relationshipFields = ($baseModelRelationship->getRelationshipFields())[$relName];
         if ($relationshipFields) {
             $this->queryBuilder->columns($relationshipFields);
-        } else {
+        }
+        else {
             $this->queryBuilder->columns(["{$modelAlias}.*", "{$this->newRelatedAlias}.*"]);
         }
 
@@ -303,7 +317,8 @@ class Query
         //Clauses of related models are already set on preparing clauses for base model.
         if (isset($meta['where']) && !empty($meta['where'])) {
             $this->queryBuilder->where($meta['where']);
-        } elseif ($this->clause->where) {
+        }
+        elseif ($this->clause->where) {
             $this->queryBuilder->where($this->clause->where);
         }
     }

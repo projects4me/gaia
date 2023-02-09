@@ -94,6 +94,6 @@ class softDeleteBehavior extends Behavior implements BehaviorInterface
     protected function afterQuery(&$model)
     {
         $GLOBALS['logger']->debug("Setting deleted = 0 for ".$model->modelAlias);
-        $model->baseModelQuery->getPhalconQueryBuilder()->andWhere($model->modelAlias.".deleted = '0'");
+        $model->query->getPhalconQueryBuilder()->andWhere($model->modelAlias.".deleted = '0'");
     }
 }

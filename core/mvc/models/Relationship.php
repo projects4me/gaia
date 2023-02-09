@@ -38,42 +38,14 @@ class Relationship
      * 
      * @var array
      */
-    public $modelRelationships = [];
-
-    /**
-     * The name of relationships of type ManyToMany.
-     * 
-     * @var array
-     */
-    public $hasManyToMany = [];
-
-    /**
-     * The name of relationships of type OneToMany.
-     * 
-     * @var array
-     */
-    public $hasMany = [];
-
-    /**
-     * The name of relationships of type OneToOne.
-     * 
-     * @var array
-     */
-    public $hasOne = [];
-
-    /**
-     * The name of relationships of type ManyToOne.
-     * 
-     * @var array
-     */
-    public $belongsTo = [];
+    protected $modelRelationships = [];
 
     /**
      * This contains array of relationship fields.
      * 
      * @var array
      */
-    public $relationshipFields = [];
+    protected $relationshipFields = [];
 
     /**
      * This contains array of types of relationship. E.g if query is splitted
@@ -83,7 +55,35 @@ class Relationship
      * 
      * @var array
      */
-    public $requiredRelationshipTypes = ['hasOne', 'hasMany', 'hasManyToMany', 'belongsTo'];
+    protected $requiredRelationshipTypes = ['hasOne', 'hasMany', 'hasManyToMany', 'belongsTo'];
+
+    /**
+     * The name of relationships of type ManyToMany.
+     * 
+     * @var array
+     */
+    protected $hasManyToMany = [];
+
+    /**
+     * The name of relationships of type OneToMany.
+     * 
+     * @var array
+     */
+    protected $hasMany = [];
+
+    /**
+     * The name of relationships of type OneToOne.
+     * 
+     * @var array
+     */
+    protected $hasOne = [];
+
+    /**
+     * The name of relationships of type ManyToOne.
+     * 
+     * @var array
+     */
+    protected $belongsTo = [];
 
     /**
      * Relationship constructor.
@@ -161,8 +161,9 @@ class Relationship
                 foreach ($params['rels'] as $relationshipName) {
                     $relationshipMeta = $this->getRelationship($relationshipName);
 
-                    //Extract user requested fields for relationships
+                    //Extract requested fields for relationships
                     foreach ($fields as $field) {
+
                         list($requestedFieldRelationship, $fieldName) = explode('.', $field);
 
                         /**
@@ -174,6 +175,7 @@ class Relationship
                          */
                         if ($requestedFieldRelationship == $relationshipName
                         && !in_array($this->modelRelationships[$relationshipName]['type'], $this->requiredRelationshipTypes)) {
+
                             $this->relationshipFields[$requestedFieldRelationship][] = $this->changeAliasOfRel($relationshipMeta, $fieldName);
                             $fieldIndex = array_search($field, $params['fields']);
                             unset($params['fields'][$fieldIndex]);
@@ -204,6 +206,11 @@ class Relationship
                         $this->relationshipFields[$relationshipName][] = "{$newRelatedAlias}.{$rhsKey}";
                     }
                 }
+
+                if (empty($fields)) {
+                    $query = $this->di->get('query');
+                    $query->setModelFields = false;
+                }
             }
         }
 
@@ -227,16 +234,6 @@ class Relationship
                 }
             }
         }
-    }
-
-    /**
-     * This function set the required relationship types.
-     * 
-     * @param array $params
-     */
-    public function setRequiredRelationships($relationshipTypes)
-    {
-        $this->requiredRelationshipTypes = $relationshipTypes;
     }
 
     /**
@@ -286,6 +283,16 @@ class Relationship
     }
 
     /**
+     * This function set the required relationship types.
+     * 
+     * @param array $params
+     */
+    public function setRequiredRelationships($relationshipTypes)
+    {
+        $this->requiredRelationshipTypes = $relationshipTypes;
+    }
+
+    /**
      * This function returns a relationship.
      *
      * @param string $relationshipName Name of the relationship
@@ -296,6 +303,21 @@ class Relationship
         return $relationship;
     }
 
+    /**
+     * This function is used to get hasManyToMany relationship with its all meta.
+     * 
+     * @param string $field
+     * @return array||null
+     */
+    public function getHasManyToManyRel($field)
+    {
+        $fieldParts = explode('.', $field);
+        $relationship = $this->getRelationship($fieldParts[0]);
+
+        if ($relationship['type'] == 'hasManyToMany') {
+            return ["relMeta" => $relationship, "relName" => $fieldParts[0], "relField" => $fieldParts[1]];
+        }
+    }
     /**
      * This function change alias of relationship from a given query. 
      * e.g "skills.name : Emberjs" query for User model is requested so, it will change skills.name to Tag.name.
@@ -308,4 +330,27 @@ class Relationship
     {
         return Util::extractClassFromNamespace($relMeta['secondaryModel']) . '.' . $field;
     }
+
+    /**
+     * This function return relationship fields.
+     * 
+     * @return array
+     */
+    public function getRelationshipFields()
+    {
+        return $this->relationshipFields;
+    }
+
+    /**
+     * This function return relationships according to given type. e.g if User gives type => 'hasManyToMany', 
+     * then this will return all hasManyToMany relationship names.
+     * 
+     * @param string $type
+     * @return array
+     */
+    public function getRelationshipsAccordingToType($type)
+    {
+        return $this->{ $type};
+    }
+
 }
