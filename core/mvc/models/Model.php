@@ -154,7 +154,7 @@ class Model extends PhalconModel
         $this->instantiateQuery($params);
         $this->di->set('currentQueryBuilder', $this->query->getPhalconQueryBuilder());
 
-        $this->relationship->setRelationshipFields($params, false);
+        $this->relationship->setRelationshipFields($params);
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
 
         $this->query->prepareReadQuery($this->getModelPath(), $params);
@@ -180,7 +180,7 @@ class Model extends PhalconModel
         $this->instantiateQuery($params);
         $this->di->set('currentQueryBuilder', $this->query->getPhalconQueryBuilder());
 
-        $this->relationship->setRelationshipFields($params, false);
+        $this->relationship->setRelationshipFields($params);
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
 
         $this->query->prepareReadAllQuery($this->getModelPath(), $params);
@@ -246,7 +246,7 @@ class Model extends PhalconModel
             $requiredRelationships = ['hasOne', 'hasMany', 'belongsTo'];
             $this->di->set('currentQueryBuilder', $this->query->getPhalconQueryBuilder());
             $this->relationship->setRequiredRelationships($requiredRelationships);
-            $this->relationship->setRelationshipFields($params, true);
+            $this->relationship->setRelationshipFields($params);
             $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
             $this->query->{ $this->typeOfQueryToPerform}($this->getModelPath(), $params);
             $this->executeModel();
