@@ -144,7 +144,7 @@ class Model extends PhalconModel
     public function read(array $params)
     {
         $this->instantiateQuery($params);
-        $this->di->set('currentQueryBuilder', $this->query->getPhalconQueryBuilder());
+        $this->di->set('queryBuilder', $this->query->getPhalconQueryBuilder());
 
         $this->relationship->setRelationshipFields($params);
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
@@ -170,7 +170,7 @@ class Model extends PhalconModel
         $typeOfQueryToPerform = 'prepareReadAllQuery';
 
         $this->instantiateQuery($params);
-        $this->di->set('currentQueryBuilder', $this->query->getPhalconQueryBuilder());
+        $this->di->set('queryBuilder', $this->query->getPhalconQueryBuilder());
 
         $this->relationship->setRelationshipFields($params);
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
@@ -238,7 +238,7 @@ class Model extends PhalconModel
 
             //**Executing Base Model **/
             $requiredRelationships = ['hasOne', 'hasMany', 'belongsTo'];
-            $this->di->set('currentQueryBuilder', $this->query->getPhalconQueryBuilder());
+            $this->di->set('queryBuilder', $this->query->getPhalconQueryBuilder());
             $this->relationship->setRequiredRelationships($requiredRelationships);
             $this->relationship->setRelationshipFields($params);
             $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
