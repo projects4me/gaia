@@ -82,13 +82,6 @@ class Model extends PhalconModel
     protected $splitQueries = true;
 
     /**
-     * This is type of query to be performed on model. e.g prepareReadAllQuery or prepareReadQuery.
-     *
-     * @var string
-     */
-    protected $typeOfQueryToPerform = null;
-
-    /**
      * This function is used in order to load the different behaviors that this model is
      * set to use.
      *
@@ -150,7 +143,6 @@ class Model extends PhalconModel
      */
     public function read(array $params)
     {
-        $this->typeOfQueryToPerform = 'prepareReadQuery';
         $this->instantiateQuery($params);
         $this->di->set('currentQueryBuilder', $this->query->getPhalconQueryBuilder());
 
@@ -158,7 +150,7 @@ class Model extends PhalconModel
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
 
         $this->query->prepareReadQuery($this->getModelPath(), $params);
-        $this->executeQuery($params);
+        $this->executeQuery($params, 'prepareReadQuery');
 
         return $this->resultSets;
     }
@@ -175,7 +167,7 @@ class Model extends PhalconModel
     public function readAll(array $params)
     {
         $this->fireEvent("beforeRead");
-        $this->typeOfQueryToPerform = 'prepareReadAllQuery';
+        $typeOfQueryToPerform = 'prepareReadAllQuery';
 
         $this->instantiateQuery($params);
         $this->di->set('currentQueryBuilder', $this->query->getPhalconQueryBuilder());
@@ -185,7 +177,7 @@ class Model extends PhalconModel
 
         $this->query->prepareReadAllQuery($this->getModelPath(), $params);
 
-        $this->executeQuery($params);
+        $this->executeQuery($params, 'prepareReadAllQuery');
 
         return $this->resultSets;
     }
@@ -216,7 +208,7 @@ class Model extends PhalconModel
 
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
         $this->query->prepareReadQuery($this->getModelPath(), $params);
-        $this->executeModel();
+        $this->executeQuery($params, 'prepareReadQuery', false);
 
         return $this->resultSets;
     }
@@ -228,12 +220,14 @@ class Model extends PhalconModel
      * the remaining related models (hasManyToMany) are fetched.
      *
      * @param array $params
+     * @param string $typeOfQueryToPerfrom This is type of query to be performed on model.
+     * @param bool $splitQuery
      */
-    public function executeQuery($params)
+    public function executeQuery($params, $typeOfQueryToPerform, $splitQuery = true)
     {
-        $this->splitQueries = ($this->passSplittingChecks($params, $this->query)) ?: false;
+        $splitQuery = ($this->splitQueries && $splitQuery) ? $this->passSplittingChecks($params, $this->query) : false;
 
-        if ($this->splitQueries) {
+        if ($splitQuery) {
             $this->instantiateQuery($params);
             $hasManyToManyRels = $this->relationship->getRelationshipsAccordingToType('hasManyToMany');
 
@@ -248,7 +242,7 @@ class Model extends PhalconModel
             $this->relationship->setRequiredRelationships($requiredRelationships);
             $this->relationship->setRelationshipFields($params);
             $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
-            $this->query->{ $this->typeOfQueryToPerform}($this->getModelPath(), $params);
+            $this->query->{ $typeOfQueryToPerform}($this->getModelPath(), $params);
             $this->executeModel();
 
             //If hasManyToMany relationships are left behind then execute.
