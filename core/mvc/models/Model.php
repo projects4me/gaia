@@ -383,51 +383,13 @@ class Model extends PhalconModel
 
         $checksPassed = false;
 
-        //Total Checks => 6
-        while (true) {
-            /**
-             * Check if total number of requested rels are less then 3 and total number of
-             * hasManyToMany rels are greater then 4.
-             * If these conditions met then we can split the query.
-             */
-            if ($queryMeta->getTotalNumberOfRelationship() <= 3 && $queryMeta->getTotalHasManyToManyRels() > 4) {
-                $checksPassed = true;
-            }
-            else {
-                break;
-            }
-
-            //Check if there is any OR condition used in where clause.
-            if (in_array("OR", $queryMeta->getOperators())) {
-                $checksPassed = false;
-                break;
-            }
-
-            //Check if sorting is applied on some models or not.
-            if ($queryMeta->checkQueryHasSort()) {
-                $checksPassed = false;
-                break;
-            }
-
-            //Check if grouping is applied on some models or not.
-            if ($queryMeta->checkQueryHasGroupBy()) {
-                $checksPassed = false;
-                break;
-            }
-
-            //Check if aggregate functions are applied on fields or not.
-            if ($queryMeta->checkQueryHasAggregateFunctions()) {
-                $checksPassed = false;
-                break;
-            }
-
-            //Check if there is any exclusive conditions used in join by model.
-            if ($queryMeta->checkQueryHasExclusiveConditions()) {
-                $checksPassed = false;
-                break;
-            }
-
-            break;
+        if (($queryMeta->getTotalNumberOfRelationship() <= 3 && $queryMeta->getTotalHasManyToManyRels() > 4)
+        && !(in_array("OR", $queryMeta->getOperators()))
+        && !($queryMeta->checkQueryHasSort())
+        && !($queryMeta->checkQueryHasGroupBy())
+        && !($queryMeta->checkQueryHasAggregateFunctions())
+        && !($queryMeta->checkQueryHasExclusiveConditions())) {
+            $checksPassed = true;
         }
 
         return $checksPassed;
