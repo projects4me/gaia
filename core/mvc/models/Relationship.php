@@ -22,7 +22,7 @@ use Gaia\Libraries\Utils\Util;
  * $relationship->verifyRelationships($params);
  * $relationship->setRequiredRelationships(['hasOne','hasMany']);
  * $relationship->setRelationshipFields($params);
- * $relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias);
+ * $relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias, $queryBuilder);
  * 
  * ```
  *
@@ -148,8 +148,9 @@ class Relationship
      * type of relationships. And if user give field e.g "members.*" for relationship, then it will only use those field. 
      *
      * @param array $params
+     * @param \Gaia\Core\MVC\Models\Query $query
      */
-    public function setRelationshipFields(&$params)
+    public function setRelationshipFields(&$params, $query)
     {
         if (isset($params['fields']) && !empty($params['fields'])) {
             $fields = $params['fields'];
@@ -209,7 +210,6 @@ class Relationship
              * to not set the model fields.
              */
             if (empty($fields)) {
-                $query = $this->di->get('query');
                 $query->setModelFields = false;
             }
         }
@@ -235,8 +235,9 @@ class Relationship
      *
      * @param array $requestedRels
      * @param string $modelAlias
+     * @param \Phalcon\Mvc\Model\Query\Builder $queryBuilder
      */
-    public function prepareJoinsForQuery($requestedRels, $modelAlias)
+    public function prepareJoinsForQuery($requestedRels, $modelAlias, $queryBuilder)
     {
         foreach ($requestedRels as $relationshipName) {
 
@@ -255,7 +256,7 @@ class Relationship
 
             if (in_array($relType, $this->requiredRelationshipTypes)) {
                 $relationshipType = $this->di->get('relationshipFactory')->createRelationship($relType);
-                $relationshipType->prepareJoin($relationshipName, $this->modelRelationships[$relationshipName], $modelAlias, $joinType);
+                $relationshipType->prepareJoin($relationshipName, $this->modelRelationships[$relationshipName], $modelAlias, $joinType, $queryBuilder);
             }
         }
     }

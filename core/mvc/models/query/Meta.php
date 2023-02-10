@@ -128,14 +128,15 @@ class Meta
      * This function is responsible to load all metadata related to query.
      * 
      * @param array $params User requested params.
-     * @param \Gaia\Core\MVC\Models\Query $query Base model query.
+     * @param \Gaia\Core\MVC\Models\Query $query Model query.
+     * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
-    public function loadQueryMeta($params, $query)
+    public function loadQueryMeta($params, $query, $relationship)
     {
         $this->loadWhereMeta($params, $query);
         $this->loadSortMeta($query);
         $this->loadGroupByMeta($query);
-        $this->loadRelationshipMeta($params, $query);
+        $this->loadRelationshipMeta($params, $query, $relationship);
     }
 
     /**
@@ -239,10 +240,11 @@ class Meta
      * 
      * @param array $params User requested params.
      * @param \Gaia\Core\MVC\Models\Query $query Base model query.
+     * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
-    protected function loadRelationshipMeta($params, $query)
+    protected function loadRelationshipMeta($params, $query, $relationship)
     {
-        $this->loadRequestedRelationships($params['rels']);
+        $this->loadRequestedRelationships($relationship);
         $this->loadJoinsMeta($params, $query);
         $this->loadConditionExclusiveOfRels($params['rels']);
     }
@@ -265,10 +267,10 @@ class Meta
     /**
      * This function fill array of different relationship types with relationship name.
      *
+     * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
-    protected function loadRequestedRelationships()
+    protected function loadRequestedRelationships($relationship)
     {
-        $relationship = $this->di->get('relationship');
         $this->hasOne = $relationship->getRelationshipsAccordingToType('hasOne');
         $this->hasManyToMany = $relationship->getRelationshipsAccordingToType('belongsTo');
         $this->hasManyToMany = $relationship->getRelationshipsAccordingToType('hasMany');

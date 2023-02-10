@@ -92,8 +92,6 @@ class Query
         $this->clause = $this->getQueryClause();
         $this->modelAlias = $modelAlias;
         $this->modelId = $id;
-        $this->di->set('currentQueryBuilder', $this->queryBuilder);
-        $this->di->set('queryClause', $this->clause);
     }
 
     public function getQueryClause()
@@ -109,11 +107,12 @@ class Query
      * 
      * @param string $modelNamespace namespace of the model.
      * @param array $params Array of requested params.
+     * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
-    public function prepareReadQuery($modelNamespace, $params)
+    public function prepareReadQuery($modelNamespace, $params, $relationship)
     {
         $this->clause->updateBaseWhereWithId($modelNamespace, $this->modelId);
-        $this->prepareSelectQuery($modelNamespace, $params);
+        $this->prepareSelectQuery($modelNamespace, $params, $relationship);
     }
 
     /**
@@ -121,10 +120,11 @@ class Query
      *
      * @param string $modelNamespace namespace of the model.
      * @param array $params Array of requested params.
+     * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
-    public function prepareReadAllQuery($modelNamespace, $params)
+    public function prepareReadAllQuery($modelNamespace, $params, $relationship)
     {
-        $this->prepareSelectQuery($modelNamespace, $params);
+        $this->prepareSelectQuery($modelNamespace, $params, $relationship);
     }
 
     /**
@@ -132,12 +132,11 @@ class Query
      *
      * @param string $modelNamespace namespace of the model.
      * @param array $params Array of requested params.
+     * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
-    public function prepareSelectQuery($modelNamespace, $params)
+    public function prepareSelectQuery($modelNamespace, $params, $relationship)
     {
-        $this->di->set('currentQueryBuilder', $this->queryBuilder);
-
-        $this->setFieldsForQuery($params);
+        $this->setFieldsForQuery($params, $relationship);
         $this->beforePrepareQuery($params);
 
         $this->queryBuilder->from([$this->modelAlias => $modelNamespace]);
@@ -171,11 +170,11 @@ class Query
      * This function call clause class functions in order to prepare clauses for query.
      * 
      * @param $params
+     * @param \Gaia\Core\MVC\Models\Query $query
      */
-    public function prepareClauses($params)
+    public function prepareClauses($params, $query)
     {
-        $this->clause = $this->di->get('queryClause');
-        $this->clause->prepareWhere($params['where']);
+        $this->clause->prepareWhere($params['where'], $query);
         $this->clause->prepareOrderBy($params['sort'], $params['order']);
 
         //set these clauses when only when list of models are requested.
@@ -191,11 +190,11 @@ class Query
      * relationship fields (if rels are given), are retrieved from database. 
      *
      * @param array $params Array of requested params.
+     * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
-    public function setFieldsForQuery(&$params)
+    public function setFieldsForQuery(&$params, $relationship)
     {
         $moduleFields = $this->getModelFields();
-        $relationship = $this->di->get('relationship');
 
         if (isset($params['fields']) && !empty($params['fields'])) {
             $params['fields'] = $params['fields'];
@@ -280,12 +279,12 @@ class Query
      * 
      * @param string $relName Name of relationship.
      * @param array $meta Metadata of relationship.
+     * @param \Gaia\Core\MVC\Models\Relationship $baseModelRelationship
      */
-    public function prepareManyToMany($relName, $meta)
+    public function prepareManyToMany($relName, $meta, $baseModelRelationship)
     {
         $meta['relatedKey'] = $meta['lhsKey'];
         $relatedModelName = Util::extractClassFromNamespace($meta['relatedModel']);
-        $baseModelRelationship = $this->di->get('relationship');
 
         /**
          * concatenating relName e.g skills with relatedModel e.g Tagged => skillsTagged that will be used as an
@@ -310,9 +309,7 @@ class Query
 
         $relationship = new \Gaia\Core\MVC\Models\Relationships\HasMany($this->di);
 
-        $this->di->set('currentQueryBuilder', $this->queryBuilder);
-
-        $relationship->prepareJoin($this->newRelatedAlias, $meta, $modelAlias, 'left');
+        $relationship->prepareJoin($this->newRelatedAlias, $meta, $modelAlias, 'left', $this->queryBuilder);
 
         //Clauses of related models are already set on preparing clauses for base model.
         if (isset($meta['where']) && !empty($meta['where'])) {

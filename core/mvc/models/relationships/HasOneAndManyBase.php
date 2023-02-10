@@ -23,8 +23,9 @@ class HasOneAndManyBase
      * @param array $relationshipMeta
      * @param string $modelAlias
      * @param string $joinType
+     * @param \Phalcon\Mvc\Model\Query\Builder $queryBuilder
      */
-    public function prepareJoin($relationshipName, $relationshipMeta, $modelAlias, $joinType)
+    public function prepareJoin($relationshipName, $relationshipMeta, $modelAlias, $joinType, $queryBuilder)
     {
         $relatedModel = $relationshipMeta['relatedModel'];
 
@@ -42,7 +43,6 @@ class HasOneAndManyBase
             $relatedQuery .= ' AND ' . $relationshipMeta['condition'];
         }
         // for each relationship apply the relationship joins to phalcon query object
-        $queryBuilder = $this->di->get('currentQueryBuilder');
         $queryBuilder->join($relatedModel, $relatedQuery, $relationshipName, $joinType);
     }
 }

@@ -113,9 +113,10 @@ class Clause
      * Note: Apostrophe must be preceded with \.
      * @todo Allow : without spaces
      * @param string $statement
+     * @param \Gaia\Core\MVC\Models\Query $query
      * @throws \Phalcon\Exception
      */
-    public function prepareWhere($statement)
+    public function prepareWhere($statement, $query)
     {
         //first condition
         if (isset($statement) && !empty($statement)) {
@@ -124,8 +125,6 @@ class Clause
              * Then replace them in the queryString to get the exact
              * \Phalcon\Mvc\Model compatible statement
              */
-
-            $query = $this->di->get('query');
 
             //retain original statement
             $this->where = $statement;
@@ -319,9 +318,9 @@ class Clause
      * 
      * @param array $relationships Array of hasManyToMany relationships.
      */
-    public function prepareRelatedWhere($relationships)
+    public function prepareRelatedWhere($relationship)
     {
-        $relationship = $this->di->get('relationship');
+        $relationships = $relationship->getRelationshipsAccordingToType('hasManyToMany');
         $rels = [];
 
         preg_match_all('@\([^(]*[^)]\)@', $this->where, $matches);
