@@ -41,8 +41,6 @@ class Util {
      * @param mixed $collection
      * @param mixed $index
      * @return array
-    /**
-
      */
     public function getDataFromArray(mixed $collection, mixed $index) :array
     {
@@ -71,21 +69,27 @@ class Util {
     }
 
     /**
-     * This function extracts the namespace from a class name and returns it
-     *
-     * @param string $className
-     * @return string $className without namespace
-     * @todo change the model and REST controller to use this
+     * Converts a string to camel case notation.
+     * @param  string  
+     * @return string
      */
-    public static function classWithoutNamespace(string $className) :string
-    {
-        $parts = explode('\\', $className);
-        return end($parts);
-    }
-
     public static function convertToCamelCase($string) 
     {
         return ucwords($string);
+    }
+
+    /**
+     * This function extracts class name from given namespace.
+     * If \\Gaia\\MVC\\Models\\User is given as a namespace then 
+     * the resultant ouput will be "User".
+     * @param  string $namespace
+     * @return string $className
+     */
+    public static function extractClassFromNamespace(string $namespace)
+    {
+        $splittedPath = explode('\\', $namespace);
+        $className = end($splittedPath);
+        return $className;
     }
 }
 ?>

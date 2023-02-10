@@ -18,5 +18,5 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Upload extends Model
 {
-
+    
 }

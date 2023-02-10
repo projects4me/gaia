@@ -37,7 +37,7 @@ class modelIdentifierBehavior extends Behavior implements BehaviorInterface
      *
      * @param $model
      */
-    protected function afterQuery($model)
+    protected function beforeQuery($model)
     {
         $GLOBALS['logger']->debug("Setting up new user defined variable");
         $model->getReadConnection()->query("select @modelId:= '{$model->query->modelId}'");

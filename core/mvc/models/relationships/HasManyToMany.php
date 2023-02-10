@@ -12,7 +12,7 @@ use Gaia\Libraries\Utils\Util;
  * This class represents HasManyToMany relationship.
  *
  * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Foundation\Core\Mvc\Models\Relationships
+ * @package Foundation\Core\MVC\Models\Relationships
  * @category HasManyToMany
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
@@ -35,12 +35,13 @@ class HasManyToMany
      * @param array $relationshipMeta
      * @param string $modelAlias
      * @param string $joinType
+     * @param \Phalcon\Mvc\Model\Query\Builder $queryBuilder
      */
-    public function prepareJoin($relationshipName, $relationshipMeta, $modelAlias, $joinType)
+    public function prepareJoin($relationshipName, $relationshipMeta, $modelAlias, $joinType, $queryBuilder)
     {
         // for a many-many relationshipMeta two joins are required
         $relatedModel = $relationshipMeta['relatedModel'];
-        $relatedModelAlias = Util::classWithoutNamespace($relatedModel);
+        $relatedModelAlias = Util::extractClassFromNamespace($relatedModel);
         $secondaryModel = $relationshipMeta['secondaryModel'];
 
         //If an exclusive condition for related model is defined then use that
@@ -64,7 +65,6 @@ class HasManyToMany
             $relatedQuery .= ' AND (' . $relationshipMeta['condition'] . ')';
         }
 
-        $queryBuilder = $this->di->get('queryBuilder');
         $queryBuilder->join($relatedModel, $relatedQuery, $relationshipName . $relatedModelAlias, $joinType);
         $queryBuilder->join($secondaryModel, $secondaryQuery, $relationshipName, $joinType);
     }

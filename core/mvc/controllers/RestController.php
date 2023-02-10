@@ -8,14 +8,12 @@ namespace Gaia\Core\MVC\REST\Controllers;
 
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\Resultset;
-use function Gaia\Libraries\Utils\create_guid as create_guid;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
-use Gaia\Libraries\Meta\Manager as metaManager;
+use Phalcon\Events\Manager as EventsManager;
 use Gaia\Libraries\Security\Acl;
-use \Phalcon\Events\EventsAwareInterface;
-use \Phalcon\Events\Manager as EventsManager;
-use \Phalcon\Events\ManagerInterface as EventsManagerInterface;
 use Gaia\Libraries\Utils\Util;
+use Phalcon\Events\ManagerInterface as EventsManagerInterface;
+use function Gaia\Libraries\Utils\create_guid;
 
 /**
  * The is the default controller used by this application. It provides the basic
@@ -30,7 +28,7 @@ use Gaia\Libraries\Utils\Util;
  * @category REST, Controller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInterface
+class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\EventsAwareInterface
 {
 
     /**
@@ -50,7 +48,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      *
      * @var string $relationship
      */
-    protected $relationship=null;
+    protected $relationship = null;
 
     /**
      * Name of controller is passed in parameter
@@ -148,7 +146,6 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
     /**
      * The components used by this controller
-
      * @var array $components
      */
     protected $components = array();
@@ -198,14 +195,14 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $this->response = new Response();
 
         //print_r($this->dispatcher->getParams());exit;
-        $this->controllerName = $this->dispatcher->getControllerName();//controller
-        $this->actionName = $this->dispatcher->getActionName();//controller
+        $this->controllerName = $this->dispatcher->getControllerName(); //controller
+        $this->actionName = $this->dispatcher->getActionName(); //controller
         $modelName = \Phalcon\Text::camelize($this->controllerName);
         $namespace = 'Gaia\\MVC\\Models\\';
-        $this->modelName = $namespace . $modelName;//model
+        $this->modelName = $namespace . $modelName; //model
 
-        $this->id = $this->dispatcher->getParam("id");//id
-        $this->relationship = $this->dispatcher->getParam("relationship");//relationship
+        $this->id = $this->dispatcher->getParam("id"); //id
+        $this->relationship = $this->dispatcher->getParam("relationship"); //relationship
         if ($this->actionName != 'options') {
             $this->authorize();
 
@@ -224,19 +221,16 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         global $logger;
 
         $logger->debug('Gaia.core.controllers.rest.loadComponents()');
-        $logger->debug($this->dispatcher->getControllerName().'->'.
+        $logger->debug($this->dispatcher->getControllerName() . '->' .
             $this->dispatcher->getActionName());
 
         $this->eventsManager = new EventsManager();
-        if (!isset($this->components) || empty($this->components))
-        {
-            if (isset($this->uses) && !empty($this->uses))
-            {
-                $logger->debug(print_r($this->uses,1));
+        if (!isset($this->components) || empty($this->components)) {
+            if (isset($this->uses) && !empty($this->uses)) {
+                $logger->debug(print_r($this->uses, 1));
 
-                foreach($this->uses as $component)
-                {
-                    $componentClass = '\\Gaia\\MVC\\REST\\Controllers\\Components\\'.$component.'Component';
+                foreach ($this->uses as $component) {
+                    $componentClass = '\\Gaia\\MVC\\REST\\Controllers\\Components\\' . $component . 'Component';
                     $this->components[$component] = new $componentClass();
                     $this->eventsManager->attach(
                         'rest',
@@ -268,14 +262,12 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
     private function setUser($reuqest)
     {
         global $currentUser;
-        $token = str_replace('Bearer ','',$reuqest->headers['AUTHORIZATION']);
-        $oAuthAccessToken = \Gaia\MVC\Models\Oauthaccesstoken::findFirst(array("access_token='".$token."'"));
-        if (isset($oAuthAccessToken->user_id))
-        {
-            $currentUser = \Gaia\MVC\Models\User::findFirst("username ='".$oAuthAccessToken->user_id."'");
+        $token = str_replace('Bearer ', '', $reuqest->headers['AUTHORIZATION']);
+        $oAuthAccessToken = \Gaia\MVC\Models\Oauthaccesstoken::findFirst(array("access_token='" . $token . "'"));
+        if (isset($oAuthAccessToken->user_id)) {
+            $currentUser = \Gaia\MVC\Models\User::findFirst("username ='" . $oAuthAccessToken->user_id . "'");
         }
-        else
-        {
+        else {
             $this->response->setStatusCode(403, "Forbidden");
             $this->response->setJsonContent(array('error' => 'Invalid Token'));
 
@@ -293,9 +285,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
     {
         global $currentUser;
 
-        if ($this->authorization)
-        {
-            require_once APP_PATH.'/core/libs/authorization/oAuthServer.php';
+        if ($this->authorization) {
+            require_once APP_PATH . '/core/libs/authorization/oAuthServer.php';
             $reuqest = \OAuth2\Request::createFromGlobals();
             if (!$server->verifyResourceRequest($reuqest)) {
                 $server->getResponse()->send();
@@ -303,53 +294,43 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             }
             $this->setUser($reuqest);
 
-            if ($this->projectAuthorization)
-            {
+            if ($this->projectAuthorization) {
                 $projects = array();
                 // Check for access on Projects Module
-                if (!empty($this->id))
-                {
+                if (!empty($this->id)) {
                     $modelName = $this->modelName;
                     $data = $modelName::find($this->id);
                     $identifier = 'projectId';
-                    if (strtolower($modelName) === 'projects')
-                    {
+                    if (strtolower($modelName) === 'projects') {
                         $identifier = 'id';
                     }
 
-                    if (isset($data[0]->$identifier))
-                    {
+                    if (isset($data[0]->$identifier)) {
                         $permission = Acl::hasProjectAccess($currentUser->id, $this->controllerName, $this->aclMap[$this->actionName], $data[0]->$identifier);
-                        if ($permission != 0)
-                        {
+                        if ($permission != 0) {
                             $projects[] = $data[0]->$identifier;
                         }
                     }
                 }
-                else
-                {
+                else {
                     $projects = Acl::getProjects($currentUser->id, $this->controllerName, $this->aclMap[$this->actionName]);
                 }
 
-                if (empty($projects))
-                {
+                if (empty($projects)) {
                     $this->response->setStatusCode(403, "Forbidden");
                     $this->response->setJsonContent(array('error' => 'Access Denied - Check ACL'));
 
                     $this->response->send();
                     exit();
                 }
-                else
-                {
+                else {
                     $this->accessibleProjects = $projects;
                 }
             }
-            elseif($this->systemLevel)
-            {
-                $permission = Acl::roleHasAccess('1', "Controllers.".$this->controllerName, $this->aclMap[$this->actionName]);
+            elseif ($this->systemLevel) {
+                $permission = Acl::roleHasAccess('1', "Controllers." . $this->controllerName, $this->aclMap[$this->actionName]);
 
-                if ($permission == 0)
-                {
+                if ($permission == 0) {
                     $this->response->setStatusCode(403, "Forbidden");
                     $this->response->setJsonContent(array('error' => 'Access Denied - Check ACL'));
 
@@ -363,7 +344,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
     /**
      * set language of errors responses
      */
-    public function setLanguage(){
+    public function setLanguage()
+    {
         //get the best language and all languages
         $bestLanguage = $this->request->getBestLanguage();
         $languages = $this->request->getLanguages();
@@ -371,28 +353,30 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
         //sort the languages for quality desc
         foreach ($languages as $key => $row) {
-            $language[$key]  = $row['language'];
+            $language[$key] = $row['language'];
             $quality[$key] = $row['quality'];
         }
         array_multisort($quality, SORT_DESC, $language, SORT_ASC, $languages);
 
         //veriry if exists the best language
-        if ( file_exists("../app/languages/".$bestLanguage.".php") ){
-            require "../app/languages/".$bestLanguage.".php";
+        if (file_exists("../app/languages/" . $bestLanguage . ".php")) {
+            require "../app/languages/" . $bestLanguage . ".php";
 
-            //if not exist best language find the first language existing
-        }else{
+        //if not exist best language find the first language existing
+        }
+        else {
             //search for the first existing language
             $cont = 0;
             foreach ($languages as $value) {
-                if ( file_exists("../app/languages/".$value['language'].".php") ){
-                    require "../app/languages/".$value['language'].".php";
+                if (file_exists("../app/languages/" . $value['language'] . ".php")) {
+                    require "../app/languages/" . $value['language'] . ".php";
                 }
-                else $cont++;
+                else
+                    $cont++;
             }
 
             //if not find any language set the desfault
-            if ( $cont == count($languages) ){
+            if ($cont == count($languages)) {
                 require "../app/languages/en.php";
             }
 
@@ -407,20 +391,19 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      * Method Http accept: OPTIONS
      * @return JSON return list of functions available
      */
-    public function optionsAction(){
-        global $settings,$apiVersion;
+    public function optionsAction()
+    {
+        global $settings, $apiVersion;
 
         $modelName = $this->modelName;
         // only allow versioned API calls
-        if (preg_match('@api/@',$this->request->getURI()))
-        {
-            $allowedMethods = (array) $settings->routes['rest']->$apiVersion->$modelName->allowedMethods;
+        if (preg_match('@api/@', $this->request->getURI())) {
+            $allowedMethods = (array)$settings->routes['rest']->$apiVersion->$modelName->allowedMethods;
             $this->response->setJsonContent(array('methods' => $allowedMethods));
         }
-        else
-        {
+        else {
             $this->response->setStatusCode(400);
-            $this->response->setJsonContent(array('status' => 'error','description' => 'Method only allowed for API'));
+            $this->response->setJsonContent(array('status' => 'error', 'description' => 'Method only allowed for API'));
         }
         return $this->response;
     }
@@ -437,22 +420,20 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $logger->debug('Gaia.core.controllers.rest->getAction');
         $modelName = $this->modelName;
 
-        if (!(isset($this->id) && !empty($this->id)))
-        {
+        if (!(isset($this->id) && !empty($this->id))) {
             throw new \Phalcon\Exception('Id must be set, please refer to guides.');
         }
 
-        $query = $this->request->get('query',null,'');
-        $sort = $this->request->get('sort',null,'');
-        $order = $this->request->get('order',null,'DESC');
-        $include = ($this->request->get('include'))?(explode(',',$this->request->get('include'))):array();
-        $fields = $this->request->get('fields',null,array());
-        $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
+        $query = $this->request->get('query', null, '');
+        $sort = $this->request->get('sort', null, '');
+        $order = $this->request->get('order', null, 'DESC');
+        $include = ($this->request->get('include')) ? (explode(',', $this->request->get('include'))) : array();
+        $fields = ($this->request->get('fields')) ? (explode(',', $this->request->get('fields'))) : array();
+        $rels = ($this->request->get('rels')) ? (explode(',', $this->request->get('rels'))) : array();
         $rels = array_merge($rels, $include);
         $addRelFields = filter_var($this->request->get('addRelFields', null, true), FILTER_VALIDATE_BOOLEAN);
-        
-        if ($this->classWithoutNamespace($modelName) === 'User' && $this->id === 'me')
-        {
+
+        if (Util::extractClassFromNamespace($modelName) === 'User' && $this->id === 'me') {
             $this->id = $GLOBALS['currentUser']->id;
         }
 
@@ -469,7 +450,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $model = new $modelName;
 
         $data = $model->read($params);
-        $dataArray = $this->extractData($data,'one');
+        $dataArray = $this->extractData($data, 'one');
         $this->finalData = $this->buildHAL($dataArray);
 
         $logger->debug('Firing afterRead event');
@@ -489,36 +470,35 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
     {
         $modelName = $this->modelName;
 
-        if (!(isset($this->id) && !empty($this->id)))
-        {
+        if (!(isset($this->id) && !empty($this->id))) {
             throw new \Phalcon\Exception('Id must be set, please refer to guides.');
         }
 
         /**
          * @todo get from settings
          */
-        $limit = $this->request->get('limit',null,20);
+        $limit = $this->request->get('limit', null, 20);
 
         $requestPage = $this->request->get('page');
-        $page = ($requestPage && $requestPage != 0 && $requestPage != 1)?$requestPage:1;
-        $offset = ($page-1) * $limit;
+        $page = ($requestPage && $requestPage != 0 && $requestPage != 1) ? $requestPage : 1;
+        $offset = ($page - 1) * $limit;
         $limit++;
 
-        $query = $this->request->get('query',null,'');
-        $sort = $this->request->get('sort',null,'');
-        $order = $this->request->get('order',null,'DESC');
+        $query = $this->request->get('query', null, '');
+        $sort = $this->request->get('sort', null, '');
+        $order = $this->request->get('order', null, 'DESC');
 
-        $fields = $this->request->get('fields',null,array());
+        $fields = $this->request->get('fields', null, array());
         $relation = $this->dispatcher->getParam("relation");
 
         $params = array(
             'id' => $this->id,
-            'related' =>$relation,
+            'related' => $relation,
             'fields' => $fields,
             'where' => $query,
             'sort' => $sort,
             'order' => $order,
-            'limit'=> $limit,
+            'limit' => $limit,
             'offset' => $offset,
         );
 
@@ -526,8 +506,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
         $data = $model->readRelated($params);
 
-        $dataArray = $this->extractData($data,'all',$relation);
-        $finalData = $this->buildHAL($dataArray,--$limit,$page);
+        $dataArray = $this->extractData($data, 'all', $relation);
+        $finalData = $this->buildHAL($dataArray, --$limit, $page);
         return $this->returnResponse($finalData);
     }
 
@@ -546,22 +526,22 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         /**
          * @todo get from settings
          */
-        $limit = $this->request->get('limit',null,20);
+        $limit = $this->request->get('limit', null, 20);
 
         $requestPage = $this->request->get('page');
-        $page = ($requestPage && $requestPage != 0 && $requestPage != 1)?$requestPage:1;
-        $offset = ($page-1) * $limit;
+        $page = ($requestPage && $requestPage != 0 && $requestPage != 1) ? $requestPage : 1;
+        $offset = ($page - 1) * $limit;
         $limit++;
 
-        $query = $this->request->get('query',null,'');
-        $sort = $this->request->get('sort',null,'');
-        $order = $this->request->get('order',null,'DESC');
-        $groupBy = $this->request->get('group',null,array());
-        $count = $this->request->get('count',null,'');
-        $having = $this->request->get('having',null,'');
-        $fields = $this->request->get('fields',null,array());
+        $query = $this->request->get('query', null, '');
+        $sort = $this->request->get('sort', null, '');
+        $order = $this->request->get('order', null, 'DESC');
+        $groupBy = $this->request->get('group', null, array());
+        $count = $this->request->get('count', null, '');
+        $having = $this->request->get('having', null, '');
+        $fields = ($this->request->get('fields')) ? (explode(',', $this->request->get('fields'))) : array();
         $addRelFields = filter_var($this->request->get('addRelFields', null, true), FILTER_VALIDATE_BOOLEAN);
-        $rels = ($this->request->get('rels'))?(explode(',',$this->request->get('rels'))):array();
+        $rels = ($this->request->get('rels')) ? (explode(',', $this->request->get('rels'))) : array();
 
         $params = array(
             'fields' => $fields,
@@ -569,7 +549,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             'where' => $query,
             'sort' => $sort,
             'order' => $order,
-            'limit'=> $limit,
+            'limit' => $limit,
             'offset' => $offset,
             'groupBy' => $groupBy,
             'count' => $count,
@@ -581,7 +561,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $data = $model->readAll($params);
 
         $dataArray = $this->extractData($data);
-        $this->finalData = $this->buildHAL($dataArray,--$limit,$page);
+        $this->finalData = $this->buildHAL($dataArray, --$limit, $page);
 
         $logger->debug('Firing afterRead event');
         $this->eventsManager->fire('rest:afterRead', $this);
@@ -620,19 +600,16 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $modelName = $this->modelName;
         $model = new $modelName();
 
-        $util = new \Gaia\Libraries\Utils\Util();
+        $util = new Util();
         $data = array();
 
         //get data
         $temp = $util->objectToArray($this->request->getJsonRawBody());
 
         //verify if exist more than one element
-        if ($util->existSubArray($temp) )
-        {
-            if (isset($temp['data']['attributes']))
-            {
-                if (isset($temp['data']['id']) && !empty($temp['data']['id']))
-                {
+        if ($util->existSubArray($temp)) {
+            if (isset($temp['data']['attributes'])) {
+                if (isset($temp['data']['id']) && !empty($temp['data']['id'])) {
                     $temp['data']['attributes']['id'] = $temp['data']['id'];
                 }
                 $data[] = $temp['data']['attributes'];
@@ -642,8 +619,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             }
 
         }
-        else
-        {
+        else {
             $data[0] = $temp;
         }
 
@@ -651,13 +627,13 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         foreach ($data as $key => $value) {
 
             //if have param then update
-            if ( isset($value['id']) ) {
+            if (isset($value['id'])) {
                 //if passed by url
-                $model = $modelName::findFirst('id = "'.$value['id'].'"');
+                $model = $modelName::findFirst('id = "' . $value['id'] . '"');
 
                 //print_r($value);
                 $model->assign($value);
-                if ( $model->save($value) ){
+                if ($model->save($value)) {
                     $this->eventsManager->fire('rest:afterUpdate', $this, $model);
                     $dataResponse = get_object_vars($model);
                     //update
@@ -665,13 +641,13 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
                     $data = $model->read(array('id' => $value['id']));
 
-                    $dataArray = $this->extractData($data,'one');
+                    $dataArray = $this->extractData($data, 'one');
                     $finalData = $this->buildHAL($dataArray);
                     return $this->returnResponse($finalData);
                 }
                 else {
                     $errors = array();
-                    foreach( $model->getMessages() as $message ) {
+                    foreach ($model->getMessages() as $message) {
                         $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
                     }
                     $this->response->setJsonContent(array(
@@ -680,7 +656,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                     ));
                 }
             }
-        }//end foreach
+        } //end foreach
 
         return $this->response;
 
@@ -698,8 +674,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         //get data
         $data = $this->request->getJsonRawBody();
 
-        if (!isset($data->collection) && is_array($data->collection))
-        {
+        if (!isset($data->collection) && is_array($data->collection)) {
             $data = array('error' => array('code' => 400, 'description' => 'Collection missing'));
             return $this->returnResponse($data);
         }
@@ -707,31 +682,29 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $transactionManager = new TransactionManager();
         $transaction = $transactionManager->get();
 
-        foreach ($data->collection as $index => $resource)
-        {
-            $temp = (array) $resource;
-            if (!isset($temp['id']))
-            {
-                $data = array('error' => array('code' => 400, 'description' => 'Id missing for record '.$index));
-                $transaction->rollback("Id missing for record ".$index);
+        foreach ($data->collection as $index => $resource) {
+            $temp = (array)$resource;
+            if (!isset($temp['id'])) {
+                $data = array('error' => array('code' => 400, 'description' => 'Id missing for record ' . $index));
+                $transaction->rollback("Id missing for record " . $index);
                 return $this->returnResponse($data);
             }
 
             $model = $modelName::findFirst($temp['id']);
             //$model = \Notes::findFirst($temp['id']);
-            if (!isset($model->id))
-            {
-                $data = array('error' => array('code' => 400, 'description' => 'Invalid record with identifier '.$temp['id']));
-                $transaction->rollback("Invalid record with identifier ".$temp['id']);
+            if (!isset($model->id)) {
+                $data = array('error' => array('code' => 400, 'description' => 'Invalid record with identifier ' . $temp['id']));
+                $transaction->rollback("Invalid record with identifier " . $temp['id']);
                 return $this->returnResponse($data);
             }
             $updatedData = $model->cloneResult($model, $temp);
             $updatedData->setTransaction($transaction);
             if ($updatedData->save()) {
                 $this->eventsManager->fire('rest:afterUpdate', $this, $updatedData);
-            } else {
-                $data = array('error' => array('code' => 400, 'description' => 'Unable to save '.$temp['id'].', all changes reverted'));
-                $transaction->rollback("Patched failed for ".$temp['id']);
+            }
+            else {
+                $data = array('error' => array('code' => 400, 'description' => 'Unable to save ' . $temp['id'] . ', all changes reverted'));
+                $transaction->rollback("Patched failed for " . $temp['id']);
                 return $this->returnResponse($data);
             }
         }
@@ -760,10 +733,8 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $temp = $util->objectToArray($this->request->getJsonRawBody());
 
         //verify if exist more than one element
-        if ($util->existSubArray($temp) )
-        {
-            if (isset($temp['data']['attributes']))
-            {
+        if ($util->existSubArray($temp)) {
+            if (isset($temp['data']['attributes'])) {
                 $data[] = $temp['data']['attributes'];
             }
             else {
@@ -771,8 +742,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             }
 
         }
-        else
-        {
+        else {
             $data[0] = $temp;
         }
 
@@ -781,52 +751,54 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             $logger->debug('Inside ForEach');
             //verify if any value is date (CURRENT_DATE, CURRENT_DATETIME), if it was replace for current date
             foreach ($value as $k => $v) {
-                if ( $v=="CURRENT_DATE" ){
+                if ($v == "CURRENT_DATE") {
                     $now = new \DateTime();
-                    $value[$k] =  $now->format('Y-m-d');
-                }else if ( $v=="CURRENT_DATETIME" ){
+                    $value[$k] = $now->format('Y-m-d');
+                }
+                else if ($v == "CURRENT_DATETIME") {
                     $now = new \DateTime();
-                    $value[$k] =  $now->format('Y-m-d H:i:s');
+                    $value[$k] = $now->format('Y-m-d H:i:s');
                 }
                 $logger->debug('Setting date and time');
             }
 
             //if have param then update
-            if ( isset($this->id) ) //if passed by url
+            if (isset($this->id)) //if passed by url
                 $model = $modelName::findFirst($this->id);
-            else
-            {
+            else {
                 $new_id = create_guid();
                 $model->newId = $new_id;
                 $value['id'] = $new_id;
             }
             $model->assign($value);
-            if ( $model->save($value) ){
+            if ($model->save($value)) {
                 $logger->debug('Firing afterCreate Event');
                 $model->id = $new_id;
                 $this->eventsManager->fire('rest:afterCreate', $this, $model);
                 $dataResponse = get_object_vars($model);
                 //update
-                if (isset($this->id) ){
+                if (isset($this->id)) {
                     $this->response->setJsonContent(array('status' => 'OK'));
                     $logger->debug('Status is OK');
-                    //insert
-                }else{
+                //insert
+                }
+                else {
                     $dataResponse['id'] = $new_id;
                     $this->response->setStatusCode(201, "Created");
 
                     $data = $model->read(array('id' => $new_id));
 
-                    $dataArray = $this->extractData($data,'one');
+                    $dataArray = $this->extractData($data, 'one');
                     $finalData = $this->buildHAL($dataArray);
                     return $this->returnResponse($finalData);
                 }
 
-            }else{
+            }
+            else {
                 $errors = array();
-                foreach( $model->getMessages() as $message )
+                foreach ($model->getMessages() as $message)
                     $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
-                    $logger->error($errors);
+                $logger->error($errors);
                 $this->response->setJsonContent(array(
                     'status' => 'ERROR',
                     'messages' => $errors
@@ -834,7 +806,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
             }
 
 
-        }//end foreach
+        } //end foreach
 
         $logger->debug('-Gaia.core.controllers.rest->postAction');
 
@@ -850,28 +822,30 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         // need to evaluate if we need to use this function
         $modelName = $this->modelName;
 
-        $model = $modelName::findFirst('id = "'.$this->id.'"');
+        $model = $modelName::findFirst('id = "' . $this->id . '"');
 
         $GLOBALS['logger']->debug('Deleting a record');
         $GLOBALS['logger']->debug($model->id);
         $GLOBALS['logger']->debug($model->deleted);
 
         //delete if exists the object
-        if ( $model!=false ){
-            if ( $model->delete() == true ){
+        if ($model != false) {
+            if ($model->delete() == true) {
                 $this->eventsManager->fire('rest:afterDelete', $this, $model);
-                $this->response->setJsonContent(array('data' => array('type' => $this->classWithoutNamespace($modelName),"id"=>$this->id)));
+                $this->response->setJsonContent(array('data' => array('type' => Util::extractClassFromNamespace($modelName), "id" => $this->id)));
                 $this->response->setStatusCode(200, "OK");
-            }else{
+            }
+            else {
                 $this->response->setStatusCode(409, "Conflict");
 
                 $errors = array();
-                foreach( $model->getMessages() as $message )
+                foreach ($model->getMessages() as $message)
                     $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
 
                 $this->response->setJsonContent(array('status' => "ERROR", 'messages' => $errors));
             }
-        }else{
+        }
+        else {
             $this->response->setStatusCode(409, "Conflict");
             $this->response->setJsonContent(array('status' => "ERROR", 'messages' => array("O elemento não existe")));
         }
@@ -894,45 +868,37 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      * @param int $page
      * @return array $hal
      */
-    protected function buildHAL(array $data,$limit=-1, $page=-1)
+    protected function buildHAL(array $data, $limit = -1, $page = -1)
     {
         $hal = $data;
         $query = $this->request->getQuery();
         $self = $next = $prev = array();
 
         $endPage = true;
-        if ($limit != -1)
-        {
-            if(isset($hal['data'][$limit]))
-            {
+        if ($limit != -1) {
+            if (isset($hal['data'][$limit])) {
                 unset($hal['data'][$limit]);
                 $endPage = false;
             }
 
-            if($page == -1)
+            if ($page == -1)
                 $page = 1;
-            if (!isset($query['page']))
-            {
+            if (!isset($query['page'])) {
                 $query['page'] = $page;
             }
         }
 
-        foreach($query as $param => $value)
-        {
-            if ($param != '_url')
-            {
-                $self[] = $param.'='.$value;
-                if (isset($limit))
-                {
-                    if ($param == 'page')
-                    {
-                        $next[] = $param.'='.($page+1);
-                        $prev[] = $param.'='.($page-1);
+        foreach ($query as $param => $value) {
+            if ($param != '_url') {
+                $self[] = $param . '=' . $value;
+                if (isset($limit)) {
+                    if ($param == 'page') {
+                        $next[] = $param . '=' . ($page + 1);
+                        $prev[] = $param . '=' . ($page - 1);
                     }
-                    else
-                    {
-                        $next[] = $param.'='.$value;
-                        $prev[] = $param.'='.$value;
+                    else {
+                        $next[] = $param . '=' . $value;
+                        $prev[] = $param . '=' . $value;
                     }
 
                 }
@@ -940,14 +906,14 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         }
 
         /*
-        if ($limit != -1)
-        {
-          foreach($hal['data'] as $count => &$singleObj){
-              $pageOffset = ($page-1) + $count;
-              $singleObj['link']['self'] =
-          }
-        }
-        */
+         if ($limit != -1)
+         {
+         foreach($hal['data'] as $count => &$singleObj){
+         $pageOffset = ($page-1) + $count;
+         $singleObj['link']['self'] =
+         }
+         }
+         */
 
 
         $hal['meta']['count'] = count($data['data']);
@@ -955,24 +921,21 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         //$hal['meta']['_links']['self']['href'] = $query['_url'];
         $hal['meta']['links']['self']['href'] = $query['_url'];
         //$hal['links']['self']['href'] = $query['_url'];
-        if (!empty($self))
-        {
+        if (!empty($self)) {
             //$hal['meta']['_links']['self']['href'] .= '?'.implode('&',$self);
-            $hal['meta']['links']['self']['href'] .= '?'.implode('&',$self);
-            //$hal['links']['self']['href'] .= '?'.implode('&',$self);
+            $hal['meta']['links']['self']['href'] .= '?' . implode('&', $self);
+        //$hal['links']['self']['href'] .= '?'.implode('&',$self);
         }
-        if (!empty($next) && !$endPage)
-        {
+        if (!empty($next) && !$endPage) {
             //$hal['meta']['_links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
-            $hal['meta']['links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
-            //$hal['links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
+            $hal['meta']['links']['next']['href'] = $query['_url'] . '?' . implode('&', $next);
+        //$hal['links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
         }
 
-        if (!empty($prev) && $page > 1)
-        {
+        if (!empty($prev) && $page > 1) {
             //$hal['meta']['_links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
-            $hal['meta']['links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
-            //$hal['links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
+            $hal['meta']['links']['prev']['href'] = $query['_url'] . '?' . implode('&', $prev);
+        //$hal['links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
         }
 
         return $hal;
@@ -989,8 +952,7 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         $this->response->setJsonContent($data);
         $this->response->setContentType('text/json');
 
-        if (isset($data['error']))
-        {
+        if (isset($data['error'])) {
             $this->response->setStatusCode($data['error']['code']);
         }
 
@@ -1007,80 +969,75 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      * @todo optimize the code
      * @todo build HAL within
      */
-    protected function extractData($data,$type = 'all',$relation=''){
+    protected function extractData($data, $type = 'all', $relation = '')
+    {
 
         $modelName = strtolower($this->modelName);
-        if (!empty($relation))
-        {
+        if (!empty($relation)) {
             $modelName = strtolower($relation);
         }
         $jsonapi_org = array();
         $jsonapi_org['data'] = array();
         //print_r($data->toArray());
         //extracting data to array
-        if ($data instanceof Resultset)
-        {
-            $data->setHydrateMode(Resultset::HYDRATE_ARRAYS);
+
+        //data extraction conditional statements (starts)..
+        if ($data['baseModel'] instanceof Resultset) {
+            $data['baseModel']->setHydrateMode(Resultset::HYDRATE_ARRAYS);
 
             $result = array();
-            foreach($data as $values){
+            foreach ($data['baseModel'] as $values) {
                 //print_r($values);
-                foreach ($values as $attr => $value){
-                    if (!isset($result[$values['id']])){
+                foreach ($values as $attr => $value) {
+                    if (!isset($result[$values['id']])) {
                         $result[$values['id']] = array();
                     }
 
-                    if (is_array($value))
-                    {
-                        $relDef = $this->getRelationshipMeta($this->classWithoutNamespace($this->modelName),$attr);
-                        if ($relDef['type'] == 'hasMany' || $relDef['type'] == 'hasManyToMany')
-                        {
-                            if (!empty($value['id']))
-                            {
+                    if (is_array($value)) {
+                        $relDef = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $attr);
+                        if ($relDef['type'] == 'hasMany' || $relDef['type'] == 'hasManyToMany') {
+                            if (!empty($value['id'])) {
                                 $result[$values['id']][$attr][] = $value;
                             }
                         }
-                        else
-                        {
+                        else {
                             $result[$values['id']][$attr] = $value;
                         }
                     }
-                    else
-                    {
+                    else {
                         $result[$values['id']][$attr] = $value;
                     }
                 }
             }
-            //die();
+        //die();
         }
-        elseif (is_array ($data))
-        {
+        elseif (is_array($data)) {
             $result = $data;
         }
-        else
-        {
+        else {
             $result = array();
         }
+        //data extraction conditional statements (ends)..
 
+        unset($data['baseModel']);
+
+        $this->extractManyToManyRelationships($data, $result);
+
+        //preparing jsonapi (starts)..
         $this->removeDuplicates($result);
 
         $count = 0;
 
-        if ($type == 'all')
-        {
+        if ($type == 'all') {
             // prepare the data for JSONAPI.org standard
-            foreach ($result as $object)
-            {
-                $modelName = $this->classWithoutNamespace($this->modelName);
+            foreach ($result as $object) {
+                $modelName = Util::extractClassFromNamespace($this->modelName);
                 $jsonapi_org['data'][$count]['type'] = $modelName;
 
-                foreach($object as $attr => $val)
-                {
-                    if (!is_array($val))
-                    {
+                foreach ($object as $attr => $val) {
+                    if (!is_array($val)) {
                         // process attributes
-                        if ($attr == 'id')
-                        {
+                        if ($attr == 'id') {
                             $jsonapi_org['data'][$count]['id'] = $val;
                         }
                         else {
@@ -1092,13 +1049,12 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                         $included = array();
                         if (isset($val['id'])) {
                             $jsonapi_org['data'][$count]['relationships'][$attr] = array();
-                            $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
+                            $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
                             $relatedModelKey = 'relatedModel';
-                            if ($relationDefinition['type'] == 'hasManyToMany')
-                            {
+                            if ($relationDefinition['type'] == 'hasManyToMany') {
                                 $relatedModelKey = 'secondaryModel';
                             }
-                            $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
+                            $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
                             $id = '';
                             $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['id'] = $val['id'];
                             $id = $val['id'];
@@ -1106,27 +1062,27 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
 
                             $included['attributes'] = $val;
 
-                            $jsonapi_org['included'][($this->modelName.$id)] = $included;
+                            $jsonapi_org['included'][($this->modelName . $id)] = $included;
                         }
                         else {
-                            foreach($val as $idx => $object){
+                            foreach ($val as $idx => $object) {
                                 if (isset($object['id'])) {
                                     $included = array();
                                     $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx] = array();
-                                    $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
+                                    $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
                                     $relatedCount = 0;
                                     $relatedModelKey = 'relatedModel';
-                                    if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])){
+                                    if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])) {
                                         $relatedModelKey = 'secondaryModel';
                                     }
-                                    $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
+                                    $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
                                     $id = '';
                                     $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
                                     $id = $object['id'];
                                     unset($object['id']);
 
                                     $included['attributes'] = $object;
-                                    $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
+                                    $jsonapi_org['included'][($relationDefinition[$relatedModelKey] . $id)] = $included;
                                 }
                             }
                         }
@@ -1137,19 +1093,15 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
         }
         else {
 
-            foreach ($result as $object)
-            {
+            foreach ($result as $object) {
 
-                $modelName = $this->classWithoutNamespace($this->modelName);
+                $modelName = Util::extractClassFromNamespace($this->modelName);
                 $jsonapi_org['data']['type'] = strtolower($modelName);
 
-                foreach($object as $attr => $val)
-                {
-                    if (!is_array($val))
-                    {
+                foreach ($object as $attr => $val) {
+                    if (!is_array($val)) {
                         // process attributes
-                        if ($attr == 'id')
-                        {
+                        if ($attr == 'id') {
                             $jsonapi_org['data']['id'] = $val;
                         }
                         else {
@@ -1161,42 +1113,40 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                         if (isset($val['id'])) {
                             $included = array();
                             $jsonapi_org['data']['relationships'][$attr] = array();
-                            $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
+                            $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
                             $relatedCount = 0;
                             $relatedModelKey = 'relatedModel';
-                            if ($relationDefinition['type'] == 'hasManyToMany')
-                            {
+                            if ($relationDefinition['type'] == 'hasManyToMany') {
                                 $relatedModelKey = 'secondaryModel';
                             }
-                            $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
+                            $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
                             $id = '';
                             $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data']['id'] = $val['id'];
                             $id = $val['id'];
                             unset($val['id']);
 
                             $included['attributes'] = $val;
-                            $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
+                            $jsonapi_org['included'][($relationDefinition[$relatedModelKey] . $id)] = $included;
                         }
                         else {
-                            foreach($val as $idx => $object){
+                            foreach ($val as $idx => $object) {
                                 if (isset($object['id'])) {
                                     $included = array();
                                     $jsonapi_org['data']['relationships'][$attr]['data'][$idx] = array();
-                                    $relationDefinition = $this->getRelationshipMeta($modelName,$attr);
+                                    $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
                                     $relatedCount = 0;
                                     $relatedModelKey = 'relatedModel';
-                                    if ($relationDefinition['type'] == 'hasManyToMany')
-                                    {
+                                    if ($relationDefinition['type'] == 'hasManyToMany') {
                                         $relatedModelKey = 'secondaryModel';
                                     }
-                                    $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower($this->classWithoutNamespace($relationDefinition[$relatedModelKey]));
+                                    $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
                                     $id = '';
                                     $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
                                     $id = $object['id'];
                                     unset($object['id']);
 
                                     $included['attributes'] = $object;
-                                    $jsonapi_org['included'][($relationDefinition[$relatedModelKey].$id)] = $included;
+                                    $jsonapi_org['included'][($relationDefinition[$relatedModelKey] . $id)] = $included;
                                 }
                             }
                         }
@@ -1205,16 +1155,133 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
                 $count++;
             }
         }
-        if(!empty($jsonapi_org['included']))
-        {
+        if (!empty($jsonapi_org['included'])) {
             $jsonapi_org['included'] = array_values($jsonapi_org['included']);
         }
         $result = $jsonapi_org;
+
+        //preparing jsonapi (ends)..
 
         // do not allow passwords to be returned
         $this->removePassword($result);
 
         return $result;
+    }
+
+    /**
+     * This function is used to extract hasManyToMany relationships and set each of 
+     * related data to its base model.
+     * 
+     * @todo Find some other solution instead of matching Resultset type.
+     * @param array $data Array containing relationship result sets.
+     * @param array $result Array of result that(currently) contains basemodel data.  
+     */
+    private function extractManyToManyRelationships($data, &$result)
+    {
+        //iterate many-many relationships
+        foreach ($data as $relName => $relData) {
+
+            //now extract and merge many-to-many with base model
+            $relData->setHydrateMode(Resultset::HYDRATE_ARRAYS);
+
+            $type = explode("\\", get_class($relData));
+            $type = end($type);
+
+            //this is used when User has not requested fields related to hasManyToMany relationship.
+            if ($type == "Complex") {
+                $this->setAllRelatedFieldsToBaseModel($result, $relData, $relName);
+            }
+            //this is used when User requested fields related to hasManyToMany relationship.
+            else if ($type == "Simple") {
+                $this->setSomeRelatedFieldsToBaseModel($result, $relData, $relName);
+            }
+        }
+
+    }
+
+    /**
+     * This function is used to set related data to base model with all related fields.
+     * 
+     * @param array $result Array of result that(currently) contains basemodel data.
+     * @param array $relData Relationship result from database.
+     * @param string $relName Name of the relationship.
+     */
+    public function setAllRelatedFieldsToBaseModel(&$result, $relData, $relName)
+    {
+        $relatedModel = [];
+        $relMeta = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
+
+        //iterate each relationship
+        foreach ($relData as $models) {
+
+            //iterate both models of relationship
+            foreach ($models as $modelName => $values) {
+                $relatedModelName = Util::extractClassFromNamespace($relMeta['secondaryModel']);
+                $lhsKey = $relMeta['lhsKey'];
+                $rhsKey = $relMeta['rhsKey'];
+
+                // iterate model attributes
+                foreach ($values as $key => $value) {
+                    if ($relatedModelName == $modelName) {
+
+                        /**
+                         * If members of "project" model is requested then we have to get
+                         * values for "User" model (Secondary model in many-to-many). So dump 
+                         * values for User model on basis of ids. e.g:
+                         * ['1' => [User_attributes],
+                         *  '2' => [User_attributes]
+                         * ]
+                         */
+                        $relatedModel[$values['id']][$key] = $value;
+                    }
+                }
+
+                /**
+                 * By keeping the above scenario of given members of project. Now we have to
+                 * check whether the "$result" have given project or not. This if will work for
+                 * relatedModel (Membership) where rhsKey => "projectId" and $values will be
+                 * "Membership" model.
+                 */
+                if ($result[$values[$rhsKey]]) {
+                    /**
+                     * if project is available then get User from $relatedModel using "lhsKey" which is userId.
+                     */
+                    $secondaryModel = $relatedModel[$values[$lhsKey]];
+                    $result[$values[$rhsKey]][$relName][] = $secondaryModel;
+                }
+            }
+        }
+    }
+
+    /**
+     * This function is used to set related data to base model with some requested related fields. In this
+     * we'll get result set in a form of scalar field, not as a object representing model. 
+     * 
+     * @param array $result Array of result that(currently) contains basemodel data.
+     * @param array $relData Relationship result from database.
+     * @param string $relName Name of the relationship.
+     */
+    public function setSomeRelatedFieldsToBaseModel(&$result, $relData, $relName)
+    {
+        $relatedModel = [];
+        $relMeta = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
+
+        foreach ($relData as $model) {
+            $lhsKey = $relMeta['lhsKey'];
+            $rhsKey = $relMeta['rhsKey'];
+
+            // iterate model attributes
+            foreach ($model as $key => $value) {
+
+                //we shouldn't have to pass middle table information to user, that's why this check is created. 
+                ($key != $lhsKey && $key != $rhsKey) && ($relatedModel[$model['id']][$key] = $value);
+            }
+
+            if ($result[$model[$rhsKey]]) {
+                $secondaryModel = $relatedModel[$model[$lhsKey]];
+                $result[$model[$rhsKey]][$relName][] = $secondaryModel;
+            }
+        }
     }
 
     /**
@@ -1224,19 +1291,17 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      * @param string $rel
      * @return array
      */
-    final private function getRelationshipMeta($modelName,$rel){
+    final private function getRelationshipMeta($modelName, $rel)
+    {
         if (isset(self::$cachedMeta[$modelName][$rel])) {
             return self::$cachedMeta[$modelName][$rel];
         }
         $modelMetadata = $this->di->get('metaManager')->getModelMeta($modelName);
 
         $relatedMetadata = array();
-        foreach ($modelMetadata['relationships'] as $relationType => $related)
-        {
-            foreach ($related as $relName => $relDef)
-            {
-                if ($relName == $rel)
-                {
+        foreach ($modelMetadata['relationships'] as $relationType => $related) {
+            foreach ($related as $relName => $relDef) {
+                if ($relName == $rel) {
                     $relatedMetadata = $relDef;
                     $relatedMetadata['type'] = $relationType;
                     break 2;
@@ -1254,14 +1319,11 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      */
     final private function removePassword(array &$array)
     {
-        foreach($array as $key => &$value)
-        {
-            if(is_array($value))
-            {
+        foreach ($array as $key => &$value) {
+            if (is_array($value)) {
                 $this->removePassword($value);
             }
-            elseif($key == 'password')
-            {
+            elseif ($key == 'password') {
                 unset($array[$key]);
             }
         }
@@ -1278,35 +1340,20 @@ class RestController extends \Phalcon\Mvc\Controller implements EventsAwareInter
      */
     final private function removeDuplicates(array &$array)
     {
-        foreach($array as $id => &$obj)
-        {
-            foreach($obj as $attr => &$data)
-            {
-                if (is_array($data) && isset($data['0']))
-                {
+        foreach ($array as $id => &$obj) {
+            foreach ($obj as $attr => &$data) {
+                if (is_array($data) && isset($data['0'])) {
                     $temp = array();
-                    foreach($data as $relatedIndex => &$relatedData)
-                    {
-                        if (isset($relatedData['id']))
-                        {
+                    foreach ($data as $relatedIndex => &$relatedData) {
+                        if (isset($relatedData['id'])) {
                             $temp[$relatedData['id']] = $relatedData;
                             unset($data[$relatedIndex]);
                         }
                     }
-                    $data = array_values(array_merge($data,$temp));
+                    $data = array_values(array_merge($data, $temp));
                 }
             }
         }
     }
 
-    /**
-     * This function returns the name of a class without the namespace
-     * @param string $string
-     * @return string
-     */
-    final private function classWithoutNamespace(string $string) :string
-    {
-        $parts = explode('\\', $string);
-        return end($parts);
-    }
 }

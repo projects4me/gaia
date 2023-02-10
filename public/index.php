@@ -183,7 +183,6 @@ try {
         new \Gaia\Core\MVC\Models\Relationships\Factory\RelationshipFactory($di)
     );
 
-
     /**
      * @todo move the migration away to elsewhere
      * 

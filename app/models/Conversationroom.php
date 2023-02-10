@@ -17,7 +17,7 @@ use Gaia\Core\MVC\Models\Model;
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class Conversationroom extends Model
-{
+{   
     public function afterCreate()
     {
         if (!empty($this->issueId)){

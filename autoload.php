@@ -67,6 +67,7 @@ $loader->registerNamespaces(
         "Gaia\\Core\\MVC\\Models\\Relationships" => APP_PATH. '/core/mvc/models/relationships',
         "Gaia\\Core\\MVC\\REST\\Controllers" => APP_PATH. '/core/mvc/controllers/',
         "Gaia\\Core\\MVC\\Models\\Relationships\\Factory" => APP_PATH. '/core/mvc/models/relationships/factory',
+        "Gaia\\Core\\MVC\\Models\\Query" => APP_PATH. '/core/mvc/models/query/',
     ]
 );
 

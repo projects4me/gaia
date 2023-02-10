@@ -18,5 +18,4 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Permission extends Model
 {
-
 }

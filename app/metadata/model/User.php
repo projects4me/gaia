@@ -268,11 +268,6 @@ $models['User'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Userlatestproject',
                 'relatedKey' => 'userId'
             ),
-            'latestIssues' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => '\\Gaia\\MVC\\Models\\Userlatestissue',
-                'relatedKey' => 'userId'
-            ),
             'mostWorkedMembers' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Userworkmostwith',

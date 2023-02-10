@@ -12,7 +12,7 @@ use \Gaia\Core\MVC\Models\Relationships\HasOneAndManyBase;
  * This class represents HasMany relationship.
  *
  * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Foundation\Core\Mvc\Models\Relationships
+ * @package Foundation\Core\MVC\Models\Relationships
  * @category HasMany
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
