@@ -149,7 +149,11 @@ class Model extends PhalconModel
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias, $this->query->getPhalconQueryBuilder());
 
         $this->query->prepareReadQuery($this->getModelPath(), $params, $this->relationship);
+        $this->fireEvent("beforeQuery");
+
         $this->executeQuery($params, 'prepareReadQuery');
+
+        $this->fireEvent("afterQuery");
 
         return $this->resultSets;
     }
@@ -173,8 +177,11 @@ class Model extends PhalconModel
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias, $this->query->getPhalconQueryBuilder());
 
         $this->query->prepareReadAllQuery($this->getModelPath(), $params, $this->relationship);
+        $this->fireEvent("beforeQuery");
 
         $this->executeQuery($params, 'prepareReadAllQuery');
+
+        $this->fireEvent("afterQuery");
 
         return $this->resultSets;
     }
@@ -205,7 +212,11 @@ class Model extends PhalconModel
 
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias, $this->query->getPhalconQueryBuilder());
         $this->query->prepareReadQuery($this->getModelPath(), $params, $this->relationship);
+
+        $this->fireEvent("beforeQuery");
         $this->executeQuery($params, 'prepareReadQuery', false);
+
+        $this->fireEvent("afterQuery");
 
         return $this->resultSets;
     }
@@ -239,6 +250,7 @@ class Model extends PhalconModel
             $this->relationship->setRelationshipFields($params, $this->query);
             $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias, $this->query->getPhalconQueryBuilder());
             $this->query->{ $typeOfQueryToPerform}($this->getModelPath(), $params, $this->relationship);
+            $this->fireEvent("beforeQuery");
             $this->executeModel();
 
             //If hasManyToMany relationships are left behind then execute.
@@ -267,7 +279,6 @@ class Model extends PhalconModel
      */
     protected function executeModel()
     {
-        $this->fireEvent("afterQuery");
         $phalconQuery = $this->query->getPhalconQuery();
         $this->resultSets['baseModel'] = $phalconQuery->execute();
     }
@@ -354,7 +365,6 @@ class Model extends PhalconModel
     {
         $id = isset($params['id']) ?: null;
         $this->query = $this->getQuery($this->modelAlias, $id);
-        $this->fireEvent("beforeQuery");
         $this->bootstrapRelationship($params);
         $this->query->prepareClauses($params, $this->query);
     }
