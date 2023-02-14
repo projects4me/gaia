@@ -345,7 +345,7 @@ class Model extends PhalconModel
             $query->clause->updateRelatedWhere($baseModelids, $relMeta, $relatedModelName);
         }
 
-        //Prepare Join for Related model
+        //Prepare Join for model
         $hasManyRel = new HasMany($this->di);
         $relMeta['relatedKey'] = $relMeta['lhsKey'];
         $hasManyRel->prepareJoin($relatedModelName, $relMeta, $secondaryModelName, 'left', $query->getPhalconQueryBuilder());
