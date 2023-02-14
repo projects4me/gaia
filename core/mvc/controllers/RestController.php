@@ -431,7 +431,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $fields = ($this->request->get('fields')) ? (explode(',', $this->request->get('fields'))) : array();
         $rels = ($this->request->get('rels')) ? (explode(',', $this->request->get('rels'))) : array();
         $rels = array_merge($rels, $include);
-        $addRelFields = filter_var($this->request->get('addRelFields', null, true), FILTER_VALIDATE_BOOLEAN);
+        $addRelFields = filter_var($this->request->get('addRelFields', null, false), FILTER_VALIDATE_BOOLEAN);
 
         if (Util::extractClassFromNamespace($modelName) === 'User' && $this->id === 'me') {
             $this->id = $GLOBALS['currentUser']->id;
@@ -540,7 +540,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $count = $this->request->get('count', null, '');
         $having = $this->request->get('having', null, '');
         $fields = ($this->request->get('fields')) ? (explode(',', $this->request->get('fields'))) : array();
-        $addRelFields = filter_var($this->request->get('addRelFields', null, true), FILTER_VALIDATE_BOOLEAN);
+        $addRelFields = filter_var($this->request->get('addRelFields', null, false), FILTER_VALIDATE_BOOLEAN);
         $rels = ($this->request->get('rels')) ? (explode(',', $this->request->get('rels'))) : array();
 
         $params = array(
@@ -1208,47 +1208,16 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      */
     public function setAllRelatedFieldsToBaseModel(&$result, $relData, $relName)
     {
-        $relatedModel = [];
         $relMeta = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
+        $relatedModelName = Util::extractClassFromNamespace($relMeta['relatedModel']);
+        $rhsKey = $relMeta['rhsKey'];
 
         //iterate each relationship
-        foreach ($relData as $models) {
-
-            //iterate both models of relationship
-            foreach ($models as $modelName => $values) {
-                $relatedModelName = Util::extractClassFromNamespace($relMeta['secondaryModel']);
-                $lhsKey = $relMeta['lhsKey'];
-                $rhsKey = $relMeta['rhsKey'];
-
-                // iterate model attributes
-                foreach ($values as $key => $value) {
-                    if ($relatedModelName == $modelName) {
-
-                        /**
-                         * If members of "project" model is requested then we have to get
-                         * values for "User" model (Secondary model in many-to-many). So dump 
-                         * values for User model on basis of ids. e.g:
-                         * ['1' => [User_attributes],
-                         *  '2' => [User_attributes]
-                         * ]
-                         */
-                        $relatedModel[$values['id']][$key] = $value;
-                    }
-                }
-
-                /**
-                 * By keeping the above scenario of given members of project. Now we have to
-                 * check whether the "$result" have given project or not. This if will work for
-                 * relatedModel (Membership) where rhsKey => "projectId" and $values will be
-                 * "Membership" model.
-                 */
-                if ($result[$values[$rhsKey]]) {
-                    /**
-                     * if project is available then get User from $relatedModel using "lhsKey" which is userId.
-                     */
-                    $secondaryModel = $relatedModel[$values[$lhsKey]];
-                    $result[$values[$rhsKey]][$relName][] = $secondaryModel;
-                }
+        foreach ($relData as $model) {
+            $modelId = $model[$relatedModelName][$rhsKey];
+            if ($result[$modelId]) {
+                unset($model[$relatedModelName]);
+                $result[$modelId][$relName][$model['id']] = $model;
             }
         }
     }

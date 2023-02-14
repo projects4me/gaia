@@ -61,19 +61,6 @@ class Query
     public $modelAlias;
 
     /**
-     * This is the new alias for related model.
-     * 
-     * @var string
-     */
-    public $newRelatedAlias;
-
-    /**
-     * This is used in order to handle whether we have to set
-     * fields for base model or not.
-     */
-    public $setModelFields = true;
-
-    /**
      * This contains all the clauses related to query.
      */
     public $clause;
@@ -199,10 +186,10 @@ class Query
         if (isset($params['fields']) && !empty($params['fields'])) {
             $params['fields'] = $params['fields'];
         }
-        else if (isset($params['addRelFields']) && empty($params['addRelFields'])) {
+        else if (isset($params['addRelFields']) && !empty($params['addRelFields'])) {
             $params['fields'] = $moduleFields;
         }
-        else if ($this->setModelFields) {
+        else {
             $params['fields'] = array_merge($moduleFields, $relationship->getRelationshipFields());
         }
     }
@@ -262,61 +249,5 @@ class Query
     public function getPhalconQuery()
     {
         return $this->queryBuilder->getQuery();
-    }
-
-    /**
-     * This function checks whether user filtered hasManyToMany relationships or not.
-     * 
-     * @return bool
-     */
-    public function checkRelIsFiltered()
-    {
-        return $this->clause->filterHasManyToMany;
-    }
-
-    /**
-     * This function is responsible for preparation of related query of type hasManyToMany.
-     * 
-     * @param string $relName Name of relationship.
-     * @param array $meta Metadata of relationship.
-     * @param \Gaia\Core\MVC\Models\Relationship $baseModelRelationship
-     */
-    public function prepareManyToMany($relName, $meta, $baseModelRelationship)
-    {
-        $meta['relatedKey'] = $meta['lhsKey'];
-        $relatedModelName = Util::extractClassFromNamespace($meta['relatedModel']);
-
-        /**
-         * concatenating relName e.g skills with relatedModel e.g Tagged => skillsTagged that will be used as an
-         * alias in JOIN.
-         */
-        $this->newRelatedAlias = "{$relName}{$relatedModelName}";
-
-        /**extracting modelAlias from model path for quering in it.
-         * e.g \\Gaia\\MVC\\Models\\Tag --> Tag **/
-        $modelAlias = Util::extractClassFromNamespace($meta['secondaryModel']);
-
-        $this->queryBuilder->from([$modelAlias => $meta['secondaryModel']]);
-
-        //check if user requested some fields from that relationship or not
-        $relationshipFields = ($baseModelRelationship->getRelationshipFields())[$relName];
-        if ($relationshipFields) {
-            $this->queryBuilder->columns($relationshipFields);
-        }
-        else {
-            $this->queryBuilder->columns(["{$modelAlias}.*", "{$this->newRelatedAlias}.*"]);
-        }
-
-        $relationship = new \Gaia\Core\MVC\Models\Relationships\HasMany($this->di);
-
-        $relationship->prepareJoin($this->newRelatedAlias, $meta, $modelAlias, 'left', $this->queryBuilder);
-
-        //Clauses of related models are already set on preparing clauses for base model.
-        if (isset($meta['where']) && !empty($meta['where'])) {
-            $this->queryBuilder->where($meta['where']);
-        }
-        elseif ($this->clause->where) {
-            $this->queryBuilder->where($this->clause->where);
-        }
     }
 }

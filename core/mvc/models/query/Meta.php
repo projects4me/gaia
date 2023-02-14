@@ -271,10 +271,10 @@ class Meta
      */
     protected function loadRequestedRelationships($relationship)
     {
-        $this->hasOne = $relationship->getRelationshipsAccordingToType('hasOne');
-        $this->hasManyToMany = $relationship->getRelationshipsAccordingToType('belongsTo');
-        $this->hasManyToMany = $relationship->getRelationshipsAccordingToType('hasMany');
-        $this->hasManyToMany = $relationship->getRelationshipsAccordingToType('hasManyToMany');
+        $this->hasOne = $relationship->getRelationshipsByType('hasOne');
+        $this->hasManyToMany = $relationship->getRelationshipsByType('belongsTo');
+        $this->hasManyToMany = $relationship->getRelationshipsByType('hasMany');
+        $this->hasManyToMany = $relationship->getRelationshipsByType('hasManyToMany');
     }
 
     /**

@@ -21,7 +21,7 @@ class DataExtractor
     /**
      * This function is used to extract base model ids.
      * 
-     * @param array $models Array of model.
+     * @param \Phalcon\Mvc\Model\ResultsetInterface $models
      * @return array
      */
     public static function extractModelIds($models)
@@ -38,11 +38,11 @@ class DataExtractor
      * This function is used to extract related model ids.
      * 
      * @param string $relName Name of relationship.
-     * @param array $data Arry of related model.
+     * @param \Phalcon\Mvc\Model\ResultsetInterface $data
      * @param string $key
      * @return array
      */
-    public static function extractRelIds($relName, $data, $key)
+    public static function extractRelIds($relatedModelName, $data, $key)
     {
         $ids = array();
         if ($data instanceof Resultset) {
@@ -52,8 +52,8 @@ class DataExtractor
                  * If no fields are requested then we'll get two models (for hasManyToMany).
                  * We only have to deal with that model which contains relatedId.
                  */
-                if ($values[$relName]) {
-                    $relatedModel = $values[$relName];
+                if ($values[$relatedModelName]) {
+                    $relatedModel = $values[$relatedModelName];
 
                     if ($relatedModel[$key]) {
                         $ids[] = $relatedModel[$key];
@@ -65,10 +65,7 @@ class DataExtractor
                 else {
                     //if some fields are requested then we'll get data as scalar values.
                     foreach ($values as $attr => $value) {
-                        if ($attr == $key) {
-                            $ids[] = $value;
-                        }
-                        else if ($attr == 'relatedId') {
+                        if ($attr == $key && !in_array($value, $ids)) {
                             $ids[] = $value;
                         }
                     }

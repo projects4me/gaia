@@ -19,6 +19,13 @@ use Gaia\Libraries\Utils\Util;
 class HasManyToMany
 {
     /**
+     * This contains all fields that are related to hasManyToMany relationship.
+     * 
+     * @var array
+     */
+    protected $fields = [];
+
+    /**
      * HasManyToMany constructor.
      *
      * @param \Phalcon\DiInterface  $di
@@ -47,7 +54,8 @@ class HasManyToMany
         //If an exclusive condition for related model is defined then use that
         if (isset($relationshipMeta['rhsConditionExclusive'])) {
             $relatedQuery = $relationshipMeta['rhsConditionExclusive'];
-        } else {
+        }
+        else {
             $relatedQuery = $modelAlias . '.' . $relationshipMeta['primaryKey'] .
                 ' = ' . $relationshipName . $relatedModelAlias . '.' . $relationshipMeta['rhsKey'];
         }
@@ -55,7 +63,8 @@ class HasManyToMany
         //If an exclusive condition for secondary model is defined then use that
         if (isset($relationshipMeta['lhsConditionExclusive'])) {
             $secondaryQuery = $relationshipMeta['lhsConditionExclusive'];
-        } else {
+        }
+        else {
             $secondaryQuery = $relationshipName . '.' . $relationshipMeta['secondaryKey'] .
                 ' = ' . $relationshipName . $relatedModelAlias . '.' . $relationshipMeta['lhsKey'];
         }
@@ -67,5 +76,99 @@ class HasManyToMany
 
         $queryBuilder->join($relatedModel, $relatedQuery, $relationshipName . $relatedModelAlias, $joinType);
         $queryBuilder->join($secondaryModel, $secondaryQuery, $relationshipName, $joinType);
+    }
+
+    /**
+     * This function prepares where condition.
+     * 
+     * @param \Gaia\Core\MVC\Models\Relationship $relationship
+     * @param array $whereClauses
+     * @return string
+     */
+    public function prepareWhere($relationship, $whereClauses)
+    {
+        $whereClause = '';
+        foreach ($whereClauses as $where) {
+            $regex = "/(?<=[(])[A-z]+/";
+            preg_match($regex, $where, $relName);
+
+            $relMeta = $relationship->getRelationship($relName[0]);
+
+            //regex for extracting field by removing '(' ')' brackets
+            $regex = '/(?<=[(])[A-z]+[.][A-z]+/';
+            preg_match($regex, $where, $field);
+
+            $newRelField = $this->changeAliasOfRel($relMeta, $field[0]);
+            $updatedWhere = str_replace($field[0], $newRelField, $where);
+            if ($whereClause) {
+                $whereClause .= ` AND {$updatedWhere}`;
+            }
+            else {
+                $whereClause = $updatedWhere;
+            }
+        }
+        return $whereClause;
+    }
+
+    /**
+     * This function returns fields related to given hasManyToMany relationship.
+     * 
+     * @param string $relName Name of the relationship.
+     * @return array
+     */
+    public function getFields($relName)
+    {
+        $fields = [];
+        if (isset($this->fields[$relName])) {
+            $fields = $this->fields[$relName];
+        }
+        return $fields;
+    }
+
+    /**
+     * This function set all fields related to hasManyToMany relationship.
+     * 
+     * @param array $parameters Relationship parameters.
+     * @param string $relName Name of the relationship.
+     * @param array $relMeta Relationship metadata.
+     * @param array $hasManyToManyRelationships
+     */
+    public function setFields(&$parameters, $relName, $relMeta, $hasManyToManyRelationships)
+    {
+        $relatedModelName = Util::extractClassFromNamespace($relMeta['relatedModel']);
+
+        foreach ($parameters['fields'] as $field) {
+            list($relName, $fieldName) = explode('.', $field);
+
+            if (in_array($relName, $hasManyToManyRelationships)) {
+
+                $index = array_search($field, $parameters['fields']);
+                unset($parameters['fields'][$index]);
+
+                $relatedField = $this->changeAliasOfRel($relMeta, $relName);
+
+                $this->fields[$relName][] = $relatedField;
+            }
+
+            if (!empty($this->fields[$relName])) {
+                $relatedModelRhsField = "{$relatedModelName}.{$relMeta['rhsKey']}";
+                $relatedModelLhsField = "{$relatedModelName}.{$relMeta['lhsKey']}";
+                array_push($this->fields[$relName], $relatedModelRhsField, $relatedModelLhsField);
+            }
+        }
+    }
+
+    /**
+     * This function change alias of relationship from a given query. 
+     * e.g "skills.name : Emberjs" query for User model is requested so, it will change skills.name to Tag.name.
+     * 
+     * @param array $relMeta Metadata of relationship.
+     * @param string $field Field of relationship.
+     * 
+     */
+    public function changeAliasOfRel($relMeta, $field)
+    {
+        $fieldParts = explode('.', $field);
+        return Util::extractClassFromNamespace($relMeta['secondaryModel']) . '.' . $fieldParts[1];
     }
 }

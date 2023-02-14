@@ -20,7 +20,6 @@ use Gaia\Libraries\Utils\Util;
  * $relationship->prepareDefaultRels($params); 
  * $relationship->loadRelationships($metadata['relationships']);
  * $relationship->verifyRelationships($params);
- * $relationship->setRequiredRelationships(['hasOne','hasMany']);
  * $relationship->setRelationshipFields($params);
  * $relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias, $queryBuilder);
  * 
@@ -46,16 +45,6 @@ class Relationship
      * @var array
      */
     protected $relationshipFields = [];
-
-    /**
-     * This contains array of types of relationship. E.g if query is splitted
-     * then required relationship types for base model to join in a single query
-     * can be "hasOne" and "hasMany". By default these are set to all three types of
-     * relationships.
-     * 
-     * @var array
-     */
-    protected $requiredRelationshipTypes = ['hasOne', 'hasMany', 'hasManyToMany', 'belongsTo'];
 
     /**
      * The name of relationships of type ManyToMany.
@@ -150,82 +139,10 @@ class Relationship
      * @param array $params
      * @param \Gaia\Core\MVC\Models\Query $query
      */
-    public function setRelationshipFields(&$params, $query)
+    public function setRelationshipFields($relationships)
     {
-        if (isset($params['fields']) && !empty($params['fields'])) {
-            $fields = $params['fields'];
-
-            //iterate requested relationships
-            foreach ($params['rels'] as $relationshipName) {
-                $relationshipMeta = $this->getRelationship($relationshipName);
-
-                //Extract requested fields for relationships
-                foreach ($fields as $field) {
-
-                    list($requestedFieldRelationship, $fieldName) = explode('.', $field);
-
-                    /**
-                     * Check whether the relationship type is avalaible inside requiredRelationshipType array or not.
-                     * If user has set requiredRelationshipTypes ==> ['hasOne','hasMany'] then
-                     * we'll only set relationship fields of type hasManyToMany and will unset that field
-                     * from $params['fields'] as we don't want that field in querying base model.
-                     * 
-                     */
-                    if ($requestedFieldRelationship == $relationshipName
-                    && !in_array($this->modelRelationships[$relationshipName]['type'], $this->requiredRelationshipTypes)) {
-
-                        $this->relationshipFields[$requestedFieldRelationship][] = $this->changeAliasOfRel($relationshipMeta, $fieldName);
-                        $fieldIndex = array_search($field, $params['fields']);
-                        unset($params['fields'][$fieldIndex]);
-                    }
-                }
-
-                /**
-                 * If some related fields of hasManyToMany relationship are requested then check whether user has
-                 * also requested "id" for related model. If not then set that.
-                 */
-                if ($this->relationshipFields[$relationshipName]) {
-                    $modelIdField = $this->changeAliasOfRel($relationshipMeta, 'id');
-                    if (!in_array($modelIdField, $this->relationshipFields[$relationshipName])) {
-                        $this->relationshipFields[$relationshipName][] = $modelIdField;
-                    }
-
-                    /**
-                     * And also set middle table RHSKEY and LHSKEY as a required fields so that CONTROLLER can easily 
-                     * extract and prepare information for base model.
-                     */
-                    $relatedModelName = Util::extractClassFromNamespace($relationshipMeta['relatedModel']);
-                    $newRelatedAlias = "{$relationshipName}{$relatedModelName}";
-
-                    $lhsKey = $relationshipMeta["lhsKey"];
-                    $rhsKey = $relationshipMeta["rhsKey"];
-
-                    $this->relationshipFields[$relationshipName][] = "{$newRelatedAlias}.{$lhsKey}";
-                    $this->relationshipFields[$relationshipName][] = "{$newRelatedAlias}.{$rhsKey}";
-                }
-            }
-
-            /**
-             * After unsetting hasManyToMany fields, if no field is left behind then tell Query
-             * to not set the model fields.
-             */
-            if (empty($fields)) {
-                $query->setModelFields = false;
-            }
-        }
-
-        // if fields are not set than set default fields ".*"
-        else {
-            foreach ($params['rels'] as $relationshipName) {
-
-                /**
-                 * If user has not requested fields and splitQuery is true then only set fields for the type that are required.
-                 * e.g if requiredRelationships => ['hasOne','hasMany'] then set fields for those relationships have these types. 
-                 */
-                if (in_array($this->modelRelationships[$relationshipName]['type'], $this->requiredRelationshipTypes)) {
-                    $this->relationshipFields[] = $relationshipName . '.*';
-                }
-            }
+        foreach ($relationships as $relationshipName) {
+            $this->relationshipFields[] = $relationshipName . '.*';
         }
     }
 
@@ -254,10 +171,8 @@ class Relationship
 
             $relType = $this->modelRelationships[$relationshipName]['type'];
 
-            if (in_array($relType, $this->requiredRelationshipTypes)) {
-                $relationshipType = $this->di->get('relationshipFactory')->createRelationship($relType);
-                $relationshipType->prepareJoin($relationshipName, $this->modelRelationships[$relationshipName], $modelAlias, $joinType, $queryBuilder);
-            }
+            $relationshipType = $this->di->get('relationshipFactory')->createRelationship($relType);
+            $relationshipType->prepareJoin($relationshipName, $this->modelRelationships[$relationshipName], $modelAlias, $joinType, $queryBuilder);
         }
     }
 
@@ -277,16 +192,6 @@ class Relationship
     }
 
     /**
-     * This function set the required relationship types.
-     * 
-     * @param array $params
-     */
-    public function setRequiredRelationships($relationshipTypes)
-    {
-        $this->requiredRelationshipTypes = $relationshipTypes;
-    }
-
-    /**
      * This function returns a relationship.
      *
      * @param string $relationshipName Name of the relationship
@@ -295,34 +200,6 @@ class Relationship
     {
         $relationship = $this->modelRelationships[$relationshipName];
         return $relationship;
-    }
-
-    /**
-     * This function is used to get hasManyToMany relationship with its all meta.
-     * 
-     * @param string $field
-     * @return array||null
-     */
-    public function getHasManyToManyRel($field)
-    {
-        $fieldParts = explode('.', $field);
-        $relationship = $this->getRelationship($fieldParts[0]);
-
-        if ($relationship['type'] == 'hasManyToMany') {
-            return ["relMeta" => $relationship, "relName" => $fieldParts[0], "relField" => $fieldParts[1]];
-        }
-    }
-    /**
-     * This function change alias of relationship from a given query. 
-     * e.g "skills.name : Emberjs" query for User model is requested so, it will change skills.name to Tag.name.
-     * 
-     * @param array $relMeta Metadata of relationship.
-     * @param string $field Field of relationship.
-     * 
-     */
-    public function changeAliasOfRel($relMeta, $field)
-    {
-        return Util::extractClassFromNamespace($relMeta['secondaryModel']) . '.' . $field;
     }
 
     /**
@@ -342,7 +219,7 @@ class Relationship
      * @param string $type
      * @return array
      */
-    public function getRelationshipsAccordingToType($type)
+    public function getRelationshipsByType($type)
     {
         return $this->{ $type};
     }
