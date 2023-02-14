@@ -246,7 +246,7 @@ class Meta
     {
         $this->loadRequestedRelationships($relationship);
         $this->loadJoinsMeta($params, $query);
-        $this->loadConditionExclusiveOfRels($params['rels']);
+        $this->loadConditionExclusiveOfRels($params['rels'], $relationship);
     }
 
     /**
@@ -281,11 +281,10 @@ class Meta
      * This loads all exclusive conditions related to a relationship.
      * 
      * @param array $relationships Relationships requested.
+     * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
-    protected function loadConditionExclusiveOfRels($relationships)
+    protected function loadConditionExclusiveOfRels($relationships, $relationship)
     {
-        $relationship = $this->di->get("relationship");
-
         foreach ($relationships as $rel) {
             $relMeta = $relationship->getRelationship($rel);
             if (isset($relMeta['conditionExclusive'])) {

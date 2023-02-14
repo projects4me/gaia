@@ -298,7 +298,7 @@ $models['User'] = array(
                 'secondaryKey' => 'id'
             ),
             'badgeLevels' => array(
-                'primaryKey' => 'badgeId',
+                'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Scoreboard',
                 'rhsKey' => 'userId',
                 'lhsKey' => 'badgeId',
