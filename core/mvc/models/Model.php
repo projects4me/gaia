@@ -147,7 +147,7 @@ class Model extends PhalconModel
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias, $this->query->getPhalconQueryBuilder());
 
         $this->query->prepareReadQuery($this->getModelPath(), $params, $this->relationship);
-        $this->fireEvent("beforeQuery");
+        // $this->fireEvent("beforeQuery");
 
         $resultSets = $this->executeQuery($params, 'prepareReadQuery');
 
@@ -442,7 +442,7 @@ class Model extends PhalconModel
      */
     public function getQuery($modelName, $params)
     {
-        $id = isset($params['id']) ?: null;
+        $id = isset($params['id']) ? $params['id'] : null;
         $query = new Query($this->getDI(), $modelName, $id);
         return $query;
     }
