@@ -256,12 +256,12 @@ class Model extends PhalconModel
             }
 
             //array of filtered relationships
-            $filteredRels = $this->query->clause->getFilteredRels($this->relationship, $params['where']);
+            $filteredRels = $this->query->getClause()->getFilteredRels($this->relationship, $params['where']);
 
             //loop each filtered hasManyToMany relationship and execute it.
             foreach ($filteredRels as $filteredRel) {
                 if (in_array($filteredRel, $hasManyToManyRels)) {
-                    $resultSets[$filteredRel] = $this->executeHasManyRel($filteredRel, $parameters);
+                    $resultSets[$filteredRel] = $this->executeHasManyRel($filteredRel, $parameters, $this->query);
 
                     //unsetting executed relationship
                     $index = array_search($filteredRel, $parameters['rels']);
@@ -280,9 +280,9 @@ class Model extends PhalconModel
             }
 
             //Execute Base Model
-            $clause = $this->query->clause;
+            $clause = $this->query->getClause();
             $this->query = $this->getQuery($this->modelAlias, $parameters);
-            $this->query->clause = $clause;
+            $this->query->setClause($clause);
             $this->relationship = $this->bootstrapRelationship($parameters);
             $this->relationship->setRelationshipFields($parameters['rels']);
             $this->relationship->prepareJoinsForQuery($parameters['rels'], $this->modelAlias, $this->query->getPhalconQueryBuilder());
@@ -292,7 +292,7 @@ class Model extends PhalconModel
 
             //Execute remaining hasManyToMany rels
             foreach ($relsToBeExecuted as $relName) {
-                $resultSets[$relName] = $this->executeHasManyRel($relName, $parameters, $baseModelIds);
+                $resultSets[$relName] = $this->executeHasManyRel($relName, $parameters, $this->query, $baseModelIds);
             }
         }
         else {
@@ -307,10 +307,11 @@ class Model extends PhalconModel
      * 
      * @param string $relName Name of relationship.
      * @param array $parameters
+     * @param \Gaia\Core\MVC\Models\Query $baseModelQuery
      * @param array $baseModelIds
      * @return \Phalcon\Mvc\Model\ResultsetInterface
      */
-    public function executeHasManyRel($relName, &$parameters, $baseModelids = null)
+    public function executeHasManyRel($relName, &$parameters, $baseModelQuery, $baseModelids = null)
     {
         $relParams = [];
         $keys = array_keys($parameters);
@@ -320,7 +321,7 @@ class Model extends PhalconModel
         $relationship = $this->getRelationship();
 
         //Get all where clauses related to relationship (without processing of where).
-        $whereClauses = $this->query->clause->getWhereClause('original', $relName);
+        $whereClauses = $baseModelQuery->getClause()->getWhereClause('original', $relName);
 
         //Get information related to relationship.
         $relMeta = $this->relationship->getRelationship($relName);
@@ -342,7 +343,7 @@ class Model extends PhalconModel
 
         //If model is executed first then update relationship model where with model ids.
         if ($baseModelids) {
-            $query->clause->updateRelatedWhere($baseModelids, $relMeta, $relatedModelName);
+            $query->getClause()->updateRelatedWhere($baseModelids, $relMeta, $relatedModelName);
         }
 
         //Prepare Join for model
@@ -361,10 +362,10 @@ class Model extends PhalconModel
         $result = $this->executeModel($query);
 
         //Update Base model where clause
-        $relWheres = $this->query->clause->getWhereClause('translated', $relName);
+        $relWheres = $baseModelQuery->getClause()->getWhereClause('translated', $relName);
         foreach ($relWheres as $relWhere) {
             $ids = DataExtractor::extractRelIds($relatedModelName, $result, $relMeta['rhsKey']);
-            $this->query->clause->updateBaseWhereWithIds($ids, $relMeta, $this->modelAlias, $relWhere);
+            $baseModelQuery->getClause()->updateBaseWhereWithIds($ids, $relMeta, $this->modelAlias, $relWhere);
         }
 
         return $result;

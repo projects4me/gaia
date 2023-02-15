@@ -63,7 +63,7 @@ class Query
     /**
      * This contains all the clauses related to query.
      */
-    public $clause;
+    protected $clause;
 
     /**
      * Query constructor.
@@ -249,5 +249,27 @@ class Query
     public function getPhalconQuery()
     {
         return $this->queryBuilder->getQuery();
+    }
+
+    /**
+     * This function set clause object.
+     * 
+     * @param \Gaia\Core\MVC\Models\Query\Clause $clause
+     */
+    public function setClause($clause)
+    {
+        if ($clause instanceof Clause) {
+            $this->clause = $clause;
+        }
+    }
+
+    /**
+     * This function returns clause object of query.
+     * 
+     * @return \Gaia\Core\MVC\Models\Query\Clause
+     */
+    public function getClause()
+    {
+        return $this->clause;
     }
 }

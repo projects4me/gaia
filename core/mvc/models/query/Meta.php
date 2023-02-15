@@ -146,7 +146,7 @@ class Meta
      */
     protected function loadSortMeta($query)
     {
-        $orderBy = $this->extractModelName($query->clause->orderBy);
+        $orderBy = $this->extractModelName($query->getClause()->orderBy);
         $this->orderByClauseModel = $orderBy;
     }
 
@@ -157,7 +157,7 @@ class Meta
      */
     protected function loadGroupByMeta($query)
     {
-        $groupByArray = $query->clause->groupBy;
+        $groupByArray = $query->getClause()->groupBy;
         if (isset($groupByArray)) {
             foreach ($groupByArray as $groupBy) {
                 $this->groupByClauseModels[] = $this->extractModelName($groupBy);
@@ -173,9 +173,9 @@ class Meta
      */
     protected function loadWhereMeta($params, $query)
     {
-        $this->loadWhereClauseOperators($query->clause->where);
+        $this->loadWhereClauseOperators($query->getClause()->where);
         $this->loadAggregateFunctions($params);
-        $this->loadWhereConditions($query->clause->where);
+        $this->loadWhereConditions($query->getClause()->where);
     }
 
     /**
