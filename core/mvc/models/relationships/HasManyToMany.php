@@ -81,18 +81,16 @@ class HasManyToMany
     /**
      * This function prepares where condition.
      * 
-     * @param \Gaia\Core\MVC\Models\Relationship $relationship
+     * @param array $relMeta
      * @param array $whereClauses
      * @return string
      */
-    public function prepareWhere($relationship, $whereClauses)
+    public function prepareWhere($relMeta, $whereClauses)
     {
         $whereClause = '';
         foreach ($whereClauses as $where) {
             $regex = "/(?<=[(])[A-z]+/";
             preg_match($regex, $where, $relName);
-
-            $relMeta = $relationship->getRelationship($relName[0]);
 
             //regex for extracting field by removing '(' ')' brackets
             $regex = '/(?<=[(])[A-z]+[.][A-z]+/';

@@ -238,7 +238,7 @@ class Model extends PhalconModel
      */
     public function executeQuery($params, $typeOfQueryToPerform, $splitQueryParam = true)
     {
-        $splitQuery = ($this->splitQueries && $splitQueryParam) ? $this->passSplittingChecks($params, $this->query) : false;
+        $splitQuery = ($this->splitQueries && $splitQueryParam) ? $this->passSplittingChecks($params, $this->query, $this->relationship) : false;
 
         $resultSets = [];
 
@@ -261,7 +261,7 @@ class Model extends PhalconModel
             //loop each filtered hasManyToMany relationship and execute it.
             foreach ($filteredRels as $filteredRel) {
                 if (in_array($filteredRel, $hasManyToManyRels)) {
-                    $resultSets[$filteredRel] = $this->executeHasManyRel($filteredRel, $parameters, $this->query);
+                    $resultSets[$filteredRel] = $this->executeHasManyRel($filteredRel, $parameters, $this->query, $this->relationship);
 
                     //unsetting executed relationship
                     $index = array_search($filteredRel, $parameters['rels']);
@@ -292,7 +292,7 @@ class Model extends PhalconModel
 
             //Execute remaining hasManyToMany rels
             foreach ($relsToBeExecuted as $relName) {
-                $resultSets[$relName] = $this->executeHasManyRel($relName, $parameters, $this->query, $baseModelIds);
+                $resultSets[$relName] = $this->executeHasManyRel($relName, $parameters, $this->query, $this->relationship, $baseModelIds);
             }
         }
         else {
@@ -308,10 +308,11 @@ class Model extends PhalconModel
      * @param string $relName Name of relationship.
      * @param array $parameters
      * @param \Gaia\Core\MVC\Models\Query $baseModelQuery
+     * @param \Gaia\Core\MVC\Models\Relationship $baseModelRelationship
      * @param array $baseModelIds
      * @return \Phalcon\Mvc\Model\ResultsetInterface
      */
-    public function executeHasManyRel($relName, &$parameters, $baseModelQuery, $baseModelids = null)
+    public function executeHasManyRel($relName, &$parameters, $baseModelQuery, $baseModelRelationship, $baseModelids = null)
     {
         $relParams = [];
         $keys = array_keys($parameters);
@@ -331,7 +332,7 @@ class Model extends PhalconModel
         //Prepare where for relationship
         $hasManyToManyRel = new HasManyToMany($this->di);
         if ($whereClauses) {
-            $whereClause = $hasManyToManyRel->prepareWhere($this->relationship, $whereClauses);
+            $whereClause = $hasManyToManyRel->prepareWhere($relMeta, $whereClauses);
             $relParams['where'] = $whereClause;
         }
 
@@ -403,12 +404,13 @@ class Model extends PhalconModel
      * 
      * @param array $params
      * @param \Gaia\Core\MVC\Models\Query $query
+     * @param \Gaia\Core\MVC\Models\Relationship $relationship
      * @return boolean
      */
-    protected function passSplittingChecks($params, $query)
+    protected function passSplittingChecks($params, $query, $relationship)
     {
         $queryMeta = $this->getQueryMeta();
-        $queryMeta->loadQueryMeta($params, $this->query, $this->relationship);
+        $queryMeta->loadQueryMeta($params, $query, $relationship);
 
         $checksPassed = false;
 
