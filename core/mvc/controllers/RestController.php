@@ -1217,7 +1217,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $modelId = $model[$relatedModelName][$rhsKey];
             if ($result[$modelId]) {
                 unset($model[$relatedModelName]);
-                $result[$modelId][$relName][$model['id']] = $model;
+                $result[$modelId][$relName][] = $model;
             }
         }
     }
