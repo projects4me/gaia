@@ -251,7 +251,7 @@ class Model extends PhalconModel
 
         $resultSets = [];
 
-        if ($splitQuery) {
+        if (true) {
             //retain original params
             $parameters = $params;
 
@@ -414,7 +414,7 @@ class Model extends PhalconModel
      * @param array $params
      * @return boolean
      */
-    protected function passSplittingChecks($params, $query, $relationship)
+    protected function passSplittingChecks($params)
     {
         $queryMeta = $this->instantiateQueryMeta();
         $queryMeta->loadQueryMeta($params, $this->getQuery(), $this->getRelationship());
