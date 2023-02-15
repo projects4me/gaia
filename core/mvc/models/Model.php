@@ -59,7 +59,14 @@ class Model extends PhalconModel
      *
      * @var \Gaia\Core\MVC\Models\Query
      */
-    public $query;
+    protected $query;
+
+    /**
+     * This contains all information related to relationship of the model.
+     *
+     * @var \Gaia\Core\MVC\Models\Relationship
+     */
+    protected $relationship;    
 
     /**
      * This is the new id that is being inserted in the system.
@@ -138,7 +145,7 @@ class Model extends PhalconModel
      */
     public function read(array $params)
     {
-        $this->query = $this->getQuery($this->modelAlias, $params);
+        $this->query = $this->instantiateQuery($this->modelAlias, $params);
         $this->query->prepareClauses($params, $this->query);
 
         $this->relationship = $this->bootstrapRelationship($params);
@@ -147,7 +154,7 @@ class Model extends PhalconModel
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias, $this->query->getPhalconQueryBuilder());
 
         $this->query->prepareReadQuery($this->getModelPath(), $params, $this->relationship);
-        // $this->fireEvent("beforeQuery");
+        $this->fireEvent("beforeQuery");
 
         $resultSets = $this->executeQuery($params, 'prepareReadQuery');
 
@@ -169,7 +176,7 @@ class Model extends PhalconModel
     {
         $this->fireEvent("beforeRead");
 
-        $this->query = $this->getQuery($this->modelAlias, $params);
+        $this->query = $this->instantiateQuery($this->modelAlias, $params);
         $this->query->prepareClauses($params, $this->query);
 
         $this->relationship = $this->bootstrapRelationship($params);
@@ -209,7 +216,7 @@ class Model extends PhalconModel
             $params['fields'] = $related . '.*';
         }
 
-        $this->query = $this->getQuery($this->modelAlias, $params);
+        $this->query = $this->instantiateQuery($this->modelAlias, $params);
 
         $this->relationship = $this->bootstrapRelationship($params);
         $this->relationship->loadRequestedRelationships($params['rels']);
@@ -238,7 +245,9 @@ class Model extends PhalconModel
      */
     public function executeQuery($params, $typeOfQueryToPerform, $splitQueryParam = true)
     {
-        $splitQuery = ($this->splitQueries && $splitQueryParam) ? $this->passSplittingChecks($params, $this->query, $this->relationship) : false;
+        $splitQuery = ($this->splitQueries && $splitQueryParam) ? $this->passSplittingChecks($params) : false;
+        $query = $this->getQuery();
+        $relationship = $this->getRelationship();
 
         $resultSets = [];
 
@@ -247,21 +256,21 @@ class Model extends PhalconModel
             $parameters = $params;
 
             //Name of hasManyToMany relationships that are requested
-            $hasManyToManyRels = $this->relationship->getRelationshipsByType('hasManyToMany');
+            $hasManyToManyRels = $relationship->getRelationshipsByType('hasManyToMany');
             $hasManyToMany = new HasManyToMany($this->di);
 
             foreach ($hasManyToManyRels as $relName) {
-                $relMeta = $this->relationship->getRelationship($relName);
+                $relMeta = $relationship->getRelationship($relName);
                 $hasManyToMany->setFields($parameters, $relName, $relMeta, $hasManyToManyRels);
             }
 
             //array of filtered relationships
-            $filteredRels = $this->query->getClause()->getFilteredRels($this->relationship, $params['where']);
+            $filteredRels = $query->getClause()->getFilteredRels($relationship, $params['where']);
 
             //loop each filtered hasManyToMany relationship and execute it.
             foreach ($filteredRels as $filteredRel) {
                 if (in_array($filteredRel, $hasManyToManyRels)) {
-                    $resultSets[$filteredRel] = $this->executeHasManyRel($filteredRel, $parameters, $this->query, $this->relationship);
+                    $resultSets[$filteredRel] = $this->executeHasManyRel($filteredRel, $parameters);
 
                     //unsetting executed relationship
                     $index = array_search($filteredRel, $parameters['rels']);
@@ -280,8 +289,8 @@ class Model extends PhalconModel
             }
 
             //Execute Base Model
-            $clause = $this->query->getClause();
-            $this->query = $this->getQuery($this->modelAlias, $parameters);
+            $clause = $query->getClause();
+            $this->query = $this->instantiateQuery($this->modelAlias, $parameters);
             $this->query->setClause($clause);
             $this->relationship = $this->bootstrapRelationship($parameters);
             $this->relationship->setRelationshipFields($parameters['rels']);
@@ -292,7 +301,7 @@ class Model extends PhalconModel
 
             //Execute remaining hasManyToMany rels
             foreach ($relsToBeExecuted as $relName) {
-                $resultSets[$relName] = $this->executeHasManyRel($relName, $parameters, $this->query, $this->relationship, $baseModelIds);
+                $resultSets[$relName] = $this->executeHasManyRel($relName, $parameters, $baseModelIds);
             }
         }
         else {
@@ -307,25 +316,25 @@ class Model extends PhalconModel
      * 
      * @param string $relName Name of relationship.
      * @param array $parameters
-     * @param \Gaia\Core\MVC\Models\Query $baseModelQuery
-     * @param \Gaia\Core\MVC\Models\Relationship $baseModelRelationship
      * @param array $baseModelIds
      * @return \Phalcon\Mvc\Model\ResultsetInterface
      */
-    public function executeHasManyRel($relName, &$parameters, $baseModelQuery, $baseModelRelationship, $baseModelids = null)
+    public function executeHasManyRel($relName, &$parameters, $baseModelids = null)
     {
         $relParams = [];
         $keys = array_keys($parameters);
         $relParams = array_fill_keys($keys, $relParams);
+        $baseModelQuery = $this->getQuery();
+        $baseModelRelationship = $this->getRelationship();
 
         //Get relationship object
-        $relationship = $this->getRelationship();
+        $relationship = $this->instantiateRelationship();
 
         //Get all where clauses related to relationship (without processing of where).
         $whereClauses = $baseModelQuery->getClause()->getWhereClause('original', $relName);
 
         //Get information related to relationship.
-        $relMeta = $this->relationship->getRelationship($relName);
+        $relMeta = $baseModelRelationship->getRelationship($relName);
         $secondaryModelName = Util::extractClassFromNamespace($relMeta['secondaryModel']);
         $relatedModelName = Util::extractClassFromNamespace($relMeta['relatedModel']);
 
@@ -339,7 +348,7 @@ class Model extends PhalconModel
         //We need to join related model, that's why related model added in rels.
         $relParams['rels'] = [$relatedModelName];
 
-        $query = $this->getQuery($secondaryModelName, $relParams);
+        $query = $this->instantiateQuery($secondaryModelName, $relParams);
         $query->prepareClauses($relParams, $query);
 
         //If model is executed first then update relationship model where with model ids.
@@ -391,7 +400,7 @@ class Model extends PhalconModel
      */
     protected function bootstrapRelationship($params)
     {
-        $relationship = $this->getRelationship();
+        $relationship = $this->instantiateRelationship();
         $metadata = $this->di->get('metaManager')->getModelMeta($this->modelAlias);
         $relationship->prepareDefaultRels($params);
         $relationship->loadRelationships($metadata['relationships']);
@@ -403,14 +412,12 @@ class Model extends PhalconModel
      * This function verify all checks for splitting of a query.
      * 
      * @param array $params
-     * @param \Gaia\Core\MVC\Models\Query $query
-     * @param \Gaia\Core\MVC\Models\Relationship $relationship
      * @return boolean
      */
     protected function passSplittingChecks($params, $query, $relationship)
     {
-        $queryMeta = $this->getQueryMeta();
-        $queryMeta->loadQueryMeta($params, $query, $relationship);
+        $queryMeta = $this->instantiateQueryMeta();
+        $queryMeta->loadQueryMeta($params, $this->getQuery(), $this->getRelationship());
 
         $checksPassed = false;
 
@@ -443,7 +450,7 @@ class Model extends PhalconModel
      * @param array $params
      * @return \Gaia\Core\MVC\Models\Query
      */
-    public function getQuery($modelName, $params)
+    public function instantiateQuery($modelName, $params)
     {
         $id = isset($params['id']) ? $params['id'] : null;
         $query = new Query($this->getDI(), $modelName, $id);
@@ -455,10 +462,30 @@ class Model extends PhalconModel
      *
      * @return \Gaia\Core\MVC\Models\Relationship
      */
-    public function getRelationship()
+    public function instantiateRelationship()
     {
         $relationship = new Relationship($this->getDI());
         return $relationship;
+    }
+
+    /**
+     * This function returns relationship object.
+     * 
+     * @return \Gaia\Core\MVC\Models\Relationship
+     */
+    public function getRelationship()
+    {
+        return $this->relationship;
+    }
+
+    /**
+     * This function returns query object.
+     * 
+     * @return \Gaia\Core\MVC\Models\Query
+     */    
+    public function getQuery()
+    {
+        return $this->query;
     }
 
     /**
@@ -466,7 +493,7 @@ class Model extends PhalconModel
      *
      * @return \Gaia\Core\MVC\Models\Query\Meta
      */
-    public function getQueryMeta()
+    public function instantiateQueryMeta()
     {
         $queryMeta = new QueryMeta($this->getDI());
         return $queryMeta;
