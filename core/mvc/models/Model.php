@@ -251,7 +251,7 @@ class Model extends PhalconModel
 
         $resultSets = [];
 
-        if (true) {
+        if ($splitQuery) {
             //retain original params
             $parameters = $params;
 
