@@ -146,7 +146,7 @@ class Meta
      */
     protected function loadSortMeta($query)
     {
-        $orderBy = $this->extractModelName($query->clause->orderBy);
+        $orderBy = $this->extractModelName($query->getClause()->orderBy);
         $this->orderByClauseModel = $orderBy;
     }
 
@@ -157,7 +157,7 @@ class Meta
      */
     protected function loadGroupByMeta($query)
     {
-        $groupByArray = $query->clause->groupBy;
+        $groupByArray = $query->getClause()->groupBy;
         if (isset($groupByArray)) {
             foreach ($groupByArray as $groupBy) {
                 $this->groupByClauseModels[] = $this->extractModelName($groupBy);
@@ -173,9 +173,9 @@ class Meta
      */
     protected function loadWhereMeta($params, $query)
     {
-        $this->loadWhereClauseOperators($query->clause->where);
+        $this->loadWhereClauseOperators($query->getClause()->where);
         $this->loadAggregateFunctions($params);
-        $this->loadWhereConditions($query->clause->where);
+        $this->loadWhereConditions($query->getClause()->where);
     }
 
     /**
@@ -246,7 +246,7 @@ class Meta
     {
         $this->loadRequestedRelationships($relationship);
         $this->loadJoinsMeta($params, $query);
-        $this->loadConditionExclusiveOfRels($params['rels']);
+        $this->loadConditionExclusiveOfRels($params['rels'], $relationship);
     }
 
     /**
@@ -271,21 +271,20 @@ class Meta
      */
     protected function loadRequestedRelationships($relationship)
     {
-        $this->hasOne = $relationship->getRelationshipsAccordingToType('hasOne');
-        $this->hasManyToMany = $relationship->getRelationshipsAccordingToType('belongsTo');
-        $this->hasManyToMany = $relationship->getRelationshipsAccordingToType('hasMany');
-        $this->hasManyToMany = $relationship->getRelationshipsAccordingToType('hasManyToMany');
+        $this->hasOne = $relationship->getRelationshipsByType('hasOne');
+        $this->hasManyToMany = $relationship->getRelationshipsByType('belongsTo');
+        $this->hasManyToMany = $relationship->getRelationshipsByType('hasMany');
+        $this->hasManyToMany = $relationship->getRelationshipsByType('hasManyToMany');
     }
 
     /**
      * This loads all exclusive conditions related to a relationship.
      * 
      * @param array $relationships Relationships requested.
+     * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
-    protected function loadConditionExclusiveOfRels($relationships)
+    protected function loadConditionExclusiveOfRels($relationships, $relationship)
     {
-        $relationship = $this->di->get("relationship");
-
         foreach ($relationships as $rel) {
             $relMeta = $relationship->getRelationship($rel);
             if (isset($relMeta['conditionExclusive'])) {

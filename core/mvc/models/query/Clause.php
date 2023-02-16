@@ -58,6 +58,13 @@ class Clause
     public $having = null;
 
     /**
+     * This contains array of original and translated WHERE conditions.
+     * 
+     * @var array
+     */
+    protected $whereConditions = [];
+
+    /**
      * The purpose of this function is parse the query string from a string to
      * and array.
      *
@@ -169,6 +176,10 @@ class Clause
                     if ($field == "{$query->modelAlias}.id") {
                         $query->modelId = $value;
                     }
+
+                    $fieldParts = explode('.', $field);
+
+                    $this->whereConditions['original'][$fieldParts[0]][] = $substatement;
 
                     $translatedStatement = '';
                     // parse based on the operator
@@ -314,53 +325,47 @@ class Clause
     }
 
     /**
-     * This function prepare WHERE clause for related query.
+     * This function returns array of relationship names which are filtered.
      * 
-     * @param array $relationships Array of hasManyToMany relationships.
+     * @return array Array of relationship names.
      */
-    public function prepareRelatedWhere($relationship)
+    public function getFilteredRels()
     {
-        $relationships = $relationship->getRelationshipsAccordingToType('hasManyToMany');
         $rels = [];
 
         preg_match_all('@\([^(]*[^)]\)@', $this->where, $matches);
         $whereConditions = $matches[0];
+
         foreach ($whereConditions as $whereCondition) {
             //regex for extracting model or rel name
             $regex = "/(?<=[(])[A-z]+/";
             preg_match($regex, $whereCondition, $relName);
 
+            $this->whereConditions['translated'][$relName[0]][] = $whereCondition;
+
             //regex for extracting field by removing '(' ')' brackets
             $regex = '/(?<=[(])[A-z]+[.][A-z]+/';
             preg_match($regex, $whereCondition, $field);
 
-            if (in_array($relName[0], $relationships)) {
-                $result = extract($relationship->getHasManyToManyRel($field[0]));
-                if ($result) {
-                    $relField = $relationship->changeAliasOfRel($relMeta, $relField);
-
-                    $statement = str_replace($field[0], $relField, $whereCondition);
-
-                    //This work is for mutiple where conditions on same relationship.
-                    $precedingWhere = (isset($rels[$relName]['where']) && !empty($rels[$relName]['where']))
-                        ? ($rels[$relName]['where']) : null;
-                    if ($precedingWhere) {
-                        //pushing previously added conditions of relationship.
-                        $relMeta['originalWhere'] = $rels[$relName]['originalWhere'];
-                        //push new condition of relationship
-                        $relMeta['originalWhere'][] = $whereCondition;
-                        $relMeta['where'] = "{$precedingWhere} AND {$statement}";
-                    }
-                    else {
-                        $relMeta['where'] = $statement;
-                        $relMeta['originalWhere'][] = $whereCondition;
-                    }
-                    $rels[$relName] = $relMeta;
-                }
-            }
+            !(in_array($relName[0], $rels)) && ($rels[] = $relName[0]);
         }
 
         return $rels;
+    }
+
+    /**
+     * This function returns where clause according to given model name.
+     * 
+     * @param string $type
+     * @param string $modelName
+     */
+    public function getWhereClause($type, $modelName)
+    {
+        $whereClauses = [];
+        if (isset($this->whereConditions[$type][$modelName])) {
+            $whereClauses = $this->whereConditions[$type][$modelName];
+        }
+        return $whereClauses;
     }
 
     /**
@@ -402,25 +407,28 @@ class Clause
      * @param array $relMeta Metadata of relationship.
      * @param array $baseModel Alias of base model.
      */
-    public function updateBaseWhereWithIds($ids, $relMeta, $baseModel)
+    public function updateBaseWhereWithIds($ids, $relMeta, $baseModel, $statementToReplace)
     {
         $key = "{$baseModel}.{$relMeta['primaryKey']}";
 
-        $statementToBeReplaced = $this->prepareINStatement($key, $ids);
+        $statementToInject = $this->prepareINStatement($key, $ids);
 
-        if (isset($relMeta['originalWhere'])) {
+        $this->where = str_replace($statementToReplace, $statementToInject, $this->where);
+    }
 
-            /**
-             * if there are multiple where conditions for same relationship than replace
-             * those conditions.
-             */
-            foreach ($relMeta['originalWhere'] as $originalWhereClause) {
-                $this->where = str_replace($originalWhereClause, $statementToBeReplaced, $this->where);
-            }
-        }
-        else {
-            $this->where = $statementToBeReplaced;
-        }
+    /**
+     * This function updates related model WHERE clause. This is used when we queried base model first and give ids
+     * of those to query related model.
+     * 
+     * @param array $baseModelIds Ids of the base model.
+     * @param array $relMeta Metadata of relationship.
+     * @param string $relatedModelName Name of related model.
+     */
+    public function updateRelatedWhere($baseModelIds, $relMeta, $relatedModelName)
+    {
+        $key = "{$relatedModelName}.{$relMeta['rhsKey']}";
+
+        $this->where = $this->prepareINStatement($key, $baseModelIds);
     }
 
     /**
@@ -433,21 +441,5 @@ class Clause
     {
         $modelName = Util::extractClassFromNamespace($modelNamespace);
         $this->where = "{$modelName}.id = '{$id}'";
-    }
-
-    /**
-     * This function updates related model WHERE clause. This is used when we queried base model first and give ids
-     * of those to query related model.
-     * 
-     * @param array $baseModelIds Ids of the base model.
-     * @param array $relMeta Metadata of relationship.
-     * @param string $relName Name of relationship.
-     */
-    public function updateRelatedWhere($baseModelIds, $relMeta, $relName)
-    {
-        $relatedModel = Util::extractClassFromNamespace($relMeta['relatedModel']);
-        $key = "{$relName}{$relatedModel}.{$relMeta['rhsKey']}";
-
-        $this->where = $this->prepareINStatement($key, $baseModelIds);
     }
 }
