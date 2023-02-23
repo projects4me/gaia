@@ -258,7 +258,7 @@ class Meta
     protected function loadJoinsMeta($params, $query)
     {
         //joins involved in query
-        $this->joins = $query->getPhalconQueryBuilder()->getJoins();
+        $this->joins = $query->getPhalconQueryBuilder()->getJoins() ?: array();
 
         //total number of joins in a query
         $this->totalJoins = count($this->joins);
