@@ -2,7 +2,7 @@ name: Run Gaia test cases
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened,reopened]
 
 jobs:
 
@@ -18,7 +18,7 @@ jobs:
       id: composer-packages
       uses: actions/cache@v3
       with:
-        path: /__w/gaia/gaia/vendor
+        path: vendor
         key: vendor-cache
 
     - name: Watch change in composer.json
