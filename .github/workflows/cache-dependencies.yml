@@ -1,0 +1,36 @@
+name: Caching composer packages
+
+on:
+  push:
+    branches:
+      - 'dev'
+
+jobs:
+  Install-and-cache-composer-packages:
+
+    runs-on: ubuntu-latest
+    container:
+      image: rananoman/gaia:1.0.0
+    steps:
+    - name: Checkout to Repository
+      uses: actions/checkout@v3
+
+    - name: Cache Composer packages
+      id: composer-packages
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: vendor-cache
+
+    - name: Watch change in composer.json
+      id: watch-composer-json
+      uses: tj-actions/changed-files@v32
+      with:
+          files: "composer.json"
+
+    - name: Install Dependencies
+      if: |
+        steps.watch-composer-json.outputs.any_changed == 'true'
+        || steps.composer-packages.outputs.cache-hit != 'true'
+      run: |
+        composer install
