@@ -110,6 +110,14 @@ $models['User'] = array(
             'null' => true,
             'fts' => true
         ),
+        'accountStatus' => array(
+            'name' => 'accountStatus',
+            'label' => 'LBL_USERS_ACCOUNT_STATUS',
+            'type' => 'varchar',
+            'length' => '25',
+            'null' => false,
+            'default' => 'inactive'
+        ),
         'title' => array(
             'name' => 'title',
             'label' => 'LBL_USERS_TITLE',
