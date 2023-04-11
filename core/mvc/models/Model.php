@@ -66,7 +66,7 @@ class Model extends PhalconModel
      *
      * @var \Gaia\Core\MVC\Models\Relationship
      */
-    protected $relationship;    
+    protected $relationship;
 
     /**
      * This is the new id that is being inserted in the system.
@@ -84,31 +84,14 @@ class Model extends PhalconModel
     protected $splitQueries = true;
 
     /**
-     * This function is used in order to load the different behaviors that this model is
-     * set to use.
+     * This method is called only once when the model is created. We are loading
+     * all behaviors related to model once.
      *
      * @return void
      */
-    public function loadBehavior()
+    public function initialize()
     {
-        // Load each of the relationship types one by one
-        if (isset($this->metadata['behaviors']) && !empty($this->metadata['behaviors'])) {
-            foreach ($this->metadata['behaviors'] as $behavior) {
-                $behaviorClass = '\\Gaia\\MVC\\Models\\Behaviors\\' . $behavior;
-                $this->addBehavior(new $behaviorClass);
-            }
-        }
-    }
-
-    /**
-     * This function read the meta data stored for a model and returns an array
-     * with parsed in a format that PhalconModel can understand
-     *
-     * @return array
-     */
-    public function metaData()
-    {
-        return $this->metadata;
+        $this->loadBehavior($this->getMetadata());
     }
 
     /**
@@ -120,17 +103,31 @@ class Model extends PhalconModel
      */
     public function onConstruct()
     {
-        $modelName = Util::extractClassFromNamespace(get_class($this));
-        $this->modelAlias = $modelName;
+        $this->modelAlias = $this->getModelName();
 
-        $metadata = $this->getDI()->get('metaManager')->getModelMeta($modelName);
+        $metadata = $this->getMetaData();
         $this->setSource($metadata['tableName']);
         $this->metadata = $metadata;
 
-        // Load the behaviors in the model as well
-        $this->loadBehavior();
-
         $this->keepSnapshots(true);
+    }
+
+    /**
+     * This function is used in order to load the different behaviors that this model is
+     * set to use.
+     *
+     * @param array $metadata
+     * @return void
+     */
+    public function loadBehavior($metadata)
+    {
+        // Load each of the relationship types one by one
+        if (isset($metadata['behaviors']) && !empty($metadata['behaviors']) && empty($this->modelsManager->behaviors)) {
+            foreach ($metadata['behaviors'] as $behavior) {
+                $behaviorClass = '\\Gaia\\MVC\\Models\\Behaviors\\' . $behavior;
+                $this->addBehavior(new $behaviorClass);
+            }
+        }
     }
 
     /**
@@ -482,7 +479,7 @@ class Model extends PhalconModel
      * This function returns query object.
      * 
      * @return \Gaia\Core\MVC\Models\Query
-     */    
+     */
     public function getQuery()
     {
         return $this->query;
@@ -499,4 +496,23 @@ class Model extends PhalconModel
         return $queryMeta;
     }
 
+    /**
+     * This function returns model name.
+     *
+     * @return string
+     */
+    public function getModelName()
+    {
+        return Util::extractClassFromNamespace($this->getModelPath());
+    }
+
+    /**
+     * This function returns metadata of model.
+     *
+     * @return Array
+     */
+    public function getMetaData()
+    {
+        return $this->getDI()->get('metaManager')->getModelMeta($this->getModelName());
+    }
 }
