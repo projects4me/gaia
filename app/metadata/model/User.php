@@ -91,7 +91,7 @@ $models['User'] = array(
             'name' => 'password',
             'label' => 'LBL_USERS_PASSWORD',
             'type' => 'varchar',
-            'length' => '50',
+            'length' => '60',
             'null' => false,
         ),
         'email' => array(
@@ -325,7 +325,8 @@ $models['User'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior',
-        'modelIdentifierBehavior'
+        'modelIdentifierBehavior',
+        'encryptPasswordBehavior'
     ),
 
 );
