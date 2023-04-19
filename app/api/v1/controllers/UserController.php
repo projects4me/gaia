@@ -7,7 +7,6 @@
 namespace Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
-use Gaia\Libraries\Utils\Util;
 
 /**
  * User controller
