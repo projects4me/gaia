@@ -717,10 +717,9 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * Method Http accept: POST (insert) and PUT (update)
      * Save/update data
      *
-     * @param array $requestData
      * @return \Phalcon\Http\Response
      */
-    public function postAction($requestData = null)
+    public function postAction()
     {
         global $logger;
         $logger->debug('Gaia.core.controllers.rest->postAction');
@@ -732,9 +731,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $util = new Util();
         $data = array();
 
-        if (!$requestData) {
-            $requestData = $util->objectToArray($this->request->getJsonRawBody());
-        }
+        $requestData = $util->objectToArray($this->request->getJsonRawBody());
+
         //verify if exist more than one element
         if ($util->existSubArray($requestData)) {
             if (isset($requestData['data']['attributes'])) {
