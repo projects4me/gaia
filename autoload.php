@@ -39,6 +39,8 @@ require_once APP_PATH.'/core/libs/utils/Util.php';
 
 require_once(APP_PATH.'/core/libs/security/acl.php');
 
+require_once(APP_PATH.'/core/libs/oauth2.0/storage/pdo.php');
+
 $request = new \Phalcon\Http\Request();
 $appVersions = include(APP_PATH.'/version.php');
 $apiVersion = $appVersions['apiVersion'];
