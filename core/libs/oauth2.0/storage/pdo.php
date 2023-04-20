@@ -25,7 +25,7 @@ class Pdo extends \OAuth2\Storage\Pdo
      * @param string $password
      * @return string
      */
-    public function checkPassword($user, $password)
+    protected function checkPassword($user, $password)
     {
         return $user['password'] = $this->hashPassword($password, $user['password']);
     }
@@ -37,7 +37,7 @@ class Pdo extends \OAuth2\Storage\Pdo
      * @param string $passwordHash  Hash of password stored in database.
      * @return string
      */
-    public function hashPassword($password, $passwordHash = null)
+    protected function hashPassword($password, $passwordHash = null)
     {
         if (password_verify($password, $passwordHash)) {
             return $passwordHash;
