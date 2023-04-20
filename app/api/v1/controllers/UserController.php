@@ -4,7 +4,7 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace  Gaia\MVC\REST\Controllers;
+namespace Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
 
@@ -19,5 +19,4 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class UserController extends RestController
 {
-
 }

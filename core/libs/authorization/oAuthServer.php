@@ -15,7 +15,7 @@ OAuth2\Autoloader::register();
 
 $pdo = \Phalcon\Di::getDefault()->get('db')->getInternalHandler();
 
-$storage = new OAuth2\Storage\Pdo($pdo,array('user_table'=>'users'));
+$storage = new Gaia\Libraries\Oauth\Storage\Pdo($pdo,array('user_table'=>'users'));
 
 // Pass a storage object or array of storage objects to the OAuth2 server class
 $server = new OAuth2\Server($storage);
