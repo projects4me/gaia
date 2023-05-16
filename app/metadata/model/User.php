@@ -110,13 +110,37 @@ $models['User'] = array(
             'null' => true,
             'fts' => true
         ),
+        'dateOfBirth' => array(
+            'name' => 'dateOfBirth',
+            'label' => 'LBL_USERS_DATE_OF_BIRTH',
+            'type' => 'varchar',
+            'length' => '6',
+            'null' => true,
+            'fts' => true
+        ),
+        'language' => array(
+            'name' => 'language',
+            'label' => 'LBL_USERS_LANGUAGE',
+            'type' => 'varchar',
+            'length' => '10',
+            'null' => true,
+            'fts' => true
+        ),
+        'timezone' => array(
+            'name' => 'timezone',
+            'label' => 'LBL_USERS_TIMEZONE',
+            'type' => 'varchar',
+            'length' => '25',
+            'null' => true,
+            'fts' => true
+        ),
         'accountStatus' => array(
             'name' => 'accountStatus',
             'label' => 'LBL_USERS_ACCOUNT_STATUS',
             'type' => 'varchar',
             'length' => '25',
             'null' => false,
-            'default' => 'inactive'
+            'default' => 'active'
         ),
         'title' => array(
             'name' => 'title',
@@ -285,8 +309,8 @@ $models['User'] = array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Userecentactivity',
                 'relatedKey' => 'userId'
-            )            
-        ), 
+            )
+        ),
         'hasManyToMany' => array(
             'skills' => array(
                 'primaryKey' => 'id',
