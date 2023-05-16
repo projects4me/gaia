@@ -308,6 +308,13 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'userimage' => array(
+                'path' => '/api/:version/userimage',
+                'allowedMethods' => array(
+                    'POST'
+                ),
+                'identifier' => 'id'
+            )
         )
     ),
     'app' => array(
