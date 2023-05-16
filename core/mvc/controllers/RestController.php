@@ -628,6 +628,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
             //if have param then update
             if (isset($value['id'])) {
+                $this->id = $value['id'];
+                
                 //if passed by url
                 $model = $modelName::findFirst('id = "' . $value['id'] . '"');
 
