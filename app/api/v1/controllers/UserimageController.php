@@ -57,7 +57,7 @@ class UserimageController extends \Phalcon\Mvc\Controller
      * This function is used to save user's image, that is temporary uploaded by user, in 
      * tmp directory.
      * 
-     * @return array
+     * @return \Phalcon\Http\Response
      */
     function postAction()
     {
