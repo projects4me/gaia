@@ -92,7 +92,7 @@ $models['User'] = array(
             'label' => 'LBL_USERS_PASSWORD',
             'type' => 'varchar',
             'length' => '60',
-            'null' => true,
+            'null' => false,
         ),
         'email' => array(
             'name' => 'email',
