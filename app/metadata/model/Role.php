@@ -41,10 +41,11 @@ $models['Role'] = array(
             'null' => false,
             'default' => 0
         ),
-        'description' => array(
-            'name' => 'description',
-            'label' => 'LBL_ROLES_DESCRIPTION',
-            'type' => 'text',
+        'groupEntity' => array(
+            'name' => 'groupEntity',
+            'label' => 'LBL_ROLES_GROUP_ENTITY',
+            'type' => 'varchar',
+            'length' => '36',
             'null' => true,
         ),
         'createdUser' => array(

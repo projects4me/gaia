@@ -63,6 +63,20 @@ $models['Permission'] = array(
            'length' => '1',
            'null' => true,
        ),
+       '_import' => array(
+        'name' => '_import',
+        'label' => 'LBL_PERMISSIONS_IMPORT',
+        'type' => 'int',
+        'length' => '1',
+        'null' => true,
+        ),
+        '_export' => array(
+            'name' => '_export',
+            'label' => 'LBL_PERMISSIONS_EXPORT',
+            'type' => 'int',
+            'length' => '1',
+            'null' => true,
+        )
     ),
     'indexes' => array(
         'id' => 'primary',

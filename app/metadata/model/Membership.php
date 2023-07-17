@@ -68,9 +68,16 @@ $models['Membership'] = array(
             'length' => '36',
             'null' => false,
         ),
-        'projectId' => array(
-            'name' => 'projectId',
-            'label' => 'LBL_MEMBERSHIPS_PROJECT_ID',
+        'entity' => array(
+            'name' => 'entity',
+            'label' => 'LBL_MEMBERSHIPS_ENTITY',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'entityId' => array(
+            'name' => 'entityId',
+            'label' => 'LBL_MEMBERSHIPS_ENTITY_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
