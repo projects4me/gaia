@@ -82,7 +82,7 @@ $models['Role'] = array(
     ),
     'foriegnKeys' => array(
 
-    ) ,
+    ),
     'triggers' => array(
 
     ),

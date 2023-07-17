@@ -98,7 +98,7 @@ $models['Membership'] = array(
     ),
     'foreignKeys' => array(
 
-    ) ,
+    ),
     'triggers' => array(
 
     ),
