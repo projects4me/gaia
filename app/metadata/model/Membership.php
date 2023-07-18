@@ -94,6 +94,7 @@ $models['Membership'] = array(
         'id' => 'primary',
         'roleId' => 'index',
         'entityId' => 'index',
+        'entity' => 'index',
         'userId' => 'index',
     ),
     'foreignKeys' => array(
