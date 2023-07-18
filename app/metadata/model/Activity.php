@@ -114,7 +114,7 @@ $models['Activity'] = array(
                                 IF NEW.relatedTo = "issue" THEN
                                 UPDATE issues as Issue SET Issue.lastActivityDate = NEW.dateCreated where Issue.id = NEW.relatedId;
                                 ELSEIF NEW.relatedTo = "project" THEN
-                                UPDATE memberships as Membership SET Membership.lastActivityDate = NEW.dateCreated where Membership.projectId = NEW.relatedId AND Membership.userId = NEW.createdUser;
+                                UPDATE memberships as Membership SET Membership.lastActivityDate = NEW.dateCreated where Membership.entityId = NEW.relatedId AND Membership.entity = "project" AND Membership.userId = NEW.createdUser;
                                 END IF;
                             END;'
         )

@@ -4,59 +4,66 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-$models['Resource'] = array(
-    'tableName' => 'resources',
+$models['Aclcontroller'] = array(
+    'tableName' => 'acl_controllers',
     'fields' => array(
         'id' => array(
             'name' => 'id',
-            'label' => 'LBL_RESOURCES_ID',
+            'label' => 'LBL_ACL_CONTROLLERS_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
-        'parentId' => array(
-            'name' => 'parentId',
-            'label' => 'LBL_RESOURCES_PARENT_ID',
+        'entityId' => array(
+            'name' => 'entityId',
+            'label' => 'LBL_ACL_CONTROLLERS_ENTITY_ID',
             'type' => 'varchar',
-            'length' => '36',
-            'null' => true,
+            'length' => '50',
+            'null' => false,
         ),
         'entity' => array(
             'name' => 'entity',
-            'label' => 'LBL_RESOURCES_ENTITY',
+            'label' => 'LBL_ACL_CONTROLLERS_ENTITY',
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
         ),
         'lft' => array(
             'name' => 'lft',
-            'label' => 'LBL_RESOURCES_LEFT',
+            'label' => 'LBL_ACL_CONTROLLERS_LEFT',
             'type' => 'int',
             'length' => '11',
             'null' => false,
         ),
         'rht' => array(
             'name' => 'rht',
-            'label' => 'LBL_RESOURCES_RIGHT',
+            'label' => 'LBL_ACL_CONTROLLERS_RIGHT',
             'type' => 'int',
             'length' => '11',
             'null' => false,
         ),
+        'parentId' => array(
+            'name' => 'parentId',
+            'label' => 'LBL_ACL_CONTROLLERS_PARENT_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+        ),
         'dateCreated' => array(
             'name' => 'dateCreated',
-            'label' => 'LBL_RESOURCES_DATE_CREATED',
+            'label' => 'LBL_ACL_CONTROLLERS_DATE_CREATED',
             'type' => 'datetime',
             'null' => true,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
-            'label' => 'LBL_RESOURCES_DATE_MODIFIED',
+            'label' => 'LBL_ACL_CONTROLLERS_DATE_MODIFIED',
             'type' => 'datetime',
             'null' => true,
         ),
         'deleted' => array(
             'name' => 'deleted',
-            'label' => 'LBL_RESOURCES_DELETED',
+            'label' => 'LBL_ACL_CONTROLLERS_DELETED',
             'type' => 'bool',
             'length' => '1',
             'null' => false,
@@ -64,28 +71,28 @@ $models['Resource'] = array(
         ),
         'createdUser' => array(
             'name' => 'createdUser',
-            'label' => 'LBL_RESOURCES_CREATED_USER',
+            'label' => 'LBL_ACL_CONTROLLERS_CREATED_USER',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
-            'label' => 'LBL_RESOURCES_CREATED_USER_NAME',
+            'label' => 'LBL_ACL_CONTROLLERS_CREATED_USER_NAME',
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
-            'label' => 'LBL_RESOURCES_MODIFIED_USER',
+            'label' => 'LBL_ACL_CONTROLLERS_MODIFIED_USER',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
-            'label' => 'LBL_RESOURCES_MODIFIED_USER_NAME',
+            'label' => 'LBL_ACL_CONTROLLERS_MODIFIED_USER_NAME',
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
@@ -101,24 +108,16 @@ $models['Resource'] = array(
 
     ),
     'functions' => array(),
-    'relationships' => array(
-        'hasMany' => array(
-            'permissions' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => '\\Gaia\\MVC\\Models\\Permission',
-                'relatedKey' => 'resourceId',
-            ),
-        ),
-        'belongsTo' => array(
-            'child' => array(
-                'primaryKey' => 'parentId',
-                'relatedModel' => '\\Gaia\\MVC\\Models\\Resource',
-                'relatedKey' => 'id',
-                'conditionExclusive' => 'Resource.lft BETWEEN child.lft AND child.rht',
-                'relType' => 'INNER'
-            ),
-        ),
+    'relationships' => array(),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
+
 );
 
 return $models;

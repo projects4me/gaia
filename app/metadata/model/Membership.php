@@ -68,9 +68,16 @@ $models['Membership'] = array(
             'length' => '36',
             'null' => false,
         ),
-        'projectId' => array(
-            'name' => 'projectId',
-            'label' => 'LBL_MEMBERSHIPS_PROJECT_ID',
+        'entity' => array(
+            'name' => 'entity',
+            'label' => 'LBL_MEMBERSHIPS_ENTITY',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'entityId' => array(
+            'name' => 'entityId',
+            'label' => 'LBL_MEMBERSHIPS_ENTITY_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
@@ -86,12 +93,13 @@ $models['Membership'] = array(
     'indexes' => array(
         'id' => 'primary',
         'roleId' => 'index',
-        'projectId' => 'index',
+        'entityId' => 'index',
+        'entity' => 'index',
         'userId' => 'index',
     ),
     'foreignKeys' => array(
 
-    ) ,
+    ),
     'triggers' => array(
 
     ),
