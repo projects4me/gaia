@@ -280,7 +280,7 @@ $models['User'] = array(
             'projectMemberships' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
-                'relatedKey' => 'projectId',
+                'relatedKey' => 'entityId',
                 'conditionExclusive' => 'memberships.entityId = projectMemberships.entityId'
             ),
             'fellowMembers' => array(
@@ -325,7 +325,7 @@ $models['User'] = array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
                 'rhsKey' => 'userId',
-                'lhsKey' => 'projectId',
+                'lhsKey' => 'entityId',
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\Project',
                 'secondaryKey' => 'id'
             ),
