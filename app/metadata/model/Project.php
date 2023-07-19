@@ -206,7 +206,8 @@ $models['Project'] = array(
             'memberships' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
-                'relatedKey' => 'projectId',
+                'relatedKey' => 'entityId',
+                'condition' => 'memberships.entity="project"'
             ),
             'activities' => array(
                 'primaryKey' => 'id',
@@ -236,18 +237,20 @@ $models['Project'] = array(
             'members' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
-                'rhsKey' => 'projectId',
+                'rhsKey' => 'entityId',
                 'lhsKey' => 'userId',
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\User',
                 'secondaryKey' => 'id',
+                'condition' => 'membersMembership.entity= "project"'
             ),
             'roles' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
-                'rhsKey' => 'projectId',
+                'rhsKey' => 'entityId',
                 'lhsKey' => 'roleId',
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\Role',
                 'secondaryKey' => 'id',
+                'condition' => 'rolesMembership.entity= "project"'
             ),
         )
     ),
