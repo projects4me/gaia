@@ -28,6 +28,13 @@ $models['Permission'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'controllerId' => array(
+            'name' => 'controllerId',
+            'label' => 'LBL_PERMISSSIONS_CONTROLLER_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
         '_read' => array(
             'name' => '_read',
             'label' => 'LBL_PERMISSIONS_READ',
