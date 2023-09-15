@@ -126,7 +126,7 @@ try {
             if ($event->getType() == 'beforeQuery') {
                 $GLOBALS['timer']->diff();
                 $sqlVariables = $connection->getSQLVariables();
-                if (count($sqlVariables)) {
+                if (isset($sqlVariables)) {
                     $dblogger->debug(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables));
                 } else {
                     $dblogger->debug(print_r($connection->getSQLBindTypes(),1));
