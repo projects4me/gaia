@@ -44,7 +44,7 @@ class HasManyToMany
      * @param string $joinType
      * @param \Phalcon\Mvc\Model\Query\Builder $queryBuilder
      */
-    public function prepareJoin($relationshipName, $relationshipMeta, $modelAlias, $joinType, $queryBuilder)
+    public function prepareJoin($relationshipName, $relationshipMeta, $modelAlias, $joinType, $queryBuilder, $relConditions)
     {
         // for a many-many relationshipMeta two joins are required
         $relatedModel = $relationshipMeta['relatedModel'];
@@ -74,6 +74,10 @@ class HasManyToMany
             $relatedQuery .= ' AND (' . $relationshipMeta['condition'] . ')';
         }
 
+        foreach ($relConditions as $relCondition) {
+            $relatedQuery .= ' AND ' . $relCondition;
+        }
+        
         $queryBuilder->join($relatedModel, $relatedQuery, $relationshipName . $relatedModelAlias, $joinType);
         $queryBuilder->join($secondaryModel, $secondaryQuery, $relationshipName, $joinType);
     }

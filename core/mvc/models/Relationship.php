@@ -75,6 +75,13 @@ class Relationship
     protected $belongsTo = [];
 
     /**
+     * This contains some additional conditions against each relationship.
+     * 
+     * @var array
+     */
+    protected $relConditions = [];
+
+    /**
      * Relationship constructor.
      *
      * @param \Phalcon\DiInterface $di
@@ -169,10 +176,11 @@ class Relationship
                 $joinType = 'left';
             }
 
+            //relType
             $relType = $this->modelRelationships[$relationshipName]['type'];
 
             $relationshipType = $this->di->get('relationshipFactory')->createRelationship($relType);
-            $relationshipType->prepareJoin($relationshipName, $this->modelRelationships[$relationshipName], $modelAlias, $joinType, $queryBuilder);
+            $relationshipType->prepareJoin($relationshipName, $this->modelRelationships[$relationshipName], $modelAlias, $joinType, $queryBuilder, $this->getRelConditions($relationshipName));
         }
     }
 
@@ -224,4 +232,34 @@ class Relationship
         return $this->{ $type};
     }
 
+    /**
+     * This function returns all of the requested relationships.
+     * 
+     * @return array
+     */
+    public function getRequestedRelationships()
+    {
+        return array_merge($this->hasOne, $this->hasMany, $this->hasManyToMany);
+    }
+
+    public function addRelConditions($relName, $condition)
+    {
+        $this->relConditions[$relName][] = $condition;
+    }
+
+    public function getRelConditions($relName)
+    {
+        return isset($this->relConditions[$relName]) ? $this->relConditions[$relName] : null;
+    }
+
+    protected function getRelationshipType($relName)
+    {
+        $relTypes = ["hasOne", "hasMany", "hasManyToMany"];
+
+        foreach ($relTypes as $relType) {
+            if (isset($this->$relType[$relName])) {
+                return $relType;
+            }
+        }
+    }
 }

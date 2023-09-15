@@ -6,6 +6,8 @@
 
 namespace Gaia\Core\MVC\Models\Relationships;
 
+use Gaia\Core\MVC\Models\Relationship;
+
 /**
  * This class is base for hasOne, HasMany and belongsTo relationships.
  *
@@ -14,7 +16,7 @@ namespace Gaia\Core\MVC\Models\Relationships;
  * @category HasOneAndManyBase
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class HasOneAndManyBase
+class HasOneAndManyBase extends Relationship
 {
     /**
      * This function prepares join based on relationship meta and set that join in query builder.
@@ -25,7 +27,7 @@ class HasOneAndManyBase
      * @param string $joinType
      * @param \Phalcon\Mvc\Model\Query\Builder $queryBuilder
      */
-    public function prepareJoin($relationshipName, $relationshipMeta, $modelAlias, $joinType, $queryBuilder)
+    public function prepareJoin($relationshipName, $relationshipMeta, $modelAlias, $joinType, $queryBuilder, $relConditions)
     {
         $relatedModel = $relationshipMeta['relatedModel'];
 
@@ -41,6 +43,10 @@ class HasOneAndManyBase
         // if a condition is set in the metadata then use it
         if (isset($relationshipMeta['condition'])) {
             $relatedQuery .= ' AND ' . $relationshipMeta['condition'];
+        }
+
+        if (isset($relConditions)) {
+            $relatedQuery .= " AND $relConditions[0]";
         }
         // for each relationship apply the relationship joins to phalcon query object
         $queryBuilder->join($relatedModel, $relatedQuery, $relationshipName, $joinType);
