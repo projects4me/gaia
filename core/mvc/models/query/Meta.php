@@ -261,7 +261,7 @@ class Meta
         $this->joins = $query->getPhalconQueryBuilder()->getJoins();
 
         //total number of joins in a query
-        $this->totalJoins = count($this->joins);
+        $this->totalJoins = count($this->joins ?? []);
     }
 
     /**
