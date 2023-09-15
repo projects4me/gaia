@@ -110,6 +110,12 @@ $models['Issuetype'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior'
     ),
+    'acl' => array(
+        'assignment' => array(
+            'field' => 'createdUser',
+            'condition' => 'issuetype.createdUser=:userId:'
+        )
+    )
 );
 
 return $models;

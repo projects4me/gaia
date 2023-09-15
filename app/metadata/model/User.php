@@ -338,7 +338,7 @@ $models['User'] = array(
                 'secondaryKey' => 'badgeId',
                 'lhsConditionExclusive' => 'badgeLevelsScoreboard.score >= badgeLevels.min_criteria
                                             AND badgeLevelsScoreboard.score <= badgeLevels.max_criteria
-                                            AND badgeLevels.badgeId = badgeLevelsScoreboard.badgeId' 
+                                            AND badgeLevels.badgeId = badgeLevelsScoreboard.badgeId'
             )
         )
     ),
@@ -352,7 +352,12 @@ $models['User'] = array(
         'modelIdentifierBehavior',
         'encryptPasswordBehavior'
     ),
-
+    'acl' => array(
+        'assignment' => array(
+            'field' => 'createdUser',
+            'condition' => 'User.createdUser=:userId:'
+        )
+    )
 );
 
 return $models;

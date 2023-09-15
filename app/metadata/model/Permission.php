@@ -80,6 +80,7 @@ $models['Permission'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
+        'controllerId' => 'index'
     ),
     'foriegnKeys' => array(
 
