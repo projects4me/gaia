@@ -8,12 +8,13 @@ use Phalcon\DI\FactoryDefault;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Logger;
 use Phalcon\Logger\Adapter\Stream as StreamAdapter;
+use Gaia\Libraries\Meta\Manager as metaManager;
 use Phalcon\Mvc\Model\Manager as ModelsManager;
 
 ini_set('display_errors',1);
 error_reporting(E_ALL);
 
-if (!defined('APP_PATH')) define('APP_PATH', realpath('..'));
+define('APP_PATH', realpath('.'));
 if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
 
 require APP_PATH . '/autoload.php';
@@ -52,33 +53,49 @@ $di->set(
     }
 );
 
+$di->set(
+    'relationshipFactory',
+    new \Gaia\Core\MVC\Models\Relationships\Factory\RelationshipFactory($di)
+);
+
+$di->set(
+    'metaManager',
+    new metaManager($di)
+);
+
 // Add any needed services to the DI here
 $di->set('db', function () {
-    //       global $logger;
-    $connection = new DbAdapter((array) $GLOBALS['settings']['database']);
+    // global $logger;
+    $connection = new DbAdapter($GLOBALS['settings']['database']->toArray());
     $eventsManager = new Phalcon\Events\Manager();
-    $dblogger = new \Phalcon\Logger\Adapter\File(APP_PATH . "/logs/tests/db.log");
-//         print_r($logger);
+    $dbLoggerAdapter = new StreamAdapter(APP_PATH . "/logs/tests/db.log");
+    $dblogger = new Logger(
+        'dblog',
+        [
+            'local'   => $dbLoggerAdapter,
+        ]
+    );
+    $dblogger = $dblogger->setLogLevel(Logger::DEBUG);
     //Listen all the database events
     $eventsManager->attach('db', function($event, $connection) use ($dblogger) {
-//            global $logger;
         if ($event->getType() == 'beforeQuery') {
-            $GLOBALS['timer']->diff();
+            // $GLOBALS['timer']->diff();
+            
             $sqlVariables = $connection->getSQLVariables();
-            if (count($sqlVariables)) {
-                $dblogger->log(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
+            if (isset($sqlVariables)) {
+                $dblogger->debug(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables));
             } else {
-                $dblogger->log(print_r($connection->getSQLBindTypes(),1), \Phalcon\Logger::INFO);
+                $dblogger->debug(print_r($connection->getSQLBindTypes(),1));
             }
         }
         if ($event->getType() == 'afterQuery') {
-            $dblogger->log('Query execution time:'.($GLOBALS['timer']->diff()).' seconds', \Phalcon\Logger::INFO);
-            $dblogger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
+            // $dblogger->debug('Query execution time:'.($GLOBALS['timer']->diff()).' seconds');
+            $dblogger->debug($connection->getSQLStatement());
         }
     });
 
-    //Assign the eventsManager to the db adapter instance
-    $connection->setEventsManager($eventsManager);
+     //Assign the eventsManager to the db adapter instance
+     $connection->setEventsManager($eventsManager);
     return $connection;
 });
 

@@ -1,0 +1,5 @@
+id,name,createdUser,modifierUser,deleted,dateCreated,dateModified
+r-acl-1,Test-Acl-Admin,u-acl-1,u-acl-1,0,2017-04-07 13:03:06,2017-04-07 13:03:06
+r-acl-2,Test-Acl-ProjectManager,u-acl-1,u-acl-1,0,2017-04-07 13:03:06,2017-04-07 13:03:06
+r-acl-3,Test-Acl-Dev,u-acl-1,u-acl-1,0,2017-04-07 13:03:06,2017-04-07 13:03:06
+r-acl-4,Test-Acl-QA,u-acl-1,u-acl-1,0,2017-04-07 13:03:06,2017-04-07 13:03:06

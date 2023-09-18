@@ -1,0 +1,6 @@
+id,name,deleted,createdUser,modifiedUser,system,createdUserName,modifiedUserName
+it-acl-1,itacl1,0,u-acl-1,u-acl-1,0,acluser1,acluser1
+it-acl-2,itacl2,0,u-acl-2,u-acl-2,0,acluser2,acluser2
+it-acl-3,itacl3,0,u-acl-2,u-acl-2,0,acluser2,acluser2
+it-acl-4,itacl4,0,u-acl-2,u-acl-2,0,acluser2,acluser2
+it-acl-5,itacl5,0,u-acl-2,u-acl-2,0,acluser2,acluser2

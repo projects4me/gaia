@@ -15,7 +15,7 @@
          stopOnFailure="false"
          syntaxCheck="true">
     <testsuite name="Phalcon - Testsuite">
-        <directory>./</directory>
+        <directory>../tests</directory>
     </testsuite>
 
     <filter>

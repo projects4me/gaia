@@ -1,0 +1,11 @@
+id,roleId,entity,entityId,userId,createdUser,modifiedUser,createdUserName,modifiedUserName,deleted,dateCreated,dateModified
+m-acl-1,r-acl-3,project,p-acl-1,u-acl-1,u-acl-1,u-acl-1,acluser1,acluser1,0,2017-04-07 13:03:06,2017-04-07 13:03:06
+m-acl-2,r-acl-3,project,p-acl-2,u-acl-2,u-acl-2,u-acl-2,acluser2,acluser2,0,2017-04-07 13:03:06,2017-04-07 13:03:06
+m-acl-3,r-acl-3,project,p-acl-3,u-acl-2,u-acl-2,u-acl-2,acluser2,acluser2,0,2017-04-08 13:03:06,2017-04-08 13:03:06
+m-acl-4,r-acl-3,project,p-acl-4,u-acl-2,u-acl-2,u-acl-2,acluser2,acluser2,0,2017-04-09 13:03:06,2017-04-09 13:03:06
+m-acl-5,r-acl-3,project,p-acl-5,u-acl-2,u-acl-2,u-acl-2,acluser2,acluser2,0,2017-04-10 13:03:06,2017-04-10 13:03:06
+m-acl-6,r-acl-3,project,p-acl-6,u-acl-2,u-acl-2,u-acl-2,acluser2,acluser2,0,2017-04-11 13:03:06,2017-04-11 13:03:06
+m-acl-7,r-acl-3,project,p-acl-7,u-acl-2,u-acl-2,u-acl-2,acluser2,acluser2,0,2017-04-12 13:03:06,2017-04-12 13:03:06
+m-acl-8,r-acl-3,project,p-acl-8,u-acl-2,u-acl-2,u-acl-2,acluser2,acluser2,0,2017-04-13 13:03:06,2017-04-13 13:03:06
+m-acl-9,r-acl-3,project,p-acl-9,u-acl-2,u-acl-2,u-acl-2,acluser2,acluser2,0,2017-04-14 13:03:06,2017-04-14 13:03:06
+m-acl-10,r-acl-3,project,p-acl-10,u-acl-2,u-acl-2,u-acl-2,acluser2,acluser2,0,2017-04-15 13:03:06,2017-04-15 13:03:06
