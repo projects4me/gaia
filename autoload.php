@@ -22,7 +22,6 @@
 
 require APP_PATH.'/vendor/autoload.php';
 
-require_once(APP_PATH.'/app/models/Behaviors/aclBehavior.php');
 require_once(APP_PATH.'/core/mvc/models/behaviors/auditBehavior.php');
 
 require_once APP_PATH.'/core/libs/file/handler.php';
@@ -70,6 +69,7 @@ $loader->registerNamespaces(
         "Gaia\\Core\\MVC\\REST\\Controllers" => APP_PATH. '/core/mvc/controllers/',
         "Gaia\\Core\\MVC\\Models\\Relationships\\Factory" => APP_PATH. '/core/mvc/models/relationships/factory',
         "Gaia\\Core\\MVC\\Models\\Query" => APP_PATH. '/core/mvc/models/query/',
+        "Tests\\Gaia\\Acl" => APP_PATH. '/tests/acl/'
     ]
 );
 
