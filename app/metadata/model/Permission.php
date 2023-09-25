@@ -16,14 +16,21 @@ $models['Permission'] = array(
         ),
         'resourceId' => array(
             'name' => 'resourceId',
-            'label' => 'LBL_PERMISSSIONS_RESOURCE_ID',
+            'label' => 'LBL_PERMISSIONS_RESOURCE_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
         'roleId' => array(
             'name' => 'roleId',
-            'label' => 'LBL_PERMISSSIONS_ROLE_ID',
+            'label' => 'LBL_PERMISSIONS_ROLE_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'controllerId' => array(
+            'name' => 'controllerId',
+            'label' => 'LBL_PERMISSIONS_CONTROLLER_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
