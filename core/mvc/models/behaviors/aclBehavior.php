@@ -57,7 +57,7 @@ class aclBehavior extends Behavior implements BehaviorInterface
         $permission = $di->get('permission');
         $accessLevel = $permission->getAccess($model->modelAlias);
 
-        if ($accessLevel < 3) {
+        if (array_key_exists($accessLevel, $this->accessLevelMapping)) {
             $this->accessLevelMapping[$accessLevel]::applyACLByModel($model, $userId);
         }
     }
