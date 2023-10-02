@@ -10,11 +10,9 @@ use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\Resultset;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Events\Manager as EventsManager;
-use Gaia\Libraries\Security\Acl;
 use Gaia\Libraries\Utils\Util;
 use Phalcon\Events\ManagerInterface as EventsManagerInterface;
 use function Gaia\Libraries\Utils\create_guid;
-use phpDocumentor\Parser\Exception;
 
 /**
  * The is the default controller used by this application. It provides the basic
