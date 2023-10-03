@@ -125,7 +125,7 @@ class Permission extends Model
             "Resource2.lft <= Resource1.lft AND Resource2.rht >= Resource1.rht",
             "Resource2"
         );
-        $queryBuilder->leftJoin("Gaia\\MVC\\Models\\Permission", "Permission.resourceId=Resource2.id", "Permission");
+        $queryBuilder->leftJoin("Gaia\\MVC\\Models\\Permission", "Permission.resourceId=Resource1.id", "Permission");
 
         //clauses
         ($resource) && ($queryBuilder->where('Resource1.entity=:resource:', ["resource" => $resource]));
