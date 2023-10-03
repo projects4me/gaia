@@ -50,17 +50,20 @@ class Resource extends Model
     {
         //update resource tree before inserting new node
         $parentNode = Resource::findFirst("entity='$parentEntity'");
-        $parentRHT = $parentNode->rht;
 
-        $updateLFTPhql = "UPDATE resources set lft = lft+2 where lft>=$parentRHT";
-        $updateRHTPhql = "UPDATE resources set rht = rht+2 where rht>=$parentRHT";
+        if ($parentNode) {
+            $parentRHT = $parentNode->rht;
 
-        \Phalcon\Di::getDefault()->get('db')->query($updateLFTPhql);
-        \Phalcon\Di::getDefault()->get('db')->query($updateRHTPhql);
+            $updateLFTPhql = "UPDATE resources set lft = lft+2 where lft>=$parentRHT";
+            $updateRHTPhql = "UPDATE resources set rht = rht+2 where rht>=$parentRHT";
 
-        //insert new node
-        $values['lft'] = $parentRHT;
-        $values['rht'] = $parentRHT + 1;
+            \Phalcon\Di::getDefault()->get('db')->query($updateLFTPhql);
+            \Phalcon\Di::getDefault()->get('db')->query($updateRHTPhql);
+
+            $values['lft'] = $parentRHT;
+            $values['rht'] = $parentRHT + 1;
+            $values['parentId'] = $parentNode->id;
+        }
 
         $resource = new Resource();
         $resource->assign($values);
