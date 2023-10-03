@@ -144,7 +144,7 @@ abstract class BaseAcl extends TestCase
                     $newModel = self::createModel($modelNamespace, $model['behaviors'], $values);
                 }
                 else {
-                    $newModel = self::{ $model['createModel']}($modelNamespace, $values);
+                    $newModel = self::{ $model['createModel']}($modelNamespace, $model['behaviors'], $values);
                 }
 
                 self::$$key[] = $newModel;
@@ -162,6 +162,19 @@ abstract class BaseAcl extends TestCase
      */
     public static function createModel($modelNamespace, $behaviors, $values)
     {
+        $model = self::createModelReflection($modelNamespace, $behaviors);
+        $newModel = $model['model'];
+        $instance = $model['instance'];
+
+        //assign and save model
+        $newModel->getMethod('assign')->invoke($instance, $values);
+        $newModel->getMethod('save')->invoke($instance);
+
+        return $instance;
+    }
+
+    public static function createModelReflection($modelNamespace, $behaviors)
+    {
         //create reflection class to add required behaviors before the creation of object.
         $newModel = new \ReflectionClass($modelNamespace);
         $instance = $newModel->newInstanceWithoutConstructor();
@@ -175,40 +188,10 @@ abstract class BaseAcl extends TestCase
         $method = $newModel->getMethod('__construct');
         $method->invoke($instance);
 
-        //assign and save model
-        $newModel->getMethod('assign')->invoke($instance, $values);
-        $newModel->getMethod('save')->invoke($instance);
-
-        return $instance;
-    }
-
-    /**
-     * This method is used to create user model.
-     * 
-     * @param string $modelNamespace
-     * @param array $values
-     * @return \Gaia\MVC\Models\User
-     */
-    public static function createUser($modelNamespace, $values)
-    {
-        global $currentUser;
-        $newModel = new $modelNamespace();
-        $newModel->assign($values);
-
-        $currentUser = $newModel;
-
-        $newModel->save();
-        return $newModel;
-    }
-
-    /**
-     * This method is used to create resource model.
-     * 
-     * @return \Gaia\MVC\Models\Resource
-     */
-    public static function createResource($modelNamespace, $values)
-    {
-        return $modelNamespace::addResource('App', $values);
+        return array(
+            'model' => $newModel,
+            'instance' => $instance
+        );
     }
 
     /**
@@ -277,12 +260,84 @@ abstract class BaseAcl extends TestCase
     }
 
     /**
+     * This method is used to create user model.
+     * 
+     * @param string $modelNamespace
+     * @param array $values
+     * @return \Gaia\MVC\Models\User
+     */
+    public static function createUser($modelNamespace, $behaviors, $values)
+    {
+        global $currentUser;
+
+        $model = self::createModelReflection($modelNamespace, $behaviors);
+        $newModel = $model['model'];
+        $instance = $model['instance'];
+
+        //assign and save model
+        $newModel->getMethod('assign')->invoke($instance, $values);
+        $currentUser = $instance;
+        $newModel->getMethod('save')->invoke($instance);
+
+        return $instance;
+    }    
+
+    /**
+     * This method is used to create resource model.
+     * 
+     * @return \Gaia\MVC\Models\Resource
+     */
+    public static function createResource($modelNamespace, $behaviors, $values)
+    {
+        $model = self::createModelReflection($modelNamespace, $behaviors);
+        $newModel = $model['model'];
+        $instance = $model['instance'];
+
+        $parentNode = $newModel->getMethod('findFirst')->invoke($instance, "entity='App'");
+
+        if ($parentNode) {
+            $parentRHT = $parentNode->rht;
+
+            $updateLFTPhql = "UPDATE resources set lft = lft+2 where lft>=$parentRHT";
+            $updateRHTPhql = "UPDATE resources set rht = rht+2 where rht>=$parentRHT";
+
+            \Phalcon\Di::getDefault()->get('db')->query($updateLFTPhql);
+            \Phalcon\Di::getDefault()->get('db')->query($updateRHTPhql);
+
+            $values['lft'] = $parentRHT;
+            $values['rht'] = $parentRHT + 1;
+            $values['parentId'] = $parentNode->id;
+        }
+
+        $newModel->getMethod('assign')->invoke($instance, $values);
+        $newModel->getMethod('save')->invoke($instance);
+
+        return $instance;
+    }    
+
+    /**
      * This method is used to delete resource model.
      * 
      * @param \Gaia\MVC\Models\Resource $resource
      */
     public static function deleteResource($resource)
     {
-        \Gaia\MVC\Models\Resource::deleteResource($resource->entity);
+        $model = self::createModelReflection('\\Gaia\\MVC\\Models\\Resource', array());
+        $newModel = $model['model'];
+        $instance = $model['instance'];
+
+        $node = $newModel->getMethod('findFirst')->invoke($instance, "entity='$resource->entity'");
+
+        $nodeRHT = $node->rht;
+        $nodeLFT = $node->lft;
+
+        $rangeWidth = ($nodeRHT - $nodeLFT) + 1;
+        $updateLFTPhql = "UPDATE resources set lft = lft-$rangeWidth where lft>=$nodeRHT";
+        $updateRHTPhql = "UPDATE resources set rht = rht-$rangeWidth where rht>=$nodeRHT";
+
+        \Phalcon\Di::getDefault()->get('db')->query($updateLFTPhql);
+        \Phalcon\Di::getDefault()->get('db')->query($updateRHTPhql);
+
+        $node->delete();
     }
 }
