@@ -84,17 +84,15 @@ class Project extends Model
         $di = \Phalcon\Di::getDefault();
 
         $metadata = $di->get('metaManager')->getModelMeta((new self)->modelAlias);
-        $relatedKey = $metadata['acl']['group']['relatedKey'];
-
         $groups = self::getGroups($userId, $metadata['acl']['group']);
 
         //prepare IN
         $values = '';
         foreach ($groups as $group) {
-            $values .= "$group,";
+            $values .= "'$group',";
         }
 
         $values = substr($values, 0, -1);
-        $model->getRelationship()->addRelConditions($relName, "$relName.$relatedKey IN ('$values')");
+        $model->getRelationship()->addRelConditions($relName, "$relName.projectId IN ($values)");
     }
 }
