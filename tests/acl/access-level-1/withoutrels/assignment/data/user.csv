@@ -1,2 +1,2 @@
-id,name,description,username,email,password,status,deleted,dateCreated,dateModified
-u-acl-1,acluser1,interesting person,test-user-1,acl@gmail.com,123,Active,0,2017-04-07 13:03:06,2017-04-07 13:03:06
+id,name,username,email,password,accountStatus,deleted,createdUserName,modifiedUserName,createdUser,modifiedUser
+u-acl-1,acluser1,test-user-1,acl@gmail.com,123,Active,0,acluser1,acluser1,u-acl-1,u-acl-1
