@@ -119,6 +119,15 @@ $models['Resource'] = array(
             ),
         ),
     ),
+    'behaviors' => array(
+        'auditBehavior',
+        'dateCreatedBehavior',
+        'dateModifiedBehavior',
+        'createdUserBehavior',
+        'modifiedUserBehavior',
+        'softDeleteBehavior',
+        'modelIdentifierBehavior'
+    )
 );
 
 return $models;
