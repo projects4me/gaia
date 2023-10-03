@@ -13,7 +13,7 @@ use Phalcon\Events\Manager as EventsManager;
 use Gaia\Libraries\Utils\Util;
 use Phalcon\Events\ManagerInterface as EventsManagerInterface;
 use function Gaia\Libraries\Utils\create_guid;
-
+use Gaia\Libraries\Security\Acl;
 /**
  * The is the default controller used by this application. It provides the basic
  * implementation of REST function, e.g. GET, POST, PATCH, DELETE and OPTIONS.
