@@ -19,6 +19,8 @@ if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
 
 require APP_PATH . '/autoload.php';
 
+require APP_PATH . '/tests/autoload.php';
+
 require APP_PATH . '/tests/UnitTestCase.php';
 
 global $logger;
