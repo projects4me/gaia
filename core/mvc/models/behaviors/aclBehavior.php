@@ -70,16 +70,17 @@ class aclBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeJoins($model)
     {
-        $relationships = $model->getRelationship()->getRequestedRelationships();
+        $relationship = $model->getRelationship();
+        $requestedRelationships = $relationship->getRequestedRelationships();
         $userId = $GLOBALS['currentUser']->id;
 
         $di = \Phalcon\Di::getDefault();
         $permission = $di->get('permission');
 
-        foreach ($relationships as $rel) {
+        foreach ($requestedRelationships as $rel) {
             $accessLevel = $permission->getAccess($rel);
 
-            if ($accessLevel < 3) {
+            if (array_key_exists($accessLevel, $this->accessLevelMapping)) {
                 $this->accessLevelMapping[$accessLevel]::applyACLByRel($model, $rel, $userId);
             }
         }
