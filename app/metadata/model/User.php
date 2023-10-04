@@ -316,7 +316,7 @@ $models['User'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Userecentactivity',
                 'relatedKey' => 'userId'
             ),
-            'permissions' => array(
+            'aclPermissions' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Userpermission',
                 'relatedKey' => 'userId'

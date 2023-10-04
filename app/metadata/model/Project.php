@@ -232,7 +232,7 @@ $models['Project'] = array(
                 'relatedKey' => 'projectId',
                 'condition' => 'issuestatuses.system = "0"'
             ),
-            'permissions' => array(
+            'aclPermissions' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Usergrouppermission',
                 'relatedKey' => 'entityId',
