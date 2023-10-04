@@ -1,0 +1,11 @@
+id,subject,deleted,createdUser,owner,assignee,reportedUser,modifiedUser,issueNumber,priority,projectId,typeId,createdUserName,modifiedUserName
+i-acl-1,acl-issue-1,0,u-acl-1,u-acl-1,u-acl-1,u-acl-1,u-acl-1,100000,medium,p-acl-1,1,acluser1,acluser1
+i-acl-2,acl-issue-2,0,u-acl-2,u-acl-2,u-acl-2,u-acl-2,u-acl-2,100001,medium,p-acl-1,1,acluser1,acluser1
+i-acl-3,acl-issue-3,0,u-acl-2,u-acl-2,u-acl-2,u-acl-2,u-acl-2,100002,medium,p-acl-1,1,acluser1,acluser1
+i-acl-4,acl-issue-4,0,u-acl-2,u-acl-2,u-acl-2,u-acl-2,u-acl-2,100003,medium,p-acl-2,1,acluser1,acluser1
+i-acl-5,acl-issue-5,0,u-acl-2,u-acl-2,u-acl-2,u-acl-2,u-acl-2,100004,medium,p-acl-2,1,acluser1,acluser1
+i-acl-6,acl-issue-6,0,u-acl-2,u-acl-2,u-acl-2,u-acl-2,u-acl-2,100005,medium,p-acl-3,1,acluser1,acluser1
+i-acl-7,acl-issue-7,0,u-acl-2,u-acl-2,u-acl-2,u-acl-2,u-acl-2,100006,medium,p-acl-4,1,acluser1,acluser1
+i-acl-8,acl-issue-8,0,u-acl-2,u-acl-2,u-acl-2,u-acl-2,u-acl-2,100007,medium,p-acl-5,1,acluser1,acluser1
+i-acl-9,acl-issue-9,0,u-acl-2,u-acl-2,u-acl-2,u-acl-2,u-acl-2,100008,medium,p-acl-6,1,acluser1,acluser1
+i-acl-10,acl-issue-10,0,u-acl-2,u-acl-2,u-acl-2,u-acl-2,u-acl-2,100009,medium,p-acl-7,1,acluser1,acluser1

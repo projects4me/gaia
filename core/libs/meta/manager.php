@@ -106,8 +106,9 @@ class Manager
             'relationships' => (isset($metadata['relationships'])?$metadata['relationships']:array()),
             
             // Load the behaviors as well
-            'behaviors' => (isset($metadata['behaviors'])?$metadata['behaviors']:array())
-            
+            'behaviors' => (isset($metadata['behaviors'])?$metadata['behaviors']:array()),
+
+            'acl' => (isset($metadata['acl'])?$metadata['acl']:array()),
         );
 
         return $modelMeta;

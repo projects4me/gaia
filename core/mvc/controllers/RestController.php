@@ -10,7 +10,6 @@ use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\Resultset;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Events\Manager as EventsManager;
-use Gaia\Libraries\Security\Acl;
 use Gaia\Libraries\Utils\Util;
 use Phalcon\Events\ManagerInterface as EventsManagerInterface;
 use function Gaia\Libraries\Utils\create_guid;
@@ -126,13 +125,34 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * @var array $aclMap
      */
     protected $aclMap = array(
-        'get' => 'read',
-        'list' => 'read',
-        'related' => 'read',
-        'post' => 'create',
-        'delete' => 'delete',
-        'put' => 'update',
-        'patch' => 'update'
+        'get' => array(
+            'action' => '_read',
+            'label' => 'Read'
+        ),
+        'list' => array(
+            'action' => '_read',
+            'label' => 'Read'
+        ),
+        'related' => array(
+            'action' => '_read',
+            'label' => 'Read'
+        ),
+        'post' => array(
+            'action' => '_create',
+            'label' => 'Create'
+        ),
+        'delete' => array(
+            'action' => '_delete',
+            'label' => 'delete'
+        ),
+        'put' => array(
+            'action' => '_update',
+            'label' => 'Update'
+        ),
+        'patch' => array(
+            'action' => '_update',
+            'label' => 'Update'
+        ),
     );
 
     /**
@@ -205,7 +225,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $this->relationship = $this->dispatcher->getParam("relationship"); //relationship
         if ($this->actionName != 'options') {
             $this->authorize();
-
         }
         $logger->debug('-Gaia.core.controllers.rest->initialize()');
     }
@@ -257,12 +276,12 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * Make currentUser available as global
      *
      * @global type $currentUser
-     * @param type $reuqest
+     * @param type $request
      */
-    private function setUser($reuqest)
+    private function setUser($request)
     {
         global $currentUser;
-        $token = str_replace('Bearer ', '', $reuqest->headers['AUTHORIZATION']);
+        $token = str_replace('Bearer ', '', $request->headers['AUTHORIZATION']);
         $oAuthAccessToken = \Gaia\MVC\Models\Oauthaccesstoken::findFirst(array("access_token='" . $token . "'"));
         if (isset($oAuthAccessToken->user_id)) {
             $currentUser = \Gaia\MVC\Models\User::findFirst("username ='" . $oAuthAccessToken->user_id . "'");
@@ -284,61 +303,52 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     private function authorize()
     {
         global $currentUser;
-
         if ($this->authorization) {
             require_once APP_PATH . '/core/libs/authorization/oAuthServer.php';
-            $reuqest = \OAuth2\Request::createFromGlobals();
-            if (!$server->verifyResourceRequest($reuqest)) {
+            $request = \OAuth2\Request::createFromGlobals();
+            if (!$server->verifyResourceRequest($request)) {
                 $server->getResponse()->send();
                 exit();
             }
-            $this->setUser($reuqest);
+            $this->setUser($request);
 
-            if ($this->projectAuthorization) {
-                $projects = array();
-                // Check for access on Projects Module
-                if (!empty($this->id)) {
-                    $modelName = $this->modelName;
-                    $data = $modelName::find($this->id);
-                    $identifier = 'projectId';
-                    if (strtolower($modelName) === 'projects') {
-                        $identifier = 'id';
-                    }
+            $permission = new \Gaia\MVC\Models\Permission();
+            $permission->fetchUserPermissions($currentUser->id, $this->aclMap[$this->actionName]['action']);
 
-                    if (isset($data[0]->$identifier)) {
-                        $permission = Acl::hasProjectAccess($currentUser->id, $this->controllerName, $this->aclMap[$this->actionName], $data[0]->$identifier);
-                        if ($permission != 0) {
-                            $projects[] = $data[0]->$identifier;
-                        }
-                    }
-                }
-                else {
-                    $projects = Acl::getProjects($currentUser->id, $this->controllerName, $this->aclMap[$this->actionName]);
-                }
+            $this->getDI()->set(
+                'permission',
+                $permission
+            );
 
-                if (empty($projects)) {
-                    $this->response->setStatusCode(403, "Forbidden");
-                    $this->response->setJsonContent(array('error' => 'Access Denied - Check ACL'));
+            $resource = \Phalcon\Text::camelize($this->controllerName) . "." . $this->aclMap[$this->actionName]['label'];
 
-                    $this->response->send();
-                    exit();
-                }
-                else {
-                    $this->accessibleProjects = $projects;
-                }
+            try {
+                //check ACL on Model
+                $permission->checkAccess($resource, \Phalcon\Text::camelize($this->controllerName));
+
+                //check ACL on Model's relationship
+                $relationships = $this->getRelsWithMeta($this->request->get('rels'), Util::extractClassFromNamespace($this->modelName));
+                $permission->checkRelsAccess($relationships, $this->aclMap[$this->actionName]['label']);
             }
-            elseif ($this->systemLevel) {
-                $permission = Acl::roleHasAccess('1', "Controllers." . $this->controllerName, $this->aclMap[$this->actionName]);
-
-                if ($permission == 0) {
-                    $this->response->setStatusCode(403, "Forbidden");
-                    $this->response->setJsonContent(array('error' => 'Access Denied - Check ACL'));
-
-                    $this->response->send();
-                    exit();
-                }
+            catch (\Phalcon\Exception $e) {
+                $this->response->setStatusCode(403, "Forbidden");
+                $this->response->setJsonContent(array('error' => $e->getMessage()));
+                $this->response->send();
+                exit();
             }
         }
+    }
+
+    protected function getRelsWithMeta($rels, $modelName)
+    {
+        $relationships = [];
+
+        $rels = isset($rels) ? explode(",", $rels) : array();
+        foreach ($rels as $rel) {
+            $relationships[$rel] = $this->getRelationshipMeta($modelName, $rel);
+        }
+
+        return $relationships;
     }
 
     /**
@@ -629,7 +639,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             //if have param then update
             if (isset($value['id'])) {
                 $this->id = $value['id'];
-                
+
                 //if passed by url
                 $model = $modelName::findFirst('id = "' . $value['id'] . '"');
 
@@ -974,7 +984,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      */
     protected function extractData($data, $type = 'all', $relation = '')
     {
-
         $modelName = strtolower($this->modelName);
         if (!empty($relation)) {
             $modelName = strtolower($relation);

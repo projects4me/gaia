@@ -84,6 +84,13 @@ class Model extends PhalconModel
     protected $splitQueries = true;
 
     /**
+     * This contains behaviors that are required by the model.
+     * 
+     * @var array
+     */
+    protected $requiredBehaviors = [];
+
+    /**
      * This method is called only once when the model is created. We are loading
      * all behaviors related to model once.
      *
@@ -91,7 +98,8 @@ class Model extends PhalconModel
      */
     public function initialize()
     {
-        $this->loadBehavior($this->getMetadata());
+        $this->setRequiredBehaviors($this->getMetaData());
+        $this->loadBehaviors($this->getRequiredBehaviors());
     }
 
     /**
@@ -116,17 +124,14 @@ class Model extends PhalconModel
      * This function is used in order to load the different behaviors that this model is
      * set to use.
      *
-     * @param array $metadata
+     * @param array $behaviors
      * @return void
      */
-    public function loadBehavior($metadata)
+    public function loadBehaviors($behaviors)
     {
-        // Load each of the relationship types one by one
-        if (isset($metadata['behaviors']) && !empty($metadata['behaviors']) && empty($this->modelsManager->behaviors)) {
-            foreach ($metadata['behaviors'] as $behavior) {
-                $behaviorClass = '\\Gaia\\MVC\\Models\\Behaviors\\' . $behavior;
-                $this->addBehavior(new $behaviorClass);
-            }
+        foreach ($behaviors as $behavior) {
+            $behaviorClass = '\\Gaia\\MVC\\Models\\Behaviors\\' . $behavior;
+            $this->addBehavior(new $behaviorClass);
         }
     }
 
@@ -148,6 +153,8 @@ class Model extends PhalconModel
         $this->relationship = $this->bootstrapRelationship($params);
         $this->relationship->loadRequestedRelationships($params['rels']);
         $this->relationship->setRelationshipFields($params['rels'], $this->query);
+
+        $this->fireEvent('beforeJoins');
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias, $this->query->getPhalconQueryBuilder());
 
         $this->query->prepareReadQuery($this->getModelPath(), $params, $this->relationship);
@@ -179,6 +186,8 @@ class Model extends PhalconModel
         $this->relationship = $this->bootstrapRelationship($params);
         $this->relationship->loadRequestedRelationships($params['rels']);
         $this->relationship->setRelationshipFields($params['rels'], $this->query);
+
+        $this->fireEvent('beforeJoins');
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias, $this->query->getPhalconQueryBuilder());
 
         $this->query->prepareReadAllQuery($this->getModelPath(), $params, $this->relationship);
@@ -218,6 +227,8 @@ class Model extends PhalconModel
         $this->relationship = $this->bootstrapRelationship($params);
         $this->relationship->loadRequestedRelationships($params['rels']);
         $this->relationship->setRelationshipFields($params['rels'], $this->query);
+
+        $this->fireEvent('beforeJoins');
         $this->relationship->prepareJoinsForQuery($params['rels'], $this->modelAlias, $this->query->getPhalconQueryBuilder());
 
         $this->query->prepareReadQuery($this->getModelPath(), $params, $this->relationship);
@@ -514,5 +525,27 @@ class Model extends PhalconModel
     public function getMetaData()
     {
         return $this->getDI()->get('metaManager')->getModelMeta($this->getModelName());
+    }
+
+    /**
+     * This function is used to set the behaviors, required by the model.
+     * 
+     * @param array $metadata
+     */
+    public function setRequiredBehaviors($metadata)
+    {
+        if (isset($metadata['behaviors']) && !empty($metadata['behaviors']) && (count($this->requiredBehaviors) == 0)) {
+            $this->requiredBehaviors = $metadata['behaviors'];
+        }
+    }
+
+    /**
+     * This function returns array of requiredBehaviors
+     * 
+     * @return array
+     */
+    public function getRequiredBehaviors()
+    {
+        return $this->requiredBehaviors;
     }
 }

@@ -169,7 +169,7 @@ $models['Project'] = array(
     ),
     'foriegnKeys' => array(
 
-    ) ,
+    ),
     'triggers' => array(
 
     ),
@@ -263,6 +263,26 @@ $models['Project'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior'
     ),
+    'acl' => array(
+        'assignment' => array(
+            'relatedModel' => array(
+                'namespace' => '\\Gaia\\MVC\\Models\\Membership',
+                'condition' => 'Membership.entityId=Project.id AND Membership.entity="project" AND Membership.userId=:userId:',
+                'alias' => 'Membership'
+            )
+        ),
+        'group' => array(
+            'relatedModel' => array(
+                'Membership' => '\\Gaia\\MVC\\Models\\Membership',
+            ),
+            'columns' => array(
+                'Membership.entity',
+                'Membership.entityId'
+            ),
+            'condition' => "Membership.userId=:userId: AND Membership.entity='project'",
+            'relatedKey' => 'projectId'
+        )
+    )
 );
 
 return $models;
