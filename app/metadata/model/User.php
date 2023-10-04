@@ -230,6 +230,12 @@ $models['User'] = array(
             'returnType' => 'VARCHAR(36) CHARSET utf8',
             'parameters' => '',
             'statement' => 'return @modelId'
+        ),
+        'getCurrentUserId' => array(
+            'functionName' => 'getCurrentUserId',
+            'returnType' => 'VARCHAR(36) CHARSET utf8',
+            'parameters' => '',
+            'statement' => 'return @currentUserId'
         )
     ),
     'relationships' => array(
@@ -309,6 +315,11 @@ $models['User'] = array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Userecentactivity',
                 'relatedKey' => 'userId'
+            ),
+            'permissions' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Userpermission',
+                'relatedKey' => 'userId'
             )
         ),
         'hasManyToMany' => array(
@@ -350,7 +361,8 @@ $models['User'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior',
         'modelIdentifierBehavior',
-        'encryptPasswordBehavior'
+        'encryptPasswordBehavior',
+        'currentUserBehavior'
     ),
     'acl' => array(
         'assignment' => array(

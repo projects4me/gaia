@@ -231,6 +231,12 @@ $models['Project'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Issuestatus',
                 'relatedKey' => 'projectId',
                 'condition' => 'issuestatuses.system = "0"'
+            ),
+            'permissions' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Usergrouppermission',
+                'relatedKey' => 'entityId',
+                'condition' => 'permissions.groupName = "project"'
             )
         ),
         'hasManyToMany' => array(
@@ -261,7 +267,9 @@ $models['Project'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'modelIdentifierBehavior',
+        'currentUserBehavior'
     ),
     'acl' => array(
         'assignment' => array(
