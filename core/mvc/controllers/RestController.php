@@ -322,20 +322,12 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
             $resource = \Phalcon\Text::camelize($this->controllerName) . "." . $this->aclMap[$this->actionName]['label'];
 
-            try {
-                //check ACL on Model
-                $permission->checkAccess($resource, \Phalcon\Text::camelize($this->controllerName));
+            //check ACL on Model
+            $permission->checkAccess($resource, \Phalcon\Text::camelize($this->controllerName));
 
-                //check ACL on Model's relationship
-                $relationships = $this->getRelsWithMeta($this->request->get('rels'), Util::extractClassFromNamespace($this->modelName));
-                $permission->checkRelsAccess($relationships, $this->aclMap[$this->actionName]['label']);
-            }
-            catch (\Phalcon\Exception $e) {
-                $this->response->setStatusCode(403, "Forbidden");
-                $this->response->setJsonContent(array('error' => $e->getMessage()));
-                $this->response->send();
-                exit();
-            }
+            //check ACL on Model's relationship
+            $relationships = $this->getRelsWithMeta($this->request->get('rels'), Util::extractClassFromNamespace($this->modelName));
+            $permission->checkRelsAccess($relationships, $this->aclMap[$this->actionName]['label']);
         }
     }
 
