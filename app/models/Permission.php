@@ -37,7 +37,7 @@ class Permission extends Model
      * Prefix of the resource.
      * 
      * @var string $resourcePrefix
-     */    
+     */
     protected $resourcePrefix;
 
     /**
@@ -53,7 +53,7 @@ class Permission extends Model
             $this->resourcesPermissions[$resourceAlias] = max($this->permissions[$resource]);
         }
         else {
-            throw new \Phalcon\Exception("Access Denied to $resource");
+            throw new \Gaia\Exception\Access("Access Denied to $resource");
         }
     }
 
@@ -63,13 +63,13 @@ class Permission extends Model
      * 
      * @param array $rels
      * @param string $action
-     */    
+     */
     public function checkRelsAccess($rels, $action)
     {
-            foreach ($rels as $relName => $relMeta) {
-                $resource = Util::extractClassFromNamespace($relMeta['relatedModel']) . ".$action";
-                $this->checkAccess($resource, $relName);
-            }
+        foreach ($rels as $relName => $relMeta) {
+            $resource = Util::extractClassFromNamespace($relMeta['relatedModel']) . ".$action";
+            $this->checkAccess($resource, $relName);
+        }
     }
 
     /**
@@ -77,7 +77,7 @@ class Permission extends Model
      * 
      * @param string $userId 
      * @param string $action 
-     */    
+     */
     public function fetchUserPermissions($userId, $action)
     {
         $results = [];
@@ -110,7 +110,7 @@ class Permission extends Model
      * @param string $resource 
      * @param string $action
      * @return \Phalcon\Mvc\Model\Query\Builder
-     */    
+     */
     private function buildPermissionsQuery($resource = null, $action = null)
     {
         $di = \Phalcon\Di::getDefault();
