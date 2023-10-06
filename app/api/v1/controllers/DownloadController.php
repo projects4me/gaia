@@ -72,22 +72,17 @@ class DownloadController extends \Phalcon\Mvc\Controller
                     $this->response->send();
                     $downloadToken->delete();
                     $logger->debug("-Gaia.MVC.Controller.download->getAction");
-                    exit();
+                    return $this->response;
                 } else {
                     $logger->critical("File mentioned in the data not found");
-                    $this->response->setStatusCode(500, "Internal Server Error");
-                    $this->response->send();
+                    throw new \Gaia\Exception\FileNotFound("File not found");
                     $logger->debug("-Gaia.MVC.Controller.download->getAction");
-                    exit();
                 }
             }
             $logger->info("Expired download token provided");
             $downloadToken->delete();
         }
-        $this->response->setStatusCode(404, "Not Found");
-        $this->response->send();
-        $logger->debug("-Gaia.MVC.Controller.download->getAction");
-        exit();
+        throw new \Gaia\Exception\ResourceNotFound();
     }
 
 }

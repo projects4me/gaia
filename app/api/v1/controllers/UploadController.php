@@ -52,15 +52,11 @@ class UploadController extends RestController
                 $this->response->setHeader("Content-Length", $data[0]->fileSize);
                 readfile($data[0]->filePath);
             } else {
-                $this->response->setStatusCode(500, "Internal Server Error");
+                throw new \Gaia\Exception\FileNotfound("File not found");
             }
         } else {
-            $this->response->setStatusCode(400, "Not Found");
+            throw new \Gaia\Exception\ResourceNotFound();
         }
-
-        $this->response->send();
-        $logger->debug("-Gaia.Controllers.Upload->getAction");
-        exit();
     }
     /**
      * This is the list action for uploads, it is used to either get the preview

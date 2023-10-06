@@ -43,10 +43,10 @@ class ImageController extends \Phalcon\Mvc\Controller
         $this->response->setContentType('image/jpeg');
 
         if (isset($data['error'])) {
-            $this->response->setStatusCode($data['error']['code']);
+            throw new \Gaia\Exception\FileNotFound("File not found");
         }
 
         $this->response->send();
-        exit();
+        return $this->response;
     }
 }
