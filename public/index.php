@@ -1,29 +1,17 @@
 <?php
 
-use Phalcon\Di,
-    Phalcon\DI\FactoryDefault,
-    Phalcon\Mvc\View,
-    Phalcon\Mvc\Dispatcher,
-    Phalcon\Mvc\Url as UrlResolver,
-    Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter,
-    Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter,
-    Phalcon\Session\Adapter\Files as SessionAdapter,
-    Phalcon\Translate\Adapter\NativeArray,
-    Phalcon\Logger,
-    Phalcon\Logger\Adapter\Stream as StreamAdapter,
-    Gaia\Libraries\Utils\executiontime,
-    Gaia\Libraries\Meta\Migration\Driver as migrationDriver,
-    Phalcon\Mvc\Model\Behavior;
-
-use Gaia\Libraries\Test\something;
-
+use Phalcon\DI\FactoryDefault,
+Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter,
+Phalcon\Logger,
+Phalcon\Logger\Adapter\Stream as StreamAdapter,
+Gaia\Libraries\Utils\executiontime;
 
 /**
  * Error Reporting
  * @todo Remove before publishing
  */
 error_reporting(E_ALL);
-ini_set('display_errors',true);
+ini_set('display_errors', true);
 
 // Setup the application constants
 define('APP_PATH', realpath('..'));
@@ -39,22 +27,21 @@ require APP_PATH . '/autoload.php';
  */
 
 global $logger;
-$loggerAdapter = new StreamAdapter(APP_PATH.'/logs/application.log');
+$loggerAdapter = new StreamAdapter(APP_PATH . '/logs/application.log');
 $logger = new Logger(
     'applicationlog',
-    [
-        'local'   => $loggerAdapter,
-    ]
-);
+[
+    'local' => $loggerAdapter,
+]);
 $logger->setLogLevel(Logger::DEBUG);
 
 // Allow from any origin
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
     header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Max-Age: 86400');    // cache for 1 day
-    header('Access-Control-Allow-Headers: Accept, Accept-CH, Accept-Charset, Accept-Datetime, Accept-Encoding, Accept-Ext, Accept-Features, Accept-Language, Accept-Params, Accept-Ranges, Access-Control-Allow-Credentials, Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Expose-Headers, Access-Control-Max-Age, Access-Control-Request-Headers, Access-Control-Request-Method, Age, Allow, Alternates, Authentication-Info, Authorization, C-Ext, C-Man, C-Opt, C-PEP, C-PEP-Info, CONNECT, Cache-Control, Compliance, Connection, Content-Base, Content-Disposition, Content-Encoding, Content-ID, Content-Language, Content-Length, Content-Location, Content-MD5, Content-Range, Content-Script-Type, Content-Security-Policy, Content-Style-Type, Content-Transfer-Encoding, Content-Type, Content-Version, Cookie, Cost, DAV, DELETE, DNT, DPR, Date, Default-Style, Delta-Base, Depth, Derived-From, Destination, Differential-ID, Digest, ETag, Expect, Expires, Ext, From, GET, GetProfile, HEAD, HTTP-date, Host, IM, If, If-Match, If-Modified-Since, If-None-Match, If-Range, If-Unmodified-Since, Keep-Alive, Label, Last-Event-ID, Last-Modified, Link, Location, Lock-Token, MIME-Version, Man, Max-Forwards, Media-Range, Message-ID, Meter, Negotiate, Non-Compliance, OPTION, OPTIONS, OWS, Opt, Optional, Ordering-Type, Origin, Overwrite, P3P, PEP, PICS-Label, POST, PUT, Pep-Info, Permanent, Position, Pragma, ProfileObject, Protocol, Protocol-Query, Protocol-Request, Proxy-Authenticate, Proxy-Authentication-Info, Proxy-Authorization, Proxy-Features, Proxy-Instruction, Public, RWS, Range, Referer, Refresh, Resolution-Hint, Resolver-Location, Retry-After, Safe, Sec-Websocket-Extensions, Sec-Websocket-Key, Sec-Websocket-Origin, Sec-Websocket-Protocol, Sec-Websocket-Version, Security-Scheme, Server, Set-Cookie, Set-Cookie2, SetProfile, SoapAction, Status, Status-URI, Strict-Transport-Security, SubOK, Subst, Surrogate-Capability, Surrogate-Control, TCN, TE, TRACE, Timeout, Title, Trailer, Transfer-Encoding, UA-Color, UA-Media, UA-Pixels, UA-Resolution, UA-Windowpixels, URI, Upgrade, User-Agent, Variant-Vary, Vary, Version, Via, Viewport-Width, WWW-Authenticate, Want-Digest, Warning, Width, X-Content-Duration, X-Content-Security-Policy, X-Content-Type-Options, X-CustomHeader, X-DNSPrefetch-Control, X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto, X-Frame-Options, X-Modified, X-OTHER, X-PING, X-PINGOTHER, X-Powered-By, X-Requested-With');    // cache for 1 day
-    header('Access-Control-Expose-Headers: Accept, Accept-CH, Accept-Charset, Accept-Datetime, Accept-Encoding, Accept-Ext, Accept-Features, Accept-Language, Accept-Params, Accept-Ranges, Access-Control-Allow-Credentials, Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Expose-Headers, Access-Control-Max-Age, Access-Control-Request-Headers, Access-Control-Request-Method, Age, Allow, Alternates, Authentication-Info, Authorization, C-Ext, C-Man, C-Opt, C-PEP, C-PEP-Info, CONNECT, Cache-Control, Compliance, Connection, Content-Base, Content-Disposition, Content-Encoding, Content-ID, Content-Language, Content-Length, Content-Location, Content-MD5, Content-Range, Content-Script-Type, Content-Security-Policy, Content-Style-Type, Content-Transfer-Encoding, Content-Type, Content-Version, Cookie, Cost, DAV, DELETE, DNT, DPR, Date, Default-Style, Delta-Base, Depth, Derived-From, Destination, Differential-ID, Digest, ETag, Expect, Expires, Ext, From, GET, GetProfile, HEAD, HTTP-date, Host, IM, If, If-Match, If-Modified-Since, If-None-Match, If-Range, If-Unmodified-Since, Keep-Alive, Label, Last-Event-ID, Last-Modified, Link, Location, Lock-Token, MIME-Version, Man, Max-Forwards, Media-Range, Message-ID, Meter, Negotiate, Non-Compliance, OPTION, OPTIONS, OWS, Opt, Optional, Ordering-Type, Origin, Overwrite, P3P, PEP, PICS-Label, POST, PUT, Pep-Info, Permanent, Position, Pragma, ProfileObject, Protocol, Protocol-Query, Protocol-Request, Proxy-Authenticate, Proxy-Authentication-Info, Proxy-Authorization, Proxy-Features, Proxy-Instruction, Public, RWS, Range, Referer, Refresh, Resolution-Hint, Resolver-Location, Retry-After, Safe, Sec-Websocket-Extensions, Sec-Websocket-Key, Sec-Websocket-Origin, Sec-Websocket-Protocol, Sec-Websocket-Version, Security-Scheme, Server, Set-Cookie, Set-Cookie2, SetProfile, SoapAction, Status, Status-URI, Strict-Transport-Security, SubOK, Subst, Surrogate-Capability, Surrogate-Control, TCN, TE, TRACE, Timeout, Title, Trailer, Transfer-Encoding, UA-Color, UA-Media, UA-Pixels, UA-Resolution, UA-Windowpixels, URI, Upgrade, User-Agent, Variant-Vary, Vary, Version, Via, Viewport-Width, WWW-Authenticate, Want-Digest, Warning, Width, X-Content-Duration, X-Content-Security-Policy, X-Content-Type-Options, X-CustomHeader, X-DNSPrefetch-Control, X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto, X-Frame-Options, X-Modified, X-OTHER, X-PING, X-PINGOTHER, X-Powered-By, X-Requested-With');    // cache for 1 day
+    header('Access-Control-Max-Age: 86400'); // cache for 1 day
+    header('Access-Control-Allow-Headers: Accept, Accept-CH, Accept-Charset, Accept-Datetime, Accept-Encoding, Accept-Ext, Accept-Features, Accept-Language, Accept-Params, Accept-Ranges, Access-Control-Allow-Credentials, Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Expose-Headers, Access-Control-Max-Age, Access-Control-Request-Headers, Access-Control-Request-Method, Age, Allow, Alternates, Authentication-Info, Authorization, C-Ext, C-Man, C-Opt, C-PEP, C-PEP-Info, CONNECT, Cache-Control, Compliance, Connection, Content-Base, Content-Disposition, Content-Encoding, Content-ID, Content-Language, Content-Length, Content-Location, Content-MD5, Content-Range, Content-Script-Type, Content-Security-Policy, Content-Style-Type, Content-Transfer-Encoding, Content-Type, Content-Version, Cookie, Cost, DAV, DELETE, DNT, DPR, Date, Default-Style, Delta-Base, Depth, Derived-From, Destination, Differential-ID, Digest, ETag, Expect, Expires, Ext, From, GET, GetProfile, HEAD, HTTP-date, Host, IM, If, If-Match, If-Modified-Since, If-None-Match, If-Range, If-Unmodified-Since, Keep-Alive, Label, Last-Event-ID, Last-Modified, Link, Location, Lock-Token, MIME-Version, Man, Max-Forwards, Media-Range, Message-ID, Meter, Negotiate, Non-Compliance, OPTION, OPTIONS, OWS, Opt, Optional, Ordering-Type, Origin, Overwrite, P3P, PEP, PICS-Label, POST, PUT, Pep-Info, Permanent, Position, Pragma, ProfileObject, Protocol, Protocol-Query, Protocol-Request, Proxy-Authenticate, Proxy-Authentication-Info, Proxy-Authorization, Proxy-Features, Proxy-Instruction, Public, RWS, Range, Referer, Refresh, Resolution-Hint, Resolver-Location, Retry-After, Safe, Sec-Websocket-Extensions, Sec-Websocket-Key, Sec-Websocket-Origin, Sec-Websocket-Protocol, Sec-Websocket-Version, Security-Scheme, Server, Set-Cookie, Set-Cookie2, SetProfile, SoapAction, Status, Status-URI, Strict-Transport-Security, SubOK, Subst, Surrogate-Capability, Surrogate-Control, TCN, TE, TRACE, Timeout, Title, Trailer, Transfer-Encoding, UA-Color, UA-Media, UA-Pixels, UA-Resolution, UA-Windowpixels, URI, Upgrade, User-Agent, Variant-Vary, Vary, Version, Via, Viewport-Width, WWW-Authenticate, Want-Digest, Warning, Width, X-Content-Duration, X-Content-Security-Policy, X-Content-Type-Options, X-CustomHeader, X-DNSPrefetch-Control, X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto, X-Frame-Options, X-Modified, X-OTHER, X-PING, X-PINGOTHER, X-Powered-By, X-Requested-With'); // cache for 1 day
+    header('Access-Control-Expose-Headers: Accept, Accept-CH, Accept-Charset, Accept-Datetime, Accept-Encoding, Accept-Ext, Accept-Features, Accept-Language, Accept-Params, Accept-Ranges, Access-Control-Allow-Credentials, Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Expose-Headers, Access-Control-Max-Age, Access-Control-Request-Headers, Access-Control-Request-Method, Age, Allow, Alternates, Authentication-Info, Authorization, C-Ext, C-Man, C-Opt, C-PEP, C-PEP-Info, CONNECT, Cache-Control, Compliance, Connection, Content-Base, Content-Disposition, Content-Encoding, Content-ID, Content-Language, Content-Length, Content-Location, Content-MD5, Content-Range, Content-Script-Type, Content-Security-Policy, Content-Style-Type, Content-Transfer-Encoding, Content-Type, Content-Version, Cookie, Cost, DAV, DELETE, DNT, DPR, Date, Default-Style, Delta-Base, Depth, Derived-From, Destination, Differential-ID, Digest, ETag, Expect, Expires, Ext, From, GET, GetProfile, HEAD, HTTP-date, Host, IM, If, If-Match, If-Modified-Since, If-None-Match, If-Range, If-Unmodified-Since, Keep-Alive, Label, Last-Event-ID, Last-Modified, Link, Location, Lock-Token, MIME-Version, Man, Max-Forwards, Media-Range, Message-ID, Meter, Negotiate, Non-Compliance, OPTION, OPTIONS, OWS, Opt, Optional, Ordering-Type, Origin, Overwrite, P3P, PEP, PICS-Label, POST, PUT, Pep-Info, Permanent, Position, Pragma, ProfileObject, Protocol, Protocol-Query, Protocol-Request, Proxy-Authenticate, Proxy-Authentication-Info, Proxy-Authorization, Proxy-Features, Proxy-Instruction, Public, RWS, Range, Referer, Refresh, Resolution-Hint, Resolver-Location, Retry-After, Safe, Sec-Websocket-Extensions, Sec-Websocket-Key, Sec-Websocket-Origin, Sec-Websocket-Protocol, Sec-Websocket-Version, Security-Scheme, Server, Set-Cookie, Set-Cookie2, SetProfile, SoapAction, Status, Status-URI, Strict-Transport-Security, SubOK, Subst, Surrogate-Capability, Surrogate-Control, TCN, TE, TRACE, Timeout, Title, Trailer, Transfer-Encoding, UA-Color, UA-Media, UA-Pixels, UA-Resolution, UA-Windowpixels, URI, Upgrade, User-Agent, Variant-Vary, Vary, Version, Via, Viewport-Width, WWW-Authenticate, Want-Digest, Warning, Width, X-Content-Duration, X-Content-Security-Policy, X-Content-Type-Options, X-CustomHeader, X-DNSPrefetch-Control, X-Forwarded-For, X-Forwarded-Port, X-Forwarded-Proto, X-Frame-Options, X-Modified, X-OTHER, X-PING, X-PINGOTHER, X-Powered-By, X-Requested-With'); // cache for 1 day
 }
 
 // Access-Control headers are received during OPTIONS requests
@@ -72,8 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 try {
 
-    global $stime,$di,$apiVersion,$logger,$timer;
-    $stime = explode(" ",microtime());
+    global $stime, $di, $apiVersion, $logger, $timer;
+    $stime = explode(" ", microtime());
     $stime = $stime[1] + $stime[0];
 
     $timer = new executiontime();
@@ -82,19 +69,19 @@ try {
     $di = new FactoryDefault();
 
     //Setup the view component
-    $di->set('view', function(){
+    $di->set('view', function () {
         $view = new \Phalcon\Mvc\View();
-        $view->setViewsDir(APP_PATH.'/app/views/');
+        $view->setViewsDir(APP_PATH . '/app/views/');
         $view->registerEngines(
             array(
-                ".volt" => 'Phalcon\Mvc\View\Engine\Volt'
-            )
+            ".volt" => 'Phalcon\Mvc\View\Engine\Volt'
+        )
         );
         return $view;
     });
 
     //Setup a base URI so that all generated URIs include the "tutorial" folder
-    $di->set('url', function(){
+    $di->set('url', function () {
         $url = new \Phalcon\Mvc\Url();
         $url->setBaseUri('/');
         return $url;
@@ -102,7 +89,7 @@ try {
 
     // @todo - set in di
     // @todo - add actions route
-    $di->set('router', function(){
+    $di->set('router', function () {
         $router = new Gaia\MVC\Router();
         $router->init();
         return $router;
@@ -116,32 +103,34 @@ try {
         $dbLoggerAdapter = new StreamAdapter(APP_PATH . "/logs/db.log");
         $dblogger = new Logger(
             'dblog',
-            [
-                'local'   => $dbLoggerAdapter,
-            ]
-        );
+        [
+            'local' => $dbLoggerAdapter,
+        ]
+            );
         $dblogger = $dblogger->setLogLevel(Logger::DEBUG);
         //Listen all the database events
-        $eventsManager->attach('db', function($event, $connection) use ($dblogger) {
-            if ($event->getType() == 'beforeQuery') {
-                $GLOBALS['timer']->diff();
-                $sqlVariables = $connection->getSQLVariables();
-                if (isset($sqlVariables)) {
-                    $dblogger->debug(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables));
-                } else {
-                    $dblogger->debug(print_r($connection->getSQLBindTypes(),1));
+        $eventsManager->attach('db', function ($event, $connection) use ($dblogger) {
+                if ($event->getType() == 'beforeQuery') {
+                    $GLOBALS['timer']->diff();
+                    $sqlVariables = $connection->getSQLVariables();
+                    if (isset($sqlVariables)) {
+                        $dblogger->debug(print_r($connection->getSQLBindTypes(), 1) . ' ' . join(', ', $sqlVariables));
+                    }
+                    else {
+                        $dblogger->debug(print_r($connection->getSQLBindTypes(), 1));
+                    }
+                }
+                if ($event->getType() == 'afterQuery') {
+                    $dblogger->debug('Query execution time:' . ($GLOBALS['timer']->diff()) . ' seconds');
+                    $dblogger->debug($connection->getSQLStatement());
                 }
             }
-            if ($event->getType() == 'afterQuery') {
-                $dblogger->debug('Query execution time:'.($GLOBALS['timer']->diff()).' seconds');
-                $dblogger->debug($connection->getSQLStatement());
-            }
-        });
+            );
 
-         //Assign the eventsManager to the db adapter instance
-         $connection->setEventsManager($eventsManager);
-        return $connection;
-    });
+            //Assign the eventsManager to the db adapter instance
+            $connection->setEventsManager($eventsManager);
+            return $connection;
+        });
 
     $di->set(
         'metaManager',
@@ -193,6 +182,10 @@ try {
     $app = new \Phalcon\Mvc\Application($di);
     echo $app->handle($_SERVER["REQUEST_URI"])->getContent();
 
-} catch(\Phalcon\Exception $e) {
-     echo "PhalconException: ", $e->getMessage();
+}
+catch (\Gaia\Exception\Access $e) {
+    return $e->handle();
+}
+catch (\Phalcon\Exception $e) {
+    echo "PhalconException: ", $e->getMessage();
 }
