@@ -41,7 +41,7 @@ abstract class AclAdminController extends RestController
     public function getAction()
     {
         $this->checkAdminAccess();
-        return $this->callParent ? parent::getAction() : null;
+        return $this->callParent ?parent::getAction() : null;
     }
 
     /**
@@ -49,11 +49,11 @@ abstract class AclAdminController extends RestController
      * relatedAction() is called (if required).
      * 
      * @return \Phalcon\Http\Response|null
-     */    
+     */
     public function relatedAction()
     {
         $this->checkAdminAccess();
-        return $this->callParent ? parent::relatedAction() : null;
+        return $this->callParent ?parent::relatedAction() : null;
     }
 
     /**
@@ -61,11 +61,11 @@ abstract class AclAdminController extends RestController
      * patchAction() is called (if required).
      * 
      * @return \Phalcon\Http\Response|null
-     */    
+     */
     public function patchAction()
     {
         $this->checkAdminAccess();
-        return $this->callParent ? parent::patchAction() : null;
+        return $this->callParent ?parent::patchAction() : null;
     }
 
     /**
@@ -73,11 +73,11 @@ abstract class AclAdminController extends RestController
      * postAction() is called (if required).
      * 
      * @return \Phalcon\Http\Response|null
-     */    
+     */
     public function postAction()
     {
         $this->checkAdminAccess();
-        return $this->callParent ? parent::postAction() : null;
+        return $this->callParent ?parent::postAction() : null;
     }
 
     /**
@@ -92,11 +92,7 @@ abstract class AclAdminController extends RestController
         $permission = $this->getDI()->get('permission');
         $accessLevel = $permission->getAccess($controllerName);
 
-        if ($accessLevel !== $this->adminAccessLevel) {
-            $this->response->setStatusCode(403, "forbidden");
-            $this->response->setJsonContent(array('error' => "Access Denied"));
-            $this->response->send();
-            exit();
-        }
+        if ($accessLevel !== $this->adminAccessLevel)
+            throw new \Gaia\Exception\Access("Access Denied");
     }
 }
