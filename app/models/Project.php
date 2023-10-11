@@ -66,7 +66,7 @@ class Project extends Model
         $memberships = $queryBuilder->getQuery()->execute();
 
         foreach ($memberships as $membership) {
-            $groups[] = $membership['entityId'];
+            $groups[] = $membership['relatedId'];
         }
 
         return $groups;

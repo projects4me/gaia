@@ -92,7 +92,7 @@ class Permission extends Model
 
         //Fetch Permissions of User
         $permissionsByUser = (new self)->buildPermissionsQuery(null, $action);
-        $permissionsByUser->innerJoin("Gaia\\MVC\\Models\\Aclcontroller", "Aclcontroller.id=Permission.controllerId AND Aclcontroller.entityId='$userId'", "Aclcontroller");
+        $permissionsByUser->innerJoin("Gaia\\MVC\\Models\\Aclcontroller", "Aclcontroller.id=Permission.controllerId AND Aclcontroller.relatedId='$userId'", "Aclcontroller");
         $results[] = $permissionsByUser->getQuery()->execute();
 
         foreach ($results as $permission) {

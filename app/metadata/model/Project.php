@@ -206,7 +206,7 @@ $models['Project'] = array(
             'memberships' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
-                'relatedKey' => 'entityId',
+                'relatedKey' => 'relatedId',
                 'condition' => 'memberships.entity="project"'
             ),
             'activities' => array(
@@ -235,7 +235,7 @@ $models['Project'] = array(
             'aclPermissions' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Usergrouppermission',
-                'relatedKey' => 'entityId',
+                'relatedKey' => 'relatedId',
                 'condition' => 'permissions.groupName = "project"'
             )
         ),
@@ -243,7 +243,7 @@ $models['Project'] = array(
             'members' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
-                'rhsKey' => 'entityId',
+                'rhsKey' => 'relatedId',
                 'lhsKey' => 'userId',
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\User',
                 'secondaryKey' => 'id',
@@ -252,7 +252,7 @@ $models['Project'] = array(
             'roles' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
-                'rhsKey' => 'entityId',
+                'rhsKey' => 'relatedId',
                 'lhsKey' => 'roleId',
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\Role',
                 'secondaryKey' => 'id',
@@ -275,7 +275,7 @@ $models['Project'] = array(
         'assignment' => array(
             'relatedModel' => array(
                 'namespace' => '\\Gaia\\MVC\\Models\\Membership',
-                'condition' => 'Membership.entityId=Project.id AND Membership.entity="project" AND Membership.userId=:userId:',
+                'condition' => 'Membership.relatedId=Project.id AND Membership.entity="project" AND Membership.userId=:userId:',
                 'alias' => 'Membership'
             )
         ),
@@ -285,7 +285,7 @@ $models['Project'] = array(
             ),
             'columns' => array(
                 'Membership.entity',
-                'Membership.entityId'
+                'Membership.relatedId'
             ),
             'condition' => "Membership.userId=:userId: AND Membership.entity='project'",
             'relatedKey' => 'projectId'

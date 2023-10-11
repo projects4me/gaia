@@ -14,16 +14,16 @@ $models['Aclcontroller'] = array(
             'length' => '36',
             'null' => false,
         ),
-        'entityId' => array(
-            'name' => 'entityId',
-            'label' => 'LBL_ACL_CONTROLLERS_ENTITY_ID',
+        'relatedId' => array(
+            'name' => 'relatedId',
+            'label' => 'LBL_ACL_CONTROLLERS_RELATED_ID',
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
         ),
-        'entity' => array(
+        'relatedTo' => array(
             'name' => 'entity',
-            'label' => 'LBL_ACL_CONTROLLERS_ENTITY',
+            'label' => 'LBL_ACL_CONTROLLERS_RELATED_TO',
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
