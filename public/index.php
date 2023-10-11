@@ -186,6 +186,12 @@ try {
 catch (\Gaia\Exception\Access $e) {
     return $e->handle();
 }
+catch(\Gaia\Exception\ResourceNotFound $e) {
+    return $e->handle();
+}
+catch(\Gaia\Exception\FileNotFound $e) {
+    return $e->handle();
+}
 catch (\Phalcon\Exception $e) {
     echo "PhalconException: ", $e->getMessage();
 }

@@ -287,11 +287,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $currentUser = \Gaia\MVC\Models\User::findFirst("username ='" . $oAuthAccessToken->user_id . "'");
         }
         else {
-            $this->response->setStatusCode(403, "Forbidden");
-            $this->response->setJsonContent(array('error' => 'Invalid Token'));
-
-            $this->response->send();
-            exit();
+            throw new \Gaia\Exception\Access("Invalid Token");
         }
     }
 
@@ -308,7 +304,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $request = \OAuth2\Request::createFromGlobals();
             if (!$server->verifyResourceRequest($request)) {
                 $server->getResponse()->send();
-                exit();
+                
             }
             $this->setUser($request);
 

@@ -46,11 +46,11 @@ class UserimageController extends \Phalcon\Mvc\Controller
         $this->response->setContentType('image/jpeg');
 
         if (isset($data['error'])) {
-            $this->response->setStatusCode($data['error']['code']);
+            throw new \Gaia\Exception\FileNotFound("File not found");
         }
 
         $this->response->send();
-        exit();
+        return $this->response;
     }
 
     /**
@@ -78,7 +78,7 @@ class UserimageController extends \Phalcon\Mvc\Controller
         } else {
             $logger->error('Unable to move the file over to the upload directory, please make' .
                 ' sure that the directory exists and that its writable');
-            $this->response->setStatusCode(500, "Internal Server Error");
+            throw new \Gaia\Exception\FileNotFound();
         }
 
         return $this->response;
