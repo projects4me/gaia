@@ -69,7 +69,7 @@ $models['Membership'] = array(
             'null' => false,
         ),
         'relatedTo' => array(
-            'name' => 'entity',
+            'name' => 'relatedTo',
             'label' => 'LBL_MEMBERSHIPS_RELATED_TO',
             'type' => 'varchar',
             'length' => '36',
@@ -94,7 +94,7 @@ $models['Membership'] = array(
         'id' => 'primary',
         'roleId' => 'index',
         'relatedId' => 'index',
-        'entity' => 'index',
+        'relatedTo' => 'index',
         'userId' => 'index',
     ),
     'foreignKeys' => array(

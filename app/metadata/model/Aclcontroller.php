@@ -22,7 +22,7 @@ $models['Aclcontroller'] = array(
             'null' => false,
         ),
         'relatedTo' => array(
-            'name' => 'entity',
+            'name' => 'relatedTo',
             'label' => 'LBL_ACL_CONTROLLERS_RELATED_TO',
             'type' => 'varchar',
             'length' => '50',
