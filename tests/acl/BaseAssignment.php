@@ -76,6 +76,10 @@ abstract class BaseAssignment extends \Tests\Gaia\Acl\BaseAcl
                 'namespace' => '\\Gaia\\MVC\\Models\\Permission',
                 'behaviors' => array(
                     'aclBehavior'
+                ),
+                'nullableAttributes' => array(
+                    'controllerId',
+                    'roleId'
                 )
             ),
             "issuetypes" => array(

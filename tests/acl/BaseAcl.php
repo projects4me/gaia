@@ -141,7 +141,8 @@ abstract class BaseAcl extends TestCase
                 $newModel = null;
 
                 if (!isset($model['createModel'])) {
-                    $newModel = self::createModel($modelNamespace, $model['behaviors'], $values);
+                    $nullableAttributes = isset($model['nullableAttributes']) ? $model['nullableAttributes'] : null;
+                    $newModel = self::createModel($modelNamespace, $model['behaviors'], $values, $nullableAttributes);
                 }
                 else {
                     $newModel = self::{ $model['createModel']}($modelNamespace, $model['behaviors'], $values);
@@ -160,11 +161,22 @@ abstract class BaseAcl extends TestCase
      * @param array $values
      * @return \Gaia\Core\MVC\Models\Model
      */
-    public static function createModel($modelNamespace, $behaviors, $values)
+    public static function createModel($modelNamespace, $behaviors, $values, $nullableAttributes = null)
     {
         $model = self::createModelReflection($modelNamespace, $behaviors);
         $newModel = $model['model'];
         $instance = $model['instance'];
+
+        /**
+         * Attributes on which empty values are allowed. This is done because for some cases we need to add empty
+         * values against an attribute which cannot accept null values. And for that case Phalcon doesn't insert that
+         * model and gives us an error.
+         */
+        if ($nullableAttributes) {
+            $allowEmptyStringValues = $newModel->getMethod('allowEmptyStringValues');
+            $allowEmptyStringValues->setAccessible(true);
+            $allowEmptyStringValues->invoke($instance, $nullableAttributes);
+        }
 
         //assign and save model
         $newModel->getMethod('assign')->invoke($instance, $values);
@@ -280,7 +292,7 @@ abstract class BaseAcl extends TestCase
         $newModel->getMethod('save')->invoke($instance);
 
         return $instance;
-    }    
+    }
 
     /**
      * This method is used to create resource model.
@@ -313,7 +325,7 @@ abstract class BaseAcl extends TestCase
         $newModel->getMethod('save')->invoke($instance);
 
         return $instance;
-    }    
+    }
 
     /**
      * This method is used to delete resource model.
