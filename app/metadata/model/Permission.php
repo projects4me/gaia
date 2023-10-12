@@ -26,21 +26,14 @@ $models['Permission'] = array(
             'label' => 'LBL_PERMISSIONS_ROLE_ID',
             'type' => 'varchar',
             'length' => '36',
-            'null' => false,
+            'null' => true,
         ),
         'controllerId' => array(
             'name' => 'controllerId',
             'label' => 'LBL_PERMISSIONS_CONTROLLER_ID',
             'type' => 'varchar',
             'length' => '36',
-            'null' => false,
-        ),
-        'controllerId' => array(
-            'name' => 'controllerId',
-            'label' => 'LBL_PERMISSSIONS_CONTROLLER_ID',
-            'type' => 'varchar',
-            'length' => '36',
-            'null' => false,
+            'null' => true,
         ),
         '_read' => array(
             'name' => '_read',
@@ -90,7 +83,19 @@ $models['Permission'] = array(
             'type' => 'int',
             'length' => '1',
             'null' => true,
-        )
+        ),
+        'dateCreated' => array(
+            'name' => 'dateCreated',
+            'label' => 'LBL_PERMISSIONS_DATE_CREATED',
+            'type' => 'datetime',
+            'null' => true,
+        ),
+        'dateModified' => array(
+            'name' => 'dateModified',
+            'label' => 'LBL_PERMISSIONS_DATE_MODIFIED',
+            'type' => 'datetime',
+            'null' => true,
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
