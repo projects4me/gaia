@@ -6,7 +6,7 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Gaia\Core\MVC\REST\Controllers\RestController;
+use Gaia\MVC\REST\Controllers\AclAdminController;
 
 /**
  * Permissions Controller
@@ -16,7 +16,7 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  * @category Controller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class PermissionController extends RestController
+class PermissionController extends AclAdminController
 {
     /**
      * Project authorization flag
