@@ -6,14 +6,14 @@
 
 $models['Userpermission'] = array(
     'tableName' => 'user_permissions',
-    'viewSql' => 'SELECT Permission.id as id, Membership.userId as userId, Resource2.entity, MAX(Permission._read) as _read, MAX(Permission.`_search`) as _search, MAX(Permission.`_create`) as _create, MAX(Permission.`_update`) as _update, MAX(Permission.`_delete`) as _delete, MAX(Permission.`_import`) as _import, MAX(Permission.`_export`) as _export 
+    'viewSql' => 'SELECT Permission.id as id, Membership.userId as userId, Resource2.entity, MAX(Permission.readF) as readF, MAX(Permission.`searchF`) as searchF, MAX(Permission.`createF`) as createF, MAX(Permission.`updateF`) as updateF, MAX(Permission.`deleteF`) as deleteF, MAX(Permission.`importF`) as importF, MAX(Permission.`exportF`) as exportF 
                     FROM resources Resource1
                     left join resources Resource2 on Resource2.lft <= Resource1.lft AND Resource2.rht >= Resource1.rht
                     left join permissions Permission on Permission.resourceId = Resource2.id
                     inner join memberships Membership on Membership.roleId = Permission.roleId AND Membership.userId = getModelId()
                     GROUP BY Resource2.id
                     UNION ALL
-                    SELECT Permission.id as id, Aclcontroller.relatedId as userId, Resource2.entity, MAX(Permission._read) as _read, MAX(Permission.`_search`) as _search, MAX(Permission.`_create`) as _create, MAX(Permission.`_update`) as _update, MAX(Permission.`_delete`) as _delete, MAX(Permission.`_import`) as _import, MAX(Permission.`_export`) as _export 
+                    SELECT Permission.id as id, Aclcontroller.relatedId as userId, Resource2.entity, MAX(Permission.readF) as readF, MAX(Permission.`searchF`) as searchF, MAX(Permission.`createF`) as createF, MAX(Permission.`updateF`) as updateF, MAX(Permission.`deleteF`) as deleteF, MAX(Permission.`importF`) as importF, MAX(Permission.`exportF`) as exportF 
                     FROM resources Resource1
                     left join resources Resource2 on Resource2.lft <= Resource1.lft AND Resource2.rht >= Resource1.rht
                     left join permissions Permission on Permission.resourceId = Resource2.id
@@ -36,38 +36,38 @@ $models['Userpermission'] = array(
             'type' => 'varchar',
             'null' => false,
         ),
-        '_read' => array(
-            'name' => '_read',
+        'readF' => array(
+            'name' => 'readF',
             'type' => 'varchar',
             'null' => false,
         ),
-        '_search' => array(
-            'name' => '_search',
+        'searchF' => array(
+            'name' => 'searchF',
             'type' => 'varchar',
             'null' => false,
         ),
-        '_create' => array(
-            'name' => '_create',
+        'createF' => array(
+            'name' => 'createF',
             'type' => 'varchar',
             'null' => false,
         ),
-        '_update' => array(
-            'name' => '_update',
+        'updateF' => array(
+            'name' => 'updateF',
             'type' => 'varchar',
             'null' => false,
         ),
-        '_delete' => array(
-            'name' => '_delete',
+        'deleteF' => array(
+            'name' => 'deleteF',
             'type' => 'varchar',
             'null' => false,
         ),
-        '_import' => array(
-            'name' => '_import',
+        'importF' => array(
+            'name' => 'importF',
             'type' => 'varchar',
             'null' => false,
         ),
-        '_export' => array(
-            'name' => '_export',
+        'exportF' => array(
+            'name' => 'exportF',
             'type' => 'varchar',
             'null' => false,
         )

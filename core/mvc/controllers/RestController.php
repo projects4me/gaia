@@ -126,31 +126,31 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      */
     protected $aclMap = array(
         'get' => array(
-            'action' => '_read',
+            'action' => 'readF',
             'label' => 'Read'
         ),
         'list' => array(
-            'action' => '_read',
+            'action' => 'readF',
             'label' => 'Read'
         ),
         'related' => array(
-            'action' => '_read',
+            'action' => 'readF',
             'label' => 'Read'
         ),
         'post' => array(
-            'action' => '_create',
+            'action' => 'createF',
             'label' => 'Create'
         ),
         'delete' => array(
-            'action' => '_delete',
+            'action' => 'deleteF',
             'label' => 'delete'
         ),
         'put' => array(
-            'action' => '_update',
+            'action' => 'updateF',
             'label' => 'Update'
         ),
         'patch' => array(
-            'action' => '_update',
+            'action' => 'updateF',
             'label' => 'Update'
         ),
     );

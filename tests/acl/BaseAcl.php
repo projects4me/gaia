@@ -225,7 +225,7 @@ abstract class BaseAcl extends TestCase
 
         $permission = new \Gaia\MVC\Models\Permission();
         $permission->setResourcePrefix(self::$resourcePrefix);
-        $permission->fetchUserPermissions(self::$users[0]->id, '_read');
+        $permission->fetchUserPermissions(self::$users[0]->id, 'readF');
         $permission->checkAccess($resource, $modelName);
 
         //call getRelsWithMeta function of Rest Controller
