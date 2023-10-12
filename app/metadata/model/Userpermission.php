@@ -13,11 +13,11 @@ $models['Userpermission'] = array(
                     inner join memberships Membership on Membership.roleId = Permission.roleId AND Membership.userId = getModelId()
                     GROUP BY Resource2.id
                     UNION ALL
-                    SELECT Permission.id as id, Aclcontroller.entityId as userId, Resource2.entity, MAX(Permission._read) as _read, MAX(Permission.`_search`) as _search, MAX(Permission.`_create`) as _create, MAX(Permission.`_update`) as _update, MAX(Permission.`_delete`) as _delete, MAX(Permission.`_import`) as _import, MAX(Permission.`_export`) as _export 
+                    SELECT Permission.id as id, Aclcontroller.relatedId as userId, Resource2.entity, MAX(Permission._read) as _read, MAX(Permission.`_search`) as _search, MAX(Permission.`_create`) as _create, MAX(Permission.`_update`) as _update, MAX(Permission.`_delete`) as _delete, MAX(Permission.`_import`) as _import, MAX(Permission.`_export`) as _export 
                     FROM resources Resource1
                     left join resources Resource2 on Resource2.lft <= Resource1.lft AND Resource2.rht >= Resource1.rht
                     left join permissions Permission on Permission.resourceId = Resource2.id
-                    inner join acl_controllers Aclcontroller on Aclcontroller.id = Permission.controllerId AND Aclcontroller.entityId = getModelId()
+                    inner join acl_controllers Aclcontroller on Aclcontroller.id = Permission.controllerId AND Aclcontroller.relatedId = getModelId()
                     GROUP BY Resource2.id;',
     'isView' => true,
     'fields' => array(

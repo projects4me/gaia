@@ -6,11 +6,11 @@
 
 $models['Usergrouppermission'] = array(
     'tableName' => 'user_group_permissions',
-    'viewSql' => 'SELECT Permission.id as id, Membership.entityId as entityId, Membership.entity as groupName, Resource2.entity as entity, MAX(Permission._read) as _read, MAX(Permission.`_search`) as _search, MAX(Permission.`_create`) as _create, MAX(Permission.`_update`) as _update, MAX(Permission.`_delete`) as _delete, MAX(Permission.`_import`) as _import, MAX(Permission.`_export`) as _export
+    'viewSql' => 'SELECT Permission.id as id, Membership.relatedId as relatedId, Membership.relatedTo as groupName, Resource2.entity as entity, MAX(Permission._read) as _read, MAX(Permission.`_search`) as _search, MAX(Permission.`_create`) as _create, MAX(Permission.`_update`) as _update, MAX(Permission.`_delete`) as _delete, MAX(Permission.`_import`) as _import, MAX(Permission.`_export`) as _export
                     from resources as Resource1
                     left join resources Resource2 on Resource2.lft <= Resource1.lft AND Resource2.rht >= Resource1.rht
                     left join permissions Permission on Permission.resourceId = Resource2.id
-                    inner join memberships Membership on Membership.roleId = Permission.roleId AND Membership.userId = getCurrentUserId() AND Membership.entityId =getModelId()
+                    inner join memberships Membership on Membership.roleId = Permission.roleId AND Membership.userId = getCurrentUserId() AND Membership.relatedId =getModelId()
                     GROUP BY Resource2.id;',
     'isView' => true,
     'fields' => array(
@@ -19,8 +19,8 @@ $models['Usergrouppermission'] = array(
             'type' => 'varchar',
             'null' => false,
         ),
-        'entityId' => array(
-            'name' => 'entityId',
+        'relatedId' => array(
+            'name' => 'relatedId',
             'type' => 'varchar',
             'null' => false,
         ),

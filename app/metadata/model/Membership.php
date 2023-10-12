@@ -68,16 +68,16 @@ $models['Membership'] = array(
             'length' => '36',
             'null' => false,
         ),
-        'entity' => array(
-            'name' => 'entity',
-            'label' => 'LBL_MEMBERSHIPS_ENTITY',
+        'relatedTo' => array(
+            'name' => 'relatedTo',
+            'label' => 'LBL_MEMBERSHIPS_RELATED_TO',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
         ),
-        'entityId' => array(
-            'name' => 'entityId',
-            'label' => 'LBL_MEMBERSHIPS_ENTITY_ID',
+        'relatedId' => array(
+            'name' => 'relatedId',
+            'label' => 'LBL_MEMBERSHIPS_RELATED_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
@@ -93,8 +93,8 @@ $models['Membership'] = array(
     'indexes' => array(
         'id' => 'primary',
         'roleId' => 'index',
-        'entityId' => 'index',
-        'entity' => 'index',
+        'relatedId' => 'index',
+        'relatedTo' => 'index',
         'userId' => 'index',
     ),
     'foreignKeys' => array(

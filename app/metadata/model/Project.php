@@ -206,8 +206,8 @@ $models['Project'] = array(
             'memberships' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
-                'relatedKey' => 'entityId',
-                'condition' => 'memberships.entity="project"'
+                'relatedKey' => 'relatedId',
+                'condition' => 'memberships.relatedTo="project"'
             ),
             'activities' => array(
                 'primaryKey' => 'id',
@@ -235,28 +235,28 @@ $models['Project'] = array(
             'aclPermissions' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Usergrouppermission',
-                'relatedKey' => 'entityId',
-                'condition' => 'permissions.groupName = "project"'
+                'relatedKey' => 'relatedId',
+                'condition' => 'aclPermissions.groupName = "project"'
             )
         ),
         'hasManyToMany' => array(
             'members' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
-                'rhsKey' => 'entityId',
+                'rhsKey' => 'relatedId',
                 'lhsKey' => 'userId',
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\User',
                 'secondaryKey' => 'id',
-                'condition' => 'membersMembership.entity= "project"'
+                'condition' => 'membersMembership.relatedTo= "project"'
             ),
             'roles' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Membership',
-                'rhsKey' => 'entityId',
+                'rhsKey' => 'relatedId',
                 'lhsKey' => 'roleId',
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\Role',
                 'secondaryKey' => 'id',
-                'condition' => 'rolesMembership.entity= "project"'
+                'condition' => 'rolesMembership.relatedTo= "project"'
             ),
         )
     ),
@@ -275,7 +275,7 @@ $models['Project'] = array(
         'assignment' => array(
             'relatedModel' => array(
                 'namespace' => '\\Gaia\\MVC\\Models\\Membership',
-                'condition' => 'Membership.entityId=Project.id AND Membership.entity="project" AND Membership.userId=:userId:',
+                'condition' => 'Membership.relatedId=Project.id AND Membership.relatedTo="project" AND Membership.userId=:userId:',
                 'alias' => 'Membership'
             )
         ),
@@ -284,10 +284,10 @@ $models['Project'] = array(
                 'Membership' => '\\Gaia\\MVC\\Models\\Membership',
             ),
             'columns' => array(
-                'Membership.entity',
-                'Membership.entityId'
+                'Membership.relatedTo',
+                'Membership.relatedId'
             ),
-            'condition' => "Membership.userId=:userId: AND Membership.entity='project'",
+            'condition' => "Membership.userId=:userId: AND Membership.relatedTo='project'",
             'relatedKey' => 'projectId'
         )
     )

@@ -50,7 +50,7 @@ class Project extends Model
      * @param string $userId
      * @param array $aclMeta
      * @return array
-     */    
+     */
     private static function getGroups($userId, $aclMeta)
     {
         $groups = [];
@@ -66,7 +66,7 @@ class Project extends Model
         $memberships = $queryBuilder->getQuery()->execute();
 
         foreach ($memberships as $membership) {
-            $groups[] = $membership['entityId'];
+            $groups[] = $membership['relatedId'];
         }
 
         return $groups;
@@ -86,6 +86,8 @@ class Project extends Model
         $metadata = $di->get('metaManager')->getModelMeta((new self)->modelAlias);
         $groups = self::getGroups($userId, $metadata['acl']['group']);
 
+        $relatedKey = self::getRelatedKey($model, $relName);
+
         //prepare IN
         $values = '';
         foreach ($groups as $group) {
@@ -93,6 +95,28 @@ class Project extends Model
         }
 
         $values = substr($values, 0, -1);
-        $model->getRelationship()->addRelConditions($relName, "$relName.projectId IN ($values)");
+        $model->getRelationship()->addRelConditions($relName, "$relName.$relatedKey IN ($values)");
+    }
+
+    /**
+     * This function returns related key of the related model.
+     * 
+     * @param \Phalcon\Mvc\Model $model
+     * @param string $relName
+     * @return string $relatedKey
+     */
+    public static function getRelatedKey($model, $relName)
+    {
+        $possibleRelatedKeys = ['projectId', 'relatedId'];
+
+        $relationship = $model->getRelationship()->getRelationship($relName);
+        $relatedModel = (new $relationship['relatedModel']());
+        $relatedModelMeta = $relatedModel->getModelsMetaData();
+        $attributes = $relatedModelMeta->getAttributes($relatedModel);
+
+        foreach ($possibleRelatedKeys as $relatedKey) {
+            if (in_array($relatedKey, $attributes))
+                return $relatedKey;
+        }
     }
 }
