@@ -35,51 +35,51 @@ $models['Permission'] = array(
             'length' => '36',
             'null' => true,
         ),
-        '_read' => array(
-            'name' => '_read',
-            'label' => 'LBL_PERMISSIONS_READ',
+        'readF' => array(
+            'name' => 'readF',
+            'label' => 'LBL_PERMISSIONS_READ_F',
             'type' => 'int',
             'length' => '1',
             'null' => true,
         ),
-        '_search' => array(
-            'name' => '_search',
-            'label' => 'LBL_PERMISSIONS_SEARCH',
+        'searchF' => array(
+            'name' => 'searchF',
+            'label' => 'LBL_PERMISSIONS_SEARCH_F',
             'type' => 'int',
             'length' => '1',
             'null' => true,
         ),
-        '_create' => array(
-            'name' => '_create',
-            'label' => 'LBL_PERMISSIONS_CREATE',
+        'createF' => array(
+            'name' => 'createF',
+            'label' => 'LBL_PERMISSIONS_CREATE_F',
             'type' => 'int',
             'length' => '1',
             'null' => true,
         ),
-        '_update' => array(
-            'name' => '_update',
-            'label' => 'LBL_PERMISSIONS_UPDATE',
+        'updateF' => array(
+            'name' => 'updateF',
+            'label' => 'LBL_PERMISSIONS_UPDATE_F',
             'type' => 'int',
             'length' => '1',
             'null' => true,
         ),
-        '_delete' => array(
-            'name' => '_delete',
-            'label' => 'LBL_PERMISSIONS_DELETE',
+        'deleteF' => array(
+            'name' => 'deleteF',
+            'label' => 'LBL_PERMISSIONS_DELETE_F',
             'type' => 'int',
             'length' => '1',
             'null' => true,
         ),
-        '_import' => array(
-            'name' => '_import',
-            'label' => 'LBL_PERMISSIONS_IMPORT',
+        'importF' => array(
+            'name' => 'importF',
+            'label' => 'LBL_PERMISSIONS_IMPORT_F',
             'type' => 'int',
             'length' => '1',
             'null' => true,
         ),
-        '_export' => array(
-            'name' => '_export',
-            'label' => 'LBL_PERMISSIONS_EXPORT',
+        'exportF' => array(
+            'name' => 'exportF',
+            'label' => 'LBL_PERMISSIONS_EXPORT_F',
             'type' => 'int',
             'length' => '1',
             'null' => true,
