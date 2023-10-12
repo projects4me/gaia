@@ -236,7 +236,7 @@ $models['Project'] = array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Usergrouppermission',
                 'relatedKey' => 'relatedId',
-                'condition' => 'permissions.groupName = "project"'
+                'condition' => 'aclPermissions.groupName = "project"'
             )
         ),
         'hasManyToMany' => array(
