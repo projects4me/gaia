@@ -192,6 +192,12 @@ catch(\Gaia\Exception\ResourceNotFound $e) {
 catch(\Gaia\Exception\FileNotFound $e) {
     return $e->handle();
 }
+catch(\Gaia\Exception\MigrationDriver $e) {
+    return $e->handle();
+}
 catch (\Phalcon\Exception $e) {
     echo "PhalconException: ", $e->getMessage();
+}
+catch(\Gaia\Exception\Exception $e) {
+    return $e->handle();
 }

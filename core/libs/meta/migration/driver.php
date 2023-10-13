@@ -83,15 +83,7 @@ class Driver
             }
         }
         catch (PhalconException $e) {
-            print($e->getMessage());
-        }
-        catch (Exception $e) {
-            if ($extensionLoaded) {
-                print Color::error($e->getMessage()) . PHP_EOL;
-            }
-            else {
-                print 'ERROR: ' . $e->getMessage() . PHP_EOL;
-            }
+            throw new \Gaia\Exception\MigrationDriver($e->getMessage());
         }
         return $result;
     }
