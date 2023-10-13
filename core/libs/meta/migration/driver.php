@@ -50,9 +50,11 @@ class Driver
     public function migrate()
     {
         $result = array();
+        $models = array();
+
         try {
             // Set the metadata directory
-            $migrationsDir = APP_PATH.metaManager::basePath.'/model';
+            $migrationsDir = APP_PATH . metaManager::basePath . '/model';
 
             // setup the database using global settings
             metaMigration::setup($GLOBALS['settings']->database);
@@ -62,22 +64,27 @@ class Driver
             foreach ($iterator as $fileinfo) {
                 if ($fileinfo->isFile()) {
                     if (preg_match('/\.php$/', $fileinfo->getFilename())) {
-                        $model = str_replace('.php', '', basename($fileinfo->getFilename()));
-                        $result[$model] = 'Failed to migrate '.$model;
-                        $this->di->get('metaMigration')->migrateModel($model);
-                        $result[$model] = $model." migrated successfully";
+                        $models[] = str_replace('.php', '', basename($fileinfo->getFilename()));
                     }
                 }
             }
-       } catch (PhalconException $e) {
-           print($e->getMessage());
-       } catch (Exception $e) {
-           if ($extensionLoaded) {
-               print Color::error($e->getMessage()) . PHP_EOL;
-           } else {
-               print 'ERROR: ' . $e->getMessage() . PHP_EOL;
-           }
-       }
-       return $result;
+
+            // before migrating table or views, let's migrate functions. Because table or views use
+            // functions. So migrating functions is required first.
+            foreach ($models as $model) {
+                $this->di->get('metaMigration')->migrateFunctions($model);
+            }
+
+            //migrate models
+            foreach ($models as $model) {
+                $result[$model] = "Failed to migrate $model";
+                $this->di->get('metaMigration')->migrateModel($model);
+                $result[$model] = "$model migrated successfully";
+            }
+        }
+        catch (PhalconException $e) {
+            throw new \Gaia\Exception\MigrationDriver($e->getMessage());
+        }
+        return $result;
     }
 }
