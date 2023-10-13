@@ -66,10 +66,6 @@ class Migration extends PhalconMigration
         // Get the definitions of table/view from the meta data
         $meta = $this->getMetaData($model);
 
-        // before migrating table or views, let's migrate functions. Because table or views use
-        // functions. So migrating functions is required first.
-        $this->migrateFunctions($model, $meta);
-
         //check whether meta is for table or View
         isset($meta[$model]['isView']) ? $this->migrateView($model, $meta) : $this->migrateTable($model, $meta);
     }
@@ -150,10 +146,11 @@ class Migration extends PhalconMigration
      * tables or views.
      * 
      * @param $model
-     * @param $meta 
      */
-    private function migrateFunctions($model, $meta)
+    public function migrateFunctions($model)
     {
+        $meta = $this->getMetaData($model);
+
         foreach ($meta[$model]['functions'] as $schema) {
             $functionExistsQuery = $this->di->get('dialect')->showFunction($schema['functionName']);
             $result = $this::$connection->query($functionExistsQuery)->fetch();
