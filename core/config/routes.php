@@ -195,8 +195,8 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'permissions' => array(
-                'path' => '/api/:version/permissions',
+            'permission' => array(
+                'path' => '/api/:version/permission',
                 'allowedMethods' => array(
                     'GET',
                     'POST',
