@@ -48,9 +48,14 @@ class Permission extends Model
      */
     public function checkAccess($resource, $resourceAlias)
     {
+        $parentResource = $this->getParentResource($resource);
+
         $resource = ($this->resourcePrefix) ? ("$this->resourcePrefix.$resource") : $resource;
         if (isset($this->permissions[$resource])) {
             $this->resourcesPermissions[$resourceAlias] = max($this->permissions[$resource]);
+        }
+        else if (isset($this->permissions[$parentResource->entity])) {
+            $this->resourcesPermissions[$resourceAlias] = max($this->permissions[$parentResource->entity]);
         }
         else {
             throw new \Gaia\Exception\Access("Access Denied to $resource");
@@ -154,4 +159,26 @@ class Permission extends Model
         $this->resourcePrefix = $prefix;
     }
 
+    /**
+     * This function is used to fetch parent of the given resource.
+     * 
+     * @param string $childResource
+     * @return \Phalcon\Mvc\Model\Row
+     */
+    protected function getParentResource($childResource)
+    {
+        $di = \Phalcon\Di::getDefault();
+
+        $queryBuilder = $di->get('modelsManager')->createBuilder();
+        $queryBuilder->columns(["Resource2.entity"]);
+        $queryBuilder->from(['Resource1' => 'Gaia\\MVC\\Models\\Resource']);
+        $queryBuilder->leftJoin(
+            "Gaia\\MVC\\Models\\Resource",
+            "Resource2.id = Resource1.parentId",
+            "Resource2"
+        );
+
+        $queryBuilder->where('Resource1.entity=:resource:', ["resource" => $childResource]);
+        return $queryBuilder->getQuery()->getSingleResult();
+    }
 }
