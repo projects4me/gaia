@@ -121,8 +121,9 @@ class Project extends Model
         $attributes = $relatedModelMeta->getAttributes($relatedModel);
 
         foreach ($possibleRelatedKeys as $relatedKey) {
-            if (in_array($relatedKey, $attributes))
+            if (in_array($relatedKey, $attributes)) {
                 return $relatedKey;
+            }
         }
     }
 }
