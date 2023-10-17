@@ -113,7 +113,7 @@ class Project extends Model
         $relatedModel = (new $relationship['relatedModel']());
 
         //If relatedModel is Project then return id as related key
-        if ($relatedModel instanceof \Gaia\MVC\Models\Project)
+        if ($relatedModel instanceof self)
             return 'id';
 
         $relatedModelMeta = $relatedModel->getModelsMetaData();
