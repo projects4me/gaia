@@ -252,12 +252,12 @@ class Relationship
         return isset($this->relConditions[$relName]) ? $this->relConditions[$relName] : null;
     }
 
-    protected function getRelationshipType($relName)
+    public function getRelationshipType($relName)
     {
         $relTypes = ["hasOne", "hasMany", "hasManyToMany"];
 
         foreach ($relTypes as $relType) {
-            if (isset($this->$relType[$relName])) {
+            if (in_array($relName, $this->$relType)) {
                 return $relType;
             }
         }

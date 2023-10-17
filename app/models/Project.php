@@ -110,7 +110,11 @@ class Project extends Model
         $possibleRelatedKeys = ['projectId', 'relatedId'];
 
         $relationship = $model->getRelationship()->getRelationship($relName);
-        $relatedModel = (new $relationship['relatedModel']());
+        $relType = $model->getRelationship()->getRelationshipType($relName);
+        $modelType = 'relatedModel';
+
+        ($relType === 'hasManyToMany') && ($modelType = 'secondaryModel');
+        $relatedModel = (new $relationship[$modelType]());
 
         // If relatedModel is Project then return id as related key
         if ($relatedModel instanceof self) {
