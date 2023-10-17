@@ -112,7 +112,7 @@ class Project extends Model
         $relationship = $model->getRelationship()->getRelationship($relName);
         $relatedModel = (new $relationship['relatedModel']());
 
-        //If relatedModel is Project then return id as related key 
+        // If relatedModel is Project then return id as related key
         if ($relatedModel instanceof self) {
             return 'id';
         }
