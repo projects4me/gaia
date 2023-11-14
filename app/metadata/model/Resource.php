@@ -89,6 +89,13 @@ $models['Resource'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+        ),
+        'groupName' => array(
+            'name' => 'groupName',
+            'label' => 'LBL_GROUP_NAME',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false
         )
     ),
     'indexes' => array(

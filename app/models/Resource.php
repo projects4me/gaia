@@ -48,14 +48,16 @@ class Resource extends Model
      */
     public static function addResource($parentEntity, $values)
     {
+        $groupClause = "AND groupName = '{$values['groupName']}'";
+
         //update resource tree before inserting new node
-        $parentNode = Resource::findFirst("entity='$parentEntity'");
+        $parentNode = Resource::findFirst("entity='$parentEntity' $groupClause");
 
         if ($parentNode) {
             $parentRHT = $parentNode->rht;
 
-            $updateLFTPhql = "UPDATE resources set lft = lft+2 where lft>=$parentRHT";
-            $updateRHTPhql = "UPDATE resources set rht = rht+2 where rht>=$parentRHT";
+            $updateLFTPhql = "UPDATE resources set lft = lft+2 where lft>=$parentRHT $groupClause";
+            $updateRHTPhql = "UPDATE resources set rht = rht+2 where rht>=$parentRHT $groupClause";
 
             \Phalcon\Di::getDefault()->get('db')->query($updateLFTPhql);
             \Phalcon\Di::getDefault()->get('db')->query($updateRHTPhql);
@@ -78,17 +80,19 @@ class Resource extends Model
      * 
      * @param string $entityName
      */
-    public static function deleteResource($entityName)
+    public static function deleteResource($entityName, $groupName)
     {
+        $groupClause = "AND groupName='$groupName'";
+        
         //update resource tree before deleting node
-        $node = Resource::findFirst("entity='$entityName'");
+        $node = Resource::findFirst("entity='$entityName' $groupClause");
 
         $nodeRHT = $node->rht;
         $nodeLFT = $node->lft;
 
         $rangeWidth = ($nodeRHT - $nodeLFT) + 1;
-        $updateLFTPhql = "UPDATE resources set lft = lft-$rangeWidth where lft>=$nodeRHT";
-        $updateRHTPhql = "UPDATE resources set rht = rht-$rangeWidth where rht>=$nodeRHT";
+        $updateLFTPhql = "UPDATE resources set lft = lft-$rangeWidth where lft>=$nodeRHT $groupClause";
+        $updateRHTPhql = "UPDATE resources set rht = rht-$rangeWidth where rht>=$nodeRHT $groupClause";
 
         \Phalcon\Di::getDefault()->get('db')->query($updateLFTPhql);
         \Phalcon\Di::getDefault()->get('db')->query($updateRHTPhql);
