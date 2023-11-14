@@ -49,6 +49,7 @@ class ResourceController extends AclAdminController
 
         $requestData = $util->objectToArray($this->request->getJsonRawBody());
         $parentEntity = $requestData['parentEntity'];
+
         $newId = create_guid();
         $requestData['id'] = $newId;
 

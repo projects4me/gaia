@@ -305,13 +305,13 @@ abstract class BaseAcl extends TestCase
         $newModel = $model['model'];
         $instance = $model['instance'];
 
-        $parentNode = $newModel->getMethod('findFirst')->invoke($instance, "entity='App'");
+        $parentNode = $newModel->getMethod('findFirst')->invoke($instance, "entity='App' AND groupName='gaia'");
 
         if ($parentNode) {
             $parentRHT = $parentNode->rht;
 
-            $updateLFTPhql = "UPDATE resources set lft = lft+2 where lft>=$parentRHT";
-            $updateRHTPhql = "UPDATE resources set rht = rht+2 where rht>=$parentRHT";
+            $updateLFTPhql = "UPDATE resources set lft = lft+2 where lft>=$parentRHT AND groupName='gaia'";
+            $updateRHTPhql = "UPDATE resources set rht = rht+2 where rht>=$parentRHT AND groupName='gaia'";
 
             \Phalcon\Di::getDefault()->get('db')->query($updateLFTPhql);
             \Phalcon\Di::getDefault()->get('db')->query($updateRHTPhql);
@@ -338,14 +338,14 @@ abstract class BaseAcl extends TestCase
         $newModel = $model['model'];
         $instance = $model['instance'];
 
-        $node = $newModel->getMethod('findFirst')->invoke($instance, "entity='$resource->entity'");
+        $node = $newModel->getMethod('findFirst')->invoke($instance, "entity='$resource->entity' AND groupName='gaia'");
 
         $nodeRHT = $node->rht;
         $nodeLFT = $node->lft;
 
         $rangeWidth = ($nodeRHT - $nodeLFT) + 1;
-        $updateLFTPhql = "UPDATE resources set lft = lft-$rangeWidth where lft>=$nodeRHT";
-        $updateRHTPhql = "UPDATE resources set rht = rht-$rangeWidth where rht>=$nodeRHT";
+        $updateLFTPhql = "UPDATE resources set lft = lft-$rangeWidth where lft>=$nodeRHT AND groupName='gaia'";
+        $updateRHTPhql = "UPDATE resources set rht = rht-$rangeWidth where rht>=$nodeRHT AND groupName='gaia'";
 
         \Phalcon\Di::getDefault()->get('db')->query($updateLFTPhql);
         \Phalcon\Di::getDefault()->get('db')->query($updateRHTPhql);
