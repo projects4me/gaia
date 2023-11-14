@@ -8,14 +8,14 @@ $models['Userpermission'] = array(
     'tableName' => 'user_permissions',
     'viewSql' => 'SELECT Permission.id as id, Membership.userId as userId, Resource2.entity, MAX(Permission.readF) as readF, MAX(Permission.`searchF`) as searchF, MAX(Permission.`createF`) as createF, MAX(Permission.`updateF`) as updateF, MAX(Permission.`deleteF`) as deleteF, MAX(Permission.`importF`) as importF, MAX(Permission.`exportF`) as exportF 
                     FROM resources Resource1
-                    left join resources Resource2 on Resource2.lft <= Resource1.lft AND Resource2.rht >= Resource1.rht
+                    inner join resources Resource2 on Resource2.lft <= Resource1.lft AND Resource2.rht >= Resource1.rht AND Resource1.groupName="prometheus" AND Resource2.groupName="prometheus"
                     left join permissions Permission on Permission.resourceId = Resource2.id
                     inner join memberships Membership on Membership.roleId = Permission.roleId AND Membership.userId = getModelId()
                     GROUP BY Resource2.id
                     UNION ALL
                     SELECT Permission.id as id, Aclcontroller.relatedId as userId, Resource2.entity, MAX(Permission.readF) as readF, MAX(Permission.`searchF`) as searchF, MAX(Permission.`createF`) as createF, MAX(Permission.`updateF`) as updateF, MAX(Permission.`deleteF`) as deleteF, MAX(Permission.`importF`) as importF, MAX(Permission.`exportF`) as exportF 
                     FROM resources Resource1
-                    left join resources Resource2 on Resource2.lft <= Resource1.lft AND Resource2.rht >= Resource1.rht
+                    inner join resources Resource2 on Resource2.lft <= Resource1.lft AND Resource2.rht >= Resource1.rht AND Resource1.groupName="Prometheus" AND Resource2.groupName="Prometheus"
                     left join permissions Permission on Permission.resourceId = Resource2.id
                     inner join acl_controllers Aclcontroller on Aclcontroller.id = Permission.controllerId AND Aclcontroller.relatedId = getModelId()
                     GROUP BY Resource2.id;',
