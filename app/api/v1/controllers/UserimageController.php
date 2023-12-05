@@ -39,7 +39,7 @@ class UserimageController extends \Phalcon\Mvc\Controller
             $filePath = APP_PATH . DS . 'public' . DS . 'img' . DS . 'Reddit.png';
         }
 
-        $data = readfile($filePath);
+        $data = file_get_contents($filePath);
 
         $this->response->setStatusCode(200, "OK");
         $this->response->setContent($data);
