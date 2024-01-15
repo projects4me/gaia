@@ -24,8 +24,7 @@ $models['Role'] = array(
         'description' => array(
             'name' => 'description',
             'label' => 'LBL_ROLES_DESCRIPTION',
-            'type' => 'varchar',
-            'length' => '50',
+            'type' => 'text',
             'null' => false,
         ),        
         'dateCreated' => array(
