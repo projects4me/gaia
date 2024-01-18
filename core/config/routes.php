@@ -198,7 +198,6 @@ $config['routes'] = array(
             'permission' => array(
                 'path' => '/api/:version/permission',
                 'allowedMethods' => array(
-                    'GET',
                     'POST',
                     'PUT',
                     'DELETE',
