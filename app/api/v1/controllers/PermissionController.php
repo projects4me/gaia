@@ -53,7 +53,7 @@ class PermissionController extends AclAdminController
         // Merge applied permission into default against the resource name.
         foreach ($defaultPermissions['data'] as $index => $defaultPermission) {
             $resourceName = $defaultPermission['attributes']['resourceName'];
-            if (isset($permissionsMap[$resourceName])) {
+            if (isset($permissionsMap[$resourceName]) === true) {
                 unset($permissionsMap[$resourceName]['attributes']['resourceId']);
                 $defaultPermissions['data'][$index] = $permissionsMap[$resourceName];
             }
@@ -76,33 +76,31 @@ class PermissionController extends AclAdminController
         $path = APP_PATH . '/app/metadata/model';
         $permissions = [];
 
-        if (is_dir($path) === true) {
-            // Get all models names.
-            global $settings;
-            $models = $settings['models'];
+        // Get all models names.
+        global $settings;
+        $models = $settings['models'];
 
-            $permissionInterface = $this->getPermissionInterface($path);
-            $permissionIndex = 0;
-            foreach ($models as $modelName) {
-                // Get metadata of the model.
-                $metaFilePath = $path . '/' . $modelName . '.php';
-                $this->addPermissions($permissionIndex, $modelName, [$modelName], $permissions, $permissionInterface, false);
+        $permissionInterface = $this->getPermissionInterface($path);
+        $permissionIndex = 0;
+        foreach ($models as $modelName) {
+            // Get metadata of the model.
+            $metaFilePath = $path . '/' . $modelName . '.php';
+            $this->addPermissions($permissionIndex, $modelName, [$modelName], $permissions, $permissionInterface, false);
 
-                $data = $this->di->get('fileHandler')->readFile($metaFilePath);
+            $data = $this->di->get('fileHandler')->readFile($metaFilePath);
 
-                $fieldTypes = ['fields', 'relationships'];
-                foreach ($fieldTypes as $fieldType) {
-                    // Here fields can be relationship types when $fieldType is relationships.
-                    $fields = array_keys($data[$modelName][$fieldType]);
+            $fieldTypes = ['fields', 'relationships'];
+            foreach ($fieldTypes as $fieldType) {
+                // Here fields can be relationship types when $fieldType is relationships.
+                $fields = array_keys($data[$modelName][$fieldType]);
 
-                    if ($fieldType !== 'relationships') {
-                        $this->addPermissions($permissionIndex, $modelName, $fields, $permissions, $permissionInterface, true);
-                    } else {
-                        $relatedTypes = $fields;
-                        foreach ($relatedTypes as $relType) {
-                            $rels = array_keys($data[$modelName][$fieldType][$relType]);
-                            $this->addPermissions($permissionIndex, $modelName, $rels, $permissions, $permissionInterface, true);
-                        }
+                if ($fieldType !== 'relationships') {
+                    $this->addPermissions($permissionIndex, $modelName, $fields, $permissions, $permissionInterface, true);
+                } else {
+                    $relatedTypes = $fields;
+                    foreach ($relatedTypes as $relType) {
+                        $rels = array_keys($data[$modelName][$fieldType][$relType]);
+                        $this->addPermissions($permissionIndex, $modelName, $rels, $permissions, $permissionInterface, true);
                     }
                 }
             }
@@ -115,6 +113,12 @@ class PermissionController extends AclAdminController
      * This method is used to create permission model by the given field lists and return the permissions array.
      *
      * @method addPermissions
+     * @param  int    $permissionIndex     Permissions array index.
+     * @param  string $modelName           Model name.
+     * @param  array  $fields              Fields array.
+     * @param  array  $permissions         Permissions array.
+     * @param  array  $permissionInterface Permission default interface.
+     * @param  bool   $addPrefix           Boolean flag to add model as a prefix on field.
      * @return void
      */
     protected function addPermissions(&$permissionIndex, $modelName, $fields, &$permissions, $permissionInterface, $addPrefix)
@@ -142,6 +146,7 @@ class PermissionController extends AclAdminController
      * This method returns permission interface.
      *
      * @method getPermissionInterface
+     * @param  string $path Path of the permission model.
      * @return array
      */
     protected function getPermissionInterface($path)
