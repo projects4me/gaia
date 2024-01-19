@@ -53,7 +53,7 @@ class PermissionController extends AclAdminController
         // Merge applied permission into default against the resource name.
         foreach ($defaultPermissions['data'] as $index => $defaultPermission) {
             $resourceName = $defaultPermission['attributes']['resourceName'];
-            if (isset($permissionsMap[$resourceName]) === true) {
+            if (isset($permissionsMap[$resourceName])) {
                 unset($permissionsMap[$resourceName]['attributes']['resourceId']);
                 $defaultPermissions['data'][$index] = $permissionsMap[$resourceName];
             }
@@ -78,32 +78,30 @@ class PermissionController extends AclAdminController
 
         if (is_dir($path) === true) {
             // Get all models names.
-            $models = scandir($path);
+            global $settings;
+            $models = $settings['models'];
 
             $permissionInterface = $this->getPermissionInterface($path);
             $permissionIndex = 0;
-            foreach ($models as $modelFileName) {
+            foreach ($models as $modelName) {
                 // Get metadata of the model.
-                if ($modelFileName !== '.' && $modelFileName !== '..') {
-                    $metaFilePath = $path . '/' . $modelFileName;
-                    $modelName = str_replace('.php', '', $modelFileName);
-                    $this->addPermissions($permissionIndex, $modelName, [$modelName], $permissions, $permissionInterface, false);
+                $metaFilePath = $path . '/' . $modelName . '.php';
+                $this->addPermissions($permissionIndex, $modelName, [$modelName], $permissions, $permissionInterface, false);
 
-                    $data = $this->di->get('fileHandler')->readFile($metaFilePath);
+                $data = $this->di->get('fileHandler')->readFile($metaFilePath);
 
-                    $fieldTypes = ['fields', 'relationships'];
-                    foreach ($fieldTypes as $fieldType) {
-                        // Here fields can be relationship types when $fieldType is relationships.
-                        $fields = array_keys($data[$modelName][$fieldType]);
+                $fieldTypes = ['fields', 'relationships'];
+                foreach ($fieldTypes as $fieldType) {
+                    // Here fields can be relationship types when $fieldType is relationships.
+                    $fields = array_keys($data[$modelName][$fieldType]);
 
-                        if ($fieldType !== 'relationships') {
-                            $this->addPermissions($permissionIndex, $modelName, $fields, $permissions, $permissionInterface, true);
-                        } else {
-                            $relatedTypes = $fields;
-                            foreach ($relatedTypes as $relType) {
-                                $rels = array_keys($data[$modelName][$fieldType][$relType]);
-                                $this->addPermissions($permissionIndex, $modelName, $rels, $permissions, $permissionInterface, true);
-                            }
+                    if ($fieldType !== 'relationships') {
+                        $this->addPermissions($permissionIndex, $modelName, $fields, $permissions, $permissionInterface, true);
+                    } else {
+                        $relatedTypes = $fields;
+                        foreach ($relatedTypes as $relType) {
+                            $rels = array_keys($data[$modelName][$fieldType][$relType]);
+                            $this->addPermissions($permissionIndex, $modelName, $rels, $permissions, $permissionInterface, true);
                         }
                     }
                 }
@@ -126,7 +124,8 @@ class PermissionController extends AclAdminController
             $modelFields = array_map(
                 function ($field) use ($modelName) {
                     return "{$modelName}.{$field}";
-                }, $fields
+                },
+                $fields
             );
         }
 
