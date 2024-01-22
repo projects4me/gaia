@@ -304,7 +304,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $request = \OAuth2\Request::createFromGlobals();
             if (!$server->verifyResourceRequest($request)) {
                 $server->getResponse()->send();
-                
             }
             $this->setUser($request);
 
@@ -987,7 +986,22 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
             $result = array();
             foreach ($data['baseModel'] as $values) {
-                //print_r($values);
+                /**
+                 * First check whether there is any array of the current model or not. If its array then
+                 * convert its values to a temp array and remove it because this array will cause error 
+                 * while creating the JSON API included array. The current model array as a result set can
+                 * be caused when User gives input to columns array of queryBuilder as "CurrentModel.*".
+                 */
+                $modelName = Util::extractClassFromNamespace($this->modelName);
+                if ($values[$modelName]) {
+                    $baseModelArray = $values[$modelName];
+                    unset($values[$modelName]);
+
+                    foreach ($baseModelArray as $attr => $value) {
+                        $values[$attr] = $value;
+                    }
+                }
+
                 foreach ($values as $attr => $value) {
                     if (!isset($result[$values['id']])) {
                         $result[$values['id']] = array();

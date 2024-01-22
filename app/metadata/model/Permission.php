@@ -110,14 +110,14 @@ $models['Permission'] = array(
     'functions' => array(),
     'relationships' => array(
         'belongsTo' => array(
-            'resources' => array(
+            'resource' => array(
                 'primaryKey' => 'resourceId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Resource',
                 'relatedKey' => 'id',
             ),
-            'requesters' => array(
-                'primaryKey' => 'roleId',
-                'relatedModel' => '\\Gaia\\MVC\\Models\\Requester',
+            'aclController' => array(
+                'primaryKey' => 'controllerId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Aclcontroller',
                 'relatedKey' => 'id',
             )
         ),
