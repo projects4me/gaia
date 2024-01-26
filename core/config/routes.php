@@ -314,6 +314,13 @@ $config['routes'] = array(
                     'POST'
                 ),
                 'identifier' => 'id'
+            ),
+            'systemsetting' => array(
+                'path' => '/api/:version/systemsetting',
+                'allowedMethods' => array(
+                    'GET'
+                ),
+                'identifier' => 'id'
             )
         )
     ),
