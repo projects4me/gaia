@@ -315,13 +315,13 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id'
             ),
-            'systemsetting' => array(
+            'systemsetting' => [
                 'path' => '/api/:version/systemsetting',
-                'allowedMethods' => array(
+                'allowedMethods' => [
                     'GET'
-                ),
+                ],
                 'identifier' => 'id'
-            )
+            ]
         )
     ),
     'app' => array(

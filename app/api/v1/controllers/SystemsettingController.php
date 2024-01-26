@@ -11,13 +11,20 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
 /**
  * System Settings/Configurations Controller
  *
- * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Foundation
+ * @author   Rana Nouman <ranamnouman@gmail.com>
+ * @package  Foundation
  * @category Controller
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class SystemsettingController extends RestController
 {
+
+    /**
+     * This method is used to return list of system configurations.
+     *
+     * @method listAction
+     * @return \Phalcon\Http\Response
+     */
     public function listAction()
     {
         $configPaths = [
