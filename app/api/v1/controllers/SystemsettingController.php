@@ -39,7 +39,7 @@ class SystemsettingController extends RestController
             ]
         ];
 
-        // Get all system configurations.
+        // Get all system level configurations.
         global $settings;
         $systemConfigurations = $settings['system'];
 
