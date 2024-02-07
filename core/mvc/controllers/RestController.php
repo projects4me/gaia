@@ -12,6 +12,7 @@ use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Events\Manager as EventsManager;
 use Gaia\Libraries\Utils\Util;
 use Phalcon\Events\ManagerInterface as EventsManagerInterface;
+
 use function Gaia\Libraries\Utils\create_guid;
 
 /**
@@ -29,7 +30,6 @@ use function Gaia\Libraries\Utils\create_guid;
  */
 class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\EventsAwareInterface
 {
-
     /**
      * Model's name is registered from controller via parameter
      * @var string $modelName
@@ -285,8 +285,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $oAuthAccessToken = \Gaia\MVC\Models\Oauthaccesstoken::findFirst(array("access_token='" . $token . "'"));
         if (isset($oAuthAccessToken->user_id)) {
             $currentUser = \Gaia\MVC\Models\User::findFirst("username ='" . $oAuthAccessToken->user_id . "'");
-        }
-        else {
+        } else {
             throw new \Gaia\Exception\Access("Invalid Token");
         }
     }
@@ -315,14 +314,14 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 $permission
             );
 
-            $resource = \Phalcon\Text::camelize($this->controllerName) . "." . $this->aclMap[$this->actionName]['label'];
+            $resource = \Phalcon\Text::camelize($this->controllerName);
 
             //check ACL on Model
-            $permission->checkAccess($resource, \Phalcon\Text::camelize($this->controllerName));
+            $permission->checkModelAccess($resource, $this->aclMap[$this->actionName], null);
 
             //check ACL on Model's relationship
             $relationships = $this->getRelsWithMeta($this->request->get('rels'), Util::extractClassFromNamespace($this->modelName));
-            $permission->checkRelsAccess($relationships, $this->aclMap[$this->actionName]['label']);
+            $permission->checkRelsAccess($resource, $relationships, $this->aclMap[$this->actionName]);
         }
     }
 
@@ -359,17 +358,16 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         if (file_exists("../app/languages/" . $bestLanguage . ".php")) {
             require "../app/languages/" . $bestLanguage . ".php";
 
-        //if not exist best language find the first language existing
-        }
-        else {
+            //if not exist best language find the first language existing
+        } else {
             //search for the first existing language
             $cont = 0;
             foreach ($languages as $value) {
                 if (file_exists("../app/languages/" . $value['language'] . ".php")) {
                     require "../app/languages/" . $value['language'] . ".php";
-                }
-                else
+                } else {
                     $cont++;
+                }
             }
 
             //if not find any language set the desfault
@@ -395,10 +393,9 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $modelName = $this->modelName;
         // only allow versioned API calls
         if (preg_match('@api/@', $this->request->getURI())) {
-            $allowedMethods = (array)$settings->routes['rest']->$apiVersion->$modelName->allowedMethods;
+            $allowedMethods = (array) $settings->routes['rest']->$apiVersion->$modelName->allowedMethods;
             $this->response->setJsonContent(array('methods' => $allowedMethods));
-        }
-        else {
+        } else {
             $this->response->setStatusCode(400);
             $this->response->setJsonContent(array('status' => 'error', 'description' => 'Method only allowed for API'));
         }
@@ -444,7 +441,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             'addRelFields' => $addRelFields
         );
 
-        $model = new $modelName;
+        $model = new $modelName();
 
         $data = $model->read($params);
         $dataArray = $this->extractData($data, 'one');
@@ -499,7 +496,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             'offset' => $offset,
         );
 
-        $model = new $modelName;
+        $model = new $modelName();
 
         $data = $model->readRelated($params);
 
@@ -554,7 +551,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             'addRelFields' => $addRelFields
         );
 
-        $model = new $modelName;
+        $model = new $modelName();
         $data = $model->readAll($params);
 
         $dataArray = $this->extractData($data);
@@ -610,13 +607,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     $temp['data']['attributes']['id'] = $temp['data']['id'];
                 }
                 $data[] = $temp['data']['attributes'];
-            }
-            else {
+            } else {
                 $data = $temp;
             }
 
-        }
-        else {
+        } else {
             $data[0] = $temp;
         }
 
@@ -643,8 +638,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     $dataArray = $this->extractData($data, 'one');
                     $finalData = $this->buildHAL($dataArray);
                     return $this->returnResponse($finalData);
-                }
-                else {
+                } else {
                     $errors = array();
                     foreach ($model->getMessages() as $message) {
                         $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
@@ -682,7 +676,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $transaction = $transactionManager->get();
 
         foreach ($data->collection as $index => $resource) {
-            $temp = (array)$resource;
+            $temp = (array) $resource;
             if (!isset($temp['id'])) {
                 $data = array('error' => array('code' => 400, 'description' => 'Id missing for record ' . $index));
                 $transaction->rollback("Id missing for record " . $index);
@@ -700,8 +694,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $updatedData->setTransaction($transaction);
             if ($updatedData->save()) {
                 $this->eventsManager->fire('rest:afterUpdate', $this, $updatedData);
-            }
-            else {
+            } else {
                 $data = array('error' => array('code' => 400, 'description' => 'Unable to save ' . $temp['id'] . ', all changes reverted'));
                 $transaction->rollback("Patched failed for " . $temp['id']);
                 return $this->returnResponse($data);
@@ -736,13 +729,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         if ($util->existSubArray($requestData)) {
             if (isset($requestData['data']['attributes'])) {
                 $data[] = $requestData['data']['attributes'];
-            }
-            else {
+            } else {
                 $data = $requestData;
             }
 
-        }
-        else {
+        } else {
             $data[0] = $requestData;
         }
 
@@ -754,8 +745,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 if ($v == "CURRENT_DATE") {
                     $now = new \DateTime();
                     $value[$k] = $now->format('Y-m-d');
-                }
-                else if ($v == "CURRENT_DATETIME") {
+                } elseif ($v == "CURRENT_DATETIME") {
                     $now = new \DateTime();
                     $value[$k] = $now->format('Y-m-d H:i:s');
                 }
@@ -763,14 +753,22 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             }
 
             //if have param then update
-            if (isset($this->id)) //if passed by url
+            if (isset($this->id)) { //if passed by url
                 $model = $modelName::findFirst($this->id);
-            else {
+            } else {
                 $new_id = create_guid();
                 $model->newId = $new_id;
                 $value['id'] = $new_id;
             }
             $model->assign($value);
+
+            /**
+             * If there is need to made some changes in model depending upon the request values then
+             * we can add requestValues object inside the model that will be used in the beforeCreate event.
+             */
+            $model->requestValues = $value;
+            $this->eventsManager->fire('rest:beforeCreate', $this, $model);
+
             if ($model->save($value)) {
                 $logger->debug('Firing afterCreate Event');
                 $model->id = $new_id;
@@ -780,9 +778,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 if (isset($this->id)) {
                     $this->response->setJsonContent(array('status' => 'OK'));
                     $logger->debug('Status is OK');
-                //insert
-                }
-                else {
+                    //insert
+                } else {
                     $dataResponse['id'] = $new_id;
                     $this->response->setStatusCode(201, "Created");
 
@@ -793,11 +790,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     return $this->returnResponse($finalData);
                 }
 
-            }
-            else {
+            } else {
                 $errors = array();
-                foreach ($model->getMessages() as $message)
+                foreach ($model->getMessages() as $message) {
                     $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
+                }
                 $logger->error($errors);
                 $this->response->setJsonContent(array(
                     'status' => 'ERROR',
@@ -834,18 +831,17 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 $this->eventsManager->fire('rest:afterDelete', $this, $model);
                 $this->response->setJsonContent(array('data' => array('type' => Util::extractClassFromNamespace($modelName), "id" => $this->id)));
                 $this->response->setStatusCode(200, "OK");
-            }
-            else {
+            } else {
                 $this->response->setStatusCode(409, "Conflict");
 
                 $errors = array();
-                foreach ($model->getMessages() as $message)
+                foreach ($model->getMessages() as $message) {
                     $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
+                }
 
                 $this->response->setJsonContent(array('status' => "ERROR", 'messages' => $errors));
             }
-        }
-        else {
+        } else {
             $this->response->setStatusCode(409, "Conflict");
             $this->response->setJsonContent(array('status' => "ERROR", 'messages' => array("O elemento não existe")));
         }
@@ -856,9 +852,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     /**
      * Method Http accept: DELETE
      */
-    public function deleteCollectionAction()
-    {
-    }
+    public function deleteCollectionAction() {}
 
     /**
      * This function builds the custom HAL data
@@ -881,8 +875,9 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 $endPage = false;
             }
 
-            if ($page == -1)
+            if ($page == -1) {
                 $page = 1;
+            }
             if (!isset($query['page'])) {
                 $query['page'] = $page;
             }
@@ -895,8 +890,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     if ($param == 'page') {
                         $next[] = $param . '=' . ($page + 1);
                         $prev[] = $param . '=' . ($page - 1);
-                    }
-                    else {
+                    } else {
                         $next[] = $param . '=' . $value;
                         $prev[] = $param . '=' . $value;
                     }
@@ -924,18 +918,18 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         if (!empty($self)) {
             //$hal['meta']['_links']['self']['href'] .= '?'.implode('&',$self);
             $hal['meta']['links']['self']['href'] .= '?' . implode('&', $self);
-        //$hal['links']['self']['href'] .= '?'.implode('&',$self);
+            //$hal['links']['self']['href'] .= '?'.implode('&',$self);
         }
         if (!empty($next) && !$endPage) {
             //$hal['meta']['_links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
             $hal['meta']['links']['next']['href'] = $query['_url'] . '?' . implode('&', $next);
-        //$hal['links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
+            //$hal['links']['next']['href'] = $query['_url'].'?'.  implode('&',$next);
         }
 
         if (!empty($prev) && $page > 1) {
             //$hal['meta']['_links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
             $hal['meta']['links']['prev']['href'] = $query['_url'] . '?' . implode('&', $prev);
-        //$hal['links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
+            //$hal['links']['prev']['href'] = $query['_url'].'?'.  implode('&',$prev);
         }
 
         return $hal;
@@ -988,7 +982,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             foreach ($data['baseModel'] as $values) {
                 /**
                  * First check whether there is any array of the current model or not. If its array then
-                 * convert its values to a temp array and remove it because this array will cause error 
+                 * convert its values to a temp array and remove it because this array will cause error
                  * while creating the JSON API included array. The current model array as a result set can
                  * be caused when User gives input to columns array of queryBuilder as "CurrentModel.*".
                  */
@@ -1013,22 +1007,18 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                             if (!empty($value['id'])) {
                                 $result[$values['id']][$attr][] = $value;
                             }
-                        }
-                        else {
+                        } else {
                             $result[$values['id']][$attr] = $value;
                         }
-                    }
-                    else {
+                    } else {
                         $result[$values['id']][$attr] = $value;
                     }
                 }
             }
-        //die();
-        }
-        elseif (is_array($data)) {
+            //die();
+        } elseif (is_array($data)) {
             $result = $data;
-        }
-        else {
+        } else {
             $result = array();
         }
         //data extraction conditional statements (ends)..
@@ -1053,12 +1043,10 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                         // process attributes
                         if ($attr == 'id') {
                             $jsonapi_org['data'][$count]['id'] = $val;
-                        }
-                        else {
+                        } else {
                             $jsonapi_org['data'][$count]['attributes'][$attr] = $val;
                         }
-                    }
-                    else {
+                    } else {
                         // process relationships
                         $included = array();
                         if (isset($val['id'])) {
@@ -1077,8 +1065,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                             $included['attributes'] = $val;
 
                             $jsonapi_org['included'][($this->modelName . $id)] = $included;
-                        }
-                        else {
+                        } else {
                             foreach ($val as $idx => $object) {
                                 if (isset($object['id'])) {
                                     $included = array();
@@ -1104,8 +1091,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 }
                 $count++;
             }
-        }
-        else {
+        } else {
 
             foreach ($result as $object) {
 
@@ -1117,12 +1103,10 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                         // process attributes
                         if ($attr == 'id') {
                             $jsonapi_org['data']['id'] = $val;
-                        }
-                        else {
+                        } else {
                             $jsonapi_org['data']['attributes'][$attr] = $val;
                         }
-                    }
-                    else {
+                    } else {
                         // process relationships
                         if (isset($val['id'])) {
                             $included = array();
@@ -1141,8 +1125,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
                             $included['attributes'] = $val;
                             $jsonapi_org['included'][($relationDefinition[$relatedModelKey] . $id)] = $included;
-                        }
-                        else {
+                        } else {
                             foreach ($val as $idx => $object) {
                                 if (isset($object['id'])) {
                                     $included = array();
@@ -1183,12 +1166,12 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     }
 
     /**
-     * This function is used to extract hasManyToMany relationships and set each of 
+     * This function is used to extract hasManyToMany relationships and set each of
      * related data to its base model.
-     * 
+     *
      * @todo Find some other solution instead of matching Resultset type.
      * @param array $data Array containing relationship result sets.
-     * @param array $result Array of result that(currently) contains basemodel data.  
+     * @param array $result Array of result that(currently) contains basemodel data.
      */
     private function extractManyToManyRelationships($data, &$result)
     {
@@ -1201,21 +1184,20 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $type = explode("\\", get_class($relData));
             $type = end($type);
 
-            //this is used when User has not requested fields related to hasManyToMany relationship.
+            // This is used when User has not requested fields related to hasManyToMany relationship.
             if ($type == "Complex") {
                 $this->setAllRelatedFieldsToBaseModel($result, $relData, $relName);
             }
-            //this is used when User requested fields related to hasManyToMany relationship.
-            else if ($type == "Simple") {
+            // This is used when User requested fields related to hasManyToMany relationship.
+            elseif ($type == "Simple") {
                 $this->setSomeRelatedFieldsToBaseModel($result, $relData, $relName);
             }
         }
-
     }
 
     /**
      * This function is used to set related data to base model with all related fields.
-     * 
+     *
      * @param array $result Array of result that(currently) contains basemodel data.
      * @param array $relData Relationship result from database.
      * @param string $relName Name of the relationship.
@@ -1238,8 +1220,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
     /**
      * This function is used to set related data to base model with some requested related fields. In this
-     * we'll get result set in a form of scalar field, not as a object representing model. 
-     * 
+     * we'll get result set in a form of scalar field, not as a object representing model.
+     *
      * @param array $result Array of result that(currently) contains basemodel data.
      * @param array $relData Relationship result from database.
      * @param string $relName Name of the relationship.
@@ -1256,7 +1238,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             // iterate model attributes
             foreach ($model as $key => $value) {
 
-                //we shouldn't have to pass middle table information to user, that's why this check is created. 
+                //we shouldn't have to pass middle table information to user, that's why this check is created.
                 ($key != $lhsKey && $key != $rhsKey) && ($relatedModel[$model['id']][$key] = $value);
             }
 
@@ -1305,8 +1287,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         foreach ($array as $key => &$value) {
             if (is_array($value)) {
                 $this->removePassword($value);
-            }
-            elseif ($key == 'password') {
+            } elseif ($key == 'password') {
                 unset($array[$key]);
             }
         }
@@ -1338,5 +1319,4 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             }
         }
     }
-
 }
