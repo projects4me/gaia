@@ -351,7 +351,7 @@ class PermissionController extends AclAdminController
         if ($modelGroups) {
             $this->passGroupDependentCheck($modelGroups, $permissionFlags, $allowedPermissions, $values, $requestedModelName);
         } elseif (in_array(strtolower($requestedModelName), $allowedGroups)) {
-            $this->passSelfDependentCheck($permissionFlags, $values, $requestedModelName);
+            $this->passSelfDependentCheck($permissionFlags, $allowedPermissions, $values, $requestedModelName);
         }
 
         return true;
@@ -398,11 +398,12 @@ class PermissionController extends AclAdminController
      *
      * @method passSelfDependentCheck
      * @param  array  $permissionFlags    Array of permission flags.
+     * @param  array  $allowedPermissions The array of allowed permissions.
      * @param  array  $values             Array containing values of the request.
      * @param  string $requestedModelName The name of the model for which permission is going to be created.
      * @return bool
      */
-    private function passSelfDependentCheck($permissionFlags, $values, $requestedModelName)
+    private function passSelfDependentCheck($permissionFlags, $allowedPermissions, $values, $requestedModelName)
     {
         /*
         * If the requested model is itself a group then fetch all of the list of dependent models and
@@ -441,7 +442,6 @@ class PermissionController extends AclAdminController
                 }
             }
         }
-        
         return true;
     }
 
