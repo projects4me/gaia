@@ -21,7 +21,6 @@ use function Gaia\Libraries\Utils\create_guid;
  */
 class PermissionController extends AclAdminController
 {
-
     /**
      * This components that this controller uses.
      *
@@ -350,59 +349,99 @@ class PermissionController extends AclAdminController
 
         // Check whether the given resource/model is dependent on group or not.
         if ($modelGroups) {
-            foreach ($modelGroups as $group) {
-                $groupPermission = $this->retrievePermission(ucfirst($group), $values);
-
-                if ($groupPermission) {
-                    foreach ($permissionFlags as $flag) {
-                        $permissionSet = "{$groupPermission->$flag}{$values[$flag]}";
-                        if (!in_array($permissionSet, $allowedPermissions)) {
-                            $message = "You cannot set access level of {$values[$flag]} on {$requestedModelName} module because its group '{$group}' is having access level of {$groupPermission->$flag}.";
-                            throw new \Gaia\Exception\Exception(htmlspecialchars($message));
-                        }
-                    }
-                }
-            }
+            $this->passGroupDependentCheck($modelGroups, $permissionFlags, $allowedPermissions, $values, $requestedModelName);
         } elseif (in_array(strtolower($requestedModelName), $allowedGroups)) {
-            /*
-             * If the requested model is itself a group then fetch all of the list of dependent models and
-             * retrieve there permissions and check the eligibility for permission creation.
-             */
+            $this->passSelfDependentCheck($permissionFlags, $values, $requestedModelName);
+        }
 
-            global $settings;
-            $path = APP_PATH . '/app/metadata/model';
-            $models = $settings['models'];
-            $dependentModels = [];
-            $dependentPermissions = [];
+        return true;
+    }
 
-            // Get list of dependent groups.
-            foreach ($models as $modelName) {
-                $metaFilePath = $path . '/' . $modelName . '.php';
-                $data = $this->di->get('fileHandler')->readFile($metaFilePath);
+    /**
+     * This function is called when a resource is dependent on some groups and is used to verify all checks required
+     * to create permission.
+     *
+     * @method passGroupDependentCheck
+     * @param  array  $modelGroups        Array containing the name of groups on which the resource in dependent.
+     * @param  array  $permissionFlags    Array of permission flags.
+     * @param  array  $allowedPermissions The array of allowed permissions.
+     * @param  array  $values             Array containing values of the request.
+     * @param  string $requestedModelName The name of the model for which permission is going to be created.
+     * @return bool
+     */
+    private function passGroupDependentCheck(
+        $modelGroups,
+        $permissionFlags,
+        $allowedPermissions,
+        $values,
+        $requestedModelName
+    ) {
+        foreach ($modelGroups as $group) {
+            $groupPermission = $this->retrievePermission(ucfirst($group), $values);
 
-                if (in_array(strtolower($requestedModelName), $data[$modelName]['groups'])) {
-                    $dependentModels[] = $modelName;
-                }
-            }
-
-            // Retrieve permissions of dependent models.
-            foreach ($dependentModels as $dependentModel) {
-                $permission = $this->retrievePermission($dependentModel, $values);
-                ($permission) && ($dependentPermissions[$dependentModel] = $permission);
-            }
-
-            // Iterate all of the dependent permissions and check the eligibility.
-            foreach ($dependentPermissions as $dependentPermission) {
+            if ($groupPermission) {
                 foreach ($permissionFlags as $flag) {
-                    $permissionSet = "{$values[$flag]}{$dependentPermission->$flag}";
+                    $permissionSet = "{$groupPermission->$flag}{$values[$flag]}";
                     if (!in_array($permissionSet, $allowedPermissions)) {
-                        $message = "You cannot set access level of {$values[$flag]} on {$requestedModelName} module because its dependent group '{$group}' is having access level of {$dependentPermission->$flag}.";
+                        $message = "You cannot set access level of {$values[$flag]} on {$requestedModelName} module because its group '{$group}' is having access level of {$groupPermission->$flag}.";
                         throw new \Gaia\Exception\Exception(htmlspecialchars($message));
                     }
                 }
             }
         }
 
+        return true;
+    }
+
+    /**
+     * This function is called when a resource is itself a group and verify all checks required to create permission.
+     *
+     * @method passSelfDependentCheck
+     * @param  array  $permissionFlags    Array of permission flags.
+     * @param  array  $values             Array containing values of the request.
+     * @param  string $requestedModelName The name of the model for which permission is going to be created.
+     * @return bool
+     */
+    private function passSelfDependentCheck($permissionFlags, $values, $requestedModelName)
+    {
+        /*
+        * If the requested model is itself a group then fetch all of the list of dependent models and
+        * retrieve there permissions and check the eligibility for permission creation.
+        */
+
+        global $settings;
+        $path = APP_PATH . '/app/metadata/model';
+        $models = $settings['models'];
+        $dependentModels = [];
+        $dependentPermissions = [];
+
+        // Get list of dependent groups.
+        foreach ($models as $modelName) {
+            $metaFilePath = $path . '/' . $modelName . '.php';
+            $data = $this->di->get('fileHandler')->readFile($metaFilePath);
+
+            if (in_array(strtolower($requestedModelName), $data[$modelName]['groups'])) {
+                $dependentModels[] = $modelName;
+            }
+        }
+
+        // Retrieve permissions of dependent models.
+        foreach ($dependentModels as $dependentModel) {
+            $permission = $this->retrievePermission($dependentModel, $values);
+            ($permission) && ($dependentPermissions[$dependentModel] = $permission);
+        }
+
+        // Iterate all of the dependent permissions and check the eligibility.
+        foreach ($dependentPermissions as $dependentModel => $dependentPermission) {
+            foreach ($permissionFlags as $flag) {
+                $permissionSet = "{$values[$flag]}{$dependentPermission->$flag}";
+                if (!in_array($permissionSet, $allowedPermissions)) {
+                    $message = "You cannot set access level of {$values[$flag]} on {$requestedModelName} module because its dependent group '{$dependentModel}' is having access level of {$dependentPermission->$flag}.";
+                    throw new \Gaia\Exception\Exception(htmlspecialchars($message));
+                }
+            }
+        }
+        
         return true;
     }
 
