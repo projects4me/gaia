@@ -251,7 +251,7 @@ class PermissionController extends AclAdminController
          * inside db, is updated.
          */
 
-        if (str_contains($requestData['resourceId'], 'new') === true) {
+        if (isset($requestData['resourceId']) && str_contains($requestData['resourceId'], 'new') === true) {
             // All of the resources should be available inside the database.
             $requestData = $requestData['data']['attributes'];
         }
@@ -386,8 +386,16 @@ class PermissionController extends AclAdminController
                 foreach ($permissionFlags as $flag) {
                     $permissionSet = "{$groupPermission->$flag}{$values[$flag]}";
                     if (!in_array($permissionSet, $allowedPermissions)) {
-                        $message = "You cannot set access level of {$values[$flag]} on {$requestedModelName} module because its group '{$group}' is having access level of {$groupPermission->$flag}.";
-                        throw new \Gaia\Exception\Exception(htmlspecialchars($message));
+                        $errorMessage = "You cannot set access level of {$values[$flag]} on {$requestedModelName} module because its group '{$group}' is having access level of {$groupPermission->$flag}.";
+                        $suggestion = "You can use access levels e.g. 0, 1, 2 and 9";
+                        throw new \Gaia\Exception\Permission(
+                            $errorMessage,
+                            null,
+                            null,
+                            [
+                                "suggestion" => $suggestion
+                            ]
+                        );
                     }
                 }
             }
@@ -439,8 +447,16 @@ class PermissionController extends AclAdminController
             foreach ($permissionFlags as $flag) {
                 $permissionSet = "{$values[$flag]}{$dependentPermission->$flag}";
                 if (!in_array($permissionSet, $allowedPermissions)) {
-                    $message = "You cannot set access level of {$values[$flag]} on {$requestedModelName} module because its dependent group '{$dependentModel}' is having access level of {$dependentPermission->$flag}.";
-                    throw new \Gaia\Exception\Exception(htmlspecialchars($message));
+                    $errorMessage = "You cannot set access level of {$values[$flag]} on {$requestedModelName} module because its dependent group '{$dependentModel}' is having access level of {$dependentPermission->$flag}.";
+                    $suggestion = "You can use access levels e.g. 1 and 9";
+                    throw new \Gaia\Exception\Permission(
+                        $errorMessage,
+                        null,
+                        null,
+                        [
+                            "suggestion" => $suggestion
+                        ]
+                    );
                 }
             }
         }
@@ -464,7 +480,7 @@ class PermissionController extends AclAdminController
 
         foreach ($expectedRelatedIds as $expectedRelatedId) {
             $clause = "resourceId='{$resource->id}'";
-            if ($values[$expectedRelatedId]) {
+            if (isset($values[$expectedRelatedId])) {
                 $clause .= " AND {$expectedRelatedId}='{$values[$expectedRelatedId]}'";
                 $permission = \Gaia\MVC\Models\Permission::findFirst($clause);
             }

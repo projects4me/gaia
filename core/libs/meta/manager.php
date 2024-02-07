@@ -315,7 +315,7 @@ class Manager
         foreach ($models as $modelName) {
             $metadata = $this->getModelMeta($modelName);
 
-            if ($metadata['acl']['group']) {
+            if (isset($metadata['acl']['group'])) {
                 $groups[] = $modelName;
             }
         }
