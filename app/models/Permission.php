@@ -12,10 +12,10 @@ use Gaia\Libraries\Utils\Util;
 /**
  * Permission Model
  *
- * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Foundation
+ * @author   Rana Nouman <ranamnouman@gmail.com>
+ * @package  Foundation
  * @category Model
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class Permission extends Model
 {
@@ -43,9 +43,9 @@ class Permission extends Model
     /**
      * This function is used to check whether the user has access to given resource or not.
      *
-     * @param string $resource
-     * @param array $actionMap
-     * @param string $resourceAlias
+     * @param string $resource      Name of the resource.
+     * @param array  $actionMap     Array of acl action map.
+     * @param string $resourceAlias Alias of the resource.
      */
     public function checkModelAccess($resource, $actionMap, $resourceAlias)
     {
@@ -58,13 +58,13 @@ class Permission extends Model
      * This function is used to check whether the user has access to given list of
      * relationships or not.
      *
-     * @param string $resource
-     * @param array $rels
-     * @param array $actionMap
+     * @param string $resource  Name of the resource.
+     * @param array  $rels      Array of model relationships.
+     * @param array  $actionMap Array of acl action map.
      */
     public function checkRelsAccess($resource, $rels, $actionMap)
     {
-        foreach ($rels as $relName => $relMeta) {
+        foreach (array_keys($rels) as $relName) {
             $this->checkAccess("$resource.$relName", $actionMap, $relName);
         }
     }
@@ -76,14 +76,14 @@ class Permission extends Model
      * resourcesPermissions, which is key value paired array containing the resource name as key and access level as
      * its value.
      *
-     * @param string $resource
-     * @param array $actionMap
-     * @param string $resourceAlias
+     * @param string $resource      Name of the resource.
+     * @param array  $actionMap     Array of acl action map.
+     * @param string $resourceAlias Alias of the resource.
      */
     public function checkAccess($resource, $actionMap, $resourceAlias)
     {
         $parentResource = $this->getParentResource($resource, $actionMap['action'], $resourceAlias);
-        $alias = $resourceAlias ?? $resource;
+        $alias = ($resourceAlias ?? $resource);
         $accessGranted = false;
 
         $resource = ($this->resourcePrefix) ? ("$this->resourcePrefix.$resource") : $resource;
@@ -91,7 +91,8 @@ class Permission extends Model
             $this->resourcesPermissions[$alias] = max($this->permissions[$resource]);
             $accessGranted = true;
         } elseif (isset($this->permissions[$parentResource->entity])
-                && max($this->permissions[$parentResource->entity])) {
+            && max($this->permissions[$parentResource->entity])
+        ) {
             $this->resourcesPermissions[$alias] = max($this->permissions[$parentResource->entity]);
             $accessGranted = true;
         } else {
@@ -104,8 +105,8 @@ class Permission extends Model
     /**
      * This function is used to fetch user permissions based on given action.
      *
-     * @param string $userId
-     * @param string $action
+     * @param string $userId The identifier of user.
+     * @param string $action Name of action for which permission is to be fetched.
      */
     public function fetchUserPermissions($userId, $action)
     {
@@ -136,8 +137,8 @@ class Permission extends Model
     /**
      * This function is used to setup the permissions query using the phalcon query builder.
      *
-     * @param string $resource
-     * @param string $action
+     * @param  string $resource
+     * @param  string $action
      * @return \Phalcon\Mvc\Model\Query\Builder
      */
     private function buildPermissionsQuery($resource = null, $action = null)
@@ -164,7 +165,7 @@ class Permission extends Model
     /**
      * This function returns access of a given resource.
      *
-     * @param string $resource
+     * @param  string $resource
      * @return string
      */
     public function getAccess($resource)
@@ -186,7 +187,7 @@ class Permission extends Model
     /**
      * This function is used to fetch parent of the given resource.
      *
-     * @param string $childResource
+     * @param  string $childResource
      * @return \Phalcon\Mvc\Model\Row
      */
     protected function getParentResource($childResource)

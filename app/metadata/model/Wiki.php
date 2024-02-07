@@ -194,9 +194,9 @@ $models['Wiki'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior'
     ),
-    'groups' => array(
+    'groups' => [
         'project'
-    )
+    ]
 );
 
 return $models;

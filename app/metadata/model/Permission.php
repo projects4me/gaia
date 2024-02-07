@@ -122,7 +122,7 @@ $models['Permission'] = array(
             )
         ),
     ),
-    'behaviors' => array(
+    'behaviors' => [
         'aclBehavior',
         'auditBehavior',
         'dateCreatedBehavior',
@@ -131,7 +131,7 @@ $models['Permission'] = array(
         'modifiedUserBehavior',
         'modelIdentifierBehavior',
         'currentUserBehavior'
-    ),
+    ],
 );
 
 return $models;
