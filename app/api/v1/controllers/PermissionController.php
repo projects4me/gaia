@@ -258,6 +258,8 @@ class PermissionController extends AclAdminController
 
         if ($this->passPreReqs($requestData) === true) {
             return parent::postAction();
+        } else {
+            throw new \Gaia\Exception\Exception("Permission cannot be created due to some reasons");
         }
     }
 
@@ -286,7 +288,7 @@ class PermissionController extends AclAdminController
 
         // Get metadata of the resource.
         $requestedModelName = $resourceModel->entity;
-        $resourceMetaData = $this->di->get('fileHandler')->readFile("{$metadataPath}/{$requestedModelName}.php");
+        $resourceMetaData = $this->getDI()->get('metaManager')->getModelMeta($requestedModelName);
 
         if (str_contains($requestedModelName, '.') === true) {
             list($requestedModule, $requestedField) = explode(".", $requestedModelName);
@@ -343,14 +345,15 @@ class PermissionController extends AclAdminController
      */
     private function passModelChecks($resourceMeta, $requestedModelName, $permissionFlags, $values)
     {
-        $allowedGroups = ['project'];
+        $allowedGroups = $this->getDI()->get('metaManager')->getGroups();
+        $modelGroups = $this->getDI()->get('metaManager')->getModelGroups($requestedModelName);
+
         $allowedPermissions = ['10', '11', '12', '90', '91', '99'];
-        $modelGroups = array_intersect($resourceMeta[$requestedModelName]['groups'], $allowedGroups);
 
         // Check whether the given resource/model is dependent on group or not.
         if ($modelGroups) {
             $this->passGroupDependentCheck($modelGroups, $permissionFlags, $allowedPermissions, $values, $requestedModelName);
-        } elseif (in_array(strtolower($requestedModelName), $allowedGroups)) {
+        } elseif (in_array($requestedModelName, $allowedGroups)) {
             $this->passSelfDependentCheck($permissionFlags, $allowedPermissions, $values, $requestedModelName);
         }
 
@@ -418,10 +421,9 @@ class PermissionController extends AclAdminController
 
         // Get list of dependent groups.
         foreach ($models as $modelName) {
-            $metaFilePath = $path . '/' . $modelName . '.php';
-            $data = $this->di->get('fileHandler')->readFile($metaFilePath);
+            $group = $this->getDI()->get('metaManager')->getModelGroups($modelName);
 
-            if (in_array(strtolower($requestedModelName), $data[$modelName]['groups'])) {
+            if (in_array($requestedModelName, $group)) {
                 $dependentModels[] = $modelName;
             }
         }

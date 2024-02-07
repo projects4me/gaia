@@ -129,7 +129,6 @@ $models['Permission'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'modelIdentifierBehavior',
         'currentUserBehavior'
     ],
 );

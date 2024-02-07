@@ -316,9 +316,6 @@ $models['Issue'] = array(
             'field' => 'createdUser',
             'condition' => 'Issue.createdUser=:userId:'
         )
-    ),
-    'groups' => array(
-        'project'
     )
 );
 
