@@ -7,6 +7,9 @@
 namespace Gaia\MVC\REST\Controllers;
 
 use Gaia\MVC\REST\Controllers\AclAdminController;
+use Gaia\Libraries\Utils\Util;
+
+use function Gaia\Libraries\Utils\create_guid;
 
 /**
  * Permissions Controller
@@ -18,6 +21,13 @@ use Gaia\MVC\REST\Controllers\AclAdminController;
  */
 class PermissionController extends AclAdminController
 {
+    /**
+     * This components that this controller uses.
+     *
+     * @var $uses
+     */
+    public $uses = ['Permission'];
+
     /**
      * Project authorization flag
      *
@@ -46,16 +56,15 @@ class PermissionController extends AclAdminController
         // Map appliedPermissions array by 'resourceName' for easier lookup.
         $permissionsMap = [];
         foreach ($appliedPermissions['data'] as $appliedPermission) {
-            $resourceName = $appliedPermission['attributes']['resourceName'];
-            $permissionsMap[$resourceName] = $appliedPermission;
+            $requestedResource = $appliedPermission['attributes']['resourceName'];
+            $permissionsMap[$requestedResource] = $appliedPermission;
         }
 
         // Merge applied permission into default against the resource name.
         foreach ($defaultPermissions['data'] as $index => $defaultPermission) {
-            $resourceName = $defaultPermission['attributes']['resourceName'];
-            if (isset($permissionsMap[$resourceName]) === true) {
-                unset($permissionsMap[$resourceName]['attributes']['resourceId']);
-                $defaultPermissions['data'][$index] = $permissionsMap[$resourceName];
+            $requestedResource = $defaultPermission['attributes']['resourceName'];
+            if (isset($permissionsMap[$requestedResource]) === true) {
+                $defaultPermissions['data'][$index] = $permissionsMap[$requestedResource];
             }
         }
 
@@ -89,17 +98,17 @@ class PermissionController extends AclAdminController
 
             $data = $this->di->get('fileHandler')->readFile($metaFilePath);
 
-            $fieldTypes = ['fields', 'relationships'];
-            foreach ($fieldTypes as $fieldType) {
-                // Here fields can be relationship types when $fieldType is relationships.
-                $fields = array_keys($data[$modelName][$fieldType]);
+            $requestedFieldTypes = ['fields', 'relationships'];
+            foreach ($requestedFieldTypes as $requestedFieldType) {
+                // Here fields can be relationship types when $requestedFieldType is relationships.
+                $requestedFields = array_keys($data[$modelName][$requestedFieldType]);
 
-                if ($fieldType !== 'relationships') {
-                    $this->addPermissions($permissionIndex, $modelName, $fields, $permissions, $permissionInterface, true);
+                if ($requestedFieldType !== 'relationships') {
+                    $this->addPermissions($permissionIndex, $modelName, $requestedFields, $permissions, $permissionInterface, true);
                 } else {
-                    $relatedTypes = $fields;
+                    $relatedTypes = $requestedFields;
                     foreach ($relatedTypes as $relType) {
-                        $rels = array_keys($data[$modelName][$fieldType][$relType]);
+                        $rels = array_keys($data[$modelName][$requestedFieldType][$relType]);
                         $this->addPermissions($permissionIndex, $modelName, $rels, $permissions, $permissionInterface, true);
                     }
                 }
@@ -115,21 +124,21 @@ class PermissionController extends AclAdminController
      * @method addPermissions
      * @param  int    $permissionIndex     Permissions array index.
      * @param  string $modelName           Model name.
-     * @param  array  $fields              Fields array.
+     * @param  array  $requestedFields     Fields array.
      * @param  array  $permissions         Permissions array.
      * @param  array  $permissionInterface Permission default interface.
      * @param  bool   $addPrefix           Boolean flag to add model as a prefix on field.
      * @return void
      */
-    protected function addPermissions(&$permissionIndex, $modelName, $fields, &$permissions, $permissionInterface, $addPrefix)
+    protected function addPermissions(&$permissionIndex, $modelName, $requestedFields, &$permissions, $permissionInterface, $addPrefix)
     {
-        $modelFields = $fields;
+        $modelFields = $requestedFields;
         if ($addPrefix === true) {
             $modelFields = array_map(
-                function ($field) use ($modelName) {
-                    return "{$modelName}.{$field}";
+                function ($requestedField) use ($modelName) {
+                    return "{$modelName}.{$requestedField}";
                 },
-                $fields
+                $requestedFields
             );
         }
 
@@ -137,6 +146,7 @@ class PermissionController extends AclAdminController
         foreach ($modelFields as $modelField) {
             $permissionIndex++;
             $permissionInterface['attributes']['resourceName'] = $modelField;
+            $permissionInterface['attributes']['resourceId'] = "new_resource_{$permissionIndex}";
             $permissionInterface['id'] = "new_{$permissionIndex}";
             $permissions['data'][] = $permissionInterface;
         }
@@ -157,11 +167,11 @@ class PermissionController extends AclAdminController
         $permissionModel = $this->di->get('fileHandler')->readFile("{$path}/Permission.php");
 
         $permissionFields = array_keys($permissionModel['Permission']['fields']);
-        $notRequiredFields = ['resourceId', 'controllerId', 'id'];
+        $notRequiredFields = ['controllerId', 'id'];
 
-        $fields = array_diff($permissionFields, $notRequiredFields);
-        foreach ($fields as $field) {
-            $permissionInterface['attributes'][$field] = '';
+        $requestedFields = array_diff($permissionFields, $notRequiredFields);
+        foreach ($requestedFields as $requestedField) {
+            $permissionInterface['attributes'][$requestedField] = '';
         }
 
         return $permissionInterface;
@@ -202,13 +212,13 @@ class PermissionController extends AclAdminController
         foreach ($queryParamsRequested as $queryParam => $value) {
             $query = "(({$maps['query'][$queryParam]} : {$value}))";
 
-            $fields = ["Permission.*"];
-            $fields[] = $maps['fields'][$queryParam];
+            $requestedFields = ["Permission.*"];
+            $requestedFields[] = $maps['fields'][$queryParam];
 
             $params = [
                 'where' => $query,
                 'rels' => $maps['rels'][$queryParam],
-                'fields' => $fields,
+                'fields' => $requestedFields,
             ];
 
             $permissionModel = new $this->modelName();
@@ -218,5 +228,263 @@ class PermissionController extends AclAdminController
         }
 
         return $appliedPermissions;
+    }
+
+    /**
+     * This function is used to create permission.
+     *
+     * @method postAction
+     * @return \Phalcon\Http\Response|null
+     */
+    public function postAction()
+    {
+        global $logger;
+        $logger->debug('Gaia.core.controllers.permission->postAction');
+
+        $util = new Util();
+
+        $requestData = $util->objectToArray($this->request->getJsonRawBody());
+
+        /*
+         * Fetch resource if not attached to permission and create permission. Below conditional statement
+         * will work in case when post request is generated from frontend when a default permission, which is not
+         * inside db, is updated.
+         */
+
+        if (isset($requestData['resourceId']) && str_contains($requestData['resourceId'], 'new') === true) {
+            // All of the resources should be available inside the database.
+            $requestData = $requestData['data']['attributes'];
+        }
+
+        if ($this->passPreReqs($requestData) === true) {
+            return parent::postAction();
+        } else {
+            throw new \Gaia\Exception\Exception("Permission cannot be created due to some reasons");
+        }
+    }
+
+    /**
+     * This function verify all of the checks that are required to create a permission.
+     *
+     * @method passPreReqs
+     * @param  array $values Request values
+     * @return bool
+     */
+    private function passPreReqs($values)
+    {
+        // Resource name required.
+        $resourceName = $values['resourceName'];
+        if (!$resourceName) {
+            throw new \Gaia\Exception\Exception("Please specify resource name");
+        }
+
+        // Get permission flags from configurations.
+        global $settings;
+        $permissionFlags = $settings['system']['acl']['permissionFlags'];
+
+        // Retrieve Resource from database using given resource name.
+        $metadataPath = APP_PATH . '/app/metadata/model';
+        $resourceModel = \Gaia\MVC\Models\Resource::findFirst("entity='{$resourceName}'");
+
+        // Get metadata of the resource.
+        $requestedModelName = $resourceModel->entity;
+        $resourceMetaData = $this->getDI()->get('metaManager')->getModelMeta($requestedModelName);
+
+        if (str_contains($requestedModelName, '.') === true) {
+            list($requestedModule, $requestedField) = explode(".", $requestedModelName);
+            $requestedModelName = $requestedModule;
+        }
+
+        if ($requestedField) {
+            $this->passFieldChecks(
+                $permissionFlags,
+                $values
+            );
+        } elseif (!$requestedField) {
+            $this->passModelChecks(
+                $resourceMetaData,
+                $requestedModelName,
+                $permissionFlags,
+                $values
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * This function verify all checks, related to fields, that are required to create a permission.
+     *
+     * @method passFieldChecks
+     * @param  array $permissionFlags Array of permission flags.
+     * @param  array $values          Array containing values of the request.
+     * @return bool
+     */
+    private function passFieldChecks($permissionFlags, $values)
+    {
+        $allowedAccessLevels = ["0", "9"];
+
+        foreach ($permissionFlags as $flag) {
+            if (!in_array($values[$flag], $allowedAccessLevels)) {
+                throw new \Gaia\Exception\Exception("You can only set 0 and 9 access levels");
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * This function verify all checks, related to model, that are required to create a permission.
+     *
+     * @method passModelChecks
+     * @param  array  $resourceMeta       The array containing metadata of resource.
+     * @param  string $requestedModelName The name of the model for which permission is going to be created.
+     * @param  array  $permissionFlags    Array of permission flags.
+     * @param  array  $values             Array containing values of the request.
+     * @return bool
+     */
+    private function passModelChecks($resourceMeta, $requestedModelName, $permissionFlags, $values)
+    {
+        $allowedGroups = $this->getDI()->get('metaManager')->getGroups();
+        $modelGroups = $this->getDI()->get('metaManager')->getModelGroups($requestedModelName);
+
+        $allowedPermissions = ['10', '11', '12', '90', '91', '99'];
+
+        // Check whether the given resource/model is dependent on group or not.
+        if ($modelGroups) {
+            $this->passGroupDependentCheck($modelGroups, $permissionFlags, $allowedPermissions, $values, $requestedModelName);
+        } elseif (in_array($requestedModelName, $allowedGroups)) {
+            $this->passSelfDependentCheck($permissionFlags, $allowedPermissions, $values, $requestedModelName);
+        }
+
+        return true;
+    }
+
+    /**
+     * This function is called when a resource is dependent on some groups and is used to verify all checks required
+     * to create permission.
+     *
+     * @method passGroupDependentCheck
+     * @param  array  $modelGroups        Array containing the name of groups on which the resource in dependent.
+     * @param  array  $permissionFlags    Array of permission flags.
+     * @param  array  $allowedPermissions The array of allowed permissions.
+     * @param  array  $values             Array containing values of the request.
+     * @param  string $requestedModelName The name of the model for which permission is going to be created.
+     * @return bool
+     */
+    private function passGroupDependentCheck(
+        $modelGroups,
+        $permissionFlags,
+        $allowedPermissions,
+        $values,
+        $requestedModelName
+    ) {
+        foreach ($modelGroups as $group) {
+            $groupPermission = $this->retrievePermission(ucfirst($group), $values);
+
+            if ($groupPermission) {
+                foreach ($permissionFlags as $flag) {
+                    $permissionSet = "{$groupPermission->$flag}{$values[$flag]}";
+                    if (!in_array($permissionSet, $allowedPermissions)) {
+                        $errorMessage = "You cannot set access level of {$values[$flag]} on {$requestedModelName} module because its group '{$group}' is having access level of {$groupPermission->$flag}.";
+                        $suggestion = "You can use access levels e.g. 0, 1, 2 and 9";
+                        throw new \Gaia\Exception\Permission(
+                            $errorMessage,
+                            null,
+                            null,
+                            [
+                                "suggestion" => $suggestion
+                            ]
+                        );
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * This function is called when a resource is itself a group and verify all checks required to create permission.
+     *
+     * @method passSelfDependentCheck
+     * @param  array  $permissionFlags    Array of permission flags.
+     * @param  array  $allowedPermissions The array of allowed permissions.
+     * @param  array  $values             Array containing values of the request.
+     * @param  string $requestedModelName The name of the model for which permission is going to be created.
+     * @return bool
+     */
+    private function passSelfDependentCheck($permissionFlags, $allowedPermissions, $values, $requestedModelName)
+    {
+        /*
+        * If the requested model is itself a group then fetch all of the list of dependent models and
+        * retrieve there permissions and check the eligibility for permission creation.
+        */
+
+        global $settings;
+        $path = APP_PATH . '/app/metadata/model';
+        $models = $settings['models'];
+        $dependentModels = [];
+        $dependentPermissions = [];
+
+        // Get list of dependent groups.
+        foreach ($models as $modelName) {
+            $group = $this->getDI()->get('metaManager')->getModelGroups($modelName);
+
+            if (in_array($requestedModelName, $group)) {
+                $dependentModels[] = $modelName;
+            }
+        }
+
+        // Retrieve permissions of dependent models.
+        foreach ($dependentModels as $dependentModel) {
+            $permission = $this->retrievePermission($dependentModel, $values);
+            ($permission) && ($dependentPermissions[$dependentModel] = $permission);
+        }
+
+        // Iterate all of the dependent permissions and check the eligibility.
+        foreach ($dependentPermissions as $dependentModel => $dependentPermission) {
+            foreach ($permissionFlags as $flag) {
+                $permissionSet = "{$values[$flag]}{$dependentPermission->$flag}";
+                if (!in_array($permissionSet, $allowedPermissions)) {
+                    $errorMessage = "You cannot set access level of {$values[$flag]} on {$requestedModelName} module because its dependent group '{$dependentModel}' is having access level of {$dependentPermission->$flag}.";
+                    $suggestion = "You can use access levels e.g. 1 and 9";
+                    throw new \Gaia\Exception\Permission(
+                        $errorMessage,
+                        null,
+                        null,
+                        [
+                            "suggestion" => $suggestion
+                        ]
+                    );
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * This function is used to retrieve permission from the database against the given resourceName, roleId
+     * or controllerId.
+     *
+     * @method retrievePermission
+     * @param  string $resourceName The name of resource.
+     * @param  array  $values       The array of default values for permission model.
+     * @return \Gaia\MVC\Models\Permission
+     */
+    protected function retrievePermission($resourceName, $values)
+    {
+        $resource = \Gaia\MVC\Models\Resource::findFirst("entity='{$resourceName}'");
+        // Check that permission is available against given resourceId, roleId or controllerId.
+        $expectedRelatedIds = ['roleId', 'controllerId'];
+
+        foreach ($expectedRelatedIds as $expectedRelatedId) {
+            $clause = "resourceId='{$resource->id}'";
+            if (isset($values[$expectedRelatedId])) {
+                $clause .= " AND {$expectedRelatedId}='{$values[$expectedRelatedId]}'";
+                $permission = \Gaia\MVC\Models\Permission::findFirst($clause);
+            }
+        }
+        return $permission;
     }
 }

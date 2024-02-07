@@ -12,12 +12,12 @@ use Gaia\Libraries\file\Handler as fileHandler;
 
 /**
  * This class is used for the metadata storage, retrival and maintenance.
- * 
+ *
  * The meta data in Foundation is divided into 3 parts
  * 1) Model Metadata
  * 2) View Metadata
  * 3) BusinessProcess Metadata
- *  
+ *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
  * @category metaManager
@@ -31,7 +31,7 @@ class Manager
      */
     protected $di;
 
-    const basePath = '/app/metadata';
+    public const basePath = '/app/metadata';
 
     /**
      * Manager constructor.
@@ -46,21 +46,21 @@ class Manager
     /**
      * This function get the model metadata stored for the application and
      * returns it. This class uses Phalcon Model Data
-     * 
+     *
      * @todo Use Cahce
      * @param string $model
      * @return array
      */
     public function getModelMeta($model)
     {
-        $metadata = $this->di->get('fileHandler')->readFile(APP_PATH.self::basePath.'/model/'.$model.'.php');
+        $metadata = $this->di->get('fileHandler')->readFile(APP_PATH . self::basePath . '/model/' . $model . '.php');
         $metadata = $metadata[$model];
         $fields = $this->parseFields($metadata);
 
         $modelMeta = array(
             // Set the table name
             'tableName' => $fields['tableName'],
-            
+
             // Every column in the mapped table
             MetaData::MODELS_ATTRIBUTES => $fields['attributes'],
 
@@ -99,43 +99,41 @@ class Manager
             // Fields that allow empty strings
             MetaData::MODELS_EMPTY_STRING_VALUES => array(
             ),
-            
+
             // All the relationships for the model
             // For now we will just copy things over and see if for future
             // we need any adjustment in the format
-            'relationships' => (isset($metadata['relationships'])?$metadata['relationships']:array()),
-            
-            // Load the behaviors as well
-            'behaviors' => (isset($metadata['behaviors'])?$metadata['behaviors']:array()),
+            'relationships' => (isset($metadata['relationships']) ? $metadata['relationships'] : array()),
 
-            'acl' => (isset($metadata['acl'])?$metadata['acl']:array()),
+            // Load the behaviors as well
+            'behaviors' => (isset($metadata['behaviors']) ? $metadata['behaviors'] : array()),
+
+            'acl' => (isset($metadata['acl']) ? $metadata['acl'] : array()),
         );
 
         return $modelMeta;
     }
-    
+
     /**
      * This function parses the data from the metadata array
-     * 
+     *
      * @param array $metadata
      * @return array
      */
     public function parseFields($metadata)
     {
         // The application default values
-        $data = array('default'=>array());
+        $data = array('default' => array());
         $data['tableName'] = $metadata['tableName'];
-        foreach ($metadata['fields'] as $field => $properties)
-        {
+        foreach ($metadata['fields'] as $field => $properties) {
             // Add all the fields in the attributes array
             $data['attributes'][] = $field;
-            
+
             // Sort out the primary and non primary fields
             if(isset($metadata['indexes'][$field]) && $metadata['indexes'][$field] == 'primary') {
                 $data['primary'][] = $field;
                 $data['id'] = $field;
-            } 
-            else {
+            } else {
                 $data['nonPrimary'][] = $field;
             }
 
@@ -143,35 +141,34 @@ class Manager
             if (!$properties['null']) {
                 $data['notNull'][] = $field;
             }
-            
+
             // set the field type
             $data['type'][$field] = $this->getFieldType($properties['type']);
 
             // set the field data bind type
             $data['bind'][$field] = $this->getBindType($properties['type']);
-            
+
             // if default value is set in metadata then set it
             if (isset($properties['default'])) {
                 //$data['bind'][$field] = $properties['default'];
                 $data['default'][$field] = $properties['default'];
             }
-            
+
         }
         return $data;
     }
-    
+
     /**
      * This function returns the type defined in metadata mapped according to
-     * PhalconPHP 
-     * 
+     * PhalconPHP
+     *
      * @param string $type
      * @return integer
      */
     public function getFieldType($type)
     {
         $dbType = '';
-        switch ($type)
-        {
+        switch ($type) {
             case 'int':
                 $dbType = Column::TYPE_INTEGER;
                 break;
@@ -217,19 +214,18 @@ class Manager
         }
         return $dbType;
     }
-    
+
     /**
-     * This function returns the field data bind type defined in metadata 
-     * mapped according to PhalconPHP 
-     * 
+     * This function returns the field data bind type defined in metadata
+     * mapped according to PhalconPHP
+     *
      * @param string $type
      * @return integer
      */
     public function getBindType($type)
     {
         $bindType = '';
-        switch ($type)
-        {
+        switch ($type) {
             case 'int':
                 $bindType = Column::BIND_PARAM_INT;
                 break;
@@ -274,5 +270,56 @@ class Manager
                 break;
         }
         return $bindType;
+    }
+
+    /**
+     * This function is used to get list of groups of the given model.
+     *
+     * @method getModelGroups
+     * @return array
+     */
+    public function getModelGroups($modelName)
+    {
+        $systemGroups = $this->getGroups();
+        $metadata = $this->getModelMeta($modelName);
+        $fields = $metadata[0];
+        $modelGroups = [];
+
+        foreach ($systemGroups as $group) {
+            $groupMetadata = $this->getModelMeta($group);
+            $relatedKey = $groupMetadata['acl']['group']['relatedKey'];
+
+            foreach ($fields as $field) {
+                if ($relatedKey === $field) {
+                    $modelGroups[] = $group;
+                }
+            }
+        }
+
+        return $modelGroups;
+    }
+
+    /**
+     * This function is used to return the list of groups in the system.
+     *
+     * @method getGroups
+     * @return array
+     */
+    public function getGroups()
+    {
+        $path = APP_PATH . '/app/metadata/model';
+        global $settings;
+        $models = $settings['models'];
+        $groups = [];
+
+        foreach ($models as $modelName) {
+            $metadata = $this->getModelMeta($modelName);
+
+            if (isset($metadata['acl']['group'])) {
+                $groups[] = $modelName;
+            }
+        }
+
+        return $groups;
     }
 }
