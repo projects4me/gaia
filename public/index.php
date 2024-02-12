@@ -10,7 +10,7 @@ Gaia\Libraries\Utils\executiontime;
  * Error Reporting
  * @todo Remove before publishing
  */
-error_reporting(E_ALL);
+error_reporting(E_ERROR);
 ini_set('display_errors', true);
 
 // Setup the application constants
