@@ -84,6 +84,7 @@ class PermissionController extends AclAdminController
     {
         $path = APP_PATH . '/app/metadata/model';
         $permissions = [];
+        $allowedRelTypes = ['hasOne', 'belongsTo'];
 
         // Get all models names.
         global $settings;
@@ -108,8 +109,12 @@ class PermissionController extends AclAdminController
                 } else {
                     $relatedTypes = $requestedFields;
                     foreach ($relatedTypes as $relType) {
-                        $rels = array_keys($data[$modelName][$requestedFieldType][$relType]);
-                        $this->addPermissions($permissionIndex, $modelName, $rels, $permissions, $permissionInterface, true);
+
+                        // Only create permissions for relationships of type hasOne and belongsTo.
+                        if (in_array($relType, $allowedRelTypes)) {
+                            $rels = array_keys($data[$modelName][$requestedFieldType][$relType]);
+                            $this->addPermissions($permissionIndex, $modelName, $rels, $permissions, $permissionInterface, true);
+                        }
                     }
                 }
             }
