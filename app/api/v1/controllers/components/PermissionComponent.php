@@ -6,6 +6,7 @@
 
 namespace Gaia\MVC\REST\Controllers\Components;
 
+use Gaia\Libraries\Utils\Util;
 use Phalcon\Events\Event as Event;
 
 /**
@@ -28,10 +29,15 @@ class PermissionComponent
      */
     public function beforeCreate(Event $event, $controller, $model)
     {
-        $values = $model->requestValues;
-        if (!$model->resourceId) {
-            $resource = \Gaia\MVC\Models\Resource::findFirst("entity='{$values['resourceName']}'");
+        $util = new Util();
+        $requestValues = $util->objectToArray($controller->request->getJsonRawBody());
+        $modelAttributes = $requestValues['data']['attributes'];
+
+        if (!$model->resourceId || str_contains($model->resourceId, 'new')) {
+            $resource = \Gaia\MVC\Models\Resource::findFirst("entity='{$modelAttributes['resourceName']}'");
             $model->resourceId = $resource->id;
+            $model->resourceName = 'subject';
         }
+        $model->newId = $model->id = $requestValues['data']['id'];
     }
 }

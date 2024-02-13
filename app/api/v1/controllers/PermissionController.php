@@ -147,7 +147,7 @@ class PermissionController extends AclAdminController
             $permissionIndex++;
             $permissionInterface['attributes']['resourceName'] = $modelField;
             $permissionInterface['attributes']['resourceId'] = "new_resource_{$permissionIndex}";
-            $permissionInterface['id'] = "new_{$permissionIndex}";
+            $permissionInterface['id'] = create_guid();
             $permissions['data'][] = $permissionInterface;
         }
     }
@@ -239,7 +239,7 @@ class PermissionController extends AclAdminController
     public function postAction()
     {
         global $logger;
-        $logger->debug('Gaia.core.controllers.permission->postAction');
+        $logger->debug('+Gaia.core.controllers.permission->postAction');
 
         $util = new Util();
 
@@ -251,7 +251,7 @@ class PermissionController extends AclAdminController
          * inside db, is updated.
          */
 
-        if (isset($requestData['resourceId']) && str_contains($requestData['resourceId'], 'new') === true) {
+        if (isset($requestData['data']['attributes']['resourceId']) && str_contains($requestData['data']['attributes']['resourceId'], 'new') === true) {
             // All of the resources should be available inside the database.
             $requestData = $requestData['data']['attributes'];
         }
@@ -261,6 +261,30 @@ class PermissionController extends AclAdminController
         } else {
             throw new \Gaia\Exception\Exception("Permission cannot be created due to some reasons");
         }
+
+        $logger->debug('-Gaia.core.controllers.permission->postAction');
+    }
+
+    /**
+     * This function is used to update the permission.
+     *
+     * @throws \Gaia\Exception\Permission
+     * @return \Phalcon\Http\Response
+     */
+    public function patchAction()
+    {
+        global $logger;
+        $logger->debug('+Gaia.core.controllers.permission->patchAction');
+        $util = new Util();
+        $requestData = $util->objectToArray($this->request->getJsonRawBody());
+        $requestData = $requestData['data']['attributes'];
+
+        if ($this->passPreReqs($requestData) === true) {
+            return parent::patchAction();
+        } else {
+            throw new \Gaia\Exception\Permission("Permission cannot be updated due to some reasons");
+        }
+        $logger->debug('-Gaia.core.controllers.permission->patchAction');
     }
 
     /**
@@ -270,7 +294,7 @@ class PermissionController extends AclAdminController
      * @param  array $values Request values
      * @return bool
      */
-    private function passPreReqs($values)
+    private function passPreReqs(&$values)
     {
         // Resource name required.
         $resourceName = $values['resourceName'];
@@ -325,8 +349,17 @@ class PermissionController extends AclAdminController
         $allowedAccessLevels = ["0", "9"];
 
         foreach ($permissionFlags as $flag) {
-            if (!in_array($values[$flag], $allowedAccessLevels)) {
-                throw new \Gaia\Exception\Exception("You can only set 0 and 9 access levels");
+            if (!empty($values[$flag]) && !in_array($values[$flag], $allowedAccessLevels)) {
+                $errorMessage = "You're not allowed to set {$values[$flag]}";
+                $suggestion = "You can only set 0 and 9 access levels";
+                throw new \Gaia\Exception\Permission(
+                    $errorMessage,
+                    null,
+                    null,
+                    [
+                        "suggestion" => $suggestion
+                    ]
+                );
             }
         }
 

@@ -762,16 +762,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             }
             $model->assign($value);
 
-            /**
-             * If there is need to made some changes in model depending upon the request values then
-             * we can add requestValues object inside the model that will be used in the beforeCreate event.
-             */
-            $model->requestValues = $value;
             $this->eventsManager->fire('rest:beforeCreate', $this, $model);
 
             if ($model->save($value)) {
                 $logger->debug('Firing afterCreate Event');
-                $model->id = $new_id;
+                $model->id = $model->newId;
                 $this->eventsManager->fire('rest:afterCreate', $this, $model);
                 $dataResponse = get_object_vars($model);
                 //update
@@ -780,10 +775,10 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     $logger->debug('Status is OK');
                     //insert
                 } else {
-                    $dataResponse['id'] = $new_id;
+                    $dataResponse['id'] = $model->newId;
                     $this->response->setStatusCode(201, "Created");
 
-                    $data = $model->read(array('id' => $new_id));
+                    $data = $model->read(array('id' => $model->newId));
 
                     $dataArray = $this->extractData($data, 'one');
                     $finalData = $this->buildHAL($dataArray);
