@@ -310,7 +310,7 @@ class PermissionController extends AclAdminController
         // Get permission flags from configurations.
         global $settings;
         $permissionFlags = $settings['system']['acl']['permissionFlags'];
-        
+
         // Get only required permission flags.
         $permissionFlags = array_intersect($permissionFlags->toArray(), array_keys($values));
 
