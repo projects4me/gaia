@@ -30,7 +30,7 @@ services:
       SERVICE_NAME: mysql
     ports:
       - '3306:3306'
-    command: --sql_mode="" --general-log=1 --general-log-file=/var/lib/mysql/mysql.log
+    command: --sql_mode="" --general-log=1 --general-log-file=/var/log/mysqld.log
     volumes:
      - ./db/Dump20221215.sql:/docker-entrypoint-initdb.d/Dump20221215.sql
      - mysql_db:/var/lib/mysql     
