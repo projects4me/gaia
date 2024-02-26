@@ -111,8 +111,18 @@ $models['Membership'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modifiedUserBehavior',
+        'aclBehavior'
     ),
+    'acl' => [
+        'assignment' => [
+            'field' => 'createdUser',
+            'condition' => 'Membership.createdUser=:userId:'
+        ],
+        'groupExplicitKeys' => [
+            'project' => 'relatedId'
+        ]
+    ]
 );
 
 return $models;

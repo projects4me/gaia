@@ -283,16 +283,25 @@ class Manager
         $systemGroups = $this->getGroups();
         $metadata = $this->getModelMeta($modelName);
         $fields = $metadata[0];
+        $explicitKeys = !empty($metadata['acl']['groupExplicitKeys'])
+                        ? $metadata['acl']['groupExplicitKeys']
+                        : [];
         $modelGroups = [];
 
         foreach ($systemGroups as $group) {
             $groupMetadata = $this->getModelMeta($group);
             $relatedKey = $groupMetadata['acl']['group']['relatedKey'];
 
+            // Check if there is same field as relatedKey of group.
             foreach ($fields as $field) {
                 if ($relatedKey === $field) {
                     $modelGroups[] = $group;
                 }
+            }
+
+            // Check if there is an explicit key against the group name in the model metadata.
+            if ($explicitKeys && isset($explicitKeys[strtolower($group)]) && !isset($modelGroups[$group])) {
+                $modelGroups[] = $group;
             }
         }
 
