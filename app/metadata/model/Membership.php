@@ -105,6 +105,19 @@ $models['Membership'] = array(
     ),
     'functions' => array(),
     'relationships' => array(
+        'hasOne' => [
+            'project' => [
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
+                'relatedKey' => 'id',
+                'condition' => 'Membership.relatedTo="project"'
+            ],
+            'user' => [
+                'primaryKey' => 'userId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id',
+            ]
+        ]
     ),
     'behaviors' => array(
         'auditBehavior',
