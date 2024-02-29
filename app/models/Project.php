@@ -48,7 +48,9 @@ class Project extends Model
 
         // If explicit key is available then don't need to find use default related key.
         if (!$relatedKey) {
-            $relatedKey = ($model instanceof \Gaia\MVC\Models\Project) ? 'id' : $metadata['acl']['group']['relatedKey'];
+            $relatedKey = ($model instanceof \Gaia\MVC\Models\Project)
+            ? 'id'
+            : $projectMeta['acl']['group']['relatedKey'];
         }
         $groups = self::getGroups($userId, $projectMeta['acl']['group']);
         $query->getPhalconQueryBuilder()->inWhere($model->modelAlias . ".$relatedKey", $groups);
