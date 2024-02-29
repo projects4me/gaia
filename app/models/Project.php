@@ -21,14 +21,14 @@ class Project extends Model
     /**
      * Flag decides whether to execute hasManyToMany relationship queries
      * separately or not.
-     * 
+     *
      * @var bool
      */
     public $splitQueries = false;
 
     /**
      * This function is used to apply ACL to the model.
-     * 
+     *
      * @param \Phalcon\Mvc\Model $model
      * @param string $userId
      */
@@ -37,16 +37,26 @@ class Project extends Model
         $di = \Phalcon\Di::getDefault();
         $query = $model->getQuery();
 
-        $metadata = $di->get('metaManager')->getModelMeta((new self)->modelAlias);
-        $relatedKey = ($model instanceof \Gaia\MVC\Models\Project) ? 'id' : $metadata['acl']['group']['relatedKey'];
+        $modelMeta = $di->get('metaManager')->getModelMeta($model->modelAlias);
+        $projectMeta = $di->get('metaManager')->getModelMeta((new self())->modelAlias);
+        $relatedKey = '';
 
-        $groups = self::getGroups($userId, $metadata['acl']['group']);
+        // Get explicit key if available against the project group.
+        if (!empty($modelMeta['acl']['groupExplicitKeys'])) {
+            $relatedKey = $modelMeta['acl']['groupExplicitKeys']['project'];
+        }
+
+        // If explicit key is available then don't need to find use default related key.
+        if (!$relatedKey) {
+            $relatedKey = ($model instanceof \Gaia\MVC\Models\Project) ? 'id' : $metadata['acl']['group']['relatedKey'];
+        }
+        $groups = self::getGroups($userId, $projectMeta['acl']['group']);
         $query->getPhalconQueryBuilder()->inWhere($model->modelAlias . ".$relatedKey", $groups);
     }
 
     /**
      * This function is used to get the list of the groups on which user have membership.
-     * 
+     *
      * @param string $userId
      * @param array $aclMeta
      * @return array
@@ -74,7 +84,7 @@ class Project extends Model
 
     /**
      * This function is used to apply acl on given relationship.
-     * 
+     *
      * @param \Phalcon\Mvc\Model $model
      * @param string $relName
      * @param string $userId
@@ -83,7 +93,7 @@ class Project extends Model
     {
         $di = \Phalcon\Di::getDefault();
 
-        $metadata = $di->get('metaManager')->getModelMeta((new self)->modelAlias);
+        $metadata = $di->get('metaManager')->getModelMeta((new self())->modelAlias);
         $groups = self::getGroups($userId, $metadata['acl']['group']);
 
         $relatedKey = self::getRelatedKey($model, $relName);
@@ -100,7 +110,7 @@ class Project extends Model
 
     /**
      * This function returns related key of the related model.
-     * 
+     *
      * @param \Phalcon\Mvc\Model $model
      * @param string $relName
      * @return string $relatedKey
