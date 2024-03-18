@@ -444,7 +444,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $model = new $modelName();
 
         $data = $model->read($params);
-        $dataArray = $this->extractData($data, 'one');
+        $dataArray = $this->extractData($data, $params, false, 'one');
         $this->finalData = $this->buildHAL($dataArray);
 
         $logger->debug('Firing afterRead event');
@@ -500,7 +500,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         $data = $model->readRelated($params);
 
-        $dataArray = $this->extractData($data, 'all', $relation);
+        $dataArray = $this->extractData($data, $params, false, 'all', $relation);
         $finalData = $this->buildHAL($dataArray, --$limit, $page);
         return $this->returnResponse($finalData);
     }
@@ -554,7 +554,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $model = new $modelName();
         $data = $model->readAll($params);
 
-        $dataArray = $this->extractData($data);
+        $dataArray = $this->extractData($data, $params);
         $this->finalData = $this->buildHAL($dataArray, --$limit, $page);
 
         $logger->debug('Firing afterRead event');
@@ -635,7 +635,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
                     $data = $model->read(array('id' => $value['id']));
 
-                    $dataArray = $this->extractData($data, 'one');
+                    $dataArray = $this->extractData($data, [], false, 'one');
                     $finalData = $this->buildHAL($dataArray);
                     return $this->returnResponse($finalData);
                 } else {
@@ -780,7 +780,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
                     $data = $model->read(array('id' => $model->newId));
 
-                    $dataArray = $this->extractData($data, 'one');
+                    $dataArray = $this->extractData($data, [], false, 'one');
                     $finalData = $this->buildHAL($dataArray);
                     return $this->returnResponse($finalData);
                 }
@@ -847,7 +847,9 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     /**
      * Method Http accept: DELETE
      */
-    public function deleteCollectionAction() {}
+    public function deleteCollectionAction()
+    {
+    }
 
     /**
      * This function builds the custom HAL data
@@ -958,16 +960,15 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * @todo optimize the code
      * @todo build HAL within
      */
-    protected function extractData($data, $type = 'all', $relation = '')
+    protected function extractData($data, $params = [], $requireScalarFields = false, $type = 'all', $relation = '')
     {
         $modelName = strtolower($this->modelName);
+        $permission = $this->getDI()->get('permission');
         if (!empty($relation)) {
             $modelName = strtolower($relation);
         }
         $jsonapi_org = array();
         $jsonapi_org['data'] = array();
-        //print_r($data->toArray());
-        //extracting data to array
 
         //data extraction conditional statements (starts)..
         if ($data['baseModel'] instanceof Resultset) {
@@ -975,6 +976,19 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
             $result = array();
             foreach ($data['baseModel'] as $values) {
+
+                if (isset($params['fields']) && !empty($params['fields'])) {
+                    $values = $this->updateFields($values, $params, $requireScalarFields);
+                }
+
+                if (empty($permission->getAllowedFields())) {
+                    $modelAlias = Util::extractClassFromNamespace($this->modelName);
+                    $permission->applyACLOnFields($values, $this->aclMap[$this->actionName]['action'], $modelAlias);
+                }
+
+
+                $values = $this->filterFieldsByACL($permission->getAllowedFields(), $values);
+
                 /**
                  * First check whether there is any array of the current model or not. If its array then
                  * convert its values to a temp array and remove it because this array will cause error
@@ -1313,5 +1327,75 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 }
             }
         }
+    }
+
+    /**
+     * This function is called when user requested some specific fields. If a related model field is requested then by
+     * default Phalcon consider it as a scalar field and we have no way to map this field into the object of related
+     * model. That's why for the requested related model fields we have used alias e.g. members_username. So for that
+     * purpose we map related model fields into the array with the key of relationship name. e.g. this function will
+     * convert [members_username=>"Rana Nouman"] to ["members" => ["username"=> "Rana Nouman"]].
+     *
+     * @method updateFields
+     * @param $values Array of values retreived against the model and/or related model from the database.
+     * @param $params Array of user requested parameters.
+     * @param $requiredScalarFields Boolean flag that represents that scalar fields are required or not.
+     *                              If not required then that field will be added into the object.
+     * @return array
+     */
+    final private function updateFields($values, $params, $requireScalarFields)
+    {
+        $updatedValues = [];
+        foreach ($values as $fieldName => $value) {
+            if (str_contains($fieldName, "_")) {
+                list($relName, $relfieldName) = explode("_", $fieldName);
+
+                // Check if user has given alias for the field or not, if given then use that one.
+                foreach ($params['fields'] as $requestedField) {
+                    if (str_contains(strtoupper($requestedField), "AS")
+                        && str_contains($requestedField, str_replace("_", ".", $fieldName))) {
+                        list(, , $alias) = explode(" ", $requestedField);
+                        $relfieldName = $alias;
+                    }
+                }
+
+                // If scalar fields are not required then if condition will work.
+                if (in_array($relName, $params['rels']) && !$requireScalarFields) {
+                    $updatedValues[$relName][$relfieldName] = $value;
+                } else {
+                    $updatedValues[$relfieldName] = $value;
+                }
+            } else {
+                $updatedValues[$fieldName] = $value;
+            }
+        }
+        return $updatedValues;
+    }
+
+    /**
+     * This function will only return those fields on which user has access.
+     *
+     * @method filterFieldsByACL
+     * @param $allowedFields Array of fields on which user has access.
+     * @param $values Result retreived from database.
+     */
+    protected function filterFieldsByACL($allowedFields, $values)
+    {
+        $filteredValues = [];
+
+        foreach ($values as $key => $value) {
+            if (getType($value) === "array") {
+                foreach ($value as $fieldName => $fieldValue) {
+                    $field = "{$key}.{$fieldName}";
+                    $filteredValues[$key][$fieldName] = (in_array($field, $allowedFields)) ? $fieldValue : null;
+                }
+            } else {
+                $modelName = Util::extractClassFromNamespace($this->modelName);
+                $field = "{$modelName}.{$key}";
+                $filteredValues[$key] = (in_array($field, $allowedFields)) ? $value : null;
+            }
+        }
+
+        return $filteredValues;
     }
 }
