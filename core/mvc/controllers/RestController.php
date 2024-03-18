@@ -23,21 +23,23 @@ use function Gaia\Libraries\Utils\create_guid;
  *
  * Supports only JSON, OAUTH, ACL, Mixin Implementation (Components)
  *
- * @author Hammad Hassan <gollomer@gmail.com>
- * @package core
+ * @author   Hammad Hassan <gollomer@gmail.com>
+ * @package  core
  * @category REST, Controller
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\EventsAwareInterface
 {
     /**
      * Model's name is registered from controller via parameter
+     *
      * @var string $modelName
      */
     protected $modelName;
 
     /**
      * Model object in question
+     *
      * @var \Phalcon\Mvc\ModelInterface $model
      */
     protected $model;
@@ -166,6 +168,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
     /**
      * The components used by this controller
+     *
      * @var array $components
      */
     protected $components = array();
@@ -233,15 +236,16 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * This function preloads the component classes for use later
      *
      * @return void
-     *
      */
     final private function loadComponents()
     {
         global $logger;
 
         $logger->debug('Gaia.core.controllers.rest.loadComponents()');
-        $logger->debug($this->dispatcher->getControllerName() . '->' .
-            $this->dispatcher->getActionName());
+        $logger->debug(
+            $this->dispatcher->getControllerName() . '->' .
+            $this->dispatcher->getActionName()
+        );
 
         $this->eventsManager = new EventsManager();
         if (!isset($this->components) || empty($this->components)) {
@@ -276,7 +280,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * Make currentUser available as global
      *
      * @global type $currentUser
-     * @param type $request
+     * @param  type $request
      */
     private function setUser($request)
     {
@@ -299,7 +303,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     {
         global $currentUser;
         if ($this->authorization) {
-            require_once APP_PATH . '/core/libs/authorization/oAuthServer.php';
+            include_once APP_PATH . '/core/libs/authorization/oAuthServer.php';
             $request = \OAuth2\Request::createFromGlobals();
             if (!$server->verifyResourceRequest($request)) {
                 $server->getResponse()->send();
@@ -356,7 +360,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         //veriry if exists the best language
         if (file_exists("../app/languages/" . $bestLanguage . ".php")) {
-            require "../app/languages/" . $bestLanguage . ".php";
+            include "../app/languages/" . $bestLanguage . ".php";
 
             //if not exist best language find the first language existing
         } else {
@@ -364,7 +368,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $cont = 0;
             foreach ($languages as $value) {
                 if (file_exists("../app/languages/" . $value['language'] . ".php")) {
-                    require "../app/languages/" . $value['language'] . ".php";
+                    include "../app/languages/" . $value['language'] . ".php";
                 } else {
                     $cont++;
                 }
@@ -372,7 +376,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
             //if not find any language set the desfault
             if ($cont == count($languages)) {
-                require "../app/languages/en.php";
+                include "../app/languages/en.php";
             }
 
         }
@@ -384,6 +388,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
     /**
      * Method Http accept: OPTIONS
+     *
      * @return JSON return list of functions available
      */
     public function optionsAction()
@@ -405,6 +410,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
     /**
      * Method Http accept: GET
+     *
      * @return \Phalcon\http\Response Retrive data by id
      * @throws \Phalcon\Exception
      */
@@ -457,6 +463,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
     /**
      * Method Http accept: GET
+     *
      * @return JSON Retrive all data, with and without relationship
      * @throws \Phalcon\Exception
      */
@@ -507,6 +514,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
     /**
      * Method Http accept: GET
+     *
      * @return JSON Retrive all data, with and without relationship
      */
     public function listAction()
@@ -643,10 +651,12 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     foreach ($model->getMessages() as $message) {
                         $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
                     }
-                    $this->response->setJsonContent(array(
+                    $this->response->setJsonContent(
+                        array(
                         'status' => 'ERROR',
                         'messages' => $errors
-                    ));
+                        )
+                    );
                 }
             }
         } //end foreach
@@ -791,10 +801,12 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
                 }
                 $logger->error($errors);
-                $this->response->setJsonContent(array(
+                $this->response->setJsonContent(
+                    array(
                     'status' => 'ERROR',
                     'messages' => $errors
-                ));
+                    )
+                );
             }
 
 
@@ -854,9 +866,9 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     /**
      * This function builds the custom HAL data
      *
-     * @param array $data
-     * @param int $limit
-     * @param int $page
+     * @param  array $data
+     * @param  int   $limit
+     * @param  int   $page
      * @return array $hal
      */
     protected function buildHAL(array $data, $limit = -1, $page = -1)
@@ -935,7 +947,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     /**
      * Return the response, allow the error code handling here
      *
-     * @param array $data
+     * @param  array $data
      * @return \Phalcon\Http\Response
      */
     protected function returnResponse(array $data)
@@ -953,12 +965,15 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     /**
      * Extract collection data to json
      *
-     * @param  object $data object collection with data
-     * @param  string $type How many entities are expected
+     * @param  object $data                 object collection with data.
+     * @param  array  $params               User request parameters.
+     * @param  $requiredScalarFields Boolean flag that represents that scalar fields are required or not.
+     *                               If not required then that field will be added into the object.
+     * @param  string $type
      * @param  string $relation
      * @return string $data
-     * @todo optimize the code
-     * @todo build HAL within
+     * @todo   optimize the code
+     * @todo   build HAL within
      */
     protected function extractData($data, $params = [], $requireScalarFields = false, $type = 'all', $relation = '')
     {
@@ -1178,8 +1193,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * This function is used to extract hasManyToMany relationships and set each of
      * related data to its base model.
      *
-     * @todo Find some other solution instead of matching Resultset type.
-     * @param array $data Array containing relationship result sets.
+     * @todo  Find some other solution instead of matching Resultset type.
+     * @param array $data   Array containing relationship result sets.
      * @param array $result Array of result that(currently) contains basemodel data.
      */
     private function extractManyToManyRelationships($data, &$result)
@@ -1207,8 +1222,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     /**
      * This function is used to set related data to base model with all related fields.
      *
-     * @param array $result Array of result that(currently) contains basemodel data.
-     * @param array $relData Relationship result from database.
+     * @param array  $result  Array of result that(currently) contains basemodel data.
+     * @param array  $relData Relationship result from database.
      * @param string $relName Name of the relationship.
      */
     public function setAllRelatedFieldsToBaseModel(&$result, $relData, $relName)
@@ -1231,8 +1246,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * This function is used to set related data to base model with some requested related fields. In this
      * we'll get result set in a form of scalar field, not as a object representing model.
      *
-     * @param array $result Array of result that(currently) contains basemodel data.
-     * @param array $relData Relationship result from database.
+     * @param array  $result  Array of result that(currently) contains basemodel data.
+     * @param array  $relData Relationship result from database.
      * @param string $relName Name of the relationship.
      */
     public function setSomeRelatedFieldsToBaseModel(&$result, $relData, $relName)
@@ -1261,8 +1276,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     /**
      * This function is used to retrieve the relationship metadata for a model
      *
-     * @param string $modelName
-     * @param string $rel
+     * @param  string $modelName
+     * @param  string $rel
      * @return array
      */
     final private function getRelationshipMeta($modelName, $rel)
@@ -1308,7 +1323,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * for the related entities this function is used to remove the duplicate
      * entries before they are processes further
      *
-     * @param array $array
+     * @param  array $array
      * @return void
      */
     final private function removeDuplicates(array &$array)
@@ -1337,10 +1352,10 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * convert [members_username=>"Rana Nouman"] to ["members" => ["username"=> "Rana Nouman"]].
      *
      * @method updateFields
-     * @param $values Array of values retreived against the model and/or related model from the database.
-     * @param $params Array of user requested parameters.
-     * @param $requiredScalarFields Boolean flag that represents that scalar fields are required or not.
-     *                              If not required then that field will be added into the object.
+     * @param  $values               Array of values retreived against the model and/or related model from the database.
+     * @param  $params               Array of user requested parameters.
+     * @param  $requiredScalarFields Boolean flag that represents that scalar fields are required or not.
+     *                               If not required then that field will be added into the object.
      * @return array
      */
     final private function updateFields($values, $params, $requireScalarFields)
@@ -1353,7 +1368,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 // Check if user has given alias for the field or not, if given then use that one.
                 foreach ($params['fields'] as $requestedField) {
                     if (str_contains(strtoupper($requestedField), "AS")
-                        && str_contains($requestedField, str_replace("_", ".", $fieldName))) {
+                        && str_contains($requestedField, str_replace("_", ".", $fieldName))
+                    ) {
                         list(, , $alias) = explode(" ", $requestedField);
                         $relfieldName = $alias;
                     }
@@ -1376,8 +1392,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * This function will only return those fields on which user has access.
      *
      * @method filterFieldsByACL
-     * @param $allowedFields Array of fields on which user has access.
-     * @param $values Result retreived from database.
+     * @param  $allowedFields Array of fields on which user has access.
+     * @param  $values        Result retreived from database.
      */
     protected function filterFieldsByACL($allowedFields, $values)
     {
