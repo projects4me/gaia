@@ -228,7 +228,7 @@ class PermissionController extends AclAdminController
 
             $permissionModel = new $this->modelName();
             $data = $permissionModel->readAll($params);
-            $dataArray = $this->extractData($data);
+            $dataArray = $this->extractData($data, $params);
             $appliedPermissions['data'] = array_merge($appliedPermissions['data'], $dataArray['data']);
         }
 
