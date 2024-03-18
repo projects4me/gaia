@@ -41,6 +41,14 @@ class Permission extends Model
     protected $resourcePrefix;
 
     /**
+     * The array of fields on which user has access and these fields will be return back
+     * as an response of an API call.
+     *
+     * @var array $allowedFields
+     */
+    private $allowedFields = [];
+
+    /**
      * This function is used to check whether the user has access to given resource or not.
      *
      * @param string $resource      Name of the resource.
@@ -116,7 +124,7 @@ class Permission extends Model
         //Fetch Permissions of User by Role
         $permissionsByRole = (new self())->buildPermissionsQuery(null, $action);
         $permissionsByRole->innerJoin("Gaia\\MVC\\Models\\Membership", "Membership.roleId=Permission.roleId AND Membership.userId='$userId'", "Membership");
-        // $permissionsByRole->groupBy(['Membership.roleId', 'Resource2.id']);
+        $permissionsByRole->groupBy(['Membership.roleId', 'Resource2.id']);
 
         $results[] = $permissionsByRole->getQuery()->execute();
 
@@ -205,5 +213,45 @@ class Permission extends Model
 
         $queryBuilder->where('Resource1.entity=:resource:', ["resource" => $childResource]);
         return $queryBuilder->getQuery()->getSingleResult();
+    }
+
+    /**
+     * This function apply acl on the model/related model fields. Only fields on which user has access
+     * will be returned back as response.
+     *
+     * @method applyACLOnFields
+     * @param  $values
+     * @param  string $action     Name of action for which permission is to be fetched.
+     * @param  string $modelAlias
+     * @return null|void
+     */
+    public function applyACLOnFields($values, $action, $modelAlias)
+    {
+        $fields = [];
+
+        foreach ($values as $fieldName => $value) {
+            if (getType($value) !== 'array') {
+                $field = "{$modelAlias}.{$fieldName}";
+                ($this->checkAccess($field, $action)) && ($fields[] = $field);
+            } else {
+                foreach ($value as $nestedField => $nestedValue) {
+                    $field = "{$fieldName}.{$nestedField}";
+                    ($this->checkAccess($field, $action)) && ($fields[] = $field);
+                }
+            }
+        }
+
+        $this->allowedFields = $fields;
+    }
+
+    /**
+     * This function return allowedFields property.
+     *
+     * @method getAllowedFields
+     * @return array
+     */
+    public function getAllowedFields()
+    {
+        return $this->allowedFields;
     }
 }
