@@ -13,21 +13,23 @@ use function Gaia\Libraries\Utils\create_guid;
 /**
  * Resource Controller
  *
- * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Foundation
+ * @author   Rana Nouman <ranamnouman@gmail.com>
+ * @package  Foundation
  * @category Controller
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class ResourceController extends AclAdminController
 {
     /**
      * Project authorization flag
+     *
      * @var bool
      */
     protected $projectAuthorization = false;
 
     /**
      * System level flag
+     *
      * @var bool
      */
     protected $systemLevel = true;
@@ -61,7 +63,7 @@ class ResourceController extends AclAdminController
         $this->response->setStatusCode(201, "Created");
 
         $data = $resource->read(array('id' => $newId));
-        $dataArray = $this->extractData($data, 'one');
+        $dataArray = $this->extractData($data, false, 'one');
         $finalData = $this->buildHAL($dataArray);
 
         return $this->returnResponse($finalData);
