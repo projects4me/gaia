@@ -12,36 +12,36 @@ use Gaia\Core\MVC\Models\Query\Clause;
 
 /**
  * This class prepares phalcon supported queries (PHQL) by the given metadata.
- * 
+ *
  * Query object e.g $query is created inside model. Model calls $query functions e.g prepareReadQuery to build
  * up required query and then it execute that query to get desired result.
- * 
+ *
  * ```php
- * 
+ *
  * $query = new \Gaia\Core\MVC\Models\Query();
  * $query->prepareReadQuery($this->getmodelNamespace(), $params);
  * $phalconQuery = $query->getPhalconQuery() // getPhalconQuery() function will return Query object of Phalcon.
  * $data = $phalconQuery->execute();
- * 
+ *
  * ```
  *
- * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Core\Mvc\Models
+ * @author   Rana Nouman <ranamnouman@gmail.com>
+ * @package  Core\Mvc\Models
  * @category Query
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class Query
 {
     /**
      * This is the id of model being requested by user.
-     * 
+     *
      * @var string
      */
     public $modelId;
 
     /**
      * Phalcon query builder.
-     * 
+     *
      * @var \Phalcon\Mvc\Model\Query\Builder
      */
     protected $queryBuilder;
@@ -68,11 +68,11 @@ class Query
     /**
      * Query constructor.
      *
-     * @param \Phalcon\DiInterface  $di
-     * @param string $modelAlias Alias of Model.
-     * @param string $id Model identifier.
+     * @param \Phalcon\DiInterface $di
+     * @param string               $modelAlias Alias of Model.
+     * @param string               $id         Model identifier.
      */
-    function __construct(\Phalcon\Di\FactoryDefault $di, $modelAlias, $id)
+    public function __construct(\Phalcon\Di\FactoryDefault $di, $modelAlias, $id)
     {
         $this->di = $di;
         $this->queryBuilder = $this->di->get('modelsManager')->createBuilder();
@@ -88,12 +88,12 @@ class Query
     }
 
     /**
-     * This function is used to prepare select query for an model. It firsts set the where clause 
-     * in query builder if a model with an "id" is requested. Then it calls prepareSelectQuery 
+     * This function is used to prepare select query for an model. It firsts set the where clause
+     * in query builder if a model with an "id" is requested. Then it calls prepareSelectQuery
      * function in order to create a query.
-     * 
-     * @param string $modelNamespace namespace of the model.
-     * @param array $params Array of requested params.
+     *
+     * @param string                             $modelNamespace namespace of the model.
+     * @param array                              $params         Array of requested params.
      * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
     public function prepareReadQuery($modelNamespace, $params, $relationship)
@@ -105,8 +105,8 @@ class Query
     /**
      * This function is used to prepare select query for collection of model.
      *
-     * @param string $modelNamespace namespace of the model.
-     * @param array $params Array of requested params.
+     * @param string                             $modelNamespace namespace of the model.
+     * @param array                              $params         Array of requested params.
      * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
     public function prepareReadAllQuery($modelNamespace, $params, $relationship)
@@ -117,8 +117,8 @@ class Query
     /**
      * This function is responsible to prepare select query for the model.
      *
-     * @param string $modelNamespace namespace of the model.
-     * @param array $params Array of requested params.
+     * @param string                             $modelNamespace namespace of the model.
+     * @param array                              $params         Array of requested params.
      * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
     public function prepareSelectQuery($modelNamespace, $params, $relationship)
@@ -144,8 +144,7 @@ class Query
         if (isset($params['limit']) && !empty($params['limit'])) {
             if (isset($params['offset']) && !empty($params['offset'])) {
                 $this->queryBuilder->limit($params['limit'], $params['offset']);
-            }
-            else {
+            } else {
                 $this->queryBuilder->limit($params['limit']);
             }
         }
@@ -155,7 +154,7 @@ class Query
 
     /**
      * This function call clause class functions in order to prepare clauses for query.
-     * 
+     *
      * @param $params
      * @param \Gaia\Core\MVC\Models\Query $query
      */
@@ -173,10 +172,10 @@ class Query
 
     /**
      * This function set fields for query. If user defined some fields in request, then
-     * those fields are retrieved. If not requested than all fields of model, alongwith 
-     * relationship fields (if rels are given), are retrieved from database. 
+     * those fields are retrieved. If not requested than all fields of model, alongwith
+     * relationship fields (if rels are given), are retrieved from database.
      *
-     * @param array $params Array of requested params.
+     * @param array                              $params       Array of requested params.
      * @param \Gaia\Core\MVC\Models\Relationship $relationship
      */
     public function setFieldsForQuery(&$params, $relationship)
@@ -184,14 +183,50 @@ class Query
         $moduleFields = $this->getModelFields();
 
         if (isset($params['fields']) && !empty($params['fields'])) {
-            $params['fields'] = $params['fields'];
-        }
-        else if (isset($params['addRelFields']) && !empty($params['addRelFields'])) {
+            $params['fields'] = $this->setRelatedFields($params['fields'], $params['rels']);
+        } elseif (isset($params['addRelFields']) && !empty($params['addRelFields'])) {
             $params['fields'] = $moduleFields;
-        }
-        else {
+        } else {
             $params['fields'] = array_merge($moduleFields, $relationship->getRelationshipFields());
         }
+    }
+
+    /**
+     * This function is called when user requested some specific fields. In this function we're appending alaises
+     * against the relationship field name (if requested) and also adding "id" field for the relationship if it is
+     * not requested in order to fetch the related model properly.
+     *
+     * @method setRelatedFields
+     * @param  $fields Array of fields.
+     * @param  $rels   Array containing the requested relationships.
+     * @return array
+     */
+    protected function setRelatedFields($fields, $rels)
+    {
+        $updatedFields = [];
+        foreach ($rels as $relName) {
+            // Set alias for relationships e.g. members.username => members.username AS members_username
+            foreach ($fields as $field) {
+                if (str_contains(strtoupper($field), 'AS')) {
+                    list($fieldName) = explode(" ", $field);
+                    $alias = str_replace(".", "_", $fieldName);
+                    $updatedFields[] = "{$fieldName} AS {$alias}";
+                } elseif (str_contains($field, $relName)) {
+                    $alias = str_replace(".", "_", $field);
+                    $updatedFields[] = "{$field} AS {$alias}";
+                } else {
+                    $updatedFields[] = $field;
+                }
+            }
+
+            // Check if user has requested "id" against the related model, if not then set it.
+            $relatedIdField = "{$relName}.id";
+            if (!in_array($relatedIdField, $fields)) {
+                $relatedIdAlias = str_replace(".", "_", $relatedIdField);
+                $updatedFields[] = "{$relatedIdField} AS {$relatedIdAlias}";
+            }
+        }
+        return $updatedFields;
     }
 
     /**
@@ -210,7 +245,7 @@ class Query
     }
 
     /**
-     * If we want to do some work before setting up query, then we have to put that 
+     * If we want to do some work before setting up query, then we have to put that
      * logic inside this function and call that function in setQuery method.
      *
      * @param array $params Array of requested params.
@@ -253,7 +288,7 @@ class Query
 
     /**
      * This function set clause object.
-     * 
+     *
      * @param \Gaia\Core\MVC\Models\Query\Clause $clause
      */
     public function setClause($clause)
@@ -265,7 +300,7 @@ class Query
 
     /**
      * This function returns clause object of query.
-     * 
+     *
      * @return \Gaia\Core\MVC\Models\Query\Clause
      */
     public function getClause()
