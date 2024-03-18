@@ -80,23 +80,23 @@ class Permission extends Model
      * @param array  $actionMap     Array of acl action map.
      * @param string $resourceAlias Alias of the resource.
      */
-    public function checkAccess($resource, $actionMap, $resourceAlias)
+    public function checkAccess($resource, $actionMap, $resourceAlias = null)
     {
         $parentResource = $this->getParentResource($resource, $actionMap['action'], $resourceAlias);
         $alias = ($resourceAlias ?? $resource);
-        $accessGranted = false;
+        $accessGranted = true;
 
         $resource = ($this->resourcePrefix) ? ("$this->resourcePrefix.$resource") : $resource;
-        if (isset($this->permissions[$resource]) && max($this->permissions[$resource])) {
-            $this->resourcesPermissions[$alias] = max($this->permissions[$resource]);
-            $accessGranted = true;
-        } elseif (isset($this->permissions[$parentResource->entity])
-            && max($this->permissions[$parentResource->entity])
-        ) {
-            $this->resourcesPermissions[$alias] = max($this->permissions[$parentResource->entity]);
-            $accessGranted = true;
-        } else {
-            $accessGranted = false;
+        if (isset($this->permissions[$resource]) || isset($this->permissions[$parentResource->entity])) {
+            $accessLevel = isset($this->permissions[$resource])
+                                ? max($this->permissions[$resource])
+                                : max($this->permissions[$parentResource->entity]);
+
+            if ($accessLevel !== "0") {
+                ($accessLevel !== null) && ($this->resourcesPermissions[$alias] = $accessLevel);
+            } else {
+                $accessGranted = false;
+            }
         }
 
         return $accessGranted;
@@ -116,7 +116,7 @@ class Permission extends Model
         //Fetch Permissions of User by Role
         $permissionsByRole = (new self())->buildPermissionsQuery(null, $action);
         $permissionsByRole->innerJoin("Gaia\\MVC\\Models\\Membership", "Membership.roleId=Permission.roleId AND Membership.userId='$userId'", "Membership");
-        $permissionsByRole->groupBy(['Membership.roleId', 'Resource2.id']);
+        // $permissionsByRole->groupBy(['Membership.roleId', 'Resource2.id']);
 
         $results[] = $permissionsByRole->getQuery()->execute();
 
