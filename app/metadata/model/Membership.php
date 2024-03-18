@@ -80,7 +80,7 @@ $models['Membership'] = array(
             'label' => 'LBL_MEMBERSHIPS_RELATED_ID',
             'type' => 'varchar',
             'length' => '36',
-            'null' => false,
+            'null' => true,
         ),
         'userId' => array(
             'name' => 'userId',
