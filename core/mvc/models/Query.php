@@ -203,19 +203,20 @@ class Query
      */
     protected function setRelatedFields($fields, $rels)
     {
-        $updatedFields = [];
+        $updatedFields = $fields;
+
         foreach ($rels as $relName) {
-            // Set alias for relationships e.g. members.username => members.username AS members_username
+            // Set alias for relationships e.g. members.username => members.username AS members_username.
             foreach ($fields as $field) {
                 if (str_contains(strtoupper($field), 'AS')) {
                     list($fieldName) = explode(" ", $field);
                     $alias = str_replace(".", "_", $fieldName);
-                    $updatedFields[] = "{$fieldName} AS {$alias}";
+                    $temp = "{$fieldName} AS {$alias}";
+                    $updatedFields[array_search($field, $updatedFields)] = $temp;
                 } elseif (str_contains($field, $relName)) {
                     $alias = str_replace(".", "_", $field);
-                    $updatedFields[] = "{$field} AS {$alias}";
-                } else {
-                    $updatedFields[] = $field;
+                    $temp = "{$field} AS {$alias}";
+                    $updatedFields[array_search($field, $updatedFields)] = $temp;
                 }
             }
 

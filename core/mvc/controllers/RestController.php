@@ -969,7 +969,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * @param  array  $params               User request parameters.
      * @param  $requiredScalarFields Boolean flag that represents that scalar fields are required or not.
      *                               If not required then that field will be added into the object.
-     * @param  string $type
+     * @param  string $type                 The type of results required.
      * @param  string $relation
      * @return string $data
      * @todo   optimize the code
@@ -978,215 +978,281 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     protected function extractData($data, $params = [], $requireScalarFields = false, $type = 'all', $relation = '')
     {
         $modelName = strtolower($this->modelName);
-        $permission = $this->getDI()->get('permission');
         if (!empty($relation)) {
             $modelName = strtolower($relation);
         }
-        $jsonapi_org = array();
-        $jsonapi_org['data'] = array();
 
-        //data extraction conditional statements (starts)..
+        $jsonApiOrg = ['data' => []];
+
+        // Extract data and prepare JSON API
+        $result = $this->prepareData($data, $params, $requireScalarFields, $type);
+
+        $this->removePassword($result);
+
+        return $result;
+    }
+
+    /**
+     * Prepares the data for JSON API response.
+     *
+     * @param  mixed  $data                The data to prepare.
+     * @param  array  $params              User requested parameters.
+     * @param  bool   $requireScalarFields Flag indicating whether scalar fields are required.
+     * @param  string $type                The type of results required.
+     * @return array The prepared data.
+     */
+    private function prepareData($data, $params, $requireScalarFields, $type)
+    {
+        $result = [];
+        $permission = $this->getDI()->get('permission');
+
         if ($data['baseModel'] instanceof Resultset) {
             $data['baseModel']->setHydrateMode(Resultset::HYDRATE_ARRAYS);
 
-            $result = array();
             foreach ($data['baseModel'] as $values) {
-
                 if (isset($params['fields']) && !empty($params['fields'])) {
                     $values = $this->updateFields($values, $params, $requireScalarFields);
                 }
 
-                if (empty($permission->getAllowedFields())) {
-                    $modelAlias = Util::extractClassFromNamespace($this->modelName);
-                    $permission->applyACLOnFields($values, $this->aclMap[$this->actionName]['action'], $modelAlias);
-                }
+                // Apply ACL on fields.
+                $this->applyACL($values);
 
-
+                // Only fields, on which user has access, will become part of the response.
                 $values = $this->filterFieldsByACL($permission->getAllowedFields(), $values);
 
-                /**
-                 * First check whether there is any array of the current model or not. If its array then
-                 * convert its values to a temp array and remove it because this array will cause error
-                 * while creating the JSON API included array. The current model array as a result set can
-                 * be caused when User gives input to columns array of queryBuilder as "CurrentModel.*".
-                 */
-                $modelName = Util::extractClassFromNamespace($this->modelName);
-                if ($values[$modelName]) {
-                    $baseModelArray = $values[$modelName];
-                    unset($values[$modelName]);
-
-                    foreach ($baseModelArray as $attr => $value) {
-                        $values[$attr] = $value;
-                    }
-                }
-
-                foreach ($values as $attr => $value) {
-                    if (!isset($result[$values['id']])) {
-                        $result[$values['id']] = array();
-                    }
-
-                    if (is_array($value)) {
-                        $relDef = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $attr);
-                        if ($relDef['type'] == 'hasMany' || $relDef['type'] == 'hasManyToMany') {
-                            if (!empty($value['id'])) {
-                                $result[$values['id']][$attr][] = $value;
-                            }
-                        } else {
-                            $result[$values['id']][$attr] = $value;
-                        }
-                    } else {
-                        $result[$values['id']][$attr] = $value;
-                    }
-                }
+                $this->flattenModelData($values, $result);
             }
-            //die();
         } elseif (is_array($data)) {
             $result = $data;
-        } else {
-            $result = array();
         }
-        //data extraction conditional statements (ends)..
 
         unset($data['baseModel']);
-
         $this->extractManyToManyRelationships($data, $result);
-
-        //preparing jsonapi (starts)..
         $this->removeDuplicates($result);
+        return $this->prepareJsonApi($result, $type);
+    }
 
+    /**
+     * Applies ACL permissions to the data.
+     *
+     * @param  array $values The data to apply ACL permissions on.
+     * @return void
+     */
+    private function applyACL(&$values)
+    {
+        $permission = $this->getDI()->get('permission');
+        if (empty($permission->getAllowedFields())) {
+            $modelAlias = Util::extractClassFromNamespace($this->modelName);
+            $permission->applyACLOnFields($values, $this->aclMap[$this->actionName]['action'], $modelAlias);
+        }
+    }
+
+    /**
+     * Flattens the model data for easier processing.
+     *
+     * @param  array $values The model data to flatten.
+     * @param  array $result Reference to the result array.
+     * @return void
+     */
+    private function flattenModelData($values, &$result)
+    {
+        /**
+         * First check whether there is any array of the current model or not. If its array then
+         * convert its values to a temp array and remove it because this array will cause error
+         * while creating the JSON API included array. The current model array as a result set can
+         * be caused when User gives input to columns array of queryBuilder as "CurrentModel.*".
+         */
+        $modelName = Util::extractClassFromNamespace($this->modelName);
+        if ($values[$modelName]) {
+            $baseModelArray = $values[$modelName];
+            unset($values[$modelName]);
+
+            foreach ($baseModelArray as $attr => $value) {
+                $values[$attr] = $value;
+            }
+        }
+
+        foreach ($values as $attr => $value) {
+            if (!isset($result[$values['id']])) {
+                $result[$values['id']] = array();
+            }
+
+            if (is_array($value)) {
+                $relDef = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $attr);
+                if ($relDef['type'] == 'hasMany' || $relDef['type'] == 'hasManyToMany') {
+                    if (!empty($value['id'])) {
+                        $result[$values['id']][$attr][] = $value;
+                    }
+                } else {
+                    $result[$values['id']][$attr] = $value;
+                }
+            } else {
+                $result[$values['id']][$attr] = $value;
+            }
+        }
+    }
+
+    /**
+     * Prepares JSON API response.
+     *
+     * @param  array  $result The data to prepare JSON API response from.
+     * @param  string $type   The type of results required.
+     * @return array The prepared JSON API response.
+     */
+    private function prepareJsonApi($result, $type)
+    {
+        $jsonApiOrg = ['data' => []];
         $count = 0;
 
         if ($type == 'all') {
-            // prepare the data for JSONAPI.org standard
-            foreach ($result as $object) {
-                $modelName = Util::extractClassFromNamespace($this->modelName);
-                $jsonapi_org['data'][$count]['type'] = $modelName;
-
-                foreach ($object as $attr => $val) {
-                    if (!is_array($val)) {
-                        // process attributes
-                        if ($attr == 'id') {
-                            $jsonapi_org['data'][$count]['id'] = $val;
-                        } else {
-                            $jsonapi_org['data'][$count]['attributes'][$attr] = $val;
-                        }
-                    } else {
-                        // process relationships
-                        $included = array();
-                        if (isset($val['id'])) {
-                            $jsonapi_org['data'][$count]['relationships'][$attr] = array();
-                            $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
-                            $relatedModelKey = 'relatedModel';
-                            if ($relationDefinition['type'] == 'hasManyToMany') {
-                                $relatedModelKey = 'secondaryModel';
-                            }
-                            $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['type'] = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
-                            $id = '';
-                            $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data']['id'] = $val['id'];
-                            $id = $val['id'];
-                            unset($val['id']);
-
-                            $included['attributes'] = $val;
-
-                            $jsonapi_org['included'][($this->modelName . $id)] = $included;
-                        } else {
-                            foreach ($val as $idx => $object) {
-                                if (isset($object['id'])) {
-                                    $included = array();
-                                    $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx] = array();
-                                    $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
-                                    $relatedCount = 0;
-                                    $relatedModelKey = 'relatedModel';
-                                    if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])) {
-                                        $relatedModelKey = 'secondaryModel';
-                                    }
-                                    $included['type'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
-                                    $id = '';
-                                    $included['id'] = $jsonapi_org['data'][$count]['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
-                                    $id = $object['id'];
-                                    unset($object['id']);
-
-                                    $included['attributes'] = $object;
-                                    $jsonapi_org['included'][($relationDefinition[$relatedModelKey] . $id)] = $included;
-                                }
-                            }
-                        }
-                    }
-                }
-                $count++;
-            }
+            $this->handleAllResults($result, $jsonApiOrg, $count);
         } else {
+            $this->handleSingleResult($result, $jsonApiOrg, $count);
+        }
 
-            foreach ($result as $object) {
+        if (!empty($jsonApiOrg['included'])) {
+            $jsonApiOrg['included'] = array_values($jsonApiOrg['included']);
+        }
 
-                $modelName = Util::extractClassFromNamespace($this->modelName);
-                $jsonapi_org['data']['type'] = strtolower($modelName);
+        return $jsonApiOrg;
+    }
 
-                foreach ($object as $attr => $val) {
-                    if (!is_array($val)) {
-                        // process attributes
-                        if ($attr == 'id') {
-                            $jsonapi_org['data']['id'] = $val;
-                        } else {
-                            $jsonapi_org['data']['attributes'][$attr] = $val;
-                        }
+    /**
+     * Handles processing of all (array) results for JSON API response.
+     *
+     * @param array $result The result data to process.
+     * @param array $jsonApiOrg Reference to the JSON API response.
+     * @param int $count Reference to the count of processed results.
+     * @return void
+     */
+    private function handleAllResults($result, &$jsonApiOrg, &$count)
+    {
+        foreach ($result as $object) {
+            $modelName = Util::extractClassFromNamespace($this->modelName);
+            $jsonApiOrg['data'][$count]['type'] = $modelName;
+
+            foreach ($object as $attr => $val) {
+                if (!is_array($val)) {
+                    // process attributes
+                    if ($attr == 'id') {
+                        $jsonApiOrg['data'][$count]['id'] = $val;
                     } else {
-                        // process relationships
-                        if (isset($val['id'])) {
-                            $included = array();
-                            $jsonapi_org['data']['relationships'][$attr] = array();
-                            $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
-                            $relatedCount = 0;
-                            $relatedModelKey = 'relatedModel';
-                            if ($relationDefinition['type'] == 'hasManyToMany') {
-                                $relatedModelKey = 'secondaryModel';
-                            }
-                            $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data']['type'] = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
-                            $id = '';
-                            $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data']['id'] = $val['id'];
-                            $id = $val['id'];
-                            unset($val['id']);
+                        $jsonApiOrg['data'][$count]['attributes'][$attr] = $val;
+                    }
+                } else {
+                    // process relationships
+                    $included = array();
+                    if (isset($val['id'])) {
+                        $jsonApiOrg['data'][$count]['relationships'][$attr] = array();
+                        $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
+                        $relatedModelKey = 'relatedModel';
+                        if ($relationDefinition['type'] == 'hasManyToMany') {
+                            $relatedModelKey = 'secondaryModel';
+                        }
+                        $included['type'] = $jsonApiOrg['data'][$count]['relationships'][$attr]['data']['type'] = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
+                        $id = '';
+                        $included['id'] = $jsonApiOrg['data'][$count]['relationships'][$attr]['data']['id'] = $val['id'];
+                        $id = $val['id'];
+                        unset($val['id']);
 
-                            $included['attributes'] = $val;
-                            $jsonapi_org['included'][($relationDefinition[$relatedModelKey] . $id)] = $included;
-                        } else {
-                            foreach ($val as $idx => $object) {
-                                if (isset($object['id'])) {
-                                    $included = array();
-                                    $jsonapi_org['data']['relationships'][$attr]['data'][$idx] = array();
-                                    $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
-                                    $relatedCount = 0;
-                                    $relatedModelKey = 'relatedModel';
-                                    if ($relationDefinition['type'] == 'hasManyToMany') {
-                                        $relatedModelKey = 'secondaryModel';
-                                    }
-                                    $included['type'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
-                                    $id = '';
-                                    $included['id'] = $jsonapi_org['data']['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
-                                    $id = $object['id'];
-                                    unset($object['id']);
+                        $included['attributes'] = $val;
 
-                                    $included['attributes'] = $object;
-                                    $jsonapi_org['included'][($relationDefinition[$relatedModelKey] . $id)] = $included;
+                        $jsonApiOrg['included'][($this->modelName . $id)] = $included;
+                    } else {
+                        foreach ($val as $idx => $object) {
+                            if (isset($object['id'])) {
+                                $included = array();
+                                $jsonApiOrg['data'][$count]['relationships'][$attr]['data'][$idx] = array();
+                                $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
+                                $relatedCount = 0;
+                                $relatedModelKey = 'relatedModel';
+                                if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])) {
+                                    $relatedModelKey = 'secondaryModel';
                                 }
+                                $included['type'] = $jsonApiOrg['data'][$count]['relationships'][$attr]['data'][$idx]['type'] = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
+                                $id = '';
+                                $included['id'] = $jsonApiOrg['data'][$count]['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
+                                $id = $object['id'];
+                                unset($object['id']);
+
+                                $included['attributes'] = $object;
+                                $jsonApiOrg['included'][($relationDefinition[$relatedModelKey] . $id)] = $included;
                             }
                         }
                     }
                 }
-                $count++;
             }
+            $count++;
         }
-        if (!empty($jsonapi_org['included'])) {
-            $jsonapi_org['included'] = array_values($jsonapi_org['included']);
+    }
+
+/**
+ * Handles processing of a single result (object) for JSON API response.
+ *
+ * @param array $result The result data to process.
+ * @param array $jsonApiOrg Reference to the JSON API response.
+ * @param int $count Reference to the count of processed results.
+ * @return void
+ */
+    private function handleSingleResult($result, &$jsonApiOrg, $count)
+    {
+        foreach ($result as $object) {
+            $modelName = Util::extractClassFromNamespace($this->modelName);
+            $jsonApiOrg['data']['type'] = strtolower($modelName);
+
+            foreach ($object as $attr => $val) {
+                if (!is_array($val)) {
+                    // process attributes
+                    if ($attr == 'id') {
+                        $jsonApiOrg['data']['id'] = $val;
+                    } else {
+                        $jsonApiOrg['data']['attributes'][$attr] = $val;
+                    }
+                } else {
+                    // process relationships
+                    if (isset($val['id'])) {
+                        $included = array();
+                        $jsonApiOrg['data']['relationships'][$attr] = array();
+                        $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
+                        $relatedCount = 0;
+                        $relatedModelKey = 'relatedModel';
+                        if ($relationDefinition['type'] == 'hasManyToMany') {
+                            $relatedModelKey = 'secondaryModel';
+                        }
+                        $included['type'] = $jsonApiOrg['data']['relationships'][$attr]['data']['type'] = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
+                        $id = '';
+                        $included['id'] = $jsonApiOrg['data']['relationships'][$attr]['data']['id'] = $val['id'];
+                        $id = $val['id'];
+                        unset($val['id']);
+
+                        $included['attributes'] = $val;
+                        $jsonApiOrg['included'][($relationDefinition[$relatedModelKey] . $id)] = $included;
+                    } else {
+                        foreach ($val as $idx => $object) {
+                            if (isset($object['id'])) {
+                                $included = array();
+                                $jsonApiOrg['data']['relationships'][$attr]['data'][$idx] = array();
+                                $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
+                                $relatedCount = 0;
+                                $relatedModelKey = 'relatedModel';
+                                if ($relationDefinition['type'] == 'hasManyToMany') {
+                                    $relatedModelKey = 'secondaryModel';
+                                }
+                                $included['type'] = $jsonApiOrg['data']['relationships'][$attr]['data'][$idx]['type'] = strtolower(Util::extractClassFromNamespace($relationDefinition[$relatedModelKey]));
+                                $id = '';
+                                $included['id'] = $jsonApiOrg['data']['relationships'][$attr]['data'][$idx]['id'] = $object['id'];
+                                $id = $object['id'];
+                                unset($object['id']);
+
+                                $included['attributes'] = $object;
+                                $jsonApiOrg['included'][($relationDefinition[$relatedModelKey] . $id)] = $included;
+                            }
+                        }
+                    }
+                }
+            }
+            $count++;
         }
-        $result = $jsonapi_org;
-
-        //preparing jsonapi (ends)..
-
-        // do not allow passwords to be returned
-        $this->removePassword($result);
-
-        return $result;
     }
 
     /**
