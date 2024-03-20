@@ -192,100 +192,22 @@ class UploadController extends RestController
         // If files were uploaded then good otherwise generate an error
         if (!empty($_FILES['file'])) {
             // create a new id for for upload
-            $new_id = create_guid();
+            $newId = create_guid();
 
             // Setup the data required
             $tempFile = $_FILES['file']['tmp_name'];
             $targetPath = APP_PATH . DS. $storeFolder . DS;
-            $targetFile =  $targetPath. $new_id;
+            $targetFile =  $targetPath. $newId;
 
             // Try to move the file over to the upload directory
             if (move_uploaded_file($tempFile, $targetFile)) {
-
-                $modelName = $this->modelName;
-                $model = new $modelName();
-
-                $thumbnail = false;
-                // If the uploaded file is an image then generate a thumbnail for it
-                if ($this->_isImage($targetFile)) {
-                    if ($this->_generateThumb($targetFile, $targetPath, $new_id)) {
-                        $thumbnail = true;
-                    }
-                }
-
-                // Set the values for the model
-                $value = array(
-                    'id' => $new_id,
-                    'name' => $_FILES['file']['name'],
-                    'status' => 'uploaded',
-                    'relatedId' => $_REQUEST['relatedId'],
-                    'relatedTo' => $_REQUEST['relatedTo'],
-                    'fileType' => $_FILES['file']['type'],
-                    'fileSize' => $_FILES['file']['size'],
-                    'fileMime' => $_FILES['file']['type'],
-                    'filePath' => $targetFile,
-                    'fileDestination' => 'filesystem',
-                    'fileThumbnail' => $thumbnail
-                );
-                $model->assign($value);
-                $model->save();
-                if ($model->save($value)) {
-                    $this->eventsManager->fire('rest:afterCreate', $this, $model);
-                    // if we were able to save the model then send the OK status
-                    $dataResponse = get_object_vars($model);
-                    //update
-                    if (isset($this->id)) {
-                        $this->response->setJsonContent(array('status' => 'OK'));
-                        //insert
-                    } else {
-                        $dataResponse['id'] = $new_id;
-                        $this->response->setStatusCode(201, "Created");
-
-                        $data = $model->read(array('id' => $new_id));
-
-
-                        //$thumbdata = 'data:'.$value['attributes']['fileMime'].';base64,'.base64_encode(file_get_contents($targetPath));
-                        $dataArray = $this->extractData($data, false, 'one');
-                        $finalData = $this->buildHAL($dataArray);
-
-                        if ($thumbnail) {
-                            $thumbPath = APP_PATH . DS. 'filesystem'.DS.'uploads' . DS.
-                                "thumbnail/thumb_" . $finalData['data']['id']. '.jpg';
-
-                            $thumbdata = 'data:'.$_FILES['file']['type'].';base64,'.base64_encode(file_get_contents($thumbPath));
-                            $finalData['data']['attributes']['fileThumbnail'] = $thumbdata;
-                        }
-
-                        $logger->debug("File with ID ".$new_id." uploaded, returning response");
-
-                        return $this->returnResponse($finalData);
-                    }
-
-                } else {
-                    // Otherwise consolidate the errors and display
-                    $errors = array();
-                    foreach($model->getMessages() as $message) {
-                        $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
-                    }
-
-                    $logger->error("Unable to upload the file");
-                    $logger->error(print_r($errors, 1));
-
-                    $this->response->setJsonContent(
-                        array(
-                        'status' => 'ERROR',
-                        'messages' => $errors
-                        )
-                    );
-                }
-                return $this->response;
+                $this->saveFileUpload($targetFile, $targetPath, $newId);
             } else {
                 $logger->error(
                     'Unable to move the file over to the upload directory, please make'.
                     ' sure that the directory exists and that its writable'
                 );
                 $this->response->setStatusCode(500, "Internal Server Error");
-                return $this->response;
             }
         } else {
             $logger->error(
@@ -293,7 +215,95 @@ class UploadController extends RestController
                 ' upload one and it must be named file.'
             );
             $this->response->setStatusCode(400, "Bad Request. File not found");
-            return $this->response;
+        }
+        return $this->response;
+    }
+
+    /**
+     * Saves the upload model.
+     *
+     * @param  string $targetFile The path to the uploaded file.
+     * @param  string $targetPath The directory where the file should be stored.
+     * @param  string $newId      The unique identifier for the file.
+     * @return mixed Returns response data if the file is successfully saved, otherwise sets error messages.
+     */
+    private function saveFileUpload($targetFile, $targetPath, $newId)
+    {
+        $modelName = $this->modelName;
+        $model = new $modelName();
+
+        $thumbnail = false;
+        // If the uploaded file is an image then generate a thumbnail for it
+        if ($this->_isImage($targetFile)) {
+            if ($this->_generateThumb($targetFile, $targetPath, $newId)) {
+                $thumbnail = true;
+            }
+        }
+
+        // Set the values for the model
+        $value = array(
+            'id' => $newId,
+            'name' => $_FILES['file']['name'],
+            'status' => 'uploaded',
+            'relatedId' => $_REQUEST['relatedId'],
+            'relatedTo' => $_REQUEST['relatedTo'],
+            'fileType' => $_FILES['file']['type'],
+            'fileSize' => $_FILES['file']['size'],
+            'fileMime' => $_FILES['file']['type'],
+            'filePath' => $targetFile,
+            'fileDestination' => 'filesystem',
+            'fileThumbnail' => $thumbnail
+        );
+        $model->assign($value);
+        $model->save();
+        if ($model->save($value)) {
+            $this->eventsManager->fire('rest:afterCreate', $this, $model);
+            // if we were able to save the model then send the OK status
+            $dataResponse = get_object_vars($model);
+            //update
+            if (isset($this->id)) {
+                $this->response->setJsonContent(array('status' => 'OK'));
+                //insert
+            } else {
+                $dataResponse['id'] = $newId;
+                $this->response->setStatusCode(201, "Created");
+
+                $data = $model->read(array('id' => $newId));
+
+
+                //$thumbdata = 'data:'.$value['attributes']['fileMime'].';base64,'.base64_encode(file_get_contents($targetPath));
+                $dataArray = $this->extractData($data, false, 'one');
+                $finalData = $this->buildHAL($dataArray);
+
+                if ($thumbnail) {
+                    $thumbPath = APP_PATH . DS. 'filesystem'.DS.'uploads' . DS.
+                        "thumbnail/thumb_" . $finalData['data']['id']. '.jpg';
+
+                    $thumbdata = 'data:'.$_FILES['file']['type'].';base64,'.base64_encode(file_get_contents($thumbPath));
+                    $finalData['data']['attributes']['fileThumbnail'] = $thumbdata;
+                }
+
+                $logger->debug("File with ID ".$newId." uploaded, returning response");
+
+                return $this->returnResponse($finalData);
+            }
+
+        } else {
+            // Otherwise consolidate the errors and display
+            $errors = array();
+            foreach ($model->getMessages() as $message) {
+                $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
+            }
+
+            $logger->error("Unable to upload the file");
+            $logger->error(print_r($errors, 1));
+
+            $this->response->setJsonContent(
+                array(
+                'status' => 'ERROR',
+                'messages' => $errors
+                )
+            );
         }
     }
 

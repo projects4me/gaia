@@ -982,8 +982,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $modelName = strtolower($relation);
         }
 
-        $jsonApiOrg = ['data' => []];
-
         // Extract data and prepare JSON API
         $result = $this->prepareData($data, $params, $requireScalarFields, $type);
 

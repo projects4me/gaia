@@ -220,9 +220,9 @@ class Permission extends Model
      * will be returned back as response.
      *
      * @method applyACLOnFields
-     * @param  $values
+     * @param  $values     Array of result set retreived from database.
      * @param  string $action     Name of action for which permission is to be fetched.
-     * @param  string $modelAlias
+     * @param  string $modelAlias Model alias.
      * @return null|void
      */
     public function applyACLOnFields($values, $action, $modelAlias)
@@ -230,11 +230,11 @@ class Permission extends Model
         $fields = [];
 
         foreach ($values as $fieldName => $value) {
-            if (getType($value) !== 'array') {
+            if (!is_array($value)) {
                 $field = "{$modelAlias}.{$fieldName}";
                 ($this->checkAccess($field, $action)) && ($fields[] = $field);
             } else {
-                foreach ($value as $nestedField => $nestedValue) {
+                foreach (array_keys($value) as $nestedField) {
                     $field = "{$fieldName}.{$nestedField}";
                     ($this->checkAccess($field, $action)) && ($fields[] = $field);
                 }
