@@ -229,6 +229,8 @@ class UploadController extends RestController
      */
     private function saveFileUpload($targetFile, $targetPath, $newId)
     {
+        global $logger;
+
         $modelName = $this->modelName;
         $model = new $modelName();
 
