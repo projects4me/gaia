@@ -41,6 +41,14 @@ class Permission extends Model
     protected $resourcePrefix;
 
     /**
+     * The array of fields on which user has access and these fields will be return back
+     * as an response of an API call.
+     *
+     * @var array $allowedFields
+     */
+    private $allowedFields = [];
+
+    /**
      * This function is used to check whether the user has access to given resource or not.
      *
      * @param string $resource      Name of the resource.
@@ -80,23 +88,23 @@ class Permission extends Model
      * @param array  $actionMap     Array of acl action map.
      * @param string $resourceAlias Alias of the resource.
      */
-    public function checkAccess($resource, $actionMap, $resourceAlias)
+    public function checkAccess($resource, $actionMap, $resourceAlias = null)
     {
         $parentResource = $this->getParentResource($resource, $actionMap['action'], $resourceAlias);
         $alias = ($resourceAlias ?? $resource);
-        $accessGranted = false;
+        $accessGranted = true;
 
         $resource = ($this->resourcePrefix) ? ("$this->resourcePrefix.$resource") : $resource;
-        if (isset($this->permissions[$resource]) && max($this->permissions[$resource])) {
-            $this->resourcesPermissions[$alias] = max($this->permissions[$resource]);
-            $accessGranted = true;
-        } elseif (isset($this->permissions[$parentResource->entity])
-            && max($this->permissions[$parentResource->entity])
-        ) {
-            $this->resourcesPermissions[$alias] = max($this->permissions[$parentResource->entity]);
-            $accessGranted = true;
-        } else {
-            $accessGranted = false;
+        if (isset($this->permissions[$resource]) || isset($this->permissions[$parentResource->entity])) {
+            $accessLevel = isset($this->permissions[$resource])
+                                ? max($this->permissions[$resource])
+                                : max($this->permissions[$parentResource->entity]);
+
+            if ($accessLevel !== "0") {
+                ($accessLevel !== null) && ($this->resourcesPermissions[$alias] = $accessLevel);
+            } else {
+                $accessGranted = false;
+            }
         }
 
         return $accessGranted;
@@ -205,5 +213,45 @@ class Permission extends Model
 
         $queryBuilder->where('Resource1.entity=:resource:', ["resource" => $childResource]);
         return $queryBuilder->getQuery()->getSingleResult();
+    }
+
+    /**
+     * This function apply acl on the model/related model fields. Only fields on which user has access
+     * will be returned back as response.
+     *
+     * @method applyACLOnFields
+     * @param  $values     Array of result set retreived from database.
+     * @param  string $action     Name of action for which permission is to be fetched.
+     * @param  string $modelAlias Model alias.
+     * @return null|void
+     */
+    public function applyACLOnFields($values, $action, $modelAlias)
+    {
+        $fields = [];
+
+        foreach ($values as $fieldName => $value) {
+            if (!is_array($value)) {
+                $field = "{$modelAlias}.{$fieldName}";
+                ($this->checkAccess($field, $action)) && ($fields[] = $field);
+            } else {
+                foreach (array_keys($value) as $nestedField) {
+                    $field = "{$fieldName}.{$nestedField}";
+                    ($this->checkAccess($field, $action)) && ($fields[] = $field);
+                }
+            }
+        }
+
+        $this->allowedFields = $fields;
+    }
+
+    /**
+     * This function return allowedFields property.
+     *
+     * @method getAllowedFields
+     * @return array
+     */
+    public function getAllowedFields()
+    {
+        return $this->allowedFields;
     }
 }
