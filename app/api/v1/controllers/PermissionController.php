@@ -557,7 +557,12 @@ class PermissionController extends AclAdminController
         }
 
         $modelNamespace = "\\Gaia\\MVC\\Models\\$modelName";
-        $model = new $modelNamespace();
+
+        if (class_exists($modelNamespace)) {
+            $model = new $modelNamespace();
+        } else {
+            throw new \Gaia\Exception\Exception("Model not found");
+        }
 
         return $model->isAclAllowed();
     }
