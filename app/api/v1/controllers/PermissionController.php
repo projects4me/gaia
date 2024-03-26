@@ -93,27 +93,29 @@ class PermissionController extends AclAdminController
         $permissionInterface = $this->getPermissionInterface($path);
         $permissionIndex = 0;
         foreach ($models as $modelName) {
-            // Get metadata of the model.
-            $metaFilePath = $path . '/' . $modelName . '.php';
-            $this->addPermissions($permissionIndex, $modelName, [$modelName], $permissions, $permissionInterface, false);
+            if ($this->canApplyAcl($modelName)) {
+                // Get metadata of the model.
+                $metaFilePath = $path . '/' . $modelName . '.php';
+                $this->addPermissions($permissionIndex, $modelName, [$modelName], $permissions, $permissionInterface, false);
 
-            $data = $this->di->get('fileHandler')->readFile($metaFilePath);
+                $data = $this->di->get('fileHandler')->readFile($metaFilePath);
 
-            $requestedFieldTypes = ['fields', 'relationships'];
-            foreach ($requestedFieldTypes as $requestedFieldType) {
-                // Here fields can be relationship types when $requestedFieldType is relationships.
-                $requestedFields = array_keys($data[$modelName][$requestedFieldType]);
+                $requestedFieldTypes = ['fields', 'relationships'];
+                foreach ($requestedFieldTypes as $requestedFieldType) {
+                    // Here fields can be relationship types when $requestedFieldType is relationships.
+                    $requestedFields = array_keys($data[$modelName][$requestedFieldType]);
 
-                if ($requestedFieldType !== 'relationships') {
-                    $this->addPermissions($permissionIndex, $modelName, $requestedFields, $permissions, $permissionInterface, true);
-                } else {
-                    $relatedTypes = $requestedFields;
-                    foreach ($relatedTypes as $relType) {
+                    if ($requestedFieldType !== 'relationships') {
+                        $this->addPermissions($permissionIndex, $modelName, $requestedFields, $permissions, $permissionInterface, true);
+                    } else {
+                        $relatedTypes = $requestedFields;
+                        foreach ($relatedTypes as $relType) {
 
-                        // Only create permissions for relationships of type hasOne and belongsTo.
-                        if (in_array($relType, $allowedRelTypes)) {
-                            $rels = array_keys($data[$modelName][$requestedFieldType][$relType]);
-                            $this->addPermissions($permissionIndex, $modelName, $rels, $permissions, $permissionInterface, true);
+                            // Only create permissions for relationships of type hasOne and belongsTo.
+                            if (in_array($relType, $allowedRelTypes)) {
+                                $rels = array_keys($data[$modelName][$requestedFieldType][$relType]);
+                                $this->addPermissions($permissionIndex, $modelName, $rels, $permissions, $permissionInterface, true);
+                            }
                         }
                     }
                 }
@@ -306,6 +308,15 @@ class PermissionController extends AclAdminController
         if (!$resourceName) {
             throw new \Gaia\Exception\Exception("Please specify resource name");
         }
+
+        if (!$this->canApplyAcl($resourceName)) {
+            $actionsMap = [
+                "post" => "created",
+                "patch" => "updated"
+            ];
+
+            throw new \Gaia\Exception\Exception("Permission cannot {$actionsMap[$this->actionName]}");
+        };
 
         // Get permission flags from configurations.
         global $settings;
@@ -527,5 +538,27 @@ class PermissionController extends AclAdminController
             }
         }
         return $permission;
+    }
+
+    /**
+     * Checks that whether we can apply acl on the model or not. If not allowed then we can't able to
+     * create the permission against the given resource.
+     *
+     * @method canApplyAcl
+     * @param  string $resource
+     * @return bool
+     */
+    private function canApplyAcl($resource)
+    {
+        if (str_contains($resource, ".")) {
+            list($modelName, $field) = explode(".", $resource);
+        } else {
+            $modelName = $resource;
+        }
+
+        $modelNamespace = "\\Gaia\\MVC\\Models\\$modelName";
+        $model = new $modelNamespace();
+
+        return $model->isAclAllowed();
     }
 }
