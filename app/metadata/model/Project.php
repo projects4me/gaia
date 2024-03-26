@@ -290,7 +290,10 @@ $models['Project'] = array(
             'condition' => "Membership.userId=:userId: AND Membership.relatedTo='project'",
             'relatedKey' => 'projectId'
         )
-    )
+    ),
+    'customIdentifiers' => [
+        'name'
+    ]
 );
 
 return $models;

@@ -74,6 +74,7 @@ $models['Dashboard'] = array(
         'dateModifiedBehavior',
         'softDeleteBehavior'
     ),
+    'customIdentifiers' => []
 );
 
 return $models;

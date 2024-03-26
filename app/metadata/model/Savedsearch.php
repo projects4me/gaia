@@ -102,7 +102,7 @@ $models['Savedsearch'] = array(
         'createdUserBehavior',
         'softDeleteBehavior'
     ),
-
+    'customIdentifiers' => []
 );
 
 return $models;

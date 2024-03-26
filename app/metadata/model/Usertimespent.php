@@ -23,7 +23,7 @@ $models['Usertimespent'] = array(
             'name' => 'userId',
             'type' => 'varchar',
             'null' => false,
-        ),        
+        ),
         'totalMinutes' => array(
             'name' => 'totalMinutes',
             'type' => 'varchar',
@@ -35,7 +35,8 @@ $models['Usertimespent'] = array(
     ),
     'foriegnKeys' => array(),
     'triggers' => array(),
-    'functions' => array()
+    'functions' => array(),
+    'customIdentifiers' => []
 );
 
 return $models;

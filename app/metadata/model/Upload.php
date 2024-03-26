@@ -161,6 +161,7 @@ $models['Upload'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
     ),
+    'customIdentifiers' => []
 );
 
 return $models;

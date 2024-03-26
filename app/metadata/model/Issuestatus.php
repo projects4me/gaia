@@ -117,6 +117,7 @@ $models['Issuestatus'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior'
     ),
+    'customIdentifiers' => []
 );
 
 return $models;

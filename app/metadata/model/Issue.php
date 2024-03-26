@@ -316,7 +316,10 @@ $models['Issue'] = array(
             'field' => 'createdUser',
             'condition' => 'Issue.createdUser=:userId:'
         )
-    )
+    ),
+    'customIdentifiers' => [
+        'issueNumber'
+    ]
 );
 
 return $models;

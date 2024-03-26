@@ -140,7 +140,8 @@ $models['Activity'] = array(
         'createdUserBehavior',
         'dateCreatedBehavior',
         'softDeleteBehavior'
-   )
+    ),
+    'customIdentifiers' => []
 );
 
 return $models;

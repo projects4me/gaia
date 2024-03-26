@@ -52,7 +52,8 @@ $models['Oauthaccesstoken'] = array(
     'triggers' => array(
 
     ),
-    'functions' => array()
+    'functions' => array(),
+    'customIdentifiers' => []
 );
 
 return $models;

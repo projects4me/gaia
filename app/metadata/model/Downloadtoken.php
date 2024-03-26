@@ -96,6 +96,7 @@ $models['Downloadtoken'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior'
     ),
+    'customIdentifiers' => []
 );
 
 return $models;

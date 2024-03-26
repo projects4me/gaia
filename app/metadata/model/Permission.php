@@ -131,6 +131,7 @@ $models['Permission'] = array(
         'modifiedUserBehavior',
         'currentUserBehavior'
     ],
+    'customIdentifiers' => []
 );
 
 return $models;

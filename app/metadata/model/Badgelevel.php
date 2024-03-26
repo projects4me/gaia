@@ -115,6 +115,7 @@ $models['Badgelevel'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior'
     ),
+    'customIdentifiers' => []
 );
 
 return $models;

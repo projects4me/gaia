@@ -76,6 +76,7 @@ $models['Tagged'] = array(
     'behaviors' => array(
         'aclBehavior',
     ),
+    'customIdentifiers' => []
 );
 
 return $models;

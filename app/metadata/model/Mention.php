@@ -112,6 +112,7 @@ $models['Mention'] = array(
         'createdUserBehavior',
         'softDeleteBehavior'
     ),
+    'customIdentifiers' => []
 );
 
 return $models;

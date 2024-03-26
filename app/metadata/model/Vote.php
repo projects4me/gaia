@@ -133,7 +133,7 @@ $models['Vote'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior'
     ),
-
+    'customIdentifiers' => []
 );
 
 return $models;

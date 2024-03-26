@@ -55,6 +55,7 @@ $models['Converser'] = array(
         ),
       )
     ),
+    'customIdentifiers' => []
 );
 
 return $models;
