@@ -151,11 +151,21 @@ class PermissionController extends AclAdminController
 
         // Add fields.
         foreach ($modelFields as $modelField) {
-            $permissionIndex++;
-            $permissionInterface['attributes']['resourceName'] = $modelField;
-            $permissionInterface['attributes']['resourceId'] = "new_resource_{$permissionIndex}";
-            $permissionInterface['id'] = create_guid();
-            $permissions['data'][] = $permissionInterface;
+            list(, $fieldName) = explode('.', $modelField);
+
+            $fieldName = $fieldName ?? $modelField;
+
+            /*
+            * If the field is 'id' or any other custom identifier e.g. issueNumber for issue than that
+            * field will not become the part of permissions array.
+            */
+            if (!in_array($fieldName, $this->getModelIdentifiers($modelName))) {
+                $permissionIndex++;
+                $permissionInterface['attributes']['resourceName'] = $modelField;
+                $permissionInterface['attributes']['resourceId'] = "new_resource_{$permissionIndex}";
+                $permissionInterface['id'] = create_guid();
+                $permissions['data'][] = $permissionInterface;
+            }
         }
     }
 
@@ -551,8 +561,10 @@ class PermissionController extends AclAdminController
      */
     private function canApplyAcl($resource)
     {
+        $isAllowed = true;
+
         if (str_contains($resource, ".")) {
-            list($modelName, ) = explode(".", $resource);
+            list($modelName, $fieldName) = explode(".", $resource);
         } else {
             $modelName = $resource;
         }
@@ -561,10 +573,42 @@ class PermissionController extends AclAdminController
 
         if (class_exists($modelNamespace)) {
             $model = new $modelNamespace();
+            $isAllowed = $model->isAclAllowed();
         } else {
             throw new \Gaia\Exception\Exception("Model not found");
         }
 
-        return $model->isAclAllowed();
+        /*
+        * Check whether the resource is the identifier of the model e.g. id or issueNumber of Issue model. If it
+        * is then not allow to add/update permission.
+        */
+        if ($fieldName && in_array($fieldName, $this->getModelIdentifiers($modelName))) {
+            $isAllowed = false;
+        }
+
+        return $isAllowed;
+    }
+
+    /**
+     * This function returns list of identifiers of the given model.
+     *
+     * @method getModelIdentifiers
+     * @param $modelName Name of the model.
+     * @return Array
+     */
+    private function getModelIdentifiers($modelName)
+    {
+        $data = $this->di->get('fileHandler')->readFile(APP_PATH . "/app/metadata/model/{$modelName}.php");
+
+        // Prepare Array of identifiers on which applying ACL is not allowed.
+        $excludedIdentifiers = [
+            'id'
+        ];
+
+        foreach ($data[$modelName]['customIdentifiers'] as $identifier) {
+            $excludedIdentifiers[] = $identifier;
+        }
+
+        return $excludedIdentifiers;
     }
 }
