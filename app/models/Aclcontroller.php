@@ -11,11 +11,17 @@ use Gaia\Core\MVC\Models\Model;
 /**
  * ACL Controller Model
  *
- * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Foundation
+ * @author   Rana Nouman <ranamnouman@gmail.com>
+ * @package  Foundation
  * @category Model
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class Aclcontroller extends Model
 {
+    /**
+     * Flag to determine if ACL rules should be applied to the model.
+     *
+     * @var boolean
+     */
+    protected $aclAllowed = false;
 }

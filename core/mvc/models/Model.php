@@ -19,10 +19,10 @@ use Gaia\Core\MVC\Models\Relationships\HasManyToMany;
  * overwrite the default functionality of Phalcon\Mvc\Model in order to
  * introduce manual meta-data extensions along with other changes
  *
- * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation\Mvc
+ * @author   Hammad Hassan <gollomer@gmail.com>
+ * @package  Foundation\Mvc
  * @category Model
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class Model extends PhalconModel
 {
@@ -84,8 +84,15 @@ class Model extends PhalconModel
     protected $splitQueries = true;
 
     /**
+     * Flag to determine if ACL rules should be applied to the model.
+     *
+     * @var bool
+     */
+    protected $aclAllowed = true;
+
+    /**
      * This contains behaviors that are required by the model.
-     * 
+     *
      * @var array
      */
     protected $requiredBehaviors = [];
@@ -124,14 +131,14 @@ class Model extends PhalconModel
      * This function is used in order to load the different behaviors that this model is
      * set to use.
      *
-     * @param array $behaviors
+     * @param  array $behaviors
      * @return void
      */
     public function loadBehaviors($behaviors)
     {
         foreach ($behaviors as $behavior) {
             $behaviorClass = '\\Gaia\\MVC\\Models\\Behaviors\\' . $behavior;
-            $this->addBehavior(new $behaviorClass);
+            $this->addBehavior(new $behaviorClass());
         }
     }
 
@@ -140,10 +147,10 @@ class Model extends PhalconModel
      * This RestController must use this function instead of find so that we can
      * support the default pagination, sorting, filtering and relationships
      *
-     * @param array $params
+     * @param  array $params
      * @return array
      * @throws \Phalcon\Exception
-     * @todo remove the relationship preload to all
+     * @todo   remove the relationship preload to all
      */
     public function read(array $params)
     {
@@ -172,7 +179,7 @@ class Model extends PhalconModel
      * This RestController must use this function instead of find so that we can
      * support the default pagination, sorting, filtering and relationships
      *
-     * @param array $params
+     * @param  array $params
      * @return array
      * @throws \Phalcon\Exception
      */
@@ -205,7 +212,7 @@ class Model extends PhalconModel
      * This RestController must use this function instead of find so that we can
      * support the default pagination, sorting, filtering and relationships
      *
-     * @param array $params
+     * @param  array $params
      * @return array
      * @throws \Phalcon\Exception
      */
@@ -215,11 +222,9 @@ class Model extends PhalconModel
         $params['rels'] = array($related);
 
         // Set the fields
+        $params['fields'] = $related . '.*';
         if (isset($params['fields']) && !empty($params['fields'])) {
             $params['fields'] = $params['fields'];
-        }
-        else {
-            $params['fields'] = $related . '.*';
         }
 
         $this->query = $this->instantiateQuery($this->modelAlias, $params);
@@ -247,9 +252,9 @@ class Model extends PhalconModel
      * hasManyToMany, then those related models are fetched first and then base model. After that
      * the remaining related models (hasManyToMany) are fetched.
      *
-     * @param array $params
+     * @param array  $params
      * @param string $typeOfQueryToPerfrom This is type of query to be performed on model.
-     * @param bool $splitQuery
+     * @param bool   $splitQuery
      */
     public function executeQuery($params, $typeOfQueryToPerform, $splitQueryParam = true)
     {
@@ -311,8 +316,7 @@ class Model extends PhalconModel
             foreach ($relsToBeExecuted as $relName) {
                 $resultSets[$relName] = $this->executeHasManyRel($relName, $parameters, $baseModelIds);
             }
-        }
-        else {
+        } else {
             $resultSets['baseModel'] = $this->executeModel($this->query);
         }
 
@@ -321,10 +325,10 @@ class Model extends PhalconModel
 
     /**
      * This function executes hasManyToMany relationships.
-     * 
-     * @param string $relName Name of relationship.
-     * @param array $parameters
-     * @param array $baseModelIds
+     *
+     * @param  string $relName      Name of relationship.
+     * @param  array  $parameters
+     * @param  array  $baseModelIds
      * @return \Phalcon\Mvc\Model\ResultsetInterface
      */
     public function executeHasManyRel($relName, &$parameters, $baseModelids = null)
@@ -375,7 +379,8 @@ class Model extends PhalconModel
         //get all requested fields related to relationship.
         $relParams['fields'] = $hasManyToManyRel->getFields($relName);
 
-        /**Execute Relationship */
+        
+        // Execute Relationship.
         $query->prepareReadAllQuery($relMeta['secondaryModel'], $relParams, $relationship);
         $result = $this->executeModel($query);
 
@@ -391,8 +396,8 @@ class Model extends PhalconModel
 
     /**
      * This function executes base model.
-     * 
-     * @param \Gaia\Core\MVC\Models\Query $query
+     *
+     * @param  \Gaia\Core\MVC\Models\Query $query
      * @return \Phalcon\Mvc\Model\ResultsetInterface
      */
     protected function executeModel($query)
@@ -418,8 +423,8 @@ class Model extends PhalconModel
 
     /**
      * This function verify all checks for splitting of a query.
-     * 
-     * @param array $params
+     *
+     * @param  array $params
      * @return boolean
      */
     protected function passSplittingChecks($params)
@@ -430,11 +435,12 @@ class Model extends PhalconModel
         $checksPassed = false;
 
         if (($queryMeta->getTotalNumberOfRelationship() <= 3 && $queryMeta->getTotalHasManyToManyRels() > 4)
-        && !(in_array("OR", $queryMeta->getOperators()))
-        && !($queryMeta->checkQueryHasSort())
-        && !($queryMeta->checkQueryHasGroupBy())
-        && !($queryMeta->checkQueryHasAggregateFunctions())
-        && !($queryMeta->checkQueryHasExclusiveConditions())) {
+            && !(in_array("OR", $queryMeta->getOperators()))
+            && !($queryMeta->checkQueryHasSort())
+            && !($queryMeta->checkQueryHasGroupBy())
+            && !($queryMeta->checkQueryHasAggregateFunctions())
+            && !($queryMeta->checkQueryHasExclusiveConditions())
+        ) {
             $checksPassed = true;
         }
 
@@ -454,8 +460,8 @@ class Model extends PhalconModel
     /**
      * This function return new Query object.
      *
-     * @param string $modelName
-     * @param array $params
+     * @param  string $modelName
+     * @param  array  $params
      * @return \Gaia\Core\MVC\Models\Query
      */
     public function instantiateQuery($modelName, $params)
@@ -478,7 +484,7 @@ class Model extends PhalconModel
 
     /**
      * This function returns relationship object.
-     * 
+     *
      * @return \Gaia\Core\MVC\Models\Relationship
      */
     public function getRelationship()
@@ -488,7 +494,7 @@ class Model extends PhalconModel
 
     /**
      * This function returns query object.
-     * 
+     *
      * @return \Gaia\Core\MVC\Models\Query
      */
     public function getQuery()
@@ -529,7 +535,7 @@ class Model extends PhalconModel
 
     /**
      * This function is used to set the behaviors, required by the model.
-     * 
+     *
      * @param array $metadata
      */
     public function setRequiredBehaviors($metadata)
@@ -541,11 +547,22 @@ class Model extends PhalconModel
 
     /**
      * This function returns array of requiredBehaviors
-     * 
+     *
      * @return array
      */
     public function getRequiredBehaviors()
     {
         return $this->requiredBehaviors;
+    }
+
+    /**
+     * This function checks whether ACL functionality is enabled for the model by returning
+     * the value of the $aclAllowed property.
+     *
+     * @return bool
+     */
+    public function isAclAllowed()
+    {
+        return $this->aclAllowed;
     }
 }
