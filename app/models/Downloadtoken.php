@@ -21,7 +21,7 @@ class Downloadtoken extends Model
     /**
      * Flag to determine if ACL rules should be applied to the model.
      *
-     * @var bool
+     * @var boolean
      */
     protected $aclAllowed = false;
 }

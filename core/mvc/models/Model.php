@@ -222,10 +222,9 @@ class Model extends PhalconModel
         $params['rels'] = array($related);
 
         // Set the fields
+        $params['fields'] = $related . '.*';
         if (isset($params['fields']) && !empty($params['fields'])) {
             $params['fields'] = $params['fields'];
-        } else {
-            $params['fields'] = $related . '.*';
         }
 
         $this->query = $this->instantiateQuery($this->modelAlias, $params);
@@ -380,9 +379,8 @@ class Model extends PhalconModel
         //get all requested fields related to relationship.
         $relParams['fields'] = $hasManyToManyRel->getFields($relName);
 
-        /**
-* Execute Relationship 
-*/
+        
+        // Execute Relationship.
         $query->prepareReadAllQuery($relMeta['secondaryModel'], $relParams, $relationship);
         $result = $this->executeModel($query);
 

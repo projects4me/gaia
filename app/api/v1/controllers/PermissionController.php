@@ -315,7 +315,8 @@ class PermissionController extends AclAdminController
                 "patch" => "updated"
             ];
 
-            throw new \Gaia\Exception\Exception("Permission cannot {$actionsMap[$this->actionName]}");
+            $action = $actionsMap[$this->actionName];
+            throw new \Gaia\Exception\Exception("Permission cannot ". $action);
         };
 
         // Get permission flags from configurations.
@@ -545,13 +546,13 @@ class PermissionController extends AclAdminController
      * create the permission against the given resource.
      *
      * @method canApplyAcl
-     * @param  string $resource
-     * @return bool
+     * @param  string $resource Name of the resource on which acl is being checked.
+     * @return boolean
      */
     private function canApplyAcl($resource)
     {
         if (str_contains($resource, ".")) {
-            list($modelName, $field) = explode(".", $resource);
+            list($modelName, ) = explode(".", $resource);
         } else {
             $modelName = $resource;
         }
