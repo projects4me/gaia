@@ -18,15 +18,16 @@ use Gaia\Libraries\file\Handler as fileHandler;
  * 2) View Metadata
  * 3) BusinessProcess Metadata
  *
- * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation
+ * @author   Hammad Hassan <gollomer@gmail.com>
+ * @package  Foundation
  * @category metaManager
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
-  */
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ */
 class Manager
 {
     /**
      * This is the dependency injector used for this class
+     *
      * @var \Phalcon\DiInterface $di
      */
     protected $di;
@@ -47,8 +48,8 @@ class Manager
      * This function get the model metadata stored for the application and
      * returns it. This class uses Phalcon Model Data
      *
-     * @todo Use Cahce
-     * @param string $model
+     * @todo   Use Cahce
+     * @param  string $model
      * @return array
      */
     public function getModelMeta($model)
@@ -100,6 +101,8 @@ class Manager
             MetaData::MODELS_EMPTY_STRING_VALUES => array(
             ),
 
+            'fields' => $metadata['fields'],
+
             // All the relationships for the model
             // For now we will just copy things over and see if for future
             // we need any adjustment in the format
@@ -117,7 +120,7 @@ class Manager
     /**
      * This function parses the data from the metadata array
      *
-     * @param array $metadata
+     * @param  array $metadata
      * @return array
      */
     public function parseFields($metadata)
@@ -162,7 +165,7 @@ class Manager
      * This function returns the type defined in metadata mapped according to
      * PhalconPHP
      *
-     * @param string $type
+     * @param  string $type
      * @return integer
      */
     public function getFieldType($type)
@@ -219,7 +222,7 @@ class Manager
      * This function returns the field data bind type defined in metadata
      * mapped according to PhalconPHP
      *
-     * @param string $type
+     * @param  string $type
      * @return integer
      */
     public function getBindType($type)

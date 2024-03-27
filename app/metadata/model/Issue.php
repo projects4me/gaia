@@ -115,7 +115,8 @@ $models['Issue'] = array(
             'length' => '11',
             'autoIncrement' => 'true',
             'null' => true,
-            'fts' => true
+            'fts' => true,
+            'link' => true
         ),
         'endDate' => array(
             'name' => 'endDate',
@@ -211,7 +212,8 @@ $models['Issue'] = array(
             'assignedTo' => array(
                 'primaryKey' => 'assignee',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-                'relatedKey' => 'id'
+                'relatedKey' => 'id',
+                'link' => true
             ),
             'createdBy' => array(
                 'primaryKey' => 'createdUser',

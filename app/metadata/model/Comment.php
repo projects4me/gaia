@@ -145,7 +145,7 @@ $models['Comment'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    ),
+    )
 );
 
 return $models;

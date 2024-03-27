@@ -167,7 +167,7 @@ $models['Conversationroom'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior',
         'aclBehavior'
-    ),
+    )
 );
 
 return $models;

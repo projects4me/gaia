@@ -33,10 +33,10 @@ $models['Oauthjwt'] = array(
         'client_id' => 'primary',
     ),
     'foriegnKeys' => array(
-       
+
     ) ,
     'triggers' => array(
-        
+
     ),
     'functions' => array()
 );

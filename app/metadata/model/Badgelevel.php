@@ -114,7 +114,7 @@ $models['Badgelevel'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    ),
+    )
 );
 
 return $models;

@@ -101,8 +101,7 @@ $models['Savedsearch'] = array(
         'dateCreatedBehavior',
         'createdUserBehavior',
         'softDeleteBehavior'
-    ),
-
+    )
 );
 
 return $models;

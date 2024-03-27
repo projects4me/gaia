@@ -111,7 +111,7 @@ $models['Mention'] = array(
         'dateCreatedBehavior',
         'createdUserBehavior',
         'softDeleteBehavior'
-    ),
+    )
 );
 
 return $models;

@@ -21,7 +21,8 @@ $models['Project'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
-            'fts' => true
+            'fts' => true,
+            'link' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',

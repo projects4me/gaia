@@ -75,7 +75,7 @@ $models['Tagged'] = array(
     ),
     'behaviors' => array(
         'aclBehavior',
-    ),
+    )
 );
 
 return $models;

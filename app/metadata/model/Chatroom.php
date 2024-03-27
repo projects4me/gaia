@@ -136,7 +136,7 @@ $models['Chatroom'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    ),
+    )
 );
 
 return $models;

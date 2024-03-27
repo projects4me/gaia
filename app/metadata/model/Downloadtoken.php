@@ -95,7 +95,7 @@ $models['Downloadtoken'] = array(
         'dateCreatedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior'
-    ),
+    )
 );
 
 return $models;

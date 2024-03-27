@@ -73,7 +73,7 @@ $models['Dashboard'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'softDeleteBehavior'
-    ),
+    )
 );
 
 return $models;

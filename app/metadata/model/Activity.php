@@ -140,7 +140,7 @@ $models['Activity'] = array(
         'createdUserBehavior',
         'dateCreatedBehavior',
         'softDeleteBehavior'
-   )
+    )
 );
 
 return $models;

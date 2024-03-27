@@ -26,7 +26,7 @@ $models['Role'] = array(
             'label' => 'LBL_ROLES_DESCRIPTION',
             'type' => 'text',
             'null' => false,
-        ),        
+        ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_ROLES_DATE_CREATED',
@@ -109,8 +109,7 @@ $models['Role'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    ),
-
+    )
 );
 
 return $models;

@@ -54,7 +54,7 @@ $models['Converser'] = array(
           'relatedKey' => 'id',
         ),
       )
-    ),
+    )
 );
 
 return $models;

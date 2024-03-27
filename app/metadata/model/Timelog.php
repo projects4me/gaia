@@ -147,8 +147,7 @@ $models['Timelog'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    ),
-
+    )
 );
 
 return $models;
