@@ -212,7 +212,8 @@ $models['Issue'] = array(
             'assignedTo' => array(
                 'primaryKey' => 'assignee',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
-                'relatedKey' => 'id'
+                'relatedKey' => 'id',
+                'link' => true
             ),
             'createdBy' => array(
                 'primaryKey' => 'createdUser',
