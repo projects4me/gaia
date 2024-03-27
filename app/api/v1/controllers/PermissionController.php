@@ -159,7 +159,7 @@ class PermissionController extends AclAdminController
             * If the field is 'id' or any other custom identifier e.g. issueNumber for issue than that
             * field will not become the part of permissions array.
             */
-            if (!in_array($fieldName, $this->getModelIdentifiers($modelName))) {
+            if (!in_array($fieldName, $this->di->get('metaManager')->getModelIdentifiers($modelName))) {
                 $permissionIndex++;
                 $permissionInterface['attributes']['resourceName'] = $modelField;
                 $permissionInterface['attributes']['resourceId'] = "new_resource_{$permissionIndex}";
@@ -582,33 +582,10 @@ class PermissionController extends AclAdminController
         * Check whether the resource is the identifier of the model e.g. id or issueNumber of Issue model. If it
         * is then not allow to add/update permission.
         */
-        if ($fieldName && in_array($fieldName, $this->getModelIdentifiers($modelName))) {
+        if ($fieldName && in_array($fieldName, $this->di->get('metaManager')->getModelIdentifiers($modelName))) {
             $isAllowed = false;
         }
 
         return $isAllowed;
-    }
-
-    /**
-     * This function returns list of identifiers of the given model.
-     *
-     * @method getModelIdentifiers
-     * @param $modelName Name of the model.
-     * @return Array
-     */
-    private function getModelIdentifiers($modelName)
-    {
-        $data = $this->di->get('fileHandler')->readFile(APP_PATH . "/app/metadata/model/{$modelName}.php");
-
-        // Prepare Array of identifiers on which applying ACL is not allowed.
-        $excludedIdentifiers = [
-            'id'
-        ];
-
-        foreach ($data[$modelName]['customIdentifiers'] as $identifier) {
-            $excludedIdentifiers[] = $identifier;
-        }
-
-        return $excludedIdentifiers;
     }
 }
