@@ -153,7 +153,7 @@ class PermissionController extends AclAdminController
         foreach ($modelFields as $modelField) {
             list(, $fieldName) = explode('.', $modelField);
 
-            $fieldName = $fieldName ?? $modelField;
+            $fieldName = ($fieldName ?? $modelField);
 
             /*
             * If the field is 'id' or any other custom identifier e.g. issueNumber for issue than that
