@@ -136,8 +136,7 @@ $models['Tag'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    ),
-    'customIdentifiers' => []
+    )
 );
 
 return $models;

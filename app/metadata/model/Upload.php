@@ -160,8 +160,7 @@ $models['Upload'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-    ),
-    'customIdentifiers' => []
+    )
 );
 
 return $models;

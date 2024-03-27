@@ -161,8 +161,7 @@ $models['Milestone'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    ),
-    'customIdentifiers' => []
+    )
 );
 
 return $models;

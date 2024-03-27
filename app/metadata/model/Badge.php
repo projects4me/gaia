@@ -99,8 +99,7 @@ $models['Badge'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    ),
-    'customIdentifiers' => []
+    )
 );
 
 return $models;

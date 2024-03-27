@@ -21,7 +21,8 @@ $models['Project'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
-            'fts' => true
+            'fts' => true,
+            'link' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
@@ -290,10 +291,7 @@ $models['Project'] = array(
             'condition' => "Membership.userId=:userId: AND Membership.relatedTo='project'",
             'relatedKey' => 'projectId'
         )
-    ),
-    'customIdentifiers' => [
-        'name'
-    ]
+    )
 );
 
 return $models;

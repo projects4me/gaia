@@ -67,8 +67,7 @@ $models['Userlatestproject'] = array(
     ),
     'foriegnKeys' => array(),
     'triggers' => array(),
-    'functions' => array(),
-    'customIdentifiers' => []
+    'functions' => array()
 );
 
 return $models;

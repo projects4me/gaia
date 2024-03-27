@@ -132,8 +132,7 @@ $models['Vote'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior'
-    ),
-    'customIdentifiers' => []
+    )
 );
 
 return $models;

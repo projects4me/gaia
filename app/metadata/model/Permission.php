@@ -130,8 +130,7 @@ $models['Permission'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'currentUserBehavior'
-    ],
-    'customIdentifiers' => []
+    ]
 );
 
 return $models;

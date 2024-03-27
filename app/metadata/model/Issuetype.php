@@ -115,8 +115,7 @@ $models['Issuetype'] = array(
             'field' => 'createdUser',
             'condition' => 'issuetype.createdUser=:userId:'
         )
-    ),
-    'customIdentifiers' => []
+    )
 );
 
 return $models;

@@ -134,8 +134,7 @@ $models['Resource'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior',
         'modelIdentifierBehavior'
-    ),
-    'customIdentifiers' => []
+    )
 );
 
 return $models;

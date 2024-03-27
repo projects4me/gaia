@@ -115,7 +115,8 @@ $models['Issue'] = array(
             'length' => '11',
             'autoIncrement' => 'true',
             'null' => true,
-            'fts' => true
+            'fts' => true,
+            'link' => true
         ),
         'endDate' => array(
             'name' => 'endDate',
@@ -316,10 +317,7 @@ $models['Issue'] = array(
             'field' => 'createdUser',
             'condition' => 'Issue.createdUser=:userId:'
         )
-    ),
-    'customIdentifiers' => [
-        'issueNumber'
-    ]
+    )
 );
 
 return $models;

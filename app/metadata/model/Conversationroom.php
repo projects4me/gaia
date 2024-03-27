@@ -167,8 +167,7 @@ $models['Conversationroom'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior',
         'aclBehavior'
-    ),
-    'customIdentifiers' => []
+    )
 );
 
 return $models;

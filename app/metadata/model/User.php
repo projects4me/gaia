@@ -369,8 +369,7 @@ $models['User'] = array(
             'field' => 'createdUser',
             'condition' => 'User.createdUser=:userId:'
         )
-    ),
-    'customIdentifiers' => []
+    )
 );
 
 return $models;

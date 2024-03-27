@@ -100,6 +100,8 @@ class Manager
             MetaData::MODELS_EMPTY_STRING_VALUES => array(
             ),
 
+            'fields' => $metadata['fields'],
+
             // All the relationships for the model
             // For now we will just copy things over and see if for future
             // we need any adjustment in the format
@@ -109,8 +111,6 @@ class Manager
             'behaviors' => (isset($metadata['behaviors']) ? $metadata['behaviors'] : array()),
 
             'acl' => (isset($metadata['acl']) ? $metadata['acl'] : array()),
-
-            'customIdentifiers' => (isset($metadata['customIdentifiers']) ? $metadata['customIdentifiers'] : array())
         );
 
         return $modelMeta;
@@ -332,28 +332,5 @@ class Manager
         }
 
         return $groups;
-    }
-
-    /**
-     * This function returns list of identifiers of the given model.
-     *
-     * @method getModelIdentifiers
-     * @param $modelName Name of the model.
-     * @return Array
-     */
-    public function getModelIdentifiers($modelName)
-    {
-        $data = $this->getModelMeta($modelName);
-
-        // Prepare Array of identifiers on which applying ACL is not allowed.
-        $excludedIdentifiers = [
-            'id'
-        ];
-
-        foreach ($data['customIdentifiers'] as $identifier) {
-            $excludedIdentifiers[] = $identifier;
-        }
-
-        return $excludedIdentifiers;
     }
 }

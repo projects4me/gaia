@@ -135,8 +135,7 @@ $models['Membership'] = array(
         'groupExplicitKeys' => [
             'project' => 'relatedId'
         ]
-    ],
-    'customIdentifiers' => []
+    ]
 );
 
 return $models;
