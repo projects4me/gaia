@@ -93,28 +93,27 @@ class PermissionController extends AclAdminController
         $permissionInterface = $this->getPermissionInterface($path);
         $permissionIndex = 0;
         foreach ($models as $modelName) {
-            if ($this->canApplyAcl($modelName)) {
+            if ($this->canApplyModelAcl($modelName)) {
                 // Get metadata of the model.
-                $metaFilePath = $path . '/' . $modelName . '.php';
-                $this->addPermissions($permissionIndex, $modelName, [$modelName], $permissions, $permissionInterface, false);
+                $data = $this->di->get('metaManager')->getModelMeta($modelName);
 
-                $data = $this->di->get('fileHandler')->readFile($metaFilePath);
+                $this->addPermissions($permissionIndex, $modelName, [$modelName], $permissions, $permissionInterface, false, $data);
 
                 $requestedFieldTypes = ['fields', 'relationships'];
                 foreach ($requestedFieldTypes as $requestedFieldType) {
                     // Here fields can be relationship types when $requestedFieldType is relationships.
-                    $requestedFields = array_keys($data[$modelName][$requestedFieldType]);
+                    $requestedFields = array_keys($data[$requestedFieldType]);
 
                     if ($requestedFieldType !== 'relationships') {
-                        $this->addPermissions($permissionIndex, $modelName, $requestedFields, $permissions, $permissionInterface, true);
+                        $this->addPermissions($permissionIndex, $modelName, $requestedFields, $permissions, $permissionInterface, true, $data);
                     } else {
                         $relatedTypes = $requestedFields;
                         foreach ($relatedTypes as $relType) {
 
                             // Only create permissions for relationships of type hasOne and belongsTo.
                             if (in_array($relType, $allowedRelTypes)) {
-                                $rels = array_keys($data[$modelName][$requestedFieldType][$relType]);
-                                $this->addPermissions($permissionIndex, $modelName, $rels, $permissions, $permissionInterface, true);
+                                $rels = array_keys($data[$requestedFieldType][$relType]);
+                                $this->addPermissions($permissionIndex, $modelName, $rels, $permissions, $permissionInterface, true, $data);
                             }
                         }
                     }
@@ -135,9 +134,10 @@ class PermissionController extends AclAdminController
      * @param  array  $permissions         Permissions array.
      * @param  array  $permissionInterface Permission default interface.
      * @param  bool   $addPrefix           Boolean flag to add model as a prefix on field.
+     * @param  array  $metadata            The metadata of given model.
      * @return void
      */
-    protected function addPermissions(&$permissionIndex, $modelName, $requestedFields, &$permissions, $permissionInterface, $addPrefix)
+    protected function addPermissions(&$permissionIndex, $modelName, $requestedFields, &$permissions, $permissionInterface, $addPrefix, $metadata)
     {
         $modelFields = $requestedFields;
         if ($addPrefix === true) {
@@ -151,11 +151,21 @@ class PermissionController extends AclAdminController
 
         // Add fields.
         foreach ($modelFields as $modelField) {
-            $permissionIndex++;
-            $permissionInterface['attributes']['resourceName'] = $modelField;
-            $permissionInterface['attributes']['resourceId'] = "new_resource_{$permissionIndex}";
-            $permissionInterface['id'] = create_guid();
-            $permissions['data'][] = $permissionInterface;
+            list(, $fieldName) = explode('.', $modelField);
+
+            $fieldName = ($fieldName ?? $modelField);
+
+            /*
+            * If the field is 'id' or any other custom identifier e.g. issueNumber for issue than that
+            * field will not become the part of permissions array.
+            */
+            if ($this->canApplyFieldAcl($fieldName, $metadata)) {
+                $permissionIndex++;
+                $permissionInterface['attributes']['resourceName'] = $modelField;
+                $permissionInterface['attributes']['resourceId'] = "new_resource_{$permissionIndex}";
+                $permissionInterface['id'] = create_guid();
+                $permissions['data'][] = $permissionInterface;
+            }
         }
     }
 
@@ -309,51 +319,44 @@ class PermissionController extends AclAdminController
             throw new \Gaia\Exception\Exception("Please specify resource name");
         }
 
-        if (!$this->canApplyAcl($resourceName)) {
-            $actionsMap = [
-                "post" => "created",
-                "patch" => "updated"
-            ];
 
-            $action = $actionsMap[$this->actionName];
-            throw new \Gaia\Exception\Exception("Permission cannot ". $action);
-        };
+        if ($this->canApplyAcl($resourceName)) {
+            // Get permission flags from configurations.
+            global $settings;
+            $permissionFlags = $settings['system']['acl']['permissionFlags'];
 
-        // Get permission flags from configurations.
-        global $settings;
-        $permissionFlags = $settings['system']['acl']['permissionFlags'];
+            // Get only required permission flags.
+            $permissionFlags = array_intersect($permissionFlags->toArray(), array_keys($values));
 
-        // Get only required permission flags.
-        $permissionFlags = array_intersect($permissionFlags->toArray(), array_keys($values));
+            // Retrieve Resource from database using given resource name.
+            $metadataPath = APP_PATH . '/app/metadata/model';
+            $resourceModel = \Gaia\MVC\Models\Resource::findFirst("entity='{$resourceName}'");
 
-        // Retrieve Resource from database using given resource name.
-        $metadataPath = APP_PATH . '/app/metadata/model';
-        $resourceModel = \Gaia\MVC\Models\Resource::findFirst("entity='{$resourceName}'");
+            // Get metadata of the resource.
+            $requestedModelName = $resourceModel->entity;
+            $resourceMetaData = $this->getDI()->get('metaManager')->getModelMeta($requestedModelName);
 
-        // Get metadata of the resource.
-        $requestedModelName = $resourceModel->entity;
-        $resourceMetaData = $this->getDI()->get('metaManager')->getModelMeta($requestedModelName);
+            if (str_contains($requestedModelName, '.') === true) {
+                list($requestedModule, $requestedField) = explode(".", $requestedModelName);
+                $requestedModelName = $requestedModule;
+            }
 
-        if (str_contains($requestedModelName, '.') === true) {
-            list($requestedModule, $requestedField) = explode(".", $requestedModelName);
-            $requestedModelName = $requestedModule;
+            if ($requestedField) {
+                $this->passFieldChecks(
+                    $permissionFlags,
+                    $values
+                );
+            } elseif (!$requestedField) {
+                $this->passModelChecks(
+                    $resourceMetaData,
+                    $requestedModelName,
+                    $permissionFlags,
+                    $values
+                );
+            }
+
+            return true;
         }
-
-        if ($requestedField) {
-            $this->passFieldChecks(
-                $permissionFlags,
-                $values
-            );
-        } elseif (!$requestedField) {
-            $this->passModelChecks(
-                $resourceMetaData,
-                $requestedModelName,
-                $permissionFlags,
-                $values
-            );
-        }
-
-        return true;
     }
 
     /**
@@ -542,29 +545,98 @@ class PermissionController extends AclAdminController
     }
 
     /**
+     * This function is used to check whether acl should applied to the given resource or not.
+     *
+     * @method canApplyAcl
+     * @param  string $resourceName
+     * @return boolean
+     */
+    private function canApplyAcl($resourceName)
+    {
+        $actionsMap = [
+            "post" => "created",
+            "patch" => "updated"
+        ];
+
+        $modelName = $resourceName;
+
+        if (str_contains($resourceName, ".")) {
+            list($modelName, $fieldName) = explode(".", $resourceName);
+        }
+
+        $metadata = $this->di->get('metaManager')->getModelMeta($modelName);
+
+        $action = $actionsMap[$this->actionName];
+
+        if ($fieldName && !$this->canApplyFieldAcl($fieldName, $metadata)) {
+            throw new \Gaia\Exception\Exception("Permission cannot ". $action);
+        }
+
+        if (!$this->canApplyModelAcl($modelName)) {
+            throw new \Gaia\Exception\Exception("Permission cannot ". $action);
+        }
+
+        return true;
+    }
+
+    /**
      * Checks that whether we can apply acl on the model or not. If not allowed then we can't able to
      * create the permission against the given resource.
      *
-     * @method canApplyAcl
-     * @param  string $resource Name of the resource on which acl is being checked.
+     * @method canApplyModelAcl
+     * @param  string $modelName Name of the resource on which acl is being checked.
      * @return boolean
      */
-    private function canApplyAcl($resource)
+    private function canApplyModelAcl($modelName)
     {
-        if (str_contains($resource, ".")) {
-            list($modelName, ) = explode(".", $resource);
-        } else {
-            $modelName = $resource;
-        }
+        $isAllowed = true;
 
         $modelNamespace = "\\Gaia\\MVC\\Models\\$modelName";
 
         if (class_exists($modelNamespace)) {
             $model = new $modelNamespace();
+            $isAllowed = $model->isAclAllowed();
         } else {
             throw new \Gaia\Exception\Exception("Model not found");
         }
 
-        return $model->isAclAllowed();
+        return $isAllowed;
+    }
+
+    /**
+     * Checks that whether we can apply acl on the field or not. If not allowed then we can't able to
+     * create the permission against the given field.
+     *
+     * @method canApplyFieldAcl
+     * @param  string $fieldName Name of the field on which acl is being checked.
+     * @param  array  $metadata  The metadata of given model.
+     * @return boolean
+     */
+    private function canApplyFieldAcl($fieldName, $metadata)
+    {
+        $isAllowed = true;
+
+        /*
+        * Check whether the given resource is field or not. If it's field then check whether this is used for links
+        * generation or not. If used then acl is not allowed on this field.
+        */
+        if ($fieldName
+            && (isset($metadata['fields'][$fieldName]['identifier'])
+            || isset($metadata['fields'][$fieldName]['relatedIdentifier'])
+            || isset($metadata['fields'][$fieldName]['linkedTo']))) {
+            $isAllowed = false;
+        }
+
+        /*
+        * If acl attribute explicitly applied to field then use its value. The fields on which acl is not allowed
+        * e.g. identifiers, linkedTo cannot use 'acl' attribute.
+        */
+        if ($fieldName
+            && $isAllowed
+            && isset($metadata['fields'][$fieldName]['acl'])) {
+            $isAllowed = ($metadata['fields'][$fieldName]['acl']);
+        }
+
+        return $isAllowed;
     }
 }

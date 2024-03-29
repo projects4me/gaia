@@ -13,6 +13,7 @@ $models['Role'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'name' => array(
             'name' => 'name',
@@ -20,13 +21,14 @@ $models['Role'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'id'
         ),
         'description' => array(
             'name' => 'description',
             'label' => 'LBL_ROLES_DESCRIPTION',
             'type' => 'text',
             'null' => false,
-        ),        
+        ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_ROLES_DATE_CREATED',
@@ -45,7 +47,8 @@ $models['Role'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'groupEntity' => array(
             'name' => 'groupEntity',
@@ -60,6 +63,7 @@ $models['Role'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -67,6 +71,7 @@ $models['Role'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -74,6 +79,7 @@ $models['Role'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -81,6 +87,7 @@ $models['Role'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
     ),
     'indexes' => array(
@@ -109,8 +116,7 @@ $models['Role'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    ),
-
+    )
 );
 
 return $models;

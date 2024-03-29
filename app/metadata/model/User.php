@@ -14,6 +14,7 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'name' => array(
             'name' => 'name',
@@ -21,7 +22,8 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
-            'fts' => true
+            'fts' => true,
+            'linkedTo' => 'id'
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
@@ -43,7 +45,8 @@ $models['User'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'description' => array(
             'name' => 'description',
@@ -58,6 +61,7 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -65,6 +69,7 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -72,6 +77,7 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -79,6 +85,7 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'username' => array(
             'name' => 'username',

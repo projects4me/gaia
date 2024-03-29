@@ -116,8 +116,7 @@ $models['Aclcontroller'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    ),
-
+    )
 );
 
 return $models;

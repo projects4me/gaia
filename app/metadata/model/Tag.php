@@ -14,7 +14,8 @@ $models['Tag'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
-            'fts' => true
+            'fts' => true,
+            'identifier' => true
         ),
         'tag' => array(
             'name' => 'tag',
@@ -44,7 +45,8 @@ $models['Tag'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -52,6 +54,7 @@ $models['Tag'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -59,6 +62,7 @@ $models['Tag'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -66,6 +70,7 @@ $models['Tag'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -73,6 +78,7 @@ $models['Tag'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
     ),
     'indexes' => array(
@@ -136,8 +142,7 @@ $models['Tag'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    ),
-
+    )
 );
 
 return $models;

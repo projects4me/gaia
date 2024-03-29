@@ -12,7 +12,8 @@ $models['Badge'] = array(
             'label' => 'LBL_BADGES_ID',
             'type' => 'varchar',
             'length' => '36',
-            'null' => false
+            'null' => false,
+            'identifier' => true
         ),
         'name' => array(
             'name' => 'name',
@@ -41,6 +42,7 @@ $models['Badge'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -48,6 +50,7 @@ $models['Badge'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -55,6 +58,7 @@ $models['Badge'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -62,6 +66,7 @@ $models['Badge'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -70,7 +75,8 @@ $models['Badge'] = array(
             'length' => '1',
             'null' => false,
             'default' => 0,
-            'fts' => true
+            'fts' => true,
+            'acl' => false
         ),
     ),
     'indexes' => array(
@@ -99,7 +105,7 @@ $models['Badge'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    ),
+    )
 );
 
 return $models;

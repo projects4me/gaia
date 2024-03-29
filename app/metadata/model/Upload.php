@@ -14,6 +14,7 @@ $models['Upload'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'name' => array(
             'name' => 'name',
@@ -43,6 +44,7 @@ $models['Upload'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -50,6 +52,7 @@ $models['Upload'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -57,6 +60,7 @@ $models['Upload'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -64,6 +68,7 @@ $models['Upload'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'status' => array(
             'name' => 'status',
@@ -79,6 +84,7 @@ $models['Upload'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'relatedTo' => array(
             'name' => 'relatedTo',
@@ -86,6 +92,7 @@ $models['Upload'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'relatedId'
         ),
         'fileType' => array(
             'name' => 'fileType',
@@ -160,7 +167,7 @@ $models['Upload'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-    ),
+    )
 );
 
 return $models;

@@ -13,6 +13,7 @@ $models['Mention'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
@@ -26,6 +27,7 @@ $models['Mention'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -33,6 +35,7 @@ $models['Mention'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -40,7 +43,8 @@ $models['Mention'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'relatedTo' => array(
             'name' => 'relatedTo',
@@ -48,6 +52,7 @@ $models['Mention'] = array(
             'type' => 'varchar',
             'length' => '30',
             'null' => false,
+            'linkedTo' => 'relatedId'
         ),
         'relatedId' => array(
             'name' => 'relatedId',
@@ -55,6 +60,7 @@ $models['Mention'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => true,
+            'relatedIdentifier' => true
         ),
         'notified' => array(
             'name' => 'notified',
@@ -111,7 +117,7 @@ $models['Mention'] = array(
         'dateCreatedBehavior',
         'createdUserBehavior',
         'softDeleteBehavior'
-    ),
+    )
 );
 
 return $models;

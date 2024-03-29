@@ -13,6 +13,7 @@ $models['Permission'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'resourceId' => array(
             'name' => 'resourceId',
@@ -130,7 +131,7 @@ $models['Permission'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'currentUserBehavior'
-    ],
+    ]
 );
 
 return $models;

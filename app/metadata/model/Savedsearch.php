@@ -13,6 +13,7 @@ $models['Savedsearch'] = array(
             'type' => 'char',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'name' => array(
             'name' => 'name',
@@ -33,6 +34,7 @@ $models['Savedsearch'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -40,6 +42,7 @@ $models['Savedsearch'] = array(
             'type' => 'varchar',
             'length' => '100',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -47,7 +50,8 @@ $models['Savedsearch'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'public' => array(
             'name' => 'public',
@@ -73,7 +77,8 @@ $models['Savedsearch'] = array(
             'label' => 'LBL_SAVED_SEARCHES_PROJECT_ID',
             'type' => 'char',
             'length' => '36',
-            'null' => true
+            'null' => true,
+            'relatedIdentifier' => true
         )
 
     ),
@@ -101,8 +106,7 @@ $models['Savedsearch'] = array(
         'dateCreatedBehavior',
         'createdUserBehavior',
         'softDeleteBehavior'
-    ),
-
+    )
 );
 
 return $models;

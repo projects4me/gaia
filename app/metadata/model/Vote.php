@@ -13,6 +13,7 @@ $models['Vote'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
@@ -32,6 +33,7 @@ $models['Vote'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -39,6 +41,7 @@ $models['Vote'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -46,6 +49,7 @@ $models['Vote'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -53,6 +57,7 @@ $models['Vote'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'vote' => array(
             'name' => 'vote',
@@ -66,6 +71,7 @@ $models['Vote'] = array(
             'type' => 'varchar',
             'length' => '20',
             'null' => false,
+            'linkedTo' => 'relatedId'
         ),
         'relatedId' => array(
             'name' => 'relatedId',
@@ -73,6 +79,7 @@ $models['Vote'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'relatedName' => array(
             'name' => 'relatedName',
@@ -132,8 +139,7 @@ $models['Vote'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior'
-    ),
-
+    )
 );
 
 return $models;

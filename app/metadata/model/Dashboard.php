@@ -13,6 +13,7 @@ $models['Dashboard'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'userId' => array(
             'name' => 'userId',
@@ -52,7 +53,8 @@ $models['Dashboard'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
     ),
     'indexes' => array(
@@ -73,7 +75,7 @@ $models['Dashboard'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'softDeleteBehavior'
-    ),
+    )
 );
 
 return $models;

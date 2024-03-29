@@ -14,6 +14,7 @@ $models['Conversationroom'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'subject' => array(
             'name' => 'subject',
@@ -43,7 +44,8 @@ $models['Conversationroom'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'description' => array(
             'name' => 'description',
@@ -58,6 +60,7 @@ $models['Conversationroom'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -65,6 +68,7 @@ $models['Conversationroom'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -72,6 +76,7 @@ $models['Conversationroom'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -79,6 +84,7 @@ $models['Conversationroom'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'roomType' => array(
             'name' => 'roomType',
@@ -94,6 +100,7 @@ $models['Conversationroom'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'projectName' => array(
             'name' => 'projectName',
@@ -101,6 +108,7 @@ $models['Conversationroom'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => true,
+            'linkedTo' => 'projectId'
         ),
         'issueId' => array(
             'name' => 'issueId',
@@ -167,7 +175,7 @@ $models['Conversationroom'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior',
         'aclBehavior'
-    ),
+    )
 );
 
 return $models;

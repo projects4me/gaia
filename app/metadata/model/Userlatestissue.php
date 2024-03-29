@@ -18,6 +18,7 @@ $models['Userlatestissue'] = array(
             'name' => 'id',
             'type' => 'varchar',
             'null' => false,
+            'identifier' => true
         ),
         'subject' => array(
             'name' => 'subject',
@@ -28,6 +29,7 @@ $models['Userlatestissue'] = array(
             'name' => 'issueNumber',
             'type' => 'varchar',
             'null' => false,
+            'linkedTo' => 'id'
         ),
         'status' => array(
             'name' => 'status',
@@ -38,6 +40,7 @@ $models['Userlatestissue'] = array(
             'name' => 'projectShortCode',
             'type' => 'varchar',
             'null' => false,
+            'linkedTo' => 'projectId'
         ),
         'lastActivityDate' => array(
             'name' => 'lastActivityDate',
@@ -48,11 +51,13 @@ $models['Userlatestissue'] = array(
             'name' => 'userId',
             'type' => 'varchar',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'projectId' => array(
             'name' => 'projectId',
             'type' => 'varchar',
             'null' => false,
+            'relatedIdentifier' => true
         )
     ),
     'indexes' => array(

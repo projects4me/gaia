@@ -13,6 +13,7 @@ $models['Converser'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'userId' => array(
             'name' => 'userId',
@@ -54,7 +55,7 @@ $models['Converser'] = array(
           'relatedKey' => 'id',
         ),
       )
-    ),
+    )
 );
 
 return $models;
