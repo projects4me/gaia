@@ -22,7 +22,7 @@ $models['Wiki'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
-            'fts' => true
+            'fts' => true,
             'linkedTo' => 'id'
         ),
         'dateCreated' => array(

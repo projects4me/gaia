@@ -604,11 +604,11 @@ class PermissionController extends AclAdminController
     }
 
     /**
-     * Checks that whether we can apply acl on the field/relationship or not. If not allowed then we can't able to
-     * create the permission against the given field/relationship.
+     * Checks that whether we can apply acl on the field or not. If not allowed then we can't able to
+     * create the permission against the given field.
      *
      * @method canApplyFieldAcl
-     * @param  string $fieldName Name of the field/relationship on which acl is being checked.
+     * @param  string $fieldName Name of the field on which acl is being checked.
      * @param  array  $metadata  The metadata of given model.
      * @return boolean
      */
@@ -620,16 +620,21 @@ class PermissionController extends AclAdminController
         * Check whether the given resource is field or not. If it's field then check whether this is used for links
         * generation or not. If used then acl is not allowed on this field.
         */
-        if ($fieldName && isset($metadata['fields'][$fieldName]['link']) || $fieldName === 'id') {
+        if ($fieldName
+            && (isset($metadata['fields'][$fieldName]['identifier'])
+            || isset($metadata['fields'][$fieldName]['relatedIdentifier'])
+            || isset($metadata['fields'][$fieldName]['linkedTo']))) {
             $isAllowed = false;
         }
 
         /*
-        * Check whether the given resource is relationship or not. If it's relationship then check whether
-        * this is used for links generation or not. If used then acl is not allowed on this relationship.
+        * If acl attribute explicitly applied to field then use its value. The fields on which acl is not allowed
+        * e.g. identifiers, linkedTo cannot use 'acl' attribute.
         */
-        if ($fieldName && isset($metadata['relationships'][$fieldName]['link'])) {
-            $isAllowed = false;
+        if ($fieldName
+            && $isAllowed
+            && isset($metadata['fields'][$fieldName]['acl'])) {
+            $isAllowed = ($metadata['fields'][$fieldName]['acl']);
         }
 
         return $isAllowed;
