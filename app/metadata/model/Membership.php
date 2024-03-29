@@ -13,6 +13,7 @@ $models['Membership'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
@@ -33,6 +34,7 @@ $models['Membership'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -40,6 +42,7 @@ $models['Membership'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'dateModified' => array(
             'name' => 'dateModified',
@@ -53,6 +56,7 @@ $models['Membership'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -60,6 +64,7 @@ $models['Membership'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'roleId' => array(
             'name' => 'roleId',
@@ -74,6 +79,7 @@ $models['Membership'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'linkedTo' => 'relatedId'
         ),
         'relatedId' => array(
             'name' => 'relatedId',
@@ -81,6 +87,7 @@ $models['Membership'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => true,
+            'relatedIdentifier' => true
         ),
         'userId' => array(
             'name' => 'userId',

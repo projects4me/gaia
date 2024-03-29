@@ -14,6 +14,7 @@ $models['Activity'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
@@ -35,6 +36,7 @@ $models['Activity'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -42,6 +44,7 @@ $models['Activity'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'relatedTo' => array(
             'name' => 'relatedTo',
@@ -49,6 +52,7 @@ $models['Activity'] = array(
             'type' => 'varchar',
             'length' => '30',
             'null' => false,
+            'linkedTo' => 'relatedId'
         ),
         'relatedId' => array(
             'name' => 'relatedId',
@@ -56,6 +60,7 @@ $models['Activity'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -64,7 +69,8 @@ $models['Activity'] = array(
             'length' => '1',
             'null' => false,
             'default' => 0,
-            'fts' => true
+            'fts' => true,
+            'acl' => false
         ),
         'type' => array(
             'name' => 'type',
@@ -87,6 +93,7 @@ $models['Activity'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => true,
+            'relatedIdentifier' => true
         ),
         'relatedActivityModule' => array(
             'name' => 'relatedActivityModule',

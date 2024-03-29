@@ -12,7 +12,8 @@ $models['Scoreboard'] = array(
             'label' => 'LBL_SCOREBOARD_ID',
             'type' => 'varchar',
             'length' => '36',
-            'null' => false
+            'null' => false,
+            'identifier' => true
         ),
         'userId' => array(
             'name' => 'userId',
@@ -47,6 +48,7 @@ $models['Scoreboard'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -54,6 +56,7 @@ $models['Scoreboard'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'dateModified' => array(
             'name' => 'dateModified',
@@ -67,6 +70,7 @@ $models['Scoreboard'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -74,6 +78,7 @@ $models['Scoreboard'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -82,7 +87,8 @@ $models['Scoreboard'] = array(
             'length' => '1',
             'null' => false,
             'default' => 0,
-            'fts' => true
+            'fts' => true,
+            'acl' => false
         ),
     ),
     'indexes' => array(

@@ -19,16 +19,19 @@ $models['Userworkmostwith'] = array(
             'name' => 'id',
             'type' => 'varchar',
             'null' => false,
+            'identifier' => true
         ),
         'userId' => array(
             'name' => 'userId',
             'type' => 'varchar',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'name' => array(
             'name' => 'name',
             'type' => 'varchar',
             'null' => false,
+            'linkedTo' => 'userId'
         ),
         'title' => array(
             'name' => 'title',

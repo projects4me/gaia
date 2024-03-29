@@ -18,11 +18,13 @@ $models['Usertimespent'] = array(
             'name' => 'id',
             'type' => 'varchar',
             'null' => false,
+            'identifier' => true
         ),
         'userId' => array(
             'name' => 'userId',
             'type' => 'varchar',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'totalMinutes' => array(
             'name' => 'totalMinutes',

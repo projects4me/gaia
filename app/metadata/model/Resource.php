@@ -13,6 +13,7 @@ $models['Resource'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'parentId' => array(
             'name' => 'parentId',
@@ -34,6 +35,7 @@ $models['Resource'] = array(
             'type' => 'int',
             'length' => '11',
             'null' => false,
+            'acl' => false
         ),
         'rht' => array(
             'name' => 'rht',
@@ -41,6 +43,7 @@ $models['Resource'] = array(
             'type' => 'int',
             'length' => '11',
             'null' => false,
+            'acl' => false
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
@@ -60,7 +63,8 @@ $models['Resource'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -68,6 +72,7 @@ $models['Resource'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -75,6 +80,7 @@ $models['Resource'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -82,6 +88,7 @@ $models['Resource'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -89,6 +96,7 @@ $models['Resource'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'groupName' => array(
             'name' => 'groupName',

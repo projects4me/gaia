@@ -14,6 +14,7 @@ $models['Project'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'name' => array(
             'name' => 'name',
@@ -22,7 +23,7 @@ $models['Project'] = array(
             'length' => '255',
             'null' => false,
             'fts' => true,
-            'link' => true
+            'linkedTo' => 'id'
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
@@ -44,6 +45,7 @@ $models['Project'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -51,6 +53,7 @@ $models['Project'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -58,6 +61,7 @@ $models['Project'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -65,6 +69,7 @@ $models['Project'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'assignee' => array(
             'name' => 'assignee',
@@ -79,7 +84,8 @@ $models['Project'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'description' => array(
             'name' => 'description',

@@ -14,6 +14,7 @@ $models['Issue'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'subject' => array(
             'name' => 'subject',
@@ -50,7 +51,8 @@ $models['Issue'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'description' => array(
             'name' => 'description',
@@ -65,6 +67,7 @@ $models['Issue'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -72,6 +75,7 @@ $models['Issue'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'owner' => array(
             'name' => 'owner',
@@ -100,6 +104,7 @@ $models['Issue'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -107,6 +112,7 @@ $models['Issue'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'issueNumber' => array(
             'name' => 'issueNumber',
@@ -116,7 +122,7 @@ $models['Issue'] = array(
             'autoIncrement' => 'true',
             'null' => true,
             'fts' => true,
-            'link' => true
+            'linkedTo' => 'id'
         ),
         'endDate' => array(
             'name' => 'endDate',

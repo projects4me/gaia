@@ -18,6 +18,7 @@ $models['Usergrouppermission'] = array(
             'name' => 'id',
             'type' => 'varchar',
             'null' => false,
+            'identifier' => true
         ),
         'relatedId' => array(
             'name' => 'relatedId',

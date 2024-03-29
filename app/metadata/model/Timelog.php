@@ -13,6 +13,7 @@ $models['Timelog'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
@@ -32,7 +33,8 @@ $models['Timelog'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -40,6 +42,7 @@ $models['Timelog'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -47,6 +50,7 @@ $models['Timelog'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -54,6 +58,7 @@ $models['Timelog'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -61,6 +66,7 @@ $models['Timelog'] = array(
             'type' => 'varchar',
             'length' => '255',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'issueId' => array(
             'name' => 'issueId',

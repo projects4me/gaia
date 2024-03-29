@@ -17,21 +17,25 @@ $models['Userecentactivity'] = array(
             'name' => 'id',
             'type' => 'varchar',
             'null' => false,
+            'identifier' => true
         ),
         'userId' => array(
             'name' => 'userId',
             'type' => 'varchar',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'relatedTo' => array(
             'name' => 'relatedTo',
             'type' => 'varchar',
             'null' => false,
+            'linkedTo' => 'relatedId'
         ),
         'relatedId' => array(
             'name' => 'relatedId',
             'type' => 'varchar',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'type' => array(
             'name' => 'type',
@@ -47,11 +51,13 @@ $models['Userecentactivity'] = array(
             'name' => 'relatedActivity',
             'type' => 'varchar',
             'null' => false,
+            'linkedTo' => 'relatedActivityId'
         ),
         'relatedActivityId' => array(
             'name' => 'relatedActivityId',
             'type' => 'varchar',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'relatedActivityModule' => array(
             'name' => 'relatedActivityModule',
@@ -62,17 +68,20 @@ $models['Userecentactivity'] = array(
             'name' => 'projectId',
             'type' => 'varchar',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'issueNumber' => array(
             'name' => 'issueNumber',
             'type' => 'varchar',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'userId'
         ),
     ),
     'indexes' => array(

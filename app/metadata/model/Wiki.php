@@ -14,6 +14,7 @@ $models['Wiki'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'name' => array(
             'name' => 'name',
@@ -22,6 +23,7 @@ $models['Wiki'] = array(
             'length' => '255',
             'null' => false,
             'fts' => true
+            'linkedTo' => 'id'
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
@@ -43,6 +45,7 @@ $models['Wiki'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -50,6 +53,7 @@ $models['Wiki'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -57,6 +61,7 @@ $models['Wiki'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -64,6 +69,7 @@ $models['Wiki'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -71,7 +77,8 @@ $models['Wiki'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'status' => array(
             'name' => 'status',
@@ -102,6 +109,7 @@ $models['Wiki'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'markUp' => array(
             'name' => 'markUp',
@@ -116,6 +124,7 @@ $models['Wiki'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => true,
+            'relatedIdentifier' => true
         )
     ),
     'indexes' => array(

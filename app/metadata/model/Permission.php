@@ -13,6 +13,7 @@ $models['Permission'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'resourceId' => array(
             'name' => 'resourceId',

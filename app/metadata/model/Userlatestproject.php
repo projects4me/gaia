@@ -19,11 +19,13 @@ $models['Userlatestproject'] = array(
             'name' => 'id',
             'type' => 'varchar',
             'null' => false,
+            'identifier' => true
         ),
         'name' => array(
             'name' => 'name',
             'type' => 'varchar',
             'null' => false,
+            'linkedTo' => 'id'
         ),
         'description' => array(
             'name' => 'description',
@@ -49,6 +51,7 @@ $models['Userlatestproject'] = array(
             'name' => 'userId',
             'type' => 'int',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'closedIssues' => array(
             'name' => 'closedIssues',

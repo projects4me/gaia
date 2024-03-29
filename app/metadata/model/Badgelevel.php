@@ -12,7 +12,8 @@ $models['Badgelevel'] = array(
             'label' => 'LBL_BADGE_LEVELS_ID',
             'type' => 'varchar',
             'length' => '36',
-            'null' => false
+            'null' => false,
+            'identifier' => true
         ),
         'name' => array(
             'name' => 'name',
@@ -26,7 +27,8 @@ $models['Badgelevel'] = array(
             'label' => 'LBL_BADGE_LEVELS_BADGE_ID',
             'type' => 'varchar',
             'length' => '36',
-            'null' => false
+            'null' => false,
+            'relatedIdentifier' => true
         ),
         'max_criteria' => array(
             'name' => 'max_criteria',
@@ -62,6 +64,7 @@ $models['Badgelevel'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -69,6 +72,7 @@ $models['Badgelevel'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -76,6 +80,7 @@ $models['Badgelevel'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -83,6 +88,7 @@ $models['Badgelevel'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'deleted' => array(
             'name' => 'deleted',
@@ -91,7 +97,8 @@ $models['Badgelevel'] = array(
             'length' => '1',
             'null' => false,
             'default' => 0,
-            'fts' => true
+            'fts' => true,
+            'acl' => false
         ),
     ),
     'indexes' => array(

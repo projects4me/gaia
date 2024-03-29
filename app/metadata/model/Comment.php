@@ -14,6 +14,7 @@ $models['Comment'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'dateCreated' => array(
             'name' => 'dateCreated',
@@ -35,7 +36,8 @@ $models['Comment'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'comment' => array(
             'name' => 'comment',
@@ -50,6 +52,7 @@ $models['Comment'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -57,6 +60,7 @@ $models['Comment'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -64,6 +68,7 @@ $models['Comment'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -71,6 +76,7 @@ $models['Comment'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'relatedTo' => array(
             'name' => 'relatedTo',
@@ -78,6 +84,7 @@ $models['Comment'] = array(
             'type' => 'varchar',
             'length' => '20',
             'null' => false,
+            'linkedTo' => 'relatedId'
         ),
         'relatedId' => array(
             'name' => 'relatedId',
@@ -85,6 +92,7 @@ $models['Comment'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'relatedName' => array(
             'name' => 'relatedName',

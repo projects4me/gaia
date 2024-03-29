@@ -13,6 +13,7 @@ $models['Tagged'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'relatedId' => array(
             'name' => 'relatedId',
@@ -20,6 +21,7 @@ $models['Tagged'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'relatedTo' => array(
             'name' => 'relatedTo',
@@ -27,6 +29,7 @@ $models['Tagged'] = array(
             'type' => 'varchar',
             'length' => '15',
             'null' => false,
+            'linkedTo' => 'relatedId'
         ),
         'tagId' => array(
             'name' => 'tagId',

@@ -13,6 +13,7 @@ $models['Issuetype'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'identifier' => true
         ),
         'name' => array(
             'name' => 'name',
@@ -39,7 +40,8 @@ $models['Issuetype'] = array(
             'type' => 'bool',
             'length' => '1',
             'null' => false,
-            'default' => 0
+            'default' => 0,
+            'acl' => false
         ),
         'description' => array(
             'name' => 'description',
@@ -53,6 +55,7 @@ $models['Issuetype'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'createdUserName' => array(
             'name' => 'createdUserName',
@@ -60,6 +63,7 @@ $models['Issuetype'] = array(
             'type' => 'varchar',
             'length' => '50',
             'null' => false,
+            'linkedTo' => 'createdUser'
         ),
         'modifiedUser' => array(
             'name' => 'modifiedUser',
@@ -67,6 +71,7 @@ $models['Issuetype'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'relatedIdentifier' => true
         ),
         'modifiedUserName' => array(
             'name' => 'modifiedUserName',
@@ -74,6 +79,7 @@ $models['Issuetype'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+            'linkedTo' => 'modifiedUser'
         ),
         'system' => array(
             'name' => 'system',
