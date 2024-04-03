@@ -321,11 +321,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $resource = \Phalcon\Text::camelize($this->controllerName);
 
             //check ACL on Model
-            $permission->checkModelAccess($resource, $this->aclMap[$this->actionName], null);
+            $permission->checkModelAccess($resource, null);
 
             //check ACL on Model's relationship
             $relationships = $this->getRelsWithMeta($this->request->get('rels'), Util::extractClassFromNamespace($this->modelName));
-            $permission->checkRelsAccess($resource, $relationships, $this->aclMap[$this->actionName]);
+            $permission->checkRelsAccess($resource, $relationships);
         }
     }
 
@@ -1357,7 +1357,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 if ($relName == $rel) {
                     $relatedMetadata = $relDef;
                     $relatedMetadata['type'] = $relationType;
-                    break 2;
+                    break;
                 }
             }
         }

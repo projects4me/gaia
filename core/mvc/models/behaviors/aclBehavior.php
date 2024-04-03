@@ -6,10 +6,10 @@
 
 namespace Gaia\MVC\Models\Behaviors;
 
-use Phalcon\Mvc\ModelInterface,
-Phalcon\Mvc\Model\BehaviorInterface,
-Phalcon\Mvc\Model\Behavior,
-Gaia\Libraries\Utils\Util;
+use Phalcon\Mvc\ModelInterface;
+use Phalcon\Mvc\Model\BehaviorInterface;
+use Phalcon\Mvc\Model\Behavior;
+use Gaia\Libraries\Utils\Util;
 
 /**
  * Description of aclBehavior
@@ -20,7 +20,7 @@ class aclBehavior extends Behavior implements BehaviorInterface
 {
     /**
      * This contains the models according to the access level.
-     * 
+     *
      * @var array
      */
     protected $accessLevelMapping = [
@@ -31,8 +31,8 @@ class aclBehavior extends Behavior implements BehaviorInterface
     /**
      * This function is called whenever an event is fired.
      *
-     * @param string $eventType
-     * @param ModelInterface $model
+     * @param  string         $eventType
+     * @param  ModelInterface $model
      * @return mixed
      */
     public function notify($eventType, ModelInterface $model)
@@ -45,7 +45,7 @@ class aclBehavior extends Behavior implements BehaviorInterface
     /**
      * This function is called before a query is executed
      *
-     * @param ModelInterface $model
+     * @param  ModelInterface $model
      * @return void
      */
     protected function beforeQuery($model)
@@ -65,7 +65,7 @@ class aclBehavior extends Behavior implements BehaviorInterface
     /**
      * This function is called before a joins are added into the model.
      *
-     * @param ModelInterface $model
+     * @param  ModelInterface $model
      * @return void
      */
     protected function beforeJoins($model)
@@ -79,10 +79,42 @@ class aclBehavior extends Behavior implements BehaviorInterface
 
         foreach ($requestedRelationships as $rel) {
             $accessLevel = $permission->getAccess($rel);
+            $relMeta = $relationship->getRelationship($rel);
 
             if (array_key_exists($accessLevel, $this->accessLevelMapping)) {
+                // If the related model is group itself then apply access level 2.
+                ($this->relIsGroup($relMeta)) && ($accessLevel = 2);
                 $this->accessLevelMapping[$accessLevel]::applyACLByRel($model, $rel, $userId);
+            } elseif ($accessLevel === '0') {
+                // If access level is 0 then append 0 in the join condition to not retrieve related model.
+                $model->getRelationship()->addRelConditions($rel, "0");
             }
         }
+    }
+
+    /**
+     * This function is used to check whether the related model of the given relationship is
+     * a group or not.
+     *
+     * @method relIsGroup
+     * @param  $relMeta The relationship metadata.
+     * @return boolean
+     */
+    private function relIsGroup($relMeta)
+    {
+        $di = \Phalcon\Di::getDefault();
+
+        $isGroup = false;
+        $relatedNamespace = (isset($relMeta['secondaryModel']))
+                            ? $relMeta['secondaryModel']
+                            : $relMeta['relatedModel'];
+
+        $relatedModelName = Util::extractClassFromNamespace($relatedNamespace);
+        $metadata = $di->get('metaManager')->getModelMeta($relatedModelName);
+
+        if (isset($metadata['acl']['group'])) {
+            $isGroup = true;
+        }
+        return $isGroup;
     }
 }
