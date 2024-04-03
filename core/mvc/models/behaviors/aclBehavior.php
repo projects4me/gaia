@@ -87,6 +87,9 @@ class aclBehavior extends Behavior implements BehaviorInterface
                 } else {
                     \Gaia\MVC\Models\Project::applyACLByRel($model, $rel, $userId);
                 }
+            } elseif ($accessLevel === '0') {
+                // If access level is 0 then append 0 in the join condition to not retrieve related model.
+                $model->getRelationship()->addRelConditions($rel, "0");
             }
         }
     }
@@ -96,6 +99,8 @@ class aclBehavior extends Behavior implements BehaviorInterface
      * a group or not.
      *
      * @method relIsGroup
+     * @param  $relName The name of the relationship
+     * @param  $relMeta The relationship metadata.
      * @return boolean
      */
     private function relIsGroup($relName, $relMeta)
