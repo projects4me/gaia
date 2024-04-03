@@ -52,12 +52,11 @@ class Permission extends Model
      * This function is used to check whether the user has access to given resource or not.
      *
      * @param string $resource      Name of the resource.
-     * @param array  $actionMap     Array of acl action map.
      * @param string $resourceAlias Alias of the resource.
      */
-    public function checkModelAccess($resource, $actionMap, $resourceAlias)
+    public function checkModelAccess($resource, $resourceAlias)
     {
-        if (!$this->checkAccess($resource, $actionMap, $resourceAlias)) {
+        if (!$this->checkAccess($resource, $resourceAlias)) {
             throw new \Gaia\Exception\Access("Access Denied to $resource");
         }
     }
@@ -68,12 +67,16 @@ class Permission extends Model
      *
      * @param string $resource  Name of the resource.
      * @param array  $rels      Array of model relationships.
-     * @param array  $actionMap Array of acl action map.
      */
-    public function checkRelsAccess($resource, $rels, $actionMap)
+    public function checkRelsAccess($resource, $rels)
     {
-        foreach (array_keys($rels) as $relName) {
-            $this->checkAccess("$resource.$relName", $actionMap, $relName);
+        foreach ($rels as $relName => $relMeta) {
+            $relatedNamespace = (isset($relMeta['secondaryModel']))
+                                ? $relMeta['secondaryModel']
+                                : $relMeta['relatedModel'];
+
+            $relatedModelName = Util::extractClassFromNamespace($relatedNamespace);
+            $this->checkAccess($relatedModelName, $relName);
         }
     }
 
@@ -85,12 +88,11 @@ class Permission extends Model
      * its value.
      *
      * @param string $resource      Name of the resource.
-     * @param array  $actionMap     Array of acl action map.
      * @param string $resourceAlias Alias of the resource.
      */
-    public function checkAccess($resource, $actionMap, $resourceAlias = null)
+    public function checkAccess($resource, $resourceAlias = null)
     {
-        $parentResource = $this->getParentResource($resource, $actionMap['action'], $resourceAlias);
+        $parentResource = $this->getParentResource($resource);
         $alias = ($resourceAlias ?? $resource);
         $accessGranted = true;
 
