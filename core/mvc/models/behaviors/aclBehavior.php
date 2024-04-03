@@ -82,11 +82,9 @@ class aclBehavior extends Behavior implements BehaviorInterface
             $relMeta = $relationship->getRelationship($rel);
 
             if (array_key_exists($accessLevel, $this->accessLevelMapping)) {
-                if (!$this->relIsGroup($rel, $relMeta)) {
-                    $this->accessLevelMapping[$accessLevel]::applyACLByRel($model, $rel, $userId);
-                } else {
-                    \Gaia\MVC\Models\Project::applyACLByRel($model, $rel, $userId);
-                }
+                // If the related model is group itself then apply access level 2.
+                ($this->relIsGroup($relMeta)) && ($accessLevel = 2);
+                $this->accessLevelMapping[$accessLevel]::applyACLByRel($model, $rel, $userId);
             } elseif ($accessLevel === '0') {
                 // If access level is 0 then append 0 in the join condition to not retrieve related model.
                 $model->getRelationship()->addRelConditions($rel, "0");
@@ -99,11 +97,10 @@ class aclBehavior extends Behavior implements BehaviorInterface
      * a group or not.
      *
      * @method relIsGroup
-     * @param  $relName The name of the relationship
      * @param  $relMeta The relationship metadata.
      * @return boolean
      */
-    private function relIsGroup($relName, $relMeta)
+    private function relIsGroup($relMeta)
     {
         $di = \Phalcon\Di::getDefault();
 
