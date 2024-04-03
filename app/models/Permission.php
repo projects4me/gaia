@@ -102,8 +102,8 @@ class Permission extends Model
                                 ? max($this->permissions[$resource])
                                 : max($this->permissions[$parentResource->entity]);
 
-            if ($accessLevel !== "0") {
-                ($accessLevel !== null) && ($this->resourcesPermissions[$alias] = $accessLevel);
+            if ($accessLevel !== null) {
+                $this->resourcesPermissions[$alias] = $accessLevel;
             } else {
                 $accessGranted = false;
             }
