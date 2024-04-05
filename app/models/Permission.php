@@ -104,7 +104,9 @@ class Permission extends Model
 
             if ($accessLevel !== null) {
                 $this->resourcesPermissions[$alias] = $accessLevel;
-            } else {
+            }
+
+            if ($accessLevel === '0') {
                 $accessGranted = false;
             }
         }
