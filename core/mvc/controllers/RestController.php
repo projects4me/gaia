@@ -1013,7 +1013,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 }
 
                 // Apply ACL on fields.
-                $this->applyACL($values);
+                $this->applyACL($values, $params);
 
                 // Only fields, on which user has access, will become part of the response.
                 $values = $this->filterFieldsByACL($permission->getAllowedFields(), $values);
@@ -1034,14 +1034,15 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * Applies ACL permissions to the data.
      *
      * @param  array $values The data to apply ACL permissions on.
+     * @param  array $params User requested parameters.
      * @return void
      */
-    private function applyACL(&$values)
+    private function applyACL(&$values, $params)
     {
         $permission = $this->getDI()->get('permission');
         if (empty($permission->getAllowedFields())) {
             $modelAlias = Util::extractClassFromNamespace($this->modelName);
-            $permission->applyACLOnFields($values, $this->aclMap[$this->actionName]['action'], $modelAlias);
+            $permission->applyACLOnFields($values, $this->aclMap[$this->actionName]['action'], $modelAlias, $params);
         }
     }
 
@@ -1118,9 +1119,9 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     /**
      * Handles processing of all (array) results for JSON API response.
      *
-     * @param array $result The result data to process.
-     * @param array $jsonApiOrg Reference to the JSON API response.
-     * @param int $count Reference to the count of processed results.
+     * @param  array $result     The result data to process.
+     * @param  array $jsonApiOrg Reference to the JSON API response.
+     * @param  int   $count      Reference to the count of processed results.
      * @return void
      */
     private function handleAllResults($result, &$jsonApiOrg, &$count)
@@ -1184,14 +1185,14 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         }
     }
 
-/**
- * Handles processing of a single result (object) for JSON API response.
- *
- * @param array $result The result data to process.
- * @param array $jsonApiOrg Reference to the JSON API response.
- * @param int $count Reference to the count of processed results.
- * @return void
- */
+    /**
+     * Handles processing of a single result (object) for JSON API response.
+     *
+     * @param  array $result     The result data to process.
+     * @param  array $jsonApiOrg Reference to the JSON API response.
+     * @param  int   $count      Reference to the count of processed results.
+     * @return void
+     */
     private function handleSingleResult($result, &$jsonApiOrg, $count)
     {
         foreach ($result as $object) {
