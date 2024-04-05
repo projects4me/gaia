@@ -65,17 +65,15 @@ class Permission extends Model
      * This function is used to check whether the user has access to given list of
      * relationships or not.
      *
-     * @param string $resource  Name of the resource.
-     * @param array  $rels      Array of model relationships.
+     * @param string $resource Name of the resource.
+     * @param array  $rels     Array of model relationships.
      */
     public function checkRelsAccess($resource, $rels)
     {
-        foreach ($rels as $relName => $relMeta) {
-            $relatedNamespace = (isset($relMeta['secondaryModel']))
-                                ? $relMeta['secondaryModel']
-                                : $relMeta['relatedModel'];
+        $di = \Phalcon\Di::getDefault();
 
-            $relatedModelName = Util::extractClassFromNamespace($relatedNamespace);
+        foreach (array_keys($rels) as $relName) {
+            $relatedModelName = $di->get('metaManager')->getRelatedModelName($resource, $relName);
             $this->checkAccess($relatedModelName, $relName);
         }
     }
@@ -227,41 +225,111 @@ class Permission extends Model
      * @param  $values     Array of result set retreived from database.
      * @param  string $action     Name of action for which permission is to be fetched.
      * @param  string $modelAlias Model alias.
+     * @param  array  $params     User requested parameters.
      * @return null|void
      */
-    public function applyACLOnFields($values, $action, $modelAlias)
+    public function applyACLOnFields($values, $action, $modelAlias, $params)
     {
         $fields = [];
-        $di = \Phalcon\Di::getDefault();
 
         foreach ($values as $fieldName => $value) {
             if (!is_array($value)) {
-                $field = "{$modelAlias}.{$fieldName}";
-                ($this->checkAccess($field, $action)) && ($fields[] = $field);
+                $this->applyACLByScalarField($fieldName, $modelAlias, $params, $fields);
             } else {
-                // Handling relationship fields.
-                $relName = $fieldName;
-                $relMeta = $di->get('metaManager')->getRelationshipMeta($modelAlias, $relName);
-                $relatedNamespace = (isset($relMeta['secondaryModel']))
-                                    ? $relMeta['secondaryModel']
-                                    : $relMeta['relatedModel'];
-
-                $relatedModelName = Util::extractClassFromNamespace($relatedNamespace);
-
-                /*
-                 * Check ACL against the related model field e.g. if the relationship is projects then
-                 * for the field "projects.name", we'll check ACL for its related model field "Project.name".
-                 * If user will have access on "Project.name" then we'll push "projects.name" into the fields array.
-                 */
-                foreach (array_keys($value) as $nestedField) {
-                    $field = "{$relatedModelName}.{$nestedField}";
-                    $relatedField = "{$fieldName}.{$nestedField}";
-                    ($this->checkAccess($field, $action)) && ($fields[] = $relatedField);
-                }
+                $this->applyACLByObjectField($fieldName, $modelAlias, $value, $fields);
             }
         }
 
         $this->allowedFields = $fields;
+    }
+
+    /**
+     * This function applies ACL to scalar field.
+     *
+     * @param  string $fieldName  The name of field.
+     * @param  string $modelAlias Model alias.
+     * @param  array  $params     User requested parameters.
+     * @param  array  $fields     Array of allowed fields.
+     * @return void
+     */
+    protected function applyACLByScalarField($fieldName, $modelAlias, $params, &$fields)
+    {
+        $di = \Phalcon\Di::getDefault();
+        $field = "{$modelAlias}.{$fieldName}";
+        $allowedField = $field;
+        $aliasByFields = $this->getAliasByFields($params);
+
+        // If alias is used for field.
+        if (in_array($fieldName, array_keys($aliasByFields))) {
+            list($moduleName, $moduleField) = explode('.', $aliasByFields[$fieldName]);
+            $isModel = $modelAlias === $moduleName;
+
+            // Use related model as prefix for the field in case of relationship.
+            if (!$isModel) {
+                $relName = $moduleName;
+                $moduleName = $di->get('metaManager')->getRelatedModelName($modelAlias, $relName);
+            }
+            $field = "{$moduleName}.{$moduleField}";
+            $allowedField = $fieldName;
+        }
+
+        ($this->checkAccess($field, $action)) && ($fields[$allowedField] = $allowedField);
+    }
+
+    /**
+     * This function applies ACL to field inside an object.
+     *
+     * @param  string $fieldName  The name of field.
+     * @param  string $modelAlias Model alias.
+     * @param  array  $values     Array containing model values.
+     * @param  array  $fields     Array of allowed fields.
+     * @return void
+     */
+    protected function applyACLByObjectField($fieldName, $modelAlias, $values, &$fields)
+    {
+        $di = \Phalcon\Di::getDefault();
+
+        // Handling the object. An object can be a model or a relationship.
+        $isModel = $modelAlias === $fieldName;
+
+        // If object is relationship.
+        if (!$isModel) {
+            $relName = $fieldName;
+            $relatedModelName = $di->get('metaManager')->getRelatedModelName($modelAlias, $relName);
+        }
+
+        /*
+        * Check ACL against the model field e.g. if the relationship is projects then for the field
+        * "projects.name", we'll check ACL for its related model field "Project.name". If user will have
+        * access on "Project.name" then we'll push "projects.name" into the fields array.
+        * There can be another case where the object (retrieved from database) can represent a model
+        * itself e.g. Permission.* so this case is also handled here.
+        */
+        foreach (array_keys($values) as $nestedField) {
+            $allowedField = "{$fieldName}.{$nestedField}";
+            $field = ($isModel) ? ($allowedField) : "{$relatedModelName}.{$nestedField}";
+            ($this->checkAccess($field, $action)) && ($fields[] = $allowedField);
+        }
+    }
+
+    /**
+     * This function returns list of alias against the field.
+     *
+     * @param  array $params The request parameters.
+     * @return array
+     */
+    protected function getAliasByFields($params)
+    {
+        $aliasByFields = [];
+        foreach ($params['fields'] as $requestedField) {
+            // If alias is used.
+            if (str_contains(strtoupper($requestedField), "AS")) {
+                list($field, , $alias) = explode(" ", $requestedField);
+                $aliasByFields[$alias] = $field;
+            }
+        }
+
+        return $aliasByFields;
     }
 
     /**
