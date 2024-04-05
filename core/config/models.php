@@ -13,6 +13,7 @@ $config['models'] = [
     'Downloadtoken',
     'Issue',
     'Issuestatus',
+    'Issuetype',
     'Membership',
     'Mention',
     'Milestone',
