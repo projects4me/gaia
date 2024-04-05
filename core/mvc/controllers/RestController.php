@@ -1042,7 +1042,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $permission = $this->getDI()->get('permission');
         if (empty($permission->getAllowedFields())) {
             $modelAlias = Util::extractClassFromNamespace($this->modelName);
-            $permission->applyACLOnFields($values, $this->aclMap[$this->actionName]['action'], $modelAlias, $params);
+            $permission->applyACLOnFields($values, $modelAlias, $params);
         }
     }
 
