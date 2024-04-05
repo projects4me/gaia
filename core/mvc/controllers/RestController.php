@@ -1470,10 +1470,12 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     $field = "{$key}.{$fieldName}";
                     $filteredValues[$key][$fieldName] = (in_array($field, $allowedFields)) ? $fieldValue : null;
                 }
-            } else {
+            } elseif (!array_key_exists($key, $allowedFields)) {
                 $modelName = Util::extractClassFromNamespace($this->modelName);
                 $field = "{$modelName}.{$key}";
                 $filteredValues[$key] = (in_array($field, $allowedFields)) ? $value : null;
+            } else {
+                $filteredValues[$key] = (in_array($key, $allowedFields)) ? $value : null;
             }
         }
 
