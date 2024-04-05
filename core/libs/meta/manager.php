@@ -118,6 +118,34 @@ class Manager
     }
 
     /**
+     * This function is used to return the metadata of the relationship of given model.
+     *
+     * @method getRelationshipMeta
+     * @param $modelAlias The alias of model.
+     * @param $relationshipName The relationship name.
+     */
+    public function getRelationshipMeta($modelAlias, $relationshipName)
+    {
+        $modelMeta = $this->getModelMeta($modelAlias);
+        $relMeta = [];
+
+        foreach ($modelMeta['relationships'] as $relationshipType => $related) {
+            foreach ($related as $relName => $relDef) {
+                if ($relationshipName == $relName) {
+                    $relMeta = $relDef;
+                    break;
+                }
+            }
+        }
+
+        if (!$relMeta) {
+            throw new \Gaia\Exception\Exception("No metadata found against relationship ". $relName);
+        }
+
+        return $relMeta;
+    }
+
+    /**
      * This function parses the data from the metadata array
      *
      * @param  array $metadata
