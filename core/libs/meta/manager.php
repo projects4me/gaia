@@ -9,6 +9,7 @@ namespace Gaia\Libraries\Meta;
 use Phalcon\Db\Column;
 use Phalcon\Mvc\Model\MetaData;
 use Gaia\Libraries\file\Handler as fileHandler;
+use Gaia\Libraries\Utils\Util;
 
 /**
  * This class is used for the metadata storage, retrival and maintenance.
@@ -123,6 +124,8 @@ class Manager
      * @method getRelationshipMeta
      * @param $modelAlias The alias of model.
      * @param $relationshipName The relationship name.
+     * @throws \Gaia\Exception\Exception
+     * @return array
      */
     public function getRelationshipMeta($modelAlias, $relationshipName)
     {
@@ -361,5 +364,23 @@ class Manager
         }
 
         return $groups;
+    }
+
+    /**
+     * This function is used to get related model name for the given relationship.
+     *
+     * @param $modelAlias The alias of model.
+     * @param $relationshipName The relationship name.
+     * @return string
+     */
+    public function getRelatedModelName($modelAlias, $relName)
+    {
+        $relMeta = $this->getRelationshipMeta($modelAlias, $relName);
+        $relatedNamespace = (isset($relMeta['secondaryModel']))
+        ? $relMeta['secondaryModel']
+        : $relMeta['relatedModel'];
+
+        $relatedModelName = Util::extractClassFromNamespace($relatedNamespace);
+        return $relatedModelName;
     }
 }
