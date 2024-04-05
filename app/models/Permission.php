@@ -230,15 +230,26 @@ class Permission extends Model
     public function applyACLOnFields($values, $action, $modelAlias)
     {
         $fields = [];
+        $di = \Phalcon\Di::getDefault();
 
         foreach ($values as $fieldName => $value) {
             if (!is_array($value)) {
                 $field = "{$modelAlias}.{$fieldName}";
                 ($this->checkAccess($field, $action)) && ($fields[] = $field);
             } else {
+                // Handling relationship fields.
+                $relName = $fieldName;
+                $relMeta = $di->get('metaManager')->getRelationshipMeta($modelAlias, $relName);
+                $relatedNamespace = (isset($relMeta['secondaryModel']))
+                                    ? $relMeta['secondaryModel']
+                                    : $relMeta['relatedModel'];
+
+                $relatedModelName = Util::extractClassFromNamespace($relatedNamespace);
+
                 foreach (array_keys($value) as $nestedField) {
-                    $field = "{$fieldName}.{$nestedField}";
-                    ($this->checkAccess($field, $action)) && ($fields[] = $field);
+                    $field = "{$relatedModelName}.{$nestedField}";
+                    $relatedField = "{$fieldName}.{$nestedField}";
+                    ($this->checkAccess($field, $action)) && ($fields[] = $relatedField);
                 }
             }
         }
