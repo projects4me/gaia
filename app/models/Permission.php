@@ -246,6 +246,11 @@ class Permission extends Model
 
                 $relatedModelName = Util::extractClassFromNamespace($relatedNamespace);
 
+                /*
+                 * Check ACL against the related model field e.g. if the relationship is projects then
+                 * for the field "projects.name", we'll check ACL for its related model field "Project.name".
+                 * If user will have access on "Project.name" then we'll push "projects.name" into the fields array.
+                 */
                 foreach (array_keys($value) as $nestedField) {
                     $field = "{$relatedModelName}.{$nestedField}";
                     $relatedField = "{$fieldName}.{$nestedField}";
