@@ -83,7 +83,7 @@ class aclBehavior extends Behavior implements BehaviorInterface
 
             if (array_key_exists($accessLevel, $this->accessLevelMapping)) {
                 // If the related model is group itself then apply access level 2.
-                ($this->relIsGroup($relMeta)) && ($accessLevel = 2);
+                ($this->relIsGroup($rel, $model->modelAlias)) && ($accessLevel = 2);
                 $this->accessLevelMapping[$accessLevel]::applyACLByRel($model, $rel, $userId);
             } elseif ($accessLevel === '0') {
                 // If access level is 0 then append 0 in the join condition to not retrieve related model.
@@ -97,19 +97,16 @@ class aclBehavior extends Behavior implements BehaviorInterface
      * a group or not.
      *
      * @method relIsGroup
-     * @param  $relMeta The relationship metadata.
+     * @param $modelAlias The alias of model.
+     * @param  $relName The name of the relationship.
      * @return boolean
      */
-    private function relIsGroup($relMeta)
+    private function relIsGroup($relName, $modelAlias)
     {
         $di = \Phalcon\Di::getDefault();
 
         $isGroup = false;
-        $relatedNamespace = (isset($relMeta['secondaryModel']))
-                            ? $relMeta['secondaryModel']
-                            : $relMeta['relatedModel'];
-
-        $relatedModelName = Util::extractClassFromNamespace($relatedNamespace);
+        $relatedModelName = $di->get('metaManager')->getRelatedModelName($modelAlias, $relName);
         $metadata = $di->get('metaManager')->getModelMeta($relatedModelName);
 
         if (isset($metadata['acl']['group'])) {
