@@ -18,7 +18,7 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class UserController extends RestController
 {
-    public $uses = ['Globalrole'];
+    public $uses = ['Globalrole', 'Dashboard'];
     
     /**
      * This function updates user record and move user's profile from temp directory to its original
