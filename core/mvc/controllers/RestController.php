@@ -1062,7 +1062,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
          * be caused when User gives input to columns array of queryBuilder as "CurrentModel.*".
          */
         $modelName = Util::extractClassFromNamespace($this->modelName);
-        if ($values[$modelName]) {
+        if (isset($values[$modelName])) {
             $baseModelArray = $values[$modelName];
             unset($values[$modelName]);
 

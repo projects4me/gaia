@@ -95,7 +95,7 @@ class Permission extends Model
         $accessGranted = true;
 
         $resource = ($this->resourcePrefix) ? ("$this->resourcePrefix.$resource") : $resource;
-        if (isset($this->permissions[$resource]) || isset($this->permissions[$parentResource->entity])) {
+        if (isset($this->permissions[$resource]) || (isset($parentResource->entity) && isset($this->permissions[$parentResource->entity]))) {
             $accessLevel = isset($this->permissions[$resource])
                                 ? max($this->permissions[$resource])
                                 : max($this->permissions[$parentResource->entity]);
