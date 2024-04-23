@@ -22,8 +22,6 @@
 
 require APP_PATH.'/vendor/autoload.php';
 
-require_once(APP_PATH.'/core/mvc/models/behaviors/auditBehavior.php');
-
 require_once APP_PATH.'/core/libs/file/handler.php';
 
 require_once APP_PATH.'/core/libs/meta/manager.php';
