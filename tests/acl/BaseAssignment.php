@@ -9,10 +9,10 @@ namespace Tests\Gaia\Acl;
 /**
  * This is the base class for assignment models.
  * 
- * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Gaia\Tests
+ * @author   Rana Nouman <ranamnouman@gmail.com>
+ * @package  Gaia\Tests
  * @category Tests
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 abstract class BaseAssignment extends \Tests\Gaia\Acl\BaseAcl
 {

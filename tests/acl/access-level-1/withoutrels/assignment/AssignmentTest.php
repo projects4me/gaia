@@ -9,10 +9,10 @@ namespace Tests\Gaia\Acl\AccessLevel1\WithoutRels;
 /**
  * This class is responsible to test the assignment model without relationships with access level of 1 on model.
  * 
- * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Gaia\Tests
+ * @author   Rana Nouman <ranamnouman@gmail.com>
+ * @package  Gaia\Tests
  * @category Tests
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class AssignmentTest extends \Tests\Gaia\Acl\BaseAssignment
 {
@@ -176,7 +176,7 @@ class AssignmentTest extends \Tests\Gaia\Acl\BaseAssignment
                             )
                         ],
                     ]
-                )
+                    )
             ]
         ];
     }

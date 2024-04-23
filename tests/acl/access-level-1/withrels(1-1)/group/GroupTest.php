@@ -9,10 +9,10 @@ namespace Tests\Gaia\Acl\AccessLevel1\WithRels1_1;
 /**
  * This class is responsible to test the group model with access level 1 on both model and its relationships.
  * 
- * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Gaia\Tests
+ * @author   Rana Nouman <ranamnouman@gmail.com>
+ * @package  Gaia\Tests
  * @category Tests
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class GroupTest extends \Tests\Gaia\Acl\BaseGroup
 {
@@ -123,7 +123,7 @@ class GroupTest extends \Tests\Gaia\Acl\BaseGroup
                                 'conversationRoomId' => null
                             )
                         ])
-                )
+                    )
             ]
         ];
     }
