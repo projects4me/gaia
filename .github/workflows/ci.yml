@@ -13,32 +13,12 @@ jobs:
     - name: Checkout to Repository
       uses: actions/checkout@v3
 
-    - name: Cache Composer packages
-      id: composer-packages
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: vendor-cache
-
-    - name: Watch change in composer.json
-      id: watch-composer-json
-      uses: tj-actions/changed-files@v32
-      with:
-          files: "composer.json"
-
-    - name: Install Dependencies
-      if: |
-        steps.watch-composer-json.outputs.any_changed == 'true'
-        || steps.composer-packages.outputs.cache-hit != 'true'
-      run: |
-        composer install
-
     - name: Run test Cases
       run: |
         docker compose up -d
         docker exec -it gaia-dev bash
-        ls
-        phpunit --configuration tests/phpunit.xml --coverage-html /__w/gaia/gaia/coverage
+        composer install
+        phpunit --configuration tests/phpunit.xml
 
     - name: Upload Code coverage report
       uses: actions/upload-artifact@v3
