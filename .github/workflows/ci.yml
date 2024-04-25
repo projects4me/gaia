@@ -62,7 +62,7 @@ jobs:
         mysql --host mysql -uroot -p$DB_ROOT_PWD pr4m < db/Dump20240424.sql
         mysql --host mysql -uroot -p$DB_ROOT_PWD -e "SET global sql_mode='';"
         mkdir logs/tests && touch logs/tests/db.log
-        phpunit --configuration tests/phpunit.xml --coverage-html /__w/gaia/gaia/coverage
+        phpunit --coverage-html /__w/gaia/gaia/coverage
 
 
     - name: Upload Code coverage report

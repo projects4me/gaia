@@ -14,7 +14,7 @@ use Phalcon\Mvc\Model\Manager as ModelsManager;
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-define('APP_PATH', realpath('.'));
+define('APP_PATH', realpath('../'));
 if (!defined('DS')) { define('DS', DIRECTORY_SEPARATOR);
 }
 

@@ -20,9 +20,7 @@
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <!--directory suffix=".php">../app/api</directory>
-            <directory suffix=".php">../app/models</directory-->
-            <directory suffix=".php">../foundation</directory>
+            <directory suffix=".php">../app/models</directory>
             <exclude>
                 <directory suffix=".php">../foundation/config</directory>
                 <file>../foundation/libs/authorization/oAuthServer.php</file>
