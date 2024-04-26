@@ -2,7 +2,7 @@ name: Run Gaia test cases
 
 on:
   pull_request:
-    types: [opened,reopened]
+    types: [opened, reopened]
 
 jobs:
 
@@ -10,6 +10,27 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: rananoman/gaia:1.0.0
+      env:
+        DB_ROOT_PWD : ${{ secrets.DB_ROOT_PWD }}
+        DB_USER : ${{ secrets.DB_USER }}
+        DB_PWD : ${{ secrets.DB_PWD }}
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_DATABASE: pr4m
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PWD }}
+          MYSQL_USER: ${{ secrets.DB_USER }}
+          MYSQL_PASSWORD: ${{ secrets.DB_PWD }}
+        ports:
+        - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - name: Checkout to Repository
       uses: actions/checkout@v3
@@ -36,8 +57,12 @@ jobs:
 
     - name: Run test Cases
       run: |
-        cd tests
+        mysql --host mysql -uroot -p$DB_ROOT_PWD pr4m < db/Dump20240424.sql
+        mysql --host mysql -uroot -p$DB_ROOT_PWD -e "SET global sql_mode='';"
+        mkdir logs/tests && touch logs/tests/db.log
+        cd tests/
         phpunit --coverage-html /__w/gaia/gaia/coverage
+
 
     - name: Upload Code coverage report
       uses: actions/upload-artifact@v3

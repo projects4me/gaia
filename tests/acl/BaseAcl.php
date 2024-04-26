@@ -6,114 +6,114 @@
 
 namespace Tests\Gaia\Acl;
 
-use PHPUnit\Framework\TestCase,
-Phalcon\DI,
-Gaia\Core\MVC\REST\Controllers\RestController;
+use PHPUnit\Framework\TestCase;
+use Phalcon\DI;
+use Gaia\Core\MVC\REST\Controllers\RestController;
 
 /**
  * This is the base class that contains all of the ACL related implementation and required test cases.
- * 
- * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Gaia\Tests
+ *
+ * @author   Rana Nouman <ranamnouman@gmail.com>
+ * @package  Gaia\Tests
  * @category Tests
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 abstract class BaseAcl extends TestCase
 {
     /**
      * This contains array of user model.
-     * 
+     *
      * @var array
      */
     protected static $users = [];
 
     /**
      * This contains array of membership model.
-     * 
+     *
      * @var array
      */
     protected static $memberships = [];
 
     /**
      * This contains array of role model.
-     * 
+     *
      * @var array
      */
     protected static $roles = [];
 
     /**
      * This contains array of resource model.
-     * 
+     *
      * @var array
      */
     protected static $resources = [];
 
     /**
      * Prefix that will be attached with the resource name.
-     * 
+     *
      * @var string
      */
     protected static $resourcePrefix = 'Test';
 
     /**
      * This contains array of permission model.
-     * 
+     *
      * @var array
      */
     protected static $permissions = [];
 
     /**
      * This is the access level of resource.
-     * 
+     *
      * @var string
      */
     protected static $accessLevel = null;
 
     /**
      * This contains array of models that will be created for testing.
-     * 
+     *
      * @var array
      */
     protected static $models = [];
 
     /**
      * This contains array of project model.
-     * 
+     *
      * @var array
      */
     protected static $projects = [];
 
     /**
      * This contains array of issue model.
-     * 
+     *
      * @var array
      */
     protected static $issues = [];
 
     /**
      * This contains array of the data path (csv) of each model.
-     * 
+     *
      * @var array
      */
     protected static $dataPath = [];
 
     /**
      * This is the test type to be executed.
-     * 
+     *
      * @var array
      */
     protected static $testType;
 
     /**
      * This contains array of issuetype model.
-     * 
+     *
      * @var array
      */
     protected static $issuetypes = [];
 
     /**
      * This method is used to setup some pre-conditions before the loading of any test case.
-     * 
+     *
      * @return void
      */
     public static function setUpBeforeClass(): void
@@ -123,7 +123,6 @@ abstract class BaseAcl extends TestCase
 
     /**
      * This method loads data required for testing.
-     * 
      */
     public static function setUpData()
     {
@@ -143,8 +142,7 @@ abstract class BaseAcl extends TestCase
                 if (!isset($model['createModel'])) {
                     $nullableAttributes = isset($model['nullableAttributes']) ? $model['nullableAttributes'] : null;
                     $newModel = self::createModel($modelNamespace, $model['behaviors'], $values, $nullableAttributes);
-                }
-                else {
+                } else {
                     $newModel = self::{ $model['createModel']}($modelNamespace, $model['behaviors'], $values);
                 }
 
@@ -155,10 +153,10 @@ abstract class BaseAcl extends TestCase
 
     /**
      * This method is used to create model.
-     * 
-     * @param string $modelNamespace
-     * @param array $behaviors
-     * @param array $values
+     *
+     * @param  string $modelNamespace
+     * @param  array  $behaviors
+     * @param  array  $values
      * @return \Gaia\Core\MVC\Models\Model
      */
     public static function createModel($modelNamespace, $behaviors, $values, $nullableAttributes = null)
@@ -208,14 +206,14 @@ abstract class BaseAcl extends TestCase
 
     /**
      * @dataProvider data
-     * 
+     *
      * This method is the test case which is used to get the required resource and assert it with the expected one (data provider).
-     * 
-     * @param array $params
+     *
+     * @param array  $params
      * @param string $resource
      * @param string $modelName
      * @param string $modelNamespace
-     * @param array $expected
+     * @param array  $expected
      */
     public function testGetResource($params, $resource, $modelName, $modelNamespace, $expected)
     {
@@ -226,12 +224,12 @@ abstract class BaseAcl extends TestCase
         $permission = new \Gaia\MVC\Models\Permission();
         $permission->setResourcePrefix(self::$resourcePrefix);
         $permission->fetchUserPermissions(self::$users[0]->id, 'readF');
-        $permission->checkAccess($resource, $modelName);
+        $permission->checkAccess($modelName, null);
 
         //call getRelsWithMeta function of Rest Controller
         $rels = ($params['rels']) ? implode(",", $params['rels']) : null;
         $relationships = $getRelsReflection->invoke($restController, $rels, $modelName);
-        $permission->checkRelsAccess($relationships, 'Read');
+        $permission->checkRelsAccess($modelName, $relationships);
 
         //modifiy method access
         $reflectionMethod = new \ReflectionMethod('Gaia\\Core\\MVC\\REST\\Controllers\\RestController', 'extractData');
@@ -251,7 +249,7 @@ abstract class BaseAcl extends TestCase
 
         $model = new $modelNamespace();
         $data = $model->readAll($params);
-        $dataArray = $reflectionMethod->invoke($restController, $data);
+        $dataArray = $reflectionMethod->invoke($restController, $data, $params);
         $this->assertEquals($expected, $dataArray);
     }
 
@@ -264,7 +262,7 @@ abstract class BaseAcl extends TestCase
             $deleteFunction = (!isset($modelData['deleteModel'])) ? false : $modelData['deleteModel'];
 
             foreach (self::$$key as $model) {
-                ($deleteFunction) ?self::{ $deleteFunction}($model) : $model->delete();
+                ($deleteFunction) ? self::{ $deleteFunction}($model) : $model->delete();
             }
 
             self::$$key = [];
@@ -273,9 +271,9 @@ abstract class BaseAcl extends TestCase
 
     /**
      * This method is used to create user model.
-     * 
-     * @param string $modelNamespace
-     * @param array $values
+     *
+     * @param  string $modelNamespace
+     * @param  array  $values
      * @return \Gaia\MVC\Models\User
      */
     public static function createUser($modelNamespace, $behaviors, $values)
@@ -296,7 +294,7 @@ abstract class BaseAcl extends TestCase
 
     /**
      * This method is used to create resource model.
-     * 
+     *
      * @return \Gaia\MVC\Models\Resource
      */
     public static function createResource($modelNamespace, $behaviors, $values)
@@ -319,6 +317,7 @@ abstract class BaseAcl extends TestCase
             $values['lft'] = $parentRHT;
             $values['rht'] = $parentRHT + 1;
             $values['parentId'] = $parentNode->id;
+            $values['groupName'] = 'gaia';
         }
 
         $newModel->getMethod('assign')->invoke($instance, $values);
@@ -329,7 +328,7 @@ abstract class BaseAcl extends TestCase
 
     /**
      * This method is used to delete resource model.
-     * 
+     *
      * @param \Gaia\MVC\Models\Resource $resource
      */
     public static function deleteResource($resource)
