@@ -7,6 +7,7 @@
 namespace Gaia\MVC\Models;
 
 use Gaia\Core\MVC\Models\Model;
+use Gaia\Libraries\Utils\Util;
 
 /**
  * User Model
@@ -21,14 +22,14 @@ class User extends Model
     /**
      * Flag decides whether to execute hasManyToMany relationship queries
      * separately or not.
-     * 
+     *
      * @var boolean
      */
     public $splitQueries = false;
 
     /**
      * This function is used to apply ACL to the model.
-     * 
+     *
      * @param \Phalcon\Mvc\Model $model
      * @param string $userId
      */
@@ -43,12 +44,11 @@ class User extends Model
             $query->getPhalconQueryBuilder()->andWhere($aclMeta['assignment']['condition'], [
                 'userId' => $userId
             ]);
-        }
-        else {
+        } else {
             $relatedModel = $aclMeta['assignment']['relatedModel'];
             $query->getPhalconQueryBuilder()->innerJoin($relatedModel['namespace'], $relatedModel['condition'], $relatedModel['alias']);
             $query->getPhalconQueryBuilder()->setBindParams(
-            [
+                [
                 "userId" => $userId,
             ],
                 true
@@ -58,13 +58,22 @@ class User extends Model
 
     /**
      * This function is used to apply acl on given relationship.
-     * 
+     *
      * @param \Phalcon\Mvc\Model $model
      * @param string $relName
      * @param string $userId
      */
     public static function applyACLByRel($model, $relName, $userId)
     {
+        $di = \Phalcon\Di::getDefault();
+        if ($model->getRelationship()->getRelationshipType($relName)) {
+            $relMetadata = $di->get('metaManager')->getRelationshipMeta($model->modelAlias, $relName);
+            $relatedModelName = Util::extractClassFromNamespace($relMetadata['relatedModel']);
+
+            // Concatenate relatedModel alias with relName e.g. membersMembership
+            $relName .= $relatedModelName;
+        }
+
         $model->getRelationship()->addRelConditions($relName, "$relName.createdUser = '$userId'");
-    }    
+    }
 }
