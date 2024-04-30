@@ -309,9 +309,14 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 $server->getResponse()->send();
             }
             $this->setUser($request);
+            $modelAlias = Util::extractClassFromNamespace($this->modelName);
 
             $permission = new \Gaia\MVC\Models\Permission();
-            $permission->fetchUserPermissions($currentUser->id, $this->aclMap[$this->actionName]['action']);
+            $query = $this->request->get('query', null, '');
+            $params['where'] = $query;
+            $projectId = ($modelAlias === 'Project' && isset($this->id)) ? $this->id : null;
+            
+            $permission->fetchUserPermissions($currentUser->id, $this->aclMap[$this->actionName]['action'], $modelAlias, $params, $projectId);
 
             $this->getDI()->set(
                 'permission',
@@ -324,7 +329,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $permission->checkModelAccess($resource, null);
 
             //check ACL on Model's relationship
-            $relationships = $this->getRelsWithMeta($this->request->get('rels'), Util::extractClassFromNamespace($this->modelName));
+            $relationships = $this->getRelsWithMeta($this->request->get('rels'), $modelAlias);
             $permission->checkRelsAccess($resource, $relationships);
         }
     }
