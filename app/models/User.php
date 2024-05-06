@@ -66,7 +66,7 @@ class User extends Model
     public static function applyACLByRel($model, $relName, $userId)
     {
         $di = \Phalcon\Di::getDefault();
-        if ($model->getRelationship()->getRelationshipType($relName)) {
+        if ($model->getRelationship()->getRelationshipType($relName) === 'hasManyToMany') {
             $relMetadata = $di->get('metaManager')->getRelationshipMeta($model->modelAlias, $relName);
             $relatedModelName = Util::extractClassFromNamespace($relMetadata['relatedModel']);
 

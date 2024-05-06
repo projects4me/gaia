@@ -145,7 +145,9 @@ class Permission extends Model
 
             $membership = $membershipQueryBuilder->getQuery()->getSingleResult();
         }
-
+        
+        $membershipRoleIdCondition = '';
+        
         (isset($membership->roleId))
             && ($membershipRoleIdCondition = "AND Membership.roleId='{$membership->roleId}'");
 
