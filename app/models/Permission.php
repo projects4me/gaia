@@ -115,17 +115,45 @@ class Permission extends Model
     /**
      * This function is used to fetch user permissions based on given action.
      *
-     * @param string $userId The identifier of user.
-     * @param string $action Name of action for which permission is to be fetched.
+     * @param string $userId    The identifier of user.
+     * @param string $action    Name of action for which permission is to be fetched.
+     * @param string $modelName The name of model.
+     * @param array  $params    The user requested parameters.
+     * @param string $projectId The identifier of the project.
      */
-    public function fetchUserPermissions($userId, $action)
+    public function fetchUserPermissions($userId, $action, $modelName, $params, $projectId)
     {
         $results = [];
         $permissions = [];
+        $di = \Phalcon\Di::getDefault();
+
+        $projectId = $projectId ?? $this->getProjectId($modelName, $params);
+
+        if ($projectId) {
+            $membershipQueryBuilder = $di->get('modelsManager')->createBuilder();
+
+            $membershipQueryBuilder->columns(["Membership.roleId"]);
+            $membershipQueryBuilder->from(['Membership' => 'Gaia\\MVC\\Models\\Membership']);
+            $membershipQueryBuilder->where(
+                'Membership.relatedId=:projectId:',
+                ["projectId" => $projectId]
+            );
+            $membershipQueryBuilder->andWhere(
+                'Membership.userId=:userId:',
+                ["userId" => $userId]
+            );
+
+            $membership = $membershipQueryBuilder->getQuery()->getSingleResult();
+        }
+        
+        $membershipRoleIdCondition = '';
+        
+        (isset($membership->roleId))
+            && ($membershipRoleIdCondition = "AND Membership.roleId='{$membership->roleId}'");
 
         //Fetch Permissions of User by Role
         $permissionsByRole = (new self())->buildPermissionsQuery(null, $action);
-        $permissionsByRole->innerJoin("Gaia\\MVC\\Models\\Membership", "Membership.roleId=Permission.roleId AND Membership.userId='$userId'", "Membership");
+        $permissionsByRole->innerJoin("Gaia\\MVC\\Models\\Membership", "Membership.roleId=Permission.roleId $membershipRoleIdCondition AND Membership.userId='$userId'", "Membership");
         $permissionsByRole->groupBy(['Membership.roleId', 'Resource2.id']);
 
         $results[] = $permissionsByRole->getQuery()->execute();
@@ -340,5 +368,50 @@ class Permission extends Model
     public function getAllowedFields()
     {
         return $this->allowedFields;
+    }
+
+    /**
+     * This function extract project ID from the given parameters (if available) and return it.
+     *
+     * @param  string $modelName The name of model.
+     * @param  array  $params    The user requested parameters.
+     * @return string|null The project ID if found, otherwise null.
+     */
+    protected function getProjectId($modelName, $params)
+    {
+        $modelQuery = $this->instantiateQuery($modelName, $params);
+        $modelQuery->prepareClauses($params, $modelQuery);
+        $whereClauses = $modelQuery->getClause()->getWhereClause('original', $modelName);
+        $possibleKeys = ['projectId', 'Project.id'];
+        $edgeCaseKey = "relatedTo : project";
+        $edgeCasePassed = false;
+        $projectId = null;
+
+        foreach ($whereClauses as $clause) {
+            foreach ($possibleKeys as $key) {
+                if (strpos($clause, $key) !== false) {
+                    list(, , $projectId) = str_replace(')', '', explode(' ', $clause));
+                    return $projectId;
+                }
+            }
+
+            // Check for the edge case with 'relatedTo'
+            if (strpos($clause, $edgeCaseKey) !== false) {
+                $edgeCasePassed = true;
+                break;
+            }
+        }
+
+        // If edge case is passed then findout projectId from relatedId
+        if ($edgeCasePassed) {
+            foreach ($whereClauses as $clause) {
+                if (strpos($clause, 'relatedId') !== false) {
+                    list(, , $projectId) = str_replace(')', '', explode(' ', $clause));
+                    return $projectId;
+                }
+            }
+        }
+
+        return $projectId;
     }
 }
