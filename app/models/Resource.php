@@ -112,6 +112,7 @@ class Resource extends Model
      * @param string $groupName The name of the group for which the resource is being saved. In
      *                          our backend case this would be 'gaia'. Through this we can distinguish
      *                          between multiple platforms e.g. frontend, backend etc.
+     * @return void
      */
     public static function addResourcesIntoDatabase($groupName)
     {
@@ -152,6 +153,7 @@ class Resource extends Model
      *                             distinguish between multiple platforms e.g. frontend, backend
      *                             etc.
      * @param string $parentEntity The name of parent resource (if any).
+     * @return void
      */
     protected static function addResourceIntoDatabase($entity, $groupName, $parentEntity = null)
     {
