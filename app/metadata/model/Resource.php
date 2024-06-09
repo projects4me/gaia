@@ -141,9 +141,7 @@ $models['Resource'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior',
-        'modelIdentifierBehavior',
-        'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modelIdentifierBehavior'
     )
 );
 
