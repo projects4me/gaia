@@ -56,8 +56,7 @@ class Resource extends Model
         $parentNode = Resource::findFirst("entity='$parentEntity' $groupClause");
 
         if ($parentNode) {
-            $parentRHT = ($parentNode->rht) ?? 0;
-
+            $parentRHT = $parentNode->rht;
             $updateLFTPhql = "UPDATE resources set lft = lft+2 where lft>=$parentRHT $groupClause";
             $updateRHTPhql = "UPDATE resources set rht = rht+2 where rht>=$parentRHT $groupClause";
 
@@ -109,9 +108,9 @@ class Resource extends Model
      * that the model name itself e.g. Project is added into the database as resource and
      * at the last the model's fields are added into the database.
      *
-     * @param string $groupName The name of the group for which the resource is being saved. In
-     *                          our backend case this would be 'gaia'. Through this we can distinguish
-     *                          between multiple platforms e.g. frontend, backend etc.
+     * @param  string $groupName The name of the group for which the resource is being saved. In
+     *                           our backend case this would be 'gaia'. Through this we can distinguish
+     *                           between multiple platforms e.g. frontend, backend etc.
      * @return void
      */
     public static function addResourcesIntoDatabase($groupName)
@@ -120,7 +119,10 @@ class Resource extends Model
         $models = $di->get('config')->get('models')->toArray();
 
         // Add "App" resource as a parent for all of the models (resources).
-        (new self())->addResourceIntoDatabase('App', $groupName);
+        (new self())->addResourceIntoDatabase('App', $groupName, null, 1, 2);
+
+        // Add "App" resource as a parent for for frontend group "prometheus"
+        (new self())->addResourceIntoDatabase('App', 'prometheus', null, 1, 2);
 
         foreach ($models as $modelName) {
             $modelNamespace = "\\Gaia\\MVC\\Models\\{$modelName}";
@@ -147,26 +149,33 @@ class Resource extends Model
     /**
      * This function is used to add resource into the database.
      *
-     * @param string $entity       The name of the resource.
-     * @param string $groupName    The name of the group for which the resource is being saved. In
-     *                             our backend case this would be 'gaia'. Through this we can
-     *                             distinguish between multiple platforms e.g. frontend, backend
-     *                             etc.
-     * @param string $parentEntity The name of parent resource (if any).
+     * @param  string $entity       The name of the resource.
+     * @param  string $groupName    The name of the group for which the resource is being saved. In
+     *                              our backend case this would be 'gaia'. Through this we can
+     *                              distinguish between multiple platforms e.g. frontend, backend
+     *                              etc.
+     * @param  string $parentEntity The name of parent resource (if any).
+     * @param  int    $lft          The left value for the resource node used to check how many childs does
+     *                              that resource have.
+     * @param  int    $rht          The right value for the resource node used to check how many childs does
+     *                              that resource have.
      * @return void
      */
-    protected static function addResourceIntoDatabase($entity, $groupName, $parentEntity = null)
+    protected static function addResourceIntoDatabase($entity, $groupName, $parentEntity = null, $lft = null, $rht = null)
     {
         // Check if the resource exists or not.
-        $resource = \Gaia\MVC\Models\Resource::findFirst("entity='$entity'");
+        $resource = \Gaia\MVC\Models\Resource::findFirst("entity='$entity' AND groupName ='$groupName'");
 
         if(!$resource) {
             // Add model as a resource into db.
             (new self())->addResource(
-                $parentEntity, [
+                $parentEntity,
+                [
                 'id' => create_guid(),
                 'entity' => $entity,
                 'groupName' => $groupName,
+                'lft' => $lft,
+                'rht' => $rht
                 ]
             );
         }
