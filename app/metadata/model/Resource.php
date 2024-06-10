@@ -34,7 +34,7 @@ $models['Resource'] = array(
             'label' => 'LBL_RESOURCES_LEFT',
             'type' => 'int',
             'length' => '11',
-            'null' => false,
+            'null' => true,
             'acl' => false
         ),
         'rht' => array(
@@ -42,7 +42,7 @@ $models['Resource'] = array(
             'label' => 'LBL_RESOURCES_RIGHT',
             'type' => 'int',
             'length' => '11',
-            'null' => false,
+            'null' => true,
             'acl' => false
         ),
         'dateCreated' => array(
