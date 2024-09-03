@@ -107,6 +107,12 @@ class Project extends Model
         }
 
         $values = substr($values, 0, -1);
+
+        // If values is empty then SET it to NULL to avoid any SQL error.
+        if ($values == '') {
+            $values = 'NULL';
+        }
+
         $model->getRelationship()->addRelConditions($relName, "$relName.$relatedKey IN ($values)");
     }
 
