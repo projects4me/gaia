@@ -10,7 +10,6 @@ use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\BehaviorInterface;
 use Phalcon\Mvc\Model\Behavior;
 
-
 /**
  * This behavior serves the purpose of maintaining the Audit Information.
  * Which really is if an field has during an update
@@ -29,9 +28,7 @@ class auditBehavior extends Behavior implements BehaviorInterface
      */
     public function notify($eventType, ModelInterface $model)
     {
-
-        if (method_exists($this, $eventType))
-        {
+        if (method_exists($this, $eventType)) {
             $this->$eventType($model);
         }
     }
@@ -45,7 +42,7 @@ class auditBehavior extends Behavior implements BehaviorInterface
     protected function beforeUpdate(&$model)
     {
         $changedFields = $model->getChangedFields();
-        if ( count($changedFields) > 0){
+        if (count($changedFields) > 0) {
             $originalData = $model->getSnapshotData();
             $model->isChanged = true;
             $audit = array();
@@ -57,7 +54,5 @@ class auditBehavior extends Behavior implements BehaviorInterface
             }
             $model->audit = $audit;
         }
-
     }
-
 }
