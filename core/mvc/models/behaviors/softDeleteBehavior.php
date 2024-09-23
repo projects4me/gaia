@@ -9,7 +9,7 @@ namespace Gaia\MVC\Models\Behaviors;
 use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\BehaviorInterface;
 use Phalcon\Mvc\Model\Behavior;
-use Phalcon\Mvc\Model\Message;
+use Phalcon\Messages\Message;
 
 
 /**

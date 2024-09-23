@@ -119,10 +119,10 @@ class Resource extends Model
         $models = $di->get('config')->get('models')->toArray();
 
         // Add "App" resource as a parent for all of the models (resources).
-        (new self())->addResourceIntoDatabase('App', $groupName, null, 1, 2);
+        self::addResourceIntoDatabase('App', $groupName, null, 1, 2);
 
         // Add "App" resource as a parent for for frontend group "prometheus"
-        (new self())->addResourceIntoDatabase('App', 'prometheus', null, 1, 2);
+        self::addResourceIntoDatabase('App', 'prometheus', null, 1, 2);
 
         foreach ($models as $modelName) {
             $modelNamespace = "\\Gaia\\MVC\\Models\\{$modelName}";
@@ -132,14 +132,14 @@ class Resource extends Model
             if ($model->isAclAllowed()) {
                 $metadata = $di->get('metaManager')->getModelMeta($modelName);
 
-                (new self())->addResourceIntoDatabase($modelName, $groupName, 'App');
+                self::addResourceIntoDatabase($modelName, $groupName, 'App');
 
                 // Add model fields into db.
                 foreach ($metadata['fields'] as $field) {
                     // No need to add
                     if (!$field['identifier']) {
                         $resourceName = "$modelName.{$field['name']}";
-                        (new self())->addResourceIntoDatabase($resourceName, $groupName, $modelName);
+                        self::addResourceIntoDatabase($resourceName, $groupName, $modelName);
                     }
                 }
             }
@@ -166,9 +166,9 @@ class Resource extends Model
         // Check if the resource exists or not.
         $resource = \Gaia\MVC\Models\Resource::findFirst("entity='$entity' AND groupName ='$groupName'");
 
-        if(!$resource) {
+        if (!isset($resource) && empty($resource)) {
             // Add model as a resource into db.
-            (new self())->addResource(
+            self::addResource(
                 $parentEntity,
                 [
                 'id' => create_guid(),
