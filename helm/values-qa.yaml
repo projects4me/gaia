@@ -1,0 +1,22 @@
+replicaCount: 1
+
+image:
+  repository: rananoman/gaia
+  pullPolicy: Always
+  tag: qa-latest
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 80
+  enabled: true
+
+# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enabled: true
+  host: qaapi.projects4.me
+  path: /
+  pathType: Prefix
+  port: 80
+
+resources: {}
