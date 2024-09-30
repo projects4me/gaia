@@ -3,6 +3,10 @@ name: Deploy Gaia Dev
 on:
   pull_request:
     types: [closed]
+  workflow_run:
+    workflows: ["Run Gaia test cases"]
+    types: 
+      - completed
 
 jobs:
 
