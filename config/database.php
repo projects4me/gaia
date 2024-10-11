@@ -41,7 +41,7 @@ $config['database'] = array(
     'host'        => 'mysql',
     'username'    => 'nouman',
     'password'    => 'nouman',
-    'dbname'      => 'pr4m',
+    'dbname'      => 'pr4m_qa',
     'charset'     => 'utf8mb4',
 );
 
