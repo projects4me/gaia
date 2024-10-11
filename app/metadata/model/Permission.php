@@ -43,13 +43,6 @@ $models['Permission'] = array(
             'length' => '1',
             'null' => true,
         ),
-        'searchF' => array(
-            'name' => 'searchF',
-            'label' => 'LBL_PERMISSIONS_SEARCH_F',
-            'type' => 'int',
-            'length' => '1',
-            'null' => true,
-        ),
         'createF' => array(
             'name' => 'createF',
             'label' => 'LBL_PERMISSIONS_CREATE_F',
