@@ -303,8 +303,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     {
         global $currentUser;
         if ($this->authorization) {
-            include_once APP_PATH . '/core/libs/authorization/oAuthServer.php';
             $request = \OAuth2\Request::createFromGlobals();
+            include_once APP_PATH . '/core/libs/authorization/oAuthServer.php';
             if (!$server->verifyResourceRequest($request)) {
                 $server->getResponse()->send();
             }
@@ -806,6 +806,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
                 }
                 $logger->error($errors);
+                $this->response->setStatusCode(422, "Unprocessable Entity");
                 $this->response->setJsonContent(
                     array(
                     'status' => 'ERROR',
