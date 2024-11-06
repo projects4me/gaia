@@ -1,8 +1,8 @@
 <?php
 
 $config['oauth'] = array(
-    "rememberMeTimeout" => "3", // in hours
-    "sessionTimeout" => "1" // in hours
+    "rememberMeTimeout" => "720", // in hours
+    "sessionTimeout" => "24" // in hours
 );
 
 return $config;
