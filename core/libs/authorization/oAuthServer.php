@@ -41,6 +41,6 @@ if ($request->request('grant_type') === 'refresh_token') {
             )
         );
     } else {
-        throw new \Gaia\Exception\Access("Invalid Token");
+        throw new \Gaia\Exception\UnAuthorized("Invalid Token");
     }
 }
