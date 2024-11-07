@@ -198,6 +198,9 @@ catch(\Gaia\Exception\MigrationDriver $e) {
 catch(\Gaia\Exception\Permission $e) {
     return $e->handle();
 }
+catch(\Gaia\Exception\UnAuthorized $e) {
+    return $e->handle();
+}
 catch (\Phalcon\Exception $e) {
     echo "PhalconException: ", $e->getMessage();
 }

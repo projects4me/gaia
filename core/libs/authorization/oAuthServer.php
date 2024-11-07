@@ -15,13 +15,32 @@ OAuth2\Autoloader::register();
 
 $pdo = \Phalcon\Di::getDefault()->get('db')->getInternalHandler();
 
-$storage = new Gaia\Libraries\Oauth\Storage\Pdo($pdo,array('user_table'=>'users'));
+$storage = new Gaia\Libraries\Oauth\Storage\Pdo($pdo, array('user_table' => 'users'));
 
 // Pass a storage object or array of storage objects to the OAuth2 server class
-$server = new OAuth2\Server($storage);
+$config = array(
+    'access_lifetime' => 3600
+);
+$server = new OAuth2\Server($storage, $config);
 
-
-//$server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage));
 $server->addGrantType(new OAuth2\GrantType\UserCredentials($storage));
-$server->addGrantType(new OAuth2\GrantType\RefreshToken($storage));
-//$server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage));
+
+if ($request->request('grant_type') === 'refresh_token') {
+    $refreshToken = $request->request('refresh_token');
+    $refreshTokenModel = (\Gaia\MVC\Models\Oauthrefreshtoken::findFirst("refresh_token = '$refreshToken'"));
+    $username = $refreshTokenModel->user_id;
+    $user = \Gaia\MVC\Models\User::findFirst("username = '$username'");
+    $maxDate = max($user->rememberMe, $user->sessionExpires);
+    $currentDate = gmdate('Y-m-d H:i:s');
+    if ($maxDate > $currentDate) {
+        $server->addGrantType(
+            new OAuth2\GrantType\RefreshToken(
+                $storage, array(
+                'always_issue_new_refresh_token' => true
+                )
+            )
+        );
+    } else {
+        throw new \Gaia\Exception\UnAuthorized("Invalid Token");
+    }
+}

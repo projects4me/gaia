@@ -219,7 +219,21 @@ $models['User'] = array(
             'length' => '200',
             'null' => true,
             'fts' => true
-        )
+        ),
+        'sessionExpires' => array(
+            'name' => 'sessionExpires',
+            'label' => 'LBL_USERS_SESSION_EXPIRES',
+            'type' => 'datetime',
+            'null' => true,
+            'fts' => true
+        ),
+        'rememberMe' => array(
+            'name' => 'rememberMe',
+            'label' => 'LBL_USERS_REMEMBER_ME',
+            'type' => 'datetime',
+            'null' => true,
+            'fts' => true
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
