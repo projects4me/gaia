@@ -304,7 +304,10 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         global $currentUser;
         if ($this->authorization) {
             $request = \OAuth2\Request::createFromGlobals();
-            include_once APP_PATH . '/core/libs/authorization/oAuthServer.php';
+            $oauthServer = new \Gaia\Libraries\OAuthServer($request);
+            $oauthServer->addGrantType();
+            $server = $oauthServer->getServer();
+
             if (!$server->verifyResourceRequest($request)) {
                 $server->getResponse()->send();
             }
