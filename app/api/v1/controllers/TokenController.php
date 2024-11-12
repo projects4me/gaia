@@ -46,11 +46,11 @@ class TokenController extends RestController
             $request->request = $request->request['token'];
         }
 
-        // include OAuth2 Server object
-        include_once APP_PATH.'/core/libs/authorization/oAuthServer.php';
+        $oauthServer = new \Gaia\Libraries\Authorization\OAuthServer($request);
+        $oauthServer->addGrantType();
 
         // Handle a request for an OAuth2.0 Access Token and send the response to the client
-        $response = $server->handleTokenRequest($request);
+        $response = $oauthServer->getServer()->handleTokenRequest($request);
 
         if ($request->request['grant_type'] === 'password') {
             $this->handlePasswordGrant($request, $response);
