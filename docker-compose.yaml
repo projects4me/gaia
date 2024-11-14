@@ -3,6 +3,7 @@ services:
   gaia:
     container_name: gaia-dev
     build: .
+    image: rananoman/gaia:env-dev
     volumes:
       - ./:/var/www/html
       - php_config:/usr/local/etc/php/conf.d/
@@ -32,7 +33,7 @@ services:
       - '3306:3306'
     command: --sql_mode="" --general-log=1 --general-log-file=/var/log/mysqld.log
     volumes:
-     - ./db/Dump20240424.sql:/docker-entrypoint-initdb.d/Dump20240424.sql
+     - ./db/Dump20241114.sql:/docker-entrypoint-initdb.d/Dump20241114.sql
      - mysql_db:/var/lib/mysql     
     
   xhgui:
