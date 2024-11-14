@@ -9,7 +9,7 @@ jobs:
   Build-and-Test:
     runs-on: ubuntu-latest
     container:
-      image: rananoman/gaia:1.0.0
+      image: rananoman/gaia:env-dev
       env:
         DB_ROOT_PWD : ${{ secrets.DB_ROOT_PWD }}
         DB_USER : ${{ secrets.DB_USER }}
