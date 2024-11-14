@@ -43,16 +43,16 @@ class OAuthServer
     ];
 
     /**
-     * Phalcon HTTP request object.
+     * OAuth2 request object.
      *
-     * @var \Phalcon\Http\Request
+     * @var \OAuth2\Request
      */
     private $request;
 
     /**
      * OAuthServer constructor.
      *
-     * @param \Phalcon\Http\Request Phalcon http request object.
+     * @param \OAuth2\Request $request  OAuth request object.
      * @param array                                             $config The configuration settings for the OAuth server.
      */
     public function __construct($request, $config = [])
@@ -106,7 +106,7 @@ class OAuthServer
                     )
                 );
             } else {
-                throw new UnAuthorized("Invalid Token");
+                throw new UnAuthorized("Your session is expired");
             }
         } else {
             throw new UnAuthorized("Invalid Token");
