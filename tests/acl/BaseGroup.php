@@ -4,7 +4,7 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Tests\Gaia\Acl;
+namespace Gaia\Tests\Acl;
 
 /**
  * This is the base class for group models.
@@ -14,7 +14,7 @@ namespace Tests\Gaia\Acl;
  * @category Tests
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-abstract class BaseGroup extends \Tests\Gaia\Acl\BaseAcl
+abstract class BaseGroup extends \Gaia\Tests\Acl\BaseAcl
 {
     /**
      * This method is used to setup some pre-conditions before the loading of any test case. In this method
