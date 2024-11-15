@@ -1,4 +1,4 @@
-FROM rananoman/gaia:env-prod
+FROM rananoman/gaia:env-dev
 
 COPY ./ /var/www/html
 

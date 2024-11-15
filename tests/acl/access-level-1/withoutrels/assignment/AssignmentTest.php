@@ -4,7 +4,7 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Tests\Gaia\Acl\AccessLevel1\WithoutRels;
+namespace Gaia\Tests\Acl\AccessLevel1\WithoutRels;
 
 /**
  * This class is responsible to test the assignment model without relationships with access level of 1 on model.
@@ -14,7 +14,7 @@ namespace Tests\Gaia\Acl\AccessLevel1\WithoutRels;
  * @category Tests
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class AssignmentTest extends \Tests\Gaia\Acl\BaseAssignment
+class AssignmentTest extends \Gaia\Tests\Acl\BaseAssignment
 {
     /**
      * This method is used to setup some pre-conditions before the loading of any test case.

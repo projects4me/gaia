@@ -4,7 +4,8 @@ $loader = new \Phalcon\Loader();
 
 $loader->registerNamespaces(
     [
-    "Tests\\Gaia\\Acl" => APP_PATH . '/tests/acl/'
+    "Gaia\\Tests\\Acl" => APP_PATH . '/tests/acl/',
+    "Gaia\\Tests\\Controller" => APP_PATH . '/tests/api/controllers'
     ]
 );
 

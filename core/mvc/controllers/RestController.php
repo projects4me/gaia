@@ -303,13 +303,15 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     {
         global $currentUser;
         if ($this->authorization) {
-            $request = \OAuth2\Request::createFromGlobals();
-            $oauthServer = new \Gaia\Libraries\OAuthServer($request);
-            $oauthServer->addGrantType();
+            $request = $this->getOAuthRequest();
+            $oauthServer = $this->getOAuthServer($request);
             $server = $oauthServer->getServer();
 
             if (!$server->verifyResourceRequest($request)) {
-                $server->getResponse()->send();
+                $response = $server->getResponse();
+                $this->response->setStatusCode($response->getStatusCode(), $response->getStatusText());
+                $this->response->setJsonContent($response->getParameters());
+                throw new \Gaia\Exception\UnAuthorized("Invalid Token");
             }
             $this->setUser($request);
             $modelAlias = Util::extractClassFromNamespace($this->modelName);
@@ -318,7 +320,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $query = $this->request->get('query', null, '');
             $params['where'] = $query;
             $projectId = ($modelAlias === 'Project' && isset($this->id)) ? $this->id : null;
-            
+
             $permission->fetchUserPermissions($currentUser->id, $this->aclMap[$this->actionName]['action'], $modelAlias, $params, $projectId);
 
             $this->getDI()->set(
@@ -1489,5 +1491,27 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         }
 
         return $filteredValues;
+    }
+
+    /**
+     * Returns an OAuth2 request object created from the global variables.
+     *
+     * @return \OAuth2\Request The OAuth2 request object.
+     */
+    public function getOAuthRequest()
+    {
+        return \OAuth2\Request::createFromGlobals();
+    }
+
+    /**
+     * Returns an OAuth server object.
+     *
+     * @param  \OAuth2\Request $request The OAuth2 request object.
+     * @param  array           $config  The configuration options for the OAuth server (optional).
+     * @return \Gaia\Libraries\Authorization\OAuthServer The OAuth server object.
+     */
+    protected function getOAuthServer($request, $config = [])
+    {
+        return new \Gaia\Libraries\Authorization\OAuthServer($request, $config);
     }
 }

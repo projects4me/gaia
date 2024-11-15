@@ -3,13 +3,14 @@ name: Run Gaia test cases
 on:
   pull_request:
     types: [opened, reopened]
+  push:
 
 jobs:
 
   Build-and-Test:
     runs-on: ubuntu-latest
     container:
-      image: rananoman/gaia:1.0.0
+      image: rananoman/gaia:env-dev
       env:
         DB_ROOT_PWD : ${{ secrets.DB_ROOT_PWD }}
         DB_USER : ${{ secrets.DB_USER }}
@@ -35,34 +36,37 @@ jobs:
     - name: Checkout to Repository
       uses: actions/checkout@v3
 
-    - name: Cache Composer packages
-      id: composer-packages
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: vendor-cache
+    # - name: Cache Composer packages
+    #   id: composer-packages
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: vendor
+    #     key: vendor-cache
 
-    - name: Watch change in composer.json
-      id: watch-composer-json
-      uses: tj-actions/changed-files@v32
-      with:
-          files: "composer.json"
+    # - name: Watch change in composer.json
+    #   id: watch-composer-json
+    #   uses: tj-actions/changed-files@v32
+    #   with:
+    #       files: "composer.json"
+
+    # - name: Install Dependencies
+    #   if: |
+    #     steps.watch-composer-json.outputs.any_changed == 'true'
+    #     || steps.composer-packages.outputs.cache-hit != 'true'
+    #   run: |
+    #     composer install
 
     - name: Install Dependencies
-      if: |
-        steps.watch-composer-json.outputs.any_changed == 'true'
-        || steps.composer-packages.outputs.cache-hit != 'true'
       run: |
         composer install
 
     - name: Run test Cases
       run: |
-        mysql --host mysql -uroot -p$DB_ROOT_PWD pr4m < db/Dump20240424.sql
+        mysql --host mysql -uroot -p$DB_ROOT_PWD pr4m < db/Dump20241114.sql
         mysql --host mysql -uroot -p$DB_ROOT_PWD -e "SET global sql_mode='';"
         mkdir logs/tests && touch logs/tests/db.log
         cd tests/
-        phpunit --coverage-html /__w/gaia/gaia/coverage
-
+        XDEBUG_MODE=coverage phpunit --coverage-html /__w/gaia/gaia/coverage
 
     - name: Upload Code coverage report
       uses: actions/upload-artifact@v3

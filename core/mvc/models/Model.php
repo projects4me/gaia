@@ -98,6 +98,13 @@ class Model extends PhalconModel
     protected $requiredBehaviors = [];
 
     /**
+     * This contains behaviors that are attached to the model.
+     *
+     * @var array
+     */
+    protected $attachedBehaviors = [];
+
+    /**
      * This method is called only once when the model is created. We are loading
      * all behaviors related to model once.
      *
@@ -139,6 +146,7 @@ class Model extends PhalconModel
         foreach ($behaviors as $behavior) {
             $behaviorClass = '\\Gaia\\MVC\\Models\\Behaviors\\' . $behavior;
             $this->addBehavior(new $behaviorClass());
+            $this->attachedBehaviors[] = $behavior;
         }
     }
 
@@ -546,7 +554,7 @@ class Model extends PhalconModel
     }
 
     /**
-     * This function returns array of requiredBehaviors
+     * This function returns array of requiredBehaviors.
      *
      * @return array
      */
@@ -564,5 +572,15 @@ class Model extends PhalconModel
     public function isAclAllowed()
     {
         return $this->aclAllowed;
+    }
+
+    /**
+     * This function returns array of attachedBehaviors.
+     *
+     * @return array
+     */
+    public function getAttachedBehaviors()
+    {
+        return $this->attachedBehaviors;
     }
 }

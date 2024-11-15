@@ -35,7 +35,7 @@ class TokenController extends RestController
     public function postAction()
     {
         // Populate data from the request
-        $request = \OAuth2\Request::createFromGlobals();
+        $request = $this->getOAuthRequest();
 
         // Allow exceptions for the our application so as to make it easy for
         // ember-data integration. For the rest the default implementation
@@ -46,7 +46,7 @@ class TokenController extends RestController
             $request->request = $request->request['token'];
         }
 
-        $oauthServer = new \Gaia\Libraries\Authorization\OAuthServer($request);
+        $oauthServer = $this->getOAuthServer($request);
         $oauthServer->addGrantType();
 
         // Handle a request for an OAuth2.0 Access Token and send the response to the client
