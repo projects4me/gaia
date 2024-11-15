@@ -31,23 +31,23 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          push: true
-          tags: |
-            rananoman/gaia:${{ env.SOURCE_BRANCH }}
-            rananoman/gaia:${{ env.TARGET_BRANCH }}-latest
-          context: .
-          file: docker/dev/Dockerfile
+      # - name: Build and push
+      #   uses: docker/build-push-action@v6
+      #   with:
+      #     push: true
+      #     tags: |
+      #       rananoman/gaia:${{ env.SOURCE_BRANCH }}
+      #       rananoman/gaia:${{ env.TARGET_BRANCH }}-latest
+      #     context: .
+      #     file: docker/dev/Dockerfile
 
-      - name: Deploy
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.OVH_HOST }}
-          username: ${{ secrets.OVH_USERNAME }}
-          key: ${{ secrets.OVH_KEY }}
-          port: ${{ secrets.OVH_PORT }}
-          script: |
-            cd ${{ secrets.OVH_GAIA_HELM_PATH }}
-            helm --kubeconfig ${{ secrets.KUBECONFIG_PATH }} upgrade gaia-${{ env.TARGET_BRANCH }} . -f values-${{ env.TARGET_BRANCH }}.yaml
+      # - name: Deploy
+      #   uses: appleboy/ssh-action@v1.0.3
+      #   with:
+      #     host: ${{ secrets.OVH_HOST }}
+      #     username: ${{ secrets.OVH_USERNAME }}
+      #     key: ${{ secrets.OVH_KEY }}
+      #     port: ${{ secrets.OVH_PORT }}
+      #     script: |
+      #       cd ${{ secrets.OVH_GAIA_HELM_PATH }}
+      #       helm --kubeconfig ${{ secrets.KUBECONFIG_PATH }} upgrade gaia-${{ env.TARGET_BRANCH }} . -f values-${{ env.TARGET_BRANCH }}.yaml
