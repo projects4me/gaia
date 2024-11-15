@@ -3,6 +3,7 @@ name: Run Gaia test cases
 on:
   pull_request:
     types: [opened, reopened]
+  push:
 
 jobs:
 
@@ -33,7 +34,13 @@ jobs:
 
     steps:
     - name: Checkout to Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+
+    - name: Compose.json available
+      run: |
+        ls -la
 
     - name: Cache Composer packages
       id: composer-packages
@@ -44,7 +51,7 @@ jobs:
 
     - name: Watch change in composer.json
       id: watch-composer-json
-      uses: tj-actions/changed-files@v32
+      uses: tj-actions/changed-files@v45
       with:
           files: "composer.json"
 
