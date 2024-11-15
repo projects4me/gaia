@@ -180,7 +180,8 @@ class TokenControllerTest extends TestCase
         $sessionExpirationReflection = $tokenControllerReflection->getMethod('setSessionExpiration');
         $sessionExpirationReflection->setAccessible(true);
         $sessionExpirationReflection->invokeArgs(
-            $this->controller, [
+            $this->controller,
+            [
             $user,
             $config
             ]
@@ -281,14 +282,28 @@ class TokenControllerTest extends TestCase
     protected function mockOAuthRequest($rememberMe = false)
     {
         $request = new Request();
-        $request->request = [
-            'grant_type' => 'password',
-            'username' => 'testUserOAuth',
-            'password' => 'unit-testing',
-            'client_id' => "projects4me",
-            "client_secret" => "06110fb83488715ca69057f4a7cedf93",
-            "remember_me" => $rememberMe
-        ];
+
+        $client = \Gaia\MVC\Models\Oauthclient::findFirst([
+            'conditions' => 'client_id = :client_id:',
+            'bind' => [
+                'client_id' => 'projects4me'
+            ]
+        ]);
+
+        // Retrieve the OAuth client
+        if ($client) {
+            $request->request = [
+                'grant_type' => 'password',
+                'username' => 'testUserOAuth',
+                'password' => 'unit-testing',
+                'client_id' => $client->client_id,
+                "client_secret" => $client->client_secret,
+                "remember_me" => $rememberMe
+            ];
+        } else {
+            throw new \Exception('Client not found');
+        }
+
         $request->server = [
             'REQUEST_METHOD' => 'POST'
         ];
