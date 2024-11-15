@@ -66,10 +66,7 @@ jobs:
         mysql --host mysql -uroot -p$DB_ROOT_PWD -e "SET global sql_mode='';"
         mkdir logs/tests && touch logs/tests/db.log
         cd tests/
-        phpunit --coverage-html /__w/gaia/gaia/coverage
-
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
+        XDEBUG_MODE=coverage phpunit --coverage-html /__w/gaia/gaia/coverage
 
     - name: Upload Code coverage report
       uses: actions/upload-artifact@v3
