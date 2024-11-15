@@ -34,6 +34,8 @@ jobs:
     steps:
     - name: Checkout to Repository
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # Add this line to fetch complete commit history
 
     - name: Cache Composer packages
       id: composer-packages
