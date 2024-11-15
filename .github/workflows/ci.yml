@@ -3,6 +3,7 @@ name: Run Gaia test cases
 on:
   pull_request:
     types: [opened, reopened]
+  push:
 
 jobs:
 
@@ -67,6 +68,8 @@ jobs:
         cd tests/
         phpunit --coverage-html /__w/gaia/gaia/coverage
 
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
 
     - name: Upload Code coverage report
       uses: actions/upload-artifact@v3
