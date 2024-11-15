@@ -9,7 +9,7 @@ jobs:
   Build-and-Test:
     runs-on: ubuntu-latest
     container:
-      image: rananoman/gaia:1.0.0
+      image: rananoman/gaia:env-dev
       env:
         DB_ROOT_PWD : ${{ secrets.DB_ROOT_PWD }}
         DB_USER : ${{ secrets.DB_USER }}
@@ -32,17 +32,17 @@ jobs:
           --health-retries 5
 
     steps:
-    - name: Checkout to Repository
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0 # Add this line to fetch complete commit history
-
     - name: Cache Composer packages
       id: composer-packages
       uses: actions/cache@v3
       with:
         path: vendor
         key: vendor-cache
+
+    - name: Checkout to Repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # Add this line to fetch complete commit history
 
     - name: Watch change in composer.json
       id: watch-composer-json
