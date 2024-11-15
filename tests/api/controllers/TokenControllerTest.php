@@ -106,7 +106,11 @@ class TokenControllerTest extends TestCase
         $this->mockOAuthServer();
         $this->getAccessToken();
         $user = \Gaia\MVC\Models\User::findFirstByUsername('testUserOAuth');
-        $this->assertGreaterThan(gmdate('Y-m-d H:i:s'), $user->rememberMe);
+
+        $oauthConfig = $this->controller->config->get('oauth');
+        $rememberMeTimeout = $oauthConfig['rememberMeTimeout'];
+        $expectedDate = gmdate('Y-m-d H:i:s', strtotime("+$rememberMeTimeout hours"));
+        $this->assertGreaterThanOrEqual($expectedDate, $user->rememberMe);
     }
 
     /**
@@ -120,7 +124,9 @@ class TokenControllerTest extends TestCase
         $this->mockOAuthServer();
         $this->getAccessToken();
         $user = \Gaia\MVC\Models\User::findFirstByUsername('testUserOAuth');
-        $this->assertLessThan(gmdate('Y-m-d H:i:s'), $user->rememberMe);
+
+        $expectedDate = gmdate('Y-m-d H:i:s', strtotime('-1 day'));
+        $this->assertLessThanOrEqual($expectedDate, $user->rememberMe);
     }
 
     /**
