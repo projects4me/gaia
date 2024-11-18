@@ -234,6 +234,21 @@ $models['User'] = array(
             'null' => true,
             'fts' => true
         ),
+        'failedLoginAttempts' => array(
+            'name' => 'failedLoginAttempts',
+            'label' => 'LBL_USERS_FAILED_LOGIN_ATTEMPTS',
+            'type' => 'int',
+            'default' => 0,
+            'null' => true,
+            'fts' => true
+        ),
+        'lastFailedAttempt' => array(
+            'name' => 'lastFailedAttempt',
+            'label' => 'LBL_USERS_LAST_FAILED_ATTEMPT',
+            'type' => 'datetime',
+            'null' => true,
+            'fts' => true
+        )
     ),
     'indexes' => array(
         'id' => 'primary',
