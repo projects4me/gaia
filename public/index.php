@@ -201,6 +201,9 @@ catch(\Gaia\Exception\Permission $e) {
 catch(\Gaia\Exception\UnAuthorized $e) {
     return $e->handle();
 }
+catch(\Gaia\Exception\ResourceLocked $e) {
+    return $e->handle();
+}
 catch (\Phalcon\Exception $e) {
     echo "PhalconException: ", $e->getMessage();
 }
