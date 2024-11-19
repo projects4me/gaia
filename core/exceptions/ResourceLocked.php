@@ -8,7 +8,7 @@ namespace Gaia\Exception;
 
 /**
  * This class is reponsible for handling the exceptions related to locking the resource.
- * 
+ *
  * @author Rana Nouman <ranamnouman@gmail.com>
  * @package Gaia
  * @category Exception
@@ -18,7 +18,7 @@ class ResourceLocked extends \Exception
 {
     /**
      * This function is used to set and return the http response.
-     * 
+     *
      * @return \Phalcon\Http\Response
      */
     public function handle()
@@ -26,7 +26,10 @@ class ResourceLocked extends \Exception
         $di = \Phalcon\Di::getDefault();
         $response = $di->get('response');
         $response->setStatusCode("423", "Locked");
-        ($this->getMessage()) && $response->setJsonContent(array('error' => $this->getMessage()));
+        ($this->getMessage()) && $response->setJsonContent([
+            'error' => "resourceLocked",
+            'error_description' => $this->getMessage()
+        ]);
         $response->send();
         return $response;
     }
