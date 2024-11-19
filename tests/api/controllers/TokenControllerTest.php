@@ -197,6 +197,64 @@ class TokenControllerTest extends TestCase
     }
 
     /**
+     * Test the incorrect password with exceeding login attempts.
+     *
+     * @return void
+     */
+    public function testIncorrectPasswordWithExceedingAttempts()
+    {
+        $this->mockOAuthRequest(
+            false, [
+            'password' => 'incorrect-password'
+            ]
+        );
+        $this->mockOAuthServer();
+
+        $user = \Gaia\MVC\Models\User::findFirstByUsername('testUserOAuth');
+
+        $oauthConfig = $this->controller->config->get('oauth');
+        $failedLoginAttemptsLimit = $oauthConfig['failedLoginAttemptsLimit'];
+        $user->failedLoginAttempts = $failedLoginAttemptsLimit;
+        $user->save();
+
+        $this->expectException(\Gaia\Exception\ResourceLocked::class);
+        $this->expectExceptionMessage('User is locked. Please try again later.');
+        $response = $this->getAccessToken();
+    }
+
+    /**
+     * Test the incorrect password with exceeding login attempts and exceeding lock time.
+     *
+     * @return void
+     */
+    public function testIncorrectPasswordWithExceedingAttemptsAndExceedingLockTime()
+    {
+        $this->mockOAuthRequest(
+            false, [
+            'password' => 'incorrect-password'
+            ]
+        );
+        $this->mockOAuthServer();
+
+        $user = \Gaia\MVC\Models\User::findFirstByUsername('testUserOAuth');
+
+        $oauthConfig = $this->controller->config->get('oauth');
+        $failedLoginAttemptsLimit = $oauthConfig['failedLoginAttemptsLimit'];
+        $user->failedLoginAttempts = $failedLoginAttemptsLimit;
+        $user->lastFailedAttempt = gmdate('Y-m-d H:i:s', strtotime('-2 day'));
+        $user->save();
+
+        $response = $this->getAccessToken();
+
+        // Check if the user login attempts are reset to 0
+        $oauthTestUser = \Gaia\MVC\Models\User::findFirstByUsername('testUserOAuth');
+        $errorDescription = json_decode($response->getContent())->error_description;
+        $this->assertEquals(401, $response->getStatusCode());
+        $this->assertEquals("Invalid username and password combination", $errorDescription);
+        $this->assertEquals(0, $oauthTestUser->failedLoginAttempts, "User login attempts should be reset to 0");
+    }
+
+    /**
      * Get the access token.
      *
      * This method sends a POST request to the controller's postAction() method
@@ -276,30 +334,35 @@ class TokenControllerTest extends TestCase
     /**
      * Mocks the OAuth request with the given rememberMe flag.
      *
-     * @param  bool $rememberMe Flag indicating whether to remember the user or not.
+     * @param  bool  $rememberMe    Flag indicating whether to remember the user or not.
+     * @param  array $requestConfig Additional configuration for the request.
      * @return void
      */
-    protected function mockOAuthRequest($rememberMe = false)
+    protected function mockOAuthRequest($rememberMe = false, $requestConfig = [])
     {
         $request = new Request();
 
-        $client = \Gaia\MVC\Models\Oauthclient::findFirst([
+        $client = \Gaia\MVC\Models\Oauthclient::findFirst(
+            [
             'conditions' => 'client_id = :client_id:',
             'bind' => [
                 'client_id' => 'projects4me'
             ]
-        ]);
+            ]
+        );
 
         // Retrieve the OAuth client
         if ($client) {
-            $request->request = [
+            $request->request = array_merge(
+                [
                 'grant_type' => 'password',
                 'username' => 'testUserOAuth',
                 'password' => 'unit-testing',
                 'client_id' => $client->client_id,
                 "client_secret" => $client->client_secret,
                 "remember_me" => $rememberMe
-            ];
+                ], $requestConfig
+            );
         } else {
             throw new \Exception('Client not found');
         }

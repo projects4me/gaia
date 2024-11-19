@@ -3,7 +3,6 @@ name: Run Gaia test cases
 on:
   pull_request:
     types: [opened, reopened]
-  push:
 
 jobs:
 
@@ -62,7 +61,7 @@ jobs:
 
     - name: Run test Cases
       run: |
-        mysql --host mysql -uroot -p$DB_ROOT_PWD pr4m < db/Dump20241114.sql
+        mysql --host mysql -uroot -p$DB_ROOT_PWD pr4m < db/Dump20241118.sql
         mysql --host mysql -uroot -p$DB_ROOT_PWD -e "SET global sql_mode='';"
         mkdir logs/tests && touch logs/tests/db.log
         cd tests/

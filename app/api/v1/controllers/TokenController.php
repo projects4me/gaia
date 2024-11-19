@@ -36,6 +36,7 @@ class TokenController extends RestController
     {
         // Populate data from the request
         $request = $this->getOAuthRequest();
+        $grantType = $request->request('grant_type');
 
         // Allow exceptions for the our application so as to make it easy for
         // ember-data integration. For the rest the default implementation
@@ -49,10 +50,15 @@ class TokenController extends RestController
         $oauthServer = $this->getOAuthServer($request);
         $oauthServer->addGrantType();
 
+        // Check failed login attempts before handling the OAuth2.0 Access Token request
+        if ($grantType === 'password') {
+            $this->handleFailedLoginAttempt($request);
+        }
+
         // Handle a request for an OAuth2.0 Access Token and send the response to the client
         $response = $oauthServer->getServer()->handleTokenRequest($request);
 
-        if ($request->request['grant_type'] === 'password') {
+        if ($grantType === 'password') {
             $this->handlePasswordGrant($request, $response);
         }
 
@@ -84,12 +90,7 @@ class TokenController extends RestController
             $this->validateOAuthConfig($oauthConfig);
 
             // Get the user by username
-            $username = $request->request['username'];
-            $user = \Gaia\MVC\Models\User::findFirstByUsername($username);
-
-            if (!$user) {
-                throw new Exception("User not found.");
-            }
+            $user = $this->getUserByUsername($request->request['username']);
 
             // Set current user to avoid behavior-related issues
             $this->setCurrentUser($user);
@@ -156,5 +157,72 @@ class TokenController extends RestController
         // Assuming the `$currentUser` needs to be set for other parts of the application
         global $currentUser;
         $currentUser = $user;
+    }
+
+    /**
+     * Get the user by username.
+     *
+     * @param  string $username
+     * @return \Gaia\MVC\Models\User
+     */
+    protected function getUserByUsername($username)
+    {
+        $user = \Gaia\MVC\Models\User::findFirstByUsername($username);
+        if (!$user) {
+            throw new Exception("User not found.");
+        }
+        return $user;
+    }
+
+    /**
+     * Handle failed login attempts for OAuth2 authentication.
+     *
+     * @param  \OAuth2\Request $request
+     * @throws Exception
+     */
+    private function handleFailedLoginAttempt($request)
+    {
+        $username = $request->request('username');
+        $user = $this->getUserByUsername($username);
+        $oauthConfig = $this->config->get('oauth');
+        $failedLimit = $oauthConfig['failedLoginAttemptsLimit'];
+
+        $lastFailedAttempt =  $user->lastFailedAttempt ?? gmdate('Y-m-d H:i:s');
+        $lockTime = strtotime($lastFailedAttempt);
+        $currentTime = time();
+        $timeDiff = $currentTime - $lockTime;
+        $lockTimeInHours = $oauthConfig['failedLoginLockTime'];
+        $lockTimeInSeconds = $lockTimeInHours * 60 * 60; // Convert lock time to seconds
+
+        if (!password_verify($request->request('password'), $user->password)) {
+            // Check if time difference is greater than 24 hours (default), if yes then reset the failed login attempts
+            if ($timeDiff > $lockTimeInSeconds) {
+                $this->resetUserFailedAttempts($user);
+            } elseif ($user->failedLoginAttempts < $failedLimit) {
+                $this->resetUserFailedAttempts($user, $user->failedLoginAttempts + 1);
+            } else {
+                throw new \Gaia\Exception\ResourceLocked("User is locked. Please try again later.");
+            }
+        }
+        // If the password is correct, and lock time is expired then reset the failed login attempts
+        elseif ($timeDiff > $lockTimeInSeconds) {
+            $this->resetUserFailedAttempts($user);
+        } elseif ($user->failedLoginAttempts >= $failedLimit) {
+            throw new \Gaia\Exception\ResourceLocked("User is locked. Please try again later.");
+        }
+    }
+
+    /**
+     * Reset the failed login attempts for the user either to 0 or to the given limit.
+     *
+     * @param \Gaia\MVC\Models\User $user
+     * @param int                   $loginAttempts
+     */
+    private function resetUserFailedAttempts(\Gaia\MVC\Models\User $user, $loginAttempts = 0)
+    {
+        $this->setCurrentUser($user);
+        $user->failedLoginAttempts = $loginAttempts;
+        $user->lastFailedAttempt = gmdate('Y-m-d H:i:s');
+        $user->save();
     }
 }
