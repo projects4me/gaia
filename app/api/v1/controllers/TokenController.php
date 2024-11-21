@@ -169,7 +169,7 @@ class TokenController extends RestController
     {
         $user = \Gaia\MVC\Models\User::findFirstByUsername($username);
         if (!$user) {
-            throw new Exception("User not found.");
+            throw new \Gaia\Exception\UnAuthorized("Credentials are incorrect");
         }
         return $user;
     }
