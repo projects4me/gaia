@@ -5,6 +5,7 @@ namespace Gaia\Events\Notification;
 use Phalcon\Events\Event;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
+use Gaia\Templates\Email\ResetPassword;
 
 /**
  * This class is used to send email notifications.
@@ -34,6 +35,7 @@ class Email
             $host = getenv('FRONTEND_HOST');
             $resetToken = $this->createResetToken(20);
             $mail = new PHPMailer();
+            ResetPassword::setEmailBody($user, $host, $resetToken);
 
             $mail->SMTPDebug = SMTP::DEBUG_SERVER;
             $mail->isSMTP();
@@ -44,25 +46,11 @@ class Email
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = $smtpConfig['port'];
 
-            //Recipients
             $mail->setFrom($smtpConfig['username'], $smtpConfig['user']);
             $mail->addAddress($user->email, $user->name);
-
-            //Content
             $mail->isHTML(true);
-            $mail->Subject = 'Reset Link';
-            $mail->Body    = '
-                <div style="max-width:600px;margin:0 auto;background-color:#ffffff;">
-                    <div style="background-color:#f5f8fa;padding:20px 10px;">
-                        <h1 style="color:#333333;font-size:24px;">Projects4me</h1>
-                    </div>
-                    <div style="padding:20px 10px;">
-                        <p>Dear ' . $user->name . ',</p>
-                        <p>Click on the link below to reset your password.</p>
-                        <a href="http://' .$host. '/resetpassword?token=' . $resetToken . '">Reset Password</a>
-                    </div>
-                </div>
-            ';
+            $mail->Subject = ResetPassword::getEmailSubject();
+            $mail->Body    = ResetPassword::getEmailBody();
             // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
             $mail->send();
