@@ -248,7 +248,14 @@ $models['User'] = array(
             'type' => 'datetime',
             'null' => true,
             'fts' => true
-        )
+        ),
+        'resetToken' => array(
+            'name' => 'resetToken',
+            'label' => 'LBL_USERS_RESET_TOKEN',
+            'type' => 'varchar',
+            'length' => '40',
+            'null' => true,
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
