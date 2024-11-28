@@ -28,6 +28,8 @@ class Email
     public function resetPassword(Event $event, $user)
     {
         try {
+            $di = \Phalcon\Di::getDefault();
+            $smtpConfig = $di->get('config')->get('smtp');
             $request = \OAuth2\Request::createFromGlobals();
             $host = getenv('FRONTEND_HOST');
             $resetToken = $this->createResetToken(20);
@@ -35,15 +37,15 @@ class Email
 
             $mail->SMTPDebug = SMTP::DEBUG_SERVER;
             $mail->isSMTP();
-            $mail->Host       = 'smtp.gmail.com';
-            $mail->SMTPAuth   = true;
-            $mail->Username   = 'projectsfourme@gmail.com';
-            $mail->Password   = 'acgl zdcf txkc oixp';
+            $mail->Host       = $smtpConfig['host'];
+            $mail->SMTPAuth   = $smtpConfig['auth'];
+            $mail->Username   = $smtpConfig['username'];
+            $mail->Password   = $smtpConfig['password'];
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = 587;
+            $mail->Port       = $smtpConfig['port'];
 
             //Recipients
-            $mail->setFrom('projectsfourme@gmail.com', 'Projects4me');
+            $mail->setFrom($smtpConfig['username'], $smtpConfig['user']);
             $mail->addAddress($user->email, $user->name);
 
             //Content
@@ -68,6 +70,7 @@ class Email
             // TODO: Save the reset token in the database
             // $this->saveResetToken($user, $resetToken);
         } catch (Exception $e) {
+            // TODO: Handle this exception using our classes
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
     }
