@@ -1,13 +1,16 @@
 <?php
 
-use Phalcon\DI\FactoryDefault,
-Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter,
-Phalcon\Logger,
-Phalcon\Logger\Adapter\Stream as StreamAdapter,
-Gaia\Libraries\Utils\executiontime;
+use Phalcon\DI\FactoryDefault;
+use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
+use Phalcon\Logger;
+use Phalcon\Logger\Adapter\Stream as StreamAdapter;
+use Gaia\Libraries\Utils\executiontime;
+use Phalcon\Events\Event;
+use Phalcon\Events\Manager as EventsManager;
 
 /**
  * Error Reporting
+ *
  * @todo Remove before publishing
  */
 error_reporting(E_ERROR);
@@ -27,9 +30,10 @@ global $logger;
 $loggerAdapter = new StreamAdapter(APP_PATH . '/logs/application.log');
 $logger = new Logger(
     'applicationlog',
-[
+    [
     'local' => $loggerAdapter,
-]);
+    ]
+);
 $logger->setLogLevel(Logger::DEBUG);
 
 // Allow from any origin
@@ -44,11 +48,13 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
 // Access-Control headers are received during OPTIONS requests
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
         header("Access-Control-Allow-Methods: GET, POST, PATCH, OPTIONS, DELETE");
+    }
 
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
         header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+    }
 
     exit(0);
 }
@@ -66,68 +72,77 @@ try {
     $di = new FactoryDefault();
 
     //Setup the view component
-    $di->set('view', function () {
-        $view = new \Phalcon\Mvc\View();
-        $view->setViewsDir(APP_PATH . '/app/views/');
-        $view->registerEngines(
-            array(
-            ".volt" => 'Phalcon\Mvc\View\Engine\Volt'
-        )
-        );
-        return $view;
-    });
+    $di->set(
+        'view', function () {
+            $view = new \Phalcon\Mvc\View();
+            $view->setViewsDir(APP_PATH . '/app/views/');
+            $view->registerEngines(
+                array(
+                ".volt" => 'Phalcon\Mvc\View\Engine\Volt'
+                )
+            );
+            return $view;
+        }
+    );
 
     //Setup a base URI so that all generated URIs include the "tutorial" folder
-    $di->set('url', function () {
-        $url = new \Phalcon\Mvc\Url();
-        $url->setBaseUri('/');
-        return $url;
-    });
+    $di->set(
+        'url', function () {
+            $url = new \Phalcon\Mvc\Url();
+            $url->setBaseUri('/');
+            return $url;
+        }
+    );
 
     // @todo - set in di
     // @todo - add actions route
-    $di->set('router', function () {
-        $router = new Gaia\MVC\Router();
-        $router->init();
-        return $router;
-    });
+    $di->set(
+        'router', function () {
+            $router = new Gaia\MVC\Router();
+            $router->init();
+            return $router;
+        }
+    );
 
 
     // Set up the database service
-    $di->set('db', function () {
-        $connection = new DbAdapter($GLOBALS['settings']['database']->toArray());
-        $eventsManager = new Phalcon\Events\Manager();
-        $dbLoggerAdapter = new StreamAdapter(APP_PATH . "/logs/db.log");
-        $dblogger = new Logger(
-            'dblog',
-        [
-            'local' => $dbLoggerAdapter,
-        ]
+    $di->set(
+        'db', function () {
+            $connection = new DbAdapter($GLOBALS['settings']['database']->toArray());
+            $eventsManager = new Phalcon\Events\Manager();
+            $dbLoggerAdapter = new StreamAdapter(APP_PATH . "/logs/db.log");
+            $dblogger = new Logger(
+                'dblog',
+                [
+                'local' => $dbLoggerAdapter,
+                ]
             );
-        $dblogger = $dblogger->setLogLevel(Logger::DEBUG);
-        //Listen all the database events
-        $eventsManager->attach('db', function ($event, $connection) use ($dblogger) {
-                if ($event->getType() == 'beforeQuery') {
-                    $GLOBALS['timer']->diff();
-                    $sqlVariables = $connection->getSQLVariables();
-                    if (isset($sqlVariables)) {
-                        $dblogger->debug(print_r($connection->getSQLBindTypes(), 1) . ' ' . join(', ', $sqlVariables));
+            $dblogger = $dblogger->setLogLevel(Logger::DEBUG);
+            //Listen all the database events
+            $eventsManager->attach(
+                'db',
+                function ($event, $connection) use ($dblogger) {
+                    if ($event->getType() == 'beforeQuery') {
+                        $GLOBALS['timer']->diff();
+                        $sqlVariables = $connection->getSQLVariables();
+                        if (isset($sqlVariables)) {
+                            $dblogger->debug(print_r($connection->getSQLBindTypes(), 1) . ' ' . join(', ', $sqlVariables));
+                        } else {
+                            $dblogger->debug(print_r($connection->getSQLBindTypes(), 1));
+                        }
                     }
-                    else {
-                        $dblogger->debug(print_r($connection->getSQLBindTypes(), 1));
+                    if ($event->getType() == 'afterQuery') {
+                        $dblogger->debug('Query execution time:' . ($GLOBALS['timer']->diff()) . ' seconds');
+                        $dblogger->debug($connection->getSQLStatement());
                     }
                 }
-                if ($event->getType() == 'afterQuery') {
-                    $dblogger->debug('Query execution time:' . ($GLOBALS['timer']->diff()) . ' seconds');
-                    $dblogger->debug($connection->getSQLStatement());
-                }
-            }
             );
 
             //Assign the eventsManager to the db adapter instance
             $connection->setEventsManager($eventsManager);
             return $connection;
-        });
+        }
+    );
 
     $di->set(
         'metaManager',
@@ -169,44 +184,38 @@ try {
         new \Gaia\Core\MVC\Models\Relationships\Factory\RelationshipFactory($di)
     );
 
+
+    // Attach all events in event manager.
+    $gaiaEventManager = new \Gaia\Events\EventManager();
+    $gaiaEventManager->attachEvents();
+
     // putenv('XHGUI_MONGO_HOST=mongodb://xhgui:27017');
     // require_once('/usr/local/src/xhgui/external/header.php');
 
     /**
      * @todo move the migration away to elsewhere
-     * 
      */
     // $di->get('migrationDriver')->migrate();
 
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);
     echo $app->handle($_SERVER["REQUEST_URI"])->getContent();
-
-}
-catch (\Gaia\Exception\Access $e) {
+} catch (\Gaia\Exception\Access $e) {
     return $e->handle();
-}
-catch(\Gaia\Exception\ResourceNotFound $e) {
+} catch (\Gaia\Exception\ResourceNotFound $e) {
     return $e->handle();
-}
-catch(\Gaia\Exception\FileNotFound $e) {
+} catch (\Gaia\Exception\FileNotFound $e) {
     return $e->handle();
-}
-catch(\Gaia\Exception\MigrationDriver $e) {
+} catch (\Gaia\Exception\MigrationDriver $e) {
     return $e->handle();
-}
-catch(\Gaia\Exception\Permission $e) {
+} catch (\Gaia\Exception\Permission $e) {
     return $e->handle();
-}
-catch(\Gaia\Exception\UnAuthorized $e) {
+} catch (\Gaia\Exception\UnAuthorized $e) {
     return $e->handle();
-}
-catch(\Gaia\Exception\ResourceLocked $e) {
+} catch (\Gaia\Exception\ResourceLocked $e) {
     return $e->handle();
-}
-catch (\Phalcon\Exception $e) {
+} catch (\Phalcon\Exception $e) {
     echo "PhalconException: ", $e->getMessage();
-}
-catch(\Gaia\Exception\Exception $e) {
+} catch (\Gaia\Exception\Exception $e) {
     return $e->handle();
 }
