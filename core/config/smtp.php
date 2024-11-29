@@ -6,8 +6,8 @@ $config['smtp'] = [
     'user' => 'Projects4me',
     'auth' => true,
     'port' => 587,
-    'username' => 'projectsfourme@gmail.com',
-    'password' => 'acgl zdcf txkc oixp'
+    'username' => getenv('SMTP_USERNAME'),
+    'password' => getenv('SMTP_PASSWORD')
 ];
 
 return $config;
