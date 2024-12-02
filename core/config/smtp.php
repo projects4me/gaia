@@ -7,7 +7,8 @@ $config['smtp'] = [
     'auth' => true,
     'port' => 587,
     'username' => getenv('SMTP_USERNAME'),
-    'password' => getenv('SMTP_PASSWORD')
+    'password' => getenv('SMTP_PASSWORD'),
+    'resetTokenTimeout' => 3600 //seconds,
 ];
 
 return $config;

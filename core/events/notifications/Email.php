@@ -50,16 +50,14 @@ class Email
             $mail->addAddress($user->email, $user->name);
             $mail->isHTML(true);
             $mail->Subject = ResetPassword::getEmailSubject();
-            $mail->Body    = ResetPassword::getEmailBody();
-            // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+            $mail->Body    = ResetPassword::getEmailBody($user, $host, $resetToken);
+            $mail->AltBody = ResetPassword::getEmailAltBody($host, $resetToken);
 
             $mail->send();
 
-            // TODO: Save the reset token in the database
-            // $this->saveResetToken($user, $resetToken);
+            $this->saveResetToken($user, $resetToken, $smtpConfig['resetTokenTimeout']);
         } catch (Exception $e) {
-            // TODO: Handle this exception using our classes
-            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            throw new \Gaia\Exception\Exception("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
         }
     }
 
@@ -73,5 +71,20 @@ class Email
     public function createResetToken($count)
     {
         return bin2hex(random_bytes($count));
+    }
+
+    /**
+     * This function is used to save the reset token in the database.
+     *
+     * @method saveResetToken
+     * @param  \Gaia\MVC\Models\User $user
+     * @param string                $resetToken
+     * @param string                $resetTokenTimeout
+     */
+    public function saveResetToken($user, $resetToken, $resetTokenTimeout)
+    {
+        $user->resetToken = $resetToken;
+        $user->resetTokenExpiry = gmdate('Y-m-d H:i:s', strtotime("+$resetTokenTimeout seconds"));
+        $user->save();
     }
 }
