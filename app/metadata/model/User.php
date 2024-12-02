@@ -256,6 +256,12 @@ $models['User'] = array(
             'length' => '40',
             'null' => true,
         ),
+        'resetTokenExpiry' => array(
+            'name' => 'resetTokenExpiry',
+            'label' => 'LBL_USERS_RESET_TOKEN_EXPIRY',
+            'type' => 'datetime',
+            'null' => true,
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
