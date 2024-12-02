@@ -67,11 +67,13 @@ class ResetPassword
     /**
      * This function is used to get the alternative body of the email.
      *
+     * @param  string $host
      * @param  string $resetToken
      * @method getEmailAltBody
      * @return string
      */
-    public static function getEmailAltBody($resetToken) {
+    public static function getEmailAltBody($host, $resetToken)
+    {
         return "Click on the link below to reset your password. <br> http://$host/resetpassword?token=$resetToken";
     }
 }
