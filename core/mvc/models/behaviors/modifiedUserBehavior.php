@@ -10,7 +10,6 @@ use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\BehaviorInterface;
 use Phalcon\Mvc\Model\Behavior;
 
-
 /**
  * This behavior serves the purpose of maintaining the modified user information.
  *
@@ -28,8 +27,7 @@ class modifiedUserBehavior extends Behavior implements BehaviorInterface
      */
     public function notify($eventType, ModelInterface $model)
     {
-        if (method_exists($this, $eventType))
-        {
+        if (method_exists($this, $eventType)) {
             $this->$eventType($model);
         }
     }
@@ -42,7 +40,7 @@ class modifiedUserBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeValidationOnUpdate(&$model)
     {
-        global $currentUser;
+        $currentUser = $this->getCurrentUser();
 
         $model->modifiedUser = $currentUser->id;
         $model->modifiedUserName = $currentUser->name;
@@ -56,7 +54,8 @@ class modifiedUserBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeValidationOnCreate(&$model)
     {
-        global $currentUser, $logger;
+        global $logger;
+        $currentUser = $this->getCurrentUser();
 
         $model->modifiedUser = $currentUser->id;
         $model->modifiedUserName = $currentUser->name;
@@ -64,4 +63,21 @@ class modifiedUserBehavior extends Behavior implements BehaviorInterface
         $logger->debug($model->modifiedUserName);
     }
 
+    /**
+     * This function is used to get the current user. If there is no current user
+     * (user is not authorized), then the system user is returned.
+     *
+     * @return \Gaia\Models\User
+     * @todo System user should be present in the database
+     */
+    protected function getCurrentUser()
+    {
+        global $currentUser;
+        if (!isset($currentUser->id)) {
+            $currentUser->id = 'system';
+            $currentUser->name = 'system_user';
+        }
+
+        return $currentUser;
+    }
 }
