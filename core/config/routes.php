@@ -329,6 +329,14 @@ $config['routes'] = array(
                     'GET'
                 ],
                 'identifier' => 'id'
+            ],
+            'resetpassword' => [
+                'path' => '/api/:version/resetpassword',
+                'allowedMethods' => [
+                    'GET',
+                    'PATCH'
+                ],
+                'identifier' => 'id'
             ]
         )
     ),
