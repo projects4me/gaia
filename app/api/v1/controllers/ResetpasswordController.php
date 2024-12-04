@@ -27,9 +27,10 @@ class ResetpasswordController extends \Phalcon\Mvc\Controller
         $validateTokenMap = [
             "reset" => "validateResetToken"
         ];
+        $request = \OAuth2\Request::createFromGlobals();
 
-        $tokenType = $this->getOAuthRequest()->query('validateTokenType');
-        $token = $this->getOAuthRequest()->query('token');
+        $tokenType = $request->query('validateTokenType');
+        $token = $request->query('token');
 
         if (!isset($tokenType) || !isset($token)) {
             throw new \Gaia\Exception\UnAuthorized("Token type and token are required");
