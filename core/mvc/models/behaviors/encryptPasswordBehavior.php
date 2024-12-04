@@ -40,6 +40,18 @@ class encryptPasswordBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeCreate(&$model)
     {
-        $model->password = password_hash($model->password, PASSWORD_DEFAULT);
+        $model->password = $this->createHash($model->password);
+    }
+
+    /**
+     * This function creates a hash of the given password.
+     *
+     * @method createHash
+     * @param string $password
+     * @return string
+     */
+    public function createHash($password)
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
     }
 }
