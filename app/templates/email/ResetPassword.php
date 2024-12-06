@@ -47,7 +47,7 @@ class ResetPassword
             <div style="padding:20px 10px;">
                 <p>Dear ' . $user->name . ',</p>
                 <p>Click on the link below to reset your password.</p>
-                <a href="http://' .$host. '/reset-password?token=' . $resetToken . '">Reset Password</a>
+                <a href="//' .$host. '/reset-password?token=' . $resetToken . '">Reset Password</a>
             </div>
         </div>    
         ';
@@ -74,6 +74,6 @@ class ResetPassword
      */
     public static function getEmailAltBody($host, $resetToken)
     {
-        return "Click on the link below to reset your password. <br> http://$host/reset-password?token=$resetToken";
+        return "Click on the link below to reset your password. <br> //$host/reset-password?token=$resetToken";
     }
 }
