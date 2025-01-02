@@ -73,6 +73,7 @@ class shortCodeBehavior extends Behavior implements BehaviorInterface
             $shortCode .= substr($word, 0, 1);
         }
 
+        $shortCode = $this->extractShortCode($shortCode);
         $shortCode = $this->updateShortCodeIfExistsInDatabase($shortCode);
 
         return strtoupper($shortCode);
@@ -87,6 +88,7 @@ class shortCodeBehavior extends Behavior implements BehaviorInterface
     protected function generateShortCodeFromSingleWord($name)
     {
         $shortCode = strtoupper(substr($name, 0, 5));
+        $shortCode = $this->extractShortCode($shortCode);
 
         // Check if the short code exists in the database
         $shortCode = $this->updateShortCodeIfExistsInDatabase($shortCode);
@@ -103,11 +105,10 @@ class shortCodeBehavior extends Behavior implements BehaviorInterface
      */
     protected function updateShortCodeIfExistsInDatabase($shortCode)
     {
-        $searchQuery = "%$shortCode%";
         $shortCodes = [];
         $number = '';
 
-        $projects = $this->getProjectsByShortCode($searchQuery);
+        $projects = $this->getProjectsByShortCode($shortCode);
 
         foreach ($projects as $project) {
             $shortCodes[] = $project->shortCode;
@@ -140,13 +141,24 @@ class shortCodeBehavior extends Behavior implements BehaviorInterface
      */
     public function getProjectsByShortCode($shortCode)
     {
+        $condition = "shortCode LIKE $shortCode%";
         return \Gaia\MVC\Models\Project::find(
             [
-            "conditions" => "shortCode LIKE :shortCode:",
-            "bind" => [
-                "shortCode" => $shortCode
-            ]
+            "conditions" => "shortCode LIKE '$shortCode%'",
             ]
         );
+    }
+
+    /**
+     * Extract the short code from the string. This function removes all the special characters
+     * and numbers from the string.
+     *
+     * @param  string $shortCode
+     * @return string
+     */
+    private function extractShortCode($shortCode)
+    {
+        $shortCode = preg_replace("/[^a-zA-Z]/", "", $shortCode);
+        return $shortCode;
     }
 }
