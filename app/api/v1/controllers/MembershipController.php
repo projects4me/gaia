@@ -18,15 +18,23 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class MembershipController extends RestController
 {
-  /**
-   * Project authorization flag
-   * @var bool
-   */
-  protected $projectAuthorization = false;
+    /**
+     * Project authorization flag
+     * @var bool
+     */
+    protected $projectAuthorization = false;
 
-  /**
-   * System level flag
-   * @var bool
-   */
-  protected $systemLevel = true;
+    /**
+     * System level flag
+     * @var bool
+     */
+    protected $systemLevel = true;
+
+    /**
+     * Components that this controller uses.
+     *
+     * @var $uses
+     * @type array
+     */
+    public $uses = array('ProjectActivities');
 }
