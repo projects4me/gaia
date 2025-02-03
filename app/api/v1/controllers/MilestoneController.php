@@ -18,4 +18,11 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class MilestoneController extends RestController
 {
+    /**
+     * Components that this controller uses.
+     *
+     * @var $uses
+     * @type array
+     */
+    public $uses = array('ProjectActivities');
 }

@@ -1514,4 +1514,14 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     {
         return new \Gaia\Libraries\Authorization\OAuthServer($request, $config);
     }
+
+    /**
+     * Returns the controller name.
+     *
+     * @return string The controller name.
+     */
+    public function getControllerName()
+    {
+        return $this->controllerName;
+    }
 }
