@@ -72,7 +72,9 @@ $loader->registerNamespaces(
         "Gaia\\Exception" => APP_PATH. '/core/exceptions/',
         "Gaia\\Events\\Notification" => APP_PATH. '/core/events/notifications/',
         "Gaia\\Events" => APP_PATH. '/core/events/',
-        "Gaia\\Templates\\Email" => APP_PATH. '/app/templates/email/'
+        "Gaia\\Templates\\Email" => APP_PATH. '/app/templates/email/',
+        "Gaia\\Workflows\\Process" => APP_PATH. '/app/workflows/process/',
+        "Gaia\\Workflows\\Actions" => APP_PATH. '/core/workflows/actions/'
     ]
 );
 
