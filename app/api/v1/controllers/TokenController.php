@@ -168,8 +168,9 @@ class TokenController extends RestController
     protected function getUserByUsername($username)
     {
         $user = \Gaia\MVC\Models\User::findFirstByUsername($username);
+
         if (!$user) {
-            throw new \Gaia\Exception\UnAuthorized("Credentials are incorrect");
+            throw new \Gaia\Exception\InvalidGrant();
         }
         return $user;
     }

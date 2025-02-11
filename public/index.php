@@ -200,6 +200,8 @@ try {
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);
     echo $app->handle($_SERVER["REQUEST_URI"])->getContent();
+} catch (\Gaia\Exception\InvalidGrant $e) {
+    return $e->handle();
 } catch (\Gaia\Exception\Access $e) {
     return $e->handle();
 } catch (\Gaia\Exception\ResourceNotFound $e) {
