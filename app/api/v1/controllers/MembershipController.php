@@ -7,6 +7,7 @@
 namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
+use Gaia\MVC\Models\Membership;
 
 /**
  * Memberships Controller
@@ -37,4 +38,66 @@ class MembershipController extends RestController
      * @type array
      */
     public $uses = array('ProjectActivities');
+
+    /**
+    * Delete action to handle membership deletion and reassign in-progress issues to a new assignee.
+     *
+     * @return \Phalcon\Http\Response
+     */
+    public function deleteAction()
+    {
+        global $logger;
+        $logger->debug('MembershipController::deleteAction() | Assigning issues to (given new assignee) member');
+
+        $membership = Membership::findById($this->id)->getFirst();
+        $newAssigneeId = $this->request->get('newAssigneeId');
+
+        $issues = \Gaia\MVC\Models\Issue::find([
+            'conditions' => 'assignee = :userId: AND status = :status:',
+            'bind' => [
+            'userId' => $membership->userId,
+            'status' => 'in_progress'
+            ]
+        ]);
+
+        if ($this->checkAssignee($membership, $newAssigneeId)) {
+            if ($issues) {
+                foreach ($issues as $issue) {
+                    $issue->assignee = $newAssigneeId;
+                    $issue->save();
+                }
+            }
+        }
+
+        return parent::deleteAction();
+    }
+
+    /**
+     * Validates if the new assignee is a member of the project
+     *
+     * @param Membership $membership Current membership being deleted
+     * @param int $newAssigneeId ID of the new assignee
+     * @return bool True if assignee is valid
+     * @throws \Gaia\Exception\Exception If assignee is not a project member
+     */
+    protected function checkAssignee(Membership $membership, $newAssigneeId)
+    {
+        global $logger;
+        $logger->debug('MembershipController::checkAssignee() | Checking if assignee is a member of the project');
+
+        $newAssigneeMembership = Membership::findFirst([
+            'conditions' => 'userId = :userId: AND relatedId = :relatedId: AND relatedTo = "project"',
+            'bind' => [
+                'userId' => $newAssigneeId,
+                'relatedId' => $membership->relatedId
+            ]
+        ]);
+
+        if (!$newAssigneeMembership) {
+            $logger->error('MembershipController::checkAssignee() | Assignee is not a member of the project');
+            throw new \Gaia\Exception\Exception('Assignee is not a member of the project');
+        }
+
+        return true;
+    }
 }
