@@ -12,21 +12,23 @@ use Gaia\MVC\Models\Membership;
 /**
  * Memberships Controller
  *
- * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation
+ * @author   Hammad Hassan <gollomer@gmail.com>
+ * @package  Foundation
  * @category Controller
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class MembershipController extends RestController
 {
     /**
      * Project authorization flag
+     *
      * @var bool
      */
     protected $projectAuthorization = false;
 
     /**
      * System level flag
+     *
      * @var bool
      */
     protected $systemLevel = true;
@@ -34,13 +36,13 @@ class MembershipController extends RestController
     /**
      * Components that this controller uses.
      *
-     * @var $uses
+     * @var  $uses
      * @type array
      */
     public $uses = array('ProjectActivities');
 
     /**
-    * Delete action to handle membership deletion and reassign in-progress issues to a new assignee.
+     * Delete action to handle membership deletion and reassign in-progress issues to a new assignee.
      *
      * @return \Phalcon\Http\Response
      */
@@ -52,15 +54,33 @@ class MembershipController extends RestController
         $membership = Membership::findById($this->id)->getFirst();
         $newAssigneeId = $this->request->get('newAssigneeId');
 
-        $issues = \Gaia\MVC\Models\Issue::find([
-            'conditions' => 'assignee = :userId: AND status = :status:',
-            'bind' => [
-            'userId' => $membership->userId,
-            'status' => 'in_progress'
-            ]
-        ]);
-
         if ($this->checkAssignee($membership, $newAssigneeId)) {
+            $queryBuilder = $this->getDI()->get('modelsManager')->createBuilder();
+            $query = $queryBuilder
+                ->from(['i' => 'Gaia\MVC\Models\Issue'])
+                ->innerJoin(
+                    'Gaia\MVC\Models\Issuestatus',
+                    'is2.projectId = i.projectId AND is2.id = i.statusId',
+                    'is2'
+                )
+                ->where(
+                    'i.assignee = :assignee:', [
+                    'assignee' => $membership->userId
+                    ]
+                )
+                ->andWhere(
+                    'is2.done = :done:', [
+                    'done' => '0'
+                    ]
+                )
+                ->andWhere(
+                    'i.projectId = :projectId:', [
+                    'projectId' => $membership->relatedId
+                    ]
+                );
+            
+            $issues = $query->getQuery()->execute();
+
             if ($issues) {
                 foreach ($issues as $issue) {
                     $issue->assignee = $newAssigneeId;
@@ -75,8 +95,8 @@ class MembershipController extends RestController
     /**
      * Validates if the new assignee is a member of the project
      *
-     * @param Membership $membership Current membership being deleted
-     * @param int $newAssigneeId ID of the new assignee
+     * @param  Membership $membership    Current membership being deleted
+     * @param  int        $newAssigneeId ID of the new assignee
      * @return bool True if assignee is valid
      * @throws \Gaia\Exception\Exception If assignee is not a project member
      */
@@ -85,13 +105,15 @@ class MembershipController extends RestController
         global $logger;
         $logger->debug('MembershipController::checkAssignee() | Checking if assignee is a member of the project');
 
-        $newAssigneeMembership = Membership::findFirst([
+        $newAssigneeMembership = Membership::findFirst(
+            [
             'conditions' => 'userId = :userId: AND relatedId = :relatedId: AND relatedTo = "project"',
             'bind' => [
                 'userId' => $newAssigneeId,
                 'relatedId' => $membership->relatedId
             ]
-        ]);
+            ]
+        );
 
         if (!$newAssigneeMembership) {
             $logger->error('MembershipController::checkAssignee() | Assignee is not a member of the project');
