@@ -12,6 +12,8 @@ use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Events\Manager as EventsManager;
 use Gaia\Libraries\Utils\Util;
 use Phalcon\Events\ManagerInterface as EventsManagerInterface;
+use Gaia\Libraries\Utils\Csv;
+use Gaia\Libraries\Utils\Zip;
 
 use function Gaia\Libraries\Utils\create_guid;
 
@@ -554,6 +556,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $fields = ($this->request->get('fields')) ? (explode(',', $this->request->get('fields'))) : array();
         $addRelFields = filter_var($this->request->get('addRelFields', null, false), FILTER_VALIDATE_BOOLEAN);
         $rels = ($this->request->get('rels')) ? (explode(',', $this->request->get('rels'))) : array();
+        $export = filter_var($this->request->get('export', null, false), FILTER_VALIDATE_BOOLEAN);
 
         $params = array(
             'fields' => $fields,
@@ -569,8 +572,15 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             'addRelFields' => $addRelFields
         );
 
+        $params = $export ? $this->updateParamsForExport($params) : $params;
+
         $model = new $modelName();
         $data = $model->readAll($params);
+
+        // if export is set, then we need to return the csvs.
+        if ($export) {
+            return $this->exportData($data, $params, $model);
+        }
 
         $dataArray = $this->extractData($data, $params);
         $this->finalData = $this->buildHAL($dataArray, --$limit, $page);
@@ -993,16 +1003,20 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $modelName = strtolower($relation);
         }
 
-        // Extract data and prepare JSON API
         $result = $this->prepareData($data, $params, $requireScalarFields, $type);
-
-        $this->removePassword($result);
+        $result = $this->prepareJsonApi($result, $type);
 
         return $result;
     }
 
     /**
-     * Prepares the data for JSON API response.
+     * This method handles data preparation by:
+     * 1. Converting Resultset objects to arrays
+     * 2. Filtering fields based on specified parameters
+     * 3. Applying Access Control List (ACL) permissions to restrict field access
+     * 4. Flattening model data structure
+     * 5. Extracting and processing many-to-many relationships
+     * 6. Removing duplicate entries and password fields
      *
      * @param  mixed  $data                The data to prepare.
      * @param  array  $params              User requested parameters.
@@ -1010,7 +1024,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * @param  string $type                The type of results required.
      * @return array The prepared data.
      */
-    private function prepareData($data, $params, $requireScalarFields, $type)
+    final protected function prepareData($data, $params, $requireScalarFields = true, $type = 'all')
     {
         $result = [];
         $permission = $this->getDI()->get('permission');
@@ -1038,7 +1052,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         unset($data['baseModel']);
         $this->extractManyToManyRelationships($data, $result);
         $this->removeDuplicates($result);
-        return $this->prepareJsonApi($result, $type);
+        $this->removePassword($result);
+        return $result;
     }
 
     /**
@@ -1523,5 +1538,109 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     public function getControllerName()
     {
         return $this->controllerName;
+    }
+
+    /**
+     * Exports data to CSV files and creates a ZIP archive.
+     *
+     * @param  array  $data   The data to be exported.
+     * @param  array  $params Parameters for data preparation and export.
+     * @param  object $model  The model instance related to the data.
+     * @return \Phalcon\Http\Response The response containing the result of the export operation.
+     */
+    protected function exportData($data, $params, $model)
+    {
+        $data = $this->prepareData($data, $params, false);
+        $moduleName = Util::extractClassFromNamespace($this->modelName);
+        $metadata = $this->di->get('metaManager')->getModelMeta($moduleName);
+
+        $csvFiles = Csv::prepareCsvFiles($moduleName, $data, $metadata, $params['rels'], $model);
+        list($zipPath, $zipFileName) = Zip::createZipArchive($csvFiles, $moduleName, true);
+
+        // Create an upload record for the zip file
+        $upload = new \Gaia\MVC\Models\Upload();
+        $upload->id = create_guid();
+        $upload->name = $zipFileName;
+        $upload->filePath = $zipPath;
+        $upload->fileMime = 'application/zip';
+        $upload->fileSize = filesize($zipPath);
+        $upload->relatedId = 'export';
+        $upload->relatedTo = 'export';
+        $upload->status = 'uploaded';
+        $upload->dateCreated = date('Y-m-d H:i:s');
+        $upload->save();
+
+        // Create a download token
+        $downloadToken = new \Gaia\MVC\Models\Downloadtoken();
+        $downloadToken->id = create_guid();
+        $downloadToken->downloadToken = md5(uniqid(rand(), true));
+        $downloadToken->expires = date('Y-m-d H:i:s', strtotime('+24 hours'));
+        $downloadToken->createdBy = $GLOBALS['currentUser']->id;
+        $downloadToken->dateCreated = date('Y-m-d H:i:s');
+        $downloadToken->uploadId = $upload->id;
+        $downloadToken->relatedTo = 'export';
+        $downloadToken->save();
+
+        // Generate download URL
+        $baseUrl = $this->di->get('config')->application->baseUri ?? '';
+        $downloadUrl = $baseUrl . '/download/get/' . $downloadToken->downloadToken;
+
+        // Return JSON response with download URL
+        $response = new Response();
+        $response->setJsonContent([
+            'status' => 'success',
+            'message' => 'Export generated successfully',
+            'download_url' => $downloadUrl,
+            'expires_in' => '24 hours'
+        ]);
+
+        return $response;
+    }
+
+    /**
+     * Updates the parameters for exporting data based on the request.
+     *
+     * This function modifies the given parameters to include the necessary conditions
+     * for exporting data. It handles two scenarios:
+     * 1. Exporting all records based on a search query.
+     * 2. Exporting specific records based on provided module IDs.
+     *
+     * @param  array $params The parameters to be updated for export.
+     * @return array The updated parameters with the necessary conditions for export.
+     * @throws \Gaia\Exception\Exception If the search query is missing when exporting all records,
+     *                                   or if module IDs are missing when exporting specific records.
+     */
+    protected function updateParamsForExport($params)
+    {
+        $moduleIds = $this->request->get('ids') ?? array();
+        $selectAll = filter_var($this->request->get('selectAll'), FILTER_VALIDATE_BOOLEAN) ?? false;
+        $modelAlias = Util::extractClassFromNamespace($this->modelName);
+
+        $additionalQuery = method_exists($this, 'getAdditionalQueryForExport') ? $this->getAdditionalQueryForExport() : null;
+
+        // Select all records based on a search query
+        if ($selectAll) {
+            if (!empty($params['where'])) {
+                $query = $params['where'];
+                $params['where'] = isset($additionalQuery) ? "($query AND $additionalQuery)" : $query;
+                return $params;
+            } else {
+                throw new \Gaia\Exception\Exception('Search query is required for exporting all records');
+            }
+        }
+
+        // Export specific records based on provided IDs
+        if (!empty($moduleIds)) {
+            $moduleIds = explode(',', $moduleIds);
+        } else {
+            throw new \Gaia\Exception\Exception("$modelAlias ids are required for export");
+        }
+
+        // Prepare the query to export specific records
+        $implodedModuleIds = implode("','", $moduleIds);
+        $query = "(($modelAlias.id CONTAINS $implodedModuleIds))";
+        $query = isset($additionalQuery) ? "($query AND $additionalQuery)" : $query;
+        $params['where'] = $query;
+        return $params;
     }
 }
