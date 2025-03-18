@@ -6,6 +6,8 @@
 
 namespace Gaia\Libraries\Utils;
 
+use Gaia\Libraries\Utils\Directory;
+
 /**
  * This class provides utility functions for working with zip archives.
  *
@@ -29,16 +31,14 @@ class Zip
     {
         global $currentUser;
         $userId = $currentUser->id;
-        $tempDir = APP_PATH . DS . 'filesystem' . DS . 'temp' . DS . $userId . DS . 'zips';
-
-        // Create the directory if it doesn't exist
-        if (!is_dir($tempDir)) {
-            mkdir($tempDir, 0700, true);
-        }
+        $tempDir = APP_PATH . DS . 'filesystem' . DS . 'temp';
+        Directory::createDirectoryIfNotExists($tempDir);
+        $zipDir = $tempDir . DS . $userId . DS . 'zips';
+        Directory::createDirectoryIfNotExists($zipDir);
 
         $modulePluralizedName = strtolower($moduleName) . 's';
         $zipFileName = 'export'. '-' . $modulePluralizedName . '-' . date('Y-m-d H-i-s') . '.zip';
-        $zipPath = $tempDir . DS . $zipFileName;
+        $zipPath = $zipDir . DS . $zipFileName;
         $zip = new \ZipArchive();
 
         if ($zip->open($zipPath, \ZipArchive::CREATE) === true) {
