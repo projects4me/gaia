@@ -6,6 +6,8 @@
 
 namespace Gaia\Libraries\Utils;
 
+use Gaia\Libraries\Utils\Directory;
+
 /**
  * This class provides utility functions for working with CSV files.
  *
@@ -38,16 +40,14 @@ class Csv
         $relsData = [];
         $modelFields = array_keys($metadata['fields']);
         $userId = $currentUser->id;
-        $tempDir = APP_PATH . DS . 'filesystem' . DS . 'temp' . DS . $userId . DS . 'csvs';
 
-        // Create the directory if it doesn't exist
-        if (!is_dir($tempDir)) {
-            mkdir($tempDir, 0700, true);
-        }
+        $tempDir = APP_PATH . DS . 'filesystem' . DS . 'temp';
+        Directory::createDirectoryIfNotExists($tempDir);
+        $csvsDir = $tempDir . DS . $userId . DS . 'csvs';
+        Directory::createDirectoryIfNotExists($csvsDir);
+        $csvPath = $csvsDir . DS . $modulePluralizedName . '.csv';
 
-        $csvPath = $tempDir . DS . $modulePluralizedName . '.csv';
         $file = fopen($csvPath, 'w');
-
         $file = self::setCsvHeaders($file, $modelFields, $data, $rels, $model);
         list($file, $pendingRels) = self::setCsvContent($file, $data, $metadata, $rels, $model);
         fclose($file);
@@ -55,7 +55,7 @@ class Csv
 
         // Handle pending relationships (one-to-many and many-to-many)
         foreach ($pendingRels as $relName => $relData) {
-            $csvPath = APP_PATH . DS . 'filesystem' . DS . 'exports' . DS . $relName . '.csv';
+            $csvPath = $csvsDir . DS . $relName . '.csv';
             $csvFiles[] = $csvPath;
 
             $file = fopen($csvPath, 'w');
