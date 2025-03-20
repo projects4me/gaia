@@ -21,9 +21,16 @@ class Directory
      */
     public static function createDirectoryIfNotExists($path, $permissions = 0700)
     {
+        global $logger;
+
         if (!is_dir($path)) {
-            if (!mkdir($path, $permissions, true)) {
-                throw new \Gaia\Exception\Exception("Failed to create directory: $path");
+            try {
+                if (!mkdir($path, $permissions, true)) {
+                    throw new \Exception("Failed to create directory: $path");
+                }
+            } catch (\Exception $e) {
+                $logger->error($e->getMessage());
+                throw new \Gaia\Exception\Exception("Internal Server Error");
             }
         }
         return true;
