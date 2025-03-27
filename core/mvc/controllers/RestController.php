@@ -1033,6 +1033,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $data['baseModel']->setHydrateMode(Resultset::HYDRATE_ARRAYS);
 
             foreach ($data['baseModel'] as $values) {
+                $this->removeSecureFields($values);
                 if (isset($params['fields']) && !empty($params['fields'])) {
                     $values = $this->updateFields($values, $params, $requireScalarFields);
                 }
@@ -1052,7 +1053,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         unset($data['baseModel']);
         $this->extractManyToManyRelationships($data, $result);
         $this->removeDuplicates($result);
-        $this->removePassword($result);
         return $result;
     }
 
@@ -1393,22 +1393,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     }
 
     /**
-     * This function is responsible for removing password from the result set
-     *
-     * @param array $array
-     */
-    final private function removePassword(array &$array)
-    {
-        foreach ($array as $key => &$value) {
-            if (is_array($value)) {
-                $this->removePassword($value);
-            } elseif ($key == 'password') {
-                unset($array[$key]);
-            }
-        }
-    }
-
-    /**
      * If there are multiple hasMany relationships in the result of a query
      * then we run into the issue of getting more rows with duplicate data even
      * for the related entities this function is used to remove the duplicate
@@ -1587,12 +1571,14 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         // Return JSON response with download URL
         $response = new Response();
-        $response->setJsonContent([
+        $response->setJsonContent(
+            [
             'status' => 'success',
             'message' => 'Export generated successfully',
             'download_url' => $downloadUrl,
             'expires_in' => '24 hours'
-        ]);
+            ]
+        );
 
         return $response;
     }
@@ -1642,5 +1628,63 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $query = isset($additionalQuery) ? "($query AND $additionalQuery)" : $query;
         $params['where'] = $query;
         return $params;
+    }
+
+    /**
+     * Masks secure fields (like passwords) with asterisks in both model fields
+     * and related model fields. Also handles nested relationships.
+     *
+     * @param array &$values Reference to array of model values to process
+     */
+    final private function removeSecureFields(&$values)
+    {
+        $modelAlias = Util::extractClassFromNamespace($this->modelName);
+        foreach ($values as $key => $value) {
+            if (!is_array($value)) {
+                if ($this->isSecureField($modelAlias, $key)) {
+                    $this->maskSecureField($key, $values);
+                }
+
+                if (str_contains($key, "_")) {
+                    list($relName, $relField) = explode("_", $key);
+                    $relatedModelName = $this->di->get('metaManager')->getRelatedModelName($modelAlias, $relName);
+                    if ($this->isSecureField($relatedModelName, $relField)) {
+                        $this->maskSecureField($key, $values);
+                    }
+                }
+            } else {
+                $relatedModelName = $this->di->get('metaManager')->getRelatedModelName($modelAlias, $key);
+                foreach ($value as $relField => $relValue) {
+                    if ($this->isSecureField($relatedModelName, $relField)) {
+                        $this->maskSecureField($relField, $values[$key]);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if a field is marked as secure in the model metadata.
+     *
+     * @param  string $modelName The name of the model to check
+     * @param  string $fieldName The name of the field to check
+     * @return bool Returns true if the field is marked as secure, false otherwise
+     */
+    final private function isSecureField($modelName, $fieldName)
+    {
+        $modelMetadata = $this->di->get('metaManager')->getModelMeta($modelName);
+        return isset($modelMetadata['fields'][$fieldName]) && $modelMetadata['fields'][$fieldName]['secure'];
+    }
+
+    /**
+     * Masks a secure field value with asterisks.
+     *
+     * @param  string $key    The field key/name to mask
+     * @param  array  &$value Reference to array containing the field value to mask
+     * @return void
+     */
+    final private function maskSecureField($key, &$value)
+    {
+        $value[$key] = "********";
     }
 }
