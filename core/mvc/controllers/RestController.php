@@ -1452,13 +1452,14 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     final private function updateFields($values, $params, $requireScalarFields)
     {
         $updatedValues = [];
+        $aliasRegex = '/\b\w+\sAS\s\w+\b/';
         foreach ($values as $fieldName => $value) {
             if (str_contains($fieldName, "_")) {
                 list($relName, $relfieldName) = explode("_", $fieldName);
 
                 // Check if user has given alias for the field or not, if given then use that one.
                 foreach ($params['fields'] as $requestedField) {
-                    if (str_contains(strtoupper($requestedField), "AS")
+                    if (preg_match($aliasRegex, strtoupper($requestedField))
                         && str_contains($requestedField, str_replace("_", ".", $fieldName))
                     ) {
                         list(, , $alias) = explode(" ", $requestedField);
