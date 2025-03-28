@@ -100,6 +100,7 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '60',
             'null' => false,
+            'secure' => true
         ),
         'email' => array(
             'name' => 'email',
@@ -225,14 +226,16 @@ $models['User'] = array(
             'label' => 'LBL_USERS_SESSION_EXPIRES',
             'type' => 'datetime',
             'null' => true,
-            'fts' => true
+            'fts' => true,
+            'secure' => true
         ),
         'rememberMe' => array(
             'name' => 'rememberMe',
             'label' => 'LBL_USERS_REMEMBER_ME',
             'type' => 'datetime',
             'null' => true,
-            'fts' => true
+            'fts' => true,
+            'secure' => true
         ),
         'failedLoginAttempts' => array(
             'name' => 'failedLoginAttempts',
@@ -240,14 +243,16 @@ $models['User'] = array(
             'type' => 'int',
             'default' => 0,
             'null' => true,
-            'fts' => true
+            'fts' => true,
+            'secure' => true
         ),
         'lastFailedAttempt' => array(
             'name' => 'lastFailedAttempt',
             'label' => 'LBL_USERS_LAST_FAILED_ATTEMPT',
             'type' => 'datetime',
             'null' => true,
-            'fts' => true
+            'fts' => true,
+            'secure' => true
         ),
         'resetToken' => array(
             'name' => 'resetToken',
@@ -255,12 +260,14 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '40',
             'null' => true,
+            'secure' => true
         ),
         'resetTokenExpiry' => array(
             'name' => 'resetTokenExpiry',
             'label' => 'LBL_USERS_RESET_TOKEN_EXPIRY',
             'type' => 'datetime',
             'null' => true,
+            'secure' => true
         ),
     ),
     'indexes' => array(
