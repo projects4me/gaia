@@ -207,7 +207,6 @@ class Model extends PhalconModel
 
         $this->query->prepareReadAllQuery($this->getModelPath(), $params, $this->relationship);
         $this->fireEvent("beforeQuery");
-
         $resultSets = $this->executeQuery($params, 'prepareReadAllQuery');
 
         $this->fireEvent("afterQuery");
@@ -314,9 +313,12 @@ class Model extends PhalconModel
             $this->query = $this->instantiateQuery($this->modelAlias, $parameters);
             $this->query->setClause($clause);
             $this->relationship = $this->bootstrapRelationship($parameters);
-            $this->relationship->setRelationshipFields($parameters['rels']);
+            $this->relationship->loadRequestedRelationships($parameters['rels']);
+            $this->relationship->setRelationshipFields($parameters['rels'], $this->query);
+            $this->fireEvent('beforeJoins');
             $this->relationship->prepareJoinsForQuery($parameters['rels'], $this->modelAlias, $this->query->getPhalconQueryBuilder());
             $this->query->{ $typeOfQueryToPerform}($this->getModelPath(), $parameters, $this->relationship);
+            $this->fireEvent('beforeQuery');
             $resultSets['baseModel'] = $this->executeModel($this->query);
             $baseModelIds = DataExtractor::extractModelIds($resultSets['baseModel']);
 
@@ -379,7 +381,7 @@ class Model extends PhalconModel
         //Prepare Join for model
         $hasManyRel = new HasMany($this->di);
         $relMeta['relatedKey'] = $relMeta['lhsKey'];
-        $hasManyRel->prepareJoin($relatedModelName, $relMeta, $secondaryModelName, 'left', $query->getPhalconQueryBuilder());
+        $hasManyRel->prepareJoin($relatedModelName, $relMeta, $secondaryModelName, 'left', $query->getPhalconQueryBuilder(), null, ['key' => $relatedModelName, 'keyToReplace' => "$relName$relatedModelName"]);
 
         //set default fields for relationship
         $relationship->setRelationshipFields($relParams['rels'], $query);
@@ -390,7 +392,9 @@ class Model extends PhalconModel
         
         // Execute Relationship.
         $query->prepareReadAllQuery($relMeta['secondaryModel'], $relParams, $relationship);
+        $this->fireEvent('beforeQuery');
         $result = $this->executeModel($query);
+        $this->fireEvent('afterQuery');
 
         //Update Base model where clause
         $relWheres = $baseModelQuery->getClause()->getWhereClause('translated', $relName);

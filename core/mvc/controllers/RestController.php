@@ -117,13 +117,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     protected $accessibleProjects = array();
 
     /**
-     * This is the cached metadata
-     *
-     * @var array $cachedMeta
-     */
-    protected static $cachedMeta = array();
-
-    /**
      * Acl Map
      *
      * @var array $aclMap
@@ -347,7 +340,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         $rels = isset($rels) ? explode(",", $rels) : array();
         foreach ($rels as $rel) {
-            $relationships[$rel] = $this->getRelationshipMeta($modelName, $rel);
+            $relationships[$rel] = $this->di->get('metaManager')->getRelationshipMeta($modelName, $rel);
         }
 
         return $relationships;
@@ -1033,7 +1026,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $data['baseModel']->setHydrateMode(Resultset::HYDRATE_ARRAYS);
 
             foreach ($data['baseModel'] as $values) {
-                $this->removeSecureFields($values);
+                $modelAlias = Util::extractClassFromNamespace($this->modelName);
+                $this->removeSecureFields($values, $modelAlias);
                 if (isset($params['fields']) && !empty($params['fields'])) {
                     $values = $this->updateFields($values, $params, $requireScalarFields);
                 }
@@ -1103,7 +1097,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             }
 
             if (is_array($value)) {
-                $relDef = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $attr);
+                $relDef = $this->di->get('metaManager')->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $attr);
                 if ($relDef['type'] == 'hasMany' || $relDef['type'] == 'hasManyToMany') {
                     if (!empty($value['id'])) {
                         $result[$values['id']][$attr][] = $value;
@@ -1169,7 +1163,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     $included = array();
                     if (isset($val['id'])) {
                         $jsonApiOrg['data'][$count]['relationships'][$attr] = array();
-                        $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
+                        $relationDefinition = $this->di->get('metaManager')->getRelationshipMeta($modelName, $attr);
                         $relatedModelKey = 'relatedModel';
                         if ($relationDefinition['type'] == 'hasManyToMany') {
                             $relatedModelKey = 'secondaryModel';
@@ -1188,7 +1182,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                             if (isset($object['id'])) {
                                 $included = array();
                                 $jsonApiOrg['data'][$count]['relationships'][$attr]['data'][$idx] = array();
-                                $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
+                                $relationDefinition = $this->di->get('metaManager')->getRelationshipMeta($modelName, $attr);
                                 $relatedCount = 0;
                                 $relatedModelKey = 'relatedModel';
                                 if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])) {
@@ -1238,7 +1232,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     if (isset($val['id'])) {
                         $included = array();
                         $jsonApiOrg['data']['relationships'][$attr] = array();
-                        $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
+                        $relationDefinition = $this->di->get('metaManager')->getRelationshipMeta($modelName, $attr);
                         $relatedCount = 0;
                         $relatedModelKey = 'relatedModel';
                         if ($relationDefinition['type'] == 'hasManyToMany') {
@@ -1257,7 +1251,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                             if (isset($object['id'])) {
                                 $included = array();
                                 $jsonApiOrg['data']['relationships'][$attr]['data'][$idx] = array();
-                                $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
+                                $relationDefinition = $this->di->get('metaManager')->getRelationshipMeta($modelName, $attr);
                                 $relatedCount = 0;
                                 $relatedModelKey = 'relatedModel';
                                 if ($relationDefinition['type'] == 'hasManyToMany') {
@@ -1319,8 +1313,9 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      */
     public function setAllRelatedFieldsToBaseModel(&$result, $relData, $relName)
     {
-        $relMeta = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
+        $relMeta = $this->di->get('metaManager')->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
         $relatedModelName = Util::extractClassFromNamespace($relMeta['relatedModel']);
+        $secondaryModelName = Util::extractClassFromNamespace($relMeta['secondaryModel']);
         $rhsKey = $relMeta['rhsKey'];
 
         //iterate each relationship
@@ -1328,6 +1323,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $modelId = $model[$relatedModelName][$rhsKey];
             if ($result[$modelId]) {
                 unset($model[$relatedModelName]);
+                $this->removeSecureFields($model, $secondaryModelName);
                 $result[$modelId][$relName][] = $model;
             }
         }
@@ -1344,7 +1340,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     public function setSomeRelatedFieldsToBaseModel(&$result, $relData, $relName)
     {
         $relatedModel = [];
-        $relMeta = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
+        $relMeta = $this->di->get('metaManager')->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
 
         foreach ($relData as $model) {
             $lhsKey = $relMeta['lhsKey'];
@@ -1362,34 +1358,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 $result[$model[$rhsKey]][$relName][] = $secondaryModel;
             }
         }
-    }
-
-    /**
-     * This function is used to retrieve the relationship metadata for a model
-     *
-     * @param  string $modelName
-     * @param  string $rel
-     * @return array
-     */
-    final private function getRelationshipMeta($modelName, $rel)
-    {
-        if (isset(self::$cachedMeta[$modelName][$rel])) {
-            return self::$cachedMeta[$modelName][$rel];
-        }
-        $modelMetadata = $this->di->get('metaManager')->getModelMeta($modelName);
-
-        $relatedMetadata = array();
-        foreach ($modelMetadata['relationships'] as $relationType => $related) {
-            foreach ($related as $relName => $relDef) {
-                if ($relName == $rel) {
-                    $relatedMetadata = $relDef;
-                    $relatedMetadata['type'] = $relationType;
-                    break;
-                }
-            }
-        }
-        self::$cachedMeta[$modelName][$rel] = $relatedMetadata;
-        return $relatedMetadata;
     }
 
     /**
@@ -1635,11 +1603,13 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * Masks secure fields (like passwords) with asterisks in both model fields
      * and related model fields. Also handles nested relationships.
      *
-     * @param array &$values Reference to array of model values to process
+     * @param array  &$values    Reference to array of model values to process
+     * @param string $modelAlias The alias/name of the current model
+     *
+     * @return void
      */
-    final private function removeSecureFields(&$values)
+    final private function removeSecureFields(&$values, $modelAlias)
     {
-        $modelAlias = Util::extractClassFromNamespace($this->modelName);
         foreach ($values as $key => $value) {
             if (!is_array($value)) {
                 if ($this->isSecureField($modelAlias, $key)) {
@@ -1674,7 +1644,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     final private function isSecureField($modelName, $fieldName)
     {
         $modelMetadata = $this->di->get('metaManager')->getModelMeta($modelName);
-        return isset($modelMetadata['fields'][$fieldName]) && $modelMetadata['fields'][$fieldName]['secure'];
+        return isset($modelMetadata['fields'][$fieldName]['secure']) && $modelMetadata['fields'][$fieldName]['secure'];
     }
 
     /**
