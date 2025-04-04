@@ -33,6 +33,25 @@ class Manager
      */
     protected $di;
 
+    /**
+     * This is the cached metadata
+     *
+     * @var array $cachedModelMeta
+     */
+    protected static $cachedModelMeta = array();
+
+    /**
+     * This is the cached metadata of relationships.
+     *
+     * @var array $cachedRelationshipMeta
+     */
+    protected static $cachedRelationshipMeta = array();
+
+    /**
+     * This is the base path for the metadata.
+     *
+     * @var string
+     */
     public const basePath = '/app/metadata';
 
     /**
@@ -55,6 +74,10 @@ class Manager
      */
     public function getModelMeta($model)
     {
+        if (isset(self::$cachedModelMeta[$model])) {
+            return self::$cachedModelMeta[$model];
+        }
+
         $metadata = $this->di->get('fileHandler')->readFile(APP_PATH . self::basePath . '/model/' . $model . '.php');
         $metadata = $metadata[$model];
         $fields = $this->parseFields($metadata);
@@ -115,6 +138,8 @@ class Manager
             'acl' => (isset($metadata['acl']) ? $metadata['acl'] : array()),
         );
 
+        self::$cachedModelMeta[$model] = $modelMeta;
+
         return $modelMeta;
     }
 
@@ -129,6 +154,10 @@ class Manager
      */
     public function getRelationshipMeta($modelAlias, $relationshipName)
     {
+        if (isset(self::$cachedRelationshipMeta[$modelAlias][$relationshipName])) {
+            return self::$cachedRelationshipMeta[$modelAlias][$relationshipName];
+        }
+
         $modelMeta = $this->getModelMeta($modelAlias);
         $relMeta = [];
 
@@ -136,6 +165,7 @@ class Manager
             foreach ($related as $relName => $relDef) {
                 if ($relationshipName == $relName) {
                     $relMeta = $relDef;
+                    $relMeta['type'] = $relationshipType;
                     break;
                 }
             }
@@ -144,6 +174,8 @@ class Manager
         if (!$relMeta) {
             throw new \Gaia\Exception\Exception("No metadata found against relationship ". $relName);
         }
+
+        self::$cachedRelationshipMeta[$modelAlias][$relationshipName] = $relMeta;
 
         return $relMeta;
     }

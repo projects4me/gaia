@@ -11,38 +11,38 @@ use Gaia\Core\MVC\Models\Relationship;
 /**
  * This class is base for hasOne, HasMany and belongsTo relationships.
  *
- * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Foundation\Core\MVC\Models\Relationships
+ * @author   Rana Nouman <ranamnouman@gmail.com>
+ * @package  Foundation\Core\MVC\Models\Relationships
  * @category HasOneAndManyBase
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class HasOneAndManyBase extends Relationship
 {
     /**
      * This function prepares join based on relationship meta and set that join in query builder.
      *
-     * @param string $relationshipName
-     * @param array $relationshipMeta
-     * @param string $modelAlias
-     * @param string $joinType
+     * @param string                           $relationshipName
+     * @param array                            $relationshipMeta
+     * @param string                           $modelAlias
+     * @param string                           $joinType
      * @param \Phalcon\Mvc\Model\Query\Builder $queryBuilder
      */
-    public function prepareJoin($relationshipName, $relationshipMeta, $modelAlias, $joinType, $queryBuilder, $relConditions)
+    public function prepareJoin($relationshipName, $relationshipMeta, $modelAlias, $joinType, $queryBuilder, $relConditions = null, $relConditionKey = null)
     {
         $relatedModel = $relationshipMeta['relatedModel'];
 
         // If an exclusive condition is defined then use that
         if (isset($relationshipMeta['conditionExclusive'])) {
             $relatedQuery = $relationshipMeta['conditionExclusive'];
-        }
-        else {
+        } else {
             $relatedQuery = $modelAlias . '.' . $relationshipMeta['primaryKey'] .
                 ' = ' . $relationshipName . '.' . $relationshipMeta['relatedKey'];
         }
 
         // if a condition is set in the metadata then use it
         if (isset($relationshipMeta['condition'])) {
-            $relatedQuery .= ' AND ' . $relationshipMeta['condition'];
+            $condition = str_replace($relConditionKey['keyToReplace'], $relConditionKey['key'], $relationshipMeta['condition']);
+            $relatedQuery .= ' AND ' . $condition;
         }
 
         if (isset($relConditions)) {
