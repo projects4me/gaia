@@ -10,7 +10,7 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: rananoman/gaia:1.0.0
+      image: rananoman/gaia:env-dev
     steps:
     - name: Checkout to Repository
       uses: actions/checkout@v3

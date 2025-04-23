@@ -76,4 +76,37 @@ class User extends Model
 
         $model->getRelationship()->addRelConditions($relName, "$relName.createdUser = '$userId'");
     }
+
+    /**
+     * Retrieves the first system user with Admin role from the database.
+     *
+     * @return \Gaia\MVC\Models\User|null Returns the first admin user found or null if none exists
+     */
+    public static function getSystemUser()
+    {
+        $di = \Phalcon\Di::getDefault();
+        $builder = $di->get('modelsManager')->createBuilder();
+        $builder->from(['User' => 'Gaia\MVC\Models\User'])
+            ->columns(['User.id','User.name'])
+            ->leftJoin('Gaia\MVC\Models\Membership', 'm.userId = User.id', 'm')
+            ->leftJoin('Gaia\MVC\Models\Role', 'r.id = m.roleId', 'r')
+            ->where('r.name = :roleName:', ['roleName' => 'Admin'])
+            ->limit(1);
+
+        $result = $builder->getQuery()->execute()->getFirst();
+
+        return User::findFirstById($result->id);
+    }
+
+    /**
+     * Sets the current user in the global scope.
+     *
+     * @param \Gaia\MVC\Models\User $user The user instance to set as current user
+     * @global \Gaia\MVC\Models\User $currentUser Global variable holding current user instance
+     */
+    public static function setCurrentUser(\Gaia\MVC\Models\User $user)
+    {
+        global $currentUser;
+        $currentUser = $user;
+    }
 }

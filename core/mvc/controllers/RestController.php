@@ -12,6 +12,8 @@ use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Events\Manager as EventsManager;
 use Gaia\Libraries\Utils\Util;
 use Phalcon\Events\ManagerInterface as EventsManagerInterface;
+use Gaia\Libraries\Utils\Csv;
+use Gaia\Libraries\Utils\Zip;
 
 use function Gaia\Libraries\Utils\create_guid;
 
@@ -113,13 +115,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * @var array $accessibleProjects
      */
     protected $accessibleProjects = array();
-
-    /**
-     * This is the cached metadata
-     *
-     * @var array $cachedMeta
-     */
-    protected static $cachedMeta = array();
 
     /**
      * Acl Map
@@ -303,10 +298,15 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     {
         global $currentUser;
         if ($this->authorization) {
-            include_once APP_PATH . '/core/libs/authorization/oAuthServer.php';
-            $request = \OAuth2\Request::createFromGlobals();
+            $request = $this->getOAuthRequest();
+            $oauthServer = $this->getOAuthServer($request);
+            $server = $oauthServer->getServer();
+
             if (!$server->verifyResourceRequest($request)) {
-                $server->getResponse()->send();
+                $response = $server->getResponse();
+                $this->response->setStatusCode($response->getStatusCode(), $response->getStatusText());
+                $this->response->setJsonContent($response->getParameters());
+                throw new \Gaia\Exception\UnAuthorized("Invalid Token");
             }
             $this->setUser($request);
             $modelAlias = Util::extractClassFromNamespace($this->modelName);
@@ -315,7 +315,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $query = $this->request->get('query', null, '');
             $params['where'] = $query;
             $projectId = ($modelAlias === 'Project' && isset($this->id)) ? $this->id : null;
-            
+
             $permission->fetchUserPermissions($currentUser->id, $this->aclMap[$this->actionName]['action'], $modelAlias, $params, $projectId);
 
             $this->getDI()->set(
@@ -340,7 +340,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         $rels = isset($rels) ? explode(",", $rels) : array();
         foreach ($rels as $rel) {
-            $relationships[$rel] = $this->getRelationshipMeta($modelName, $rel);
+            $relationships[$rel] = $this->di->get('metaManager')->getRelationshipMeta($modelName, $rel);
         }
 
         return $relationships;
@@ -549,6 +549,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $fields = ($this->request->get('fields')) ? (explode(',', $this->request->get('fields'))) : array();
         $addRelFields = filter_var($this->request->get('addRelFields', null, false), FILTER_VALIDATE_BOOLEAN);
         $rels = ($this->request->get('rels')) ? (explode(',', $this->request->get('rels'))) : array();
+        $export = filter_var($this->request->get('export', null, false), FILTER_VALIDATE_BOOLEAN);
 
         $params = array(
             'fields' => $fields,
@@ -564,8 +565,15 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             'addRelFields' => $addRelFields
         );
 
+        $params = $export ? $this->updateParamsForExport($params) : $params;
+
         $model = new $modelName();
         $data = $model->readAll($params);
+
+        // if export is set, then we need to return the csvs.
+        if ($export) {
+            return $this->exportData($data, $params, $model);
+        }
 
         $dataArray = $this->extractData($data, $params);
         $this->finalData = $this->buildHAL($dataArray, --$limit, $page);
@@ -806,6 +814,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
                 }
                 $logger->error($errors);
+                $this->response->setStatusCode(422, "Unprocessable Entity");
                 $this->response->setJsonContent(
                     array(
                     'status' => 'ERROR',
@@ -987,16 +996,20 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $modelName = strtolower($relation);
         }
 
-        // Extract data and prepare JSON API
         $result = $this->prepareData($data, $params, $requireScalarFields, $type);
-
-        $this->removePassword($result);
+        $result = $this->prepareJsonApi($result, $type);
 
         return $result;
     }
 
     /**
-     * Prepares the data for JSON API response.
+     * This method handles data preparation by:
+     * 1. Converting Resultset objects to arrays
+     * 2. Filtering fields based on specified parameters
+     * 3. Applying Access Control List (ACL) permissions to restrict field access
+     * 4. Flattening model data structure
+     * 5. Extracting and processing many-to-many relationships
+     * 6. Removing duplicate entries and password fields
      *
      * @param  mixed  $data                The data to prepare.
      * @param  array  $params              User requested parameters.
@@ -1004,7 +1017,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * @param  string $type                The type of results required.
      * @return array The prepared data.
      */
-    private function prepareData($data, $params, $requireScalarFields, $type)
+    final protected function prepareData($data, $params, $requireScalarFields = true, $type = 'all')
     {
         $result = [];
         $permission = $this->getDI()->get('permission');
@@ -1013,6 +1026,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $data['baseModel']->setHydrateMode(Resultset::HYDRATE_ARRAYS);
 
             foreach ($data['baseModel'] as $values) {
+                $modelAlias = Util::extractClassFromNamespace($this->modelName);
+                $this->removeSecureFields($values, $modelAlias);
                 if (isset($params['fields']) && !empty($params['fields'])) {
                     $values = $this->updateFields($values, $params, $requireScalarFields);
                 }
@@ -1032,7 +1047,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         unset($data['baseModel']);
         $this->extractManyToManyRelationships($data, $result);
         $this->removeDuplicates($result);
-        return $this->prepareJsonApi($result, $type);
+        return $result;
     }
 
     /**
@@ -1082,7 +1097,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             }
 
             if (is_array($value)) {
-                $relDef = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $attr);
+                $relDef = $this->di->get('metaManager')->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $attr);
                 if ($relDef['type'] == 'hasMany' || $relDef['type'] == 'hasManyToMany') {
                     if (!empty($value['id'])) {
                         $result[$values['id']][$attr][] = $value;
@@ -1148,7 +1163,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     $included = array();
                     if (isset($val['id'])) {
                         $jsonApiOrg['data'][$count]['relationships'][$attr] = array();
-                        $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
+                        $relationDefinition = $this->di->get('metaManager')->getRelationshipMeta($modelName, $attr);
                         $relatedModelKey = 'relatedModel';
                         if ($relationDefinition['type'] == 'hasManyToMany') {
                             $relatedModelKey = 'secondaryModel';
@@ -1167,7 +1182,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                             if (isset($object['id'])) {
                                 $included = array();
                                 $jsonApiOrg['data'][$count]['relationships'][$attr]['data'][$idx] = array();
-                                $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
+                                $relationDefinition = $this->di->get('metaManager')->getRelationshipMeta($modelName, $attr);
                                 $relatedCount = 0;
                                 $relatedModelKey = 'relatedModel';
                                 if ($relationDefinition['type'] == 'hasManyToMany' && isset($relationDefinition['secondaryModel'])) {
@@ -1217,7 +1232,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     if (isset($val['id'])) {
                         $included = array();
                         $jsonApiOrg['data']['relationships'][$attr] = array();
-                        $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
+                        $relationDefinition = $this->di->get('metaManager')->getRelationshipMeta($modelName, $attr);
                         $relatedCount = 0;
                         $relatedModelKey = 'relatedModel';
                         if ($relationDefinition['type'] == 'hasManyToMany') {
@@ -1236,7 +1251,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                             if (isset($object['id'])) {
                                 $included = array();
                                 $jsonApiOrg['data']['relationships'][$attr]['data'][$idx] = array();
-                                $relationDefinition = $this->getRelationshipMeta($modelName, $attr);
+                                $relationDefinition = $this->di->get('metaManager')->getRelationshipMeta($modelName, $attr);
                                 $relatedCount = 0;
                                 $relatedModelKey = 'relatedModel';
                                 if ($relationDefinition['type'] == 'hasManyToMany') {
@@ -1298,8 +1313,9 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      */
     public function setAllRelatedFieldsToBaseModel(&$result, $relData, $relName)
     {
-        $relMeta = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
+        $relMeta = $this->di->get('metaManager')->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
         $relatedModelName = Util::extractClassFromNamespace($relMeta['relatedModel']);
+        $secondaryModelName = Util::extractClassFromNamespace($relMeta['secondaryModel']);
         $rhsKey = $relMeta['rhsKey'];
 
         //iterate each relationship
@@ -1307,6 +1323,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $modelId = $model[$relatedModelName][$rhsKey];
             if ($result[$modelId]) {
                 unset($model[$relatedModelName]);
+                $this->removeSecureFields($model, $secondaryModelName);
                 $result[$modelId][$relName][] = $model;
             }
         }
@@ -1323,7 +1340,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     public function setSomeRelatedFieldsToBaseModel(&$result, $relData, $relName)
     {
         $relatedModel = [];
-        $relMeta = $this->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
+        $relMeta = $this->di->get('metaManager')->getRelationshipMeta(Util::extractClassFromNamespace($this->modelName), $relName);
 
         foreach ($relData as $model) {
             $lhsKey = $relMeta['lhsKey'];
@@ -1339,50 +1356,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             if ($result[$model[$rhsKey]]) {
                 $secondaryModel = $relatedModel[$model[$lhsKey]];
                 $result[$model[$rhsKey]][$relName][] = $secondaryModel;
-            }
-        }
-    }
-
-    /**
-     * This function is used to retrieve the relationship metadata for a model
-     *
-     * @param  string $modelName
-     * @param  string $rel
-     * @return array
-     */
-    final private function getRelationshipMeta($modelName, $rel)
-    {
-        if (isset(self::$cachedMeta[$modelName][$rel])) {
-            return self::$cachedMeta[$modelName][$rel];
-        }
-        $modelMetadata = $this->di->get('metaManager')->getModelMeta($modelName);
-
-        $relatedMetadata = array();
-        foreach ($modelMetadata['relationships'] as $relationType => $related) {
-            foreach ($related as $relName => $relDef) {
-                if ($relName == $rel) {
-                    $relatedMetadata = $relDef;
-                    $relatedMetadata['type'] = $relationType;
-                    break;
-                }
-            }
-        }
-        self::$cachedMeta[$modelName][$rel] = $relatedMetadata;
-        return $relatedMetadata;
-    }
-
-    /**
-     * This function is responsible for removing password from the result set
-     *
-     * @param array $array
-     */
-    final private function removePassword(array &$array)
-    {
-        foreach ($array as $key => &$value) {
-            if (is_array($value)) {
-                $this->removePassword($value);
-            } elseif ($key == 'password') {
-                unset($array[$key]);
             }
         }
     }
@@ -1431,13 +1404,14 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     final private function updateFields($values, $params, $requireScalarFields)
     {
         $updatedValues = [];
+        $aliasRegex = '/\b\w+\sAS\s\w+\b/';
         foreach ($values as $fieldName => $value) {
             if (str_contains($fieldName, "_")) {
                 list($relName, $relfieldName) = explode("_", $fieldName);
 
                 // Check if user has given alias for the field or not, if given then use that one.
                 foreach ($params['fields'] as $requestedField) {
-                    if (str_contains(strtoupper($requestedField), "AS")
+                    if (preg_match($aliasRegex, strtoupper($requestedField))
                         && str_contains($requestedField, str_replace("_", ".", $fieldName))
                     ) {
                         list(, , $alias) = explode(" ", $requestedField);
@@ -1485,5 +1459,203 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         }
 
         return $filteredValues;
+    }
+
+    /**
+     * Returns an OAuth2 request object created from the global variables.
+     *
+     * @return \OAuth2\Request The OAuth2 request object.
+     */
+    public function getOAuthRequest()
+    {
+        return \OAuth2\Request::createFromGlobals();
+    }
+
+    /**
+     * Returns an OAuth server object.
+     *
+     * @param  \OAuth2\Request $request The OAuth2 request object.
+     * @param  array           $config  The configuration options for the OAuth server (optional).
+     * @return \Gaia\Libraries\Authorization\OAuthServer The OAuth server object.
+     */
+    protected function getOAuthServer($request, $config = [])
+    {
+        return new \Gaia\Libraries\Authorization\OAuthServer($request, $config);
+    }
+
+    /**
+     * Returns the controller name.
+     *
+     * @return string The controller name.
+     */
+    public function getControllerName()
+    {
+        return $this->controllerName;
+    }
+
+    /**
+     * Exports data to CSV files and creates a ZIP archive.
+     *
+     * @param  array  $data   The data to be exported.
+     * @param  array  $params Parameters for data preparation and export.
+     * @param  object $model  The model instance related to the data.
+     * @return \Phalcon\Http\Response The response containing the result of the export operation.
+     */
+    protected function exportData($data, $params, $model)
+    {
+        $data = $this->prepareData($data, $params, false);
+        $moduleName = Util::extractClassFromNamespace($this->modelName);
+        $metadata = $this->di->get('metaManager')->getModelMeta($moduleName);
+
+        $csvFiles = Csv::prepareCsvFiles($moduleName, $data, $metadata, $params['rels'], $model);
+        list($zipPath, $zipFileName) = Zip::createZipArchive($csvFiles, $moduleName, true);
+
+        // Create an upload record for the zip file
+        $upload = new \Gaia\MVC\Models\Upload();
+        $upload->id = create_guid();
+        $upload->name = $zipFileName;
+        $upload->filePath = $zipPath;
+        $upload->fileMime = 'application/zip';
+        $upload->fileSize = filesize($zipPath);
+        $upload->relatedId = 'export';
+        $upload->relatedTo = 'export';
+        $upload->status = 'uploaded';
+        $upload->dateCreated = date('Y-m-d H:i:s');
+        $upload->save();
+
+        // Create a download token
+        $downloadToken = new \Gaia\MVC\Models\Downloadtoken();
+        $downloadToken->id = create_guid();
+        $downloadToken->downloadToken = md5(uniqid(rand(), true));
+        $downloadToken->expires = date('Y-m-d H:i:s', strtotime('+24 hours'));
+        $downloadToken->createdBy = $GLOBALS['currentUser']->id;
+        $downloadToken->dateCreated = date('Y-m-d H:i:s');
+        $downloadToken->uploadId = $upload->id;
+        $downloadToken->relatedTo = 'export';
+        $downloadToken->save();
+
+        // Generate download URL
+        $baseUrl = $this->di->get('config')->application->baseUri ?? '';
+        $downloadUrl = $baseUrl . '/download/get/' . $downloadToken->downloadToken;
+
+        // Return JSON response with download URL
+        $response = new Response();
+        $response->setJsonContent(
+            [
+            'status' => 'success',
+            'message' => 'Export generated successfully',
+            'download_url' => $downloadUrl,
+            'expires_in' => '24 hours'
+            ]
+        );
+
+        return $response;
+    }
+
+    /**
+     * Updates the parameters for exporting data based on the request.
+     *
+     * This function modifies the given parameters to include the necessary conditions
+     * for exporting data. It handles two scenarios:
+     * 1. Exporting all records based on a search query.
+     * 2. Exporting specific records based on provided module IDs.
+     *
+     * @param  array $params The parameters to be updated for export.
+     * @return array The updated parameters with the necessary conditions for export.
+     * @throws \Gaia\Exception\Exception If the search query is missing when exporting all records,
+     *                                   or if module IDs are missing when exporting specific records.
+     */
+    protected function updateParamsForExport($params)
+    {
+        $moduleIds = $this->request->get('ids') ?? array();
+        $selectAll = filter_var($this->request->get('selectAll'), FILTER_VALIDATE_BOOLEAN) ?? false;
+        $modelAlias = Util::extractClassFromNamespace($this->modelName);
+
+        $additionalQuery = method_exists($this, 'getAdditionalQueryForExport') ? $this->getAdditionalQueryForExport() : null;
+
+        // Select all records based on a search query
+        if ($selectAll) {
+            if (!empty($params['where'])) {
+                $query = $params['where'];
+                $params['where'] = isset($additionalQuery) ? "($query AND $additionalQuery)" : $query;
+                return $params;
+            } else {
+                throw new \Gaia\Exception\Exception('Search query is required for exporting all records');
+            }
+        }
+
+        // Export specific records based on provided IDs
+        if (!empty($moduleIds)) {
+            $moduleIds = explode(',', $moduleIds);
+        } else {
+            throw new \Gaia\Exception\Exception("$modelAlias ids are required for export");
+        }
+
+        // Prepare the query to export specific records
+        $implodedModuleIds = implode("','", $moduleIds);
+        $query = "(($modelAlias.id CONTAINS $implodedModuleIds))";
+        $query = isset($additionalQuery) ? "($query AND $additionalQuery)" : $query;
+        $params['where'] = $query;
+        return $params;
+    }
+
+    /**
+     * Masks secure fields (like passwords) with asterisks in both model fields
+     * and related model fields. Also handles nested relationships.
+     *
+     * @param array  &$values    Reference to array of model values to process
+     * @param string $modelAlias The alias/name of the current model
+     *
+     * @return void
+     */
+    final private function removeSecureFields(&$values, $modelAlias)
+    {
+        foreach ($values as $key => $value) {
+            if (!is_array($value)) {
+                if ($this->isSecureField($modelAlias, $key)) {
+                    $this->maskSecureField($key, $values);
+                }
+
+                if (str_contains($key, "_")) {
+                    list($relName, $relField) = explode("_", $key);
+                    $relatedModelName = $this->di->get('metaManager')->getRelatedModelName($modelAlias, $relName);
+                    if ($this->isSecureField($relatedModelName, $relField)) {
+                        $this->maskSecureField($key, $values);
+                    }
+                }
+            } else {
+                $relatedModelName = $this->di->get('metaManager')->getRelatedModelName($modelAlias, $key);
+                foreach ($value as $relField => $relValue) {
+                    if ($this->isSecureField($relatedModelName, $relField)) {
+                        $this->maskSecureField($relField, $values[$key]);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if a field is marked as secure in the model metadata.
+     *
+     * @param  string $modelName The name of the model to check
+     * @param  string $fieldName The name of the field to check
+     * @return bool Returns true if the field is marked as secure, false otherwise
+     */
+    final private function isSecureField($modelName, $fieldName)
+    {
+        $modelMetadata = $this->di->get('metaManager')->getModelMeta($modelName);
+        return isset($modelMetadata['fields'][$fieldName]['secure']) && $modelMetadata['fields'][$fieldName]['secure'];
+    }
+
+    /**
+     * Masks a secure field value with asterisks.
+     *
+     * @param  string $key    The field key/name to mask
+     * @param  array  &$value Reference to array containing the field value to mask
+     * @return void
+     */
+    final private function maskSecureField($key, &$value)
+    {
+        $value[$key] = "********";
     }
 }

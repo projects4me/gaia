@@ -210,6 +210,14 @@ $models['Issue'] = array(
             'eventType' => 'BEFORE INSERT',
             'statement' => 'SET NEW.status = (select name from issue_statuses
                             is2 where is2.id = NEW.statusId);'
+        ),
+        'updateIssueStatus' => array(
+            'triggerName' => 'update_issue_status',
+            'eventType' => 'BEFORE UPDATE',
+            'statement' => 'IF NEW.statusId <> OLD.statusId THEN
+                               SET NEW.status = (select name from issue_statuses
+                                              where id = NEW.statusId);
+                            END IF;'
         )
     ),
     'functions' => array(),

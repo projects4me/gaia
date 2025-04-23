@@ -276,7 +276,8 @@ $models['Project'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior',
         'modelIdentifierBehavior',
-        'currentUserBehavior'
+        'currentUserBehavior',
+        'shortCodeBehavior'
     ),
     'acl' => array(
         'assignment' => array(

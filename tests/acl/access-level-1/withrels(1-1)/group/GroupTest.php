@@ -4,7 +4,7 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Tests\Gaia\Acl\AccessLevel1\WithRels1_1;
+namespace Gaia\Tests\Acl\AccessLevel1\WithRels1_1;
 
 /**
  * This class is responsible to test the group model with access level 1 on both model and its relationships.
@@ -14,7 +14,7 @@ namespace Tests\Gaia\Acl\AccessLevel1\WithRels1_1;
  * @category Tests
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class GroupTest extends \Tests\Gaia\Acl\BaseGroup
+class GroupTest extends \Gaia\Tests\Acl\BaseGroup
 {
     /**
      * This method is used to setup some pre-conditions before the loading of any test case.

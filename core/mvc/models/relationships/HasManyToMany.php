@@ -11,10 +11,10 @@ use Gaia\Libraries\Utils\Util;
 /**
  * This class represents HasManyToMany relationship.
  *
- * @author Rana Nouman <ranamnouman@gmail.com>
- * @package Foundation\Core\MVC\Models\Relationships
+ * @author   Rana Nouman <ranamnouman@gmail.com>
+ * @package  Foundation\Core\MVC\Models\Relationships
  * @category HasManyToMany
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class HasManyToMany
 {
@@ -28,7 +28,7 @@ class HasManyToMany
     /**
      * HasManyToMany constructor.
      *
-     * @param \Phalcon\DiInterface  $di
+     * @param \Phalcon\DiInterface $di
      */
     function __construct(\Phalcon\Di\FactoryDefault $di)
     {
@@ -38,13 +38,13 @@ class HasManyToMany
     /**
      * This function prepares joins based on relationship meta and set that joins in query builder.
      *
-     * @param string $relationshipName
-     * @param array $relationshipMeta
-     * @param string $modelAlias
-     * @param string $joinType
+     * @param string                           $relationshipName
+     * @param array                            $relationshipMeta
+     * @param string                           $modelAlias
+     * @param string                           $joinType
      * @param \Phalcon\Mvc\Model\Query\Builder $queryBuilder
      */
-    public function prepareJoin($relationshipName, $relationshipMeta, $modelAlias, $joinType, $queryBuilder, $relConditions)
+    public function prepareJoin($relationshipName, $relationshipMeta, $modelAlias, $joinType, $queryBuilder, $relConditions = null)
     {
         // for a many-many relationshipMeta two joins are required
         $relatedModel = $relationshipMeta['relatedModel'];
@@ -85,8 +85,8 @@ class HasManyToMany
     /**
      * This function prepares where condition.
      * 
-     * @param array $relMeta
-     * @param array $whereClauses
+     * @param  array $relMeta
+     * @param  array $whereClauses
      * @return string
      */
     public function prepareWhere($relMeta, $whereClauses)
@@ -115,7 +115,7 @@ class HasManyToMany
     /**
      * This function returns fields related to given hasManyToMany relationship.
      * 
-     * @param string $relName Name of the relationship.
+     * @param  string $relName Name of the relationship.
      * @return array
      */
     public function getFields($relName)
@@ -130,10 +130,10 @@ class HasManyToMany
     /**
      * This function set all fields related to hasManyToMany relationship.
      * 
-     * @param array $parameters Relationship parameters.
-     * @param string $relName Name of the relationship.
-     * @param array $relMeta Relationship metadata.
-     * @param array $hasManyToManyRelationships
+     * @param array  $parameters                 Relationship parameters.
+     * @param string $relName                    Name of the relationship.
+     * @param array  $relMeta                    Relationship metadata.
+     * @param array  $hasManyToManyRelationships
      */
     public function setFields(&$parameters, $relName, $relMeta, $hasManyToManyRelationships)
     {
@@ -164,9 +164,8 @@ class HasManyToMany
      * This function change alias of relationship from a given query. 
      * e.g "skills.name : Emberjs" query for User model is requested so, it will change skills.name to Tag.name.
      * 
-     * @param array $relMeta Metadata of relationship.
-     * @param string $field Field of relationship.
-     * 
+     * @param array  $relMeta Metadata of relationship.
+     * @param string $field   Field of relationship.
      */
     public function changeAliasOfRel($relMeta, $field)
     {

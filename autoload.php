@@ -67,7 +67,15 @@ $loader->registerNamespaces(
         "Gaia\\Core\\MVC\\REST\\Controllers" => APP_PATH. '/core/mvc/controllers/',
         "Gaia\\Core\\MVC\\Models\\Relationships\\Factory" => APP_PATH. '/core/mvc/models/relationships/factory',
         "Gaia\\Core\\MVC\\Models\\Query" => APP_PATH. '/core/mvc/models/query/',
-        "Gaia\\Exception" => APP_PATH. '/core/exceptions/'
+        "Gaia\\Core\\MVC\\Models\\Query" => APP_PATH. '/core/mvc/models/query/',
+        "Gaia\\Libraries\\Authorization" => APP_PATH. '/core/libs/authorization/',
+        "Gaia\\Exception" => APP_PATH. '/core/exceptions/',
+        "Gaia\\Events\\Notification" => APP_PATH. '/core/events/notifications/',
+        "Gaia\\Events" => APP_PATH. '/core/events/',
+        "Gaia\\Templates\\Email" => APP_PATH. '/app/templates/email/',
+        "Gaia\\Workflows\\Process" => APP_PATH. '/app/workflows/process/',
+        "Gaia\\Workflows\\Actions" => APP_PATH. '/core/workflows/actions/',
+        "Gaia\\Libraries\\Utils" => APP_PATH. '/core/libs/utils/',
     ]
 );
 

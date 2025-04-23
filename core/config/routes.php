@@ -85,6 +85,14 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'forgetpassword' => array(
+                'path' => '/api/:version/forgetpassword',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                ),
+                'identifier' => 'id',
+            ),
             'issue' => array(
                 'path' => '/api/:version/issue',
                 'allowedMethods' => array(
@@ -319,6 +327,14 @@ $config['routes'] = array(
                 'path' => '/api/:version/systemsetting',
                 'allowedMethods' => [
                     'GET'
+                ],
+                'identifier' => 'id'
+            ],
+            'resetpassword' => [
+                'path' => '/api/:version/resetpassword',
+                'allowedMethods' => [
+                    'GET',
+                    'PATCH'
                 ],
                 'identifier' => 'id'
             ]

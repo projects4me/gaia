@@ -7,6 +7,8 @@
 namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
+use Gaia\MVC\Models\Downloadtoken;
+
 /**
  * Download controller
  *
@@ -17,7 +19,6 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class DownloadController extends \Phalcon\Mvc\Controller
 {
-
     /**
      * Retrieve the user and image and return
      *
@@ -41,22 +42,27 @@ class DownloadController extends \Phalcon\Mvc\Controller
             'sort' => 'Downloadtoken.dateCreated',
         );
 
-        $model = new Downloadtoken;
+        $model = new Downloadtoken();
         $data = $model->readAll($params);
+        $data = $data['baseModel'];
+
         if (isset($data[0]) && $data[0]->downloadToken) {
             $logger->info("Found the download token");
             $downloadToken = Downloadtoken::find(
                 "downloadToken = '".$data[0]->downloadToken."'"
             );
+
+            // Get the upload
+            $uploadId = $data[0]->uploadId;
+            $upload = \Gaia\MVC\Models\Upload::findFirst("id='{$uploadId}'");
+
             // validate expiry
-            $expiry = new \DateTime($data[0]->expires,new \DateTimeZone('UTC'));
-            $now = new \DateTime('now',new \DateTimeZone('UTC'));
+            $expiry = new \DateTime($data[0]->expires, new \DateTimeZone('UTC'));
+            $now = new \DateTime('now', new \DateTimeZone('UTC'));
 
             $diffInSeconds = $now->getTimestamp() - $expiry->getTimestamp();
-            $uploadRel = ($data[0]->relatedTo).'Upload';
             // If the download link has not expired
             if ($diffInSeconds <= 0) {
-               $upload = $data[0]->$uploadRel;
                 $logger->info("valid download token provided");
 
                 if (file_exists($upload->filePath)) {
@@ -68,9 +74,10 @@ class DownloadController extends \Phalcon\Mvc\Controller
                     $this->response->setHeader("Expires", '0');
                     $this->response->setHeader("Cache-Control", 'must-revalidate');
                     $this->response->setHeader("Content-Length", $upload->fileSize);
-                    readfile($upload->filePath);
-                    $this->response->send();
-                    $downloadToken->delete();
+                    $this->response->setContent(file_get_contents($upload->filePath));
+
+                    // Delete the upload and token
+                    $this->deleteUploadAndToken($upload, $downloadToken);
                     $logger->debug("-Gaia.MVC.Controller.download->getAction");
                     return $this->response;
                 } else {
@@ -80,9 +87,37 @@ class DownloadController extends \Phalcon\Mvc\Controller
                 }
             }
             $logger->info("Expired download token provided");
-            $downloadToken->delete();
+            $this->deleteUploadAndToken($upload, $downloadToken);
         }
         throw new \Gaia\Exception\ResourceNotFound();
     }
 
+    /**
+     * Deletes the upload and its associated download token.
+     *
+     * This method deletes the upload record and, if specified, the associated file from the filesystem.
+     * It also deletes the download token associated with the upload.
+     *
+     * @param object $upload The upload object containing details about the upload.
+     * @param object $downloadToken The download token object associated with the upload.
+     *
+     * @return void
+     */
+    final private function deleteUploadAndToken($upload, $downloadToken)
+    {
+        $deleteUploadType = [
+            'export' => [
+                'deleteFile' => false
+            ]
+        ];
+
+        if (in_array($upload->relatedTo, array_keys($deleteUploadType))) {
+            $upload->delete();
+            $deleteFile = $deleteUploadType[$upload->relatedTo]['deleteFile'];
+            if ($deleteFile) {
+                unlink($upload->filePath);
+            }
+        }
+        $downloadToken->delete();
+    }
 }
