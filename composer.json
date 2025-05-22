@@ -15,7 +15,6 @@
     "phalcon/incubator-test": "^1.0.0-alpha.1",
     "phalcon/incubator-logger": "^1.0",
     "phalcon/incubator-config": "^1.0",
-    "phpdocumentor/phpdocumentor":"2.*",
     "phpunit/phpunit": "9.6.*",
     "bshaffer/oauth2-server-php": "~1.8",
     "phalcon/devtools": ">=4.0.3",

@@ -1,6 +1,12 @@
 <?php
 
+/**
+ * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ */
+
 namespace Gaia\Workflows\Actions;
+
+use function Gaia\Libraries\Utils\create_guid;
 
 /**
  * Provides functionality to dynamically create and save model instances
@@ -9,6 +15,8 @@ namespace Gaia\Workflows\Actions;
  * assign data to them and save them to the database.
  *
  * @package Gaia\Workflows\Actions
+ * @author  Rana Nouman <ranamnouman@gmail.com>
+ * @license http://legal.projects4.me/LICENSE.txt AGPLv3
  */
 class CreateModel
 {
@@ -27,6 +35,10 @@ class CreateModel
             $model = new $className();
         } else {
             throw new \Gaia\Exception\Exception("Class {$modelName} not found");
+        }
+
+        if (!isset($data['id'])) {
+            $model->id = create_guid();
         }
 
         $model->assign($data);

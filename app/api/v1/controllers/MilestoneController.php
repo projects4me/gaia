@@ -24,5 +24,5 @@ class MilestoneController extends RestController
      * @var $uses
      * @type array
      */
-    public $uses = array('ProjectActivities');
+    public $uses = array('ProjectActivities', 'Notification');
 }

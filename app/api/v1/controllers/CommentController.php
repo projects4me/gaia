@@ -11,11 +11,18 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
 /**
  * Comments Controller
  *
- * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation
+ * @author   Hammad Hassan <gollomer@gmail.com>
+ * @package  Foundation
  * @category Controller
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class CommentController extends RestController
 {
+    /**
+     * Components that this controller uses.
+     *
+     * @var  $uses
+     * @type array
+     */
+    public $uses = ['Notification'];
 }
