@@ -1,11 +1,13 @@
 <?php
 
+/**
+ * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ */
+
 namespace Gaia\Workflows\Process;
 
 use Gaia\Workflows\Actions\{GetModel, CreateModel};
 use Gaia\MVC\Models\User;
-
-use function Gaia\Libraries\Utils\create_guid as create_guid;
 
 /**
  * MilestoneActivityLog class handles logging activities for overdue milestones
@@ -15,8 +17,8 @@ use function Gaia\Libraries\Utils\create_guid as create_guid;
  * marked as in progress, and creates corresponding activity log entries.
  *
  * @package Gaia\Workflows\Actions
- * @author Rana Nouman <ranamnouman@gmail.com>
- * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @author  Rana Nouman <ranamnouman@gmail.com>
+ * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class MilestoneActivityLog
 {

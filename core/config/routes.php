@@ -337,7 +337,22 @@ $config['routes'] = array(
                     'PATCH'
                 ],
                 'identifier' => 'id'
-            ]
+            ],
+            'systemnotification' => [
+                'path' => '/api/:version/systemnotification',
+                'allowedMethods' => [
+                    'GET',
+                ],
+            ],
+            'systemnotificationrecipient' => [
+                'path' => '/api/:version/systemnotificationrecipient',
+                'allowedMethods' => [
+                    'GET',
+                    'PATCH',
+                    'POST'
+                ],
+                'identifier' => 'id'
+            ],
         )
     ),
     'app' => array(
