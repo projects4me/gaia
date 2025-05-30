@@ -166,7 +166,8 @@ class Manager
                 if ($relationshipName == $relName) {
                     $relMeta = $relDef;
                     $relMeta['type'] = $relationshipType;
-                    break;
+                    self::$cachedRelationshipMeta[$modelAlias][$relationshipName] = $relMeta;
+                    return $relMeta;
                 }
             }
         }
@@ -174,10 +175,6 @@ class Manager
         if (!$relMeta) {
             throw new \Gaia\Exception\Exception("No metadata found against relationship ". $relName);
         }
-
-        self::$cachedRelationshipMeta[$modelAlias][$relationshipName] = $relMeta;
-
-        return $relMeta;
     }
 
     /**
