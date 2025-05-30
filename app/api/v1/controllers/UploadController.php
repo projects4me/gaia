@@ -274,7 +274,7 @@ class UploadController extends RestController
 
 
                 //$thumbdata = 'data:'.$value['attributes']['fileMime'].';base64,'.base64_encode(file_get_contents($targetPath));
-                $dataArray = $this->extractData($data, false, 'one');
+                $dataArray = $this->extractData($data, [], false, 'one');
                 $finalData = $this->buildHAL($dataArray);
 
                 if ($thumbnail) {
