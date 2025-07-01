@@ -75,6 +75,20 @@ $models['Timelog'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'projectId' => array(
+            'name' => 'projectId',
+            'label' => 'LBL_TIME_LOGS_PROJECT_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        ),
+        'projectShortcode' => array(
+            'name' => 'projectShortcode',
+            'label' => 'LBL_TIME_LOGS_PROJECT_SHORTCODE',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'minutes' => array(
             'name' => 'minutes',
             'label' => 'LBL_TIME_LOGS_MINUTES',
@@ -144,6 +158,11 @@ $models['Timelog'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
+            'project' => array(
+                'primaryKey' => 'projectId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
+                'relatedKey' => 'id',
+            )
         ),
     ),
     'behaviors' => array(

@@ -139,6 +139,12 @@ $models['Activity'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
                 'relatedKey' => 'id',
                 'condition' => 'Activity.relatedTo = "project"'
+            ),
+            'issue' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
+                'relatedKey' => 'id',
+                'condition' => 'Activity.relatedTo = "issue"'
             )
         )
     ),

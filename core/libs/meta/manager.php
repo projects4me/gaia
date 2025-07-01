@@ -173,7 +173,7 @@ class Manager
         }
 
         if (!$relMeta) {
-            throw new \Gaia\Exception\Exception("No metadata found against relationship ". $relName);
+            throw new \Gaia\Exception\Exception("No metadata found against relationship ". $relationshipName);
         }
     }
 
