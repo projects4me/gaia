@@ -174,6 +174,13 @@ $models['Issue'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'projectShortcode' => array(
+            'name' => 'projectShortcode',
+            'label' => 'LBL_ISSUES_PROJECT_SHORTCODE',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
         'milestoneId' => array(
             'name' => 'milestoneId',
             'label' => 'LBL_ISSUES_MILESTONE',
