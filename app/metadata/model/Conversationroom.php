@@ -102,6 +102,20 @@ $models['Conversationroom'] = array(
             'null' => false,
             'relatedIdentifier' => true
         ),
+        'projectShortcode' => array(
+            'name' => 'projectShortcode',
+            'label' => 'LBL_CONVERSATION_ROOMS_PROJECT_SHORTCODE',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => false,
+        ),
+        'issueNumber' => array(
+            'name' => 'issueNumber',
+            'label' => 'LBL_CONVERSATION_ROOMS_ISSUE_NUMBER',
+            'type' => 'int',
+            'length' => '11',
+            'null' => true,
+        ),
         'projectName' => array(
             'name' => 'projectName',
             'label' => 'LBL_CONVERSATION_ROOMS_PROJECT_NAME',
