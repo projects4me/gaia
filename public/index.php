@@ -184,7 +184,11 @@ try {
         new \Gaia\Core\MVC\Models\Relationships\Factory\RelationshipFactory($di)
     );
 
-
+    $di->set(
+        'serviceFactory',
+        new \Gaia\Services\ServiceFactory($di)
+    );
+    
     // Attach all events in event manager.
     $gaiaEventManager = new \Gaia\Events\EventManager();
     $gaiaEventManager->attachEvents();

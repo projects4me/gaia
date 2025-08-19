@@ -353,6 +353,13 @@ $config['routes'] = array(
                 ],
                 'identifier' => 'id'
             ],
+            'issueplanning' => [
+                'path' => '/api/:version/issueplanning',
+                'allowedMethods' => [
+                    'POST'
+                ],
+                'identifier' => 'id'
+            ]
         )
     ),
     'app' => array(
