@@ -202,6 +202,14 @@ $models['Issue'] = array(
             'length' => '36',
             'null' => true,
         ),
+        'isPlanned' => array(
+            'name' => 'isPlanned',
+            'label' => 'LBL_PROJECTS_IS_PLANNED',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+            'default' => 0
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
