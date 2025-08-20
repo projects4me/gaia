@@ -8,3 +8,9 @@ RUN chmod -R 755 /var/www/html
 
 # install dependencies
 RUN composer install
+
+# Make the start script executable
+RUN chmod +x /var/www/html/docker/dev/start.sh
+
+# Use the start script as the default command
+CMD ["/bin/bash", "/var/www/html/docker/dev/start.sh"]

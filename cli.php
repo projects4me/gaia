@@ -5,7 +5,7 @@ use Phalcon\Cli\Console as ConsoleApp;
 use Phalcon\Loader;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Logger;
-use Phalcon\Logger\Adapter\File as FileAdapter;
+use Phalcon\Logger\Adapter\Stream as StreamAdapter;
 use Gaia\Libraries\Utils\executiontime;
 
 define('APP_PATH', realpath('.'));
@@ -14,7 +14,13 @@ define('DS', DIRECTORY_SEPARATOR);
 require APP_PATH . '/autoload.php';
 
 global $logger,$timer;
-$logger = new FileAdapter(APP_PATH.'/logs/application.log');
+$loggerAdapter = new StreamAdapter(APP_PATH . '/logs/application.log');
+$logger = new Logger(
+    'applicationlog',
+    [
+    'local' => $loggerAdapter,
+    ]
+);
 $logger->setLogLevel(Logger::DEBUG);
 
 $timer = new executiontime();
@@ -74,6 +80,26 @@ $di->set(
 $di->set(
     'config',
     new \Gaia\Libraries\Config($di)
+);
+
+$di->set(
+    'dialectFactory',
+    new \Gaia\Db\Factory\DialectFactory($di, $GLOBALS['settings']['database']['adapter'])
+);
+
+$di->set(
+    'dialect',
+    $di->get('dialectFactory')->getDialect()
+);
+
+$di->set(
+    'relationshipFactory',
+    new \Gaia\Core\MVC\Models\Relationships\Factory\RelationshipFactory($di)
+);
+
+$di->set(
+    'serviceFactory',
+    new \Gaia\Services\ServiceFactory($di)
 );
 
 // Create a console application
