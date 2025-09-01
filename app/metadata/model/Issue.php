@@ -331,6 +331,11 @@ $models['Issue'] = array(
                 'relatedKey' => 'relatedId',
                 'condition' => 'files.relatedTo = "issue"',
             ),
+            'watchers' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issuewatcher',
+                'relatedKey' => 'issueId',
+            ),
         )
     ),
     'behaviors' => array(
