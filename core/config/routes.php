@@ -359,6 +359,13 @@ $config['routes'] = array(
                     'POST'
                 ],
                 'identifier' => 'id'
+            ],
+            'issuewatcher' => [
+                'path' => '/api/:version/issuewatcher',
+                'allowedMethods' => [
+                    'POST',
+                    'PATCH',
+                ],
             ]
         )
     ),
