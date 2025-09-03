@@ -149,10 +149,11 @@ class Manager
      * @method getRelationshipMeta
      * @param $modelAlias The alias of model.
      * @param $relationshipName The relationship name.
+     * @param $throwException Whether to throw an exception if the relationship is not found.
      * @throws \Gaia\Exception\Exception
      * @return array
      */
-    public function getRelationshipMeta($modelAlias, $relationshipName)
+    public function getRelationshipMeta($modelAlias, $relationshipName, $throwException = true)
     {
         if (isset(self::$cachedRelationshipMeta[$modelAlias][$relationshipName])) {
             return self::$cachedRelationshipMeta[$modelAlias][$relationshipName];
@@ -172,9 +173,11 @@ class Manager
             }
         }
 
-        if (!$relMeta) {
+        if (!$relMeta && $throwException) {
             throw new \Gaia\Exception\Exception("No metadata found against relationship ". $relationshipName);
         }
+
+        return $relMeta;
     }
 
     /**

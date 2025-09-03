@@ -31,20 +31,35 @@ class RecipientService
      * @return void
      * @throws \Gaia\Exception\Exception If an error occurs during recipient creation
      */
-    public function notifyIssueRecipients($notification, $issueModel, $excludeIds = [])
+    public function notifyIssueRecipients($notification, $issueModel, $excludeIds = [], $recipients = ['assignee', 'owner', 'watchers'])
     {
         global $currentUser;
+        $di = \Phalcon\Di::getDefault();
         $recipientIds = array_merge([$currentUser->id], $excludeIds);
         try {
-            $recipients = ['assignee', 'owner'];
             foreach ($recipients as $recipient) {
-                if ($currentUser->id !== $issueModel->{$recipient} && !in_array($issueModel->{$recipient}, $recipientIds)) {
-                    $notificationRecipientData = [
-                        'systemNotificationId' => $notification->id,
-                        'userId' => $issueModel->{$recipient}
-                    ];
-                    $notificationRecipient = CreateModel::execute('systemnotificationrecipient', $notificationRecipientData);
-                    $recipientIds[] = $issueModel->{$recipient};
+                $relMeta = $di->get('metaManager')->getRelationshipMeta($issueModel->modelAlias, $recipient, false);
+                if (empty($relMeta)) {
+                    if ($currentUser->id !== $issueModel->{$recipient} && !in_array($issueModel->{$recipient}, $recipientIds)) {
+                        $notificationRecipientData = [
+                            'systemNotificationId' => $notification->id,
+                            'userId' => $issueModel->{$recipient}
+                        ];
+                        $notificationRecipient = CreateModel::execute('systemnotificationrecipient', $notificationRecipientData);
+                            $recipientIds[] = $issueModel->{$recipient};
+                    }
+                } else {
+                    $relatedModels = $relMeta['relatedModel']::findByIssueId($issueModel->id);
+                    foreach ($relatedModels as $relatedModel) {
+                        if ($currentUser->id !== $relatedModel->userId && !in_array($relatedModel->userId, $recipientIds)) {
+                            $notificationRecipientData = [
+                                'systemNotificationId' => $notification->id,
+                                'userId' => $relatedModel->userId
+                            ];
+                            $notificationRecipient = CreateModel::execute('systemnotificationrecipient', $notificationRecipientData);
+                            $recipientIds[] = $relatedModel->userId;
+                        }
+                    }
                 }
             }
         } catch (\Exception $e) {
