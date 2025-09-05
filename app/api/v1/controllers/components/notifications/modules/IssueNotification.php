@@ -71,6 +71,7 @@ class IssueNotification implements NotificationModuleInterface
                 ];
                 $notification = CreateModel::execute('systemnotification', $notificationData);
                 $this->recipientService->notifyUsers($notification, [$model->assignee]);
+                $this->recipientService->notifyIssueRecipients($notification, $model, [], ['watchers']);
             }
 
             // Notify owner if different from current user
@@ -90,6 +91,7 @@ class IssueNotification implements NotificationModuleInterface
                 ];
                 $notification = CreateModel::execute('systemnotification', $notificationData);
                 $this->recipientService->notifyUsers($notification, [$model->owner]);
+                $this->recipientService->notifyIssueRecipients($notification, $model, [], ['watchers']);
             }
 
             $logger->debug('-IssueNotification::onCreate()');
