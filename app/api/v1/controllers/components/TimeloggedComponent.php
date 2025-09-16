@@ -30,11 +30,10 @@ class TimeloggedComponent
     {
         global $logger;
         $logger->debug('Gaia.Controller.Component.Timelogged::afterCreate()');
-
-        if (isset($model->id)){
+        if (isset($model->id)) {
             $activity = new Activity();
             $activity->id = create_guid();
-            $activity->description = '<b>'.$this->getTimeText($model).'</b> logged on '.date('M jS `y', strtotime($model->spentOn));
+            $activity->description = '<b>'.$this->getTimeText($model).'</b> logged on '.$this->getSpentOn($model);
             $activity->relatedTo = 'issue';
             $activity->relatedId = $model->issueId;
             $activity->relatedActivity = 'created';
@@ -62,7 +61,7 @@ class TimeloggedComponent
         if (isset($model->id)){
             $activity = new Activity();
             $activity->id = create_guid();
-            $activity->description = 'Time logged on '.date('M jS `y', strtotime($model->spentOn)).' updated to <b>'.$this->getTimeText($model).'</b>';
+            $activity->description = 'Time logged on '.$this->getSpentOn($model).' updated to <b>'.$this->getTimeText($model).'</b>';
             $activity->relatedTo = 'issue';
             $activity->relatedId = $model->issueId;
             $activity->relatedActivity = 'updated';
@@ -90,4 +89,14 @@ class TimeloggedComponent
         return implode(' ',$timeText);
     }
 
+    /**
+     * Get the spent on date
+     *
+     * @param object $model
+     * @return string
+     */
+    private function getSpentOn($model)
+    {
+        return (isset($model->spentOn)) ? date('M jS `y', strtotime($model->spentOn)) : date('M jS `y');
+    }
 }
