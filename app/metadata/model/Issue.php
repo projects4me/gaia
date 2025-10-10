@@ -204,7 +204,15 @@ $models['Issue'] = array(
         ),
         'isPlanned' => array(
             'name' => 'isPlanned',
-            'label' => 'LBL_PROJECTS_IS_PLANNED',
+            'label' => 'LBL_PROJECTS_ISSUE_IS_PLANNED',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+            'default' => 0
+        ),
+        'isReopened' => array(
+            'name' => 'isReopened',
+            'label' => 'LBL_PROJECTS_ISSUE_IS_REOPENED',
             'type' => 'bool',
             'length' => '1',
             'null' => false,
