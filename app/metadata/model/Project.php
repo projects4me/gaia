@@ -170,6 +170,13 @@ $models['Project'] = array(
             'null' => false,
             'default' => 0
         ),
+        'projectManager' => array(
+            'name' => 'projectManager',
+            'label' => 'LBL_PROJECTS_PROJECT_MANAGER',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => false,
+        )
     ),
     'indexes' => array(
         'id' => 'primary',
