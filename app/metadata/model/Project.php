@@ -71,13 +71,6 @@ $models['Project'] = array(
             'null' => false,
             'linkedTo' => 'modifiedUser'
         ),
-        'assignee' => array(
-            'name' => 'assignee',
-            'label' => 'LBL_PROJECTS_ASSIGNEE',
-            'type' => 'varchar',
-            'length' => '36',
-            'null' => false,
-        ),
         'deleted' => array(
             'name' => 'deleted',
             'label' => 'LBL_PROJECTS_DELETED',
@@ -190,8 +183,8 @@ $models['Project'] = array(
     'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
-            'owner' => array(
-                'primaryKey' => 'assignee',
+            'manager' => array(
+                'primaryKey' => 'projectManager',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
