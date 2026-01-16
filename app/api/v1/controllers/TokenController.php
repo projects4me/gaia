@@ -84,6 +84,7 @@ class TokenController extends RestController
     private function handlePasswordGrant($request, $response)
     {
         $accessToken = $response->getParameter('access_token');
+        $rememberMe = filter_var($request->request('remember_me'), FILTER_VALIDATE_BOOLEAN);
 
         if ($accessToken) {
             $oauthConfig = $this->config->get('oauth');
@@ -91,13 +92,10 @@ class TokenController extends RestController
 
             // Get the user by username
             $user = $this->getUserByUsername($request->request['username']);
-
-            // Set current user to avoid behavior-related issues
             $this->setCurrentUser($user);
 
-            // Set session and remember me expiration times
-            $this->setSessionExpiration($user, $oauthConfig);
-            $this->setRememberMeExpiration($user, $request, $oauthConfig);
+            // Set session expiration times
+            $this->setSessionExpiration($user, $oauthConfig, $rememberMe);
             $user->save();
         }
     }
@@ -110,8 +108,8 @@ class TokenController extends RestController
      */
     private function validateOAuthConfig(\Phalcon\Config $oauthConfig)
     {
-        if (!is_numeric($oauthConfig['rememberMeTimeout']) || !is_numeric($oauthConfig['sessionTimeout'])) {
-            throw new Exception("Session/Remember me Timeout should be a number");
+        if (!is_numeric($oauthConfig['sessionTimeout'])) {
+            throw new Exception("Session Timeout should be a number");
         }
     }
 
@@ -120,31 +118,13 @@ class TokenController extends RestController
      *
      * @param \Gaia\MVC\Models\User $user
      * @param array                 $oauthConfig
+     * @param bool                  $rememberMe
      */
-    private function setSessionExpiration(\Gaia\MVC\Models\User $user, \Phalcon\Config $oauthConfig)
+    private function setSessionExpiration(\Gaia\MVC\Models\User $user, \Phalcon\Config $oauthConfig, $rememberMe)
     {
-        $sessionTimeout = $oauthConfig['sessionTimeout'];
-        $sessionExpires = gmdate('Y-m-d H:i:s', strtotime("+$sessionTimeout hours"));
+        $sessionTimeout = $rememberMe ? $oauthConfig['sessionTimeoutForRememberMe'] : $oauthConfig['sessionTimeout'];
+        $sessionExpires = gmdate('Y-m-d H:i:s', strtotime("+$sessionTimeout days"));
         $user->sessionExpires = $sessionExpires;
-    }
-
-    /**
-     * Set "Remember Me" expiration for the user.
-     *
-     * @param \Gaia\MVC\Models\User $user
-     * @param \OAuth2\Request       $request
-     * @param array                 $oauthConfig
-     */
-    private function setRememberMeExpiration(\Gaia\MVC\Models\User $user, $request, \Phalcon\Config $oauthConfig)
-    {
-        $rememberMeTimeout = $oauthConfig['rememberMeTimeout'];
-        $rememberMe = filter_var($request->request('remember_me'), FILTER_VALIDATE_BOOLEAN);
-
-        if ($rememberMe) {
-            $user->rememberMe = gmdate('Y-m-d H:i:s', strtotime("+$rememberMeTimeout hours"));
-        } else {
-            $user->rememberMe = gmdate('Y-m-d H:i:s', strtotime('-1 day'));
-        }
     }
 
     /**
