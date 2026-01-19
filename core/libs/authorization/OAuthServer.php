@@ -94,15 +94,15 @@ class OAuthServer
         if ($refreshTokenModel) {
             $username = $refreshTokenModel->user_id;
             $user = User::findFirst("username = '$username'");
-
-            $maxDate = max($user->rememberMe, $user->sessionExpires);
             $currentDate = gmdate('Y-m-d H:i:s');
 
-            if ($maxDate > $currentDate) {
+            // If session is expired, then refresh token will not be issued
+            if ($user->sessionExpires > $currentDate) {
                 $this->server->addGrantType(
                     new OAuth2\GrantType\RefreshToken(
                         $this->storage,
-                        ['always_issue_new_refresh_token' => true]
+                        ['always_issue_new_refresh_token' => true,
+                        ]
                     )
                 );
             } else {

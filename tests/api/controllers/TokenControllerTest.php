@@ -96,40 +96,6 @@ class TokenControllerTest extends TestCase
     }
 
     /**
-     * This test verifies that the remember me functionality sets the correct expiration time.
-     *
-     * @return void
-     */
-    public function testSetRememberMe(): void
-    {
-        $this->mockOAuthRequest(true);
-        $this->mockOAuthServer();
-        $this->getAccessToken();
-        $user = \Gaia\MVC\Models\User::findFirstByUsername('testUserOAuth');
-
-        $oauthConfig = $this->controller->config->get('oauth');
-        $rememberMeTimeout = $oauthConfig['rememberMeTimeout'];
-        $expectedDate = gmdate('Y-m-d H:i:s', strtotime("+$rememberMeTimeout hours"));
-        $this->assertGreaterThanOrEqual($expectedDate, $user->rememberMe);
-    }
-
-    /**
-     * This test verifies that the remember me functionality expires correctly.
-     *
-     * @return void
-     */
-    public function testRememberMeExpiry(): void
-    {
-        $this->mockOAuthRequest(false);
-        $this->mockOAuthServer();
-        $this->getAccessToken();
-        $user = \Gaia\MVC\Models\User::findFirstByUsername('testUserOAuth');
-
-        $expectedDate = gmdate('Y-m-d H:i:s', strtotime('-1 day'));
-        $this->assertLessThanOrEqual($expectedDate, $user->rememberMe);
-    }
-
-    /**
      * This test verifies that the session validity is set correctly.
      *
      * @return void

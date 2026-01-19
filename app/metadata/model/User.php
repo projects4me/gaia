@@ -229,14 +229,6 @@ $models['User'] = array(
             'fts' => true,
             'secure' => true
         ),
-        'rememberMe' => array(
-            'name' => 'rememberMe',
-            'label' => 'LBL_USERS_REMEMBER_ME',
-            'type' => 'datetime',
-            'null' => true,
-            'fts' => true,
-            'secure' => true
-        ),
         'failedLoginAttempts' => array(
             'name' => 'failedLoginAttempts',
             'label' => 'LBL_USERS_FAILED_LOGIN_ATTEMPTS',
