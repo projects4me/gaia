@@ -44,7 +44,9 @@ $models['Comment'] = array(
             'label' => 'LBL_COMMENTS_DESCRIPTION',
             'type' => 'text',
             'null' => true,
-            'fts' => false
+            'fts' => false,
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci'
         ),
         'createdUser' => array(
             'name' => 'createdUser',

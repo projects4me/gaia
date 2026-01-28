@@ -58,7 +58,7 @@ class Mysql
     public function showFunction($functionName)
     {
         return "SHOW FUNCTION STATUS where name = '{$functionName}'";
-    }    
+    }
 
     /**
      * This function returns sql to create function.
@@ -70,5 +70,39 @@ class Mysql
         return "CREATE FUNCTION {$functionName}($parameters)
                 RETURNS {$returnType} DETERMINISTIC
                 {$statement}";
-    }    
+    }
+
+    /**
+     * This function returns sql to get current charset and collation of a column.
+     *
+     * @param string $tableName
+     * @param string $columnName
+     * @return string
+     */
+    public function getColumnCollation($tableName, $columnName)
+    {
+        return "SELECT CHARACTER_SET_NAME, COLLATION_NAME 
+                FROM information_schema.COLUMNS 
+                WHERE TABLE_SCHEMA = DATABASE() 
+                AND TABLE_NAME = '{$tableName}' 
+                AND COLUMN_NAME = '{$columnName}'";
+    }
+
+    /**
+     * This function returns sql to alter column with charset and collation.
+     *
+     * @param string $tableName
+     * @param string $columnName
+     * @param string $columnDefinition
+     * @param string $charset
+     * @param string $collation
+     * @return string
+     */
+    public function alterColumnCollation($tableName, $columnName, $columnDefinition, $charset, $collation)
+    {
+        return "ALTER TABLE `{$tableName}` 
+                MODIFY COLUMN `{$columnName}` {$columnDefinition} 
+                CHARACTER SET {$charset} 
+                COLLATE {$collation}";
+    }
 }

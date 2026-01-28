@@ -12,13 +12,13 @@ use Gaia\Libraries\Meta\Migration as metaMigration;
 /**
  * This class is responsible for synchronizing the database by using the
  * metadata defined for all the models in app\metadata\model.
- * 
- * This calss is dependant on Phalcon Dev Tools. 
- *  
- * @author Hammad Hassan <gollomer@gmail.com>
- * @package Foundation\Mvc\Model\Migration
+ *
+ * This class is dependant on Phalcon Dev Tools.
+ *
+ * @author   Hammad Hassan <gollomer@gmail.com>
+ * @package  Foundation\Mvc\Model\Migration
  * @category Migration
- * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class Driver
 {
@@ -43,8 +43,8 @@ class Driver
     /**
      * This function traverses model metadata directory and attempts to run
      * migration for all the models defined
-     * 
-     * @todo Allow migration for a single model
+     *
+     * @todo   Allow migration for a single model
      * @return array Success or Error
      */
     public function migrate()
@@ -79,10 +79,10 @@ class Driver
             foreach ($models as $model) {
                 $result[$model] = "Failed to migrate $model";
                 $this->di->get('metaMigration')->migrateModel($model);
+                $this->di->get('metaMigration')->migrateColumnCollation($model);
                 $result[$model] = "$model migrated successfully";
             }
-        }
-        catch (PhalconException $e) {
+        } catch (PhalconException $e) {
             throw new \Gaia\Exception\MigrationDriver($e->getMessage());
         }
         return $result;
