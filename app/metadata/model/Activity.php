@@ -101,7 +101,13 @@ $models['Activity'] = array(
             'type' => 'varchar',
             'length' => '15',
             'null' => true,
-        )
+        ),
+        'context' => array(
+            'name' => 'context',
+            'label' => 'LBL_ACTIVITIES_CONTEXT',
+            'type' => 'text',
+            'null' => true,
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
