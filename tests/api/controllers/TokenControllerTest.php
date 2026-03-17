@@ -106,7 +106,7 @@ class TokenControllerTest extends TestCase
         $this->mockOAuthServer();
         $response = $this->getAccessToken();
 
-        $user = \Gaia\MVC\Models\User::findFirstByUsername('testUserOAuth');
+        $user = \Gaia\MVC\Models\User::findFirstByEmail('test@gmail.com');
 
         $config = new \Phalcon\Config(['sessionTimeout' => '1']);
 
@@ -136,7 +136,7 @@ class TokenControllerTest extends TestCase
         $refreshToken = (json_decode($response->getContent()))->refresh_token;
 
         // Get user
-        $user = \Gaia\MVC\Models\User::findFirstByUsername('testUserOAuth');
+        $user = \Gaia\MVC\Models\User::findFirstByEmail('test@gmail.com');
 
         // Custom config for setting session timeout
         $config = new \Phalcon\Config(['sessionTimeout' => '-1']);
@@ -176,7 +176,7 @@ class TokenControllerTest extends TestCase
         );
         $this->mockOAuthServer();
 
-        $user = \Gaia\MVC\Models\User::findFirstByUsername('testUserOAuth');
+        $user = \Gaia\MVC\Models\User::findFirstByEmail('test@gmail.com');
 
         $oauthConfig = $this->controller->config->get('oauth');
         $failedLoginAttemptsLimit = $oauthConfig['failedLoginAttemptsLimit'];
@@ -202,7 +202,7 @@ class TokenControllerTest extends TestCase
         );
         $this->mockOAuthServer();
 
-        $user = \Gaia\MVC\Models\User::findFirstByUsername('testUserOAuth');
+        $user = \Gaia\MVC\Models\User::findFirstByEmail('test@gmail.com');
 
         $oauthConfig = $this->controller->config->get('oauth');
         $failedLoginAttemptsLimit = $oauthConfig['failedLoginAttemptsLimit'];
@@ -213,10 +213,10 @@ class TokenControllerTest extends TestCase
         $response = $this->getAccessToken();
 
         // Check if the user login attempts are reset to 0
-        $oauthTestUser = \Gaia\MVC\Models\User::findFirstByUsername('testUserOAuth');
+        $oauthTestUser = \Gaia\MVC\Models\User::findFirstByEmail('test@gmail.com');
         $errorDescription = json_decode($response->getContent())->error_description;
         $this->assertEquals(401, $response->getStatusCode());
-        $this->assertEquals("Invalid username and password combination", $errorDescription);
+        $this->assertEquals("Invalid email and password combination", $errorDescription);
         $this->assertEquals(0, $oauthTestUser->failedLoginAttempts, "User login attempts should be reset to 0");
     }
 
@@ -322,7 +322,7 @@ class TokenControllerTest extends TestCase
             $request->request = array_merge(
                 [
                 'grant_type' => 'password',
-                'username' => 'testUserOAuth',
+                'email' => 'test@gmail.com',
                 'password' => 'unit-testing',
                 'client_id' => $client->client_id,
                 "client_secret" => $client->client_secret,
@@ -388,11 +388,10 @@ class TokenControllerTest extends TestCase
 
         $values = [
             'id' => 'test-user-oauth1',
-            'username' => 'testUserOAuth',
+            'email' => 'test@gmail.com',
             'name' => 'test oauth user',
             'password' => $passwordHash,
             'accountStatus' => 'Active',
-            'email' => 'test@gmail.com',
             'createdUserName' => 'testUser',
             'modifiedUserName' => 'testUser',
             'createdUser' => 'test-user',
@@ -409,7 +408,7 @@ class TokenControllerTest extends TestCase
      */
     public static function tearDownAfterClass(): void
     {
-        $user = User::findFirstByUsername('testUserOAuth');
+        $user = User::findFirstByEmail('test@gmail.com');
         $user->delete();
     }
 }

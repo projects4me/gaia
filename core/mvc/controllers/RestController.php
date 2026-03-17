@@ -283,7 +283,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $token = str_replace('Bearer ', '', $request->headers['AUTHORIZATION']);
         $oAuthAccessToken = \Gaia\MVC\Models\Oauthaccesstoken::findFirst(array("access_token='" . $token . "'"));
         if (isset($oAuthAccessToken->user_id)) {
-            $currentUser = \Gaia\MVC\Models\User::findFirst("username ='" . $oAuthAccessToken->user_id . "'");
+            $currentUser = \Gaia\MVC\Models\User::findFirst("email ='" . $oAuthAccessToken->user_id . "'");
         } else {
             throw new \Gaia\Exception\Access("Invalid Token");
         }
@@ -1624,10 +1624,12 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     }
                 }
             } else {
-                $relatedModelName = $this->di->get('metaManager')->getRelatedModelName($modelAlias, $key);
-                foreach ($value as $relField => $relValue) {
-                    if ($this->isSecureField($relatedModelName, $relField)) {
-                        $this->maskSecureField($relField, $values[$key]);
+                if ($modelAlias !== $key) {
+                    $relatedModelName = $this->di->get('metaManager')->getRelatedModelName($modelAlias, $key);
+                    foreach ($value as $relField => $relValue) {
+                        if ($this->isSecureField($relatedModelName, $relField)) {
+                            $this->maskSecureField($relField, $values[$key]);
+                        }
                     }
                 }
             }

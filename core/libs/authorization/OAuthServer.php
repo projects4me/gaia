@@ -73,10 +73,19 @@ class OAuthServer
     /**
      * Adds the User Credentials grant type to the OAuth2 server.
      *
+     * bshaffer's UserCredentials grant reads the "username" field from the
+     * request. We copy the incoming "email" value into "username" here so the
+     * library can forward it to our getUser() override in the custom Pdo
+     * storage, which then performs the lookup by email column.
+     *
      * @method addPasswordGrant
      */
     protected function addPasswordGrant()
     {
+        if (!empty($this->request->request['email'])) {
+            $this->request->request['username'] = $this->request->request['email'];
+        }
+
         $this->server->addGrantType(new OAuth2\GrantType\UserCredentials($this->storage));
     }
 

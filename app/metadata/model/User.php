@@ -87,13 +87,6 @@ $models['User'] = array(
             'null' => false,
             'linkedTo' => 'modifiedUser'
         ),
-        'username' => array(
-            'name' => 'username',
-            'label' => 'LBL_USERS_USERNAME',
-            'type' => 'varchar',
-            'length' => '50',
-            'null' => false,
-        ),
         'password' => array(
             'name' => 'password',
             'label' => 'LBL_USERS_PASSWORD',
@@ -264,7 +257,7 @@ $models['User'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
-        'username' => 'unique',
+        'email' => 'unique',
     ),
     'foreignKeys' => array(
 
