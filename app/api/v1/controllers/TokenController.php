@@ -90,8 +90,8 @@ class TokenController extends RestController
             $oauthConfig = $this->config->get('oauth');
             $this->validateOAuthConfig($oauthConfig);
 
-            // Get the user by username
-            $user = $this->getUserByUsername($request->request['username']);
+            // Get the user by email
+            $user = $this->getUserByEmail($request->request['email']);
             $this->setCurrentUser($user);
 
             // Set session expiration times
@@ -140,14 +140,14 @@ class TokenController extends RestController
     }
 
     /**
-     * Get the user by username.
+     * Get the user by email.
      *
-     * @param  string $username
+     * @param  string $email
      * @return \Gaia\MVC\Models\User
      */
-    protected function getUserByUsername($username)
+    protected function getUserByEmail($email)
     {
-        $user = \Gaia\MVC\Models\User::findFirstByUsername($username);
+        $user = \Gaia\MVC\Models\User::findFirstByEmail($email);
 
         if (!$user) {
             throw new \Gaia\Exception\InvalidGrant();
@@ -163,8 +163,8 @@ class TokenController extends RestController
      */
     private function handleFailedLoginAttempt($request)
     {
-        $username = $request->request('username');
-        $user = $this->getUserByUsername($username);
+        $email = $request->request('email');
+        $user = $this->getUserByEmail($email);
         $oauthConfig = $this->config->get('oauth');
         $failedLimit = $oauthConfig['failedLoginAttemptsLimit'];
 

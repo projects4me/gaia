@@ -115,6 +115,11 @@ class Resource extends Model
      */
     public static function addResourcesIntoDatabase($groupName)
     {
+        global $currentUser;
+        if (!isset($currentUser->id)) {
+            $currentUser->id = 'system';
+            $currentUser->name = 'system_user';
+        }
         $di = \Phalcon\Di::getDefault();
         $models = $di->get('config')->get('models')->toArray();
 

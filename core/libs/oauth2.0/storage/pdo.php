@@ -19,6 +19,35 @@ class Pdo extends \OAuth2\Storage\Pdo
 {
 
     /**
+     * Fetches a user record by email address instead of username.
+     *
+     * bshaffer passes whatever was supplied as "username" in the token request
+     * straight into this method. Because we accept an email field from the
+     * client and remap it to "username" before the grant type runs, the value
+     * arriving here is always an email address.
+     *
+     * user_id is set to the email so that the access-token row carries the
+     * email; RestController resolves the current user with:
+     *   User::findFirst("email = '$token->user_id'")
+     *
+     * @param  string $email
+     * @return array|false
+     */
+    public function getUser($email)
+    {
+        $stmt = $this->db->prepare(
+            sprintf('SELECT * FROM %s WHERE email = :email', $this->config['user_table'])
+        );
+        $stmt->execute(['email' => $email]);
+
+        if (!$userInfo = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return false;
+        }
+
+        return array_merge(['user_id' => $userInfo['email']], $userInfo);
+    }
+
+    /**
      * This function checks user password.
      *
      * @param array $user

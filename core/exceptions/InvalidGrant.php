@@ -28,7 +28,7 @@ class InvalidGrant extends \Exception
         $response->setStatusCode("401", "Unauthorized");
         $response->setJsonContent([
             'error' => 'invalid_grant',
-            'error_description' => 'Invalid username and password combination'
+            'error_description' => 'Invalid email and password combination'
         ]);
         $response->send();
         return $response;
