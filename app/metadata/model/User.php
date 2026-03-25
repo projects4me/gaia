@@ -254,6 +254,12 @@ $models['User'] = array(
             'null' => true,
             'secure' => true
         ),
+        'profilePicture' => array(
+            'name' => 'profilePicture',
+            'label' => 'LBL_USERS_PROFILE_PICTURE',
+            'type' => 'mediumtext',
+            'null' => true
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',

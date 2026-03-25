@@ -42,7 +42,7 @@ class ResetPassword
         self::$body = '
         <div style="max-width:600px;margin:0 auto;background-color:#ffffff;">
             <div style="background-color:#f5f8fa;padding:20px 10px;">
-                <h1 style="color:#333333;font-size:24px;">Projects4me</h1>
+                <h1 style="color:#333333;font-size:24px;text-align:center;">Projects4me</h1>
             </div>
             <div style="padding:20px 10px;">
                 <p>Dear ' . $user->name . ',</p>

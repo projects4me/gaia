@@ -206,6 +206,7 @@ class Query
         $updatedFields = $fields;
 
         foreach ($rels as $relName) {
+            $relMeta = $this->di->get('metaManager')->getRelationshipMeta($this->modelAlias, $relName);
             // Set alias for relationships e.g. members.username => members.username AS members_username.
             foreach ($fields as $field) {
                 if (str_contains(strtoupper($field), 'AS')) {
@@ -213,18 +214,21 @@ class Query
                     $alias = str_replace(".", "_", $fieldName);
                     $temp = "{$fieldName} AS {$alias}";
                     $updatedFields[array_search($field, $updatedFields)] = $temp;
-                } elseif (str_contains($field, $relName)) {
+                } elseif (str_contains($field, $relName) && !str_contains($field, '*')) {
                     $alias = str_replace(".", "_", $field);
                     $temp = "{$field} AS {$alias}";
                     $updatedFields[array_search($field, $updatedFields)] = $temp;
                 }
             }
-
-            // Check if user has requested "id" against the related model, if not then set it.
-            $relatedIdField = "{$relName}.id";
-            if (!in_array($relatedIdField, $fields)) {
-                $relatedIdAlias = str_replace(".", "_", $relatedIdField);
-                $updatedFields[] = "{$relatedIdField} AS {$relatedIdAlias}";
+            // If addIdField is true, then add the id field to the fields array.
+            $addIdField = isset($relMeta['addIdField']) ? $relMeta['addIdField'] : true;
+            if ($addIdField) {
+                // Check if user has requested "id" against the related model, if not then set it.
+                $relatedIdField = "{$relName}.id";
+                if (!in_array($relatedIdField, $fields)) {
+                    $relatedIdAlias = str_replace(".", "_", $relatedIdField);
+                    $updatedFields[] = "{$relatedIdField} AS {$relatedIdAlias}";
+                }
             }
         }
         return $updatedFields;
