@@ -256,6 +256,15 @@ class Manager
             case 'text':
                 $dbType = Column::TYPE_TEXT;
                 break;
+            case 'tinytext':
+                $dbType = Column::TYPE_TINYTEXT;
+                break;
+            case 'mediumtext':
+                $dbType = Column::TYPE_MEDIUMTEXT;
+                break;
+            case 'longtext':
+                $dbType = Column::TYPE_LONGTEXT;
+                break;
             case 'float':
                 $dbType = Column::TYPE_FLOAT;
                 break;

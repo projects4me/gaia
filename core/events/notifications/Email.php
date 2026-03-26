@@ -6,6 +6,7 @@ use Phalcon\Events\Event;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use Gaia\Templates\Email\ResetPassword;
+use Gaia\Templates\Email\WelcomePassword;
 
 /**
  * This class is used to send email notifications.
@@ -56,6 +57,51 @@ class Email
             $mail->send();
 
             $this->saveResetToken($user, $resetToken, $smtpConfig['resetTokenTimeout']);
+        } catch (Exception $e) {
+            throw new \Gaia\Exception\Exception("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        }
+    }
+
+    /**
+     * Sends the generated password to a newly created user via email.
+     *
+     * Fired as notifications:emailPassword by GeneratePasswordComponent::afterCreate().
+     * The event data argument carries the plain-text password before it is
+     * hashed by encryptPasswordBehavior, so the value is still readable here.
+     *
+     * @method emailPassword
+     * @param  Event                 $event
+     * @param  \Gaia\MVC\Models\User $user
+     * @param  string                $password
+     * @return void
+     * @throws \Exception
+     */
+    public function emailPassword(Event $event, $user, $password)
+    {
+        try {
+            $di = \Phalcon\Di::getDefault();
+            $smtpConfig = $di->get('config')->get('smtp');
+            $mail = new PHPMailer();
+            $host = getenv('FRONTEND_HOST');
+            WelcomePassword::setEmailBody($user, $host, $password);
+
+            $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+            $mail->isSMTP();
+            $mail->Host       = $smtpConfig['host'];
+            $mail->SMTPAuth   = $smtpConfig['auth'];
+            $mail->Username   = $smtpConfig['username'];
+            $mail->Password   = $smtpConfig['password'];
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = $smtpConfig['port'];
+
+            $mail->setFrom($smtpConfig['username'], $smtpConfig['user']);
+            $mail->addAddress($user->email, $user->name);
+            $mail->isHTML(true);
+            $mail->Subject = WelcomePassword::getEmailSubject();
+            $mail->Body    = WelcomePassword::getEmailBody();
+            $mail->AltBody = WelcomePassword::getEmailAltBody($user, $password);
+
+            $mail->send();
         } catch (Exception $e) {
             throw new \Gaia\Exception\Exception("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
         }

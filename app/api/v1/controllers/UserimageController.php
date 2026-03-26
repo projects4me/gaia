@@ -19,13 +19,13 @@ class UserimageController extends \Phalcon\Mvc\Controller
 {
 
     /**
-     * Retrieve the user and image and return
+     * Retrieve the profile picture of a user from the database and return it
+     * as a JSON response containing the base64-encoded data URI.
      *
      * @method getAction
-     * @param string $id
-     * @todo Handle validation
-     * @todo Generate Image
-     * @throws \Phalcon\Exception
+     * @param  string $id  The user ID
+     * @return \Phalcon\Http\Response
+     * @throws \Gaia\Exception\ResourceNotFound
      */
     public function getAction($id)
     {
@@ -33,23 +33,32 @@ class UserimageController extends \Phalcon\Mvc\Controller
             throw new \Phalcon\Exception('Id must be set, please refer to guides.');
         }
 
-        $filePath = APP_PATH . DS . 'filesystem' . DS . 'img' . DS . 'user' . DS . $id;
+        $user = \Gaia\MVC\Models\User::findFirstById($id);
 
-        if (!file_exists($filePath)) {
-            $filePath = APP_PATH . DS . 'public' . DS . 'img' . DS . 'Reddit.png';
+        if (!$user) {
+            throw new \Gaia\Exception\ResourceNotFound("User not found");
         }
 
-        $data = file_get_contents($filePath);
+        if (empty($user->profilePicture)) {
+            throw new \Gaia\Exception\ResourceNotFound("Profile picture not found");
+        }
+
+        // Parse "data:{mime};base64,{payload}" — fall back to image/jpeg if the
+        // stored value is a raw base64 string without a data URI prefix.
+        if (preg_match('/^data:([a-zA-Z\/]+);base64,/', $user->profilePicture, $matches)) {
+            $mimeType   = $matches[1];
+            $base64Data = substr($user->profilePicture, strpos($user->profilePicture, ',') + 1);
+        } else {
+            $mimeType   = 'image/jpeg';
+            $base64Data = $user->profilePicture;
+        }
+
+        $imageData = base64_decode($base64Data);
 
         $this->response->setStatusCode(200, "OK");
-        $this->response->setContent($data);
-        $this->response->setContentType('image/jpeg');
+        $this->response->setContentType($mimeType);
+        $this->response->setContent($imageData);
 
-        if (isset($data['error'])) {
-            throw new \Gaia\Exception\FileNotFound("File not found");
-        }
-
-        $this->response->send();
         return $this->response;
     }
 

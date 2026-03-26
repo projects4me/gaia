@@ -18,8 +18,8 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class UserController extends RestController
 {
-    public $uses = ['Globalrole', 'Dashboard'];
-    
+    public $uses = ['Globalrole', 'Dashboard', 'GeneratePassword'];
+
     /**
      * This function updates user record and move user's profile from temp directory to its original
      * directory from where we deliver images to client side.
