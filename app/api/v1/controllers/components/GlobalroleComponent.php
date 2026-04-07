@@ -8,6 +8,7 @@ namespace Gaia\MVC\REST\Controllers\Components;
 
 use Phalcon\Events\Event as Event;
 use Gaia\MVC\Models\Membership;
+use Gaia\MVC\Models\Role;
 
 use function Gaia\Libraries\Utils\create_guid as create_guid;
 
@@ -21,6 +22,30 @@ use function Gaia\Libraries\Utils\create_guid as create_guid;
  */
 class GlobalroleComponent
 {
+    /**
+     * This function is called before a user is created and is used to create the global role if it doesn't exist.
+     *
+     * @param  Event $event
+     * @param  $controller
+     * @param  $model
+     */
+    public function beforeCreate(Event $event, $controller, $model)
+    {
+        global $logger;
+        $logger->debug('Gaia.Controller.Component.Globalrole::beforeCreate()');
+
+        $role = Role::findFirstByName('Global');
+        if (!!$role) {
+            $role = new Role();
+            $role->id = create_guid();
+            $role->name = 'Global';
+            $role->description = 'Global role';
+            $role->save();
+        }
+
+        $logger->debug('-Gaia.Controller.Component.Globalrole::beforeCreate()');
+    }
+
     /**
      * This function handles the creation of membership for a newly created user, against the role named as "Global".
      *
