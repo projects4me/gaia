@@ -366,6 +366,13 @@ $config['routes'] = array(
                     'POST',
                     'PATCH',
                 ],
+            ],
+            'milestoneoverview' => [
+                'path' => '/api/:version/milestoneoverview',
+                'allowedMethods' => [
+                    'GET',
+                ],
+                'identifier' => 'id'
             ]
         )
     ),
