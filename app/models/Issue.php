@@ -18,5 +18,11 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Issue extends Model
 {
-    
+    /**
+     * Use unbuffered PDO execution to avoid loading the full result set into
+     * memory.
+     *
+     * @var bool
+     */
+    protected $unbufferedExecution = true;
 }
