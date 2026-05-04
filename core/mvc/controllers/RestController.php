@@ -309,6 +309,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 throw new \Gaia\Exception\UnAuthorized("Invalid Token");
             }
             $this->setUser($request);
+            $this->trackLastActivity($currentUser->id);
             $modelAlias = Util::extractClassFromNamespace($this->modelName);
 
             $permission = new \Gaia\MVC\Models\Permission();
@@ -1659,5 +1660,20 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     final private function maskSecureField($key, &$value)
     {
         $value[$key] = "********";
+    }
+
+    /**
+     * Records the current UTC timestamp as the user's last activity.
+     *
+     * @param  string $userId
+     * @return void
+     */
+    private function trackLastActivity($userId)
+    {
+        $user = \Gaia\MVC\Models\User::findFirst("id = '$userId'");
+        if ($user) {
+            $user->lastActivityAt = gmdate('Y-m-d H:i:s');
+            $user->save();
+        }
     }
 }

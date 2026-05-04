@@ -260,6 +260,18 @@ $models['User'] = array(
             'type' => 'mediumtext',
             'null' => true
         ),
+        'dateJoined' => array(
+            'name' => 'dateJoined',
+            'label' => 'LBL_USERS_DATE_JOINED',
+            'type' => 'datetime',
+            'null' => true
+        ),
+        'lastActivityAt' => array(
+            'name' => 'lastActivityAt',
+            'label' => 'LBL_USERS_LAST_ACTIVITY_AT',
+            'type' => 'datetime',
+            'null' => true
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
