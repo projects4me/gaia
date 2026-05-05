@@ -13,6 +13,7 @@ use Gaia\Core\MVC\Models\DataExtractor;
 use Gaia\Core\MVC\Models\Query\Meta as QueryMeta;
 use Gaia\Core\MVC\Models\Relationships\HasMany;
 use Gaia\Core\MVC\Models\Relationships\HasManyToMany;
+use Gaia\Core\MVC\Models\ResultStream;
 
 /**
  * This class is the base model in the the application and is used to
@@ -91,6 +92,15 @@ class Model extends PhalconModel
     protected $aclAllowed = true;
 
     /**
+     * When true, executeModel() uses the dbUnbuffered PDO adapter and returns
+     * a ResultStream instead of a Phalcon Resultset, avoiding full dataset
+     * buffering in memory. Override in child models to opt in.
+     *
+     * @var bool
+     */
+    protected $unbufferedExecution = false;
+
+    /**
      * This contains behaviors that are required by the model.
      *
      * @var array
@@ -103,6 +113,13 @@ class Model extends PhalconModel
      * @var array
      */
     protected $attachedBehaviors = [];
+
+    /**
+     * The action to be performed on the model.
+     *
+     * @var string|null
+     */
+    protected $action = null;
 
     /**
      * This method is called only once when the model is created. We are loading
@@ -162,6 +179,7 @@ class Model extends PhalconModel
      */
     public function read(array $params)
     {
+        $this->action = 'read';
         $this->query = $this->instantiateQuery($this->modelAlias, $params);
         $this->query->prepareClauses($params, $this->query);
 
@@ -193,6 +211,7 @@ class Model extends PhalconModel
      */
     public function readAll(array $params)
     {
+        $this->action = 'readAll';
         $this->fireEvent("beforeRead");
 
         $this->query = $this->instantiateQuery($this->modelAlias, $params);
@@ -225,6 +244,7 @@ class Model extends PhalconModel
      */
     public function readRelated(array $params)
     {
+        $this->action = 'readRelated';
         $related = $params['related'];
         $params['rels'] = array($related);
 
@@ -407,15 +427,41 @@ class Model extends PhalconModel
     }
 
     /**
-     * This function executes base model.
+     * Executes the query via ORM (default) or unbuffered PDO (@see $unbufferedExecution).
      *
      * @param  \Gaia\Core\MVC\Models\Query $query
-     * @return \Phalcon\Mvc\Model\ResultsetInterface
+     * @return \Phalcon\Mvc\Model\ResultsetInterface|ResultStream
      */
     protected function executeModel($query)
     {
         $phalconQuery = $query->getPhalconQuery();
+
+        if ($this->unbufferedExecution && ($this->action === 'read' || $this->action === 'readAll')) {
+            return $this->executeUnbuffered($phalconQuery);
+        }
+
         return $phalconQuery->execute();
+    }
+
+    /**
+     * Runs the compiled SQL through the unbuffered PDO adapter and returns
+     * a forward-only ResultStream cursor.
+     *
+     * @param  \Phalcon\Mvc\Model\Query $phalconQuery
+     * @return ResultStream
+     */
+    private function executeUnbuffered($phalconQuery)
+    {
+        $sqlData = $phalconQuery->getSql();
+        $pdo     = $this->getDI()->get('dbUnbuffered');
+        $pdo->query("select @modelId:= '{$this->query->modelId}'");
+        $cursor  = $pdo->query(
+            $sqlData['sql'],
+            $sqlData['bind']      ?? [],
+            $sqlData['bindTypes'] ?? []
+        );
+
+        return new ResultStream($cursor, $this->modelAlias);
     }
 
     /**

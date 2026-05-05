@@ -14,6 +14,7 @@ use Gaia\Libraries\Utils\Util;
 use Phalcon\Events\ManagerInterface as EventsManagerInterface;
 use Gaia\Libraries\Utils\Csv;
 use Gaia\Libraries\Utils\Zip;
+use Gaia\Core\MVC\Models\ResultStream;
 
 use function Gaia\Libraries\Utils\create_guid;
 
@@ -1023,7 +1024,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $result = [];
         $permission = $this->getDI()->get('permission');
 
-        if ($data['baseModel'] instanceof Resultset) {
+        if ($data['baseModel'] instanceof Resultset || $data['baseModel'] instanceof ResultStream) {
             $data['baseModel']->setHydrateMode(Resultset::HYDRATE_ARRAYS);
 
             foreach ($data['baseModel'] as $values) {

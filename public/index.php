@@ -105,44 +105,46 @@ try {
     );
 
 
-    // Set up the database service
-    $di->set(
-        'db', function () {
-            $connection = new DbAdapter($GLOBALS['settings']['database']->toArray());
-            $eventsManager = new Phalcon\Events\Manager();
-            $dbLoggerAdapter = new StreamAdapter(APP_PATH . "/logs/db.log");
-            $dblogger = new Logger(
-                'dblog',
-                [
-                'local' => $dbLoggerAdapter,
-                ]
-            );
-            $dblogger = $dblogger->setLogLevel(Logger::DEBUG);
-            //Listen all the database events
-            $eventsManager->attach(
-                'db',
-                function ($event, $connection) use ($dblogger) {
-                    if ($event->getType() == 'beforeQuery') {
-                        $GLOBALS['timer']->diff();
-                        $sqlVariables = $connection->getSQLVariables();
-                        if (isset($sqlVariables)) {
-                            $dblogger->debug(print_r($connection->getSQLBindTypes(), 1) . ' ' . join(', ', $sqlVariables));
-                        } else {
-                            $dblogger->debug(print_r($connection->getSQLBindTypes(), 1));
-                        }
-                    }
-                    if ($event->getType() == 'afterQuery') {
-                        $dblogger->debug('Query execution time:' . ($GLOBALS['timer']->diff()) . ' seconds');
-                        $dblogger->debug($connection->getSQLStatement());
+    $createDbConnection = function (bool $unbuffered = false) {
+        $config = $GLOBALS['settings']['database']->toArray();
+        if ($unbuffered) {
+            $config['options'] = [\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false];
+        }
+
+        $connection    = new DbAdapter($config);
+        $eventsManager = new Phalcon\Events\Manager();
+        $dblogger      = (new Logger('dblog', ['local' => new StreamAdapter(APP_PATH . '/logs/db.log')]))->setLogLevel(Logger::DEBUG);
+
+        $eventsManager->attach(
+            'db',
+            function ($event, $connection) use ($dblogger) {
+                if ($event->getType() == 'beforeQuery') {
+                    $GLOBALS['timer']->diff();
+                    $sqlVariables = $connection->getSQLVariables();
+                    if (isset($sqlVariables)) {
+                        $dblogger->debug(print_r($connection->getSQLBindTypes(), 1) . ' ' . join(', ', $sqlVariables));
+                    } else {
+                        $dblogger->debug(print_r($connection->getSQLBindTypes(), 1));
                     }
                 }
-            );
+                if ($event->getType() == 'afterQuery') {
+                    $dblogger->debug('Query execution time:' . ($GLOBALS['timer']->diff()) . ' seconds');
+                    $dblogger->debug($connection->getSQLStatement());
+                }
+            }
+        );
 
-            //Assign the eventsManager to the db adapter instance
-            $connection->setEventsManager($eventsManager);
-            return $connection;
-        }
-    );
+        $connection->setEventsManager($eventsManager);
+        return $connection;
+    };
+
+    $di->setShared('db', function () use ($createDbConnection) {
+        return $createDbConnection();
+    });
+
+    $di->set('dbUnbuffered', function () use ($createDbConnection) {
+        return $createDbConnection(true);
+    });
 
     $di->set(
         'metaManager',

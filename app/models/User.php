@@ -28,6 +28,14 @@ class User extends Model
     public $splitQueries = false;
 
     /**
+     * Use unbuffered PDO execution to avoid loading the full result set into
+     * memory.
+     *
+     * @var bool
+     */
+    protected $unbufferedExecution = true;
+
+    /**
      * This function is used to apply ACL to the model.
      *
      * @param \Phalcon\Mvc\Model $model
