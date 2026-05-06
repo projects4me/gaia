@@ -101,8 +101,8 @@ class OAuthServer
         $refreshTokenModel = Oauthrefreshtoken::findFirst("refresh_token = '$refreshToken'");
 
         if ($refreshTokenModel) {
-            $username = $refreshTokenModel->user_id;
-            $user = User::findFirst("username = '$username'");
+            $email = $refreshTokenModel->user_id;
+            $user = User::findFirst("email = '$email'");
             $currentDate = gmdate('Y-m-d H:i:s');
 
             // If session is expired, then refresh token will not be issued
