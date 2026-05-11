@@ -141,7 +141,7 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '25',
             'null' => false,
-            'default' => 'active'
+            'default' => 'invited'
         ),
         'title' => array(
             'name' => 'title',
