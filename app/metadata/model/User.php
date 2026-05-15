@@ -275,7 +275,7 @@ $models['User'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
-        'email' => 'unique',
+        'email' => 'index',
     ),
     'foreignKeys' => array(
 
