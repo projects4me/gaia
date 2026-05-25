@@ -35,7 +35,7 @@ class GlobalroleComponent
         $logger->debug('Gaia.Controller.Component.Globalrole::beforeCreate()');
 
         $role = Role::findFirstByName('Global');
-        if (!!$role) {
+        if (!$role) {
             $role = new Role();
             $role->id = create_guid();
             $role->name = 'Global';
