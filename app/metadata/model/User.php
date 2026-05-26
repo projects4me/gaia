@@ -379,6 +379,16 @@ $models['User'] = array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Userpermission',
                 'relatedKey' => 'userId'
+            ),
+            'qualifications' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Userqualification',
+                'relatedKey' => 'userId'
+            ),
+            'skills' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Userskill',
+                'relatedKey' => 'userId'
             )
         ),
         'hasManyToMany' => array(

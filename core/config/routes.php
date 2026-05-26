@@ -192,6 +192,28 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'userqualification' => array(
+                'path' => '/api/:version/userqualification',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'userskill' => array(
+                'path' => '/api/:version/userskill',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'resource' => array(
                 'path' => '/api/:version/resource',
                 'allowedMethods' => array(
