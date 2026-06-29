@@ -26,20 +26,22 @@ class Project extends Model
      */
     public $splitQueries = false;
 
+    protected $unbufferedExecution = true;
+
     /**
      * This function is used to apply ACL to the model.
      *
      * @param \Phalcon\Mvc\Model $model
      * @param string $userId
      */
-    public static function applyACLByModel($model, $userId)
+    public static function applyACLByModel($model, $userId, $accessLevel, $projectId)
     {
         $di = \Phalcon\Di::getDefault();
         $query = $model->getQuery();
 
+        $relatedKey = '';
         $modelMeta = $di->get('metaManager')->getModelMeta($model->modelAlias);
         $projectMeta = $di->get('metaManager')->getModelMeta((new self())->modelAlias);
-        $relatedKey = '';
 
         // Get explicit key if available against the project group.
         if (!empty($modelMeta['acl']['groupExplicitKeys'])) {
@@ -52,8 +54,15 @@ class Project extends Model
             ? 'id'
             : $projectMeta['acl']['group']['relatedKey'];
         }
-        $groups = self::getGroups($userId, $projectMeta['acl']['group']);
-        $query->getPhalconQueryBuilder()->inWhere($model->modelAlias . ".$relatedKey", $groups);
+
+        if ($accessLevel === '2') {
+            $groups = self::getGroups($userId, $projectMeta['acl']['group']);
+            $query->getPhalconQueryBuilder()->inWhere($model->modelAlias . ".$relatedKey", $groups);
+        } else {
+            $query->getPhalconQueryBuilder()->andWhere($model->modelAlias . ".$relatedKey" . " != :projectId:", [
+                'projectId' => $projectId
+            ]);
+        }
     }
 
     /**
@@ -91,12 +100,19 @@ class Project extends Model
      * @param string $relName
      * @param string $userId
      */
-    public static function applyACLByRel($model, $relName, $userId)
+    public static function applyACLByRel($model, $relName, $userId, $projectId, $accessLevel)
     {
         $di = \Phalcon\Di::getDefault();
 
         $metadata = $di->get('metaManager')->getModelMeta((new self())->modelAlias);
         $groups = self::getGroups($userId, $metadata['acl']['group']);
+
+        if ($accessLevel === '0') {
+            //remove $projectId from $groups
+            $groups = array_filter($groups, function($group) use ($projectId) {
+                return $group !== $projectId;
+            });
+        }
 
         $relatedKey = self::getRelatedKey($model, $relName);
 

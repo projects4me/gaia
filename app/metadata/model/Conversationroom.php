@@ -189,6 +189,12 @@ $models['Conversationroom'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior',
         'aclBehavior'
+    ),
+    'acl' => array(
+        'assignment' => array(
+            'field' => 'createdUser',
+            'condition' => 'Conversationroom.createdUser=:userId:'
+        )
     )
 );
 

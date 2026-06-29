@@ -41,7 +41,7 @@ class User extends Model
      * @param \Phalcon\Mvc\Model $model
      * @param string $userId
      */
-    public static function applyACLByModel($model, $userId)
+    public static function applyACLByModel($model, $userId, $accessLevel = null, $projectId = null)
     {
         $di = \Phalcon\Di::getDefault();
         $query = $model->getQuery();
@@ -56,13 +56,29 @@ class User extends Model
             $relatedModel = $aclMeta['assignment']['relatedModel'];
             $query->getPhalconQueryBuilder()->innerJoin($relatedModel['namespace'], $relatedModel['condition'], $relatedModel['alias']);
             $query->getPhalconQueryBuilder()->setBindParams(
-                [
-                "userId" => $userId,
-            ],
+                ["userId" => $userId],
                 true
             );
         }
     }
+
+    // /**
+    //  * Normalizes project IDs passed as an array or a quoted SQL IN-list string.
+    //  *
+    //  * @param array|string $projectIds
+    //  * @return array
+    //  */
+    // private static function normalizeProjectIds($projectIds)
+    // {
+    //     if (is_array($projectIds)) {
+    //         return $projectIds;
+    //     }
+
+    //     return array_values(array_filter(array_map(
+    //         'trim',
+    //         explode(',', str_replace("'", '', $projectIds))
+    //     )));
+    // }
 
     /**
      * This function is used to apply acl on given relationship.
@@ -71,18 +87,42 @@ class User extends Model
      * @param string $relName
      * @param string $userId
      */
-    public static function applyACLByRel($model, $relName, $userId)
+    public static function applyACLByRel($model, $relName, $userId, $projectId = null, $accessLevel = null)
     {
         $di = \Phalcon\Di::getDefault();
-        if ($model->getRelationship()->getRelationshipType($relName) === 'hasManyToMany') {
-            $relMetadata = $di->get('metaManager')->getRelationshipMeta($model->modelAlias, $relName);
-            $relatedModelName = Util::extractClassFromNamespace($relMetadata['relatedModel']);
-
-            // Concatenate relatedModel alias with relName e.g. membersMembership
-            $relName .= $relatedModelName;
+        $relatedModelName = $di->get('metaManager')->getRelatedModelName($model->modelAlias, $relName);
+        $aclMeta = ($di->get('metaManager')->getModelMeta($relatedModelName))['acl'];
+        $relatedKey = \Gaia\MVC\Models\Project::getRelatedKey($model, $relName);
+        
+        if (isset($aclMeta['assignment']['field'])) {
+            $condition = "$relName.createdUser = '$userId'";
+            if ($projectId && $relatedKey) {
+                $condition .= "AND $relName.$relatedKey = '$projectId'";
+            }
+            $model->getRelationship()->addRelConditions($relName, $condition);
+        } else {
+            $relatedModel = $aclMeta['assignment']['relatedModel'];
+            if($relatedModel) {
+            $modelAlias = $model->modelAlias;
+            if($modelAlias === "User") {
+                $model->getQuery()->getPhalconQueryBuilder()->setBindParams(
+                    ["userId" => $userId],
+                    true
+                );
+                return;
+            }
+            $condition = preg_replace('/Project.id/', $modelAlias."."."projectId", $relatedModel['condition']);
+            $model->getQuery()->getPhalconQueryBuilder()->innerJoin(
+                $relatedModel['namespace'],
+                $condition,
+                $relatedModel['alias']
+            );
+            $model->getQuery()->getPhalconQueryBuilder()->setBindParams(
+                ["userId" => $userId],
+                true
+            );
+    }
         }
-
-        $model->getRelationship()->addRelConditions($relName, "$relName.createdUser = '$userId'");
     }
 
     /**

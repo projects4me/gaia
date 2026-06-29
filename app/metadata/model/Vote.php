@@ -139,6 +139,12 @@ $models['Vote'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior'
+    ),
+    'acl' => array(
+        'assignment' => array(
+            'field' => 'createdUser',
+            'condition' => 'Vote.createdUser=:userId:'
+        )
     )
 );
 

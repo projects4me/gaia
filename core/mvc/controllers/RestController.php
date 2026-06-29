@@ -302,6 +302,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $request = $this->getOAuthRequest();
             $oauthServer = $this->getOAuthServer($request);
             $server = $oauthServer->getServer();
+            $action = $this->aclMap[$this->actionName]['action'];
 
             if (!$server->verifyResourceRequest($request)) {
                 $response = $server->getResponse();
@@ -318,7 +319,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $params['where'] = $query;
             $projectId = ($modelAlias === 'Project' && isset($this->id)) ? $this->id : null;
 
-            $permission->fetchUserPermissions($currentUser->id, $this->aclMap[$this->actionName]['action'], $modelAlias, $params, $projectId);
+            $permission->fetchUserPermissions($currentUser->id, $action, $modelAlias, $params, $projectId);
 
             $this->getDI()->set(
                 'permission',
@@ -328,11 +329,12 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $resource = \Phalcon\Text::camelize($this->controllerName);
 
             //check ACL on Model
-            $permission->checkModelAccess($resource, null);
+            $permission->checkModelAccess($resource, null, $action);
 
             //check ACL on Model's relationship
-            $relationships = $this->getRelsWithMeta($this->request->get('rels'), $modelAlias);
-            $permission->checkRelsAccess($resource, $relationships);
+            $rels = $this->request->get('rels') ?? $this->request->get('include') ?? [];
+            $relationships = $this->getRelsWithMeta($rels, $modelAlias);
+            $permission->checkRelsAccess($resource, $relationships, $action);
         }
     }
 

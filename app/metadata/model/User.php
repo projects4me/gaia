@@ -431,7 +431,8 @@ $models['User'] = array(
         'softDeleteBehavior',
         'modelIdentifierBehavior',
         'encryptPasswordBehavior',
-        'currentUserBehavior'
+        'currentUserBehavior',
+        'aclBehavior'
     ),
     'acl' => array(
         'assignment' => array(

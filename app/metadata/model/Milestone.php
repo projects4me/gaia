@@ -160,13 +160,20 @@ $models['Milestone'] = array(
             ),
         )
     ),
+    'acl' => array(
+        'assignment' => array(
+            'field' => 'createdUser',
+            'condition' => 'Milestone.createdUser=:userId:'
+        )
+    ),
     'behaviors' => array(
         'auditBehavior',
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'aclBehavior'
     )
 );
 

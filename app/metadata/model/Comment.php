@@ -154,7 +154,14 @@ $models['Comment'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'aclBehavior'
+    ),
+    'acl' => array(
+        'assignment' => array(
+            'field' => 'createdUser',
+            'condition' => 'Comment.createdUser=:userId:'
+        ),
     )
 );
 

@@ -52,13 +52,23 @@ class aclBehavior extends Behavior implements BehaviorInterface
     {
         //Add ACL on model
         $userId = $GLOBALS['currentUser']->id;
+        $canApplyAcl = $this->canApplyModelAcl($model->modelAlias);
+        if (!$canApplyAcl) {
+            return;
+        }
 
         $di = \Phalcon\Di::getDefault();
         $permission = $di->get('permission');
         $accessLevel = $permission->getAccess($model->modelAlias);
+        $groups = $di->get('metaManager')->getModelGroups($model->modelAlias);
 
-        if (array_key_exists($accessLevel, $this->accessLevelMapping)) {
-            $this->accessLevelMapping[$accessLevel]::applyACLByModel($model, $userId);
+        foreach ($accessLevel as $accessData) {
+            $resourceAccessLevel = $accessData['accessLevel'];
+            if (array_key_exists($resourceAccessLevel, $this->accessLevelMapping)) {
+                $this->accessLevelMapping[$resourceAccessLevel]::applyACLByModel($model, $userId, $resourceAccessLevel, $accessData['projectId']);
+            } else if ($resourceAccessLevel === '0' && is_array($groups)) {
+                \Gaia\MVC\Models\Project::applyACLByModel($model, $userId, '0', $accessData['projectId']);
+            }
         }
     }
 
@@ -75,20 +85,47 @@ class aclBehavior extends Behavior implements BehaviorInterface
         $userId = $GLOBALS['currentUser']->id;
 
         $di = \Phalcon\Di::getDefault();
-        $permission = $di->get('permission');
+        $permissionModel = $di->get('permission');
 
         foreach ($requestedRelationships as $rel) {
-            $accessLevel = $permission->getAccess($rel);
-            $relMeta = $relationship->getRelationship($rel);
-
-            if (array_key_exists($accessLevel, $this->accessLevelMapping)) {
-                // If the related model is group itself then apply access level 2.
-                ($this->relIsGroup($rel, $model->modelAlias)) && ($accessLevel = 2);
-                $this->accessLevelMapping[$accessLevel]::applyACLByRel($model, $rel, $userId);
-            } elseif ($accessLevel === '0') {
-                // If access level is 0 then append 0 in the join condition to not retrieve related model.
-                $model->getRelationship()->addRelConditions($rel, "0");
+            $relatedModelName = $di->get('metaManager')->getRelatedModelName($model->modelAlias, $rel);
+            $canApplyAcl = $this->canApplyModelAcl($relatedModelName);
+            if (!$canApplyAcl) {
+                continue;
             }
+            $permissions = $permissionModel->getAccess($relatedModelName);
+            $relMeta = $relationship->getRelationship($rel);
+            $groups = $di->get('metaManager')->getModelGroups($relatedModelName);
+            if ($permissions) {
+                foreach ($permissions as $permission) {
+                    $accessLevel = $permission['accessLevel'];
+                    $projectId = $permission['projectId'];
+                    
+                    if (array_key_exists($accessLevel, $this->accessLevelMapping)) {
+                        $this->accessLevelMapping[$accessLevel]::applyACLByRel($model, $rel, $userId, $projectId, $accessLevel);
+                    } elseif ($accessLevel === '0' && is_array($groups)) {
+                        $isGroup = $this->relIsGroup($rel, $model->modelAlias);
+                        if ($isGroup) {
+                            $key = $this->getRelGroupKey($relMeta, $model, $rel);
+                            $model->getRelationship()->addRelConditions($rel, "$key != '$projectId'");
+                        } else if (is_array($groups)) {
+                            \Gaia\MVC\Models\Project::applyACLByRel($model, $rel, $userId, $projectId, $accessLevel);
+                        } else {
+                            // If access level is 0 and not a group then append 0 in the join condition to not retrieve related model.
+                            $model->getRelationship()->addRelConditions($rel, "0");
+                        }
+                    }
+                }
+            }
+
+            // if (array_key_exists($accessLevel, $this->accessLevelMapping)) {
+            //     // If the related model is group itself then apply access level 2.
+            //     ($this->relIsGroup($rel, $model->modelAlias)) && ($accessLevel = 2);
+            //     $this->accessLevelMapping[$accessLevel]::applyACLByRel($model, $rel, $userId);
+            // } elseif ($accessLevel === '0') {
+            //     // If access level is 0 then append 0 in the join condition to not retrieve related model.
+            //     $model->getRelationship()->addRelConditions($rel, "0");
+            // }
         }
     }
 
@@ -113,5 +150,27 @@ class aclBehavior extends Behavior implements BehaviorInterface
             $isGroup = true;
         }
         return $isGroup;
+    }
+
+    private function canApplyModelAcl($modelName)
+    {
+        $canApplyAcl = true;
+        $modelNamespace = "\\Gaia\\MVC\\Models\\$modelName";
+        if (class_exists($modelNamespace)) {
+            $model = new $modelNamespace();
+            $canApplyAcl = $model->isAclAllowed();
+        }
+        return $canApplyAcl;
+    }
+
+    private function getRelGroupKey($relMeta, $model, $relName)
+    {
+        $relType = $model->getRelationship()->getRelationshipType($relName);
+        if ($relType === 'hasManyToMany') {
+            $alias = Util::extractClassFromNamespace($relMeta['relatedModel']);
+            $key = $relName . $alias . "." . $relMeta['lhsKey'];
+            return $key;
+        }
+        return $relName."."."id";
     }
 }
