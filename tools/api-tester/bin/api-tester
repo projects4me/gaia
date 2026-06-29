@@ -1,0 +1,31 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Portable black-box HTTP API tester.
+ *
+ * No application framework imports. Requires only PHP + curl.
+ */
+
+if (PHP_SAPI !== 'cli') {
+    fwrite(STDERR, "api-tester must be run from CLI\n");
+    exit(1);
+}
+
+define('API_TESTER_ROOT', realpath(dirname(__DIR__)));
+
+spl_autoload_register(function ($class) {
+    $prefix = 'ApiTester\\';
+    if (strpos($class, $prefix) !== 0) {
+        return;
+    }
+    $relative = str_replace('\\', '/', substr($class, strlen($prefix)));
+    $file = API_TESTER_ROOT . '/src/' . $relative . '.php';
+    if (is_file($file)) {
+        require $file;
+    }
+});
+
+use ApiTester\Cli;
+
+exit(Cli::main($argv));

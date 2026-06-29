@@ -1,74 +1,107 @@
-name: Run Gaia test cases
+name: API Testing
 
 on:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize]
 
 jobs:
 
-  Build-and-Test:
+  api-testing:
+    name: API testing
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
     container:
       image: rananoman/gaia:env-dev
       env:
-        DB_ROOT_PWD : ${{ secrets.DB_ROOT_PWD }}
-        DB_USER : ${{ secrets.DB_USER }}
-        DB_PWD : ${{ secrets.DB_PWD }}
+        DB_ADAPTER: Postgres
+        DB_HOST: postgres
+        DB_PORT: "5432"
+        DB_USERNAME: nouman
+        DB_PASSWORD: nouman
+        DB_NAME: pr4m_test
 
     services:
-      mysql:
-        image: mysql:5.7
+      postgres:
+        image: postgres:16.4-alpine
         env:
-          MYSQL_DATABASE: pr4m
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PWD }}
-          MYSQL_USER: ${{ secrets.DB_USER }}
-          MYSQL_PASSWORD: ${{ secrets.DB_PWD }}
-        ports:
-        - 3306:3306
+          POSTGRES_DB: pr4m
+          POSTGRES_USER: nouman
+          POSTGRES_PASSWORD: nouman
         options: >-
-          --health-cmd "mysqladmin ping"
-          --health-interval 10s
+          --health-cmd "pg_isready -U nouman -d pr4m"
+          --health-interval 5s
           --health-timeout 5s
-          --health-retries 5
+          --health-retries 20
 
     steps:
-    - name: Checkout to Repository
+    - name: Checkout
       uses: actions/checkout@v3
 
-    # - name: Cache Composer packages
-    #   id: composer-packages
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: vendor
-    #     key: vendor-cache
+    - name: Cache Composer packages
+      id: composer-packages
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: vendor-cache-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-
 
-    # - name: Watch change in composer.json
-    #   id: watch-composer-json
-    #   uses: tj-actions/changed-files@v32
-    #   with:
-    #       files: "composer.json"
+    - name: Install dependencies
+      if: steps.composer-packages.outputs.cache-hit != 'true'
+      run: composer install
 
-    # - name: Install Dependencies
-    #   if: |
-    #     steps.watch-composer-json.outputs.any_changed == 'true'
-    #     || steps.composer-packages.outputs.cache-hit != 'true'
-    #   run: |
-    #     composer install
-
-    - name: Install Dependencies
+    - name: Install PostgreSQL 16 client
       run: |
-        composer install
+        apt-get update
+        apt-get install -y --no-install-recommends curl ca-certificates gnupg
+        install -d /usr/share/postgresql-common/pgdg
+        curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+          https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        echo 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt-archive.postgresql.org/pub/repos/apt buster-pgdg main' \
+          > /etc/apt/sources.list.d/pgdg.list
+        apt-get update
+        apt-get install -y --no-install-recommends postgresql-client-16
+        echo "/usr/lib/postgresql/16/bin" >> "$GITHUB_PATH"
 
-    - name: Run test Cases
+    - name: Load baseline into pr4m
+      env:
+        PGPASSWORD: nouman
       run: |
-        mysql --host mysql -uroot -p$DB_ROOT_PWD pr4m < db/Dump20241118.sql
-        mysql --host mysql -uroot -p$DB_ROOT_PWD -e "SET global sql_mode='';"
-        mkdir logs/tests && touch logs/tests/db.log
-        cd tests/
-        XDEBUG_MODE=coverage phpunit --coverage-html /__w/gaia/gaia/coverage
+        psql -h postgres -U nouman -d pr4m -v ON_ERROR_STOP=1 \
+          -f db/Dump20260710.sql
 
-    - name: Upload Code coverage report
+    - name: Prepare pr4m_test + fixtures
+      env:
+        PGHOST: postgres
+        PGPASSWORD: nouman
+      run: bash tools/api-tester/harness/prepare-test-db.sh
+
+    - name: Start Apache
+      run: |
+        rm -rf /var/www/html
+        ln -s "$GITHUB_WORKSPACE" /var/www/html
+        chown -R www-data:www-data "$GITHUB_WORKSPACE"
+        apache2-foreground > /tmp/apache.log 2>&1 &
+        for i in $(seq 1 30); do
+          curl -s -o /dev/null "http://127.0.0.1/" && echo "Apache is up" && exit 0
+          sleep 1
+        done
+        echo "Apache did not come up in time" >&2
+        cat /tmp/apache.log >&2
+        exit 1
+
+    - name: Run backend API testing
+      run: |
+        tools/api-tester/harness/run-api-tests.sh \
+          --base-uri http://127.0.0.1 \
+          --mode backend
+
+    - name: Upload API testing report
+      if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: code-coverage-report
-        path: coverage
+        name: api-tester-backend-report
+        path: output/api-tester-backend-report.json
+        if-no-files-found: warn

@@ -28,64 +28,6 @@ class User extends Model
     public $splitQueries = false;
 
     /**
-     * Use unbuffered PDO execution to avoid loading the full result set into
-     * memory.
-     *
-     * @var bool
-     */
-    protected $unbufferedExecution = true;
-
-    /**
-     * This function is used to apply ACL to the model.
-     *
-     * @param \Phalcon\Mvc\Model $model
-     * @param string $userId
-     */
-    public static function applyACLByModel($model, $userId)
-    {
-        $di = \Phalcon\Di::getDefault();
-        $query = $model->getQuery();
-
-        $aclMeta = ($di->get('metaManager')->getModelMeta($model->modelAlias))['acl'];
-
-        if (isset($aclMeta['assignment']['field'])) {
-            $query->getPhalconQueryBuilder()->andWhere($aclMeta['assignment']['condition'], [
-                'userId' => $userId
-            ]);
-        } else {
-            $relatedModel = $aclMeta['assignment']['relatedModel'];
-            $query->getPhalconQueryBuilder()->innerJoin($relatedModel['namespace'], $relatedModel['condition'], $relatedModel['alias']);
-            $query->getPhalconQueryBuilder()->setBindParams(
-                [
-                "userId" => $userId,
-            ],
-                true
-            );
-        }
-    }
-
-    /**
-     * This function is used to apply acl on given relationship.
-     *
-     * @param \Phalcon\Mvc\Model $model
-     * @param string $relName
-     * @param string $userId
-     */
-    public static function applyACLByRel($model, $relName, $userId)
-    {
-        $di = \Phalcon\Di::getDefault();
-        if ($model->getRelationship()->getRelationshipType($relName) === 'hasManyToMany') {
-            $relMetadata = $di->get('metaManager')->getRelationshipMeta($model->modelAlias, $relName);
-            $relatedModelName = Util::extractClassFromNamespace($relMetadata['relatedModel']);
-
-            // Concatenate relatedModel alias with relName e.g. membersMembership
-            $relName .= $relatedModelName;
-        }
-
-        $model->getRelationship()->addRelConditions($relName, "$relName.createdUser = '$userId'");
-    }
-
-    /**
      * Retrieves the first system user with Admin role from the database.
      *
      * @return \Gaia\MVC\Models\User|null Returns the first admin user found or null if none exists

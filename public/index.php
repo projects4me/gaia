@@ -1,7 +1,6 @@
 <?php
 
 use Phalcon\DI\FactoryDefault;
-use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Logger;
 use Phalcon\Logger\Adapter\Stream as StreamAdapter;
 use Gaia\Libraries\Utils\executiontime;
@@ -105,13 +104,9 @@ try {
     );
 
 
-    $createDbConnection = function (bool $unbuffered = false) {
+    $createDbConnection = function () {
         $config = $GLOBALS['settings']['database']->toArray();
-        if ($unbuffered) {
-            $config['options'] = [\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false];
-        }
-
-        $connection    = new DbAdapter($config);
+        $connection = \Gaia\Db\Factory\ConnectionFactory::create($config);
         $eventsManager = new Phalcon\Events\Manager();
         $dblogger      = (new Logger('dblog', ['local' => new StreamAdapter(APP_PATH . '/logs/db.log')]))->setLogLevel(Logger::DEBUG);
 
@@ -143,7 +138,7 @@ try {
     });
 
     $di->set('dbUnbuffered', function () use ($createDbConnection) {
-        return $createDbConnection(true);
+        return $createDbConnection();
     });
 
     $di->set(
@@ -179,6 +174,16 @@ try {
     $di->set(
         'dialect',
         $di->get('dialectFactory')->getDialect()
+    );
+
+    $di->set(
+        'migrationFactory',
+        new \Gaia\Db\Factory\MigrationFactory($di, $GLOBALS['settings']['database']['adapter'])
+    );
+
+    $di->set(
+        'migrationHandler',
+        $di->get('migrationFactory')->getHandler()
     );
 
     $di->set(

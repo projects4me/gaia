@@ -1,0 +1,377 @@
+{
+    "description": "Snapshot of Gaia REST v1 route truth for api-tester generators. Regenerated from core/config/routes.php.",
+    "source": "core/config/routes.php",
+    "version": "v1",
+    "resources": {
+        "activity": {
+            "path": "/api/:version/activity",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "comment": {
+            "path": "/api/:version/comment",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "conversationroom": {
+            "path": "/api/:version/conversationroom",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "chatroom": {
+            "path": "/api/:version/chatroom",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "converser": {
+            "path": "/api/:version/converser",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "forgetpassword": {
+            "path": "/api/:version/forgetpassword",
+            "allowedMethods": [
+                "GET",
+                "POST"
+            ],
+            "identifier": "id"
+        },
+        "issue": {
+            "path": "/api/:version/issue",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "issuetype": {
+            "path": "/api/:version/issuetype",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "membership": {
+            "path": "/api/:version/membership",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "milestone": {
+            "path": "/api/:version/milestone",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "mention": {
+            "path": "/api/:version/mention",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "timelog": {
+            "path": "/api/:version/timelog",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "role": {
+            "path": "/api/:version/role",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "project": {
+            "path": "/api/:version/project",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "user": {
+            "path": "/api/:version/user",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "userqualification": {
+            "path": "/api/:version/userqualification",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "userskill": {
+            "path": "/api/:version/userskill",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "resource": {
+            "path": "/api/:version/resource",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "permission": {
+            "path": "/api/:version/permission",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "token": {
+            "path": "/api/:version/token",
+            "allowedMethods": [
+                "POST"
+            ],
+            "identifier": "id"
+        },
+        "tag": {
+            "path": "/api/:version/tag",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "savedsearch": {
+            "path": "/api/:version/savedsearch",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "tagged": {
+            "path": "/api/:version/tagged",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "DELETE"
+            ],
+            "identifier": "id"
+        },
+        "wiki": {
+            "path": "/api/:version/wiki",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "vote": {
+            "path": "/api/:version/vote",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "upload": {
+            "path": "/api/:version/upload",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "badge": {
+            "path": "/api/:version/badge",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": null
+        },
+        "scoreboard": {
+            "path": "/api/:version/scoreboard",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": null
+        },
+        "issuestatus": {
+            "path": "/api/:version/issuestatus",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "userimage": {
+            "path": "/api/:version/userimage",
+            "allowedMethods": [
+                "POST"
+            ],
+            "identifier": "id"
+        },
+        "systemsetting": {
+            "path": "/api/:version/systemsetting",
+            "allowedMethods": [
+                "GET"
+            ],
+            "identifier": "id"
+        },
+        "resetpassword": {
+            "path": "/api/:version/resetpassword",
+            "allowedMethods": [
+                "GET",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "systemnotification": {
+            "path": "/api/:version/systemnotification",
+            "allowedMethods": [
+                "GET"
+            ],
+            "identifier": null
+        },
+        "systemnotificationrecipient": {
+            "path": "/api/:version/systemnotificationrecipient",
+            "allowedMethods": [
+                "GET",
+                "PATCH",
+                "POST"
+            ],
+            "identifier": "id"
+        },
+        "issueplanning": {
+            "path": "/api/:version/issueplanning",
+            "allowedMethods": [
+                "POST"
+            ],
+            "identifier": "id"
+        },
+        "issuewatcher": {
+            "path": "/api/:version/issuewatcher",
+            "allowedMethods": [
+                "POST",
+                "PATCH"
+            ],
+            "identifier": null
+        },
+        "milestoneoverview": {
+            "path": "/api/:version/milestoneoverview",
+            "allowedMethods": [
+                "GET"
+            ],
+            "identifier": "id"
+        }
+    }
+}

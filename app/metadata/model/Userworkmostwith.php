@@ -6,13 +6,14 @@
 
 $models['Userworkmostwith'] = array(
     'tableName' => 'user_works_most_with',
-    'viewSql' => 'SELECT Membership1.userId as userId, Membership2.userId as id, User.name as name, User.title as title, COUNT(Membership2.id) as occurenceOfUser from projects as Project 
-                  left join memberships as Membership1 on Membership1.relatedId = Project.id
-                  left join memberships as Membership2 on Membership2.relatedId = Membership1.relatedId  AND Membership2.userId != getModelId()
-                  left join users as User on User.id = Membership2.userId 
-                  where Membership1.userId = getModelId()
-                  GROUP BY Membership2.userId 
-                  ORDER BY occurenceOfUser DESC LIMIT 3',
+    'viewSql' => 'SELECT "Membership1"."userId" as "userId", "Membership2"."userId" as id, "User".name as name, "User".title as title, COUNT("Membership2".id) as "occurenceOfUser"
+                  FROM projects AS "Project"
+                  LEFT JOIN memberships AS "Membership1" ON "Membership1"."relatedId" = "Project".id
+                  LEFT JOIN memberships AS "Membership2" ON "Membership2"."relatedId" = "Membership1"."relatedId" AND "Membership2"."userId" != getmodelid()
+                  LEFT JOIN users AS "User" ON "User".id = "Membership2"."userId"
+                  WHERE "Membership1"."userId" = getmodelid()
+                  GROUP BY "Membership1"."userId", "Membership2"."userId", "User".name, "User".title
+                  ORDER BY "occurenceOfUser" DESC LIMIT 3',
     'isView' => true,
     'fields' => array(
         'id' => array(

@@ -91,8 +91,18 @@ abstract class AclAdminController extends RestController
         $controllerName = ucwords($this->controllerName);
         $permission = $this->getDI()->get('permission');
         $accessLevel = $permission->getAccess($controllerName);
+        $accessLevels = [];
 
-        if ($accessLevel !== $this->adminAccessLevel)
-            throw new \Gaia\Exception\Access("Access Denied");
+        if (is_array($accessLevel)) {
+            foreach ($accessLevel as $resource => $accessData) {
+                $accessLevels[]=$accessData['accessLevel'];
+            }
+        }
+
+        if (in_array($this->adminAccessLevel, $accessLevels)) {
+            return true;
+        }
+
+        return false;
     }
 }

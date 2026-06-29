@@ -3,7 +3,6 @@
 use Phalcon\Di\FactoryDefault\Cli as CliDI;
 use Phalcon\Cli\Console as ConsoleApp;
 use Phalcon\Loader;
-use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Logger;
 use Phalcon\Logger\Adapter\Stream as StreamAdapter;
 use Gaia\Libraries\Utils\executiontime;
@@ -29,7 +28,8 @@ $timer = new executiontime();
 $di = new CliDI();
 
 $di->set('db', function () {
-    $connection = new DbAdapter((array) $GLOBALS['settings']['database']);
+    $config = (array) $GLOBALS['settings']['database'];
+    $connection = \Gaia\Db\Factory\ConnectionFactory::create($config);
     $eventsManager = new Phalcon\Events\Manager();
     $dblogger = new \Phalcon\Logger\Adapter\File(APP_PATH . "/db.log");
 //         print_r($logger);
@@ -90,6 +90,16 @@ $di->set(
 $di->set(
     'dialect',
     $di->get('dialectFactory')->getDialect()
+);
+
+$di->set(
+    'migrationFactory',
+    new \Gaia\Db\Factory\MigrationFactory($di, $GLOBALS['settings']['database']['adapter'])
+);
+
+$di->set(
+    'migrationHandler',
+    $di->get('migrationFactory')->getHandler()
 );
 
 $di->set(

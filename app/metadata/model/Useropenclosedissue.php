@@ -6,14 +6,15 @@
 
 $models['Useropenclosedissue'] = array(
     'tableName' => 'user_open_closed_issues',
-    'viewSql' => 'SELECT 
-                sum(case when IssueStatuses.done="0" then 1 else 0 end) as openIssues,
-                sum(case when IssueStatuses.done="1" then 1 else 0 end) as closedIssues,
-                UUID() as id,
-                User.id as userId from issues as Issue
-                left join users as User on User.id = Issue.createdUser 
-                left join issue_statuses as IssueStatuses on IssueStatuses.id = Issue.statusId
-                GROUP BY User.id;',
+    'viewSql' => 'SELECT
+                SUM(CASE WHEN "IssueStatuses".done = \'0\' THEN 1 ELSE 0 END) as "openIssues",
+                SUM(CASE WHEN "IssueStatuses".done = \'1\' THEN 1 ELSE 0 END) as "closedIssues",
+                MIN(uuid_generate_v4()::varchar) as id,
+                "User".id as "userId"
+                FROM issues AS "Issue"
+                LEFT JOIN users AS "User" ON "User".id = "Issue"."createdUser"
+                LEFT JOIN issue_statuses AS "IssueStatuses" ON "IssueStatuses".id = "Issue"."statusId"
+                GROUP BY "User".id',
     'isView' => true,
     'fields' => array(
         'id' => array(
