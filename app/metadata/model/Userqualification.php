@@ -130,12 +130,6 @@ $models['Userqualification'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior',
         'modelIdentifierBehavior',
-    ),
-    'acl' => array(
-        'assignment' => array(
-            'field' => 'userId',
-            'condition' => 'Userqualification.userId=:userId:'
-        )
     )
 );
 

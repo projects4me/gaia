@@ -6,12 +6,12 @@
 
 $models['Usergrouppermission'] = array(
     'tableName' => 'user_group_permissions',
-    'viewSql' => 'SELECT Permission.id as id, Membership.relatedId as relatedId, Membership.relatedTo as groupName, Resource2.entity as entity, MAX(Permission.readF) as readF, MAX(Permission.`createF`) as createF, MAX(Permission.`updateF`) as updateF, MAX(Permission.`deleteF`) as deleteF, MAX(Permission.`importF`) as importF, MAX(Permission.`exportF`) as exportF
-                    from resources as Resource1
-                    left join resources Resource2 on Resource2.lft <= Resource1.lft AND Resource2.rht >= Resource1.rht AND Resource1.groupName="prometheus" AND Resource2.groupName="prometheus"
-                    left join permissions Permission on Permission.resourceId = Resource2.id
-                    inner join memberships Membership on Membership.roleId = Permission.roleId AND Membership.userId = getCurrentUserId() AND Membership.relatedId =getModelId()
-                    GROUP BY Resource2.id;',
+    'viewSql' => 'SELECT "Permission".id as id, "Membership"."relatedId" as "relatedId", "Membership"."relatedTo" as "groupName", "Resource2".entity as entity, MAX("Permission"."readF") as "readF", MAX("Permission"."createF") as "createF", MAX("Permission"."updateF") as "updateF", MAX("Permission"."deleteF") as "deleteF", MAX("Permission"."importF") as "importF", MAX("Permission"."exportF") as "exportF"
+                    FROM resources AS "Resource1"
+                    LEFT JOIN resources "Resource2" ON "Resource2".lft <= "Resource1".lft AND "Resource2".rht >= "Resource1".rht AND "Resource1"."groupName" = \'prometheus\' AND "Resource2"."groupName" = \'prometheus\'
+                    LEFT JOIN permissions "Permission" ON "Permission"."resourceId" = "Resource2".id
+                    INNER JOIN memberships "Membership" ON "Membership"."roleId" = "Permission"."roleId" AND "Membership"."userId" = getcurrentuserid() AND "Membership"."relatedId" = getmodelid()
+                    GROUP BY "Resource2".id, "Permission".id, "Membership"."relatedId", "Membership"."relatedTo", "Resource2".entity',
     'isView' => true,
     'fields' => array(
         'id' => array(

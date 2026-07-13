@@ -1,0 +1,778 @@
+[
+  {
+    "id": "get-activity-api-v1-activity",
+    "method": "GET",
+    "path": "/api/v1/activity",
+    "resource": "activity",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/activity.js"
+  },
+  {
+    "id": "post-comment-api-v1-comment",
+    "method": "POST",
+    "path": "/api/v1/comment",
+    "resource": "comment",
+    "priority": "P1",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/comment.js"
+  },
+  {
+    "id": "get-comment-api-v1-comment",
+    "method": "GET",
+    "path": "/api/v1/comment",
+    "resource": "comment",
+    "priority": "P1",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/comment.js"
+  },
+  {
+    "id": "patch-comment-api-v1-comment-id",
+    "method": "PATCH",
+    "path": "/api/v1/comment/:id",
+    "resource": "comment",
+    "priority": "P1",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/comment.js"
+  },
+  {
+    "id": "delete-comment-api-v1-comment-id",
+    "method": "DELETE",
+    "path": "/api/v1/comment/:id",
+    "resource": "comment",
+    "priority": "P1",
+    "testFocus": "delete/authorization/state-change",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/comment.js"
+  },
+  {
+    "id": "get-conversationroom-api-v1-conversationroom",
+    "method": "GET",
+    "path": "/api/v1/conversationroom",
+    "resource": "conversationroom",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "((Conversationroom.id : ${params.c_id}) AND (Conversationroom.projectId : ${projectId}))",
+      "(Conversationroom.projectId : ${projectId}) AND (Conversationroom.dateModified <: ${this.now})",
+      "(Conversationroom.projectId : ${projectId}) AND (Conversationroom.dateModified <: ${this.now})",
+      "(Conversationroom.projectId : ${projectId})"
+    ],
+    "source": "mirage/route-handlers/conversationroom.js"
+  },
+  {
+    "id": "post-conversationroom-api-v1-conversationroom",
+    "method": "POST",
+    "path": "/api/v1/conversationroom",
+    "resource": "conversationroom",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [
+      "((Conversationroom.id : ${params.c_id}) AND (Conversationroom.projectId : ${projectId}))",
+      "(Conversationroom.projectId : ${projectId}) AND (Conversationroom.dateModified <: ${this.now})",
+      "(Conversationroom.projectId : ${projectId}) AND (Conversationroom.dateModified <: ${this.now})",
+      "(Conversationroom.projectId : ${projectId})"
+    ],
+    "source": "mirage/route-handlers/conversationroom.js"
+  },
+  {
+    "id": "patch-conversationroom-api-v1-conversationroom-id",
+    "method": "PATCH",
+    "path": "/api/v1/conversationroom/:id",
+    "resource": "conversationroom",
+    "priority": "P0",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [
+      "((Conversationroom.id : ${params.c_id}) AND (Conversationroom.projectId : ${projectId}))",
+      "(Conversationroom.projectId : ${projectId}) AND (Conversationroom.dateModified <: ${this.now})",
+      "(Conversationroom.projectId : ${projectId}) AND (Conversationroom.dateModified <: ${this.now})",
+      "(Conversationroom.projectId : ${projectId})"
+    ],
+    "source": "mirage/route-handlers/conversationroom.js"
+  },
+  {
+    "id": "get-dashboard-api-v1-dashboard-id",
+    "method": "GET",
+    "path": "/api/v1/dashboard/:id",
+    "resource": "dashboard",
+    "priority": "P1",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/converser.js"
+  },
+  {
+    "id": "get-issue-api-v1-issue",
+    "method": "GET",
+    "path": "/api/v1/issue",
+    "resource": "issue",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "(((Issue.milestoneId NULL) OR (Issue.milestoneId EMPTY)) AND (Issue.projectId : ${projectId}))",
+      "((Issue.milestoneId : ${milestone.id} ) AND (Issue.projectId : ${projectId}))",
+      "((Issue.issueNumber : ${params.issue_number}) AND (Issue.projectId : ${projectId}))"
+    ],
+    "source": "mirage/route-handlers/issue.js"
+  },
+  {
+    "id": "get-issue-api-v1-issue-id",
+    "method": "GET",
+    "path": "/api/v1/issue/:id",
+    "resource": "issue",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "(((Issue.milestoneId NULL) OR (Issue.milestoneId EMPTY)) AND (Issue.projectId : ${projectId}))",
+      "((Issue.milestoneId : ${milestone.id} ) AND (Issue.projectId : ${projectId}))",
+      "((Issue.issueNumber : ${params.issue_number}) AND (Issue.projectId : ${projectId}))"
+    ],
+    "source": "mirage/route-handlers/issue.js"
+  },
+  {
+    "id": "patch-issue-api-v1-issue-id",
+    "method": "PATCH",
+    "path": "/api/v1/issue/:id",
+    "resource": "issue",
+    "priority": "P0",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [
+      "(((Issue.milestoneId NULL) OR (Issue.milestoneId EMPTY)) AND (Issue.projectId : ${projectId}))",
+      "((Issue.milestoneId : ${milestone.id} ) AND (Issue.projectId : ${projectId}))",
+      "((Issue.issueNumber : ${params.issue_number}) AND (Issue.projectId : ${projectId}))"
+    ],
+    "source": "mirage/route-handlers/issue.js"
+  },
+  {
+    "id": "post-issue-api-v1-issue",
+    "method": "POST",
+    "path": "/api/v1/issue",
+    "resource": "issue",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [
+      "(((Issue.milestoneId NULL) OR (Issue.milestoneId EMPTY)) AND (Issue.projectId : ${projectId}))",
+      "((Issue.milestoneId : ${milestone.id} ) AND (Issue.projectId : ${projectId}))",
+      "((Issue.issueNumber : ${params.issue_number}) AND (Issue.projectId : ${projectId}))"
+    ],
+    "source": "mirage/route-handlers/issue.js"
+  },
+  {
+    "id": "delete-issue-api-v1-issue-id",
+    "method": "DELETE",
+    "path": "/api/v1/issue/:id",
+    "resource": "issue",
+    "priority": "P0",
+    "testFocus": "delete/authorization/state-change",
+    "queryTemplates": [
+      "(((Issue.milestoneId NULL) OR (Issue.milestoneId EMPTY)) AND (Issue.projectId : ${projectId}))",
+      "((Issue.milestoneId : ${milestone.id} ) AND (Issue.projectId : ${projectId}))",
+      "((Issue.issueNumber : ${params.issue_number}) AND (Issue.projectId : ${projectId}))"
+    ],
+    "source": "mirage/route-handlers/issue.js"
+  },
+  {
+    "id": "post-issueplanning-api-v1-issueplanning",
+    "method": "POST",
+    "path": "/api/v1/issueplanning",
+    "resource": "issueplanning",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/issueplanning.js"
+  },
+  {
+    "id": "get-issuestatus-api-v1-issuestatus",
+    "method": "GET",
+    "path": "/api/v1/issuestatus",
+    "resource": "issuestatus",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "(Issuestatus.projectId : ${projectId})",
+      "(Issuestatus.system : 1)",
+      "(Issuestatus.system : 1)",
+      "(Issuestatus.system : 1)",
+      "(Issuestatus.system : 1)"
+    ],
+    "source": "mirage/route-handlers/issuestatus.js"
+  },
+  {
+    "id": "get-issuestatus-api-v1-issuestatus-id",
+    "method": "GET",
+    "path": "/api/v1/issuestatus/:id",
+    "resource": "issuestatus",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "(Issuestatus.projectId : ${projectId})",
+      "(Issuestatus.system : 1)",
+      "(Issuestatus.system : 1)",
+      "(Issuestatus.system : 1)",
+      "(Issuestatus.system : 1)"
+    ],
+    "source": "mirage/route-handlers/issuestatus.js"
+  },
+  {
+    "id": "get-issuetype-api-v1-issuetype",
+    "method": "GET",
+    "path": "/api/v1/issuetype",
+    "resource": "issuetype",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "(Issuetype.system : 1)"
+    ],
+    "source": "mirage/route-handlers/issuetype.js"
+  },
+  {
+    "id": "get-issuetype-api-v1-issuetype-id",
+    "method": "GET",
+    "path": "/api/v1/issuetype/:id",
+    "resource": "issuetype",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "(Issuetype.system : 1)"
+    ],
+    "source": "mirage/route-handlers/issuetype.js"
+  },
+  {
+    "id": "post-issuetype-api-v1-issuetype",
+    "method": "POST",
+    "path": "/api/v1/issuetype",
+    "resource": "issuetype",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [
+      "(Issuetype.system : 1)"
+    ],
+    "source": "mirage/route-handlers/issuetype.js"
+  },
+  {
+    "id": "post-issuewatcher-api-v1-issuewatcher",
+    "method": "POST",
+    "path": "/api/v1/issuewatcher",
+    "resource": "issuewatcher",
+    "priority": "P1",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/issuewatcher.js"
+  },
+  {
+    "id": "patch-issuewatcher-api-v1-issuewatcher-id",
+    "method": "PATCH",
+    "path": "/api/v1/issuewatcher/:id",
+    "resource": "issuewatcher",
+    "priority": "P1",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/issuewatcher.js"
+  },
+  {
+    "id": "get-membership-api-v1-membership",
+    "method": "GET",
+    "path": "/api/v1/membership",
+    "resource": "membership",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/membership.js"
+  },
+  {
+    "id": "post-membership-api-v1-membership",
+    "method": "POST",
+    "path": "/api/v1/membership",
+    "resource": "membership",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/membership.js"
+  },
+  {
+    "id": "patch-membership-api-v1-membership-id",
+    "method": "PATCH",
+    "path": "/api/v1/membership/:id",
+    "resource": "membership",
+    "priority": "P0",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/membership.js"
+  },
+  {
+    "id": "delete-membership-api-v1-membership-id",
+    "method": "DELETE",
+    "path": "/api/v1/membership/:id",
+    "resource": "membership",
+    "priority": "P0",
+    "testFocus": "delete/authorization/state-change",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/membership.js"
+  },
+  {
+    "id": "get-milestone-api-v1-milestone",
+    "method": "GET",
+    "path": "/api/v1/milestone",
+    "resource": "milestone",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "((Milestone.projectId : ${projectId}) AND ((Milestone.status : in_progress) OR (Milestone.status : planned)))",
+      "((Milestone.projectId : ${projectId}) AND ((Milestone.status : in_progress) OR (Milestone.status : planned)))"
+    ],
+    "source": "mirage/route-handlers/milestone.js"
+  },
+  {
+    "id": "get-milestone-api-v1-milestone-id",
+    "method": "GET",
+    "path": "/api/v1/milestone/:id",
+    "resource": "milestone",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "((Milestone.projectId : ${projectId}) AND ((Milestone.status : in_progress) OR (Milestone.status : planned)))",
+      "((Milestone.projectId : ${projectId}) AND ((Milestone.status : in_progress) OR (Milestone.status : planned)))"
+    ],
+    "source": "mirage/route-handlers/milestone.js"
+  },
+  {
+    "id": "post-milestone-api-v1-milestone",
+    "method": "POST",
+    "path": "/api/v1/milestone",
+    "resource": "milestone",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [
+      "((Milestone.projectId : ${projectId}) AND ((Milestone.status : in_progress) OR (Milestone.status : planned)))",
+      "((Milestone.projectId : ${projectId}) AND ((Milestone.status : in_progress) OR (Milestone.status : planned)))"
+    ],
+    "source": "mirage/route-handlers/milestone.js"
+  },
+  {
+    "id": "patch-milestone-api-v1-milestone-id",
+    "method": "PATCH",
+    "path": "/api/v1/milestone/:id",
+    "resource": "milestone",
+    "priority": "P0",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [
+      "((Milestone.projectId : ${projectId}) AND ((Milestone.status : in_progress) OR (Milestone.status : planned)))",
+      "((Milestone.projectId : ${projectId}) AND ((Milestone.status : in_progress) OR (Milestone.status : planned)))"
+    ],
+    "source": "mirage/route-handlers/milestone.js"
+  },
+  {
+    "id": "get-permission-api-v1-permission",
+    "method": "GET",
+    "path": "/api/v1/permission",
+    "resource": "permission",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/permission.js"
+  },
+  {
+    "id": "get-project-api-v1-project",
+    "method": "GET",
+    "path": "/api/v1/project",
+    "resource": "project",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "((Project.name STARTS A) OR (Project.name STARTS P))",
+      "(Project.id : ${projectId})"
+    ],
+    "source": "mirage/route-handlers/project.js"
+  },
+  {
+    "id": "get-project-api-v1-project-id",
+    "method": "GET",
+    "path": "/api/v1/project/:id",
+    "resource": "project",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "((Project.name STARTS A) OR (Project.name STARTS P))",
+      "(Project.id : ${projectId})"
+    ],
+    "source": "mirage/route-handlers/project.js"
+  },
+  {
+    "id": "patch-project-api-v1-project-id",
+    "method": "PATCH",
+    "path": "/api/v1/project/:id",
+    "resource": "project",
+    "priority": "P0",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [
+      "((Project.name STARTS A) OR (Project.name STARTS P))",
+      "(Project.id : ${projectId})"
+    ],
+    "source": "mirage/route-handlers/project.js"
+  },
+  {
+    "id": "post-project-api-v1-project",
+    "method": "POST",
+    "path": "/api/v1/project",
+    "resource": "project",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [
+      "((Project.name STARTS A) OR (Project.name STARTS P))",
+      "(Project.id : ${projectId})"
+    ],
+    "source": "mirage/route-handlers/project.js"
+  },
+  {
+    "id": "get-role-api-v1-role",
+    "method": "GET",
+    "path": "/api/v1/role",
+    "resource": "role",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/role.js"
+  },
+  {
+    "id": "get-role-api-v1-role-id",
+    "method": "GET",
+    "path": "/api/v1/role/:id",
+    "resource": "role",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/role.js"
+  },
+  {
+    "id": "patch-role-api-v1-role-id",
+    "method": "PATCH",
+    "path": "/api/v1/role/:id",
+    "resource": "role",
+    "priority": "P0",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/role.js"
+  },
+  {
+    "id": "post-role-api-v1-role",
+    "method": "POST",
+    "path": "/api/v1/role",
+    "resource": "role",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/role.js"
+  },
+  {
+    "id": "get-savedsearch-api-v1-savedsearch",
+    "method": "GET",
+    "path": "/api/v1/savedsearch",
+    "resource": "savedsearch",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "(Savedsearch.relatedTo : issue) AND (Savedsearch.projectId : ${this.trackedProject.getProjectId()})",
+      "(Savedsearch.relatedTo : issue) AND (Savedsearch.projectId : ${this.trackedProject.getProjectId()}) AND (Savedsearch.public : 1)"
+    ],
+    "source": "mirage/route-handlers/savedsearch.js"
+  },
+  {
+    "id": "get-systemnotification-api-v1-systemnotification",
+    "method": "GET",
+    "path": "/api/v1/systemnotification",
+    "resource": "systemnotification",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/systemnotification.js"
+  },
+  {
+    "id": "get-systemnotification-api-v1-systemnotification-id",
+    "method": "GET",
+    "path": "/api/v1/systemnotification/:id",
+    "resource": "systemnotification",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/systemnotification.js"
+  },
+  {
+    "id": "post-systemnotification-api-v1-systemnotification",
+    "method": "POST",
+    "path": "/api/v1/systemnotification",
+    "resource": "systemnotification",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/systemnotification.js"
+  },
+  {
+    "id": "put-systemnotification-api-v1-systemnotification-id",
+    "method": "PUT",
+    "path": "/api/v1/systemnotification/:id",
+    "resource": "systemnotification",
+    "priority": "P0",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/systemnotification.js"
+  },
+  {
+    "id": "delete-systemnotification-api-v1-systemnotification-id",
+    "method": "DELETE",
+    "path": "/api/v1/systemnotification/:id",
+    "resource": "systemnotification",
+    "priority": "P0",
+    "testFocus": "delete/authorization/state-change",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/systemnotification.js"
+  },
+  {
+    "id": "post-systemnotificationrecipient-api-v1-systemnotificationrecipient",
+    "method": "POST",
+    "path": "/api/v1/systemnotificationrecipient",
+    "resource": "systemnotificationrecipient",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/systemnotificationrecipient.js"
+  },
+  {
+    "id": "patch-systemnotificationrecipient-api-v1-systemnotificationrecipient-id",
+    "method": "PATCH",
+    "path": "/api/v1/systemnotificationrecipient/:id",
+    "resource": "systemnotificationrecipient",
+    "priority": "P0",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/systemnotificationrecipient.js"
+  },
+  {
+    "id": "get-systemsetting-api-v1-systemsetting",
+    "method": "GET",
+    "path": "/api/v1/systemsetting",
+    "resource": "systemsetting",
+    "priority": "P1",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/systemsetting.js"
+  },
+  {
+    "id": "get-timelog-api-v1-timelog",
+    "method": "GET",
+    "path": "/api/v1/timelog",
+    "resource": "timelog",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/timelog.js"
+  },
+  {
+    "id": "post-timelog-api-v1-timelog",
+    "method": "POST",
+    "path": "/api/v1/timelog",
+    "resource": "timelog",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/timelog.js"
+  },
+  {
+    "id": "post-token-api-v1-token",
+    "method": "POST",
+    "path": "/api/v1/token",
+    "resource": "token",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/token.js"
+  },
+  {
+    "id": "get-user-api-v1-user",
+    "method": "GET",
+    "path": "/api/v1/user",
+    "resource": "user",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "(User.id : ${userId})"
+    ],
+    "source": "mirage/route-handlers/user.js"
+  },
+  {
+    "id": "get-user-api-v1-user-id",
+    "method": "GET",
+    "path": "/api/v1/user/:id",
+    "resource": "user",
+    "priority": "P0",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "(User.id : ${userId})"
+    ],
+    "source": "mirage/route-handlers/user.js"
+  },
+  {
+    "id": "patch-user-api-v1-user-id",
+    "method": "PATCH",
+    "path": "/api/v1/user/:id",
+    "resource": "user",
+    "priority": "P0",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [
+      "(User.id : ${userId})"
+    ],
+    "source": "mirage/route-handlers/user.js"
+  },
+  {
+    "id": "delete-user-api-v1-user-id",
+    "method": "DELETE",
+    "path": "/api/v1/user/:id",
+    "resource": "user",
+    "priority": "P0",
+    "testFocus": "delete/authorization/state-change",
+    "queryTemplates": [
+      "(User.id : ${userId})"
+    ],
+    "source": "mirage/route-handlers/user.js"
+  },
+  {
+    "id": "post-user-api-v1-user",
+    "method": "POST",
+    "path": "/api/v1/user",
+    "resource": "user",
+    "priority": "P0",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [
+      "(User.id : ${userId})"
+    ],
+    "source": "mirage/route-handlers/user.js"
+  },
+  {
+    "id": "get-userqualification-api-v1-userqualification",
+    "method": "GET",
+    "path": "/api/v1/userqualification",
+    "resource": "userqualification",
+    "priority": "P1",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "(Userqualification.userId : ${userId})"
+    ],
+    "source": "mirage/route-handlers/userqualification.js"
+  },
+  {
+    "id": "post-userqualification-api-v1-userqualification",
+    "method": "POST",
+    "path": "/api/v1/userqualification",
+    "resource": "userqualification",
+    "priority": "P1",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [
+      "(Userqualification.userId : ${userId})"
+    ],
+    "source": "mirage/route-handlers/userqualification.js"
+  },
+  {
+    "id": "patch-userqualification-api-v1-userqualification-id",
+    "method": "PATCH",
+    "path": "/api/v1/userqualification/:id",
+    "resource": "userqualification",
+    "priority": "P1",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [
+      "(Userqualification.userId : ${userId})"
+    ],
+    "source": "mirage/route-handlers/userqualification.js"
+  },
+  {
+    "id": "delete-userqualification-api-v1-userqualification-id",
+    "method": "DELETE",
+    "path": "/api/v1/userqualification/:id",
+    "resource": "userqualification",
+    "priority": "P1",
+    "testFocus": "delete/authorization/state-change",
+    "queryTemplates": [
+      "(Userqualification.userId : ${userId})"
+    ],
+    "source": "mirage/route-handlers/userqualification.js"
+  },
+  {
+    "id": "get-userskill-api-v1-userskill",
+    "method": "GET",
+    "path": "/api/v1/userskill",
+    "resource": "userskill",
+    "priority": "P1",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [
+      "(Userskill.userId : ${userId})"
+    ],
+    "source": "mirage/route-handlers/userskill.js"
+  },
+  {
+    "id": "post-userskill-api-v1-userskill",
+    "method": "POST",
+    "path": "/api/v1/userskill",
+    "resource": "userskill",
+    "priority": "P1",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [
+      "(Userskill.userId : ${userId})"
+    ],
+    "source": "mirage/route-handlers/userskill.js"
+  },
+  {
+    "id": "patch-userskill-api-v1-userskill-id",
+    "method": "PATCH",
+    "path": "/api/v1/userskill/:id",
+    "resource": "userskill",
+    "priority": "P1",
+    "testFocus": "update/validation/shape",
+    "queryTemplates": [
+      "(Userskill.userId : ${userId})"
+    ],
+    "source": "mirage/route-handlers/userskill.js"
+  },
+  {
+    "id": "delete-userskill-api-v1-userskill-id",
+    "method": "DELETE",
+    "path": "/api/v1/userskill/:id",
+    "resource": "userskill",
+    "priority": "P1",
+    "testFocus": "delete/authorization/state-change",
+    "queryTemplates": [
+      "(Userskill.userId : ${userId})"
+    ],
+    "source": "mirage/route-handlers/userskill.js"
+  },
+  {
+    "id": "post-vote-api-v1-vote",
+    "method": "POST",
+    "path": "/api/v1/vote",
+    "resource": "vote",
+    "priority": "P1",
+    "testFocus": "create/validation/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/vote.js"
+  },
+  {
+    "id": "delete-vote-api-v1-vote-id",
+    "method": "DELETE",
+    "path": "/api/v1/vote/:id",
+    "resource": "vote",
+    "priority": "P1",
+    "testFocus": "delete/authorization/state-change",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/vote.js"
+  },
+  {
+    "id": "get-wiki-api-v1-wiki",
+    "method": "GET",
+    "path": "/api/v1/wiki",
+    "resource": "wiki",
+    "priority": "P1",
+    "testFocus": "list/filter/pagination/shape",
+    "queryTemplates": [],
+    "source": "mirage/route-handlers/wiki.js"
+  }
+]

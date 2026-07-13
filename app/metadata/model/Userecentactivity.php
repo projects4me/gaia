@@ -6,11 +6,11 @@
 
 $models['Userecentactivity'] = array(
     'tableName' => 'user_activities',
-    'viewSql' => 'SELECT Activity.id, User.id as userId, User.name as createdUserName, Activity.relatedTo, Activity.relatedId, Activity.type, Activity.dateCreated, Activity.relatedActivity, Activity.relatedActivityId, relatedActivityModule, Issue.projectId, Issue.issueNumber
-                    from users as User left join activities as Activity on Activity.createdUser = getModelId()
-                    left join issues as Issue on Issue.id = Activity.relatedId AND Activity.relatedTo = "issue" AND Issue.createdUser = getModelId() 
-                  where User.id = getModelId()
-                  ORDER BY Activity.dateCreated DESC LIMIT 5;',
+    'viewSql' => 'SELECT "Activity".id, "User".id as "userId", "User".name as "createdUserName", "Activity"."relatedTo", "Activity"."relatedId", "Activity".type, "Activity"."dateCreated", "Activity"."relatedActivity", "Activity"."relatedActivityId", "Activity"."relatedActivityModule", "Issue"."projectId", "Issue"."issueNumber"
+                    FROM users AS "User" LEFT JOIN activities AS "Activity" ON "Activity"."createdUser" = getmodelid()
+                    LEFT JOIN issues AS "Issue" ON "Issue".id = "Activity"."relatedId" AND "Activity"."relatedTo" = \'issue\' AND "Issue"."createdUser" = getmodelid()
+                  WHERE "User".id = getmodelid()
+                  ORDER BY "Activity"."dateCreated" DESC LIMIT 5',
     'isView' => true,
     'fields' => array(
         'id' => array(

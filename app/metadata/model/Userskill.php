@@ -115,12 +115,6 @@ $models['Userskill'] = array(
         'modifiedUserBehavior',
         // 'softDeleteBehavior',
         'modelIdentifierBehavior',
-    ),
-    'acl' => array(
-        'assignment' => array(
-            'field' => 'userId',
-            'condition' => 'Userskill.userId=:userId:'
-        )
     )
 );
 

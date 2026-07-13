@@ -117,7 +117,6 @@ $models['Permission'] = array(
         ),
     ),
     'behaviors' => [
-        'aclBehavior',
         'auditBehavior',
         'dateCreatedBehavior',
         'dateModifiedBehavior',

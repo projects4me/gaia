@@ -131,8 +131,7 @@ $models['Membership'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior',
-        'aclBehavior'
+        'modifiedUserBehavior'
     ),
     'acl' => [
         'assignment' => [

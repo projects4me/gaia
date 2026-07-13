@@ -57,7 +57,11 @@ class Driver
             $migrationsDir = APP_PATH . metaManager::basePath . '/model';
 
             // setup the database using global settings
-            metaMigration::setup($GLOBALS['settings']->database);
+            $handler = $this->di->get('migrationHandler');
+            $migrationDb = new \Phalcon\Config(
+                $handler->prepareMigrationConfig($GLOBALS['settings']->database->toArray())
+            );
+            metaMigration::setup($migrationDb);
 
             // iterate through all the model metadata defined in the system
             $iterator = new \DirectoryIterator($migrationsDir);

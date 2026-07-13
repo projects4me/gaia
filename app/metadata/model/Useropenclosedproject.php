@@ -6,13 +6,14 @@
 
 $models['Useropenclosedproject'] = array(
     'tableName' => 'user_open_closed_projects',
-    'viewSql' => 'SELECT 
-                UUID() as id,
-                sum(case when Project.done = "0" then 1 else 0 end) as openProjects,
-                sum(case when Project.done = "1" then 1 else 0 end) as closedProjects,
-                Membership.userId as userId from projects as Project 
-                inner join memberships as Membership on Membership.relatedId = Project.id
-                GROUP BY Membership.userId;',
+    'viewSql' => 'SELECT
+                MIN(uuid_generate_v4()::varchar) as id,
+                SUM(CASE WHEN "Project".done = \'0\' THEN 1 ELSE 0 END) as "openProjects",
+                SUM(CASE WHEN "Project".done = \'1\' THEN 1 ELSE 0 END) as "closedProjects",
+                "Membership"."userId" as "userId"
+                FROM projects AS "Project"
+                INNER JOIN memberships AS "Membership" ON "Membership"."relatedId" = "Project".id
+                GROUP BY "Membership"."userId"',
     'isView' => true,
     'fields' => array(
         'id' => array(

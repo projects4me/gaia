@@ -268,7 +268,6 @@ $models['Project'] = array(
         )
     ),
     'behaviors' => array(
-        'aclBehavior',
         'auditBehavior',
         'dateCreatedBehavior',
         'dateModifiedBehavior',
@@ -278,26 +277,6 @@ $models['Project'] = array(
         'modelIdentifierBehavior',
         'currentUserBehavior',
         'shortCodeBehavior'
-    ),
-    'acl' => array(
-        'assignment' => array(
-            'relatedModel' => array(
-                'namespace' => '\\Gaia\\MVC\\Models\\Membership',
-                'condition' => 'Membership.relatedId=Project.id AND Membership.relatedTo="project" AND Membership.userId=:userId:',
-                'alias' => 'Membership'
-            )
-        ),
-        'group' => array(
-            'relatedModel' => array(
-                'Membership' => '\\Gaia\\MVC\\Models\\Membership',
-            ),
-            'columns' => array(
-                'Membership.relatedTo',
-                'Membership.relatedId'
-            ),
-            'condition' => "Membership.userId=:userId: AND Membership.relatedTo='project'",
-            'relatedKey' => 'projectId'
-        )
     )
 );
 

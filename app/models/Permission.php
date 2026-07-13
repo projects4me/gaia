@@ -48,15 +48,17 @@ class Permission extends Model
      */
     private $allowedFields = [];
 
+    public $projectId = null;
+
     /**
      * This function is used to check whether the user has access to given resource or not.
      *
      * @param string $resource      Name of the resource.
      * @param string $resourceAlias Alias of the resource.
      */
-    public function checkModelAccess($resource, $resourceAlias)
+    public function checkModelAccess($resource, $resourceAlias, $action)
     {
-        if (!$this->checkAccess($resource, $resourceAlias)) {
+        if (!$this->checkAccess($resource, $resourceAlias, $action)) {
             throw new \Gaia\Exception\Access("Access Denied to $resource");
         }
     }
@@ -68,13 +70,13 @@ class Permission extends Model
      * @param string $resource Name of the resource.
      * @param array  $rels     Array of model relationships.
      */
-    public function checkRelsAccess($resource, $rels)
+    public function checkRelsAccess($resource, $rels, $action)
     {
         $di = \Phalcon\Di::getDefault();
 
         foreach (array_keys($rels) as $relName) {
             $relatedModelName = $di->get('metaManager')->getRelatedModelName($resource, $relName);
-            $this->checkAccess($relatedModelName, $relName);
+            $this->checkAccess($relatedModelName, $relName, $action, true);
         }
     }
 
@@ -88,28 +90,25 @@ class Permission extends Model
      * @param string $resource      Name of the resource.
      * @param string $resourceAlias Alias of the resource.
      */
-    public function checkAccess($resource, $resourceAlias = null)
+    public function checkAccess($resource, $resourceAlias = null, $action= 'readF', $isRel = false)
     {
-        $parentResource = $this->getParentResource($resource);
-        $alias = ($resourceAlias ?? $resource);
-        $accessGranted = true;
-
-        $resource = ($this->resourcePrefix) ? ("$this->resourcePrefix.$resource") : $resource;
-        if (isset($this->permissions[$resource]) || (isset($parentResource->entity) && isset($this->permissions[$parentResource->entity]))) {
-            $accessLevel = isset($this->permissions[$resource])
-                                ? max($this->permissions[$resource])
-                                : max($this->permissions[$parentResource->entity]);
-
-            if ($accessLevel !== null) {
-                $this->resourcesPermissions[$alias] = $accessLevel;
-            }
-
-            if ($accessLevel === '0') {
-                $accessGranted = false;
+        if (isset($this->permissions[$resource])) {
+            $permissions = $this->permissions[$resource];
+            $accessLevel = 0;
+            foreach ($permissions as $permission) {
+                if ($permission[$action] === null) {
+                    $accessLevel = 9;
+                }
+                $accessLevel = max($accessLevel, $permission[$action]);
+                $this->resourcesPermissions[$resource][] = ['accessLevel' => $permission[$action], 'projectId' => $permission['projectId']];
             }
         }
 
-        return $accessGranted;
+        if ($accessLevel === 0 && !$isRel) {
+            throw new \Gaia\Exception\Access("Access Denied to $resource");
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -128,8 +127,8 @@ class Permission extends Model
         $di = \Phalcon\Di::getDefault();
 
         $projectId = $projectId ?? $this->getProjectId($modelName, $params);
-
         if ($projectId) {
+            $this->projectId = $projectId;
             $membershipQueryBuilder = $di->get('modelsManager')->createBuilder();
 
             $membershipQueryBuilder->columns(["Membership.roleId"]);
@@ -154,18 +153,24 @@ class Permission extends Model
         //Fetch Permissions of User by Role
         $permissionsByRole = (new self())->buildPermissionsQuery(null, $action);
         $permissionsByRole->innerJoin("Gaia\\MVC\\Models\\Membership", "Membership.roleId=Permission.roleId $membershipRoleIdCondition AND Membership.userId='$userId'", "Membership");
-        $permissionsByRole->groupBy(['Membership.roleId', 'Resource2.id']);
+        // $permissionsByRole->groupBy(['Membership.roleId', 'Resource2.id']);
 
         $results[] = $permissionsByRole->getQuery()->execute();
 
         //Fetch Permissions of User
-        $permissionsByUser = (new self())->buildPermissionsQuery(null, $action);
-        $permissionsByUser->innerJoin("Gaia\\MVC\\Models\\Aclcontroller", "Aclcontroller.id=Permission.controllerId AND Aclcontroller.relatedId='$userId'", "Aclcontroller");
-        $results[] = $permissionsByUser->getQuery()->execute();
+        // $permissionsByUser = (new seslf())->buildPermissionsQuery(null, $action);
+        // $permissionsByUser->innerJoin("Gaia\\MVC\\Models\\Aclcontroller", "Aclcontroller.id=Permission.controllerId AND Aclcontroller.relatedId='$userId'", "Aclcontroller");
+        // $results[] = $permissionsByUser->getQuery()->execute();
 
         foreach ($results as $permission) {
             foreach ($permission as $value) {
-                $permissions[$value->entity][] = $value->$action;
+                if (!isset($permissions[$value->entity])) {
+                    $permissions[$value->entity] = [];
+                }
+                $permissions[$value->entity][] = [
+                    $action => $value->$action,
+                    'projectId' => $value->projectId
+                ];
             }
         }
 
@@ -184,15 +189,10 @@ class Permission extends Model
         $di = \Phalcon\Di::getDefault();
 
         $queryBuilder = $di->get('modelsManager')->createBuilder();
-        $queryBuilder->columns(["Permission.$action", 'Resource1.entity']);
+        $queryBuilder->columns(["Permission.$action", 'Resource1.entity', 'Membership.relatedId as projectId']);
         $queryBuilder->from(['Resource1' => 'Gaia\\MVC\\Models\\Resource']);
 
         //joins
-        $queryBuilder->leftJoin(
-            "Gaia\\MVC\\Models\\Resource",
-            "Resource2.lft <= Resource1.lft AND Resource2.rht >= Resource1.rht",
-            "Resource2"
-        );
         $queryBuilder->leftJoin("Gaia\\MVC\\Models\\Permission", "Permission.resourceId=Resource1.id", "Permission");
 
         //clauses
@@ -210,6 +210,18 @@ class Permission extends Model
     {
         return $this->resourcesPermissions[$resource] ?? null;
     }
+
+    // public function getModelAccess($modelName)
+    // {
+    //     $permissions = $this->permissions[$modelName] ?? null;
+    //     $accessLevel = null;
+    //     if ($permissions) {
+    //         foreach ($permissions as $permission) {
+    //             $accessLevel = max($accessLevel, $permission['readF']);
+    //         }
+    //     }
+    //     return $accessLevel;
+    // }
 
     /**
      * This function is used to set the prefix of the resource, that will be useful

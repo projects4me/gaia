@@ -33,7 +33,12 @@ class DialectFactory
     public function __construct(\Phalcon\Di\FactoryDefault $di, $dialectType)
     {
         $this->di = $di;
-        $dialect = "\Gaia\Db\Dialect\\".$dialectType;
+        $dialectMap = array(
+            'Postgres' => 'Postgres',
+            'Mysql' => 'Mysql',
+        );
+        $dialectClass = isset($dialectMap[$dialectType]) ? $dialectMap[$dialectType] : $dialectType;
+        $dialect = "\Gaia\Db\Dialect\\" . $dialectClass;
         $this->dialect = new $dialect();
     }
 

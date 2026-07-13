@@ -41,6 +41,7 @@ class currentUserBehavior extends Behavior implements BehaviorInterface
     {
         global $currentUser;
 
-        $model->getReadConnection()->query("select @currentUserId:= '{$currentUser->id}'");
+        $query = $model->getDI()->get('dialect')->setCurrentUserIdentifier($currentUser->id);
+        $model->getReadConnection()->query($query);
     }
 }

@@ -105,4 +105,37 @@ class Mysql
                 CHARACTER SET {$charset} 
                 COLLATE {$collation}";
     }
+
+    /**
+     * This function returns sql to set the model identifier session variable.
+     *
+     * @param string $modelId Model identifier value
+     * @return string
+     */
+    public function setModelIdentifier($modelId)
+    {
+        return "SELECT @modelId:= '{$this->escapeLiteral($modelId)}'";
+    }
+
+    /**
+     * This function returns sql to set the current user identifier session variable.
+     *
+     * @param string $userId Current user identifier value
+     * @return string
+     */
+    public function setCurrentUserIdentifier($userId)
+    {
+        return "SELECT @currentUserId:= '{$this->escapeLiteral($userId)}'";
+    }
+
+    /**
+     * This function escapes a string literal for use in SQL.
+     *
+     * @param string $value Literal value to escape
+     * @return string
+     */
+    private function escapeLiteral($value)
+    {
+        return str_replace("'", "''", (string) $value);
+    }
 }

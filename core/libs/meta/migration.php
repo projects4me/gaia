@@ -66,8 +66,12 @@ class Migration extends PhalconMigration
         // Get the definitions of table/view from the meta data
         $meta = $this->getMetaData($model);
 
-        //check whether meta is for table or View
-        isset($meta[$model]['isView']) ? $this->migrateView($model, $meta) : $this->migrateTable($model, $meta);
+        if (isset($meta[$model]['isView'])) {
+            $this->migrateView($model, $meta);
+            return;
+        }
+
+        $this->migrateTable($model, $meta);
     }
 
     /**
@@ -93,19 +97,22 @@ class Migration extends PhalconMigration
      */
     private function migrateTable($model, $meta)
     {
+        $handler = $this->di->get('migrationHandler');
         $tableDefinition = $this->prepareTableDefinition($model, $meta);
-        // Sync the table in the database
+        $tableName = $tableDefinition['tableName'];
+
+        if ($handler->shouldSyncExistingTableOnly(self::$connection, $tableName)) {
+            $handler->syncExistingTable(self::$connection, $tableName, $tableDefinition['columns']);
+            $this->migrateTriggers($model, $meta);
+            return;
+        }
+
         $this->morphTable(
-            $tableDefinition['tableName'],
+            $tableName,
             array(
                 'columns' => $tableDefinition['columns'],
                 'indexes' => $tableDefinition['indexes'],
-                'options' => array(
-                    'TABLE_TYPE' => 'BASE TABLE',
-                    'AUTO_INCREMENT' => '',
-                    'ENGINE' => 'InnoDB',
-                    'TABLE_COLLATION' => 'utf8_unicode_ci'
-                )
+                'options' => $handler->getTableOptions(),
             )
         );
 
@@ -122,6 +129,10 @@ class Migration extends PhalconMigration
      */
     private function migrateTriggers($model, $meta)
     {
+        if (empty($meta[$model]['triggers'])) {
+            return;
+        }
+
         foreach ($meta[$model]['triggers'] as $schema) {
             $triggerExistsQuery = $this->di->get('dialect')->showTrigger($meta[$model]['tableName']);
             $triggers = $this::$connection->query($triggerExistsQuery)->fetchAll();
@@ -151,12 +162,16 @@ class Migration extends PhalconMigration
     {
         $meta = $this->getMetaData($model);
 
+        if (empty($meta[$model]['functions'])) {
+            return;
+        }
+
         foreach ($meta[$model]['functions'] as $schema) {
             $functionExistsQuery = $this->di->get('dialect')->showFunction($schema['functionName']);
             $result = $this::$connection->query($functionExistsQuery)->fetch();
 
             //if function doesn't exists, then create.
-            if ($result['Name'] == '') {
+            if (empty($result) || empty($result['Name'])) {
                 $query = $this->di->get('dialect')->createFunction($schema['functionName'], $schema['parameters'], $schema['returnType'], $schema['statement']);
                 $this::$connection->execute($query);
             }
@@ -173,6 +188,9 @@ class Migration extends PhalconMigration
      */
     private function prepareTableDefinition($model, $meta)
     {
+        $handler = $this->di->get('migrationHandler');
+        $metaManager = $this->di->get('metaManager');
+
         // Initialize the array to be filled in
         $tableDescription = array(
             'tableName' => $meta[$model]['tableName'],
@@ -183,7 +201,10 @@ class Migration extends PhalconMigration
         // Traverse through the fields and process them
         foreach ($meta[$model]['fields'] as $field => $schema) {
             $fieldOptions = array();
-            $fieldOptions['type'] = $this->di->get('metaManager')->getFieldType($schema['type']);
+            $fieldOptions['type'] = $handler->normalizeColumnType(
+                $schema['type'],
+                $metaManager->getFieldType($schema['type'])
+            );
             if (isset($schema['length'])) {
                 $fieldOptions['size'] = $schema['length'];
             }
@@ -195,6 +216,13 @@ class Migration extends PhalconMigration
             if (isset($schema['default'])) {
                 $fieldOptions['default'] = $schema['default'];
             }
+
+            $fieldOptions = $handler->prepareColumnOptions(
+                $schema,
+                $fieldOptions,
+                $meta[$model]['indexes'],
+                $field
+            );
 
             // Add charset and collation if both are present in metadata
             if ($this->shouldApplyCollation($schema['type'])
@@ -210,6 +238,9 @@ class Migration extends PhalconMigration
 
         // Traverse through the indexes and process them
         foreach ($meta[$model]['indexes'] as $field => $type) {
+            if ($type === 'primary' && !$handler->shouldEmitPrimaryIndex()) {
+                continue;
+            }
             // need to be able to recognize all types of indexes
             $indexType = '';
             $name = '';
@@ -275,6 +306,13 @@ class Migration extends PhalconMigration
      */
     public function migrateColumnCollation($model)
     {
+        $handler = $this->di->get('migrationHandler');
+
+        if (!$handler->supportsCollationMigration()) {
+            return;
+        }
+
+        $dialect = $this->di->get('dialect');
         $meta = $this->getMetaData($model);
         
         // Skip if this is a view
@@ -283,7 +321,6 @@ class Migration extends PhalconMigration
         }
 
         $tableName = $meta[$model]['tableName'];
-        $dialect = $this->di->get('dialect');
         $metaManager = $this->di->get('metaManager');
 
         // Process each field that has charset and collation defined

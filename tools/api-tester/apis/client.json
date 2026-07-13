@@ -1,0 +1,1737 @@
+{
+  "name": "gaia-client-apis",
+  "version": 1,
+  "basePath": "/api/v1",
+  "apis": [
+    {
+      "id": "get-activity-api-v1-activity",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "post-comment-api-v1-comment",
+      "method": "POST",
+      "path": "/api/v1/comment",
+      "resource": "comment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "comment",
+          "attributes": {
+            "relatedTo": "conversationrooms",
+            "relatedId": "{conversationroomId}",
+            "comment": "<p>API Tester Runtime Comment</p>"
+          }
+        }
+      },
+      "store": {
+        "runtime.commentId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "relatedTo",
+          "relatedId",
+          "comment"
+        ],
+        "attributesEqual": {
+          "relatedTo": "conversationrooms",
+          "relatedId": "{conversationroomId}",
+          "comment": "<p>API Tester Runtime Comment</p>"
+        }
+      }
+    },
+    {
+      "id": "get-comment-api-v1-comment-runtime-id",
+      "method": "GET",
+      "path": "/api/v1/comment/{runtime.commentId}",
+      "resource": "comment",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.commentId}"
+        ]
+      }
+    },
+    {
+      "id": "patch-comment-api-v1-comment-id",
+      "method": "PATCH",
+      "path": "/api/v1/comment/{runtime.commentId}",
+      "resource": "comment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "comment",
+          "id": "{runtime.commentId}",
+          "attributes": {
+            "comment": "<p>API Tester Runtime Comment Updated</p>"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "comment": "<p>API Tester Runtime Comment Updated</p>"
+        }
+      }
+    },
+    {
+      "id": "delete-comment-api-v1-comment-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/comment/{runtime.commentId}",
+      "resource": "comment",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "get-comment-api-v1-comment",
+      "method": "GET",
+      "path": "/api/v1/comment",
+      "resource": "comment",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "get-conversationroom-api-v1-conversationroom",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "query": "((Conversationroom.id : ${params.c_id}) AND (Conversationroom.projectId : ${projectId}))",
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "post-conversationroom-api-v1-conversationroom",
+      "method": "POST",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "conversationroom",
+          "attributes": {
+            "subject": "API Tester Runtime Room",
+            "description": "Created by api-tester mutation lifecycle",
+            "roomType": "discussion",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}"
+          }
+        }
+      },
+      "store": {
+        "runtime.conversationroomId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "subject",
+          "roomType",
+          "projectId"
+        ],
+        "attributesEqual": {
+          "subject": "API Tester Runtime Room",
+          "roomType": "discussion",
+          "projectId": "{projectId}"
+        }
+      }
+    },
+    {
+      "id": "get-conversationroom-api-v1-conversationroom-runtime-id",
+      "method": "GET",
+      "path": "/api/v1/conversationroom/{runtime.conversationroomId}",
+      "resource": "conversationroom",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.conversationroomId}"
+        ],
+        "attributesEqual": {
+          "subject": "API Tester Runtime Room"
+        }
+      }
+    },
+    {
+      "id": "patch-conversationroom-api-v1-conversationroom-id",
+      "method": "PATCH",
+      "path": "/api/v1/conversationroom/{runtime.conversationroomId}",
+      "resource": "conversationroom",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "conversationroom",
+          "id": "{runtime.conversationroomId}",
+          "attributes": {
+            "subject": "API Tester Runtime Room Updated"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "subject": "API Tester Runtime Room Updated"
+        }
+      }
+    },
+    {
+      "id": "delete-conversationroom-api-v1-conversationroom-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/conversationroom/{runtime.conversationroomId}",
+      "resource": "conversationroom",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "get-dashboard-api-v1-dashboard-id",
+      "method": "GET",
+      "path": "/api/v1/dashboard/{dashboardId}",
+      "resource": "dashboard",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      },
+      "enabled": false,
+      "skipReason": "No dashboard route registered in core/config/routes.php"
+    },
+    {
+      "id": "get-issue-api-v1-issue",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "api-test-issue-000001"
+        ]
+      },
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "sort": "issueNumber",
+        "order": "ASC"
+      }
+    },
+    {
+      "id": "get-issue-api-v1-issue-id",
+      "method": "GET",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "api-test-issue-000001"
+        ],
+        "attributesPresent": [
+          "subject",
+          "projectId"
+        ]
+      }
+    },
+    {
+      "id": "post-issue-api-v1-issue",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "API Tester Runtime Issue",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.issueId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "subject",
+          "owner",
+          "assignee",
+          "reportedUser"
+        ],
+        "attributesEqual": {
+          "subject": "API Tester Runtime Issue",
+          "owner": "{userId}",
+          "assignee": "{userId}",
+          "reportedUser": "{userId}"
+        }
+      }
+    },
+    {
+      "id": "get-issue-api-v1-issue-runtime-id",
+      "method": "GET",
+      "path": "/api/v1/issue/{runtime.issueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.issueId}"
+        ]
+      }
+    },
+    {
+      "id": "patch-issue-api-v1-issue-id",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{runtime.issueId}",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{runtime.issueId}",
+          "attributes": {
+            "subject": "API Tester Runtime Issue Updated",
+            "priority": "high"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "subject": "API Tester Runtime Issue Updated",
+          "priority": "high"
+        }
+      }
+    },
+    {
+      "id": "delete-issue-api-v1-issue-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/issue/{runtime.issueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "post-issueplanning-api-v1-issueplanning",
+      "method": "POST",
+      "path": "/api/v1/issueplanning",
+      "resource": "issueplanning",
+      "auth": true,
+      "body": {
+        "issueNumber": "{params.issue_number}"
+      },
+      "expects": {
+        "status": [
+          200,
+          500,
+          502,
+          503
+        ],
+        "shape": "json"
+      },
+      "enabled": false,
+      "skipReason": "LLM service dependency; not a JSON:API CRUD resource"
+    },
+    {
+      "id": "get-issuestatus-api-v1-issuestatus",
+      "method": "GET",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "query": "(Issuestatus.projectId : ${projectId})",
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "get-issuestatus-api-v1-issuestatus-id",
+      "method": "GET",
+      "path": "/api/v1/issuestatus/{issuestatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "get-issuetype-api-v1-issuetype",
+      "method": "GET",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "query": "(Issuetype.system : 1)",
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "get-issuetype-api-v1-issuetype-id",
+      "method": "GET",
+      "path": "/api/v1/issuetype/{issuetypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "post-issuetype-api-v1-issuetype",
+      "method": "POST",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "attributes": {
+            "name": "API Tester Type",
+            "system": 0,
+            "projectId": "{projectId}",
+            "description": "Created by api-tester"
+          }
+        }
+      },
+      "store": {
+        "runtime.issuetypeId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "name",
+          "system",
+          "projectId",
+          "description"
+        ],
+        "attributesEqual": {
+          "name": "API Tester Type",
+          "system": "0",
+          "projectId": "{projectId}",
+          "description": "Created by api-tester"
+        }
+      }
+    },
+    {
+      "id": "get-issuetype-api-v1-issuetype-runtime-id",
+      "method": "GET",
+      "path": "/api/v1/issuetype/{runtime.issuetypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.issuetypeId}"
+        ]
+      }
+    },
+    {
+      "id": "patch-issuetype-api-v1-issuetype-id",
+      "method": "PATCH",
+      "path": "/api/v1/issuetype/{runtime.issuetypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "id": "{runtime.issuetypeId}",
+          "attributes": {
+            "name": "API Tester Type Updated",
+            "description": "Updated by api-tester"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Tester Type Updated",
+          "description": "Updated by api-tester"
+        }
+      }
+    },
+    {
+      "id": "delete-issuetype-api-v1-issuetype-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/issuetype/{runtime.issuetypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "post-issuewatcher-api-v1-issuewatcher",
+      "method": "POST",
+      "path": "/api/v1/issuewatcher",
+      "resource": "issuewatcher",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuewatcher",
+          "attributes": {
+            "issueId": "{issueId}",
+            "userId": "{userId}",
+            "isWatching": 1
+          }
+        }
+      },
+      "store": {
+        "runtime.issuewatcherId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "issueId",
+          "userId",
+          "isWatching"
+        ],
+        "attributesEqual": {
+          "issueId": "{issueId}",
+          "userId": "{userId}",
+          "isWatching": "1"
+        }
+      }
+    },
+    {
+      "id": "patch-issuewatcher-api-v1-issuewatcher-id",
+      "method": "PATCH",
+      "path": "/api/v1/issuewatcher/{runtime.issuewatcherId}",
+      "resource": "issuewatcher",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuewatcher",
+          "id": "{runtime.issuewatcherId}",
+          "attributes": {
+            "isWatching": 0
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "isWatching": "0"
+        }
+      }
+    },
+    {
+      "id": "get-membership-api-v1-membership",
+      "method": "GET",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "post-membership-api-v1-membership",
+      "method": "POST",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "attributes": {
+            "roleId": "3",
+            "userId": "{memberUserId}",
+            "relatedTo": "project",
+            "relatedId": "{projectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.membershipId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "roleId",
+          "userId",
+          "relatedTo",
+          "relatedId"
+        ],
+        "attributesEqual": {
+          "roleId": "3",
+          "userId": "{memberUserId}",
+          "relatedTo": "project",
+          "relatedId": "{projectId}"
+        }
+      }
+    },
+    {
+      "id": "get-membership-api-v1-membership-runtime-id",
+      "method": "GET",
+      "path": "/api/v1/membership/{runtime.membershipId}",
+      "resource": "membership",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.membershipId}"
+        ]
+      }
+    },
+    {
+      "id": "patch-membership-api-v1-membership-id",
+      "method": "PATCH",
+      "path": "/api/v1/membership/{runtime.membershipId}",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "id": "{runtime.membershipId}",
+          "attributes": {
+            "roleId": "2"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "roleId": "2"
+        }
+      }
+    },
+    {
+      "id": "delete-membership-api-v1-membership-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/membership/{runtime.membershipId}",
+      "resource": "membership",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      },
+      "query": {
+        "newAssigneeId": "{userId}"
+      }
+    },
+    {
+      "id": "get-milestone-api-v1-milestone",
+      "method": "GET",
+      "path": "/api/v1/milestone",
+      "resource": "milestone",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "query": "((Milestone.projectId : ${projectId}) AND ((Milestone.status : in_progress) OR (Milestone.status : planned)))",
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "get-milestone-api-v1-milestone-id",
+      "method": "GET",
+      "path": "/api/v1/milestone/{milestoneId}",
+      "resource": "milestone",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "post-milestone-api-v1-milestone",
+      "method": "POST",
+      "path": "/api/v1/milestone",
+      "resource": "milestone",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "milestone",
+          "attributes": {
+            "name": "API Tester Runtime Sprint",
+            "description": "Created by api-tester mutation lifecycle",
+            "status": "planned",
+            "milestoneType": "sprint",
+            "projectId": "{projectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.milestoneId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "name",
+          "status",
+          "milestoneType",
+          "projectId"
+        ],
+        "attributesEqual": {
+          "name": "API Tester Runtime Sprint",
+          "status": "planned",
+          "milestoneType": "sprint",
+          "projectId": "{projectId}"
+        }
+      }
+    },
+    {
+      "id": "get-milestone-api-v1-milestone-runtime-id",
+      "method": "GET",
+      "path": "/api/v1/milestone/{runtime.milestoneId}",
+      "resource": "milestone",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.milestoneId}"
+        ],
+        "attributesEqual": {
+          "name": "API Tester Runtime Sprint"
+        }
+      }
+    },
+    {
+      "id": "patch-milestone-api-v1-milestone-id",
+      "method": "PATCH",
+      "path": "/api/v1/milestone/{runtime.milestoneId}",
+      "resource": "milestone",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "milestone",
+          "id": "{runtime.milestoneId}",
+          "attributes": {
+            "name": "API Tester Runtime Sprint Updated",
+            "status": "in_progress"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Tester Runtime Sprint Updated",
+          "status": "in_progress"
+        }
+      }
+    },
+    {
+      "id": "delete-milestone-api-v1-milestone-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/milestone/{runtime.milestoneId}",
+      "resource": "milestone",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "get-permission-api-v1-permission",
+      "method": "GET",
+      "path": "/api/v1/permission",
+      "resource": "permission",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "get-project-api-v1-project",
+      "method": "GET",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "query": "((Project.name STARTS A) OR (Project.name STARTS P))",
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "get-project-api-v1-project-id",
+      "method": "GET",
+      "path": "/api/v1/project/{projectId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "post-project-api-v1-project",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "API Tester Runtime Project",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.projectId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "name",
+          "status",
+          "type"
+        ],
+        "attributesEqual": {
+          "name": "API Tester Runtime Project",
+          "status": "new",
+          "type": "software"
+        }
+      }
+    },
+    {
+      "id": "get-project-api-v1-project-runtime-id",
+      "method": "GET",
+      "path": "/api/v1/project/{runtime.projectId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.projectId}"
+        ]
+      }
+    },
+    {
+      "id": "patch-project-api-v1-project-id",
+      "method": "PATCH",
+      "path": "/api/v1/project/{runtime.projectId}",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "id": "{runtime.projectId}",
+          "attributes": {
+            "name": "API Tester Runtime Project Updated",
+            "status": "in_progress"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Tester Runtime Project Updated",
+          "status": "in_progress"
+        }
+      }
+    },
+    {
+      "id": "delete-project-api-v1-project-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/project/{runtime.projectId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "get-role-api-v1-role",
+      "method": "GET",
+      "path": "/api/v1/role",
+      "resource": "role",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "get-role-api-v1-role-id",
+      "method": "GET",
+      "path": "/api/v1/role/{roleId}",
+      "resource": "role",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "post-role-api-v1-role",
+      "method": "POST",
+      "path": "/api/v1/role",
+      "resource": "role",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "role",
+          "attributes": {
+            "name": "API Tester Role",
+            "description": "Created by api-tester"
+          }
+        }
+      },
+      "store": {
+        "runtime.roleId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "name",
+          "description"
+        ],
+        "attributesEqual": {
+          "name": "API Tester Role",
+          "description": "Created by api-tester"
+        }
+      }
+    },
+    {
+      "id": "get-role-api-v1-role-runtime-id",
+      "method": "GET",
+      "path": "/api/v1/role/{runtime.roleId}",
+      "resource": "role",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.roleId}"
+        ]
+      }
+    },
+    {
+      "id": "patch-role-api-v1-role-id",
+      "method": "PATCH",
+      "path": "/api/v1/role/{runtime.roleId}",
+      "resource": "role",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "role",
+          "id": "{runtime.roleId}",
+          "attributes": {
+            "description": "Updated by api-tester"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "description": "Updated by api-tester"
+        }
+      }
+    },
+    {
+      "id": "delete-role-api-v1-role-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/role/{runtime.roleId}",
+      "resource": "role",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "get-savedsearch-api-v1-savedsearch",
+      "method": "GET",
+      "path": "/api/v1/savedsearch",
+      "resource": "savedsearch",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "query": "(Savedsearch.relatedTo : issue) AND (Savedsearch.projectId : ${this.trackedProject.getProjectId()})",
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "get-systemnotification-api-v1-systemnotification",
+      "method": "GET",
+      "path": "/api/v1/systemnotification",
+      "resource": "systemnotification",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "get-systemnotification-api-v1-systemnotification-id",
+      "method": "GET",
+      "path": "/api/v1/systemnotification/{systemnotificationId}",
+      "resource": "systemnotification",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      },
+      "enabled": false,
+      "skipReason": "Route allows GET list only (no identifier); get-by-id not wired"
+    },
+    {
+      "id": "post-systemnotification-api-v1-systemnotification",
+      "method": "POST",
+      "path": "/api/v1/systemnotification",
+      "resource": "systemnotification",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "systemnotification",
+          "attributes": {
+            "description": "API tester notification create",
+            "context": "{\"source\":\"api-tester\"}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "enabled": false,
+      "skipReason": "Route allows GET only; POST not permitted"
+    },
+    {
+      "id": "put-systemnotification-api-v1-systemnotification-id",
+      "method": "PUT",
+      "path": "/api/v1/systemnotification/{systemnotificationId}",
+      "resource": "systemnotification",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "systemnotification",
+          "attributes": {
+            "description": "updated"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      },
+      "enabled": false,
+      "skipReason": "Route allows GET only; PUT not permitted"
+    },
+    {
+      "id": "delete-systemnotification-api-v1-systemnotification-id",
+      "method": "DELETE",
+      "path": "/api/v1/systemnotification/{systemnotificationId}",
+      "resource": "systemnotification",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      },
+      "enabled": false,
+      "skipReason": "Route allows GET only; DELETE not permitted"
+    },
+    {
+      "id": "post-systemnotificationrecipient-api-v1-systemnotificationrecipient",
+      "method": "POST",
+      "path": "/api/v1/systemnotificationrecipient",
+      "resource": "systemnotificationrecipient",
+      "auth": true,
+      "body": {
+        "markAllAsRead": true,
+        "userId": "{userId}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "patch-systemnotificationrecipient-api-v1-systemnotificationrecipient-id",
+      "method": "PATCH",
+      "path": "/api/v1/systemnotificationrecipient/{systemnotificationrecipientId}",
+      "resource": "systemnotificationrecipient",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "systemnotificationrecipient",
+          "id": "{systemnotificationrecipientId}",
+          "attributes": {
+            "isRead": 1
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "isRead": "1"
+        }
+      }
+    },
+    {
+      "id": "get-systemsetting-api-v1-systemsetting",
+      "method": "GET",
+      "path": "/api/v1/systemsetting",
+      "resource": "systemsetting",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "get-timelog-api-v1-timelog",
+      "method": "GET",
+      "path": "/api/v1/timelog",
+      "resource": "timelog",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "post-timelog-api-v1-timelog",
+      "method": "POST",
+      "path": "/api/v1/timelog",
+      "resource": "timelog",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "timelog",
+          "attributes": {
+            "issueId": "{issueId}",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "minutes": 15,
+            "hours": 1,
+            "days": 0,
+            "context": "spent",
+            "description": "API Tester runtime timelog"
+          }
+        }
+      },
+      "store": {
+        "runtime.timelogId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "issueId",
+          "projectId",
+          "context",
+          "minutes"
+        ],
+        "attributesEqual": {
+          "issueId": "{issueId}",
+          "projectId": "{projectId}",
+          "context": "spent",
+          "minutes": "15"
+        }
+      }
+    },
+    {
+      "id": "get-timelog-api-v1-timelog-runtime-id",
+      "method": "GET",
+      "path": "/api/v1/timelog/{runtime.timelogId}",
+      "resource": "timelog",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.timelogId}"
+        ],
+        "attributesEqual": {
+          "context": "spent",
+          "minutes": "15"
+        }
+      }
+    },
+    {
+      "id": "delete-timelog-api-v1-timelog-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/timelog/{runtime.timelogId}",
+      "resource": "timelog",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "post-token-api-v1-token",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "expects": {
+        "status": 200,
+        "shape": "oauth.token"
+      }
+    },
+    {
+      "id": "get-user-api-v1-user",
+      "method": "GET",
+      "path": "/api/v1/user",
+      "resource": "user",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "query": "(User.id : ${userId})",
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "get-user-api-v1-user-id",
+      "method": "GET",
+      "path": "/api/v1/user/{userId}",
+      "resource": "user",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "post-user-api-v1-user",
+      "method": "POST",
+      "path": "/api/v1/user",
+      "resource": "user",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "user",
+          "attributes": {
+            "name": "API Tester Created",
+            "email": "api-tester-created@example.com",
+            "password": "unit-testing",
+            "accountStatus": "active"
+          }
+        }
+      },
+      "store": {
+        "runtime.userId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "name",
+          "email"
+        ],
+        "attributesEqual": {
+          "name": "API Tester Created",
+          "email": "api-tester-created@example.com"
+        }
+      }
+    },
+    {
+      "id": "get-user-api-v1-user-runtime-id",
+      "method": "GET",
+      "path": "/api/v1/user/{runtime.userId}",
+      "resource": "user",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.userId}"
+        ]
+      }
+    },
+    {
+      "id": "patch-user-api-v1-user-id",
+      "method": "PATCH",
+      "path": "/api/v1/user/{runtime.userId}",
+      "resource": "user",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "user",
+          "id": "{runtime.userId}",
+          "attributes": {
+            "name": "API Tester Created Updated",
+            "title": "QA"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Tester Created Updated",
+          "title": "QA"
+        }
+      }
+    },
+    {
+      "id": "delete-user-api-v1-user-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/user/{runtime.userId}",
+      "resource": "user",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "get-userqualification-api-v1-userqualification",
+      "method": "GET",
+      "path": "/api/v1/userqualification",
+      "resource": "userqualification",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "query": "(Userqualification.userId : ${userId})",
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "post-userqualification-api-v1-userqualification",
+      "method": "POST",
+      "path": "/api/v1/userqualification",
+      "resource": "userqualification",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "userqualification",
+          "attributes": {
+            "userId": "{userId}",
+            "type": "education",
+            "title": "BS Computer Science",
+            "institution": "API Tester University"
+          }
+        }
+      },
+      "store": {
+        "runtime.userqualificationId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "userId",
+          "type",
+          "title",
+          "institution"
+        ],
+        "attributesEqual": {
+          "userId": "{userId}",
+          "type": "education",
+          "title": "BS Computer Science",
+          "institution": "API Tester University"
+        }
+      }
+    },
+    {
+      "id": "get-userqualification-api-v1-userqualification-runtime-id",
+      "method": "GET",
+      "path": "/api/v1/userqualification/{runtime.userqualificationId}",
+      "resource": "userqualification",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.userqualificationId}"
+        ]
+      }
+    },
+    {
+      "id": "patch-userqualification-api-v1-userqualification-id",
+      "method": "PATCH",
+      "path": "/api/v1/userqualification/{runtime.userqualificationId}",
+      "resource": "userqualification",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "userqualification",
+          "id": "{runtime.userqualificationId}",
+          "attributes": {
+            "title": "MS Computer Science",
+            "institution": "API Tester Grad School"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "title": "MS Computer Science",
+          "institution": "API Tester Grad School"
+        }
+      }
+    },
+    {
+      "id": "delete-userqualification-api-v1-userqualification-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/userqualification/{runtime.userqualificationId}",
+      "resource": "userqualification",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "get-userskill-api-v1-userskill",
+      "method": "GET",
+      "path": "/api/v1/userskill",
+      "resource": "userskill",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "query": "(Userskill.userId : ${userId})",
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "post-userskill-api-v1-userskill",
+      "method": "POST",
+      "path": "/api/v1/userskill",
+      "resource": "userskill",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "userskill",
+          "attributes": {
+            "userId": "{userId}",
+            "name": "php",
+            "proficiencyLevel": "intermediate"
+          }
+        }
+      },
+      "store": {
+        "runtime.userskillId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "userId",
+          "name",
+          "proficiencyLevel"
+        ],
+        "attributesEqual": {
+          "userId": "{userId}",
+          "name": "php",
+          "proficiencyLevel": "intermediate"
+        }
+      }
+    },
+    {
+      "id": "get-userskill-api-v1-userskill-runtime-id",
+      "method": "GET",
+      "path": "/api/v1/userskill/{runtime.userskillId}",
+      "resource": "userskill",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.userskillId}"
+        ]
+      }
+    },
+    {
+      "id": "patch-userskill-api-v1-userskill-id",
+      "method": "PATCH",
+      "path": "/api/v1/userskill/{runtime.userskillId}",
+      "resource": "userskill",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "userskill",
+          "id": "{runtime.userskillId}",
+          "attributes": {
+            "proficiencyLevel": "advanced"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "proficiencyLevel": "advanced"
+        }
+      }
+    },
+    {
+      "id": "delete-userskill-api-v1-userskill-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/userskill/{runtime.userskillId}",
+      "resource": "userskill",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "post-vote-api-v1-vote",
+      "method": "POST",
+      "path": "/api/v1/vote",
+      "resource": "vote",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "vote",
+          "attributes": {
+            "vote": 1,
+            "relatedTo": "conversationrooms",
+            "relatedId": "{conversationroomId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.voteId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "vote",
+          "relatedTo",
+          "relatedId"
+        ],
+        "attributesEqual": {
+          "vote": "1",
+          "relatedTo": "conversationrooms",
+          "relatedId": "{conversationroomId}"
+        }
+      }
+    },
+    {
+      "id": "delete-vote-api-v1-vote-runtime-id",
+      "method": "DELETE",
+      "path": "/api/v1/vote/{runtime.voteId}",
+      "resource": "vote",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "get-wiki-api-v1-wiki",
+      "method": "GET",
+      "path": "/api/v1/wiki",
+      "resource": "wiki",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "query": {
+        "limit": 5,
+        "page": 1
+      }
+    },
+    {
+      "id": "get-user-api-v1-user-me",
+      "method": "GET",
+      "path": "/api/v1/user/me",
+      "resource": "user",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "email"
+        ]
+      }
+    },
+    {
+      "id": "get-user-api-v1-user-unauthorized",
+      "method": "GET",
+      "path": "/api/v1/user",
+      "resource": "user",
+      "auth": false,
+      "query": {
+        "limit": 1,
+        "page": 1
+      },
+      "expects": {
+        "status": [
+          401,
+          403
+        ],
+        "shape": "error"
+      }
+    },
+    {
+      "id": "get-issue-api-v1-issue-null-milestone-dsl",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "(((Issue.milestoneId NULL) OR (Issue.milestoneId EMPTY)) AND (Issue.projectId : {projectId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "api-test-issue-000002"
+        ]
+      }
+    }
+  ]
+}

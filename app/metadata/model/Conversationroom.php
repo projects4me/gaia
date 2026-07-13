@@ -187,8 +187,7 @@ $models['Conversationroom'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior',
-        'aclBehavior'
+        'softDeleteBehavior'
     )
 );
 

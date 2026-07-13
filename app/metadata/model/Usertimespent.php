@@ -6,12 +6,13 @@
 
 $models['Usertimespent'] = array(
     'tableName' => 'user_time_spent',
-    'viewSql' => 'SELECT UUID() as id, 
-                  SUM((Timelog.days * 8 * 60) + (Timelog.hours * 60) + Timelog.minutes) as totalMinutes, User.id as userId from users as User 
-                  join issues as Issue on User.id = Issue.createdUser
-                  join time_logs as Timelog on Timelog.issueId = Issue.id
-                  where Timelog.deleted = "0"
-                  GROUP BY User.id;',
+    'viewSql' => 'SELECT MIN(uuid_generate_v4()::varchar) as id,
+                  SUM(("Timelog".days * 8 * 60) + ("Timelog".hours * 60) + "Timelog".minutes) as "totalMinutes", "User".id as "userId"
+                  FROM users AS "User"
+                  JOIN issues AS "Issue" ON "User".id = "Issue"."createdUser"
+                  JOIN time_logs AS "Timelog" ON "Timelog"."issueId" = "Issue".id
+                  WHERE "Timelog".deleted = \'0\'
+                  GROUP BY "User".id',
     'isView' => true,
     'fields' => array(
         'id' => array(

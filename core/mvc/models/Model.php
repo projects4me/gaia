@@ -436,10 +436,6 @@ class Model extends PhalconModel
     {
         $phalconQuery = $query->getPhalconQuery();
 
-        if ($this->unbufferedExecution && ($this->action === 'read' || $this->action === 'readAll')) {
-            return $this->executeUnbuffered($phalconQuery);
-        }
-
         return $phalconQuery->execute();
     }
 
@@ -454,7 +450,7 @@ class Model extends PhalconModel
     {
         $sqlData = $phalconQuery->getSql();
         $pdo     = $this->getDI()->get('dbUnbuffered');
-        $pdo->query("select @modelId:= '{$this->query->modelId}'");
+        $pdo->query($this->getDI()->get('dialect')->setModelIdentifier($this->query->modelId));
         $cursor  = $pdo->query(
             $sqlData['sql'],
             $sqlData['bind']      ?? [],

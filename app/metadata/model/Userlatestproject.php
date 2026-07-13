@@ -6,13 +6,13 @@
 
 $models['Userlatestproject'] = array(
     'tableName' => 'user_latest_projects',
-    'viewSql' => 'SELECT Membership.userId, Project.id as id, Project.name as name, Project.description as description, Project.status as status, Membership.lastActivityDate as lastActivityDate, Project.shortCode as shortCode,
-                    (select COUNT(Issue.id) from issues as Issue where Issue.projectId = Project.id) as totalIssues,
-                    (select COUNT(Issue.id) as totalIssues from issues as Issue left join issue_statuses as IssueStatus on IssueStatus.id = Issue.statusId where Issue.projectId = Project.id AND IssueStatus.done="1") as closedIssues
-                    from projects as Project inner join memberships as Membership on Membership.relatedId = Project.id AND Membership.userId = getModelId()
-                  where Membership.createdUser = getModelId()
-                  GROUP BY Project.id
-                  ORDER BY Membership.lastActivityDate DESC LIMIT 5;',
+    'viewSql' => 'SELECT "Membership"."userId", "Project".id as id, "Project".name as name, "Project".description as description, "Project".status as status, "Membership"."lastActivityDate" as "lastActivityDate", "Project"."shortCode" as "shortCode",
+                    (SELECT COUNT("Issue".id) FROM issues AS "Issue" WHERE "Issue"."projectId" = "Project".id) as "totalIssues",
+                    (SELECT COUNT("Issue".id) FROM issues AS "Issue" LEFT JOIN issue_statuses AS "IssueStatus" ON "IssueStatus".id = "Issue"."statusId" WHERE "Issue"."projectId" = "Project".id AND "IssueStatus".done = \'1\') as "closedIssues"
+                    FROM projects AS "Project" INNER JOIN memberships AS "Membership" ON "Membership"."relatedId" = "Project".id AND "Membership"."userId" = getmodelid()
+                  WHERE "Membership"."createdUser" = getmodelid()
+                  GROUP BY "Project".id, "Project".name, "Project".description, "Project".status, "Project"."shortCode", "Membership"."userId", "Membership"."lastActivityDate"
+                  ORDER BY "Membership"."lastActivityDate" DESC LIMIT 5',
     'isView' => true,
     'fields' => array(
         'id' => array(

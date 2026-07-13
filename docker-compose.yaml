@@ -4,49 +4,113 @@ services:
     container_name: gaia-dev
     environment:
       FRONTEND_HOST: localhost:4200
+      SMTP_USERNAME: 'projectsfourme@gmail.com'
+      SMTP_PASSWORD: 'acgl zdcf txkc oixp'
+      DB_ADAPTER: Postgres
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USERNAME: nouman
+      DB_PASSWORD: nouman
+      DB_NAME: ${DB_NAME:-pr4m}
     build: .
     volumes:
       - ./:/var/www/html
       - vendor:/var/www/html/vendor
-      - php_config:/usr/local/etc/php/conf.d/
+      - ./docker/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/gaia.ini:ro
       - xhgui:/usr/local/src
     ports:
       - '8080:80'
     expose:
       - '80'
     extra_hosts:
-      - "host.docker.internal:host-gateway"      
+      - "host.docker.internal:host-gateway"
     depends_on:
-      - mysql
-    links:
-      - mysql
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
 
-  mysql:
-    container_name: mysql-dev
-    image: mysql:5.7
+  # api-tester target for black-box api testing (pr4m_test).
+  gaia-test:
+    container_name: gaia-test
     environment:
-      MYSQL_DATABASE: pr4m
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: nouman
-      MYSQL_PASSWORD: nouman
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    ports:
-      - '3307:3306'
-    command: --sql_mode="" --general-log=1 --general-log-file=/var/log/mysqld.log
+      FRONTEND_HOST: localhost:4200
+      SMTP_USERNAME: 'projectsfourme@gmail.com'
+      SMTP_PASSWORD: 'acgl zdcf txkc oixp'
+      DB_ADAPTER: Postgres
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USERNAME: nouman
+      DB_PASSWORD: nouman
+      DB_NAME: pr4m_test
+    build: .
     volumes:
-     - ./db/Dump20241114.sql:/docker-entrypoint-initdb.d/Dump20241114.sql
-     - mysql_db:/var/lib/mysql     
-    
+      - ./:/var/www/html
+      - vendor:/var/www/html/vendor
+      - ./docker/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/zz-custom.ini:ro
+      - xhgui:/usr/local/src
+    ports:
+      - '8081:80'
+    expose:
+      - '80'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+
+  postgres:
+    container_name: postgres-dev
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: pr4m
+      POSTGRES_USER: nouman
+      POSTGRES_PASSWORD: nouman
+    # Query log: docker exec -it postgres-dev tail -f /var/lib/postgresql/data/log/postgresql.log
+    command:
+      - postgres
+      - -c
+      - logging_collector=on
+      - -c
+      - log_directory=/var/lib/postgresql/data/log
+      - -c
+      - log_filename=postgresql.log
+      - -c
+      - log_statement=all
+      - -c
+      - log_min_duration_statement=0
+      - -c
+      - log_line_prefix=%t [%p] db=%d user=%u
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+      - ./db/Dump20260710.sql:/docker-entrypoint-initdb.d/Dump20260710.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nouman -d pr4m"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - backend
+
   xhgui:
     image: edyan/xhgui:php7.4
     ports:
-      - "8000:80"
+      - "8001:80"
     volumes:
-      - xhgui:/usr/local/src  
+      - xhgui:/usr/local/src
+    networks:
+      - backend
 
 volumes:
-  mysql_db:
-  php_config:
+  postgres_db:
   xhgui:
   vendor:
+
+networks:
+  backend:
+    driver: bridge
+    external: true

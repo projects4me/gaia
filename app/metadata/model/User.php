@@ -432,12 +432,6 @@ $models['User'] = array(
         'modelIdentifierBehavior',
         'encryptPasswordBehavior',
         'currentUserBehavior'
-    ),
-    'acl' => array(
-        'assignment' => array(
-            'field' => 'createdUser',
-            'condition' => 'User.createdUser=:userId:'
-        )
     )
 );
 

@@ -352,14 +352,7 @@ $models['Issue'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior',
-        'aclBehavior'
-    ),
-    'acl' => array(
-        'assignment' => array(
-            'field' => 'createdUser',
-            'condition' => 'Issue.createdUser=:userId:'
-        )
+        'softDeleteBehavior'
     )
 );
 
