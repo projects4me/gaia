@@ -1040,7 +1040,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 // Apply ACL on fields.
                 $this->applyACL($values, $params);
 
-                // Only fields, on which user has access, will become part of the response.
+                // Only fields on which user has access become part of the response.
                 $values = $this->filterFieldsByACL($permission->getAllowedFields(), $values);
 
                 $this->flattenModelData($values, $result);
@@ -1056,10 +1056,10 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     }
 
     /**
-     * Applies ACL permissions to the data.
+     * Applies field ACL permissions to the data.
      *
-     * @param  array $values The data to apply ACL permissions on.
-     * @param  array $params User requested parameters.
+     * @param  array $values
+     * @param  array $params
      * @return void
      */
     private function applyACL(&$values, $params)
@@ -1438,11 +1438,12 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     }
 
     /**
-     * This function will only return those fields on which user has access.
+     * Keep only fields the user is allowed to see.
      *
      * @method filterFieldsByACL
-     * @param  $allowedFields Array of fields on which user has access.
-     * @param  $values        Result retreived from database.
+     * @param  array $allowedFields
+     * @param  array $values
+     * @return array
      */
     protected function filterFieldsByACL($allowedFields, $values)
     {

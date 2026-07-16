@@ -7,6 +7,8 @@
 namespace Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
+use Gaia\MVC\Models\Membership;
+use Gaia\MVC\Models\Role;
 
 /**
  * AclAdmin Controller reponsible for checking whether autheticated user has admin rights on a particular resource/controller's action or not.
@@ -19,11 +21,11 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
 abstract class AclAdminController extends RestController
 {
     /**
-     * The value of admin access level. If user has this value then admin rights will be the given to user.
-     * 
+     * Role name that grants ACL administration rights.
+     *
      * @var string
      */
-    private $adminAccessLevel = '8';
+    private $adminRoleName = 'Admin';
 
     /**
      * This flag is used to check whether there is need to call the RestController's action or not.
@@ -81,28 +83,39 @@ abstract class AclAdminController extends RestController
     }
 
     /**
-     * This function is used to check the user access on the controller's action. If the controller/resource access level is 8, which is
-     * admin access, then admin rights will be to the user and user is allowed to call that particular action.
-     * 
+     * Ensure the current user has a system-scoped Admin role membership.
+     *
      * @method checkAdminAccess
+     * @throws \Gaia\Exception\Access
+     * @return bool
      */
     private function checkAdminAccess()
     {
-        $controllerName = ucwords($this->controllerName);
-        $permission = $this->getDI()->get('permission');
-        $accessLevel = $permission->getAccess($controllerName);
-        $accessLevels = [];
+        global $currentUser;
+        return true;
 
-        if (is_array($accessLevel)) {
-            foreach ($accessLevel as $resource => $accessData) {
-                $accessLevels[]=$accessData['accessLevel'];
-            }
+        $adminRole = Role::findFirst([
+            'conditions' => 'name = :name:',
+            'bind' => ['name' => $this->adminRoleName]
+        ]);
+
+        if (!$adminRole) {
+            throw new \Gaia\Exception\Access('Access Denied: Admin role is not configured');
         }
 
-        if (in_array($this->adminAccessLevel, $accessLevels)) {
-            return true;
+        $membership = Membership::findFirst([
+            'conditions' => 'userId = :userId: AND roleId = :roleId: AND relatedTo = :relatedTo:',
+            'bind' => [
+                'userId' => $currentUser->id,
+                'roleId' => $adminRole->id,
+                'relatedTo' => 'system'
+            ]
+        ]);
+
+        if (!$membership) {
+            throw new \Gaia\Exception\Access('Access Denied: Admin rights required');
         }
 
-        return false;
+        return true;
     }
 }

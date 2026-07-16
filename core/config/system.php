@@ -30,17 +30,12 @@ $config['system'] = [
             'permissionFlags' => $permissionFlags,
             'apiOptions' => [
                 'field' => [
-                    'allow' => '9',
+                    'allow' => '1',
                     'none' => '0'
                 ],
                 'model' => [
-                    'all' => '9',
-                    'assignment' => '1',
+                    'allow' => '1',
                     'none' => '0'
-                ],
-                'groups' => [
-                    'project' => '2',
-                    'conversation' => '3'
                 ]
             ],
             'modelGroups' => $modelGroups

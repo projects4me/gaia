@@ -76,7 +76,7 @@ class shortCodeBehavior extends Behavior implements BehaviorInterface
         $shortCode = $this->extractShortCode($shortCode);
         $shortCode = $this->updateShortCodeIfExistsInDatabase($shortCode);
 
-        return strtoupper($shortCode);
+        return strtolower($shortCode);
     }
 
     /**
@@ -87,13 +87,13 @@ class shortCodeBehavior extends Behavior implements BehaviorInterface
      */
     protected function generateShortCodeFromSingleWord($name)
     {
-        $shortCode = strtoupper(substr($name, 0, 5));
+        $shortCode = strtolower(substr($name, 0, 5));
         $shortCode = $this->extractShortCode($shortCode);
 
         // Check if the short code exists in the database
         $shortCode = $this->updateShortCodeIfExistsInDatabase($shortCode);
 
-        return $shortCode;
+        return strtolower($shortCode);
     }
 
     /**

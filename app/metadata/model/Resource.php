@@ -29,22 +29,6 @@ $models['Resource'] = array(
             'length' => '50',
             'null' => false,
         ),
-        'lft' => array(
-            'name' => 'lft',
-            'label' => 'LBL_RESOURCES_LEFT',
-            'type' => 'int',
-            'length' => '11',
-            'null' => true,
-            'acl' => false
-        ),
-        'rht' => array(
-            'name' => 'rht',
-            'label' => 'LBL_RESOURCES_RIGHT',
-            'type' => 'int',
-            'length' => '11',
-            'null' => true,
-            'acl' => false
-        ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_RESOURCES_DATE_CREATED',
@@ -129,7 +113,6 @@ $models['Resource'] = array(
                 'primaryKey' => 'parentId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Resource',
                 'relatedKey' => 'id',
-                'conditionExclusive' => 'Resource.lft BETWEEN child.lft AND child.rht',
                 'relType' => 'INNER'
             ),
         ),
