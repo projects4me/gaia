@@ -111,29 +111,6 @@ SQL
 psql_db "$TEST_DB" -v ON_ERROR_STOP=1 -f "$SCHEMA_DUMP"
 rm_dump "$SCHEMA_DUMP"
 
-echo "==> Patching issueNumber sequence name for Phalcon PDO lastInsertId (lowercase lookup)"
-psql_db "$TEST_DB" -v ON_ERROR_STOP=1 <<'SQL'
--- Schema dump keeps quoted camelCase sequence name. Phalcon asks PDO for
--- lastInsertId('issues_issueNumber_seq'), which Postgres resolves as lowercase.
-DO $$
-BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_class c
-    JOIN pg_namespace n ON n.oid = c.relnamespace
-    WHERE n.nspname = 'public' AND c.relkind = 'S' AND c.relname = 'issues_issueNumber_seq'
-  ) AND NOT EXISTS (
-    SELECT 1 FROM pg_class c
-    JOIN pg_namespace n ON n.oid = c.relnamespace
-    WHERE n.nspname = 'public' AND c.relkind = 'S' AND c.relname = 'issues_issuenumber_seq'
-  ) THEN
-    ALTER SEQUENCE "issues_issueNumber_seq" RENAME TO issues_issuenumber_seq;
-  END IF;
-END $$;
-
-ALTER TABLE issues
-  ALTER COLUMN "issueNumber" SET DEFAULT nextval('issues_issuenumber_seq'::regclass);
-SQL
-
 echo "==> Patching auth helpers/policies in $TEST_DB for seeded test user"
 # Note: pr4m dump hardcodes a production user id in auth helpers/RLS.
 # For pr4m_test we bind them to the seeded api-tester user so issue reads work
@@ -268,6 +245,10 @@ BEGIN
   ) ON COMMIT DROP;
   INSERT INTO seed_ctx VALUES (v_global_role, v_bug_type, v_new_status);
 END $$;
+
+-- Remove leftover runtime tags from previous api-tester runs (unique on tag)
+DELETE FROM tags
+WHERE tag IN ('api-tester-tag', 'api-tester-tag Updated');
 
 INSERT INTO users (
   id, password, email, name, deleted, "createdUser", "modifiedUser",
@@ -459,7 +440,7 @@ ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, deleted = 0;
 
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
-  'issues_issuenumber_seq',
+  '"issues_issueNumber_seq"',
   GREATEST((SELECT COALESCE(MAX("issueNumber"), 1) FROM issues), 1)
 );
 
