@@ -18,4 +18,13 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Issue extends Model
 {
+    /**
+     * Sequence name for the issue model.
+     *
+     * @return string
+     */
+    public function getSequenceName()
+    {
+        return '"issues_issueNumber_seq"';
+    }
 }
