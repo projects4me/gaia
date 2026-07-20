@@ -74,8 +74,8 @@ class PermissionController extends AclAdminController
     }
 
     /**
-     * This method is used to prepare and return the default permissions by traversing all of the models
-     * metadata.
+     * Prepare default permissions for ACL-allowed models and their fields.
+     * Relationships are omitted — access is governed by the related model itself.
      *
      * @method getDefaultPermissions
      * @return array
@@ -83,58 +83,41 @@ class PermissionController extends AclAdminController
     protected function getDefaultPermissions()
     {
         $path = APP_PATH . '/app/metadata/model';
-        $permissions = [];
-        $allowedRelTypes = ['hasOne', 'belongsTo'];
+        $permissions = ['data' => []];
 
-        // Get all models names.
         global $settings;
         $models = $settings['models'];
 
         $permissionInterface = $this->getPermissionInterface($path);
         $permissionIndex = 0;
+
         foreach ($models as $modelName) {
-            if ($this->canApplyModelAcl($modelName)) {
-                // Get metadata of the model.
-                $data = $this->di->get('metaManager')->getModelMeta($modelName);
-
-                $this->addPermissions($permissionIndex, $modelName, [$modelName], $permissions, $permissionInterface, false, $data);
-
-                $requestedFieldTypes = ['fields', 'relationships'];
-                foreach ($requestedFieldTypes as $requestedFieldType) {
-                    // Here fields can be relationship types when $requestedFieldType is relationships.
-                    $requestedFields = array_keys($data[$requestedFieldType]);
-
-                    if ($requestedFieldType !== 'relationships') {
-                        $this->addPermissions($permissionIndex, $modelName, $requestedFields, $permissions, $permissionInterface, true, $data);
-                    } else {
-                        $relatedTypes = $requestedFields;
-                        foreach ($relatedTypes as $relType) {
-
-                            // Only create permissions for relationships of type hasOne and belongsTo.
-                            if (in_array($relType, $allowedRelTypes)) {
-                                $rels = array_keys($data[$requestedFieldType][$relType]);
-                                $this->addPermissions($permissionIndex, $modelName, $rels, $permissions, $permissionInterface, true, $data);
-                            }
-                        }
-                    }
-                }
+            if (!$this->canApplyModelAcl($modelName)) {
+                continue;
             }
+
+            $data = $this->di->get('metaManager')->getModelMeta($modelName);
+
+            $this->addPermissions($permissionIndex, $modelName, [$modelName], $permissions, $permissionInterface, false, $data);
+
+            $requestedFields = array_keys($data['fields'] ?? []);
+            $this->addPermissions($permissionIndex, $modelName, $requestedFields, $permissions, $permissionInterface, true, $data);
         }
 
         return $permissions;
     }
 
     /**
-     * This method is used to create permission model by the given field lists and return the permissions array.
+     * Create permission entries for the given field/model list.
      *
      * @method addPermissions
-     * @param  int    $permissionIndex     Permissions array index.
-     * @param  string $modelName           Model name.
-     * @param  array  $requestedFields     Fields array.
-     * @param  array  $permissions         Permissions array.
-     * @param  array  $permissionInterface Permission default interface.
-     * @param  bool   $addPrefix           Boolean flag to add model as a prefix on field.
-     * @param  array  $metadata            The metadata of given model.
+     * @param  int    $permissionIndex
+     * @param  string $modelName
+     * @param  array  $requestedFields
+     * @param  array  $permissions
+     * @param  array  $permissionInterface
+     * @param  bool   $addPrefix
+     * @param  array  $metadata
      * @return void
      */
     protected function addPermissions(&$permissionIndex, $modelName, $requestedFields, &$permissions, $permissionInterface, $addPrefix, $metadata)
@@ -149,22 +132,17 @@ class PermissionController extends AclAdminController
             );
         }
 
-        // Add fields.
         foreach ($modelFields as $modelField) {
-            list(, $fieldName) = explode('.', $modelField);
+            $parts = explode('.', $modelField);
+            $fieldName = $parts[1] ?? $modelField;
 
-            $fieldName = ($fieldName ?? $modelField);
-
-            /*
-            * If the field is 'id' or any other custom identifier e.g. issueNumber for issue than that
-            * field will not become the part of permissions array.
-            */
             if ($this->canApplyFieldAcl($fieldName, $metadata)) {
                 $permissionIndex++;
-                $permissionInterface['attributes']['resourceName'] = $modelField;
-                $permissionInterface['attributes']['resourceId'] = "new_resource_{$permissionIndex}";
-                $permissionInterface['id'] = create_guid();
-                $permissions['data'][] = $permissionInterface;
+                $entry = $permissionInterface;
+                $entry['attributes']['resourceName'] = $modelField;
+                $entry['attributes']['resourceId'] = "new_resource_{$permissionIndex}";
+                $entry['id'] = create_guid();
+                $permissions['data'][] = $entry;
             }
         }
     }
@@ -319,7 +297,6 @@ class PermissionController extends AclAdminController
             throw new \Gaia\Exception\Exception("Please specify resource name");
         }
 
-
         if ($this->canApplyAcl($resourceName)) {
             // Get permission flags from configurations.
             global $settings;
@@ -328,220 +305,43 @@ class PermissionController extends AclAdminController
             // Get only required permission flags.
             $permissionFlags = array_intersect($permissionFlags->toArray(), array_keys($values));
 
-            // Retrieve Resource from database using given resource name.
-            $metadataPath = APP_PATH . '/app/metadata/model';
-            $resourceModel = \Gaia\MVC\Models\Resource::findFirst("entity='{$resourceName}'");
-
-            // Get metadata of the resource.
-            $requestedModelName = $resourceModel->entity;
-            $resourceMetaData = $this->getDI()->get('metaManager')->getModelMeta($requestedModelName);
-
-            if (str_contains($requestedModelName, '.') === true) {
-                list($requestedModule, $requestedField) = explode(".", $requestedModelName);
-                $requestedModelName = $requestedModule;
-            }
-
-            if ($requestedField) {
-                $this->passFieldChecks(
-                    $permissionFlags,
-                    $values
-                );
-            } elseif (!$requestedField) {
-                $this->passModelChecks(
-                    $resourceMetaData,
-                    $requestedModelName,
-                    $permissionFlags,
-                    $values
-                );
-            }
+            $this->passBinaryFlagChecks($permissionFlags, $values);
 
             return true;
         }
     }
 
     /**
-     * This function verify all checks, related to fields, that are required to create a permission.
+     * Validate permission flags are binary allow/deny values (0 or 1).
      *
-     * @method passFieldChecks
+     * @method passBinaryFlagChecks
      * @param  array $permissionFlags Array of permission flags.
      * @param  array $values          Array containing values of the request.
      * @return bool
      */
-    private function passFieldChecks($permissionFlags, $values)
+    private function passBinaryFlagChecks($permissionFlags, $values)
     {
-        $allowedAccessLevels = ["0", "9"];
+        $allowedValues = ['0', '1', ''];
 
         foreach ($permissionFlags as $flag) {
-            if (!empty($values[$flag]) && !in_array($values[$flag], $allowedAccessLevels)) {
-                $errorMessage = "You're not allowed to set {$values[$flag]}";
-                $suggestion = "You can only set 0 and 9 access levels";
+            if (!isset($values[$flag])) {
+                continue;
+            }
+
+            $value = (string) $values[$flag];
+            if (!in_array($value, $allowedValues, true)) {
                 throw new \Gaia\Exception\Permission(
-                    $errorMessage,
+                    "You're not allowed to set {$values[$flag]}",
                     null,
                     null,
                     [
-                        "suggestion" => $suggestion
+                        'suggestion' => 'You can only set 0 (none) or 1 (allow)'
                     ]
                 );
             }
         }
 
         return true;
-    }
-
-    /**
-     * This function verify all checks, related to model, that are required to create a permission.
-     *
-     * @method passModelChecks
-     * @param  array  $resourceMeta       The array containing metadata of resource.
-     * @param  string $requestedModelName The name of the model for which permission is going to be created.
-     * @param  array  $permissionFlags    Array of permission flags.
-     * @param  array  $values             Array containing values of the request.
-     * @return bool
-     */
-    private function passModelChecks($resourceMeta, $requestedModelName, $permissionFlags, $values)
-    {
-        $allowedGroups = $this->getDI()->get('metaManager')->getGroups();
-        $modelGroups = $this->getDI()->get('metaManager')->getModelGroups($requestedModelName);
-
-        $allowedPermissions = ['10', '11', '12', '90', '91', '99'];
-
-        // Check whether the given resource/model is dependent on group or not.
-        if ($modelGroups) {
-            $this->passGroupDependentCheck($modelGroups, $permissionFlags, $allowedPermissions, $values, $requestedModelName);
-        } elseif (in_array($requestedModelName, $allowedGroups)) {
-            $this->passSelfDependentCheck($permissionFlags, $allowedPermissions, $values, $requestedModelName);
-        }
-
-        return true;
-    }
-
-    /**
-     * This function is called when a resource is dependent on some groups and is used to verify all checks required
-     * to create permission.
-     *
-     * @method passGroupDependentCheck
-     * @param  array  $modelGroups        Array containing the name of groups on which the resource in dependent.
-     * @param  array  $permissionFlags    Array of permission flags.
-     * @param  array  $allowedPermissions The array of allowed permissions.
-     * @param  array  $values             Array containing values of the request.
-     * @param  string $requestedModelName The name of the model for which permission is going to be created.
-     * @return bool
-     */
-    private function passGroupDependentCheck(
-        $modelGroups,
-        $permissionFlags,
-        $allowedPermissions,
-        $values,
-        $requestedModelName
-    ) {
-        foreach ($modelGroups as $group) {
-            $groupPermission = $this->retrievePermission(ucfirst($group), $values);
-
-            if ($groupPermission) {
-                foreach ($permissionFlags as $flag) {
-                    $permissionSet = "{$groupPermission->$flag}{$values[$flag]}";
-                    if (!in_array($permissionSet, $allowedPermissions)) {
-                        $errorMessage = "You cannot set access level of {$values[$flag]} on {$requestedModelName} module because its group '{$group}' is having access level of {$groupPermission->$flag}.";
-                        $suggestion = "You can use access levels e.g. 0, 1, 2 and 9";
-                        throw new \Gaia\Exception\Permission(
-                            $errorMessage,
-                            null,
-                            null,
-                            [
-                                "suggestion" => $suggestion
-                            ]
-                        );
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * This function is called when a resource is itself a group and verify all checks required to create permission.
-     *
-     * @method passSelfDependentCheck
-     * @param  array  $permissionFlags    Array of permission flags.
-     * @param  array  $allowedPermissions The array of allowed permissions.
-     * @param  array  $values             Array containing values of the request.
-     * @param  string $requestedModelName The name of the model for which permission is going to be created.
-     * @return bool
-     */
-    private function passSelfDependentCheck($permissionFlags, $allowedPermissions, $values, $requestedModelName)
-    {
-        /*
-        * If the requested model is itself a group then fetch all of the list of dependent models and
-        * retrieve there permissions and check the eligibility for permission creation.
-        */
-
-        global $settings;
-        $path = APP_PATH . '/app/metadata/model';
-        $models = $settings['models'];
-        $dependentModels = [];
-        $dependentPermissions = [];
-
-        // Get list of dependent groups.
-        foreach ($models as $modelName) {
-            $group = $this->getDI()->get('metaManager')->getModelGroups($modelName);
-
-            if (in_array($requestedModelName, $group)) {
-                $dependentModels[] = $modelName;
-            }
-        }
-
-        // Retrieve permissions of dependent models.
-        foreach ($dependentModels as $dependentModel) {
-            $permission = $this->retrievePermission($dependentModel, $values);
-            ($permission) && ($dependentPermissions[$dependentModel] = $permission);
-        }
-
-        // Iterate all of the dependent permissions and check the eligibility.
-        foreach ($dependentPermissions as $dependentModel => $dependentPermission) {
-            foreach ($permissionFlags as $flag) {
-                $permissionSet = "{$values[$flag]}{$dependentPermission->$flag}";
-                if (!in_array($permissionSet, $allowedPermissions)) {
-                    $errorMessage = "You cannot set access level of {$values[$flag]} on {$requestedModelName} module because its dependent group '{$dependentModel}' is having access level of {$dependentPermission->$flag}.";
-                    $suggestion = "You can use access levels e.g. 1 and 9";
-                    throw new \Gaia\Exception\Permission(
-                        $errorMessage,
-                        null,
-                        null,
-                        [
-                            "suggestion" => $suggestion
-                        ]
-                    );
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * This function is used to retrieve permission from the database against the given resourceName, roleId
-     * or controllerId.
-     *
-     * @method retrievePermission
-     * @param  string $resourceName The name of resource.
-     * @param  array  $values       The array of default values for permission model.
-     * @return \Gaia\MVC\Models\Permission
-     */
-    protected function retrievePermission($resourceName, $values)
-    {
-        $resource = \Gaia\MVC\Models\Resource::findFirst("entity='{$resourceName}'");
-        // Check that permission is available against given resourceId, roleId or controllerId.
-        $expectedRelatedIds = ['roleId', 'controllerId'];
-
-        foreach ($expectedRelatedIds as $expectedRelatedId) {
-            $clause = "resourceId='{$resource->id}'";
-            if (isset($values[$expectedRelatedId])) {
-                $clause .= " AND {$expectedRelatedId}='{$values[$expectedRelatedId]}'";
-                $permission = \Gaia\MVC\Models\Permission::findFirst($clause);
-            }
-        }
-        return $permission;
     }
 
     /**
@@ -559,32 +359,31 @@ class PermissionController extends AclAdminController
         ];
 
         $modelName = $resourceName;
+        $fieldName = null;
 
         if (str_contains($resourceName, ".")) {
-            list($modelName, $fieldName) = explode(".", $resourceName);
+            list($modelName, $fieldName) = explode(".", $resourceName, 2);
         }
 
         $metadata = $this->di->get('metaManager')->getModelMeta($modelName);
-
-        $action = $actionsMap[$this->actionName];
+        $action = $actionsMap[$this->actionName] ?? 'saved';
 
         if ($fieldName && !$this->canApplyFieldAcl($fieldName, $metadata)) {
-            throw new \Gaia\Exception\Exception("Permission cannot ". $action);
+            throw new \Gaia\Exception\Exception("Permission cannot " . $action);
         }
 
         if (!$this->canApplyModelAcl($modelName)) {
-            throw new \Gaia\Exception\Exception("Permission cannot ". $action);
+            throw new \Gaia\Exception\Exception("Permission cannot " . $action);
         }
 
         return true;
     }
 
     /**
-     * Checks that whether we can apply acl on the model or not. If not allowed then we can't able to
-     * create the permission against the given resource.
+     * Checks that whether we can apply acl on the model or not.
      *
      * @method canApplyModelAcl
-     * @param  string $modelName Name of the resource on which acl is being checked.
+     * @param  string $modelName
      * @return boolean
      */
     private function canApplyModelAcl($modelName)
@@ -604,36 +403,29 @@ class PermissionController extends AclAdminController
     }
 
     /**
-     * Checks that whether we can apply acl on the field or not. If not allowed then we can't able to
-     * create the permission against the given field.
+     * Checks whether ACL can be applied on a field (skips identifiers / linkedTo / acl:false).
      *
      * @method canApplyFieldAcl
-     * @param  string $fieldName Name of the field on which acl is being checked.
-     * @param  array  $metadata  The metadata of given model.
+     * @param  string $fieldName
+     * @param  array  $metadata
      * @return boolean
      */
     private function canApplyFieldAcl($fieldName, $metadata)
     {
+        // Model-level row uses the model name as "field"; always allow.
+        if (!isset($metadata['fields'][$fieldName])) {
+            return true;
+        }
+
         $isAllowed = true;
 
-        /*
-        * Check whether the given resource is field or not. If it's field then check whether this is used for links
-        * generation or not. If used then acl is not allowed on this field.
-        */
-        if ($fieldName
-            && (isset($metadata['fields'][$fieldName]['identifier'])
+        if (isset($metadata['fields'][$fieldName]['identifier'])
             || isset($metadata['fields'][$fieldName]['relatedIdentifier'])
-            || isset($metadata['fields'][$fieldName]['linkedTo']))) {
+            || isset($metadata['fields'][$fieldName]['linkedTo'])) {
             $isAllowed = false;
         }
 
-        /*
-        * If acl attribute explicitly applied to field then use its value. The fields on which acl is not allowed
-        * e.g. identifiers, linkedTo cannot use 'acl' attribute.
-        */
-        if ($fieldName
-            && $isAllowed
-            && isset($metadata['fields'][$fieldName]['acl'])) {
+        if ($isAllowed && isset($metadata['fields'][$fieldName]['acl'])) {
             $isAllowed = ($metadata['fields'][$fieldName]['acl']);
         }
 

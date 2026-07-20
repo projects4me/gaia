@@ -32,7 +32,7 @@ class Resource extends Model
             'fields' => array('child.*'),
             'rels' => array('child'),
             'where' => '(Resource.entity : ' . $entity . ')',
-            'sort' => 'child.lft',
+            'sort' => 'child.entity',
             'order' => 'DESC'
         );
 
@@ -41,31 +41,25 @@ class Resource extends Model
     }
 
     /**
-     * This function is used to add a Resource model from the database by maintaining the hierarchical
-     * structure (nested set model).
+     * Add a resource. When $parentEntity is null/empty, inserts a root row.
+     * Otherwise links the new row to the parent via parentId.
      *
-     * @param  string $parentEntity
-     * @param  array  $values
+     * @param  string|null $parentEntity
+     * @param  array       $values
      * @return \Gaia\MVC\Models\Resource
      */
     public static function addResource($parentEntity, $values)
     {
         $groupClause = "AND groupName = '{$values['groupName']}'";
 
-        //update resource tree before inserting new node
-        $parentNode = Resource::findFirst("entity='$parentEntity' $groupClause");
+        if (!empty($parentEntity)) {
+            $parentNode = Resource::findFirst("entity='$parentEntity' $groupClause");
 
-        if ($parentNode) {
-            $parentRHT = $parentNode->rht;
-            $updateLFTPhql = "UPDATE resources set lft = lft+2 where lft>=$parentRHT $groupClause";
-            $updateRHTPhql = "UPDATE resources set rht = rht+2 where rht>=$parentRHT $groupClause";
-
-            \Phalcon\Di::getDefault()->get('db')->query($updateLFTPhql);
-            \Phalcon\Di::getDefault()->get('db')->query($updateRHTPhql);
-
-            $values['lft'] = $parentRHT;
-            $values['rht'] = $parentRHT + 1;
-            $values['parentId'] = $parentNode->id;
+            if ($parentNode) {
+                $values['parentId'] = $parentNode->id;
+            }
+        } else {
+            $values['parentId'] = null;
         }
 
         $resource = new Resource();
@@ -76,41 +70,26 @@ class Resource extends Model
     }
 
     /**
-     * This function is used to delete a Resource model from the database by maintaining the hierarchical
-     * structure (nested set model).
+     * Delete a Resource by entity name within a group.
      *
      * @param string $entityName
+     * @param string $groupName
      */
     public static function deleteResource($entityName, $groupName)
     {
         $groupClause = "AND groupName='$groupName'";
-
-        //update resource tree before deleting node
         $node = Resource::findFirst("entity='$entityName' $groupClause");
 
-        $nodeRHT = $node->rht;
-        $nodeLFT = $node->lft;
-
-        $rangeWidth = ($nodeRHT - $nodeLFT) + 1;
-        $updateLFTPhql = "UPDATE resources set lft = lft-$rangeWidth where lft>=$nodeRHT $groupClause";
-        $updateRHTPhql = "UPDATE resources set rht = rht-$rangeWidth where rht>=$nodeRHT $groupClause";
-
-        \Phalcon\Di::getDefault()->get('db')->query($updateLFTPhql);
-        \Phalcon\Di::getDefault()->get('db')->query($updateRHTPhql);
-
-        $node->delete();
+        if ($node) {
+            $node->delete();
+        }
     }
 
     /**
-     * This function is used to add all resources into the database on which we can apply
-     * acl permission. First we're adding an default parent 'App' resource and all of the
-     * models e.g Issue, Project etc will be treated as child of this `App` resource. After
-     * that the model name itself e.g. Project is added into the database as resource and
-     * at the last the model's fields are added into the database.
+     * Seed model resources and their field children for RBAC.
+     * Models are flat roots (no App parent). Fields are nested under their model via parentId.
      *
-     * @param  string $groupName The name of the group for which the resource is being saved. In
-     *                           our backend case this would be 'gaia'. Through this we can distinguish
-     *                           between multiple platforms e.g. frontend, backend etc.
+     * @param  string $groupName Resource group (gaia).
      * @return void
      */
     public static function addResourcesIntoDatabase($groupName)
@@ -123,27 +102,20 @@ class Resource extends Model
         $di = \Phalcon\Di::getDefault();
         $models = $di->get('config')->get('models')->toArray();
 
-        // Add "App" resource as a parent for all of the models (resources).
-        self::addResourceIntoDatabase('App', $groupName, null, 1, 2);
-
-        // Add "App" resource as a parent for for frontend group "prometheus"
-        self::addResourceIntoDatabase('App', 'prometheus', null, 1, 2);
-
         foreach ($models as $modelName) {
             $modelNamespace = "\\Gaia\\MVC\\Models\\{$modelName}";
             $model = new $modelNamespace();
 
-            // If ACL is allowed on a model then we'll add model fields into the database.
             if ($model->isAclAllowed()) {
                 $metadata = $di->get('metaManager')->getModelMeta($modelName);
 
-                self::addResourceIntoDatabase($modelName, $groupName, 'App');
+                // Flat model root (no App parent).
+                self::addResourceIntoDatabase($modelName, $groupName, null);
 
-                // Add model fields into db.
+                // Field children under the model.
                 foreach ($metadata['fields'] as $field) {
-                    // No need to add
-                    if (!$field['identifier']) {
-                        $resourceName = "$modelName.{$field['name']}";
+                    if (empty($field['identifier'])) {
+                        $resourceName = "{$modelName}.{$field['name']}";
                         self::addResourceIntoDatabase($resourceName, $groupName, $modelName);
                     }
                 }
@@ -152,37 +124,48 @@ class Resource extends Model
     }
 
     /**
-     * This function is used to add resource into the database.
+     * Insert a resource if it does not already exist.
+     * Model roots are flat. Field resources are children via parentId.
      *
-     * @param  string $entity       The name of the resource.
-     * @param  string $groupName    The name of the group for which the resource is being saved. In
-     *                              our backend case this would be 'gaia'. Through this we can
-     *                              distinguish between multiple platforms e.g. frontend, backend
-     *                              etc.
-     * @param  string $parentEntity The name of parent resource (if any).
-     * @param  int    $lft          The left value for the resource node used to check how many childs does
-     *                              that resource have.
-     * @param  int    $rht          The right value for the resource node used to check how many childs does
-     *                              that resource have.
+     * @param  string      $entity
+     * @param  string      $groupName
+     * @param  string|null $parentEntity Parent model entity for field resources; null for models.
      * @return void
      */
-    protected static function addResourceIntoDatabase($entity, $groupName, $parentEntity = null, $lft = null, $rht = null)
+    protected static function addResourceIntoDatabase($entity, $groupName, $parentEntity = null)
     {
-        // Check if the resource exists or not.
         $resource = \Gaia\MVC\Models\Resource::findFirst("entity='$entity' AND groupName ='$groupName'");
 
-        if (!isset($resource) && empty($resource)) {
-            // Add model as a resource into db.
-            self::addResource(
-                $parentEntity,
-                [
+        if (isset($resource) && !empty($resource)) {
+            return;
+        }
+
+        if (!empty($parentEntity)) {
+            $parent = \Gaia\MVC\Models\Resource::findFirst(
+                "entity='{$parentEntity}' AND groupName ='{$groupName}'"
+            );
+            if (!$parent) {
+                return;
+            }
+
+            $child = new Resource();
+            $child->assign([
                 'id' => create_guid(),
                 'entity' => $entity,
                 'groupName' => $groupName,
-                'lft' => $lft,
-                'rht' => $rht
-                ]
-            );
+                'parentId' => $parent->id,
+            ]);
+            $child->save();
+            return;
         }
+
+        self::addResource(
+            null,
+            [
+                'id' => create_guid(),
+                'entity' => $entity,
+                'groupName' => $groupName,
+            ]
+        );
     }
 }

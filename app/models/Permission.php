@@ -41,8 +41,7 @@ class Permission extends Model
     protected $resourcePrefix;
 
     /**
-     * The array of fields on which user has access and these fields will be return back
-     * as an response of an API call.
+     * Fields the user may see in API responses after field ACL is applied.
      *
      * @var array $allowedFields
      */
@@ -81,34 +80,69 @@ class Permission extends Model
     }
 
     /**
-     * This function is used to check whether the given resource has access. This is the function contains the main
-     * logic for checking the access of the given resource. If there is no access against the resource, this will try
-     * to retreive parent resource access. After getting the resource permission, that resource is added into the
-     * resourcesPermissions, which is key value paired array containing the resource name as key and access level as
-     * its value.
+     * Check whether the given resource is allowed for the requested action.
+     * Permission flags are binary: 0 = deny, 1 = allow. Legacy non-zero values
+     * (and null, historically treated as full access) are normalized to allow.
+     * Resources with no stored permission entry remain allowed (legacy behavior).
      *
      * @param string $resource      Name of the resource.
      * @param string $resourceAlias Alias of the resource.
+     * @param string $action        Permission flag name (e.g. readF).
+     * @param bool   $isRel         Whether this check is for a relationship.
+     * @return bool
      */
     public function checkAccess($resource, $resourceAlias = null, $action= 'readF', $isRel = false)
     {
-        if (isset($this->permissions[$resource])) {
-            $permissions = $this->permissions[$resource];
-            $accessLevel = 0;
-            foreach ($permissions as $permission) {
-                if ($permission[$action] === null) {
-                    $accessLevel = 9;
-                }
-                $accessLevel = max($accessLevel, $permission[$action]);
-                $this->resourcesPermissions[$resource][] = ['accessLevel' => $permission[$action], 'projectId' => $permission['projectId']];
-            }
-        }
-
-        if ($accessLevel === 0 && !$isRel) {
-            throw new \Gaia\Exception\Access("Access Denied to $resource");
-        } else {
+        if (!isset($this->permissions[$resource])) {
             return true;
         }
+
+        $isAllowed = false;
+        $permissions = $this->permissions[$resource];
+
+        foreach ($permissions as $permission) {
+            $flagValue = array_key_exists($action, $permission) ? $permission[$action] : null;
+            $normalizedFlag = $this->normalizeFlag($flagValue);
+
+            if ($normalizedFlag === 1) {
+                $isAllowed = true;
+            }
+
+            $this->resourcesPermissions[$resource][] = [
+                'accessLevel' => $normalizedFlag,
+                'projectId' => $permission['projectId']
+            ];
+        }
+
+        if (!$isAllowed && !$isRel) {
+            // Field resources (Model.field) must not 403 — RestController nulls denied fields.
+            if (str_contains($resource, '.')) {
+                return false;
+            }
+            throw new \Gaia\Exception\Access("Access Denied to $resource");
+        }
+
+        return true;
+    }
+
+    /**
+     * Normalize a stored permission flag to binary allow (1) or deny (0).
+     * Legacy values above 1 (e.g. 2, 8, 9) and null are treated as allow until data is migrated.
+     *
+     * @param mixed $flagValue
+     * @return int
+     */
+    protected function normalizeFlag($flagValue)
+    {
+        if ($flagValue === null) {
+            return 1;
+        }
+
+        if ($flagValue === '') {
+            return 0;
+        }
+
+        return ((int) $flagValue > 0) ? 1 : 0;
     }
 
     /**
@@ -153,14 +187,8 @@ class Permission extends Model
         //Fetch Permissions of User by Role
         $permissionsByRole = (new self())->buildPermissionsQuery(null, $action);
         $permissionsByRole->innerJoin("Gaia\\MVC\\Models\\Membership", "Membership.roleId=Permission.roleId $membershipRoleIdCondition AND Membership.userId='$userId'", "Membership");
-        // $permissionsByRole->groupBy(['Membership.roleId', 'Resource2.id']);
 
         $results[] = $permissionsByRole->getQuery()->execute();
-
-        //Fetch Permissions of User
-        // $permissionsByUser = (new seslf())->buildPermissionsQuery(null, $action);
-        // $permissionsByUser->innerJoin("Gaia\\MVC\\Models\\Aclcontroller", "Aclcontroller.id=Permission.controllerId AND Aclcontroller.relatedId='$userId'", "Aclcontroller");
-        // $results[] = $permissionsByUser->getQuery()->execute();
 
         foreach ($results as $permission) {
             foreach ($permission as $value) {
@@ -211,18 +239,6 @@ class Permission extends Model
         return $this->resourcesPermissions[$resource] ?? null;
     }
 
-    // public function getModelAccess($modelName)
-    // {
-    //     $permissions = $this->permissions[$modelName] ?? null;
-    //     $accessLevel = null;
-    //     if ($permissions) {
-    //         foreach ($permissions as $permission) {
-    //             $accessLevel = max($accessLevel, $permission['readF']);
-    //         }
-    //     }
-    //     return $accessLevel;
-    // }
-
     /**
      * This function is used to set the prefix of the resource, that will be useful
      * if we want some custom nomenclature for the resources.
@@ -258,14 +274,14 @@ class Permission extends Model
     }
 
     /**
-     * This function apply acl on the model/related model fields. Only fields on which user has access
-     * will be returned back as response.
+     * Apply ACL on model/related model fields. Only fields the user can access
+     * are kept for the API response.
      *
      * @method applyACLOnFields
-     * @param  $values     Array of result set retreived from database.
-     * @param  string $modelAlias Model alias.
-     * @param  array  $params     User requested parameters.
-     * @return null|void
+     * @param  array  $values
+     * @param  string $modelAlias
+     * @param  array  $params
+     * @return void
      */
     public function applyACLOnFields($values, $modelAlias, $params)
     {
@@ -283,12 +299,12 @@ class Permission extends Model
     }
 
     /**
-     * This function applies ACL to scalar field.
-     *
-     * @param  string $fieldName  The name of field.
-     * @param  string $modelAlias Model alias.
-     * @param  array  $params     User requested parameters.
-     * @param  array  $fields     Array of allowed fields.
+     * This function is used to apply ACL on a scalar field.
+     * 
+     * @param  string $fieldName
+     * @param  string $modelAlias
+     * @param  array  $params
+     * @param  array  $fields
      * @return void
      */
     protected function applyACLByScalarField($fieldName, $modelAlias, $params, &$fields)
@@ -298,12 +314,10 @@ class Permission extends Model
         $allowedField = $field;
         $aliasByFields = $this->getAliasByFields($params);
 
-        // If alias is used for field.
         if (in_array($fieldName, array_keys($aliasByFields))) {
             list($moduleName, $moduleField) = explode('.', $aliasByFields[$fieldName]);
             $isModel = $modelAlias === $moduleName;
 
-            // Use related model as prefix for the field in case of relationship.
             if (!$isModel) {
                 $relName = $moduleName;
                 $moduleName = $di->get('metaManager')->getRelatedModelName($modelAlias, $relName);
@@ -316,34 +330,24 @@ class Permission extends Model
     }
 
     /**
-     * This function applies ACL to field inside an object.
-     *
-     * @param  string $fieldName  The name of field.
-     * @param  string $modelAlias Model alias.
-     * @param  array  $values     Array containing model values.
-     * @param  array  $fields     Array of allowed fields.
+     * This function is used to apply ACL on an object field.
+     * 
+     * @param  string $fieldName
+     * @param  string $modelAlias
+     * @param  array  $values
+     * @param  array  $fields
      * @return void
      */
     protected function applyACLByObjectField($fieldName, $modelAlias, $values, &$fields)
     {
         $di = \Phalcon\Di::getDefault();
-
-        // Handling the object. An object can be a model or a relationship.
         $isModel = $modelAlias === $fieldName;
 
-        // If object is relationship.
         if (!$isModel) {
             $relName = $fieldName;
             $relatedModelName = $di->get('metaManager')->getRelatedModelName($modelAlias, $relName);
         }
 
-        /*
-        * Check ACL against the model field e.g. if the relationship is projects then for the field
-        * "projects.name", we'll check ACL for its related model field "Project.name". If user will have
-        * access on "Project.name" then we'll push "projects.name" into the fields array.
-        * There can be another case where the object (retrieved from database) can represent a model
-        * itself e.g. Permission.* so this case is also handled here.
-        */
         foreach (array_keys($values) as $nestedField) {
             $allowedField = "{$fieldName}.{$nestedField}";
             $field = ($isModel) ? ($allowedField) : "{$relatedModelName}.{$nestedField}";
@@ -352,16 +356,19 @@ class Permission extends Model
     }
 
     /**
-     * This function returns list of alias against the field.
-     *
-     * @param  array $params The request parameters.
+     * This function is used to get the alias by fields.
+     * 
+     * @param  array $params
      * @return array
      */
     protected function getAliasByFields($params)
     {
         $aliasByFields = [];
+        if (empty($params['fields'])) {
+            return $aliasByFields;
+        }
+
         foreach ($params['fields'] as $requestedField) {
-            // If alias is used.
             if (str_contains(strtoupper($requestedField), "AS")) {
                 list($field, , $alias) = explode(" ", $requestedField);
                 $aliasByFields[$alias] = $field;
@@ -372,8 +379,6 @@ class Permission extends Model
     }
 
     /**
-     * This function return allowedFields property.
-     *
      * @method getAllowedFields
      * @return array
      */

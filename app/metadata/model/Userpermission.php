@@ -6,19 +6,11 @@
 
 $models['Userpermission'] = array(
     'tableName' => 'user_permissions',
-    'viewSql' => 'SELECT "Permission".id as id, "Membership"."userId" as "userId", "Resource2".entity, MAX("Permission"."readF") as "readF", MAX("Permission"."createF") as "createF", MAX("Permission"."updateF") as "updateF", MAX("Permission"."deleteF") as "deleteF", MAX("Permission"."importF") as "importF", MAX("Permission"."exportF") as "exportF"
-                    FROM resources "Resource1"
-                    INNER JOIN resources "Resource2" ON "Resource2".lft <= "Resource1".lft AND "Resource2".rht >= "Resource1".rht AND "Resource1"."groupName" = \'prometheus\' AND "Resource2"."groupName" = \'prometheus\'
-                    LEFT JOIN permissions "Permission" ON "Permission"."resourceId" = "Resource2".id
+    'viewSql' => 'SELECT MIN("Permission".id) as id, "Membership"."userId" as "userId", "Resource".entity, MAX("Permission"."readF") as "readF", MAX("Permission"."createF") as "createF", MAX("Permission"."updateF") as "updateF", MAX("Permission"."deleteF") as "deleteF", MAX("Permission"."importF") as "importF", MAX("Permission"."exportF") as "exportF"
+                    FROM permissions "Permission"
+                    INNER JOIN resources "Resource" ON "Resource".id = "Permission"."resourceId" AND "Resource"."groupName" = \'gaia\' AND "Resource".entity NOT LIKE \'%.%\' AND "Resource".entity <> \'App\'
                     INNER JOIN memberships "Membership" ON "Membership"."roleId" = "Permission"."roleId" AND "Membership"."userId" = getmodelid()
-                    GROUP BY "Resource2".id, "Permission".id, "Membership"."userId", "Resource2".entity
-                    UNION ALL
-                    SELECT "Permission".id as id, "Aclcontroller"."relatedId" as "userId", "Resource2".entity, MAX("Permission"."readF") as "readF", MAX("Permission"."createF") as "createF", MAX("Permission"."updateF") as "updateF", MAX("Permission"."deleteF") as "deleteF", MAX("Permission"."importF") as "importF", MAX("Permission"."exportF") as "exportF"
-                    FROM resources "Resource1"
-                    INNER JOIN resources "Resource2" ON "Resource2".lft <= "Resource1".lft AND "Resource2".rht >= "Resource1".rht AND "Resource1"."groupName" = \'Prometheus\' AND "Resource2"."groupName" = \'Prometheus\'
-                    LEFT JOIN permissions "Permission" ON "Permission"."resourceId" = "Resource2".id
-                    INNER JOIN acl_controllers "Aclcontroller" ON "Aclcontroller".id = "Permission"."controllerId" AND "Aclcontroller"."relatedId" = getmodelid()
-                    GROUP BY "Resource2".id, "Permission".id, "Aclcontroller"."relatedId", "Resource2".entity',
+                    GROUP BY "Membership"."userId", "Resource".entity',
     'isView' => true,
     'fields' => array(
         'id' => array(

@@ -13,11 +13,16 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}
+        date: "{{ now | unixEpoch }}"
     spec:
       containers:
       - name: {{ .Release.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          {{- range .Values.env }}
+          - name: {{ .name }}
+            value: {{ .value | quote }}
+          {{- end }}
         ports:
         - containerPort: {{ .Values.service.targetPort }}
-

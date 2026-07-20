@@ -6,12 +6,11 @@
 
 $models['Usergrouppermission'] = array(
     'tableName' => 'user_group_permissions',
-    'viewSql' => 'SELECT "Permission".id as id, "Membership"."relatedId" as "relatedId", "Membership"."relatedTo" as "groupName", "Resource2".entity as entity, MAX("Permission"."readF") as "readF", MAX("Permission"."createF") as "createF", MAX("Permission"."updateF") as "updateF", MAX("Permission"."deleteF") as "deleteF", MAX("Permission"."importF") as "importF", MAX("Permission"."exportF") as "exportF"
-                    FROM resources AS "Resource1"
-                    LEFT JOIN resources "Resource2" ON "Resource2".lft <= "Resource1".lft AND "Resource2".rht >= "Resource1".rht AND "Resource1"."groupName" = \'prometheus\' AND "Resource2"."groupName" = \'prometheus\'
-                    LEFT JOIN permissions "Permission" ON "Permission"."resourceId" = "Resource2".id
+    'viewSql' => 'SELECT MIN("Permission".id) as id, "Membership"."relatedId" as "relatedId", "Membership"."relatedTo" as "groupName", "Resource".entity as entity, MAX("Permission"."readF") as "readF", MAX("Permission"."createF") as "createF", MAX("Permission"."updateF") as "updateF", MAX("Permission"."deleteF") as "deleteF", MAX("Permission"."importF") as "importF", MAX("Permission"."exportF") as "exportF"
+                    FROM permissions "Permission"
+                    INNER JOIN resources "Resource" ON "Resource".id = "Permission"."resourceId" AND "Resource"."groupName" = \'gaia\' AND "Resource".entity NOT LIKE \'%.%\' AND "Resource".entity <> \'App\'
                     INNER JOIN memberships "Membership" ON "Membership"."roleId" = "Permission"."roleId" AND "Membership"."userId" = getcurrentuserid() AND "Membership"."relatedId" = getmodelid()
-                    GROUP BY "Resource2".id, "Permission".id, "Membership"."relatedId", "Membership"."relatedTo", "Resource2".entity',
+                    GROUP BY "Membership"."relatedId", "Membership"."relatedTo", "Resource".entity',
     'isView' => true,
     'fields' => array(
         'id' => array(
