@@ -4,4 +4,7 @@ hermes/
 docs/
 *.log
 config/database.php
+.cursor/
 composer.lock
+filesystem/
+output/api-tester-*-report.json

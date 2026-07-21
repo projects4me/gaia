@@ -55,6 +55,17 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     protected $relationship = null;
 
     /**
+     * Relationship aliases (from `rels`/`include`) that the current user is
+     * authorized to read for this request, resolved by authorize(). Null
+     * means authorize() did not run the RBAC/ACL branch (e.g. authorization
+     * is disabled for this controller), in which case actions fall back to
+     * the raw request parameters.
+     *
+     * @var array|null $authorizedRels
+     */
+    protected $authorizedRels = null;
+
+    /**
      * Name of controller is passed in parameter
      *
      * @var string $controllerName
@@ -240,7 +251,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $logger->debug('Gaia.core.controllers.rest.loadComponents()');
         $logger->debug(
             $this->dispatcher->getControllerName() . '->' .
-            $this->dispatcher->getActionName()
+                $this->dispatcher->getActionName()
         );
 
         $this->eventsManager = new EventsManager();
@@ -291,7 +302,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     }
 
     /**
-     * This function is used to authorize the current request
+     * Authorize the current request.
      *
      * @return void
      */
@@ -313,41 +324,58 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $this->setUser($request);
             $this->trackLastActivity($currentUser->id);
             $modelAlias = Util::extractClassFromNamespace($this->modelName);
+            $resource = \Phalcon\Text::camelize($this->controllerName);
 
-            $permission = new \Gaia\MVC\Models\Permission();
+            $acl = new \Gaia\Libraries\Security\Acl($this->getDI());
+
             $query = $this->request->get('query', null, '');
             $params['where'] = $query;
             $projectId = ($modelAlias === 'Project' && isset($this->id)) ? $this->id : null;
 
-            $permission->fetchUserPermissions($currentUser->id, $action, $modelAlias, $params, $projectId);
-
-            $this->getDI()->set(
-                'permission',
-                $permission
+            $acl->authorizeModel($resource, $modelAlias, $action, $currentUser->id, $params, $projectId);
+            $acl->authorizeClauseUsage(
+                $modelAlias,
+                $action,
+                [
+                    'query' => $query,
+                    'sort' => $this->request->get('sort', null, ''),
+                    'groupBy' => $this->request->get('group', null, []),
+                    'having' => $this->request->get('having', null, ''),
+                ]
             );
 
-            $resource = \Phalcon\Text::camelize($this->controllerName);
+            $this->getDI()->set('acl', $acl);
 
-            //check ACL on Model
-            $permission->checkModelAccess($resource, null, $action);
-
-            //check ACL on Model's relationship
-            $rels = $this->request->get('rels') ?? $this->request->get('include') ?? [];
-            $relationships = $this->getRelsWithMeta($rels, $modelAlias);
-            $permission->checkRelsAccess($resource, $relationships, $action);
+            if ($this->actionName === 'related') {
+                $relation = $this->dispatcher->getParam('relation');
+                $acl->authorizeRelated($modelAlias, $relation, $action);
+            } else {
+                $rels = $this->getRequestedRels();
+                $this->authorizedRels = $acl->filterAuthorizedRelationships($modelAlias, $rels, $action);
+            }
         }
     }
 
-    protected function getRelsWithMeta($rels, $modelName)
+    /**
+     * Get the requested relationships.
+     * 
+     * @return array
+     */
+    protected function getRequestedRels()
     {
-        $relationships = [];
+        $rels = $this->request->get('rels') ? explode(',', $this->request->get('rels')) : [];
 
-        $rels = isset($rels) ? explode(",", $rels) : array();
-        foreach ($rels as $rel) {
-            $relationships[$rel] = $this->di->get('metaManager')->getRelationshipMeta($modelName, $rel);
+        if ($this->actionName === 'get') {
+            $include = $this->request->get('include') ? explode(',', $this->request->get('include')) : [];
+            $rels = array_merge($rels, $include);
         }
 
-        return $relationships;
+        $rels = array_map('trim', $rels);
+        $rels = array_filter($rels, function ($rel) {
+            return $rel !== '';
+        });
+
+        return array_values(array_unique($rels));
     }
 
     /**
@@ -387,7 +415,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             if ($cont == count($languages)) {
                 include "../app/languages/en.php";
             }
-
         }
 
         //set the messages language
@@ -436,10 +463,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $query = $this->request->get('query', null, '');
         $sort = $this->request->get('sort', null, '');
         $order = $this->request->get('order', null, 'DESC');
-        $include = ($this->request->get('include')) ? (explode(',', $this->request->get('include'))) : array();
         $fields = ($this->request->get('fields')) ? (explode(',', $this->request->get('fields'))) : array();
-        $rels = ($this->request->get('rels')) ? (explode(',', $this->request->get('rels'))) : array();
-        $rels = array_merge($rels, $include);
+        $rels = $this->authorizedRels ?? $this->getRequestedRels();
         $addRelFields = filter_var($this->request->get('addRelFields', null, false), FILTER_VALIDATE_BOOLEAN);
 
         if (Util::extractClassFromNamespace($modelName) === 'User' && $this->id === 'me') {
@@ -552,7 +577,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $having = $this->request->get('having', null, '');
         $fields = ($this->request->get('fields')) ? (explode(',', $this->request->get('fields'))) : array();
         $addRelFields = filter_var($this->request->get('addRelFields', null, false), FILTER_VALIDATE_BOOLEAN);
-        $rels = ($this->request->get('rels')) ? (explode(',', $this->request->get('rels'))) : array();
+        $rels = $this->authorizedRels ?? $this->getRequestedRels();
         $export = filter_var($this->request->get('export', null, false), FILTER_VALIDATE_BOOLEAN);
 
         $params = array(
@@ -635,7 +660,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             } else {
                 $data = $temp;
             }
-
         } else {
             $data[0] = $temp;
         }
@@ -670,8 +694,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     }
                     $this->response->setJsonContent(
                         array(
-                        'status' => 'ERROR',
-                        'messages' => $errors
+                            'status' => 'ERROR',
+                            'messages' => $errors
                         )
                     );
                 }
@@ -679,7 +703,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         } //end foreach
 
         return $this->response;
-
     }
 
     /**
@@ -759,7 +782,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             } else {
                 $data = $requestData;
             }
-
         } else {
             $data[0] = $requestData;
         }
@@ -812,7 +834,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     $finalData = $this->buildHAL($dataArray);
                     return $this->returnResponse($finalData);
                 }
-
             } else {
                 $errors = array();
                 foreach ($model->getMessages() as $message) {
@@ -822,13 +843,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 $this->response->setStatusCode(422, "Unprocessable Entity");
                 $this->response->setJsonContent(
                     array(
-                    'status' => 'ERROR',
-                    'messages' => $errors
+                        'status' => 'ERROR',
+                        'messages' => $errors
                     )
                 );
             }
-
-
         } //end foreach
 
         $logger->debug('-Gaia.core.controllers.rest->postAction');
@@ -878,9 +897,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     /**
      * Method Http accept: DELETE
      */
-    public function deleteCollectionAction()
-    {
-    }
+    public function deleteCollectionAction() {}
 
     /**
      * This function builds the custom HAL data
@@ -922,7 +939,6 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                         $next[] = $param . '=' . $value;
                         $prev[] = $param . '=' . $value;
                     }
-
                 }
             }
         }
@@ -1025,7 +1041,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     final protected function prepareData($data, $params, $requireScalarFields = true, $type = 'all')
     {
         $result = [];
-        $permission = $this->getDI()->get('permission');
+        $acl = $this->getDI()->get('acl');
 
         if ($data['baseModel'] instanceof Resultset || $data['baseModel'] instanceof ResultStream) {
             $data['baseModel']->setHydrateMode(Resultset::HYDRATE_ARRAYS);
@@ -1041,7 +1057,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 $this->applyACL($values, $params);
 
                 // Only fields on which user has access become part of the response.
-                $values = $this->filterFieldsByACL($permission->getAllowedFields(), $values);
+                $values = $this->filterFieldsByACL($acl->getAllowedFields(), $values);
 
                 $this->flattenModelData($values, $result);
             }
@@ -1064,10 +1080,10 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      */
     private function applyACL(&$values, $params)
     {
-        $permission = $this->getDI()->get('permission');
-        if (empty($permission->getAllowedFields())) {
+        $acl = $this->getDI()->get('acl');
+        if (empty($acl->getAllowedFields())) {
             $modelAlias = Util::extractClassFromNamespace($this->modelName);
-            $permission->applyACLOnFields($values, $modelAlias, $params);
+            $acl->applyACLOnFields($values, $modelAlias, $params);
         }
     }
 
@@ -1416,10 +1432,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
                 // Check if user has given alias for the field or not, if given then use that one.
                 foreach ($params['fields'] as $requestedField) {
-                    if (preg_match($aliasRegex, strtoupper($requestedField))
+                    if (
+                        preg_match($aliasRegex, strtoupper($requestedField))
                         && str_contains($requestedField, str_replace("_", ".", $fieldName))
                     ) {
-                        list(, , $alias) = explode(" ", $requestedField);
+                        list(,, $alias) = explode(" ", $requestedField);
                         $relfieldName = $alias;
                     }
                 }
@@ -1548,10 +1565,10 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $response = new Response();
         $response->setJsonContent(
             [
-            'status' => 'success',
-            'message' => 'Export generated successfully',
-            'download_url' => $downloadUrl,
-            'expires_in' => '24 hours'
+                'status' => 'success',
+                'message' => 'Export generated successfully',
+                'download_url' => $downloadUrl,
+                'expires_in' => '24 hours'
             ]
         );
 
