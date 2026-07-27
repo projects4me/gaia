@@ -19,5 +19,10 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class TaggedController extends RestController
 {
-
+    /**
+     * Tagged endpoints are not action-ACL managed.
+     *
+     * @var bool
+     */
+    protected $aclAllowed = false;
 }

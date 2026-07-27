@@ -23,6 +23,13 @@ use Gaia\MVC\Models\Systemnotificationrecipient;
 class SystemnotificationrecipientController extends RestController
 {
     /**
+     * System notification recipient endpoints are not action-ACL managed.
+     *
+     * @var bool
+     */
+    protected $aclAllowed = false;
+
+    /**
      * Handles POST requests to the notification recipient endpoint.
      * Primarily used to mark notifications as read for a specific user.
      *

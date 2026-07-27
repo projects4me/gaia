@@ -18,10 +18,4 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Oauthrefreshtoken extends Model
 {
-    /**
-     * Flag to determine if ACL rules should be applied to the model.
-     *
-     * @var boolean
-     */
-    protected $aclAllowed = false;
 }

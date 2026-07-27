@@ -58,23 +58,28 @@ class Postgres
     }
 
     /**
-     * This function adds missing columns on existing tables without morphTable,
-     * which can conflict with existing table constraints.
+     * This function syncs existing tables without morphTable:
+     * - adds missing columns
+     * - drops columns that are no longer present in metadata
+     * - adds missing non-primary indexes from metadata
      *
      * @param \Phalcon\Db\AdapterInterface $connection Active database connection
      * @param string $tableName Table name from model metadata
      * @param Column[] $columns Expected column definitions from metadata
+     * @param array $indexes Optional metadata indexes map (field => type)
      */
-    public function syncExistingTable($connection, $tableName, array $columns)
+    public function syncExistingTable($connection, $tableName, array $columns, array $indexes = [])
     {
         $existingColumns = $connection->describeColumns($tableName);
         $existingNames = array();
+        $expectedNames = array();
 
         foreach ($existingColumns as $column) {
             $existingNames[] = $column->getName();
         }
 
         foreach ($columns as $column) {
+            $expectedNames[] = $column->getName();
             if (!in_array($column->getName(), $existingNames, true)) {
                 $connection->addColumn(
                     $tableName,
@@ -82,6 +87,55 @@ class Postgres
                     $this->prepareColumnForAdd($column)
                 );
             }
+        }
+
+        foreach ($existingNames as $existingName) {
+            if (!in_array($existingName, $expectedNames, true)) {
+                // CASCADE clears dependent views/indexes that still reference legacy columns.
+                $quotedTable = $connection->escapeIdentifier($tableName);
+                $quotedColumn = $connection->escapeIdentifier($existingName);
+                $connection->execute(
+                    "ALTER TABLE {$quotedTable} DROP COLUMN IF EXISTS {$quotedColumn} CASCADE"
+                );
+            }
+        }
+
+        $this->syncIndexes($connection, $tableName, $indexes);
+    }
+
+    /**
+     * Ensure non-primary indexes from metadata exist.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param string $tableName
+     * @param array $indexes
+     * @return void
+     */
+    private function syncIndexes($connection, $tableName, array $indexes)
+    {
+        if (empty($indexes)) {
+            return;
+        }
+
+        $existing = [];
+        foreach ($connection->describeIndexes($tableName) as $index) {
+            foreach ($index->getColumns() as $columnName) {
+                $existing[$columnName] = true;
+            }
+        }
+
+        $quotedTable = $connection->escapeIdentifier($tableName);
+        foreach ($indexes as $field => $type) {
+            if ($type === 'primary' || isset($existing[$field])) {
+                continue;
+            }
+
+            $indexName = $connection->escapeIdentifier($tableName . '_' . $field);
+            $quotedField = $connection->escapeIdentifier($field);
+            $unique = ($type === 'unique') ? 'UNIQUE ' : '';
+            $connection->execute(
+                "CREATE {$unique}INDEX IF NOT EXISTS {$indexName} ON {$quotedTable} ({$quotedField})"
+            );
         }
     }
 

@@ -15,12 +15,12 @@ $models['Permission'] = array(
             'null' => false,
             'identifier' => true
         ),
-        'resourceId' => array(
-            'name' => 'resourceId',
-            'label' => 'LBL_PERMISSIONS_RESOURCE_ID',
+        'resourceName' => array(
+            'name' => 'resourceName',
+            'label' => 'LBL_PERMISSIONS_RESOURCE_NAME',
             'type' => 'varchar',
-            'length' => '36',
-            'null' => false,
+            'length' => '100',
+            'null' => true,
         ),
         'roleId' => array(
             'name' => 'roleId',
@@ -29,51 +29,9 @@ $models['Permission'] = array(
             'length' => '36',
             'null' => true,
         ),
-        'controllerId' => array(
-            'name' => 'controllerId',
-            'label' => 'LBL_PERMISSIONS_CONTROLLER_ID',
-            'type' => 'varchar',
-            'length' => '36',
-            'null' => true,
-        ),
-        'readF' => array(
-            'name' => 'readF',
-            'label' => 'LBL_PERMISSIONS_READ_F',
-            'type' => 'int',
-            'length' => '1',
-            'null' => true,
-        ),
-        'createF' => array(
-            'name' => 'createF',
-            'label' => 'LBL_PERMISSIONS_CREATE_F',
-            'type' => 'int',
-            'length' => '1',
-            'null' => true,
-        ),
-        'updateF' => array(
-            'name' => 'updateF',
-            'label' => 'LBL_PERMISSIONS_UPDATE_F',
-            'type' => 'int',
-            'length' => '1',
-            'null' => true,
-        ),
-        'deleteF' => array(
-            'name' => 'deleteF',
-            'label' => 'LBL_PERMISSIONS_DELETE_F',
-            'type' => 'int',
-            'length' => '1',
-            'null' => true,
-        ),
-        'importF' => array(
-            'name' => 'importF',
-            'label' => 'LBL_PERMISSIONS_IMPORT_F',
-            'type' => 'int',
-            'length' => '1',
-            'null' => true,
-        ),
-        'exportF' => array(
-            'name' => 'exportF',
-            'label' => 'LBL_PERMISSIONS_EXPORT_F',
+        'allowed' => array(
+            'name' => 'allowed',
+            'label' => 'LBL_PERMISSIONS_ALLOWED',
             'type' => 'int',
             'length' => '1',
             'null' => true,
@@ -93,7 +51,8 @@ $models['Permission'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
-        'controllerId' => 'index'
+        'resourceName' => 'index',
+        'roleId' => 'index',
     ),
     'foriegnKeys' => array(
 
@@ -104,16 +63,6 @@ $models['Permission'] = array(
     'functions' => array(),
     'relationships' => array(
         'belongsTo' => array(
-            'resource' => array(
-                'primaryKey' => 'resourceId',
-                'relatedModel' => '\\Gaia\\MVC\\Models\\Resource',
-                'relatedKey' => 'id',
-            ),
-            'aclController' => array(
-                'primaryKey' => 'controllerId',
-                'relatedModel' => '\\Gaia\\MVC\\Models\\Aclcontroller',
-                'relatedKey' => 'id',
-            )
         ),
     ),
     'behaviors' => [

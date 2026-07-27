@@ -80,8 +80,9 @@ else
   copy_csv() {
     local src_sql="$1"
     local dst_sql="$2"
-    docker exec -i "$PG_CONTAINER" bash -lc \
-      "psql -U '$PG_USER' -d '$SOURCE_DB' -Atc \"$src_sql\" | psql -U '$PG_USER' -d '$TEST_DB' -c \"$dst_sql\"" >/dev/null
+    docker exec -i "$PG_CONTAINER" \
+      env PGUSER="$PG_USER" SOURCE_DB="$SOURCE_DB" TEST_DB="$TEST_DB" SRC_SQL="$src_sql" DST_SQL="$dst_sql" \
+      bash -lc 'psql -U "$PGUSER" -d "$SOURCE_DB" -Atc "$SRC_SQL" | psql -U "$PGUSER" -d "$TEST_DB" -c "$DST_SQL"' >/dev/null
   }
 fi
 
@@ -115,20 +116,60 @@ echo "==> Patching auth helpers/policies in $TEST_DB for seeded test user"
 # Note: pr4m dump hardcodes a production user id in auth helpers/RLS.
 # For pr4m_test we bind them to the seeded api-tester user so issue reads work
 # without changing application auth semantics.
+# Action-based RBAC: permissions use resourceName (e.g. issue.get) + allowed.
 psql_db "$TEST_DB" -v ON_ERROR_STOP=1 <<'SQL'
+CREATE OR REPLACE FUNCTION auth.access_level(
+  p_user_id text,
+  p_project_id text,
+  p_entity text,
+  p_action text
+)
+RETURNS integer
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+AS $function$
+DECLARE
+  lvl int := 0;
+  resource_name text;
+  action_name text;
+BEGIN
+  IF p_user_id IS NULL THEN RETURN 0; END IF;
+
+  action_name := CASE p_action
+    WHEN 'readF' THEN 'get'
+    WHEN 'createF' THEN 'create'
+    WHEN 'updateF' THEN 'update'
+    WHEN 'deleteF' THEN 'delete'
+    ELSE lower(p_action)
+  END;
+  resource_name := lower(p_entity) || '.' || action_name;
+
+  SELECT COALESCE(MAX(CASE WHEN p.allowed = 1 THEN 9 ELSE 0 END), 0)
+    INTO lvl
+  FROM memberships m
+  JOIN permissions p ON p."roleId" = m."roleId"
+  WHERE m."userId" = p_user_id
+    AND m."relatedId" = p_project_id
+    AND m."relatedTo" = 'project'
+    AND p."resourceName" = resource_name;
+
+  RETURN lvl;
+END;
+$function$;
+
 CREATE OR REPLACE FUNCTION auth.accessible_projects_for_issue_read()
 RETURNS TABLE(project_id text, read_level integer)
 LANGUAGE sql
 STABLE
 SECURITY DEFINER
 AS $function$
-  SELECT m."relatedId", MAX(p."readF")
+  SELECT m."relatedId", MAX(CASE WHEN p.allowed = 1 THEN 9 ELSE 0 END)
   FROM memberships m
   JOIN permissions p ON p."roleId" = m."roleId"
-  JOIN resources r ON r.id = p."resourceId"
   WHERE m."userId" = 'api-test-user-0001'
     AND m."relatedTo" = 'project'
-    AND r.entity = 'Issue'
+    AND p."resourceName" = 'issue.get'
   GROUP BY m."relatedId";
 $function$;
 
@@ -182,18 +223,18 @@ USING (
 DROP MATERIALIZED VIEW IF EXISTS auth.accessible_projects CASCADE;
 CREATE MATERIALIZED VIEW auth.accessible_projects AS
 SELECT m."relatedId" AS project_id,
-       r.entity,
-       max(p."readF") AS read_level
+       split_part(p."resourceName", '.', 1) AS entity,
+       max(CASE WHEN p.allowed = 1 THEN 9 ELSE 0 END) AS read_level
 FROM memberships m
 JOIN permissions p ON p."roleId"::text = m."roleId"::text
-JOIN resources r ON r.id::text = p."resourceId"::text
 WHERE m."relatedTo"::text = 'project'::text
-GROUP BY m."relatedId", r.entity;
+  AND p."resourceName" LIKE '%.get'
+GROUP BY m."relatedId", split_part(p."resourceName", '.', 1);
 SQL
 
 echo "==> Copying ACL/oauth + catalog baseline data from $SOURCE_DB"
-# Copy catalogs that mirror real pr4m shape used by API/ACL.
-BASELINE_TABLES=(oauth_clients roles resources permissions acl_controllers)
+# resources table removed in action-based RBAC; permissions are seeded below.
+BASELINE_TABLES=(oauth_clients roles permissions acl_controllers)
 for table in "${BASELINE_TABLES[@]}"; do
   echo "    - $table"
   copy_table_data "$table"
@@ -335,6 +376,38 @@ ON CONFLICT (id) DO UPDATE SET
   "userId" = EXCLUDED."userId",
   "relatedTo" = EXCLUDED."relatedTo",
   "relatedId" = EXCLUDED."relatedId";
+
+-- Action-based ACL grants for Admin + Global roles used by the test user.
+-- Covers default RestController actions for modules exercised by api-tester.
+DELETE FROM permissions
+WHERE id LIKE 'atp-%'
+   OR "roleId" IN ('1', (SELECT global_role FROM seed_ctx));
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+SELECT
+  -- id is varchar(36): "atp-" (4) + md5 hex (32)
+  'atp-' || md5(r.role_id || ':' || m.module || '.' || a.action),
+  r.role_id,
+  m.module || '.' || a.action,
+  1,
+  NOW(),
+  NOW()
+FROM (
+  SELECT '1'::text AS role_id
+  UNION
+  SELECT global_role FROM seed_ctx
+) r
+CROSS JOIN (
+  VALUES
+    ('activity'), ('comment'), ('conversationroom'), ('issue'), ('issuetype'),
+    ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
+    ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
+    ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
+    ('systemsetting')
+) AS m(module)
+CROSS JOIN (
+  VALUES ('get'), ('create'), ('update'), ('delete')
+) AS a(action);
 
 -- ACL controller entry for user (mirrors pr4m acl_controllers.relatedTo='user')
 INSERT INTO acl_controllers (

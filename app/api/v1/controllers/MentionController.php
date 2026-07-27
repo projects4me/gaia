@@ -18,4 +18,10 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class MentionController extends RestController
 {
+    /**
+     * Mention endpoints are not action-ACL managed.
+     *
+     * @var bool
+     */
+    protected $aclAllowed = false;
 }

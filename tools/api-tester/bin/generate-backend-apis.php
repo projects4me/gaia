@@ -55,15 +55,12 @@ $skipResources = [
     'systemnotification' => 'GET-list only custom notifications feed',
     'badge' => 'No route identifier; nonstandard ACL resource',
     'scoreboard' => 'No route identifier; nonstandard ACL resource',
-    'systemsetting' => 'Settings endpoint; not standard model CRUD',
 ];
 
 /** Resources where mutations are unsafe even if metadata exists (GET still enabled). */
 $skipMutations = [
     'converser' => 'POST triggers Socket.IO; requires realtime server',
     'chatroom' => 'POST triggers Socket.IO; requires realtime server',
-    'resource' => 'ACL catalog write returns empty collection payload',
-    'permission' => 'ACL write requires controller/resource wiring beyond metadata',
 ];
 
 /** Seeded fixture placeholders for get-by-id when available. */
@@ -137,6 +134,11 @@ $extraAttributes = [
         'projectId' => '{projectId}',
         'public' => 1,
     ],
+    'permission' => [
+        'resourceName' => 'wiki.get',
+        'allowed' => '1',
+        'roleId' => '{roleId}',
+    ],
 ];
 
 /** Custom non-JSON:API request bodies. */
@@ -144,6 +146,16 @@ $customBodies = [
     'systemnotificationrecipient' => [
         'markAllAsRead' => true,
         'userId' => '{userId}',
+    ],
+    'permission' => [
+        'data' => [
+            'type' => 'permission',
+            'attributes' => [
+                'resourceName' => 'wiki.get',
+                'allowed' => '1',
+                'roleId' => '{roleId}',
+            ],
+        ],
     ],
 ];
 
@@ -504,6 +516,23 @@ foreach ($routeResources as $resource => $routeCfg) {
         continue;
     }
 
+    // System settings exposes ACL moduleActions catalog (not model CRUD).
+    if ($resource === 'systemsetting') {
+        if (in_array('GET', $methods, true)) {
+            $apis[] = [
+                'id' => 'get-systemsetting-api-v1-systemsetting',
+                'method' => 'GET',
+                'path' => '/api/v1/systemsetting',
+                'resource' => 'systemsetting',
+                'auth' => true,
+                'expects' => ['status' => 200, 'shape' => 'json'],
+                'source' => 'backend-metadata',
+            ];
+            $stats['enabled']++;
+        }
+        continue;
+    }
+
     $meta = loadMetadata($resource, $metadataDir);
     if ($meta === null) {
         $stats['skippedResources']++;
@@ -611,8 +640,11 @@ foreach ($routeResources as $resource => $routeCfg) {
                 'body' => $jsonApiBody,
                 'source' => 'backend-metadata',
             ];
-            if (isset($customBodies[$resource])) {
+            if ($resource === 'systemnotificationrecipient') {
                 $post['expects'] = ['status' => 200, 'shape' => 'json'];
+            } elseif (isset($customBodies[$resource])) {
+                // Custom JSON:API body (e.g. permission) still returns a created resource.
+                $post['expects'] = ['status' => 201, 'shape' => 'jsonapi.resource'];
             } else {
                 $post['store'] = [$runtimeKey => 'data.id'];
                 $post['expects'] = ['status' => 201, 'shape' => 'jsonapi.resource'];

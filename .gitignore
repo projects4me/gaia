@@ -1,10 +1,10 @@
 vendor/
 prometheus/
 hermes/
-docs/
 *.log
 config/database.php
+output/
 .cursor/
 composer.lock
 filesystem/
-output/api-tester-*-report.json
+output/api-tester-*-report.json``

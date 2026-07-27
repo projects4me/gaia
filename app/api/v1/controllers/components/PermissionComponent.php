@@ -10,7 +10,7 @@ use Gaia\Libraries\Utils\Util;
 use Phalcon\Events\Event as Event;
 
 /**
- * This class is used to add some changes in permission model against the user requested values.
+ * This class is used to normalize permission payload values before persistence.
  *
  * @class   PermissionComponent
  * @package Gaia\MVC\REST\Controllers\Components
@@ -18,8 +18,7 @@ use Phalcon\Events\Event as Event;
 class PermissionComponent
 {
     /**
-     * This method is triggered before creating the permission model and is used to fetch the resource model against the
-     * given name of resource and add the id of the resource inside the permission model that is going to be created.
+     * Normalize action-permission payload before create.
      *
      * @param  Event                      $event      The event object.
      * @param  \Gaia\MVC\Rest\Controllers $controller The controller object which fire this event.
@@ -33,11 +32,12 @@ class PermissionComponent
         $requestValues = $util->objectToArray($controller->request->getJsonRawBody());
         $modelAttributes = $requestValues['data']['attributes'];
 
-        if (!$model->resourceId || str_contains($model->resourceId, 'new')) {
-            $resource = \Gaia\MVC\Models\Resource::findFirst("entity='{$modelAttributes['resourceName']}'");
-            $model->resourceId = $resource->id;
-            $model->resourceName = 'subject';
+        $model->resourceName = $modelAttributes['resourceName'] ?? $model->resourceName;
+        $model->allowed = isset($modelAttributes['allowed']) ? (string) $modelAttributes['allowed'] : $model->allowed;
+
+        // Preserve server-generated id when the client omits one (idempotent test creates).
+        if (!empty($requestValues['data']['id'])) {
+            $model->newId = $model->id = $requestValues['data']['id'];
         }
-        $model->newId = $model->id = $requestValues['data']['id'];
     }
 }

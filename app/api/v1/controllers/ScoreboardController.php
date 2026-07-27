@@ -19,5 +19,10 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class ScoreboardController extends RestController
 {
-  
+    /**
+     * Scoreboard endpoints are not action-ACL managed.
+     *
+     * @var bool
+     */
+    protected $aclAllowed = false;
 }

@@ -131,36 +131,39 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     /**
      * Acl Map
      *
+     * Keys are dispatcher actions. Values declare the ACL action and the
+     * controller method that implements it.
+     *
      * @var array $aclMap
      */
     protected $aclMap = array(
         'get' => array(
-            'action' => 'readF',
-            'label' => 'Read'
+            'action' => 'get',
+            'controllerAction' => 'getAction',
         ),
         'list' => array(
-            'action' => 'readF',
-            'label' => 'Read'
+            'action' => 'get',
+            'controllerAction' => 'listAction',
         ),
         'related' => array(
-            'action' => 'readF',
-            'label' => 'Read'
+            'action' => 'get',
+            'controllerAction' => 'relatedAction',
         ),
         'post' => array(
-            'action' => 'createF',
-            'label' => 'Create'
-        ),
-        'delete' => array(
-            'action' => 'deleteF',
-            'label' => 'delete'
+            'action' => 'create',
+            'controllerAction' => 'postAction',
         ),
         'put' => array(
-            'action' => 'updateF',
-            'label' => 'Update'
+            'action' => 'update',
+            'controllerAction' => 'putAction',
         ),
         'patch' => array(
-            'action' => 'updateF',
-            'label' => 'Update'
+            'action' => 'update',
+            'controllerAction' => 'patchAction',
+        ),
+        'delete' => array(
+            'action' => 'delete',
+            'controllerAction' => 'deleteAction',
         ),
     );
 

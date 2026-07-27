@@ -79,11 +79,31 @@ class Driver
                 $this->di->get('metaMigration')->migrateFunctions($model);
             }
 
-            //migrate models
+            $views = [];
+            $tables = [];
             foreach ($models as $model) {
+                $meta = $this->di->get('fileHandler')->readFile(
+                    APP_PATH . metaManager::basePath . '/model/' . $model . '.php'
+                );
+                if (isset($meta[$model]['isView']) && $meta[$model]['isView']) {
+                    $views[] = $model;
+                } else {
+                    $tables[] = $model;
+                }
+            }
+
+            // Tables first so new columns exist before views are rebuilt, and obsolete
+            // columns can be dropped (CASCADE may remove dependent views temporarily).
+            foreach ($tables as $model) {
                 $result[$model] = "Failed to migrate $model";
                 $this->di->get('metaMigration')->migrateModel($model);
                 $this->di->get('metaMigration')->migrateColumnCollation($model);
+                $result[$model] = "$model migrated successfully";
+            }
+
+            foreach ($views as $model) {
+                $result[$model] = "Failed to migrate $model";
+                $this->di->get('metaMigration')->migrateModel($model);
                 $result[$model] = "$model migrated successfully";
             }
         } catch (PhalconException $e) {

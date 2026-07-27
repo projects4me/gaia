@@ -82,7 +82,11 @@ class Migration extends PhalconMigration
      */
     private function migrateView($model, $meta)
     {
-        $this::$connection->execute($this->di->get('dialect')->createView($meta[$model]['tableName'], $meta[$model]['viewSql']));
+        $tableName = $meta[$model]['tableName'];
+
+        // Column shape changes need a full recreate; CREATE OR REPLACE cannot rename/drop view columns.
+        $this::$connection->execute('DROP VIEW IF EXISTS "' . $tableName . '" CASCADE');
+        $this::$connection->execute($this->di->get('dialect')->createView($tableName, $meta[$model]['viewSql']));
     }
 
     /**
@@ -102,7 +106,12 @@ class Migration extends PhalconMigration
         $tableName = $tableDefinition['tableName'];
 
         if ($handler->shouldSyncExistingTableOnly(self::$connection, $tableName)) {
-            $handler->syncExistingTable(self::$connection, $tableName, $tableDefinition['columns']);
+            $handler->syncExistingTable(
+                self::$connection,
+                $tableName,
+                $tableDefinition['columns'],
+                isset($meta[$model]['indexes']) ? $meta[$model]['indexes'] : []
+            );
             $this->migrateTriggers($model, $meta);
             return;
         }

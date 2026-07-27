@@ -10,13 +10,14 @@ use Gaia\Core\MVC\Models\Query;
 use Gaia\MVC\Models\Permission;
 
 /**
- * Request-scoped RBAC/ACL policy layer for REST authorization.
+ * RBAC/ACL policy layer for REST authorization.
  *
- * RestController wires HTTP context into this class. Permission remains the
- * persistence/query model that loads effective permission rows from the DB.
+ * RestController wires HTTP context into this class. Permission owns loading
+ * and storing effective permission rows from the DB. Acl reads that data and
+ * keeps authorization indexes as class-level static state.
  *
  * Responsibilities:
- * - Load and hold the current user's effective permissions for a request
+ * - Pull effective permissions from Permission into static class state
  * - Authorize direct model access (denial throws)
  * - Filter relationship aliases the user may not read (denial omits)
  * - Authorize related-resource routes (denial throws)
@@ -46,20 +47,28 @@ class Acl
     /**
      * Strategy used to combine permission flags from multiple applicable roles.
      *
-     * This remains a class-level default until it is exposed through application
-     * configuration. It can already be selected through the constructor or
-     * setPermissionResolutionMode().
+     * Class-level default until exposed through application configuration.
+     * Selectable through the constructor or setPermissionResolutionMode().
      *
      * @var string
      */
-    protected $resolutionMode = self::RESOLUTION_PERMISSIVE;
+    protected static $resolutionMode = self::RESOLUTION_PERMISSIVE;
 
     /**
-     * Effective permissions for the current request, keyed by resource entity.
+     * Effective permissions pulled from Permission, keyed by resourceName.
+     *
+     * Tied to the class so all Acl instances share one authorization snapshot.
      *
      * @var array
      */
-    protected $permissions = [];
+    protected static $permissions = [];
+
+    /**
+     * Allowed action resource names keyed for O(1) runtime checks.
+     *
+     * @var array
+     */
+    protected static $allowedActions = [];
 
     /**
      * Access decisions recorded while checking resources.
@@ -116,8 +125,35 @@ class Acl
             );
         }
 
-        $this->resolutionMode = $resolutionMode;
+        self::$resolutionMode = $resolutionMode;
         return $this;
+    }
+
+    /**
+     * Load permissions from Permission into class-level static state.
+     *
+     * @param  string $userId
+     * @return void
+     */
+    protected function loadPermissions($userId)
+    {
+        self::$permissions = Permission::loadEffectivePermissions($userId);
+        self::$allowedActions = [];
+
+        foreach (self::$permissions as $actionName => $permissionRows) {
+            foreach ($permissionRows as $permissionRow) {
+                $normalized = $this->normalizeFlag($permissionRow['allowed'] ?? null);
+                $this->resourcesPermissions[$actionName][] = [
+                    'accessLevel' => $normalized,
+                    'projectId' => null,
+                    'roleId' => isset($permissionRow['roleId']) ? $permissionRow['roleId'] : null
+                ];
+
+                if ($normalized === 1) {
+                    self::$allowedActions[$actionName] = true;
+                }
+            }
+        }
     }
 
     /**
@@ -139,10 +175,42 @@ class Acl
             $this->projectId = $projectId;
         }
 
-        $permissionModel = new Permission();
-        $this->permissions = $permissionModel->findEffectivePermissions($userId, $action, $projectId);
+        $this->loadPermissions($userId);
         $this->checkModelAccess($resource, $action);
         return $this;
+    }
+
+    /**
+     * Load user action permissions and authorize a single action resource.
+     *
+     * @param  string $resourceName e.g. issue.create
+     * @param  string $userId
+     * @return $this
+     */
+    public function authorizeAction($resourceName, $userId)
+    {
+        $this->loadPermissions($userId);
+
+        if ($this->isActionAllowed($resourceName)) {
+            return $this;
+        }
+
+        if (self::$resolutionMode === self::RESOLUTION_PERMISSIVE) {
+            return $this;
+        }
+
+        throw new \Gaia\Exception\Access("Access Denied to {$resourceName}");
+    }
+
+    /**
+     * Check whether the action resource is explicitly allowed.
+     *
+     * @param  string $resourceName
+     * @return bool
+     */
+    protected function isActionAllowed($resourceName)
+    {
+        return isset(self::$allowedActions[$resourceName]) && self::$allowedActions[$resourceName] === true;
     }
 
     /**
@@ -322,13 +390,13 @@ class Acl
      */
     public function checkAccess($resource, $action = 'readF', $isRel = false)
     {
-        if (!isset($this->permissions[$resource])) {
+        if (!isset(self::$permissions[$resource])) {
             return true;
         }
 
         $hasAllow = false;
         $hasDeny = false;
-        $permissions = $this->permissions[$resource];
+        $permissions = self::$permissions[$resource];
 
         foreach ($permissions as $permission) {
             $flagValue = array_key_exists($action, $permission) ? $permission[$action] : null;
@@ -342,12 +410,12 @@ class Acl
 
             $this->resourcesPermissions[$resource][] = [
                 'accessLevel' => $normalizedFlag,
-                'projectId' => $permission['projectId'],
+                'projectId' => $permission['projectId'] ?? null,
                 'roleId' => isset($permission['roleId']) ? $permission['roleId'] : null
             ];
         }
 
-        $isAllowed = ($this->resolutionMode === self::RESOLUTION_RESTRICTIVE)
+        $isAllowed = (self::$resolutionMode === self::RESOLUTION_RESTRICTIVE)
             ? ($hasAllow && !$hasDeny)
             : $hasAllow;
 
