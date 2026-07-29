@@ -75,7 +75,7 @@ class MembershipController extends RestController
                 )
                 ->andWhere(
                     'i.projectId = :projectId:', [
-                    'projectId' => $membership->relatedId
+                    'projectId' => $membership->projectId
                     ]
                 );
             
@@ -107,10 +107,10 @@ class MembershipController extends RestController
 
         $newAssigneeMembership = Membership::findFirst(
             [
-            'conditions' => 'userId = :userId: AND relatedId = :relatedId: AND relatedTo = "project"',
+            'conditions' => 'userId = :userId: AND projectId = :projectId:',
             'bind' => [
                 'userId' => $newAssigneeId,
-                'relatedId' => $membership->relatedId
+                'projectId' => $membership->projectId
             ]
             ]
         );

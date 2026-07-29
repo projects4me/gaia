@@ -38,8 +38,8 @@ class User extends Model
         $builder = $di->get('modelsManager')->createBuilder();
         $builder->from(['User' => 'Gaia\MVC\Models\User'])
             ->columns(['User.id','User.name'])
-            ->leftJoin('Gaia\MVC\Models\Membership', 'm.userId = User.id', 'm')
-            ->leftJoin('Gaia\MVC\Models\Role', 'r.id = m.roleId', 'r')
+            ->leftJoin('Gaia\MVC\Models\Userrole', 'ur.userId = User.id', 'ur')
+            ->leftJoin('Gaia\MVC\Models\Role', 'r.id = ur.roleId', 'r')
             ->where('r.name = :roleName:', ['roleName' => 'Admin'])
             ->limit(1);
 

@@ -84,8 +84,8 @@ class RecipientService
         try {
             $memberships = Membership::find(
                 [
-                'conditions' => 'relatedId = :relatedId: AND relatedTo = :relatedTo:',
-                'bind' => ['relatedId' => $projectModel->id, 'relatedTo' => 'project']
+                'conditions' => 'projectId = :projectId:',
+                'bind' => ['projectId' => $projectModel->id]
                 ]
             );
 

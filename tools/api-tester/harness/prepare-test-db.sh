@@ -147,11 +147,9 @@ BEGIN
 
   SELECT COALESCE(MAX(CASE WHEN p.allowed = 1 THEN 9 ELSE 0 END), 0)
     INTO lvl
-  FROM memberships m
-  JOIN permissions p ON p."roleId" = m."roleId"
-  WHERE m."userId" = p_user_id
-    AND m."relatedId" = p_project_id
-    AND m."relatedTo" = 'project'
+  FROM user_roles ur
+  JOIN permissions p ON p."roleId" = ur."roleId"
+  WHERE ur."userId" = p_user_id
     AND p."resourceName" = resource_name;
 
   RETURN lvl;
@@ -164,13 +162,13 @@ LANGUAGE sql
 STABLE
 SECURITY DEFINER
 AS $function$
-  SELECT m."relatedId", MAX(CASE WHEN p.allowed = 1 THEN 9 ELSE 0 END)
+  SELECT m."projectId", MAX(CASE WHEN p.allowed = 1 THEN 9 ELSE 0 END)
   FROM memberships m
-  JOIN permissions p ON p."roleId" = m."roleId"
+  JOIN user_roles ur ON ur."userId" = m."userId"
+  JOIN permissions p ON p."roleId" = ur."roleId"
   WHERE m."userId" = 'api-test-user-0001'
-    AND m."relatedTo" = 'project'
     AND p."resourceName" = 'issue.get'
-  GROUP BY m."relatedId";
+  GROUP BY m."projectId";
 $function$;
 
 CREATE OR REPLACE FUNCTION auth.can_access_issue(
@@ -219,17 +217,6 @@ USING (
     AND ((assignee)::text = 'api-test-user-0001'::text)
   )
 );
-
-DROP MATERIALIZED VIEW IF EXISTS auth.accessible_projects CASCADE;
-CREATE MATERIALIZED VIEW auth.accessible_projects AS
-SELECT m."relatedId" AS project_id,
-       split_part(p."resourceName", '.', 1) AS entity,
-       max(CASE WHEN p.allowed = 1 THEN 9 ELSE 0 END) AS read_level
-FROM memberships m
-JOIN permissions p ON p."roleId"::text = m."roleId"::text
-WHERE m."relatedTo"::text = 'project'::text
-  AND p."resourceName" LIKE '%.get'
-GROUP BY m."relatedId", split_part(p."resourceName", '.', 1);
 SQL
 
 echo "==> Copying ACL/oauth + catalog baseline data from $SOURCE_DB"
@@ -249,9 +236,10 @@ echo "==> Seeding deterministic fixture entities modeled on pr4m patterns"
 # password hash for: unit-testing
 # Patterns mirrored from pr4m:
 # - accountStatus = 'active' (lowercase)
-# - membership.relatedTo = 'project' | 'system' (lowercase)
-# - Admin roleId = '1' for project admin membership
-# - Global role for system membership (role from pr4m Global roles)
+# - membership.projectId for project membership
+# - user_roles for application-wide role assignment
+# - Admin roleId = '1' for seeded user_roles
+# - Global role for system-level user_roles (role from pr4m Global roles)
 # - system issue types/statuses from copied catalog
 # - project name STARTS A/P for query DSL coverage
 psql_db "$TEST_DB" -v ON_ERROR_STOP=1 <<'SQL'
@@ -287,9 +275,10 @@ BEGIN
   INSERT INTO seed_ctx VALUES (v_global_role, v_bug_type, v_new_status);
 END $$;
 
--- Remove leftover runtime tags from previous api-tester runs (unique on tag)
+-- Remove leftover runtime tags from previous api-tester runs (unique on tag).
+-- Soft-deleted rows still occupy the unique index, so hard-delete by prefix.
 DELETE FROM tags
-WHERE tag IN ('api-tester-tag', 'api-tester-tag Updated');
+WHERE tag LIKE 'api-tester-tag%';
 
 INSERT INTO users (
   id, password, email, name, deleted, "createdUser", "modifiedUser",
@@ -353,29 +342,39 @@ INSERT INTO projects (
 )
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, deleted = 0, status = EXCLUDED.status;
 
--- Project Admin membership (mirrors pr4m relatedTo='project')
+-- Project memberships
 INSERT INTO memberships (
-  id, "createdUser", "modifiedUser", "roleId", "userId",
-  "createdUserName", "modifiedUserName", "relatedTo", "relatedId"
+  id, "createdUser", "modifiedUser", "userId",
+  "createdUserName", "modifiedUserName", "projectId"
 ) VALUES
 (
-  'api-test-membership-1', 'api-test-user-0001', 'api-test-user-0001', '1',
-  'api-test-user-0001', 'API Tester', 'API Tester', 'project', 'api-test-project-001'
+  'api-test-membership-1', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-0001', 'API Tester', 'API Tester', 'api-test-project-001'
 ),
 (
-  'api-test-membership-2', 'api-test-user-0001', 'api-test-user-0001', '1',
-  'api-test-user-0001', 'API Tester', 'API Tester', 'project', 'api-test-project-002'
-),
-(
-  -- Global/system membership (mirrors pr4m system ACL bootstrap)
-  'api-test-membership-g', 'api-test-user-0001', 'api-test-user-0001', (SELECT global_role FROM seed_ctx),
-  'api-test-user-0001', 'API Tester', 'API Tester', 'system', NULL
+  'api-test-membership-2', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-0001', 'API Tester', 'API Tester', 'api-test-project-002'
 )
 ON CONFLICT (id) DO UPDATE SET
-  "roleId" = EXCLUDED."roleId",
   "userId" = EXCLUDED."userId",
-  "relatedTo" = EXCLUDED."relatedTo",
-  "relatedId" = EXCLUDED."relatedId";
+  "projectId" = EXCLUDED."projectId";
+
+-- Application-wide role assignments
+INSERT INTO user_roles (
+  id, "createdUser", "modifiedUser", "userId", "roleId",
+  "createdUserName", "modifiedUserName"
+) VALUES
+(
+  'api-test-userrole-1', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-0001', '1', 'API Tester', 'API Tester'
+),
+(
+  'api-test-userrole-g', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-0001', (SELECT global_role FROM seed_ctx), 'API Tester', 'API Tester'
+)
+ON CONFLICT (id) DO UPDATE SET
+  "userId" = EXCLUDED."userId",
+  "roleId" = EXCLUDED."roleId";
 
 -- Action-based ACL grants for Admin + Global roles used by the test user.
 -- Covers default RestController actions for modules exercised by api-tester.
@@ -520,11 +519,6 @@ SELECT setval(
 -- Refresh auth materialized views when present (used by RLS helpers)
 DO $$
 BEGIN
-  IF EXISTS (
-    SELECT 1 FROM pg_matviews WHERE schemaname = 'auth' AND matviewname = 'accessible_projects'
-  ) THEN
-    REFRESH MATERIALIZED VIEW auth.accessible_projects;
-  END IF;
   IF EXISTS (
     SELECT 1 FROM pg_matviews WHERE schemaname = 'auth' AND matviewname = 'accessible_issues'
   ) THEN

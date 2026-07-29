@@ -6,11 +6,11 @@
 
 $models['Userpermission'] = array(
     'tableName' => 'user_permissions',
-    'viewSql' => 'SELECT MIN("Permission".id) as id, "Membership"."userId" as "userId", "Permission"."resourceName" as entity, MAX("Permission"."allowed") as "allowed"
+    'viewSql' => 'SELECT MIN("Permission".id) as id, "UserRole"."userId" as "userId", "Permission"."resourceName" as entity, MAX("Permission"."allowed") as "allowed"
                     FROM permissions "Permission"
-                    INNER JOIN memberships "Membership" ON "Membership"."roleId" = "Permission"."roleId" AND "Membership"."userId" = getmodelid()
+                    INNER JOIN user_roles "UserRole" ON "UserRole"."roleId" = "Permission"."roleId" AND "UserRole"."userId" = getmodelid()
                     WHERE "Permission"."resourceName" IS NOT NULL
-                    GROUP BY "Membership"."userId", "Permission"."resourceName"',
+                    GROUP BY "UserRole"."userId", "Permission"."resourceName"',
     'isView' => true,
     'fields' => array(
         'id' => array(

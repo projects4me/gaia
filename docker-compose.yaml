@@ -88,7 +88,7 @@ services:
       - '5432:5432'
     volumes:
       - postgres_db:/var/lib/postgresql/data
-      - ./db/Dump20260710.sql:/docker-entrypoint-initdb.d/Dump20260710.sql:ro
+      - ./db/Dump20260729.sql:/docker-entrypoint-initdb.d/Dump20260729.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U nouman -d pr4m"]
       interval: 5s

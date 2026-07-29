@@ -36,6 +36,7 @@ $config['models'] = [
     'Usercollaboration',
     'Userqualification',
     'Userecentactivity',
+    'Userrole',
     'Usergrouppermission',
     'Userlatestissue',
     'Userlatestproject',
