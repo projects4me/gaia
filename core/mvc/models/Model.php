@@ -85,13 +85,6 @@ class Model extends PhalconModel
     protected $splitQueries = true;
 
     /**
-     * Flag to determine if ACL rules should be applied to the model.
-     *
-     * @var bool
-     */
-    protected $aclAllowed = true;
-
-    /**
      * When true, executeModel() uses the dbUnbuffered PDO adapter and returns
      * a ResultStream instead of a Phalcon Resultset, avoiding full dataset
      * buffering in memory. Override in child models to opt in.
@@ -607,17 +600,6 @@ class Model extends PhalconModel
     public function getRequiredBehaviors()
     {
         return $this->requiredBehaviors;
-    }
-
-    /**
-     * This function checks whether ACL functionality is enabled for the model by returning
-     * the value of the $aclAllowed property.
-     *
-     * @return bool
-     */
-    public function isAclAllowed()
-    {
-        return $this->aclAllowed;
     }
 
     /**

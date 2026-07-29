@@ -26,6 +26,18 @@ use Gaia\MVC\Models\Timelog;
 class MilestoneoverviewController extends RestController
 {
     /**
+     * Only get is exposed — this module has no create/update/delete endpoints.
+     *
+     * @var array $aclMap
+     */
+    protected $aclMap = array(
+        'get' => array(
+            'action' => 'get',
+            'controllerAction' => 'getAction',
+        ),
+    );
+
+    /**
      * Handles GET requests for milestone overview data.
      *
      * Fetches all issues belonging to the given milestone and iterates through

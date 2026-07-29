@@ -82,98 +82,43 @@ class PermissionController extends AclAdminController
      */
     protected function getDefaultPermissions()
     {
-        $path = APP_PATH . '/app/metadata/model';
+        global $settings;
+        $moduleActions = $settings['system']['acl']['moduleActions']->toArray();
+        $permissionInterface = $this->getPermissionInterface();
         $permissions = ['data' => []];
 
-        global $settings;
-        $models = $settings['models'];
-
-        $permissionInterface = $this->getPermissionInterface($path);
-        $permissionIndex = 0;
-
-        foreach ($models as $modelName) {
-            if (!$this->canApplyModelAcl($modelName)) {
-                continue;
+        foreach ($moduleActions as $moduleDefinition) {
+            foreach ($moduleDefinition['actions'] as $actionDefinition) {
+                $permission = $permissionInterface;
+                $permission['attributes']['resourceName'] = $actionDefinition['resourceName'];
+                $permission['id'] = create_guid();
+                $permissions['data'][] = $permission;
             }
-
-            $data = $this->di->get('metaManager')->getModelMeta($modelName);
-
-            $this->addPermissions($permissionIndex, $modelName, [$modelName], $permissions, $permissionInterface, false, $data);
-
-            $requestedFields = array_keys($data['fields'] ?? []);
-            $this->addPermissions($permissionIndex, $modelName, $requestedFields, $permissions, $permissionInterface, true, $data);
         }
 
         return $permissions;
     }
 
     /**
-     * Create permission entries for the given field/model list.
-     *
-     * @method addPermissions
-     * @param  int    $permissionIndex
-     * @param  string $modelName
-     * @param  array  $requestedFields
-     * @param  array  $permissions
-     * @param  array  $permissionInterface
-     * @param  bool   $addPrefix
-     * @param  array  $metadata
-     * @return void
-     */
-    protected function addPermissions(&$permissionIndex, $modelName, $requestedFields, &$permissions, $permissionInterface, $addPrefix, $metadata)
-    {
-        $modelFields = $requestedFields;
-        if ($addPrefix === true) {
-            $modelFields = array_map(
-                function ($requestedField) use ($modelName) {
-                    return "{$modelName}.{$requestedField}";
-                },
-                $requestedFields
-            );
-        }
-
-        foreach ($modelFields as $modelField) {
-            $parts = explode('.', $modelField);
-            $fieldName = $parts[1] ?? $modelField;
-
-            if ($this->canApplyFieldAcl($fieldName, $metadata)) {
-                $permissionIndex++;
-                $entry = $permissionInterface;
-                $entry['attributes']['resourceName'] = $modelField;
-                $entry['attributes']['resourceId'] = "new_resource_{$permissionIndex}";
-                $entry['id'] = create_guid();
-                $permissions['data'][] = $entry;
-            }
-        }
-    }
-
-    /**
      * This method returns permission interface.
      *
      * @method getPermissionInterface
-     * @param  string $path Path of the permission model.
      * @return array
      */
-    protected function getPermissionInterface($path)
+    protected function getPermissionInterface()
     {
         $permissionInterface = ['type' => 'Permission'];
         $permissionInterface['attributes'] = [];
         $permissionInterface['id'] = '';
-        $permissionModel = $this->di->get('fileHandler')->readFile("{$path}/Permission.php");
-
-        $permissionFields = array_keys($permissionModel['Permission']['fields']);
-        $notRequiredFields = ['controllerId', 'id'];
-
-        $requestedFields = array_diff($permissionFields, $notRequiredFields);
-        foreach ($requestedFields as $requestedField) {
-            $permissionInterface['attributes'][$requestedField] = '';
-        }
+        $permissionInterface['attributes']['resourceName'] = '';
+        $permissionInterface['attributes']['allowed'] = '';
+        $permissionInterface['attributes']['roleId'] = '';
 
         return $permissionInterface;
     }
 
     /**
-     * This method retrieve all of the permissions applied against the role or a user from the database and
+     * This method retrieve all of the permissions applied against a role from the database and
      * return that array.
      *
      * @method getAppliedPermissions
@@ -181,45 +126,23 @@ class PermissionController extends AclAdminController
      */
     protected function getAppliedPermissions()
     {
-        $allowedQueryParams = ['roleId', 'userId'];
-        $queryParamsRequested = [];
         $appliedPermissions = ['data' => []];
-        $maps = [
-            'rels' => [
-                'roleId' => ['resource'],
-                'userId' => ['aclController', 'resource']
-            ],
-            'fields' => [
-                'roleId' => 'resource.entity as resourceName',
-                'userId' => 'aclController.relatedId as userId, resource.entity as resourceName'
-            ],
-            'query' => [
-                'roleId' => 'Permission.roleId',
-                'userId' => 'aclController.relatedId'
-            ]
-        ];
+        $roleId = $this->request->get('roleId');
 
-        foreach ($allowedQueryParams as $allowedQueryParam) {
-            ($this->request->get($allowedQueryParam))
-                && ($queryParamsRequested[$allowedQueryParam] = $this->request->get($allowedQueryParam));
+        if (!$roleId) {
+            return $appliedPermissions;
         }
 
-        foreach ($queryParamsRequested as $queryParam => $value) {
-            $query = "(({$maps['query'][$queryParam]} : {$value}))";
-
-            $requestedFields = ["Permission.*"];
-            $requestedFields[] = $maps['fields'][$queryParam];
-
-            $params = [
-                'where' => $query,
-                'rels' => $maps['rels'][$queryParam],
-                'fields' => $requestedFields,
+        foreach ($this->findPermissionRows($roleId) as $row) {
+            $appliedPermissions['data'][] = [
+                'type' => 'Permission',
+                'id' => isset($row['id']) ? $row['id'] : create_guid(),
+                'attributes' => [
+                    'resourceName' => $row['resourceName'],
+                    'allowed' => $row['allowed'],
+                    'roleId' => $row['roleId'],
+                ],
             ];
-
-            $permissionModel = new $this->modelName();
-            $data = $permissionModel->readAll($params);
-            $dataArray = $this->extractData($data, $params, true);
-            $appliedPermissions['data'] = array_merge($appliedPermissions['data'], $dataArray['data']);
         }
 
         return $appliedPermissions;
@@ -239,19 +162,9 @@ class PermissionController extends AclAdminController
         $util = new Util();
 
         $requestData = $util->objectToArray($this->request->getJsonRawBody());
+        $attributes = $requestData['data']['attributes'] ?? $requestData;
 
-        /*
-         * Fetch resource if not attached to permission and create permission. Below conditional statement
-         * will work in case when post request is generated from frontend when a default permission, which is not
-         * inside db, is updated.
-         */
-
-        if (isset($requestData['data']['attributes']['resourceId']) && str_contains($requestData['data']['attributes']['resourceId'], 'new') === true) {
-            // All of the resources should be available inside the database.
-            $requestData = $requestData['data']['attributes'];
-        }
-
-        if ($this->passPreReqs($requestData) === true) {
+        if ($this->passPreReqs($attributes) === true) {
             return parent::postAction();
         } else {
             throw new \Gaia\Exception\Exception("Permission cannot be created due to some reasons");
@@ -298,14 +211,7 @@ class PermissionController extends AclAdminController
         }
 
         if ($this->canApplyAcl($resourceName)) {
-            // Get permission flags from configurations.
-            global $settings;
-            $permissionFlags = $settings['system']['acl']['permissionFlags'];
-
-            // Get only required permission flags.
-            $permissionFlags = array_intersect($permissionFlags->toArray(), array_keys($values));
-
-            $this->passBinaryFlagChecks($permissionFlags, $values);
+            $this->passBinaryFlagChecks($values);
 
             return true;
         }
@@ -315,30 +221,22 @@ class PermissionController extends AclAdminController
      * Validate permission flags are binary allow/deny values (0 or 1).
      *
      * @method passBinaryFlagChecks
-     * @param  array $permissionFlags Array of permission flags.
      * @param  array $values          Array containing values of the request.
      * @return bool
      */
-    private function passBinaryFlagChecks($permissionFlags, $values)
+    private function passBinaryFlagChecks($values)
     {
         $allowedValues = ['0', '1', ''];
-
-        foreach ($permissionFlags as $flag) {
-            if (!isset($values[$flag])) {
-                continue;
-            }
-
-            $value = (string) $values[$flag];
-            if (!in_array($value, $allowedValues, true)) {
-                throw new \Gaia\Exception\Permission(
-                    "You're not allowed to set {$values[$flag]}",
-                    null,
-                    null,
-                    [
-                        'suggestion' => 'You can only set 0 (none) or 1 (allow)'
-                    ]
-                );
-            }
+        $value = isset($values['allowed']) ? (string) $values['allowed'] : '';
+        if (!in_array($value, $allowedValues, true)) {
+            throw new \Gaia\Exception\Permission(
+                "You're not allowed to set {$value}",
+                null,
+                null,
+                [
+                    'suggestion' => 'You can only set 0 (none) or 1 (allow)'
+                ]
+            );
         }
 
         return true;
@@ -353,82 +251,39 @@ class PermissionController extends AclAdminController
      */
     private function canApplyAcl($resourceName)
     {
-        $actionsMap = [
-            "post" => "created",
-            "patch" => "updated"
-        ];
-
-        $modelName = $resourceName;
-        $fieldName = null;
-
-        if (str_contains($resourceName, ".")) {
-            list($modelName, $fieldName) = explode(".", $resourceName, 2);
+        global $settings;
+        $moduleActions = $settings['system']['acl']['moduleActions']->toArray();
+        foreach ($moduleActions as $moduleDefinition) {
+            foreach ($moduleDefinition['actions'] as $actionDefinition) {
+                if ($actionDefinition['resourceName'] === $resourceName) {
+                    return true;
+                }
+            }
         }
 
-        $metadata = $this->di->get('metaManager')->getModelMeta($modelName);
-        $action = $actionsMap[$this->actionName] ?? 'saved';
-
-        if ($fieldName && !$this->canApplyFieldAcl($fieldName, $metadata)) {
-            throw new \Gaia\Exception\Exception("Permission cannot " . $action);
-        }
-
-        if (!$this->canApplyModelAcl($modelName)) {
-            throw new \Gaia\Exception\Exception("Permission cannot " . $action);
-        }
-
-        return true;
+        throw new \Gaia\Exception\Exception("Permission cannot be created for {$resourceName}");
     }
 
     /**
-     * Checks that whether we can apply acl on the model or not.
+     * Query permission rows for a role.
      *
-     * @method canApplyModelAcl
-     * @param  string $modelName
-     * @return boolean
-     */
-    private function canApplyModelAcl($modelName)
-    {
-        $isAllowed = true;
-
-        $modelNamespace = "\\Gaia\\MVC\\Models\\$modelName";
-
-        if (class_exists($modelNamespace)) {
-            $model = new $modelNamespace();
-            $isAllowed = $model->isAclAllowed();
-        } else {
-            throw new \Gaia\Exception\Exception("Model not found");
-        }
-
-        return $isAllowed;
-    }
-
-    /**
-     * Checks whether ACL can be applied on a field (skips identifiers / linkedTo / acl:false).
+     * Permissions are always applied to roles, never directly to users.
      *
-     * @method canApplyFieldAcl
-     * @param  string $fieldName
-     * @param  array  $metadata
-     * @return boolean
+     * @param  string $roleId
+     * @return array
      */
-    private function canApplyFieldAcl($fieldName, $metadata)
+    private function findPermissionRows($roleId)
     {
-        // Model-level row uses the model name as "field"; always allow.
-        if (!isset($metadata['fields'][$fieldName])) {
-            return true;
-        }
+        $queryBuilder = $this->di->get('modelsManager')->createBuilder()
+            ->columns([
+                'Permission.id as id',
+                'Permission.roleId as roleId',
+                'Permission.resourceName as resourceName',
+                'Permission.allowed as allowed',
+            ])
+            ->from(['Permission' => 'Gaia\\MVC\\Models\\Permission'])
+            ->where('Permission.roleId = :roleId:', ['roleId' => $roleId]);
 
-        $isAllowed = true;
-
-        if (isset($metadata['fields'][$fieldName]['identifier'])
-            || isset($metadata['fields'][$fieldName]['relatedIdentifier'])
-            || isset($metadata['fields'][$fieldName]['linkedTo'])) {
-            $isAllowed = false;
-        }
-
-        if ($isAllowed && isset($metadata['fields'][$fieldName]['acl'])) {
-            $isAllowed = ($metadata['fields'][$fieldName]['acl']);
-        }
-
-        return $isAllowed;
+        return $queryBuilder->getQuery()->execute()->toArray();
     }
 }

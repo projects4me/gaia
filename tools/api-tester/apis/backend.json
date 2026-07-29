@@ -8,12 +8,12 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 128,
-        "enabled": 115,
-        "disabled": 13,
-        "routeResources": 37,
-        "withMetadata": 25,
-        "skippedResources": 11
+        "total": 126,
+        "enabled": 116,
+        "disabled": 10,
+        "routeResources": 36,
+        "withMetadata": 24,
+        "skippedResources": 10
     },
     "apis": [
         {
@@ -1501,45 +1501,6 @@
             "source": "backend-metadata"
         },
         {
-            "id": "get-resource-api-v1-resource",
-            "method": "GET",
-            "path": "/api/v1/resource",
-            "resource": "resource",
-            "auth": true,
-            "expects": {
-                "status": 200,
-                "shape": "jsonapi.collection"
-            },
-            "query": {
-                "limit": 5,
-                "page": 1
-            },
-            "source": "backend-metadata"
-        },
-        {
-            "id": "post-resource-api-v1-resource",
-            "method": "POST",
-            "path": "/api/v1/resource",
-            "resource": "resource",
-            "auth": true,
-            "body": {
-                "data": {
-                    "type": "resource",
-                    "attributes": {
-                        "entity": "api-resource-entity",
-                        "groupName": "api-resource-groupName"
-                    }
-                }
-            },
-            "expects": {
-                "status": 201,
-                "shape": "jsonapi.resource"
-            },
-            "enabled": false,
-            "skipReason": "ACL catalog write returns empty collection payload",
-            "source": "backend-metadata"
-        },
-        {
             "id": "get-permission-api-v1-permission",
             "method": "GET",
             "path": "/api/v1/permission",
@@ -1565,17 +1526,17 @@
                 "data": {
                     "type": "permission",
                     "attributes": {
-                        "resourceId": "api-permission-resourceId"
+                        "resourceName": "wiki.get",
+                        "allowed": "1",
+                        "roleId": "{roleId}"
                     }
                 }
             },
+            "source": "backend-metadata",
             "expects": {
                 "status": 201,
                 "shape": "jsonapi.resource"
-            },
-            "enabled": false,
-            "skipReason": "ACL write requires controller/resource wiring beyond metadata",
-            "source": "backend-metadata"
+            }
         },
         {
             "id": "post-token-api-v1-token",
@@ -2197,8 +2158,6 @@
                 "status": 200,
                 "shape": "json"
             },
-            "enabled": false,
-            "skipReason": "Settings endpoint; not standard model CRUD",
             "source": "backend-metadata"
         },
         {

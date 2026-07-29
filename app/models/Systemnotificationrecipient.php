@@ -18,7 +18,6 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Systemnotificationrecipient extends Model
 {
-    protected $aclAllowed = false;
 
     /**
      * Marks all notifications as read for a specific user

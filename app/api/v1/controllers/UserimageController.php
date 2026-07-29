@@ -17,6 +17,12 @@ namespace Gaia\MVC\REST\Controllers;
  */
 class UserimageController extends \Phalcon\Mvc\Controller
 {
+    /**
+     * User image endpoints are not action-ACL managed.
+     *
+     * @var bool
+     */
+    protected $aclAllowed = false;
 
     /**
      * Retrieve the profile picture of a user from the database and return it

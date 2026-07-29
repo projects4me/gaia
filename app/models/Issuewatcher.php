@@ -18,5 +18,4 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Issuewatcher extends Model
 {
-    protected $aclAllowed = false;
 }

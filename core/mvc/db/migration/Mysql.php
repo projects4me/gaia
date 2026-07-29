@@ -67,8 +67,9 @@ class Mysql
      * @param \Phalcon\Db\AdapterInterface $connection Active database connection
      * @param string $tableName Table name from model metadata
      * @param Column[] $columns Expected column definitions from metadata
+     * @param array $indexes Optional metadata indexes map (field => type)
      */
-    public function syncExistingTable($connection, $tableName, array $columns)
+    public function syncExistingTable($connection, $tableName, array $columns, array $indexes = [])
     {
     }
 

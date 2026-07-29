@@ -25,7 +25,6 @@ $config['models'] = [
     'Oauthscope',
     'Permission',
     'Project',
-    'Resource',
     'Role',
     'Savedsearch',
     'Scoreboard',

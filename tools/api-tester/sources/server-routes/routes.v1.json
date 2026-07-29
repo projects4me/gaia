@@ -187,17 +187,6 @@
             ],
             "identifier": "id"
         },
-        "resource": {
-            "path": "/api/:version/resource",
-            "allowedMethods": [
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE",
-                "PATCH"
-            ],
-            "identifier": "id"
-        },
         "permission": {
             "path": "/api/:version/permission",
             "allowedMethods": [

@@ -1,15 +1,6 @@
 <?php
 
-// Get permission flags.
-$filePath = APP_PATH . '/app/metadata/model/Permission.php';
-$fields = array_keys(($this->di->get('fileHandler')->readFile($filePath))['Permission']['fields']);
-$permissionFlags = array_values(
-    array_filter(
-        $fields, function ($field) {
-            return strpos($field, 'F') !== false;
-        }
-    )
-);
+require_once APP_PATH . '/core/libs/security/aclMapCatalog.php';
 
 // Get groups for each model.
 $models = $this->di->get('fileHandler')->readFile(APP_PATH . '/core/config/models.php');
@@ -27,18 +18,12 @@ foreach ($models['models'] as $modelName) {
 // This contains the system settings.
 $config['system'] = [
     'acl' => [
-            'permissionFlags' => $permissionFlags,
             'apiOptions' => [
-                'field' => [
-                    'allow' => '1',
-                    'none' => '0'
-                ],
-                'model' => [
-                    'allow' => '1',
-                    'none' => '0'
-                ]
+                'allow' => '1',
+                'none' => '0'
             ],
-            'modelGroups' => $modelGroups
+            'modelGroups' => $modelGroups,
+            'moduleActions' => \Gaia\Libraries\Security\AclMapCatalog::buildModuleActions()
         ]
     ];
 

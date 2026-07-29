@@ -8,7 +8,7 @@ namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
 use ElephantIO\Client,
-ElephantIO\Engine\SocketIO\Version1X;
+  ElephantIO\Engine\SocketIO\Version1X;
 
 /**
  * Conversers Controller
@@ -20,6 +20,14 @@ ElephantIO\Engine\SocketIO\Version1X;
  */
 class ConverserController extends RestController
 {
+
+  /**
+   * Converser endpoints are not action-ACL managed.
+   *
+   * @var bool
+   */
+  protected $aclAllowed = false;
+
   /**
    * This function saves a converser which is done via the RestController.
    * In addition to saving we add a user to the room in the Hermes as well.
@@ -29,15 +37,15 @@ class ConverserController extends RestController
    * @todo Get the host from configuration file
    * @todo Implement multi-tenancy
    */
-  public function postAction(){
+  public function postAction()
+  {
 
     // Call the parent so that the Conversation room can be saved
     $response = parent::postAction();
     $converser = json_decode($response->getContent())->data;
 
     // If the Conversation room was saved then add it to Hermes
-    if ($response->getStatusCode() == '201 Created')
-    {
+    if ($response->getStatusCode() == '201 Created') {
 
       // Todo- link
       $host = 'http://localhost:3000';
@@ -54,15 +62,13 @@ class ConverserController extends RestController
       $client->of('/gaia');
 
       // If the converser is a user then add the user to the conversation
-      if ($converser->relatedTo == 'user')
-      {
-        print "Inviting ".$converser->relatedId." to room ".$converser->conversationRoomId;
-        $client->emit('invite',['room'=>$converser->conversationRoomId,'tenant'=>$tenant,'user'=>$converser->relatedId]);
+      if ($converser->relatedTo == 'user') {
+        print "Inviting " . $converser->relatedId . " to room " . $converser->conversationRoomId;
+        $client->emit('invite', ['room' => $converser->conversationRoomId, 'tenant' => $tenant, 'user' => $converser->relatedId]);
         $client->close();
       }
       // else if project then add all the users associated with the project to the conversation
-      else if($converser->relatedTo == 'project')
-      {
+      else if ($converser->relatedTo == 'project') {
         // fetch the users of th project and add them all to the project conversation
       }
     }

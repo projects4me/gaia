@@ -1198,11 +1198,7 @@
       "auth": true,
       "expects": {
         "status": 200,
-        "shape": "jsonapi.collection"
-      },
-      "query": {
-        "limit": 5,
-        "page": 1
+        "shape": "json"
       }
     },
     {

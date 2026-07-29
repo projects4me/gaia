@@ -214,17 +214,6 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
-            'resource' => array(
-                'path' => '/api/:version/resource',
-                'allowedMethods' => array(
-                    'GET',
-                    'POST',
-                    'PUT',
-                    'DELETE',
-                    'PATCH',
-                ),
-                'identifier' => 'id',
-            ),
             'permission' => array(
                 'path' => '/api/:version/permission',
                 'allowedMethods' => array(

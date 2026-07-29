@@ -18,6 +18,12 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class SystemsettingController extends RestController
 {
+    /**
+     * System settings endpoints are not action-ACL managed.
+     *
+     * @var bool
+     */
+    protected $aclAllowed = false;
 
     /**
      * This method is used to return list of system configurations.
@@ -29,9 +35,9 @@ class SystemsettingController extends RestController
     {
         $configPaths = [
             'aclSettings' => [
-                'acl.permissionFlags',
                 'acl.apiOptions',
-                'acl.modelGroups'
+                'acl.modelGroups',
+                'acl.moduleActions'
             ]
         ];
 

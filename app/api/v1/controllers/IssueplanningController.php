@@ -22,6 +22,19 @@ use Gaia\Libraries\Utils\Util;
 class IssueplanningController extends \Phalcon\Mvc\Controller
 {
     /**
+     * Only create is exposed — this module only accepts POST /issueplanning.
+     * Declared for the ACL catalog (permission UI); runtime auth is not via RestController.
+     *
+     * @var array $aclMap
+     */
+    protected $aclMap = array(
+        'create' => array(
+            'action' => 'create',
+            'controllerAction' => 'postAction',
+        ),
+    );
+
+    /**
      * This function is used to generate an issue plan using AI/LLM services.
      *
      * The method processes issue details and project context to generate

@@ -6,11 +6,11 @@
 
 $models['Usergrouppermission'] = array(
     'tableName' => 'user_group_permissions',
-    'viewSql' => 'SELECT MIN("Permission".id) as id, "Membership"."relatedId" as "relatedId", "Membership"."relatedTo" as "groupName", "Resource".entity as entity, MAX("Permission"."readF") as "readF", MAX("Permission"."createF") as "createF", MAX("Permission"."updateF") as "updateF", MAX("Permission"."deleteF") as "deleteF", MAX("Permission"."importF") as "importF", MAX("Permission"."exportF") as "exportF"
+    'viewSql' => 'SELECT MIN("Permission".id) as id, "Membership"."relatedId" as "relatedId", "Membership"."relatedTo" as "groupName", "Permission"."resourceName" as entity, MAX("Permission"."allowed") as "allowed"
                     FROM permissions "Permission"
-                    INNER JOIN resources "Resource" ON "Resource".id = "Permission"."resourceId" AND "Resource"."groupName" = \'gaia\' AND "Resource".entity NOT LIKE \'%.%\' AND "Resource".entity <> \'App\'
                     INNER JOIN memberships "Membership" ON "Membership"."roleId" = "Permission"."roleId" AND "Membership"."userId" = getcurrentuserid() AND "Membership"."relatedId" = getmodelid()
-                    GROUP BY "Membership"."relatedId", "Membership"."relatedTo", "Resource".entity',
+                    WHERE "Permission"."resourceName" IS NOT NULL
+                    GROUP BY "Membership"."relatedId", "Membership"."relatedTo", "Permission"."resourceName"',
     'isView' => true,
     'fields' => array(
         'id' => array(
@@ -34,33 +34,8 @@ $models['Usergrouppermission'] = array(
             'type' => 'varchar',
             'null' => false,
         ),
-        'readF' => array(
-            'name' => 'readF',
-            'type' => 'varchar',
-            'null' => false,
-        ),
-        'createF' => array(
-            'name' => 'createF',
-            'type' => 'varchar',
-            'null' => false,
-        ),
-        'updateF' => array(
-            'name' => 'updateF',
-            'type' => 'varchar',
-            'null' => false,
-        ),
-        'deleteF' => array(
-            'name' => 'deleteF',
-            'type' => 'varchar',
-            'null' => false,
-        ),
-        'importF' => array(
-            'name' => 'importF',
-            'type' => 'varchar',
-            'null' => false,
-        ),
-        'exportF' => array(
-            'name' => 'exportF',
+        'allowed' => array(
+            'name' => 'allowed',
             'type' => 'varchar',
             'null' => false,
         )

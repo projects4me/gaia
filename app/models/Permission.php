@@ -11,7 +11,8 @@ use Gaia\Core\MVC\Models\Model;
 /**
  * Permission Model
  *
- * Persistence and query model for permission records.
+ * Persistence and query model for permission records. Owns loading and holding
+ * the current user's effective action permissions for ACL evaluation.
  *
  * @author   Rana Nouman <ranamnouman@gmail.com>
  * @package  Foundation
@@ -21,28 +22,82 @@ use Gaia\Core\MVC\Models\Model;
 class Permission extends Model
 {
     /**
-     * Load the effective permission rows for a user and action, optionally
-     * scoped to a project membership role.
+     * Effective permissions for the loaded user, keyed by resourceName.
      *
-     * Returns an array keyed by resource entity, where each value is a list of
-     * permission flag rows suitable for Acl evaluation:
+     * @var array|null
+     */
+    protected static $effectivePermissions = null;
+
+    /**
+     * User id whose effective permissions are currently stored.
+     *
+     * @var string|null
+     */
+    protected static $loadedUserId = null;
+
+    /**
+     * Load and store effective action permissions for a user.
+     *
+     * Returns an array keyed by resourceName (e.g. issue.create), where each
+     * value is a list of allow rows suitable for Acl evaluation:
      *
      * ```
      * [
-     *   'Issue' => [
-     *     ['readF' => 0, 'projectId' => '...'],
+     *   'issue.create' => [
+     *     ['allowed' => 1, 'roleId' => '...'],
      *   ],
      * ]
      * ```
      *
-     * @param  string      $userId
-     * @param  string      $action
-     * @param  string|null $projectId
+     * Subsequent calls for the same user reuse the stored result.
+     *
+     * @param  string $userId
      * @return array
      */
-    public function findEffectivePermissions($userId, $action, $projectId = null)
+    public static function loadEffectivePermissions($userId)
     {
-        $permissionsByRole = $this->buildPermissionsQuery(null, $action);
+        $userId = (string) $userId;
+        if (self::$loadedUserId === $userId && self::$effectivePermissions !== null) {
+            return self::$effectivePermissions;
+        }
+
+        $permission = new static();
+        self::$effectivePermissions = $permission->fetchEffectivePermissions($userId);
+        self::$loadedUserId = $userId;
+
+        return self::$effectivePermissions;
+    }
+
+    /**
+     * Return previously loaded effective permissions (empty until load).
+     *
+     * @return array
+     */
+    public static function getEffectivePermissions()
+    {
+        return self::$effectivePermissions !== null ? self::$effectivePermissions : [];
+    }
+
+    /**
+     * Clear stored effective permissions.
+     *
+     * @return void
+     */
+    public static function clearEffectivePermissions()
+    {
+        self::$effectivePermissions = null;
+        self::$loadedUserId = null;
+    }
+
+    /**
+     * Query effective action permissions for a user from memberships + roles.
+     *
+     * @param  string $userId
+     * @return array
+     */
+    protected function fetchEffectivePermissions($userId)
+    {
+        $permissionsByRole = $this->buildPermissionsQuery();
         $permissionsByRole->innerJoin(
             "Gaia\\MVC\\Models\\Membership",
             "Membership.roleId=Permission.roleId",
@@ -53,21 +108,17 @@ class Permission extends Model
             ['userId' => $userId]
         );
 
-        if ($projectId) {
-            $permissionsByRole->andWhere(
-                'Membership.relatedId=:projectId:',
-                ['projectId' => $projectId]
-            );
-        }
-
         $permissions = [];
         foreach ($permissionsByRole->getQuery()->execute() as $value) {
-            if (!isset($permissions[$value->entity])) {
-                $permissions[$value->entity] = [];
+            if (empty($value->resourceName)) {
+                continue;
             }
-            $permissions[$value->entity][] = [
-                $action => $value->$action,
-                'projectId' => $value->projectId,
+
+            if (!isset($permissions[$value->resourceName])) {
+                $permissions[$value->resourceName] = [];
+            }
+            $permissions[$value->resourceName][] = [
+                'allowed' => $value->allowed,
                 'roleId' => $value->roleId
             ];
         }
@@ -76,29 +127,21 @@ class Permission extends Model
     }
 
     /**
-     * Build the base permissions query for a given action.
+     * Build the base permissions query for action-based ACL.
      *
-     * @param  string|null $resource
-     * @param  string|null $action
      * @return \Phalcon\Mvc\Model\Query\Builder
      */
-    private function buildPermissionsQuery($resource = null, $action = null)
+    private function buildPermissionsQuery()
     {
         $di = \Phalcon\Di::getDefault();
 
         $queryBuilder = $di->get('modelsManager')->createBuilder();
         $queryBuilder->columns([
-            "Permission.$action",
+            "Permission.resourceName",
+            "Permission.allowed",
             'Permission.roleId as roleId',
-            'Resource1.entity',
-            'Membership.relatedId as projectId'
         ]);
-        $queryBuilder->from(['Resource1' => 'Gaia\\MVC\\Models\\Resource']);
-        $queryBuilder->leftJoin("Gaia\\MVC\\Models\\Permission", "Permission.resourceId=Resource1.id", "Permission");
-
-        if ($resource) {
-            $queryBuilder->where('Resource1.entity=:resource:', ["resource" => $resource]);
-        }
+        $queryBuilder->from(['Permission' => 'Gaia\\MVC\\Models\\Permission']);
 
         return $queryBuilder;
     }
