@@ -8,7 +8,6 @@ namespace Gaia\MVC\REST\Controllers\Components\Notifications\Modules;
 
 use Gaia\MVC\Models\Project;
 use Gaia\MVC\Models\User;
-use Gaia\MVC\Models\Role;
 use Gaia\Workflows\Actions\CreateModel;
 use Gaia\MVC\REST\Controllers\Components\Notifications\Services\RecipientService;
 
@@ -52,17 +51,16 @@ class MembershipNotification implements NotificationModuleInterface
         try {
             $logger->debug('MembershipNotification::onCreate()');
 
-            if ($model->relatedTo !== 'project') {
+            if (empty($model->projectId)) {
                 return null;
             }
 
             $user = User::findFirstById($model->userId);
-            $role = Role::findFirstById($model->roleId);
-            $project = Project::findFirstById($model->relatedId);
+            $project = Project::findFirstById($model->projectId);
 
             // First notification - to project members
             $notificationData = [
-                'description' => "{{createdUser:{$currentUser->id}}} has added {{User@{$user->id}}} to {{Project@{$project->id}}} as {$role->name}",
+                'description' => "{{createdUser:{$currentUser->id}}} has added {{User@{$user->id}}} to {{Project@{$project->id}}}",
                 'context' => json_encode(
                     [
                     "projectShortcode" => $project->shortCode,
@@ -79,7 +77,7 @@ class MembershipNotification implements NotificationModuleInterface
             if ($currentUser->id !== $user->id) {
                 // Second notification - to the user who was added
                 $notificationData = [
-                    'description' => "{{createdUser:{$currentUser->id}}} has added you to {{Project@{$project->id}}} as {$role->name}",
+                    'description' => "{{createdUser:{$currentUser->id}}} has added you to {{Project@{$project->id}}}",
                     'context' => json_encode(
                         [
                         "projectShortcode" => $project->shortCode,
@@ -105,54 +103,14 @@ class MembershipNotification implements NotificationModuleInterface
     }
 
     /**
-     * Handles notification when a project membership role is updated - Creates a notification to the affected user about their role change.
+     * Role changes are no longer tracked on membership (roles live on userrole).
      *
      * @param  object $model The membership model instance
-     * @return object|null The created notification or null if not applicable
-     * @throws \Gaia\Exception\Exception If notification creation fails
+     * @return null
      */
     public function onUpdate($model)
     {
-        global $logger, $currentUser;
-        try {
-            $logger->debug('MembershipNotification::onUpdate()');
-
-            if ($model->relatedTo !== 'project') {
-                return null;
-            }
-
-            if (!isset($model->audit['roleId'])) {
-                return null;
-            }
-
-            $user = User::findFirstById($model->userId);
-            $oldRole = Role::findFirstById($model->audit['roleId']['old']);
-            $newRole = Role::findFirstById($model->audit['roleId']['new']);
-            $project = Project::findFirstById($model->relatedId);
-
-            $notificationData = [
-                'description' => "{{createdUser:{$currentUser->id}}} has updated your role in {{Project@{$project->id}}} from {$oldRole->name} to {$newRole->name}",
-                'context' => json_encode(
-                    [
-                    "projectShortcode" => $project->shortCode,
-                    "projectName" => $project->name,
-                    'relatedTo' => 'project'
-                    ]
-                ),
-            ];
-            $notification = CreateModel::execute('systemnotification', $notificationData);
-
-            $notificationRecipientData = [
-                'systemNotificationId' => $notification->id,
-                'userId' => $model->userId
-            ];
-            $notificationRecipient = CreateModel::execute('systemnotificationrecipient', $notificationRecipientData);
-
-            $logger->debug('-MembershipNotification::onUpdate()');
-            return $notification;
-        } catch (\Exception $e) {
-            throw new \Gaia\Exception\Exception('Error in MembershipNotification::onUpdate: ' . $e->getMessage());
-        }
+        return null;
     }
 
     /**
@@ -168,12 +126,12 @@ class MembershipNotification implements NotificationModuleInterface
         try {
             $logger->debug('MembershipNotification::onDelete()');
 
-            if ($model->relatedTo !== 'project') {
+            if (empty($model->projectId)) {
                 return null;
             }
 
             $user = User::findFirstById($model->userId);
-            $project = Project::findFirstById($model->relatedId);
+            $project = Project::findFirstById($model->projectId);
 
             if ($currentUser->id !== $user->id) {
                 $notificationData = [

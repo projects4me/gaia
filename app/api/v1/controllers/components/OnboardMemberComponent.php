@@ -8,9 +8,6 @@ namespace Gaia\MVC\REST\Controllers\Components;
 
 use Gaia\Libraries\Utils\Util;
 use Phalcon\Events\Event as Event;
-use Gaia\MVC\Models\Membership;
-use Gaia\MVC\Models\Role;
-use function Gaia\Libraries\Utils\create_guid as create_guid;
 use Gaia\Workflows\Actions\CreateModel;
 use Gaia\MVC\REST\Controllers\Components\Notifications\Modules\MembershipNotification;
 use Gaia\MVC\REST\Controllers\Components\Notifications\Services\RecipientService;
@@ -38,17 +35,9 @@ class OnboardMemberComponent
         global $logger;
         $logger->debug('Gaia.Controller.Component.OnboardMember::afterCreate()');
 
-        // Get role for the first membership
-        $role = Role::findFirstByName('Project Manager');
-        if (!$role) {
-            throw new \Gaia\Exception\Exception('Project manager role not found, to add project manager to the project, you need to create a role named "Project Manager" first');
-        }
-
         $membership = CreateModel::execute('Membership', [
             'userId' => $model->projectManager,
-            'relatedId' => $model->id,
-            'relatedTo' => 'project',
-            'roleId' => $role->id,
+            'projectId' => $model->id,
         ]);
         $recipientService = new RecipientService();
         $membershipNotification = new MembershipNotification($recipientService);

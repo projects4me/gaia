@@ -7,7 +7,7 @@
 namespace Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
-use Gaia\MVC\Models\Membership;
+use Gaia\MVC\Models\Userrole;
 use Gaia\MVC\Models\Role;
 
 /**
@@ -103,16 +103,15 @@ abstract class AclAdminController extends RestController
             throw new \Gaia\Exception\Access('Access Denied: Admin role is not configured');
         }
 
-        $membership = Membership::findFirst([
-            'conditions' => 'userId = :userId: AND roleId = :roleId: AND relatedTo = :relatedTo:',
+        $userRole = Userrole::findFirst([
+            'conditions' => 'userId = :userId: AND roleId = :roleId:',
             'bind' => [
                 'userId' => $currentUser->id,
                 'roleId' => $adminRole->id,
-                'relatedTo' => 'system'
             ]
         ]);
 
-        if (!$membership) {
+        if (!$userRole) {
             throw new \Gaia\Exception\Access('Access Denied: Admin rights required');
         }
 

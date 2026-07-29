@@ -90,7 +90,7 @@ class Permission extends Model
     }
 
     /**
-     * Query effective action permissions for a user from memberships + roles.
+     * Query effective action permissions for a user from userroles + permissions.
      *
      * @param  string $userId
      * @return array
@@ -99,12 +99,12 @@ class Permission extends Model
     {
         $permissionsByRole = $this->buildPermissionsQuery();
         $permissionsByRole->innerJoin(
-            "Gaia\\MVC\\Models\\Membership",
-            "Membership.roleId=Permission.roleId",
-            "Membership"
+            "Gaia\\MVC\\Models\\Userrole",
+            "Userrole.roleId=Permission.roleId",
+            "Userrole"
         );
         $permissionsByRole->where(
-            'Membership.userId=:userId:',
+            'Userrole.userId=:userId:',
             ['userId' => $userId]
         );
 

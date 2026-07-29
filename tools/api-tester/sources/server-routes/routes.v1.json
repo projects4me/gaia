@@ -143,6 +143,17 @@
             ],
             "identifier": "id"
         },
+        "userrole": {
+            "path": "/api/:version/userrole",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "project": {
             "path": "/api/:version/project",
             "allowedMethods": [

@@ -6,11 +6,12 @@
 
 $models['Usergrouppermission'] = array(
     'tableName' => 'user_group_permissions',
-    'viewSql' => 'SELECT MIN("Permission".id) as id, "Membership"."relatedId" as "relatedId", "Membership"."relatedTo" as "groupName", "Permission"."resourceName" as entity, MAX("Permission"."allowed") as "allowed"
+    'viewSql' => 'SELECT MIN("Permission".id) as id, "Membership"."projectId" as "relatedId", \'project\' as "groupName", "Permission"."resourceName" as entity, MAX("Permission"."allowed") as "allowed"
                     FROM permissions "Permission"
-                    INNER JOIN memberships "Membership" ON "Membership"."roleId" = "Permission"."roleId" AND "Membership"."userId" = getcurrentuserid() AND "Membership"."relatedId" = getmodelid()
+                    INNER JOIN user_roles "UserRole" ON "UserRole"."roleId" = "Permission"."roleId"
+                    INNER JOIN memberships "Membership" ON "Membership"."userId" = "UserRole"."userId" AND "Membership"."userId" = getcurrentuserid() AND "Membership"."projectId" = getmodelid()
                     WHERE "Permission"."resourceName" IS NOT NULL
-                    GROUP BY "Membership"."relatedId", "Membership"."relatedTo", "Permission"."resourceName"',
+                    GROUP BY "Membership"."projectId", "Permission"."resourceName"',
     'isView' => true,
     'fields' => array(
         'id' => array(

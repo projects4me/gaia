@@ -125,7 +125,7 @@ $extraAttributes = [
         'type' => 'degree',
         'title' => 'API Tester Degree',
     ],
-    'tag' => ['tag' => 'api-tester-tag'],
+    'tag' => ['tag' => 'api-tester-tag-{runId}'],
     'wiki' => ['name' => 'API Tester Wiki', 'projectId' => '{projectId}'],
     'savedsearch' => [
         'name' => 'API Tester Saved Search',
@@ -424,8 +424,10 @@ function patchChange(array $attrs, array $meta = [])
         if (!isset($fields[$field]) || isset($avoid[$field])) {
             continue;
         }
-        $base = (isset($attrs[$field]) && is_string($attrs[$field]) && strpos($attrs[$field], '{') === false)
-            ? $attrs[$field]
+        // Allow {runId} so unique-constrained fields stay unique across soft-deleted leftovers.
+        $attr = (isset($attrs[$field]) && is_string($attrs[$field])) ? $attrs[$field] : null;
+        $base = ($attr !== null && (strpos($attr, '{') === false || strpos($attr, '{runId}') !== false))
+            ? $attr
             : 'API Tester';
         $newVal = $base . ' Updated';
         $len = isset($fields[$field]['length']) ? (int) $fields[$field]['length'] : 0;

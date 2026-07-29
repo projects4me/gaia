@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 126,
-        "enabled": 116,
+        "total": 130,
+        "enabled": 120,
         "disabled": 10,
-        "routeResources": 36,
-        "withMetadata": 24,
+        "routeResources": 37,
+        "withMetadata": 25,
         "skippedResources": 10
     },
     "apis": [
@@ -693,10 +693,8 @@
                 "data": {
                     "type": "membership",
                     "attributes": {
-                        "roleId": "{developerRoleId}",
-                        "relatedTo": "project",
                         "userId": "{memberUserId}",
-                        "relatedId": "{projectId}"
+                        "projectId": "{projectId}"
                     }
                 }
             },
@@ -1077,6 +1075,76 @@
             "method": "DELETE",
             "path": "/api/v1/role/{runtime.roleId}",
             "resource": "role",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-userrole-api-v1-userrole",
+            "method": "GET",
+            "path": "/api/v1/userrole",
+            "resource": "userrole",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-userrole-api-v1-userrole",
+            "method": "POST",
+            "path": "/api/v1/userrole",
+            "resource": "userrole",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "userrole",
+                    "attributes": {
+                        "userId": "{userId}",
+                        "roleId": "{roleId}"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.userroleId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-userrole-api-v1-userrole-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/userrole/{runtime.userroleId}",
+            "resource": "userrole",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.userroleId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-userrole-api-v1-userrole-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/userrole/{runtime.userroleId}",
+            "resource": "userrole",
             "auth": true,
             "expects": {
                 "status": [
@@ -1576,7 +1644,7 @@
                 "data": {
                     "type": "tag",
                     "attributes": {
-                        "tag": "api-tester-tag"
+                        "tag": "api-tester-tag-{runId}"
                     }
                 }
             },
@@ -1615,7 +1683,7 @@
                     "type": "tag",
                     "id": "{runtime.tagId}",
                     "attributes": {
-                        "tag": "api-tester-tag Updated"
+                        "tag": "api-tester-tag-{runId} Updated"
                     }
                 }
             },
@@ -1623,7 +1691,7 @@
                 "status": 200,
                 "shape": "jsonapi.resource",
                 "attributesEqual": {
-                    "tag": "api-tester-tag Updated"
+                    "tag": "api-tester-tag-{runId} Updated"
                 }
             },
             "source": "backend-metadata"

@@ -34,6 +34,10 @@ class Runner
             return 1;
         }
 
+        // Unique per suite run so unique-constrained fields (e.g. tags.tag) survive
+        // soft-deleted leftovers from prior runs without requiring DB re-seed.
+        $this->fixtures->setValue('runId', bin2hex(random_bytes(4)));
+
         $results = [];
         $passed = 0;
         $failed = 0;

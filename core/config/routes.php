@@ -170,6 +170,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'userrole' => array(
+                'path' => '/api/:version/userrole',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'project' => array(
                 'path' => '/api/:version/project',
                 'allowedMethods' => array(
