@@ -5,6 +5,7 @@ namespace  Gaia\MVC\REST\Controllers;
 use Gaia\MVC\Models\Issue;
 use Gaia\MVC\Models\Project;
 use Gaia\Libraries\Utils\Util;
+use Gaia\Core\MVC\REST\Controllers\RestController;
 
 /**
  * This controller handles issue planning operations using AI/LLM services.
@@ -19,7 +20,7 @@ use Gaia\Libraries\Utils\Util;
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  * @author Rana Nouman <ranamnouman@gmail.com>
  */
-class IssueplanningController extends \Phalcon\Mvc\Controller
+class IssueplanningController extends RestController
 {
     /**
      * Only create is exposed — this module only accepts POST /issueplanning.
@@ -28,7 +29,7 @@ class IssueplanningController extends \Phalcon\Mvc\Controller
      * @var array $aclMap
      */
     protected $aclMap = array(
-        'create' => array(
+        'post' => array(
             'action' => 'create',
             'controllerAction' => 'postAction',
         ),
@@ -50,8 +51,6 @@ class IssueplanningController extends \Phalcon\Mvc\Controller
     public function postAction()
     {
         $util = new Util();
-        $data = array();
-
         $requestData = $util->objectToArray($this->request->getJsonRawBody());
         $llmService = $this->di->get('serviceFactory')::create('llm');
         $issueNumber = $requestData['issueNumber'];
@@ -62,8 +61,8 @@ class IssueplanningController extends \Phalcon\Mvc\Controller
         if (!$issue) {
             $this->response->setJsonContent(
                 [
-                'success' => false,
-                'message' => 'An error occurred while processing your request'
+                    'success' => false,
+                    'message' => 'An error occurred while processing your request'
                 ]
             );
             return $this->response;

@@ -327,15 +327,13 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $this->setUser($request);
             $this->trackLastActivity($currentUser->id);
             $modelAlias = Util::extractClassFromNamespace($this->modelName);
-            $resource = \Phalcon\Text::camelize($this->controllerName);
+            $resourceName = $this->controllerName . '.' . $action;
 
             $acl = new \Gaia\Libraries\Security\Acl($this->getDI());
 
             $query = $this->request->get('query', null, '');
-            $params['where'] = $query;
-            $projectId = ($modelAlias === 'Project' && isset($this->id)) ? $this->id : null;
 
-            $acl->authorizeModel($resource, $modelAlias, $action, $currentUser->id, $params, $projectId);
+            $acl->authorizeAction($resourceName, $currentUser->id);
             $acl->authorizeClauseUsage(
                 $modelAlias,
                 $action,
