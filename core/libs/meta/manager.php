@@ -348,50 +348,31 @@ class Manager
     }
 
     /**
-     * This function is used to get list of groups of the given model.
+     * Return the authorization groups declared on a model via metadata acl.groups.
      *
      * @method getModelGroups
+     * @param  string $modelName
      * @return array
      */
     public function getModelGroups($modelName)
     {
-        $systemGroups = $this->getGroups();
         $metadata = $this->getModelMeta($modelName);
-        $fields = $metadata[0];
-        $explicitKeys = !empty($metadata['acl']['groupExplicitKeys'])
-                        ? $metadata['acl']['groupExplicitKeys']
-                        : [];
-        $modelGroups = [];
 
-        foreach ($systemGroups as $group) {
-            $groupMetadata = $this->getModelMeta($group);
-            $relatedKey = $groupMetadata['acl']['group']['relatedKey'];
-
-            // Check if there is same field as relatedKey of group.
-            foreach ($fields as $field) {
-                if ($relatedKey === $field) {
-                    $modelGroups[] = $group;
-                }
-            }
-
-            // Check if there is an explicit key against the group name in the model metadata.
-            if ($explicitKeys && isset($explicitKeys[strtolower($group)]) && !isset($modelGroups[$group])) {
-                $modelGroups[] = $group;
-            }
+        if (empty($metadata['acl']['groups']) || !is_array($metadata['acl']['groups'])) {
+            return [];
         }
 
-        return $modelGroups;
+        return array_values($metadata['acl']['groups']);
     }
 
     /**
-     * This function is used to return the list of groups in the system.
+     * Return models marked as authorization groups (acl.group is truthy).
      *
      * @method getGroups
      * @return array
      */
     public function getGroups()
     {
-        $path = APP_PATH . '/app/metadata/model';
         global $settings;
         $models = $settings['models'];
         $groups = [];
@@ -399,7 +380,7 @@ class Manager
         foreach ($models as $modelName) {
             $metadata = $this->getModelMeta($modelName);
 
-            if (isset($metadata['acl']['group'])) {
+            if (!empty($metadata['acl']['group'])) {
                 $groups[] = $modelName;
             }
         }

@@ -155,7 +155,10 @@ $models['Comment'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    )
+    ),
+    'acl' => [
+        'groups' => ['Project', 'Conversationroom'],
+    ],
 );
 
 return $models;

@@ -20,7 +20,7 @@ Required:
   --base-uri <url>                    Running API base URI (local, staging, or production)
 
 Options:
-  --mode <client|backend>[,<mode>...]
+  --mode <client|backend|acl>[,<mode>...]
                                       API catalog(s) to run (repeatable; default: backend)
   --filter <text|a|b>                 Optional filter (supports OR with |)
   --report <file>                     Report output path (single --mode only)
@@ -35,8 +35,9 @@ Optional local env helpers (separate):
 
 Examples:
   ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode backend
+  ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode acl
   ./tools/api-tester/harness/run-api-tests.sh --base-uri https://api.staging.example.com --mode client
-  ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode client,backend
+  ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode client,backend,acl
 HELP
 }
 
@@ -77,8 +78,11 @@ resolve_mode_paths() {
     backend)
       echo "$ROOT_DIR/tools/api-tester/apis/backend.json|$ROOT_DIR/output/api-tester-backend-report.json"
       ;;
+    acl)
+      echo "$ROOT_DIR/tools/api-tester/apis/acl.json|$ROOT_DIR/output/api-tester-acl-report.json"
+      ;;
     *)
-      echo "Invalid --mode: $mode (expected client|backend)" >&2
+      echo "Invalid --mode: $mode (expected client|backend|acl)" >&2
       return 1
       ;;
   esac

@@ -266,7 +266,10 @@ $models['Project'] = array(
         'modelIdentifierBehavior',
         'currentUserBehavior',
         'shortCodeBehavior'
-    )
+    ),
+    'acl' => [
+        'group' => true,
+    ],
 );
 
 return $models;

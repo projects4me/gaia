@@ -7,6 +7,16 @@
     "password": "unit-testing",
     "tokenPath": "/api/v1/token"
   },
+  "authProfiles": {
+    "aclNoProject": {
+      "email": "api-tester-acl-noproject@example.com",
+      "password": "unit-testing"
+    },
+    "aclProjectOnly": {
+      "email": "api-tester-acl-project@example.com",
+      "password": "unit-testing"
+    }
+  },
   "values": {
     "userId": "api-test-user-0001",
     "memberUserId": "api-test-user-0002",
@@ -22,6 +32,7 @@
     "systemnotificationId": "api-test-sysnotif-01",
     "systemnotificationrecipientId": "api-test-sysnotifrec01",
     "conversationroomId": "api-test-convroom-001",
+    "commentId": "api-test-comment-000001",
     "activityId": "api-test-activity-0001",
     "timelogId": "api-test-timelog-00001",
     "dashboardId": "api-test-dashboard-001",

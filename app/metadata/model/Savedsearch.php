@@ -106,7 +106,10 @@ $models['Savedsearch'] = array(
         'dateCreatedBehavior',
         'createdUserBehavior',
         'softDeleteBehavior'
-    )
+    ),
+    'acl' => [
+        'groups' => ['Project'],
+    ],
 );
 
 return $models;

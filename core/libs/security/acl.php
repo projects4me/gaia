@@ -17,7 +17,7 @@ use Gaia\MVC\Models\Permission;
  *
  * Responsibilities:
  * - Ensure Permission has loaded the current user's effective grants
- * - Authorize direct model access (denial throws)
+ * - Authorize direct model access including authorization groups (denial throws)
  * - Filter relationship aliases the user may not read (denial omits)
  * - Authorize related-resource routes (denial throws)
  * - Apply field-level ACL for API responses
@@ -110,16 +110,25 @@ class Acl
     }
 
     /**
-     * Load user action permissions and authorize a single action resource.
+     * Load user action permissions and authorize a model action, including
+     * every authorization group declared on that model.
      *
      * @param  string $resourceName e.g. issue.create
      * @param  string $userId
+     * @param  string|null $modelAlias Model name for group checks (e.g. Issue)
      * @return $this
      * @throws \Gaia\Exception\Access
      */
-    public function authorizeAction($resourceName, $userId)
+    public function authorizeAction($resourceName, $userId, $modelAlias = null)
     {
         $this->loadPermissions($userId);
+
+        if ($modelAlias !== null && $modelAlias !== '') {
+            $action = $this->extractActionFromResourceName($resourceName);
+            $this->checkModelAccess($modelAlias, $action);
+            return $this;
+        }
+
         $this->checkAccess($resourceName);
         return $this;
     }
@@ -127,7 +136,8 @@ class Acl
     /**
      * Return only relationship aliases the current user has access to.
      *
-     * Related modules are checked as `{module}.{action}` (e.g. issue.get).
+     * Related modules require `{module}.{action}` plus access to every
+     * authorization group declared on that related module.
      *
      * @param  string $modelAlias
      * @param  array  $rels
@@ -138,9 +148,7 @@ class Acl
     {
         return array_filter($rels, function ($relName) use ($modelAlias, $action) {
             $relatedModelName = $this->getRelatedModelName($modelAlias, $relName);
-            return $this->isResourceAllowed(
-                $this->buildResourceName($relatedModelName, $action)
-            );
+            return $this->isModelActionAllowed($relatedModelName, $action);
         });
     }
 
@@ -155,7 +163,7 @@ class Acl
     public function authorizeRelated($modelAlias, $relation, $action)
     {
         $relatedModelName = $this->getRelatedModelName($modelAlias, $relation);
-        $this->checkAccess($this->buildResourceName($relatedModelName, $action));
+        $this->checkModelAccess($relatedModelName, $action);
     }
 
     /**
@@ -168,7 +176,8 @@ class Acl
      *
      * Base-model fields are covered by the request's primary authorizeAction.
      * Related aliases require the same action on the related module
-     * (`{module}.{action}`). Field-level ACL is out of scope.
+     * (`{module}.{action}`) plus that module's authorization groups.
+     * Field-level ACL is out of scope.
      *
      * Unknown aliases are left to normal query validation.
      *
@@ -198,10 +207,96 @@ class Acl
             }
 
             $relatedModelName = $this->getRelatedModelName($modelAlias, $alias);
-            $this->denyUnlessAllowed(
-                $this->buildResourceName($relatedModelName, $action)
-            );
+            if (!$this->isModelActionAllowed($relatedModelName, $action)) {
+                $this->denyAccess(
+                    'Access denied to query criteria for '
+                    . $this->buildResourceName($relatedModelName, $action)
+                );
+            }
         }
+    }
+
+    /**
+     * Whether the user may perform an action on a model, including all of its
+     * authorization groups (each group requires `{group}.get`).
+     *
+     * @param  string $modelName
+     * @param  string $action
+     * @return bool
+     */
+    public function isModelActionAllowed($modelName, $action)
+    {
+        if (!$this->isResourceAllowed($this->buildResourceName($modelName, $action))) {
+            return false;
+        }
+
+        foreach ($this->getAuthorizationGroups($modelName) as $groupModel) {
+            if (!$this->isResourceAllowed($this->buildResourceName($groupModel, 'get'))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Authorize a model action (and its groups), or throw if denied.
+     *
+     * @param  string $modelName
+     * @param  string $action
+     * @return bool
+     * @throws \Gaia\Exception\Access
+     */
+    public function checkModelAccess($modelName, $action)
+    {
+        if ($this->isModelActionAllowed($modelName, $action)) {
+            return true;
+        }
+
+        $this->denyAccess(
+            'Access denied to ' . $this->buildResourceName($modelName, $action)
+        );
+    }
+
+    /**
+     * Authorization group model names declared on the given model.
+     *
+     * @param  string $modelName
+     * @return array
+     */
+    protected function getAuthorizationGroups($modelName)
+    {
+        return $this->di->get('metaManager')->getModelGroups($modelName);
+    }
+
+    /**
+     * Extract the action segment from a resource name (e.g. issue.get → get).
+     *
+     * @param  string $resourceName
+     * @return string
+     */
+    protected function extractActionFromResourceName($resourceName)
+    {
+        $parts = explode('.', $resourceName, 2);
+        return isset($parts[1]) ? $parts[1] : $resourceName;
+    }
+
+    /**
+     * Log the denial detail and throw a generic access exception for the client.
+     *
+     * @param  string $detail
+     * @return void
+     * @throws \Gaia\Exception\Access
+     */
+    protected function denyAccess($detail)
+    {
+        global $logger;
+
+        if (isset($logger)) {
+            $logger->warning($detail);
+        }
+
+        throw new \Gaia\Exception\Access('Access Denied');
     }
 
     /**
@@ -215,7 +310,7 @@ class Acl
     protected function denyUnlessAllowed($resourceName)
     {
         if (!$this->isResourceAllowed($resourceName)) {
-            throw new \Gaia\Exception\Access('Access Denied to requested query criteria');
+            $this->denyAccess("Access denied to requested query criteria for {$resourceName}");
         }
     }
 
@@ -304,17 +399,9 @@ class Acl
             return true;
         }
 
-        throw new \Gaia\Exception\Access("Access Denied to {$resourceName}");
+        $this->denyAccess("Access denied to {$resourceName}");
     }
 
-    /**
-     * Whether the action resource is allowed under the current resolution mode.
-     *
-     * Missing grants follow resolution mode: permissive allows, restrictive denies.
-     *
-     * @param  string $resourceName
-     * @return bool
-     */
     /**
      * Whether the action resource is allowed under the current resolution mode.
      *

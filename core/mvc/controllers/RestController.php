@@ -333,7 +333,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
             $query = $this->request->get('query', null, '');
 
-            $acl->authorizeAction($resourceName, $currentUser->id);
+            $acl->authorizeAction($resourceName, $currentUser->id, $modelAlias);
             $acl->authorizeClauseUsage(
                 $modelAlias,
                 $action,

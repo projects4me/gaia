@@ -159,7 +159,10 @@ $models['Activity'] = array(
         'createdUserBehavior',
         'dateCreatedBehavior',
         'softDeleteBehavior'
-    )
+    ),
+    'acl' => [
+        'groups' => ['Project'],
+    ],
 );
 
 return $models;

@@ -43,11 +43,14 @@ Optional: `--filter project` (OR terms with `|`, e.g. `milestone|timelog`)
 # backend catalog
 ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode backend
 
+# ACL / group-authorization catalog
+./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode acl
+
 # client catalog
 ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode client
 
 # both
-./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode client,backend
+./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode client,backend,acl
 
 # remote
 ./tools/api-tester/harness/run-api-tests.sh --base-uri https://api.staging.example.com --mode backend
@@ -64,6 +67,10 @@ Optional: `--filter project` (OR terms with `|`, e.g. `milestone|timelog`)
     3. emit create → get → patch → delete lifecycles with `store` for runtime IDs
     4. skip custom/auth/file/Socket.IO/ACL endpoints that are not metadata CRUD
     5. omit PUT (not implemented in `RestController`)
+- `tools/api-tester/apis/acl.json`
+  - **group-based ACL** scenarios (hand-maintained)
+  - uses fixture `authProfiles` (`aclNoProject`, `aclProjectOnly`) seeded by `prepare-test-db.sh`
+  - covers: Issue/Comment/Conversationroom denied without `project.get`; Issue omitted from Project `rels`; related route 403; admin allow baseline
 
 Generate catalogs:
 
@@ -118,9 +125,23 @@ Each API entry can declare `expects`:
 
 - `status`: number or array
 - `shape`: `json` | `jsonapi.collection` | `jsonapi.resource` | `oauth.token` | `error`
+- `errorEqual`: exact `error` string (used by ACL 403 cases)
+- `includedTypesAbsent`: list of JSON:API `included[].type` values that must not appear
 - `attributesPresent`: list of attribute keys
 - `attributesEqual`: map of attribute key → expected value
 - `idsIncludes`: expected resource ids
+
+## Auth profiles
+
+Default auth comes from `fixtures.auth` (or `API_TEST_*` env vars).
+
+Cases may set `"auth": "<profileName>"` to use `fixtures.authProfiles.<profileName>`
+(merged over default auth). Tokens are cached per profile within a suite run.
+
+ACL mode uses:
+
+- `aclNoProject` — `issue.get`/`comment.get`/`conversationroom.get` allowed, `project.get` denied
+- `aclProjectOnly` — `project.get` allowed, `issue.get` denied
 
 ## Runtime capture (mutation lifecycle)
 

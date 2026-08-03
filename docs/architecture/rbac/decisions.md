@@ -181,6 +181,22 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 
 ---
 
+## Authorization group decisions
+
+### D-028 — Module-level authorization groups
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | A model may declare authorization groups in metadata. Access to the model requires the requested `{module}.{action}` **and** `{group}.get` for every listed group. |
+| Marker | `'acl' => ['group' => true]` marks a model as an authorization group (initially `Project`, `Conversationroom`). |
+| Dependencies | `'acl' => ['groups' => ['Project', ...]]` lists required groups on dependent models. |
+| Evaluation | Centralized in `Acl::isModelActionAllowed()` — no record/parent-ID checks; no FK auto-discovery. |
+| Examples | Issue/Wiki/Milestone (and other project child modules from Prometheus `app.project.*`) with `groups => ['Project']`: `{module}.get=1` and `project.get=0` → deny. Comment with `groups => ['Project', 'Conversationroom']`: all three of `comment.*`, `conversationroom.get`, and `project.get` must allow. |
+| Relationships | Eager `rels` omit a related alias when the related model or any of its groups fails. Related routes and active query clauses deny (403) under the same rule. |
+
+---
+
 ## Field access decisions
 
 ### D-030 — Field denial omits/nulls values; it does not 403 the resource

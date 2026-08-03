@@ -1,0 +1,177 @@
+{
+  "name": "gaia-acl-apis",
+  "version": 1,
+  "basePath": "/api/v1",
+  "description": "Group-based ACL authorization scenarios (module-level cascading).",
+  "apis": [
+    {
+      "id": "acl-issue-denied-without-project-group",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclNoProject",
+      "query": {
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 403,
+        "shape": "error",
+        "errorEqual": "Access Denied"
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-issue-detail-denied-without-project-group",
+      "method": "GET",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": "aclNoProject",
+      "expects": {
+        "status": 403,
+        "shape": "error",
+        "errorEqual": "Access Denied"
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-conversationroom-denied-without-project-group",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": "aclNoProject",
+      "query": {
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 403,
+        "shape": "error",
+        "errorEqual": "Access Denied"
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-comment-denied-without-project-group",
+      "method": "GET",
+      "path": "/api/v1/comment",
+      "resource": "comment",
+      "auth": "aclNoProject",
+      "query": {
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 403,
+        "shape": "error",
+        "errorEqual": "Access Denied"
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-comment-detail-denied-without-project-group",
+      "method": "GET",
+      "path": "/api/v1/comment/{commentId}",
+      "resource": "comment",
+      "auth": "aclNoProject",
+      "expects": {
+        "status": 403,
+        "shape": "error",
+        "errorEqual": "Access Denied"
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-project-allowed-when-project-get",
+      "method": "GET",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": "aclProjectOnly",
+      "query": {
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-issue-denied-when-issue-get-zero",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclProjectOnly",
+      "query": {
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 403,
+        "shape": "error",
+        "errorEqual": "Access Denied"
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-project-rels-issues-omitted",
+      "method": "GET",
+      "path": "/api/v1/project/{projectId}",
+      "resource": "project",
+      "auth": "aclProjectOnly",
+      "query": {
+        "rels": "issues"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{projectId}"],
+        "includedTypesAbsent": ["issue"]
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-project-related-issues-denied",
+      "method": "GET",
+      "path": "/api/v1/project/{projectId}/issues",
+      "resource": "project",
+      "auth": "aclProjectOnly",
+      "expects": {
+        "status": 403,
+        "shape": "error",
+        "errorEqual": "Access Denied"
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-admin-issue-allowed",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-admin-comment-allowed",
+      "method": "GET",
+      "path": "/api/v1/comment/{commentId}",
+      "resource": "comment",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{commentId}"]
+      },
+      "source": "acl-group"
+    }
+  ]
+}
