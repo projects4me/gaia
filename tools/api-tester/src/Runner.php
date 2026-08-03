@@ -13,6 +13,7 @@ class Runner
     private $fixtures;
     private $asserter;
     private $token;
+    private $tokens = [];
 
     public function __construct($baseUri, $apisPath, $fixturesPath, $reportPath, $filter = null)
     {
@@ -151,7 +152,11 @@ class Runner
 
         $needsAuth = !isset($api['auth']) || $api['auth'] !== false;
         if ($needsAuth) {
-            $token = $this->getToken();
+            $authProfile = null;
+            if (isset($api['auth']) && is_string($api['auth']) && $api['auth'] !== '') {
+                $authProfile = $api['auth'];
+            }
+            $token = $this->getToken($authProfile);
             $options['headers'] = ['Authorization' => 'Bearer ' . $token];
         }
 
@@ -245,16 +250,24 @@ class Runner
         return null;
     }
 
-    private function getToken()
+    private function getToken($profile = null)
     {
-        if (!empty($this->token)) {
+        $cacheKey = ($profile === null || $profile === '') ? '__default__' : $profile;
+        if (!empty($this->tokens[$cacheKey])) {
+            return $this->tokens[$cacheKey];
+        }
+
+        // Keep legacy single-token cache in sync for default profile.
+        if ($cacheKey === '__default__' && !empty($this->token)) {
+            $this->tokens[$cacheKey] = $this->token;
             return $this->token;
         }
 
-        $auth = $this->fixtures->authConfig();
+        $auth = $this->fixtures->authConfig($profile);
         if ($auth['clientSecret'] === '' || $auth['email'] === '' || $auth['password'] === '') {
             throw new \RuntimeException(
                 'Auth required but missing API_TEST_CLIENT_SECRET / API_TEST_EMAIL / API_TEST_PASSWORD'
+                . ($profile ? " (profile: {$profile})" : '')
             );
         }
 
@@ -279,8 +292,11 @@ class Runner
             );
         }
 
-        $this->token = $response['json']['access_token'];
-        return $this->token;
+        $this->tokens[$cacheKey] = $response['json']['access_token'];
+        if ($cacheKey === '__default__') {
+            $this->token = $this->tokens[$cacheKey];
+        }
+        return $this->tokens[$cacheKey];
     }
 
     private function preview($body)

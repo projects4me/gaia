@@ -122,7 +122,10 @@ $models['Issuestatus'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    )
+    ),
+    'acl' => [
+        'groups' => ['Project'],
+    ],
 );
 
 return $models;

@@ -201,7 +201,10 @@ $models['Wiki'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    )
+    ),
+    'acl' => [
+        'groups' => ['Project'],
+    ],
 );
 
 return $models;

@@ -309,6 +309,34 @@ INSERT INTO users (
   'API Tester',
   'active',
   0
+),
+(
+  -- Restricted ACL user: child modules allowed, project.get denied
+  'api-test-user-acl-np',
+  '$2y$10$OH8mqmGV2uLOLyoSdLGm/ejzhLXVOsOz/Ld2fi610E/qWWTqQ6e1G',
+  'api-tester-acl-noproject@example.com',
+  'API Tester ACL No Project',
+  0,
+  'api-test-user-0001',
+  'api-test-user-0001',
+  'API Tester',
+  'API Tester',
+  'active',
+  0
+),
+(
+  -- Restricted ACL user: project allowed, issue denied (eager-rel omit coverage)
+  'api-test-user-acl-pi',
+  '$2y$10$OH8mqmGV2uLOLyoSdLGm/ejzhLXVOsOz/Ld2fi610E/qWWTqQ6e1G',
+  'api-tester-acl-project@example.com',
+  'API Tester ACL Project Only',
+  0,
+  'api-test-user-0001',
+  'api-test-user-0001',
+  'API Tester',
+  'API Tester',
+  'active',
+  0
 )
 ON CONFLICT (id) DO UPDATE SET
   password = EXCLUDED.password,
@@ -408,6 +436,55 @@ CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
 ) AS a(action);
 
+-- Roles for group-based ACL api-tester scenarios
+INSERT INTO roles (
+  id, name, description, deleted, "createdUser", "modifiedUser", "createdUserName", "modifiedUserName"
+) VALUES
+(
+  'api-test-role-acl-np', 'ACL No Project', 'issue/comment allowed, project.get denied', 0,
+  'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
+),
+(
+  'api-test-role-acl-pi', 'ACL Project Only', 'project allowed, issue.get denied', 0,
+  'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
+)
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, deleted = 0;
+
+DELETE FROM permissions WHERE id LIKE 'atp-acl-%';
+DELETE FROM user_roles WHERE id LIKE 'api-test-userrole-acl-%';
+
+INSERT INTO user_roles (
+  id, "createdUser", "modifiedUser", "userId", "roleId",
+  "createdUserName", "modifiedUserName"
+) VALUES
+(
+  'api-test-userrole-acl-np', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-acl-np', 'api-test-role-acl-np', 'API Tester', 'API Tester'
+),
+(
+  'api-test-userrole-acl-pi', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-acl-pi', 'api-test-role-acl-pi', 'API Tester', 'API Tester'
+)
+ON CONFLICT (id) DO UPDATE SET
+  "userId" = EXCLUDED."userId",
+  "roleId" = EXCLUDED."roleId";
+
+-- No-project role: child modules allowed, project.get denied (group cascade deny)
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-np-issue-get', 'api-test-role-acl-np', 'issue.get', 1, NOW(), NOW()),
+  ('atp-acl-np-comment-get', 'api-test-role-acl-np', 'comment.get', 1, NOW(), NOW()),
+  ('atp-acl-np-conv-get', 'api-test-role-acl-np', 'conversationroom.get', 1, NOW(), NOW()),
+  ('atp-acl-np-project-get', 'api-test-role-acl-np', 'project.get', 0, NOW(), NOW());
+
+-- Project-only role: can read projects, cannot read issues (rel omit / related 403)
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-pi-project-get', 'api-test-role-acl-pi', 'project.get', 1, NOW(), NOW()),
+  ('atp-acl-pi-issue-get', 'api-test-role-acl-pi', 'issue.get', 0, NOW(), NOW()),
+  ('atp-acl-pi-conv-get', 'api-test-role-acl-pi', 'conversationroom.get', 1, NOW(), NOW()),
+  ('atp-acl-pi-comment-get', 'api-test-role-acl-pi', 'comment.get', 1, NOW(), NOW());
+
 -- ACL controller entry for user (mirrors pr4m acl_controllers.relatedTo='user')
 INSERT INTO acl_controllers (
   id, "relatedId", "relatedTo", lft, rht, deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName"
@@ -439,6 +516,17 @@ INSERT INTO conversation_rooms (
   'project', 'api-test-project-001', 'API Tester', 'API Tester', 'ATP', NOW() - INTERVAL '1 day'
 )
 ON CONFLICT (id) DO UPDATE SET deleted = 0, "projectId" = EXCLUDED."projectId";
+
+-- Seed comment for ACL direct-access cases (after conversation room exists)
+INSERT INTO comments (
+  id, comment, deleted, "createdUser", "modifiedUser",
+  "createdUserName", "modifiedUserName", "relatedTo", "relatedId"
+) VALUES (
+  'api-test-comment-000001', 'ACL seed comment', 0,
+  'api-test-user-0001', 'api-test-user-0001',
+  'API Tester', 'API Tester', 'conversationrooms', 'api-test-convroom-001'
+)
+ON CONFLICT (id) DO UPDATE SET deleted = 0, "relatedId" = EXCLUDED."relatedId";
 
 -- Issue with milestone + one without milestone (NULL/EMPTY query coverage)
 INSERT INTO issues (
@@ -544,6 +632,16 @@ data = {
     "password": "unit-testing",
     "tokenPath": "/api/v1/token"
   },
+  "authProfiles": {
+    "aclNoProject": {
+      "email": "api-tester-acl-noproject@example.com",
+      "password": "unit-testing"
+    },
+    "aclProjectOnly": {
+      "email": "api-tester-acl-project@example.com",
+      "password": "unit-testing"
+    }
+  },
   "values": {
     "userId": "api-test-user-0001",
     "memberUserId": "api-test-user-0002",
@@ -559,6 +657,7 @@ data = {
     "systemnotificationId": "api-test-sysnotif-01",
     "systemnotificationrecipientId": "api-test-sysnotifrec01",
     "conversationroomId": "api-test-convroom-001",
+    "commentId": "api-test-comment-000001",
     "activityId": "api-test-activity-0001",
     "timelogId": "api-test-timelog-00001",
     "dashboardId": "api-test-dashboard-001",
@@ -583,3 +682,4 @@ echo
 echo "Env ready. Point api-tester at a running API, e.g.:"
 echo "  ./tools/api-tester/harness/use-test-db.sh   # optional: local gaia-test on :8081"
 echo "  ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode backend"
+echo "  ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode acl"

@@ -19,9 +19,19 @@ class Fixtures
             : [];
     }
 
-    public function authConfig()
+    public function authConfig($profile = null)
     {
         $auth = isset($this->data['auth']) ? $this->data['auth'] : [];
+        if ($profile !== null && $profile !== '' && $profile !== true) {
+            $profiles = isset($this->data['authProfiles']) && is_array($this->data['authProfiles'])
+                ? $this->data['authProfiles']
+                : [];
+            if (!isset($profiles[$profile]) || !is_array($profiles[$profile])) {
+                throw new \RuntimeException("Unknown auth profile: {$profile}");
+            }
+            $auth = array_merge($auth, $profiles[$profile]);
+        }
+
         return [
             'clientId' => $this->resolveEnvValue(
                 getenv('API_TEST_CLIENT_ID') ?: (isset($auth['clientId']) ? $auth['clientId'] : 'projects4me')

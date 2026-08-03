@@ -91,9 +91,9 @@ It is responsible for:
 
 - Loading effective permissions through `Permission`.
 - Holding permission and field-access state for one request.
-- Authorizing action resources (`authorizeAction` for `module.action`).
+- Authorizing action resources (`authorizeAction` for `module.action`), including authorization groups.
 - Combining allow rows from multiple applicable roles using permissive or restrictive mode.
-- Filtering unauthorized eager relationships.
+- Filtering unauthorized eager relationships (related module + its groups).
 - Authorizing relationship-only routes.
 - Denying unauthorized active query criteria (`query`, `sort`, `group`, `having`).
 - Applying field-level filtering where still used by response preparation.
@@ -147,10 +147,10 @@ Permission administration:
 
 ### 3.6 Metadata manager
 
-Still used for relationship alias → API-visible model resolution:
+Still used for:
 
-- Normal relationships use `relatedModel`.
-- Many-to-many relationships use `secondaryModel`.
+- Relationship alias → API-visible model resolution (`relatedModel` / `secondaryModel`).
+- Authorization groups: `getGroups()` (models with `acl.group`) and `getModelGroups()` (`acl.groups` list).
 
 ---
 
@@ -163,14 +163,14 @@ Still used for relationship alias → API-visible model resolution:
 3. Resolve ACL action from `$aclMap[dispatcherAction].action`.
 4. Build `resourceName` as `{module}.{action}` (e.g. `issue.create`).
 5. Load effective permissions through `Permission`.
-6. Authorize the action resource through `Acl`.
+6. Authorize the action resource through `Acl`, including every authorization group declared on the model (`{group}.get`).
 7. Throw HTTP 403 for explicit denial (subject to resolution mode).
 
 ### 4.2 Embedded relationships
 
 1. Parse, trim, merge where supported, and de-duplicate requested relationship aliases.
 2. Resolve each alias to its API-visible related model.
-3. Evaluate related-model access for the current request action.
+3. Evaluate related-model access for the current request action **and** that model's authorization groups.
 4. Preserve allowed aliases.
 5. Drop denied aliases without denying the parent resource.
 6. Pass only allowed aliases into query construction and serialization.
@@ -181,7 +181,7 @@ For `GET /api/v1/{resource}/{id}/{relation}`:
 
 1. Authorize the parent/base request.
 2. Resolve the route relationship to its API-visible model.
-3. Authorize direct access to that related model/action.
+3. Authorize direct access to that related model/action, including its authorization groups.
 4. Throw HTTP 403 on denial.
 
 ### 4.4 Active query criteria
@@ -190,14 +190,23 @@ For `query`, `sort`, `group`, and `having`:
 
 1. Extract qualified model/field references without interpreting criterion values as fields.
 2. Resolve known relationship aliases through metadata.
-3. Check the related API-visible model and referenced field.
+3. Check the related API-visible model (action + authorization groups).
 4. Throw HTTP 403 with a generic message when either is denied.
 5. Complete this check before model query construction.
 6. Leave unknown aliases to normal query validation.
 
 Active query usage is stricter than passive eager loading: an unauthorized eager relationship is omitted, while an unauthorized criterion denies the request.
 
-### 4.5 Field filtering
+### 4.5 Authorization groups
+
+Models declare groups in metadata:
+
+- `acl.group => true` marks a model as an authorization group.
+- `acl.groups => [...]` lists required group models for a dependent.
+
+`Acl::isModelActionAllowed()` enforces module-level cascading only (no record-level parent checks).
+
+### 4.6 Field filtering
 
 Field ACL remains available in response preparation but is **deferred** for the action-based revamp. Model/action authorization is the primary gate.
 
@@ -223,6 +232,7 @@ Field ACL remains available in response preparation but is **deferred** for the 
 - [x] Canonicalize `rels` / `include` parsing for supported actions.
 - [x] Deny unauthorized model/field use in `query`, `sort`, `group`, and `having`.
 - [x] Record accepted behavior in `decisions.md`.
+- [x] Module-level authorization groups (`acl.group` / `acl.groups`) enforced in `Acl`.
 
 ### In progress / transitional
 
@@ -234,8 +244,9 @@ Field ACL remains available in response preparation but is **deferred** for the 
 
 - [ ] Field-level ACL redesign for action-based permissions.
 - [ ] Project-scoped vs system-role precedence for runtime checks.
-- [ ] Comprehensive PHPUnit RBAC tests.
-- [ ] End-to-end API RBAC test fixtures and scenarios.
+- [ ] Record-level / parent-instance group authorization.
+- [x] Group-based ACL HTTP scenarios via api-tester (`--mode acl`).
+- [ ] End-to-end API RBAC test fixtures beyond the ACL catalog.
 
 Tests remain deferred until the remaining RBAC policy surface is stable. Accepted decisions are the eventual source for test generation.
 

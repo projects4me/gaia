@@ -188,7 +188,11 @@ $models['Conversationroom'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior'
-    )
+    ),
+    'acl' => [
+        'group' => true,
+        'groups' => ['Project'],
+    ],
 );
 
 return $models;
