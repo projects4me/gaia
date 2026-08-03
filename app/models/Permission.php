@@ -79,6 +79,30 @@ class Permission extends Model
     }
 
     /**
+     * Return permission rows for a single resource name (empty if none).
+     *
+     * @param  string $resourceName
+     * @return array
+     */
+    public static function getPermissionsForResource($resourceName)
+    {
+        $permissions = self::getEffectivePermissions();
+        return isset($permissions[$resourceName]) ? $permissions[$resourceName] : [];
+    }
+
+    /**
+     * Whether any permission rows exist for the given resource name.
+     *
+     * @param  string $resourceName
+     * @return bool
+     */
+    public static function hasResource($resourceName)
+    {
+        $permissions = self::getEffectivePermissions();
+        return isset($permissions[$resourceName]);
+    }
+
+    /**
      * Clear stored effective permissions.
      *
      * @return void

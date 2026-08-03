@@ -6,18 +6,17 @@
 
 namespace Gaia\Libraries\Security;
 
-use Gaia\Core\MVC\Models\Query;
 use Gaia\MVC\Models\Permission;
 
 /**
  * RBAC/ACL policy layer for REST authorization.
  *
  * RestController wires HTTP context into this class. Permission owns loading
- * and storing effective permission rows from the DB. Acl reads that data and
- * keeps authorization indexes as class-level static state.
+ * and storing effective permission rows. Acl only evaluates those rows — it
+ * never keeps its own permission cache.
  *
  * Responsibilities:
- * - Pull effective permissions from Permission into static class state
+ * - Ensure Permission has loaded the current user's effective grants
  * - Authorize direct model access (denial throws)
  * - Filter relationship aliases the user may not read (denial omits)
  * - Authorize related-resource routes (denial throws)
@@ -55,41 +54,11 @@ class Acl
     protected static $resolutionMode = self::RESOLUTION_PERMISSIVE;
 
     /**
-     * Effective permissions pulled from Permission, keyed by resourceName.
-     *
-     * Tied to the class so all Acl instances share one authorization snapshot.
-     *
-     * @var array
-     */
-    protected static $permissions = [];
-
-    /**
-     * Allowed action resource names keyed for O(1) runtime checks.
-     *
-     * @var array
-     */
-    protected static $allowedActions = [];
-
-    /**
-     * Access decisions recorded while checking resources.
-     *
-     * @var array
-     */
-    protected $resourcesPermissions = [];
-
-    /**
      * Fields the user may see after field ACL is applied.
      *
      * @var array
      */
     private $allowedFields = [];
-
-    /**
-     * Resolved project scope for the current request, if any.
-     *
-     * @var string|null
-     */
-    public $projectId = null;
 
     /**
      * The constructor of the Acl class.
@@ -130,54 +99,14 @@ class Acl
     }
 
     /**
-     * Load permissions from Permission into class-level static state.
+     * Ensure Permission has loaded effective grants for the user.
      *
      * @param  string $userId
      * @return void
      */
     protected function loadPermissions($userId)
     {
-        self::$permissions = Permission::loadEffectivePermissions($userId);
-        self::$allowedActions = [];
-
-        foreach (self::$permissions as $actionName => $permissionRows) {
-            foreach ($permissionRows as $permissionRow) {
-                $normalized = $this->normalizeFlag($permissionRow['allowed'] ?? null);
-                $this->resourcesPermissions[$actionName][] = [
-                    'accessLevel' => $normalized,
-                    'projectId' => null,
-                    'roleId' => isset($permissionRow['roleId']) ? $permissionRow['roleId'] : null
-                ];
-
-                if ($normalized === 1) {
-                    self::$allowedActions[$actionName] = true;
-                }
-            }
-        }
-    }
-
-    /**
-     * Load the current user's permissions and authorize direct model access.
-     *
-     * @param  string      $resource   Camelized resource/model name (e.g. "Project").
-     * @param  string      $modelAlias Model alias used to resolve permission context.
-     * @param  string      $action     Permission flag being checked (e.g. readF).
-     * @param  string      $userId     Identifier of the current user.
-     * @param  array       $params     Request params used to resolve project context.
-     * @param  string|null $projectId  Explicit project scope, if already known.
-     * @return $this
-     * @throws \Gaia\Exception\Access
-     */
-    public function authorizeModel($resource, $modelAlias, $action, $userId, $params, $projectId = null)
-    {
-        $projectId = $projectId ?? $this->resolveProjectId($modelAlias, $params);
-        if ($projectId) {
-            $this->projectId = $projectId;
-        }
-
-        $this->loadPermissions($userId);
-        $this->checkModelAccess($resource, $action);
-        return $this;
+        Permission::loadEffectivePermissions($userId);
     }
 
     /**
@@ -186,36 +115,20 @@ class Acl
      * @param  string $resourceName e.g. issue.create
      * @param  string $userId
      * @return $this
+     * @throws \Gaia\Exception\Access
      */
     public function authorizeAction($resourceName, $userId)
     {
         $this->loadPermissions($userId);
-
-        if ($this->isActionAllowed($resourceName)) {
-            return $this;
-        }
-
-        if (self::$resolutionMode === self::RESOLUTION_PERMISSIVE) {
-            return $this;
-        }
-
-        throw new \Gaia\Exception\Access("Access Denied to {$resourceName}");
+        $this->checkAccess($resourceName);
+        return $this;
     }
 
     /**
-     * Check whether the action resource is explicitly allowed.
+     * Return only relationship aliases the current user has access to.
      *
-     * @param  string $resourceName
-     * @return bool
-     */
-    protected function isActionAllowed($resourceName)
-    {
-        return isset(self::$allowedActions[$resourceName]) && self::$allowedActions[$resourceName] === true;
-    }
-
-    /**
-     * Return only relationship aliases the current user has access to .
-     * 
+     * Related modules are checked as `{module}.{action}` (e.g. issue.get).
+     *
      * @param  string $modelAlias
      * @param  array  $rels
      * @param  string $action
@@ -224,7 +137,10 @@ class Acl
     public function filterAuthorizedRelationships($modelAlias, array $rels, $action)
     {
         return array_filter($rels, function ($relName) use ($modelAlias, $action) {
-            return $this->checkAccess($this->getRelatedModelName($modelAlias, $relName), $action, true);
+            $relatedModelName = $this->getRelatedModelName($modelAlias, $relName);
+            return $this->isResourceAllowed(
+                $this->buildResourceName($relatedModelName, $action)
+            );
         });
     }
 
@@ -239,19 +155,22 @@ class Acl
     public function authorizeRelated($modelAlias, $relation, $action)
     {
         $relatedModelName = $this->getRelatedModelName($modelAlias, $relation);
-        $this->checkModelAccess($relatedModelName, $action);
+        $this->checkAccess($this->buildResourceName($relatedModelName, $action));
     }
 
     /**
-     * Authorize every model/field actively referenced by query clauses.
+     * Authorize related modules actively referenced by query clauses.
      *
      * Unlike passive relationship inclusion, an unauthorized clause cannot be
      * safely omitted: doing so changes query semantics and can expose protected
      * values through result membership, ordering, or grouping. The whole
      * request is therefore denied before query construction.
      *
-     * Unknown aliases are left to normal query validation. This method handles
-     * only the base model and relationship aliases defined in model metadata.
+     * Base-model fields are covered by the request's primary authorizeAction.
+     * Related aliases require the same action on the related module
+     * (`{module}.{action}`). Field-level ACL is out of scope.
+     *
+     * Unknown aliases are left to normal query validation.
      *
      * @param  string $modelAlias
      * @param  string $action
@@ -263,10 +182,8 @@ class Acl
     {
         foreach ($this->getClauseFieldReferences($clauses) as $reference) {
             $alias = $reference['alias'];
-            $field = $reference['field'];
 
             if ($alias === $modelAlias) {
-                $this->denyUnlessAllowed("{$modelAlias}.{$field}", $action);
                 continue;
             }
 
@@ -281,8 +198,9 @@ class Acl
             }
 
             $relatedModelName = $this->getRelatedModelName($modelAlias, $alias);
-            $this->denyUnlessAllowed($relatedModelName, $action, true);
-            $this->denyUnlessAllowed("{$relatedModelName}.{$field}", $action);
+            $this->denyUnlessAllowed(
+                $this->buildResourceName($relatedModelName, $action)
+            );
         }
     }
 
@@ -290,17 +208,27 @@ class Acl
      * Throw a generic deny when a resource is not allowed for active query
      * usage.
      *
-     * @param  string $resource
-     * @param  string $action
-     * @param  bool   $isRel
+     * @param  string $resourceName
      * @return void
      * @throws \Gaia\Exception\Access
      */
-    protected function denyUnlessAllowed($resource, $action, $isRel = false)
+    protected function denyUnlessAllowed($resourceName)
     {
-        if (!$this->checkAccess($resource, $action, $isRel)) {
+        if (!$this->isResourceAllowed($resourceName)) {
             throw new \Gaia\Exception\Access('Access Denied to requested query criteria');
         }
+    }
+
+    /**
+     * Build an action resource name from a module/model name and action.
+     *
+     * @param  string $moduleOrModel
+     * @param  string $action
+     * @return string e.g. issue.create
+     */
+    protected function buildResourceName($moduleOrModel, $action)
+    {
+        return strtolower($moduleOrModel) . '.' . $action;
     }
 
     /**
@@ -364,85 +292,68 @@ class Acl
     }
 
     /**
-     * Check if the user has access to the given resource. If not, throw an exception.
+     * Authorize the action resource, or throw if denied.
      *
-     * @param  string $resource
-     * @param  string $action
-     * @throws \Gaia\Exception\Access
-     */
-    public function checkModelAccess($resource, $action)
-    {
-        if (!$this->checkAccess($resource, $action)) {
-            throw new \Gaia\Exception\Access("Access Denied to $resource");
-        }
-    }
-
-    /**
-     * Evaluate whether the resource is allowed for the action. If not, return false.
-     *
-     * Permission flags are binary: 0 = deny, 1 = allow.
-     *
-     * @param  string $resource
-     * @param  string $action
-     * @param  bool   $isRel
+     * @param  string $resourceName e.g. issue.create
      * @return bool
      * @throws \Gaia\Exception\Access
      */
-    public function checkAccess($resource, $action = 'readF', $isRel = false)
+    public function checkAccess($resourceName)
     {
-        if (!isset(self::$permissions[$resource])) {
+        if ($this->isResourceAllowed($resourceName)) {
             return true;
         }
 
-        $hasAllow = false;
-        $hasDeny = false;
-        $permissions = self::$permissions[$resource];
-
-        foreach ($permissions as $permission) {
-            $flagValue = array_key_exists($action, $permission) ? $permission[$action] : null;
-            $normalizedFlag = $this->normalizeFlag($flagValue);
-
-            if ($normalizedFlag === 1) {
-                $hasAllow = true;
-            } else {
-                $hasDeny = true;
-            }
-
-            $this->resourcesPermissions[$resource][] = [
-                'accessLevel' => $normalizedFlag,
-                'projectId' => $permission['projectId'] ?? null,
-                'roleId' => isset($permission['roleId']) ? $permission['roleId'] : null
-            ];
-        }
-
-        $isAllowed = (self::$resolutionMode === self::RESOLUTION_RESTRICTIVE)
-            ? ($hasAllow && !$hasDeny)
-            : $hasAllow;
-
-        if ($isAllowed) {
-            return true;
-        }
-
-        if ($isRel || str_contains($resource, '.')) {
-            return false;
-        }
-
-        throw new \Gaia\Exception\Access("Access Denied to $resource");
+        throw new \Gaia\Exception\Access("Access Denied to {$resourceName}");
     }
 
     /**
-     * Normalize a stored permission flag to binary allow (1) or deny (0).
+     * Whether the action resource is allowed under the current resolution mode.
+     *
+     * Missing grants follow resolution mode: permissive allows, restrictive denies.
+     *
+     * @param  string $resourceName
+     * @return bool
+     */
+    /**
+     * Whether the action resource is allowed under the current resolution mode.
+     *
+     * Missing grants follow resolution mode: permissive allows, restrictive denies.
+     * Permissive: any allow wins. Restrictive: every row must allow.
+     *
+     * @param  string $resourceName
+     * @return bool
+     */
+    protected function isResourceAllowed($resourceName)
+    {
+        if (!Permission::hasResource($resourceName)) {
+            return self::$resolutionMode === self::RESOLUTION_PERMISSIVE;
+        }
+
+        foreach (Permission::getPermissionsForResource($resourceName) as $permission) {
+            $allowed = $this->normalizeFlag($permission['allowed'] ?? null) === 1;
+
+            if (self::$resolutionMode === self::RESOLUTION_PERMISSIVE && $allowed) {
+                return true;
+            }
+
+            if (self::$resolutionMode === self::RESOLUTION_RESTRICTIVE && !$allowed) {
+                return false;
+            }
+        }
+
+        return self::$resolutionMode === self::RESOLUTION_RESTRICTIVE;
+    }
+
+    /**
+     * Normalize a stored `allowed` flag to binary allow (1) or deny (0).
      *
      * @param  mixed $flagValue
      * @return int
      */
     protected function normalizeFlag($flagValue)
     {
-        if ($flagValue === null) {
-            return 1;
-        }
-
-        if ($flagValue === '') {
+        if ($flagValue === null || $flagValue === '') {
             return 0;
         }
 
@@ -500,7 +411,7 @@ class Acl
             $allowedField = $fieldName;
         }
 
-        ($this->checkAccess($field)) && ($fields[$allowedField] = $allowedField);
+        ($this->isResourceAllowed($field)) && ($fields[$allowedField] = $allowedField);
     }
 
     /**
@@ -525,7 +436,7 @@ class Acl
         foreach (array_keys($values) as $nestedField) {
             $allowedField = "{$fieldName}.{$nestedField}";
             $field = ($isModel) ? ($allowedField) : "{$relatedModelName}.{$nestedField}";
-            ($this->checkAccess($field)) && ($fields[] = $allowedField);
+            ($this->isResourceAllowed($field)) && ($fields[] = $allowedField);
         }
     }
 
@@ -560,68 +471,6 @@ class Acl
     public function getAllowedFields()
     {
         return $this->allowedFields;
-    }
-
-    /**
-     * Get the access for the given resource.
-     * 
-     * @param  string $resource
-     * @return array|null
-     */
-    public function getAccess($resource)
-    {
-        return $this->resourcesPermissions[$resource] ?? null;
-    }
-
-    /**
-     * Resolve the project ID from request query parameters.
-     *
-     * @param  string $modelName
-     * @param  array  $params
-     * @return string|null
-     */
-    protected function resolveProjectId($modelName, $params)
-    {
-        $id = isset($params['id']) ? $params['id'] : null;
-        $clauseParams = [
-            'where' => isset($params['where']) ? $params['where'] : '',
-            'sort' => isset($params['sort']) ? $params['sort'] : '',
-            'order' => isset($params['order']) ? $params['order'] : 'DESC',
-            'groupBy' => isset($params['groupBy']) ? $params['groupBy'] : [],
-            'having' => isset($params['having']) ? $params['having'] : '',
-        ];
-        $modelQuery = new Query($this->di, $modelName, $id);
-        $modelQuery->prepareClauses($clauseParams, $modelQuery);
-        $whereClauses = $modelQuery->getClause()->getWhereClause('original', $modelName);
-        $possibleKeys = ['projectId', 'Project.id'];
-        $edgeCaseKey = "relatedTo : project";
-        $edgeCasePassed = false;
-        $projectId = null;
-
-        foreach ($whereClauses as $clause) {
-            foreach ($possibleKeys as $key) {
-                if (strpos($clause, $key) !== false) {
-                    list(,, $projectId) = str_replace(')', '', explode(' ', $clause));
-                    return $projectId;
-                }
-            }
-
-            if (strpos($clause, $edgeCaseKey) !== false) {
-                $edgeCasePassed = true;
-                break;
-            }
-        }
-
-        if ($edgeCasePassed) {
-            foreach ($whereClauses as $clause) {
-                if (strpos($clause, 'relatedId') !== false) {
-                    list(,, $projectId) = str_replace(')', '', explode(' ', $clause));
-                    return $projectId;
-                }
-            }
-        }
-
-        return $projectId;
     }
 
     /**
