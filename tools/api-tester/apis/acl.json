@@ -1,8 +1,8 @@
 {
   "name": "gaia-acl-apis",
-  "version": 1,
+  "version": 2,
   "basePath": "/api/v1",
-  "description": "Group-based ACL authorization scenarios (module-level cascading).",
+  "description": "Group-based and field-level ACL authorization scenarios.",
   "apis": [
     {
       "id": "acl-issue-denied-without-project-group",
@@ -10,15 +10,8 @@
       "path": "/api/v1/issue",
       "resource": "issue",
       "auth": "aclNoProject",
-      "query": {
-        "limit": 5,
-        "page": 1
-      },
-      "expects": {
-        "status": 403,
-        "shape": "error",
-        "errorEqual": "Access Denied"
-      },
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
     },
     {
@@ -27,11 +20,7 @@
       "path": "/api/v1/issue/{issueId}",
       "resource": "issue",
       "auth": "aclNoProject",
-      "expects": {
-        "status": 403,
-        "shape": "error",
-        "errorEqual": "Access Denied"
-      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
     },
     {
@@ -40,15 +29,8 @@
       "path": "/api/v1/conversationroom",
       "resource": "conversationroom",
       "auth": "aclNoProject",
-      "query": {
-        "limit": 5,
-        "page": 1
-      },
-      "expects": {
-        "status": 403,
-        "shape": "error",
-        "errorEqual": "Access Denied"
-      },
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
     },
     {
@@ -57,15 +39,8 @@
       "path": "/api/v1/comment",
       "resource": "comment",
       "auth": "aclNoProject",
-      "query": {
-        "limit": 5,
-        "page": 1
-      },
-      "expects": {
-        "status": 403,
-        "shape": "error",
-        "errorEqual": "Access Denied"
-      },
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
     },
     {
@@ -74,11 +49,7 @@
       "path": "/api/v1/comment/{commentId}",
       "resource": "comment",
       "auth": "aclNoProject",
-      "expects": {
-        "status": 403,
-        "shape": "error",
-        "errorEqual": "Access Denied"
-      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
     },
     {
@@ -87,14 +58,8 @@
       "path": "/api/v1/project",
       "resource": "project",
       "auth": "aclProjectOnly",
-      "query": {
-        "limit": 5,
-        "page": 1
-      },
-      "expects": {
-        "status": 200,
-        "shape": "jsonapi.collection"
-      },
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
       "source": "acl-group"
     },
     {
@@ -103,15 +68,8 @@
       "path": "/api/v1/issue",
       "resource": "issue",
       "auth": "aclProjectOnly",
-      "query": {
-        "limit": 5,
-        "page": 1
-      },
-      "expects": {
-        "status": 403,
-        "shape": "error",
-        "errorEqual": "Access Denied"
-      },
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
     },
     {
@@ -120,9 +78,7 @@
       "path": "/api/v1/project/{projectId}",
       "resource": "project",
       "auth": "aclProjectOnly",
-      "query": {
-        "rels": "issues"
-      },
+      "query": { "rels": "issues" },
       "expects": {
         "status": 200,
         "shape": "jsonapi.resource",
@@ -137,11 +93,7 @@
       "path": "/api/v1/project/{projectId}/issues",
       "resource": "project",
       "auth": "aclProjectOnly",
-      "expects": {
-        "status": 403,
-        "shape": "error",
-        "errorEqual": "Access Denied"
-      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
     },
     {
@@ -150,14 +102,8 @@
       "path": "/api/v1/issue",
       "resource": "issue",
       "auth": true,
-      "query": {
-        "limit": 5,
-        "page": 1
-      },
-      "expects": {
-        "status": 200,
-        "shape": "jsonapi.collection"
-      },
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
       "source": "acl-group"
     },
     {
@@ -172,6 +118,270 @@
         "idsIncludes": ["{commentId}"]
       },
       "source": "acl-group"
+    },
+
+    {
+      "id": "acl-field-query-bare-denied-subject",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(subject CONTAINS Seed)"
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-query-qualified-denied-subject",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.subject CONTAINS Seed)"
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-query-bare-allowed-priority",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(priority CONTAINS medium)"
+      },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-query-related-denied-project-name",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(project.name CONTAINS Alpha)"
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-query-combined-with-denied-subject",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "((priority CONTAINS medium) AND (subject CONTAINS Seed))"
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-query-structural-id-allowed",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(id CONTAINS api-test-issue-000001)"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": ["{issueId}"]
+      },
+      "source": "acl-field"
+    },
+
+    {
+      "id": "acl-field-sort-denied-subject",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": { "limit": 5, "page": 1, "sort": "subject" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-sort-allowed-priority",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": { "limit": 5, "page": 1, "sort": "priority" },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-sort-desc-denied-subject",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": { "limit": 5, "page": 1, "sort": "subject DESC" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-group-denied-subject",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": { "limit": 5, "page": 1, "group": "subject" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-group-allowed-priority",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "group": "Issue.priority,Issue.id",
+        "fields": "Issue.priority"
+      },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-having-denied-subject",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "group": "priority",
+        "having": "(subject CONTAINS Seed)"
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-field"
+    },
+
+    {
+      "id": "acl-field-explicit-fields-omits-denied-subject",
+      "method": "GET",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": { "fields": "Issue.subject,Issue.description" },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{issueId}"],
+        "attributesAbsent": ["subject"],
+        "attributesPresent": ["description"]
+      },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-explicit-fields-allowed-priority",
+      "method": "GET",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": { "fields": "Issue.id,Issue.priority" },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{issueId}"],
+        "attributesPresent": ["priority"],
+        "attributesAbsent": ["subject"]
+      },
+      "source": "acl-field"
+    },
+
+    {
+      "id": "acl-field-default-select-omits-denied-subject",
+      "method": "GET",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": "aclFields",
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{issueId}"],
+        "attributesAbsent": ["subject"],
+        "attributesPresent": ["priority"]
+      },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-default-select-write-implies-read-description",
+      "method": "GET",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": "aclFields",
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesPresent": ["description"]
+      },
+      "source": "acl-field"
+    },
+
+    {
+      "id": "acl-field-patch-discards-denied-and-readonly",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": "aclFields",
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{issueId}",
+          "attributes": {
+            "subject": "ACL-HACKED-SUBJECT",
+            "description": "acl-field-desc-written",
+            "priority": "high"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{issueId}"]
+      },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-verify-patch-discard-as-admin",
+      "method": "GET",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "subject": "{issueSubject}",
+          "description": "acl-field-desc-written",
+          "priority": "medium"
+        }
+      },
+      "source": "acl-field"
     }
   ]
 }

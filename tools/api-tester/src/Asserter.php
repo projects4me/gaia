@@ -98,10 +98,23 @@ class Asserter
         }
 
         if (!empty($expects['attributesPresent']) && is_array($expects['attributesPresent'])) {
-            $attrs = isset($json['data']['attributes']) ? $json['data']['attributes'] : [];
-            foreach ($expects['attributesPresent'] as $attr) {
-                if (!array_key_exists($attr, $attrs)) {
-                    $failures[] = "attributesPresent: missing attributes.{$attr}";
+            foreach ($this->attributeMaps($json) as $index => $attrs) {
+                foreach ($expects['attributesPresent'] as $attr) {
+                    if (!array_key_exists($attr, $attrs)) {
+                        $failures[] = "attributesPresent: missing attributes.{$attr}" .
+                            ($index !== null ? " (item {$index})" : '');
+                    }
+                }
+            }
+        }
+
+        if (!empty($expects['attributesAbsent']) && is_array($expects['attributesAbsent'])) {
+            foreach ($this->attributeMaps($json) as $index => $attrs) {
+                foreach ($expects['attributesAbsent'] as $attr) {
+                    if (array_key_exists($attr, $attrs)) {
+                        $failures[] = "attributesAbsent: unexpectedly found attributes.{$attr}" .
+                            ($index !== null ? " (item {$index})" : '');
+                    }
                 }
             }
         }
@@ -127,20 +140,51 @@ class Asserter
         }
 
         if (!empty($expects['attributesEqual']) && is_array($expects['attributesEqual'])) {
-            $attrs = isset($json['data']['attributes']) ? $json['data']['attributes'] : [];
-            foreach ($expects['attributesEqual'] as $attr => $expected) {
-                if (!array_key_exists($attr, $attrs)) {
-                    $failures[] = "attributesEqual: missing attributes.{$attr}";
-                    continue;
-                }
-                $actual = $attrs[$attr];
-                if ((string) $actual !== (string) $expected) {
-                    $failures[] = "attributesEqual: attributes.{$attr} expected '{$expected}', got '" .
-                        (is_scalar($actual) ? $actual : json_encode($actual)) . "'";
+            foreach ($this->attributeMaps($json) as $index => $attrs) {
+                foreach ($expects['attributesEqual'] as $attr => $expected) {
+                    if (!array_key_exists($attr, $attrs)) {
+                        $failures[] = "attributesEqual: missing attributes.{$attr}" .
+                            ($index !== null ? " (item {$index})" : '');
+                        continue;
+                    }
+                    $actual = $attrs[$attr];
+                    if ((string) $actual !== (string) $expected) {
+                        $failures[] = "attributesEqual: attributes.{$attr} expected '{$expected}', got '" .
+                            (is_scalar($actual) ? $actual : json_encode($actual)) . "'" .
+                            ($index !== null ? " (item {$index})" : '');
+                    }
                 }
             }
         }
 
         return $failures;
+    }
+
+    /**
+     * Collect attributes maps from a JSON:API resource or collection.
+     *
+     * For collections, only the first item is checked (deterministic seed order).
+     *
+     * @param  array|null $json
+     * @return array list of attribute maps keyed by index (0 for resource/collection first item)
+     */
+    private function attributeMaps($json)
+    {
+        if (!is_array($json) || !isset($json['data']) || !is_array($json['data'])) {
+            return [0 => []];
+        }
+
+        if (isset($json['data']['attributes']) && is_array($json['data']['attributes'])) {
+            return [0 => $json['data']['attributes']];
+        }
+
+        // Collection: assert against first row when present
+        foreach ($json['data'] as $index => $row) {
+            if (isset($row['attributes']) && is_array($row['attributes'])) {
+                return [$index => $row['attributes']];
+            }
+        }
+
+        return [0 => []];
     }
 }

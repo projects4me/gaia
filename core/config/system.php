@@ -23,7 +23,10 @@ $config['system'] = [
                 'none' => '0'
             ],
             'modelGroups' => $modelGroups,
-            'moduleActions' => \Gaia\Libraries\Security\AclMapCatalog::buildModuleActions()
+            'moduleActions' => \Gaia\Libraries\Security\AclMapCatalog::buildModuleActions(),
+            'moduleFields' => \Gaia\Libraries\Security\AclMapCatalog::buildModuleFields(
+                $this->di->get('metaManager')
+            ),
         ]
     ];
 

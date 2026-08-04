@@ -525,6 +525,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $order = $this->request->get('order', null, 'DESC');
 
         $fields = $this->request->get('fields', null, array());
+        if (is_string($fields) && $fields !== '') {
+            $fields = explode(',', $fields);
+        } elseif (!is_array($fields)) {
+            $fields = [];
+        }
         $relation = $this->dispatcher->getParam("relation");
 
         $params = array(
@@ -672,6 +677,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             if (isset($value['id'])) {
                 $this->id = $value['id'];
 
+                $modelAlias = Util::extractClassFromNamespace($modelName);
+                if ($this->getDI()->has('acl')) {
+                    $value = $this->getDI()->get('acl')->authorizeWritableFields($modelAlias, $value, 'update');
+                }
+
                 //if passed by url
                 $model = $modelName::findFirst('id = "' . $value['id'] . '"');
 
@@ -801,6 +811,12 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     $value[$k] = $now->format('Y-m-d H:i:s');
                 }
                 $logger->debug('Setting date and time');
+            }
+
+            $modelAlias = Util::extractClassFromNamespace($modelName);
+            $writeAction = isset($this->id) ? 'update' : 'create';
+            if ($this->getDI()->has('acl')) {
+                $value = $this->getDI()->get('acl')->authorizeWritableFields($modelAlias, $value, $writeAction);
             }
 
             //if have param then update
@@ -1456,7 +1472,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     }
 
     /**
-     * Keep only fields the user is allowed to see.
+     * Keep only fields the user is allowed to see. Denied attributes are omitted
+     * (key absent), not nulled.
      *
      * @method filterFieldsByACL
      * @param  array $allowedFields
@@ -1466,19 +1483,38 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     protected function filterFieldsByACL($allowedFields, $values)
     {
         $filteredValues = [];
+        $allowedLookup = [];
+
+        foreach ($allowedFields as $key => $value) {
+            if (is_int($key)) {
+                $allowedLookup[$value] = true;
+            } else {
+                $allowedLookup[$key] = true;
+                $allowedLookup[$value] = true;
+            }
+        }
 
         foreach ($values as $key => $value) {
             if (getType($value) === "array") {
+                $nested = [];
                 foreach ($value as $fieldName => $fieldValue) {
                     $field = "{$key}.{$fieldName}";
-                    $filteredValues[$key][$fieldName] = (in_array($field, $allowedFields)) ? $fieldValue : null;
+                    if (isset($allowedLookup[$field])) {
+                        $nested[$fieldName] = $fieldValue;
+                    }
                 }
-            } elseif (!array_key_exists($key, $allowedFields)) {
+                if (!empty($nested)) {
+                    $filteredValues[$key] = $nested;
+                }
+            } elseif (isset($allowedLookup[$key])) {
+                $filteredValues[$key] = $value;
+            } else {
                 $modelName = Util::extractClassFromNamespace($this->modelName);
                 $field = "{$modelName}.{$key}";
-                $filteredValues[$key] = (in_array($field, $allowedFields)) ? $value : null;
-            } else {
-                $filteredValues[$key] = (in_array($key, $allowedFields)) ? $value : null;
+                if (isset($allowedLookup[$field])) {
+                    $filteredValues[$key] = $value;
+                }
+                // else omit
             }
         }
 

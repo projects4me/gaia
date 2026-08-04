@@ -84,6 +84,9 @@ class PermissionController extends AclAdminController
     {
         global $settings;
         $moduleActions = $settings['system']['acl']['moduleActions']->toArray();
+        $moduleFields = isset($settings['system']['acl']['moduleFields'])
+            ? $settings['system']['acl']['moduleFields']->toArray()
+            : [];
         $permissionInterface = $this->getPermissionInterface();
         $permissions = ['data' => []];
 
@@ -93,6 +96,23 @@ class PermissionController extends AclAdminController
                 $permission['attributes']['resourceName'] = $actionDefinition['resourceName'];
                 $permission['id'] = create_guid();
                 $permissions['data'][] = $permission;
+            }
+        }
+
+        foreach ($moduleFields as $moduleDefinition) {
+            if (empty($moduleDefinition['fields']) || !is_array($moduleDefinition['fields'])) {
+                continue;
+            }
+            foreach ($moduleDefinition['fields'] as $fieldDefinition) {
+                if (empty($fieldDefinition['actions']) || !is_array($fieldDefinition['actions'])) {
+                    continue;
+                }
+                foreach ($fieldDefinition['actions'] as $actionDefinition) {
+                    $permission = $permissionInterface;
+                    $permission['attributes']['resourceName'] = $actionDefinition['resourceName'];
+                    $permission['id'] = create_guid();
+                    $permissions['data'][] = $permission;
+                }
             }
         }
 
@@ -257,6 +277,25 @@ class PermissionController extends AclAdminController
             foreach ($moduleDefinition['actions'] as $actionDefinition) {
                 if ($actionDefinition['resourceName'] === $resourceName) {
                     return true;
+                }
+            }
+        }
+
+        $moduleFields = isset($settings['system']['acl']['moduleFields'])
+            ? $settings['system']['acl']['moduleFields']->toArray()
+            : [];
+        foreach ($moduleFields as $moduleDefinition) {
+            if (empty($moduleDefinition['fields']) || !is_array($moduleDefinition['fields'])) {
+                continue;
+            }
+            foreach ($moduleDefinition['fields'] as $fieldDefinition) {
+                if (empty($fieldDefinition['actions']) || !is_array($fieldDefinition['actions'])) {
+                    continue;
+                }
+                foreach ($fieldDefinition['actions'] as $actionDefinition) {
+                    if ($actionDefinition['resourceName'] === $resourceName) {
+                        return true;
+                    }
                 }
             }
         }

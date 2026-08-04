@@ -7,12 +7,21 @@
 namespace Gaia\Libraries\Security;
 
 /**
- * Builds module/action ACL catalogs by inspecting REST controllers.
+ * Builds module/action and module/field ACL catalogs by inspecting REST controllers
+ * and model metadata.
+ *
  * @author Rana Nouman <ranamnouman@gmail.com>
  * @package Gaia\Libraries\Security
  */
 class AclMapCatalog
 {
+    /**
+     * Field-level ACL actions (no field delete).
+     *
+     * @var array
+     */
+    public const FIELD_ACTIONS = ['get', 'create', 'update'];
+
     /**
      * Build module actions from v1 REST routes and controller aclMaps.
      *
@@ -24,16 +33,9 @@ class AclMapCatalog
      */
     public static function buildModuleActions()
     {
-        $routesConfig = include APP_PATH . '/core/config/routes.php';
-        $restModules = isset($routesConfig['routes']['rest']['v1']) ? $routesConfig['routes']['rest']['v1'] : [];
         $modules = [];
 
-        foreach ($restModules as $moduleName => $routeConfig) {
-            $controllerClass = 'Gaia\\MVC\\REST\\Controllers\\' . self::camelize($moduleName) . 'Controller';
-            if (!self::isControllerAclAllowed($controllerClass)) {
-                continue;
-            }
-
+        foreach (self::getAclAllowedModules() as $moduleName => $controllerClass) {
             $actions = [];
             foreach (self::getControllerAclMap($controllerClass) as $map) {
                 $action = self::resolveAclCatalogAction($map);
@@ -51,6 +53,205 @@ class AclMapCatalog
                 'module' => $moduleName,
                 'actions' => array_values(array_unique($actions, SORT_REGULAR)),
             ];
+        }
+
+        return $modules;
+    }
+
+    /**
+     * Build field resources from model metadata for ACL-allowed modules.
+     *
+     * Emits get/create/update for business attributes only:
+     * `{module}.{field}.{action}`.
+     *
+     * Excludes (from metadata):
+     * - structural linkage (`getStructuralFieldNames`)
+     * - `acl => false`
+     * - `secure => true` (credential masking, not ACL)
+     * - `linkedTo` derived/display fields
+     *
+     * @param  \Gaia\Libraries\Meta\Manager $metaManager
+     * @return array
+     */
+    public static function buildModuleFields($metaManager)
+    {
+        $modules = [];
+
+        foreach (self::getAclAllowedModules() as $moduleName => $controllerClass) {
+            $modelName = self::camelize($moduleName);
+            try {
+                $meta = $metaManager->getModelMeta($modelName);
+            } catch (\Throwable $e) {
+                continue;
+            }
+
+            if (empty($meta['fields']) || !is_array($meta['fields'])) {
+                continue;
+            }
+
+            $structuralKeys = self::getStructuralFieldNames($meta);
+            $fields = [];
+
+            foreach ($meta['fields'] as $fieldName => $fieldMeta) {
+                if (!self::isFieldCatalogEligible($fieldName, $fieldMeta, $structuralKeys)) {
+                    continue;
+                }
+
+                $actions = [];
+                foreach (self::FIELD_ACTIONS as $action) {
+                    $actions[] = [
+                        'action' => $action,
+                        'resourceName' => $moduleName . '.' . $fieldName . '.' . $action,
+                    ];
+                }
+
+                $fields[] = [
+                    'field' => $fieldName,
+                    'actions' => $actions,
+                ];
+            }
+
+            if (empty($fields)) {
+                continue;
+            }
+
+            $modules[] = [
+                'module' => $moduleName,
+                'fields' => $fields,
+            ];
+        }
+
+        return $modules;
+    }
+
+    /**
+     * Whether a field should appear in the field-ACL catalog (business attribute).
+     *
+     * @param  string $fieldName
+     * @param  array  $fieldMeta
+     * @param  array  $structuralKeys FK / id names for this model
+     * @return bool
+     */
+    public static function isFieldCatalogEligible($fieldName, $fieldMeta, array $structuralKeys)
+    {
+        if (!is_array($fieldMeta)) {
+            return false;
+        }
+
+        if (isset($structuralKeys[$fieldName])) {
+            return false;
+        }
+
+        if (isset($fieldMeta['acl']) && $fieldMeta['acl'] === false) {
+            return false;
+        }
+
+        if (!empty($fieldMeta['secure'])) {
+            return false;
+        }
+
+        if (isset($fieldMeta['linkedTo']) && $fieldMeta['linkedTo'] !== '' && $fieldMeta['linkedTo'] !== null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Whether a field is structural linkage (bypasses field ACL / omitted from catalog).
+     *
+     * @param  string $fieldName
+     * @param  array  $meta Model metadata
+     * @return bool
+     */
+    public static function isStructuralFieldName($fieldName, array $meta)
+    {
+        $keys = self::getStructuralFieldNames($meta);
+        return isset($keys[$fieldName]);
+    }
+
+    /**
+     * Collect structural field names that must stay out of field ACL.
+     *
+     * Includes:
+     * - `id`
+     * - fields marked `identifier` / `relatedIdentifier`
+     * - belongsTo / hasOne `primaryKey` FKs (even when still named `id` on rare models)
+     * - linkage naming convention: fields ending in `Id` (e.g. roleId, projectId)
+     *
+     * @param  array $meta Model metadata
+     * @return array keyed by field name => true
+     */
+    public static function getStructuralFieldNames(array $meta)
+    {
+        $keys = ['id' => true];
+
+        if (!empty($meta['fields']) && is_array($meta['fields'])) {
+            foreach ($meta['fields'] as $fieldName => $fieldMeta) {
+                if (!is_array($fieldMeta)) {
+                    continue;
+                }
+
+                if (!empty($fieldMeta['identifier']) || !empty($fieldMeta['relatedIdentifier'])) {
+                    $keys[$fieldName] = true;
+                    continue;
+                }
+
+                if (self::isLinkageIdFieldName($fieldName)) {
+                    $keys[$fieldName] = true;
+                }
+            }
+        }
+
+        if (empty($meta['relationships']) || !is_array($meta['relationships'])) {
+            return $keys;
+        }
+
+        foreach ($meta['relationships'] as $relationshipType => $related) {
+            if ($relationshipType !== 'belongsTo' && $relationshipType !== 'hasOne') {
+                continue;
+            }
+            if (!is_array($related)) {
+                continue;
+            }
+            foreach ($related as $relDef) {
+                if (!empty($relDef['primaryKey']) && $relDef['primaryKey'] !== 'id') {
+                    $keys[$relDef['primaryKey']] = true;
+                }
+            }
+        }
+
+        return $keys;
+    }
+
+    /**
+     * Linkage / foreign-key style attribute names (…Id).
+     *
+     * @param  string $fieldName
+     * @return bool
+     */
+    public static function isLinkageIdFieldName($fieldName)
+    {
+        return (bool) preg_match('/Id$/', (string) $fieldName);
+    }
+
+    /**
+     * ACL-allowed REST modules keyed by module name → controller class.
+     *
+     * @return array
+     */
+    private static function getAclAllowedModules()
+    {
+        $routesConfig = include APP_PATH . '/core/config/routes.php';
+        $restModules = isset($routesConfig['routes']['rest']['v1']) ? $routesConfig['routes']['rest']['v1'] : [];
+        $modules = [];
+
+        foreach ($restModules as $moduleName => $routeConfig) {
+            $controllerClass = 'Gaia\\MVC\\REST\\Controllers\\' . self::camelize($moduleName) . 'Controller';
+            if (!self::isControllerAclAllowed($controllerClass)) {
+                continue;
+            }
+            $modules[$moduleName] = $controllerClass;
         }
 
         return $modules;

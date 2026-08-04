@@ -337,6 +337,20 @@ INSERT INTO users (
   'API Tester',
   'active',
   0
+),
+(
+  -- Field ACL user: issue+project allowed; selective field grants
+  'api-test-user-acl-ff',
+  '$2y$10$OH8mqmGV2uLOLyoSdLGm/ejzhLXVOsOz/Ld2fi610E/qWWTqQ6e1G',
+  'api-tester-acl-fields@example.com',
+  'API Tester ACL Fields',
+  0,
+  'api-test-user-0001',
+  'api-test-user-0001',
+  'API Tester',
+  'API Tester',
+  'active',
+  0
 )
 ON CONFLICT (id) DO UPDATE SET
   password = EXCLUDED.password,
@@ -447,10 +461,14 @@ INSERT INTO roles (
 (
   'api-test-role-acl-pi', 'ACL Project Only', 'project allowed, issue.get denied', 0,
   'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
+),
+(
+  'api-test-role-acl-ff', 'ACL Field Restricted', 'issue field ACL matrix for api-tester', 0,
+  'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
 )
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, deleted = 0;
 
-DELETE FROM permissions WHERE id LIKE 'atp-acl-%';
+DELETE FROM permissions WHERE id LIKE 'atp-acl-%' OR id LIKE 'atp-ff-%';
 DELETE FROM user_roles WHERE id LIKE 'api-test-userrole-acl-%';
 
 INSERT INTO user_roles (
@@ -464,6 +482,10 @@ INSERT INTO user_roles (
 (
   'api-test-userrole-acl-pi', 'api-test-user-0001', 'api-test-user-0001',
   'api-test-user-acl-pi', 'api-test-role-acl-pi', 'API Tester', 'API Tester'
+),
+(
+  'api-test-userrole-acl-ff', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-acl-ff', 'api-test-role-acl-ff', 'API Tester', 'API Tester'
 )
 ON CONFLICT (id) DO UPDATE SET
   "userId" = EXCLUDED."userId",
@@ -484,6 +506,28 @@ VALUES
   ('atp-acl-pi-issue-get', 'api-test-role-acl-pi', 'issue.get', 0, NOW(), NOW()),
   ('atp-acl-pi-conv-get', 'api-test-role-acl-pi', 'conversationroom.get', 1, NOW(), NOW()),
   ('atp-acl-pi-comment-get', 'api-test-role-acl-pi', 'comment.get', 1, NOW(), NOW());
+
+-- Field ACL role: module access + field matrix
+-- subject = None (0/0/0)
+-- description = write implies read (get=0, create/update=1)
+-- priority = Read Only (get=1, create/update=0)
+-- project.name.get = 0 (related clause field deny)
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-ff-issue-get', 'api-test-role-acl-ff', 'issue.get', 1, NOW(), NOW()),
+  ('atp-ff-issue-create', 'api-test-role-acl-ff', 'issue.create', 1, NOW(), NOW()),
+  ('atp-ff-issue-update', 'api-test-role-acl-ff', 'issue.update', 1, NOW(), NOW()),
+  ('atp-ff-project-get', 'api-test-role-acl-ff', 'project.get', 1, NOW(), NOW()),
+  ('atp-ff-isub-get', 'api-test-role-acl-ff', 'issue.subject.get', 0, NOW(), NOW()),
+  ('atp-ff-isub-create', 'api-test-role-acl-ff', 'issue.subject.create', 0, NOW(), NOW()),
+  ('atp-ff-isub-update', 'api-test-role-acl-ff', 'issue.subject.update', 0, NOW(), NOW()),
+  ('atp-ff-idesc-get', 'api-test-role-acl-ff', 'issue.description.get', 0, NOW(), NOW()),
+  ('atp-ff-idesc-create', 'api-test-role-acl-ff', 'issue.description.create', 1, NOW(), NOW()),
+  ('atp-ff-idesc-update', 'api-test-role-acl-ff', 'issue.description.update', 1, NOW(), NOW()),
+  ('atp-ff-ipri-get', 'api-test-role-acl-ff', 'issue.priority.get', 1, NOW(), NOW()),
+  ('atp-ff-ipri-create', 'api-test-role-acl-ff', 'issue.priority.create', 0, NOW(), NOW()),
+  ('atp-ff-ipri-update', 'api-test-role-acl-ff', 'issue.priority.update', 0, NOW(), NOW()),
+  ('atp-ff-pname-get', 'api-test-role-acl-ff', 'project.name.get', 0, NOW(), NOW());
 
 -- ACL controller entry for user (mirrors pr4m acl_controllers.relatedTo='user')
 INSERT INTO acl_controllers (
@@ -640,6 +684,10 @@ data = {
     "aclProjectOnly": {
       "email": "api-tester-acl-project@example.com",
       "password": "unit-testing"
+    },
+    "aclFields": {
+      "email": "api-tester-acl-fields@example.com",
+      "password": "unit-testing"
     }
   },
   "values": {
@@ -648,6 +696,7 @@ data = {
     "projectId": "api-test-project-001",
     "projectShortcode": "ATP",
     "issueId": "api-test-issue-000001",
+    "issueSubject": "API Tester Seed Issue",
     "milestoneId": "api-test-milestone-01",
     "roleId": "1",
     "developerRoleId": "3",

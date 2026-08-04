@@ -20,7 +20,7 @@ use Gaia\MVC\Models\Permission;
  * - Authorize direct model access including authorization groups (denial throws)
  * - Filter relationship aliases the user may not read (denial omits)
  * - Authorize related-resource routes (denial throws)
- * - Apply field-level ACL for API responses
+ * - Authorize and filter field-level ACL (`{module}.{field}.{action}`)
  *
  * @author  Rana Nouman <ranamnouman@gmail.com>
  * @package Core\Libraries\Security
@@ -167,17 +167,17 @@ class Acl
     }
 
     /**
-     * Authorize related modules actively referenced by query clauses.
+     * Authorize related modules and fields actively referenced by query clauses.
      *
      * Unlike passive relationship inclusion, an unauthorized clause cannot be
      * safely omitted: doing so changes query semantics and can expose protected
      * values through result membership, ordering, or grouping. The whole
      * request is therefore denied before query construction.
      *
-     * Base-model fields are covered by the request's primary authorizeAction.
      * Related aliases require the same action on the related module
      * (`{module}.{action}`) plus that module's authorization groups.
-     * Field-level ACL is out of scope.
+     * Every referenced field (base or related) also requires `{module}.{field}.get`
+     * (via isFieldActionAllowed, which includes the module prerequisite).
      *
      * Unknown aliases are left to normal query validation.
      *
@@ -189,31 +189,169 @@ class Acl
      */
     public function authorizeClauseUsage($modelAlias, $action, array $clauses)
     {
-        foreach ($this->getClauseFieldReferences($clauses) as $reference) {
+        foreach ($this->getClauseFieldReferences($clauses, $modelAlias) as $reference) {
             $alias = $reference['alias'];
+            $field = $reference['field'];
+            $targetModel = $modelAlias;
 
-            if ($alias === $modelAlias) {
-                continue;
+            if ($alias !== $modelAlias) {
+                $relMeta = $this->di->get('metaManager')->getRelationshipMeta(
+                    $modelAlias,
+                    $alias,
+                    false
+                );
+
+                if (empty($relMeta)) {
+                    continue;
+                }
+
+                $targetModel = $this->getRelatedModelName($modelAlias, $alias);
+                if (!$this->isModelActionAllowed($targetModel, $action)) {
+                    $this->denyAccess(
+                        'Access denied to query criteria for '
+                        . $this->buildResourceName($targetModel, $action)
+                    );
+                }
             }
 
-            $relMeta = $this->di->get('metaManager')->getRelationshipMeta(
-                $modelAlias,
-                $alias,
-                false
-            );
-
-            if (empty($relMeta)) {
-                continue;
-            }
-
-            $relatedModelName = $this->getRelatedModelName($modelAlias, $alias);
-            if (!$this->isModelActionAllowed($relatedModelName, $action)) {
+            if (!$this->isFieldActionAllowed($targetModel, $field, 'get')) {
                 $this->denyAccess(
                     'Access denied to query criteria for '
-                    . $this->buildResourceName($relatedModelName, $action)
+                    . $this->buildFieldResourceName($targetModel, $field, 'get')
                 );
             }
         }
+    }
+
+    /**
+     * Whether the user may perform a field action: module action prerequisite
+     * plus `{module}.{field}.{action}`.
+     *
+     * @param  string $modelName
+     * @param  string $field
+     * @param  string $action get|create|update
+     * @return bool
+     */
+    public function isFieldActionAllowed($modelName, $field, $action)
+    {
+        if ($this->isStructuralField($modelName, $field)) {
+            return true;
+        }
+
+        if (!$this->isModelActionAllowed($modelName, $action)) {
+            return false;
+        }
+
+        if ($this->isResourceAllowed(
+            $this->buildFieldResourceName($modelName, $field, $action)
+        )) {
+            return true;
+        }
+
+        // Write + Read combo: an explicit field write grant implies read.
+        // Missing write rows must not promote a denied/missing get (D-011).
+        if ($action === 'get' && $this->isFieldWriteExplicitlyAllowed($modelName, $field)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Whether create or update for this field is explicitly allowed (allowed=1).
+     * Missing rows do not count — only stored allow grants.
+     *
+     * @param  string $modelName
+     * @param  string $field
+     * @return bool
+     */
+    protected function isFieldWriteExplicitlyAllowed($modelName, $field)
+    {
+        foreach (['create', 'update'] as $writeAction) {
+            $resourceName = $this->buildFieldResourceName($modelName, $field, $writeAction);
+            if (!Permission::hasResource($resourceName)) {
+                continue;
+            }
+
+            foreach (Permission::getPermissionsForResource($resourceName) as $permission) {
+                if ($this->normalizeFlag($permission['allowed'] ?? null) === 1) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Drop denied SELECT columns; always keep id and linkage/join FKs.
+     *
+     * Column entries may be `Model.field`, `rel.field`, or `… AS alias`.
+     *
+     * @param  string $modelAlias Base model alias for the query
+     * @param  array  $fields
+     * @param  string $action
+     * @return array
+     */
+    public function filterAuthorizedFields($modelAlias, array $fields, $action = 'get')
+    {
+        $filtered = [];
+
+        foreach ($fields as $column) {
+            $parsed = $this->parseSelectColumn($column);
+            if ($parsed === null) {
+                $filtered[] = $column;
+                continue;
+            }
+
+            $targetModel = $this->resolveColumnModel($modelAlias, $parsed['alias']);
+            if ($targetModel === null) {
+                $filtered[] = $column;
+                continue;
+            }
+
+            if ($this->isFieldActionAllowed($targetModel, $parsed['field'], $action)) {
+                $filtered[] = $column;
+            }
+        }
+
+        return array_values($filtered);
+    }
+
+    /**
+     * Filter writable attributes in a create/update payload.
+     *
+     * Denied field attributes are discarded (not written). HTTP 403 is reserved
+     * for module-level action denial, not field denial on write.
+     *
+     * @param  string $modelName
+     * @param  array  $payload
+     * @param  string $action create|update
+     * @return array Payload with unauthorized fields removed
+     */
+    public function authorizeWritableFields($modelName, array $payload, $action)
+    {
+        $filtered = [];
+
+        foreach ($payload as $field => $value) {
+            if ($field === 'id' || $this->isStructuralField($modelName, $field)) {
+                $filtered[$field] = $value;
+                continue;
+            }
+
+            // Nested relationship payloads are not scalar field attrs.
+            if (is_array($value)) {
+                $filtered[$field] = $value;
+                continue;
+            }
+
+            if ($this->isFieldActionAllowed($modelName, $field, $action)) {
+                $filtered[$field] = $value;
+            }
+            // else discard denied field — do not 403
+        }
+
+        return $filtered;
     }
 
     /**
@@ -300,21 +438,6 @@ class Acl
     }
 
     /**
-     * Throw a generic deny when a resource is not allowed for active query
-     * usage.
-     *
-     * @param  string $resourceName
-     * @return void
-     * @throws \Gaia\Exception\Access
-     */
-    protected function denyUnlessAllowed($resourceName)
-    {
-        if (!$this->isResourceAllowed($resourceName)) {
-            $this->denyAccess("Access denied to requested query criteria for {$resourceName}");
-        }
-    }
-
-    /**
      * Build an action resource name from a module/model name and action.
      *
      * @param  string $moduleOrModel
@@ -329,25 +452,31 @@ class Acl
     /**
      * Extract field references from query clauses.
      *
-     * @param  array $clauses
+     * Base-model fields appear as bare names (`subject`). Related fields use
+     * relationship alias qualification (`project.name`). Legacy
+     * `Model.field` against the base model alias is also accepted.
+     *
+     * @param  array  $clauses
+     * @param  string $modelAlias Base model alias for bare field names
      * @return array
      */
-    protected function getClauseFieldReferences(array $clauses)
+    protected function getClauseFieldReferences(array $clauses, $modelAlias)
     {
         $references = [];
         $query = isset($clauses['query']) ? $clauses['query'] : '';
 
         if (is_string($query) && $query !== '') {
-            preg_match_all(
-                '/\(\s*([A-Za-z_][A-Za-z0-9_]*)\.([A-Za-z_][A-Za-z0-9_]*)\s+/',
-                $query,
-                $matches,
-                PREG_SET_ORDER
-            );
-            $this->appendFieldReferences($references, $matches);
+            $this->appendQueryClauseFieldReferences($references, $query, $modelAlias);
         }
 
-        foreach (['sort', 'groupBy', 'having'] as $clauseName) {
+        if (isset($clauses['having']) && $clauses['having'] !== '') {
+            $having = is_array($clauses['having'])
+                ? implode(' ', $clauses['having'])
+                : (string) $clauses['having'];
+            $this->appendQueryClauseFieldReferences($references, $having, $modelAlias);
+        }
+
+        foreach (['sort', 'groupBy'] as $clauseName) {
             if (!isset($clauses[$clauseName]) || $clauses[$clauseName] === '') {
                 continue;
             }
@@ -356,34 +485,84 @@ class Acl
                 ? implode(',', $clauses[$clauseName])
                 : (string) $clauses[$clauseName];
 
-            preg_match_all(
-                '/(?<![A-Za-z0-9_])([A-Za-z_][A-Za-z0-9_]*)\.([A-Za-z_][A-Za-z0-9_]*)/',
-                $clause,
-                $matches,
-                PREG_SET_ORDER
-            );
-            $this->appendFieldReferences($references, $matches);
+            foreach (preg_split('/\s*,\s*/', $clause) as $part) {
+                $part = trim($part);
+                if ($part === '') {
+                    continue;
+                }
+
+                $part = ltrim($part, '-+');
+                $part = preg_replace('/\s+(ASC|DESC)$/i', '', $part);
+                if (!preg_match(
+                    '/^([A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)?)/',
+                    $part,
+                    $match
+                )) {
+                    continue;
+                }
+
+                $this->appendClauseFieldToken($references, $match[1], $modelAlias);
+            }
         }
 
         return array_values($references);
     }
 
     /**
-     * Add unique alias/field references from matches.
+     * Parse parenthesized query/having substatements into field references.
      *
-     * @param  array $references
-     * @param  array $matches
+     * @param  array  $references
+     * @param  string $statement
+     * @param  string $modelAlias
      * @return void
      */
-    protected function appendFieldReferences(&$references, array $matches)
+    protected function appendQueryClauseFieldReferences(&$references, $statement, $modelAlias)
     {
-        foreach ($matches as $match) {
-            $key = $match[1] . '.' . $match[2];
-            $references[$key] = [
-                'alias' => $match[1],
-                'field' => $match[2],
-            ];
+        if (!preg_match_all('@\(([^(]*?)\)@', $statement, $subMatches)) {
+            return;
         }
+
+        foreach ($subMatches[1] as $inner) {
+            $inner = trim($inner);
+            if ($inner === '') {
+                continue;
+            }
+
+            // First token is the field: bare `subject` or qualified `rel.field`
+            if (!preg_match(
+                '/^([A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)?)/',
+                $inner,
+                $match
+            )) {
+                continue;
+            }
+
+            $this->appendClauseFieldToken($references, $match[1], $modelAlias);
+        }
+    }
+
+    /**
+     * Add a unique alias/field reference from a clause field token.
+     *
+     * @param  array  $references
+     * @param  string $token Bare field or alias.field
+     * @param  string $modelAlias
+     * @return void
+     */
+    protected function appendClauseFieldToken(&$references, $token, $modelAlias)
+    {
+        if (strpos($token, '.') !== false) {
+            list($alias, $field) = explode('.', $token, 2);
+        } else {
+            $alias = $modelAlias;
+            $field = $token;
+        }
+
+        $key = $alias . '.' . $field;
+        $references[$key] = [
+            'alias' => $alias,
+            'field' => $field,
+        ];
     }
 
     /**
@@ -448,8 +627,8 @@ class Acl
     }
 
     /**
-     * Apply ACL on model/related model fields. Only fields the user can access
-     * are kept for the API response.
+     * Apply ACL on model/related model fields using `{module}.{field}.get`.
+     * Only fields the user can access are kept for the API response allow-list.
      *
      * @param  array  $values
      * @param  string $modelAlias
@@ -472,8 +651,8 @@ class Acl
     }
 
     /**
-     * Apply ACL on a scalar field.
-     * 
+     * Apply ACL on a scalar field using action-based field identity.
+     *
      * @param  string $fieldName
      * @param  string $modelAlias
      * @param  array  $params
@@ -482,8 +661,9 @@ class Acl
      */
     protected function applyACLByScalarField($fieldName, $modelAlias, $params, &$fields)
     {
-        $field = "{$modelAlias}.{$fieldName}";
-        $allowedField = $field;
+        $targetModel = $modelAlias;
+        $targetField = $fieldName;
+        $allowedField = $fieldName;
         $aliasByFields = $this->getAliasByFields($params);
 
         if (in_array($fieldName, array_keys($aliasByFields))) {
@@ -494,16 +674,19 @@ class Acl
                 $relName = $moduleName;
                 $moduleName = $this->getRelatedModelName($modelAlias, $relName);
             }
-            $field = "{$moduleName}.{$moduleField}";
+            $targetModel = $moduleName;
+            $targetField = $moduleField;
             $allowedField = $fieldName;
         }
 
-        ($this->isResourceAllowed($field)) && ($fields[$allowedField] = $allowedField);
+        if ($this->isFieldActionAllowed($targetModel, $targetField, 'get')) {
+            $fields[$allowedField] = $allowedField;
+        }
     }
 
     /**
-     * Apply ACL on an object field.
-     * 
+     * Apply ACL on an object (related) field set.
+     *
      * @param  string $fieldName
      * @param  string $modelAlias
      * @param  array  $values
@@ -513,23 +696,19 @@ class Acl
     protected function applyACLByObjectField($fieldName, $modelAlias, $values, &$fields)
     {
         $isModel = $modelAlias === $fieldName;
-        $relatedModelName = null;
-
-        if (!$isModel) {
-            $relName = $fieldName;
-            $relatedModelName = $this->getRelatedModelName($modelAlias, $relName);
-        }
+        $relatedModelName = $isModel ? $modelAlias : $this->getRelatedModelName($modelAlias, $fieldName);
 
         foreach (array_keys($values) as $nestedField) {
             $allowedField = "{$fieldName}.{$nestedField}";
-            $field = ($isModel) ? ($allowedField) : "{$relatedModelName}.{$nestedField}";
-            ($this->isResourceAllowed($field)) && ($fields[] = $allowedField);
+            if ($this->isFieldActionAllowed($relatedModelName, $nestedField, 'get')) {
+                $fields[] = $allowedField;
+            }
         }
     }
 
     /**
      * Get the alias by fields.
-     * 
+     *
      * @param  array $params
      * @return array
      */
@@ -552,12 +731,105 @@ class Acl
 
     /**
      * Get the allowed fields.
-     * 
+     *
      * @return array
      */
     public function getAllowedFields()
     {
         return $this->allowedFields;
+    }
+
+    /**
+     * Build `{module}.{field}.{action}` resource name.
+     *
+     * @param  string $modelName
+     * @param  string $field
+     * @param  string $action
+     * @return string
+     */
+    protected function buildFieldResourceName($modelName, $field, $action)
+    {
+        return strtolower($modelName) . '.' . $field . '.' . $action;
+    }
+
+    /**
+     * Parse a SELECT column into alias + field (strips AS aliases).
+     *
+     * @param  string $column
+     * @return array|null {alias, field} or null if not Model.field form
+     */
+    protected function parseSelectColumn($column)
+    {
+        $expression = trim((string) $column);
+        if ($expression === '') {
+            return null;
+        }
+
+        if (preg_match('/\s+AS\s+/i', $expression)) {
+            $parts = preg_split('/\s+AS\s+/i', $expression, 2);
+            $expression = trim($parts[0]);
+        }
+
+        // Skip aggregates / expressions without a simple Alias.field form.
+        if (!preg_match('/^([A-Za-z_][A-Za-z0-9_]*)\.([A-Za-z_][A-Za-z0-9_]*)$/', $expression, $matches)) {
+            return null;
+        }
+
+        return [
+            'alias' => $matches[1],
+            'field' => $matches[2],
+        ];
+    }
+
+    /**
+     * Resolve a column alias (base model or relationship name) to a model name.
+     *
+     * @param  string $modelAlias
+     * @param  string $columnAlias
+     * @return string|null
+     */
+    protected function resolveColumnModel($modelAlias, $columnAlias)
+    {
+        if ($columnAlias === $modelAlias) {
+            return $modelAlias;
+        }
+
+        $relMeta = $this->di->get('metaManager')->getRelationshipMeta(
+            $modelAlias,
+            $columnAlias,
+            false
+        );
+
+        if (empty($relMeta)) {
+            return null;
+        }
+
+        return $this->getRelatedModelName($modelAlias, $columnAlias);
+    }
+
+    /**
+     * Whether a field always bypasses field ACL (id / linkage FKs).
+     *
+     * Shared rules with AclMapCatalog so catalog exclusions and runtime
+     * bypass stay aligned (D-035).
+     *
+     * @param  string $modelName
+     * @param  string $field
+     * @return bool
+     */
+    protected function isStructuralField($modelName, $field)
+    {
+        if ($field === 'id' || AclMapCatalog::isLinkageIdFieldName($field)) {
+            return true;
+        }
+
+        try {
+            $meta = $this->di->get('metaManager')->getModelMeta($modelName);
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        return AclMapCatalog::isStructuralFieldName($field, $meta);
     }
 
     /**

@@ -283,13 +283,19 @@ Objectives:
 - [ ] Define precedence between project and system memberships, if project scope returns.
 - [ ] Stop deriving security scope from loosely parsed request query strings where a trustworthy resource context can be resolved.
 
-### Phase 4 — Field ACL (optional follow-up)
+### Phase 4 — Field ACL
 
-Deferred from the action-based revamp. If resumed:
+In progress. Action-based field identity `{module}.{field}.{action}` on the existing permission store.
 
-- Field actions should be limited to what makes sense: read / create / update.
-- `delete` does not apply to fields.
-- Enforcement must match request verb (GET → read, POST → create, PATCH → update).
+Objectives:
+
+- [x] Catalog: emit `moduleFields` from metadata (`acl !== false`) with `get` / `create` / `update` only; no field `delete`.
+- [x] Admin: `PermissionController` default permissions include field resources.
+- [x] Read: pre-query `filterAuthorizedFields`; denied attributes omitted for default select and explicit `fields=` (no field-ACL 403 on `fields=`).
+- [x] Clauses: field `.get` checks in `authorizeClauseUsage` → 403 on deny.
+- [x] Write: `authorizeWritableFields` on POST/PUT/PATCH discards denied attributes (403 only for module action).
+- [x] Response: omit denied attribute keys (not null); rewrite legacy `Model.field` checks.
+- [x] Frontend: 3-segment ACL contexts; role UI nested field rows; Mirage fixtures.
 
 ### Phase 5 — Administration and configuration security
 
