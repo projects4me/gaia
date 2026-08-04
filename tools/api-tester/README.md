@@ -68,10 +68,16 @@ Optional: `--filter project` (OR terms with `|`, e.g. `milestone|timelog`)
     4. skip custom/auth/file/Socket.IO/ACL endpoints that are not metadata CRUD
     5. omit PUT (not implemented in `RestController`)
 - `tools/api-tester/apis/acl.json`
-  - **group-based ACL** scenarios (hand-maintained)
-  - uses fixture `authProfiles` (`aclNoProject`, `aclProjectOnly`) seeded by `prepare-test-db.sh`
-  - covers: Issue/Comment/Conversationroom denied without `project.get`; Issue omitted from Project `rels`; related route 403; admin allow baseline
-
+  - **group-based ACL** and **field ACL** scenarios (hand-maintained)
+  - uses fixture `authProfiles`:
+    - `aclNoProject` — child modules allowed, `project.get` denied
+    - `aclProjectOnly` — `project.get` allowed, `issue.get` denied
+    - `aclFields` — issue+project allowed with field matrix:
+      - `subject` None (0/0/0)
+      - `description` write⇒read (`get=0`, create/update=1)
+      - `priority` Read Only (`get=1`, create/update=0)
+      - `project.name.get=0`
+  - covers: group cascade deny; clause 403 (query/sort/group/having bare + related); `fields=` omits denied attrs; default select omit; write body discard; write⇒read
 Generate catalogs:
 
 ```bash
@@ -127,7 +133,7 @@ Each API entry can declare `expects`:
 - `shape`: `json` | `jsonapi.collection` | `jsonapi.resource` | `oauth.token` | `error`
 - `errorEqual`: exact `error` string (used by ACL 403 cases)
 - `includedTypesAbsent`: list of JSON:API `included[].type` values that must not appear
-- `attributesPresent`: list of attribute keys
+- `attributesPresent` / `attributesAbsent`: attribute keys on resource (or first collection item)
 - `attributesEqual`: map of attribute key → expected value
 - `idsIncludes`: expected resource ids
 
@@ -142,6 +148,7 @@ ACL mode uses:
 
 - `aclNoProject` — `issue.get`/`comment.get`/`conversationroom.get` allowed, `project.get` denied
 - `aclProjectOnly` — `project.get` allowed, `issue.get` denied
+- `aclFields` — field ACL matrix on Issue (see `apis/acl.json` description above)
 
 ## Runtime capture (mutation lifecycle)
 

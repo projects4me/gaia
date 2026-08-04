@@ -22,6 +22,30 @@ use Gaia\Core\MVC\Models\Model;
 class Permission extends Model
 {
     /**
+     * Field access modes.
+     *
+     * @var string
+     * @readonly
+     */
+    public const FIELD_ACCESS_NONE = 'none';
+
+    /**
+     * Field access mode: read.
+     *
+     * @var string
+     * @readonly
+     */
+    public const FIELD_ACCESS_READ = 'read';
+
+    /**
+     * Field access mode: write.
+     *
+     * @var string
+     * @readonly
+     */
+    public const FIELD_ACCESS_WRITE = 'write';
+
+    /**
      * Effective permissions for the loaded user, keyed by resourceName.
      *
      * @var array|null
@@ -111,6 +135,76 @@ class Permission extends Model
     {
         self::$effectivePermissions = null;
         self::$loadedUserId = null;
+    }
+
+    /**
+     * Expand a field access mode into get/create/update allowed flags.
+     *
+     * - none  → get=0, create=0, update=0
+     * - read  → get=1, create=0, update=0  (Read Only)
+     * - write → get=1, create=1, update=1  (Write + Read)
+     *
+     * @param  string $mode none|read|write
+     * @return array{get: string, create: string, update: string}
+     * @throws \InvalidArgumentException
+     */
+    public static function expandFieldAccessMode($mode)
+    {
+        switch ($mode) {
+            case self::FIELD_ACCESS_NONE:
+                return ['get' => '0', 'create' => '0', 'update' => '0'];
+            case self::FIELD_ACCESS_READ:
+                return ['get' => '1', 'create' => '0', 'update' => '0'];
+            case self::FIELD_ACCESS_WRITE:
+                return ['get' => '1', 'create' => '1', 'update' => '1'];
+            default:
+                throw new \InvalidArgumentException(
+                    "Unsupported field access mode: {$mode}"
+                );
+        }
+    }
+
+    /**
+     * This function is used to derive the field access mode from stored get/create/update allowed flags.
+     *
+     * @param  array $flags Keys get|create|update with allowed values
+     * @return string none|read|write
+     */
+    public static function deriveFieldAccessMode(array $flags)
+    {
+        $get = self::normalizeAllowedFlag(isset($flags['get']) ? $flags['get'] : null);
+        $create = self::normalizeAllowedFlag(isset($flags['create']) ? $flags['create'] : null);
+        $update = self::normalizeAllowedFlag(isset($flags['update']) ? $flags['update'] : null);
+
+        if ($create === 1 || $update === 1) {
+            return self::FIELD_ACCESS_WRITE;
+        }
+
+        if ($get === 1) {
+            return self::FIELD_ACCESS_READ;
+        }
+
+        if ($get === 0 && $create === 0 && $update === 0) {
+            return self::FIELD_ACCESS_NONE;
+        }
+
+        // Unset / empty → permissive full access (Write + Read).
+        return self::FIELD_ACCESS_WRITE;
+    }
+
+    /**
+     * Normalize an allowed flag: 1, 0, or null when unset/empty.
+     *
+     * @param  mixed $flagValue
+     * @return int|null
+     */
+    public static function normalizeAllowedFlag($flagValue)
+    {
+        if ($flagValue === null || $flagValue === '') {
+            return null;
+        }
+
+        return ((int) $flagValue > 0) ? 1 : 0;
     }
 
     /**

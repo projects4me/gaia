@@ -96,7 +96,7 @@ jobs:
       run: |
         tools/api-tester/harness/run-api-tests.sh \
           --base-uri http://127.0.0.1 \
-          --mode backend
+          --mode backend,acl
 
     - name: Upload API testing report
       if: always()

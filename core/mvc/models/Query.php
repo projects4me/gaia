@@ -124,6 +124,7 @@ class Query
     public function prepareSelectQuery($modelNamespace, $params, $relationship)
     {
         $this->setFieldsForQuery($params, $relationship);
+        $this->filterFieldsByAcl($params);
         $this->beforePrepareQuery($params);
 
         $this->queryBuilder->from([$this->modelAlias => $modelNamespace]);
@@ -150,6 +151,29 @@ class Query
         }
 
         $GLOBALS['logger']->debug($this->queryBuilder->getPhql());
+    }
+
+    /**
+     * Discard SELECT columns the current user may not read (field ACL).
+     *
+     * When fields were explicitly requested, denied columns 403 instead of
+     * silent omit. Default/full selects omit denied columns quietly.
+     *
+     * @param  array $params
+     * @return void
+     * @throws \Gaia\Exception\Access
+     */
+    protected function filterFieldsByAcl(array &$params)
+    {
+        if (!$this->di->has('acl') || empty($params['fields']) || !is_array($params['fields'])) {
+            return;
+        }
+
+        $params['fields'] = $this->di->get('acl')->filterAuthorizedFields(
+            $this->modelAlias,
+            $params['fields'],
+            'get'
+        );
     }
 
     /**

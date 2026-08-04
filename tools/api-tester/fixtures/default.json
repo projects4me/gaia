@@ -15,6 +15,10 @@
     "aclProjectOnly": {
       "email": "api-tester-acl-project@example.com",
       "password": "unit-testing"
+    },
+    "aclFields": {
+      "email": "api-tester-acl-fields@example.com",
+      "password": "unit-testing"
     }
   },
   "values": {
@@ -23,6 +27,7 @@
     "projectId": "api-test-project-001",
     "projectShortcode": "ATP",
     "issueId": "api-test-issue-000001",
+    "issueSubject": "API Tester Seed Issue",
     "milestoneId": "api-test-milestone-01",
     "roleId": "1",
     "developerRoleId": "3",

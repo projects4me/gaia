@@ -199,13 +199,75 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 
 ## Field access decisions
 
-### D-030 — Field denial omits/nulls values; it does not 403 the resource
+### D-030 — Field denial omits attributes; it does not 403 the resource
 
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | Denied field resources (`Model.field`) return false from access checks and are filtered out of the response field set. They do not deny the parent resource. |
-| Owner | `Acl::applyACLOnFields()` / `getAllowedFields()`, applied during response preparation. |
+| Decision | Denied field resources use action-based identity `{module}.{field}.{action}` (e.g. `issue.subject.get`). On read with a default/full select, denied attributes are **omitted** from the JSON:API attributes object (key absent, not set to `null`). They do not deny the parent resource. |
+| Owner | `Acl::filterAuthorizedFields()` (pre-query SELECT discard) and response preparation (`applyACLOnFields` / `filterFieldsByACL` as defense-in-depth). |
+| Legacy | Do not keep `Model.field` (e.g. `Issue.subject`) as a long-term identity. |
+
+### D-031 — Field identity and allowed field actions
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | Field resource names are `{module}.{field}.{action}` with actions limited to `get`, `create`, and `update`. There is no field-level `delete` (module `*.delete` only). Catalog entries are **business attributes** from model metadata for ACL-allowed models. |
+| Catalog exclusions | Structural linkage (D-035); fields with `'acl' => false`; `'secure' => true`; `'linkedTo'` derived/display fields. |
+| Storage | Same `permissions` table (`resourceName` + `allowed` + `roleId`). |
+
+### D-032 — Module action is a prerequisite for field access
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | Field access requires the matching module action first: e.g. `issue.get` before any `issue.*.get`, `issue.create` before any `issue.*.create`, `issue.update` before any `issue.*.update`. |
+| Implications | `Acl::isFieldActionAllowed` checks module then field resource. |
+
+### D-033 — Denied fields in `fields=` are omitted (not 403)
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | When the client names fields in `fields=`, each field is authorized with `get` the same as a default select: **allowed fields are kept; denied fields are dropped from the SELECT**. The request is **not** denied with HTTP 403 for field ACL. |
+| Rationale | Field denial must not surface as Access Denied; silent omit is consistent for default select and explicit `fields=`. |
+| Owner | `Acl::filterAuthorizedFields()` via `Query::filterFieldsByAcl()`. |
+| Contrast | Unauthorized fields in `query` / `sort` / `group` / `having` still 403 (D-036) — those change result membership/order. |
+
+### D-034 — Denied field in write body is discarded
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | When a denied field attribute is present in a POST (`create`), PUT, or PATCH (`update`) body, that attribute is **removed** before assign/save. The request continues for allowed fields. HTTP 403 is reserved for module-level action denial (`issue.create` / `issue.update`), not field denial on write. |
+
+### D-035 — id and linkage FKs bypass field ACL
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | Structural linkage fields always remain selectable and are not subject to field deny (catalog omit + runtime bypass). Includes: `{Model}.id`; fields marked `identifier` / `relatedIdentifier`; belongsTo/hasOne `primaryKey` FKs; and any attribute whose name ends in `Id` (e.g. `roleId`, `projectId`, `typeId`) even when relationship metadata is incomplete. |
+| Owner | `AclMapCatalog::getStructuralFieldNames()` / `isStructuralFieldName()`; `Acl::isStructuralField()` delegates to the same rules. |
+| Rationale | Relationship wiring must not depend on field-ACL grants. Incomplete metadata previously leaked FKs like `permission.roleId` and `issuetype.projectId` into the permission UI. |
+
+### D-036 — Field denial in query clauses returns 403
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | A field referenced in `query`, `sort`, `group`, or `having` must be authorized for field `get` (in addition to the related module action). Unauthorized active field criteria cause HTTP 403. Criteria are never silently removed. |
+| Relationships | Extends D-027 to cover field-level resources. |
+
+### D-037 — Field access modes (None / Read Only / Write + Read)
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | Field ACL is administered as one of three modes per field, not as independent get/create/update toggles in the UI. Modes expand to stored `{module}.{field}.{action}` flags: **None** → get/create/update = 0; **Read Only** → get = 1, create/update = 0; **Write + Read** → get/create/update = 1. There is no write-only mode — write always includes read. |
+| Storage | Same action resources (`issue.subject.get`, `…create`, `…update`). `Permission::expandFieldAccessMode` / `deriveFieldAccessMode` own the mapping. |
+| Evaluation | If create or update is **explicitly** allowed (`allowed = 1`), field `get` is also allowed (write⇒read). Missing write rows do not promote get (preserves D-011 / explicit deny). |
+| Implications | After PATCH/POST, no special read-after-write path is required: a writable field is always readable under this combo. |
 
 ---
 
@@ -257,8 +319,28 @@ These scenarios are settled and should become tests later:
    - A Project request filtering, sorting, grouping, or applying `having` through `issues.*` → 403
 
 7. **Unauthorized field used by a query clause**
-   - Given the related model is readable but its referenced field is denied
+   - Given the related model is readable but its referenced field is denied (`{module}.{field}.get = 0`)
    - A request using that field in `query`, `sort`, `group`, or `having` → 403
+
+8. **Denied field on default read**
+   - Given `issue.subject.get = 0` and `issue.get = 1`
+   - `GET /api/v1/issue/{id}` → 200; `subject` attribute key omitted
+
+9. **Denied field in `fields=` is omitted**
+   - Given `issue.subject.get = 0`, `issue.description` readable
+   - `GET /api/v1/issue?fields=Issue.subject,Issue.description` → 200; `subject` omitted, `description` kept
+
+10. **Denied field in PATCH body**
+    - Given `issue.subject.update = 0` and `issue.update = 1`
+    - `PATCH /api/v1/issue/{id}` with `subject` (and other attrs) in attributes → 200; `subject` discarded, other attrs saved
+
+11. **Module prerequisite for field access**
+    - Given `issue.get = 0` (module denied)
+    - Field resources under `issue.*` are not usable; parent resource request → 403
+
+12. **Missing field permission row**
+    - Given no row for `issue.subject.get` and permissive resolution
+    - Field is allowed (D-011)
 
 ---
 
@@ -278,4 +360,8 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 
 | Date | Change |
 |------|--------|
+| 2026-08-04 | D-033 revised: denied `fields=` entries are omitted (not 403); clause field denial still 403 |
+| 2026-08-03 | D-037: field ACL administered as None / Read Only / Write + Read; write implies read |
+| 2026-08-03 | D-034 revised: denied write fields are discarded; 403 reserved for module action ACL |
+| 2026-08-03 | Field ACL: action-based identity, omit (not null), full metadata catalog, explicit fields=/body/clause 403, module prerequisite, id/FK bypass (D-030–D-036) |
 | 2026-07-21 | Initial decisions from relationship data-level ACL work and Acl/Permission refactor |
