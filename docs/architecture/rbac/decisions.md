@@ -264,10 +264,11 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | Field ACL is administered as one of three modes per field, not as independent get/create/update toggles in the UI. Modes expand to stored `{module}.{field}.{action}` flags: **None** → get/create/update = 0; **Read Only** → get = 1, create/update = 0; **Write + Read** → get/create/update = 1. There is no write-only mode — write always includes read. |
-| Storage | Same action resources (`issue.subject.get`, `…create`, `…update`). `Permission::expandFieldAccessMode` / `deriveFieldAccessMode` own the mapping. |
+| Decision | Field ACL is administered as one of three modes per field, not as independent get/create/update toggles. Modes expand to stored `{module}.{field}.{action}` flags: **None** → get/create/update = 0; **Read Only** → get = 1, create/update = 0; **Write + Read** → get/create/update = 1. There is no write-only mode — write always includes read. |
+| API surface | Clients see/write one permission per field: `resourceName = {module}.{field}` (e.g. `issue.subject`) with `allowed` ∈ `''` \| `none` \| `read` \| `write`. Direct writes to `{module}.{field}.{get\|create\|update}` are rejected. |
+| Storage | Same action triples in `permissions` (`issue.subject.get`, `…create`, `…update`). `Permission::expandFieldAccessMode` / `deriveFieldAccessMode` and `PermissionController` own collapse/expand. Unset (`allowed=''`) deletes the three rows (permissive missing). |
 | Evaluation | If create or update is **explicitly** allowed (`allowed = 1`), field `get` is also allowed (write⇒read). Missing write rows do not promote get (preserves D-011 / explicit deny). |
-| Implications | After PATCH/POST, no special read-after-write path is required: a writable field is always readable under this combo. |
+| Implications | After PATCH/POST, no special read-after-write path is required: a writable field is always readable under this combo. Frontend sends one request per field mode change. |
 
 ---
 
@@ -360,6 +361,7 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 
 | Date | Change |
 |------|--------|
+| 2026-08-04 | D-037: Permission API collapses/expands field modes; clients use `{module}.{field}` + none\|read\|write only |
 | 2026-08-04 | D-033 revised: denied `fields=` entries are omitted (not 403); clause field denial still 403 |
 | 2026-08-03 | D-037: field ACL administered as None / Read Only / Write + Read; write implies read |
 | 2026-08-03 | D-034 revised: denied write fields are discarded; 403 reserved for module action ACL |

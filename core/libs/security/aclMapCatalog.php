@@ -59,10 +59,12 @@ class AclMapCatalog
     }
 
     /**
-     * Build field resources from model metadata for ACL-allowed modules.
+     * Build field mode resources from model metadata for ACL-allowed modules.
      *
-     * Emits get/create/update for business attributes only:
-     * `{module}.{field}.{action}`.
+     * Public catalog emits one mode resource per business attribute:
+     * `{module}.{field}` with modes none|read|write.
+     * Runtime ACL still evaluates `{module}.{field}.{get|create|update}` triples
+     * stored by PermissionController expand/upsert.
      *
      * Excludes (from metadata):
      * - structural linkage (`getStructuralFieldNames`)
@@ -97,17 +99,10 @@ class AclMapCatalog
                     continue;
                 }
 
-                $actions = [];
-                foreach (self::FIELD_ACTIONS as $action) {
-                    $actions[] = [
-                        'action' => $action,
-                        'resourceName' => $moduleName . '.' . $fieldName . '.' . $action,
-                    ];
-                }
-
                 $fields[] = [
                     'field' => $fieldName,
-                    'actions' => $actions,
+                    'resourceName' => $moduleName . '.' . $fieldName,
+                    'modes' => ['none', 'read', 'write'],
                 ];
             }
 
@@ -122,6 +117,60 @@ class AclMapCatalog
         }
 
         return $modules;
+    }
+
+    /**
+     * Build internal field-action resource name `{module}.{field}.{action}`.
+     *
+     * @param  string $moduleName
+     * @param  string $field
+     * @param  string $action get|create|update
+     * @return string
+     */
+    public static function buildFieldActionResourceName($moduleName, $field, $action)
+    {
+        return strtolower($moduleName) . '.' . $field . '.' . $action;
+    }
+
+    /**
+     * Whether resourceName is a public field-mode catalog entry `{module}.{field}`.
+     *
+     * @param  string $resourceName
+     * @param  array  $moduleFields Catalog from settings
+     * @return bool
+     */
+    public static function isFieldModeResource($resourceName, array $moduleFields)
+    {
+        foreach ($moduleFields as $moduleDefinition) {
+            if (empty($moduleDefinition['fields']) || !is_array($moduleDefinition['fields'])) {
+                continue;
+            }
+            foreach ($moduleDefinition['fields'] as $fieldDefinition) {
+                if (!empty($fieldDefinition['resourceName'])
+                    && $fieldDefinition['resourceName'] === $resourceName
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Whether resourceName is an internal field-action triple `{module}.{field}.{action}`.
+     *
+     * @param  string $resourceName
+     * @return bool
+     */
+    public static function isFieldActionResource($resourceName)
+    {
+        $parts = explode('.', (string) $resourceName);
+        if (count($parts) !== 3) {
+            return false;
+        }
+
+        return in_array($parts[2], self::FIELD_ACTIONS, true);
     }
 
     /**

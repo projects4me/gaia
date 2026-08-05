@@ -19,6 +19,10 @@
     "aclFields": {
       "email": "api-tester-acl-fields@example.com",
       "password": "unit-testing"
+    },
+    "aclNoConversation": {
+      "email": "api-tester-acl-noconv@example.com",
+      "password": "unit-testing"
     }
   },
   "values": {

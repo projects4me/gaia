@@ -97,6 +97,40 @@ class Asserter
             }
         }
 
+        if (!empty($expects['includedTypesPresent']) && is_array($expects['includedTypesPresent'])) {
+            $includedTypes = [];
+            if (isset($json['included']) && is_array($json['included'])) {
+                foreach ($json['included'] as $row) {
+                    if (isset($row['type'])) {
+                        $includedTypes[] = $row['type'];
+                    }
+                }
+            }
+            foreach ($expects['includedTypesPresent'] as $type) {
+                if (!in_array($type, $includedTypes, true)) {
+                    $failures[] = "includedTypesPresent: missing type {$type}";
+                }
+            }
+        }
+
+        if (!empty($expects['resourceNamesAbsent']) && is_array($expects['resourceNamesAbsent'])) {
+            $names = $this->resourceNames($json);
+            foreach ($expects['resourceNamesAbsent'] as $name) {
+                if (in_array($name, $names, true)) {
+                    $failures[] = "resourceNamesAbsent: unexpectedly found resourceName {$name}";
+                }
+            }
+        }
+
+        if (!empty($expects['resourceNamesPresent']) && is_array($expects['resourceNamesPresent'])) {
+            $names = $this->resourceNames($json);
+            foreach ($expects['resourceNamesPresent'] as $name) {
+                if (!in_array($name, $names, true)) {
+                    $failures[] = "resourceNamesPresent: missing resourceName {$name}";
+                }
+            }
+        }
+
         if (!empty($expects['attributesPresent']) && is_array($expects['attributesPresent'])) {
             foreach ($this->attributeMaps($json) as $index => $attrs) {
                 foreach ($expects['attributesPresent'] as $attr) {
@@ -186,5 +220,29 @@ class Asserter
         }
 
         return [0 => []];
+    }
+
+    /**
+     * Collect attributes.resourceName values from a JSON:API collection/resource.
+     *
+     * @param  array|null $json
+     * @return array
+     */
+    private function resourceNames($json)
+    {
+        $names = [];
+        if (!is_array($json) || !isset($json['data']) || !is_array($json['data'])) {
+            return $names;
+        }
+
+        $rows = isset($json['data']['attributes']) ? [$json['data']] : $json['data'];
+        foreach ($rows as $row) {
+            if (!is_array($row) || !isset($row['attributes']['resourceName'])) {
+                continue;
+            }
+            $names[] = (string) $row['attributes']['resourceName'];
+        }
+
+        return $names;
     }
 }

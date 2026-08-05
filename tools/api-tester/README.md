@@ -72,12 +72,13 @@ Optional: `--filter project` (OR terms with `|`, e.g. `milestone|timelog`)
   - uses fixture `authProfiles`:
     - `aclNoProject` — child modules allowed, `project.get` denied
     - `aclProjectOnly` — `project.get` allowed, `issue.get` denied
+    - `aclNoConversation` — project+comment allowed, `conversationroom.get` denied
     - `aclFields` — issue+project allowed with field matrix:
       - `subject` None (0/0/0)
       - `description` write⇒read (`get=0`, create/update=1)
       - `priority` Read Only (`get=1`, create/update=0)
       - `project.name.get=0`
-  - covers: group cascade deny; clause 403 (query/sort/group/having bare + related); `fields=` omits denied attrs; default select omit; write body discard; write⇒read
+  - covers: group cascade deny (project / conversation); mixed rels; clause 403 (query/sort/group/having bare + related); structural FK bypass; `fields=` / default omit; write body discard; write⇒read; permission create (module + field-mode write→read→none→clear); catalog excludes structural FKs; list collapses field modes (no triples)
 Generate catalogs:
 
 ```bash
@@ -133,6 +134,8 @@ Each API entry can declare `expects`:
 - `shape`: `json` | `jsonapi.collection` | `jsonapi.resource` | `oauth.token` | `error`
 - `errorEqual`: exact `error` string (used by ACL 403 cases)
 - `includedTypesAbsent`: list of JSON:API `included[].type` values that must not appear
+- `includedTypesPresent`: list of JSON:API `included[].type` values that must appear
+- `resourceNamesAbsent` / `resourceNamesPresent`: `attributes.resourceName` values across a permission (or similar) collection
 - `attributesPresent` / `attributesAbsent`: attribute keys on resource (or first collection item)
 - `attributesEqual`: map of attribute key → expected value
 - `idsIncludes`: expected resource ids
@@ -148,6 +151,7 @@ ACL mode uses:
 
 - `aclNoProject` — `issue.get`/`comment.get`/`conversationroom.get` allowed, `project.get` denied
 - `aclProjectOnly` — `project.get` allowed, `issue.get` denied
+- `aclNoConversation` — `project.get`/`comment.get` allowed, `conversationroom.get` denied
 - `aclFields` — field ACL matrix on Issue (see `apis/acl.json` description above)
 
 ## Runtime capture (mutation lifecycle)

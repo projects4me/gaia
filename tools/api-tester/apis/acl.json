@@ -2,7 +2,7 @@
   "name": "gaia-acl-apis",
   "version": 2,
   "basePath": "/api/v1",
-  "description": "Group-based and field-level ACL authorization scenarios.",
+  "description": "Group-based and field-level ACL authorization scenarios, plus permission create/update contracts.",
   "apis": [
     {
       "id": "acl-issue-denied-without-project-group",
@@ -116,6 +116,83 @@
         "status": 200,
         "shape": "jsonapi.resource",
         "idsIncludes": ["{commentId}"]
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-issue-allowed-with-project-group",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-issue-detail-allowed-with-project-group",
+      "method": "GET",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": "aclFields",
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{issueId}"]
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-conversationroom-detail-denied-without-project-group",
+      "method": "GET",
+      "path": "/api/v1/conversationroom/{conversationroomId}",
+      "resource": "conversationroom",
+      "auth": "aclNoProject",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-comment-denied-without-conversation-group",
+      "method": "GET",
+      "path": "/api/v1/comment",
+      "resource": "comment",
+      "auth": "aclNoConversation",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-comment-detail-denied-without-conversation-group",
+      "method": "GET",
+      "path": "/api/v1/comment/{commentId}",
+      "resource": "comment",
+      "auth": "aclNoConversation",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-project-allowed-when-conversation-denied",
+      "method": "GET",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": "aclNoConversation",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-project-rels-mixed-issues-omitted-members-kept",
+      "method": "GET",
+      "path": "/api/v1/project/{projectId}",
+      "resource": "project",
+      "auth": "aclProjectOnly",
+      "query": { "rels": "issues,members" },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{projectId}"],
+        "includedTypesAbsent": ["issue"],
+        "includedTypesPresent": ["user"]
       },
       "source": "acl-group"
     },
@@ -279,6 +356,74 @@
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-field"
     },
+    {
+      "id": "acl-field-having-allowed-priority",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "group": "Issue.priority,Issue.id",
+        "fields": "Issue.priority",
+        "having": "(Issue.priority = 'medium')"
+      },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-sort-related-denied-project-name",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": { "limit": 5, "page": 1, "sort": "project.name" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-group-related-denied-project-name",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": { "limit": 5, "page": 1, "group": "project.name" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-query-structural-projectId-allowed",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclFields",
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(projectId CONTAINS api-test-project-001)"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": ["{issueId}"]
+      },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-field-default-select-keeps-structural-projectId",
+      "method": "GET",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": "aclFields",
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{issueId}"],
+        "attributesPresent": ["projectId"]
+      },
+      "source": "acl-field"
+    },
 
     {
       "id": "acl-field-explicit-fields-omits-denied-subject",
@@ -382,6 +527,238 @@
         }
       },
       "source": "acl-field"
+    },
+
+    {
+      "id": "acl-perm-create-module-action",
+      "method": "POST",
+      "path": "/api/v1/permission",
+      "resource": "permission",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "permission",
+          "attributes": {
+            "resourceName": "tag.get",
+            "allowed": "1",
+            "roleId": "{developerRoleId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "resourceName": "tag.get",
+          "allowed": "1",
+          "roleId": "{developerRoleId}"
+        }
+      },
+      "store": { "runtime.tagGetPermissionId": "data.id" },
+      "source": "acl-permission"
+    },
+    {
+      "id": "acl-perm-reject-direct-field-action-triple",
+      "method": "POST",
+      "path": "/api/v1/permission",
+      "resource": "permission",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "permission",
+          "attributes": {
+            "resourceName": "issue.subject.get",
+            "allowed": "1",
+            "roleId": "{developerRoleId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "Field action permissions cannot be set directly"
+      },
+      "source": "acl-permission"
+    },
+    {
+      "id": "acl-perm-create-field-mode-write",
+      "method": "POST",
+      "path": "/api/v1/permission",
+      "resource": "permission",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "permission",
+          "attributes": {
+            "resourceName": "issue.isPlanned",
+            "allowed": "write",
+            "roleId": "{developerRoleId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "attributesEqual": {
+          "resourceName": "issue.isPlanned",
+          "allowed": "write",
+          "roleId": "{developerRoleId}"
+        }
+      },
+      "store": { "runtime.issueIsPlannedPermissionId": "data.id" },
+      "source": "acl-permission"
+    },
+    {
+      "id": "acl-perm-list-collapses-field-mode-not-triples",
+      "method": "GET",
+      "path": "/api/v1/permission",
+      "resource": "permission",
+      "auth": true,
+      "query": { "roleId": "{developerRoleId}", "limit": 500, "page": 1 },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "resourceNamesPresent": ["issue.isPlanned"],
+        "resourceNamesAbsent": [
+          "issue.isPlanned.get",
+          "issue.isPlanned.create",
+          "issue.isPlanned.update"
+        ]
+      },
+      "source": "acl-permission"
+    },
+    {
+      "id": "acl-perm-patch-field-mode-read",
+      "method": "PATCH",
+      "path": "/api/v1/permission/{runtime.issueIsPlannedPermissionId}",
+      "resource": "permission",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "permission",
+          "id": "{runtime.issueIsPlannedPermissionId}",
+          "attributes": {
+            "resourceName": "issue.isPlanned",
+            "allowed": "read",
+            "roleId": "{developerRoleId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "attributesEqual": {
+          "resourceName": "issue.isPlanned",
+          "allowed": "read",
+          "roleId": "{developerRoleId}"
+        }
+      },
+      "source": "acl-permission"
+    },
+    {
+      "id": "acl-perm-patch-field-mode-none",
+      "method": "PATCH",
+      "path": "/api/v1/permission/{runtime.issueIsPlannedPermissionId}",
+      "resource": "permission",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "permission",
+          "id": "{runtime.issueIsPlannedPermissionId}",
+          "attributes": {
+            "resourceName": "issue.isPlanned",
+            "allowed": "none",
+            "roleId": "{developerRoleId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "attributesEqual": {
+          "resourceName": "issue.isPlanned",
+          "allowed": "none",
+          "roleId": "{developerRoleId}"
+        }
+      },
+      "source": "acl-permission"
+    },
+    {
+      "id": "acl-perm-create-field-mode-for-clear",
+      "method": "POST",
+      "path": "/api/v1/permission",
+      "resource": "permission",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "permission",
+          "attributes": {
+            "resourceName": "issue.status",
+            "allowed": "write",
+            "roleId": "{developerRoleId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "attributesEqual": {
+          "resourceName": "issue.status",
+          "allowed": "write",
+          "roleId": "{developerRoleId}"
+        }
+      },
+      "store": { "runtime.issueStatusPermissionId": "data.id" },
+      "source": "acl-permission"
+    },
+    {
+      "id": "acl-perm-patch-field-mode-clear-empty",
+      "method": "PATCH",
+      "path": "/api/v1/permission/{runtime.issueStatusPermissionId}",
+      "resource": "permission",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "permission",
+          "id": "{runtime.issueStatusPermissionId}",
+          "attributes": {
+            "resourceName": "issue.status",
+            "allowed": "",
+            "roleId": "{developerRoleId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "attributesEqual": {
+          "resourceName": "issue.status",
+          "allowed": "",
+          "roleId": "{developerRoleId}"
+        }
+      },
+      "source": "acl-permission"
+    },
+    {
+      "id": "acl-perm-catalog-excludes-structural-fks",
+      "method": "GET",
+      "path": "/api/v1/permission",
+      "resource": "permission",
+      "auth": true,
+      "query": { "limit": 1000, "page": 1 },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "resourceNamesPresent": ["issue.subject", "issue.priority"],
+        "resourceNamesAbsent": [
+          "permission.roleId",
+          "issuetype.projectId",
+          "issue.projectId",
+          "issue.typeId",
+          "issue.createdUserName"
+        ]
+      },
+      "source": "acl-permission"
     }
   ]
 }
