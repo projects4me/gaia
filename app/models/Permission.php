@@ -46,6 +46,17 @@ class Permission extends Model
     public const FIELD_ACCESS_WRITE = 'write';
 
     /**
+     * Allowed values for public field-mode permission writes (excluding unset '').
+     *
+     * @var array
+     */
+    public const FIELD_ACCESS_MODES = [
+        self::FIELD_ACCESS_NONE,
+        self::FIELD_ACCESS_READ,
+        self::FIELD_ACCESS_WRITE,
+    ];
+
+    /**
      * Effective permissions for the loaded user, keyed by resourceName.
      *
      * @var array|null

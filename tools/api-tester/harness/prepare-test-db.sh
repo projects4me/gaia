@@ -351,6 +351,20 @@ INSERT INTO users (
   'API Tester',
   'active',
   0
+),
+(
+  -- Group ACL: project+comment allowed, conversationroom.get denied
+  'api-test-user-acl-nc',
+  '$2y$10$OH8mqmGV2uLOLyoSdLGm/ejzhLXVOsOz/Ld2fi610E/qWWTqQ6e1G',
+  'api-tester-acl-noconv@example.com',
+  'API Tester ACL No Conversation',
+  0,
+  'api-test-user-0001',
+  'api-test-user-0001',
+  'API Tester',
+  'API Tester',
+  'active',
+  0
 )
 ON CONFLICT (id) DO UPDATE SET
   password = EXCLUDED.password,
@@ -465,6 +479,10 @@ INSERT INTO roles (
 (
   'api-test-role-acl-ff', 'ACL Field Restricted', 'issue field ACL matrix for api-tester', 0,
   'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
+),
+(
+  'api-test-role-acl-nc', 'ACL No Conversation', 'project+comment allowed, conversationroom.get denied', 0,
+  'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
 )
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, deleted = 0;
 
@@ -486,6 +504,10 @@ INSERT INTO user_roles (
 (
   'api-test-userrole-acl-ff', 'api-test-user-0001', 'api-test-user-0001',
   'api-test-user-acl-ff', 'api-test-role-acl-ff', 'API Tester', 'API Tester'
+),
+(
+  'api-test-userrole-acl-nc', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-acl-nc', 'api-test-role-acl-nc', 'API Tester', 'API Tester'
 )
 ON CONFLICT (id) DO UPDATE SET
   "userId" = EXCLUDED."userId",
@@ -505,7 +527,16 @@ VALUES
   ('atp-acl-pi-project-get', 'api-test-role-acl-pi', 'project.get', 1, NOW(), NOW()),
   ('atp-acl-pi-issue-get', 'api-test-role-acl-pi', 'issue.get', 0, NOW(), NOW()),
   ('atp-acl-pi-conv-get', 'api-test-role-acl-pi', 'conversationroom.get', 1, NOW(), NOW()),
-  ('atp-acl-pi-comment-get', 'api-test-role-acl-pi', 'comment.get', 1, NOW(), NOW());
+  ('atp-acl-pi-comment-get', 'api-test-role-acl-pi', 'comment.get', 1, NOW(), NOW()),
+  ('atp-acl-pi-user-get', 'api-test-role-acl-pi', 'user.get', 1, NOW(), NOW());
+
+-- No-conversation role: project+comment allowed, conversationroom.get denied (multi-group)
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-nc-project-get', 'api-test-role-acl-nc', 'project.get', 1, NOW(), NOW()),
+  ('atp-acl-nc-issue-get', 'api-test-role-acl-nc', 'issue.get', 1, NOW(), NOW()),
+  ('atp-acl-nc-comment-get', 'api-test-role-acl-nc', 'comment.get', 1, NOW(), NOW()),
+  ('atp-acl-nc-conv-get', 'api-test-role-acl-nc', 'conversationroom.get', 0, NOW(), NOW());
 
 -- Field ACL role: module access + field matrix
 -- subject = None (0/0/0)
@@ -687,6 +718,10 @@ data = {
     },
     "aclFields": {
       "email": "api-tester-acl-fields@example.com",
+      "password": "unit-testing"
+    },
+    "aclNoConversation": {
+      "email": "api-tester-acl-noconv@example.com",
       "password": "unit-testing"
     }
   },
