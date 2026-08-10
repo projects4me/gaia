@@ -1,4 +1,4 @@
-name: API Testing
+name: CI
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
 jobs:
 
   api-testing:
-    name: API testing
+    name: API + PHPUnit
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -70,13 +70,23 @@ jobs:
         PGPASSWORD: nouman
       run: |
         psql -h postgres -U nouman -d pr4m -v ON_ERROR_STOP=1 \
-          -f db/Dump20260729.sql
+          -f db/Dump20260810.sql
+
+    - name: Migrate pr4m schema from metadata
+      env:
+        DB_NAME: pr4m
+      run: php cli.php migration migrate
 
     - name: Prepare pr4m_test + fixtures
       env:
         PGHOST: postgres
         PGPASSWORD: nouman
       run: bash tools/api-tester/harness/prepare-test-db.sh
+
+    - name: Run PHPUnit (AclLockoutGuard)
+      run: |
+        mkdir -p logs/tests
+        ./vendor/bin/phpunit -c tests/phpunit.xml --filter AclLockoutGuardTest
 
     - name: Start Apache
       run: |

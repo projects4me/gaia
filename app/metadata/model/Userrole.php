@@ -73,6 +73,15 @@ $models['Userrole'] = array(
             'length' => '36',
             'null' => false,
         ),
+        'deleted' => array(
+            'name' => 'deleted',
+            'label' => 'LBL_USER_ROLES_DELETED',
+            'type' => 'bool',
+            'length' => '1',
+            'null' => false,
+            'default' => 0,
+            'acl' => false
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -105,7 +114,8 @@ $models['Userrole'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modifiedUserBehavior',
+        'softDeleteBehavior'
     ),
     'acl' => [
         'assignment' => [

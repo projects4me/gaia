@@ -6,9 +6,10 @@
 
 namespace Gaia\MVC\REST\Controllers;
 
-use Gaia\MVC\REST\Controllers\AclAdminController;
+use Gaia\Core\MVC\REST\Controllers\RestController;
 use Gaia\Libraries\Utils\Util;
 use Gaia\Libraries\Security\AclMapCatalog;
+use Gaia\Libraries\Security\AclLockoutGuard;
 use Gaia\MVC\Models\Permission;
 
 use function Gaia\Libraries\Utils\create_guid;
@@ -26,7 +27,7 @@ use function Gaia\Libraries\Utils\create_guid;
  * @category Controller
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class PermissionController extends AclAdminController
+class PermissionController extends RestController
 {
     /**
      * This components that this controller uses.
@@ -298,9 +299,55 @@ class PermissionController extends AclAdminController
                 $this->passFieldModeFlagChecks($values);
             } else {
                 $this->passBinaryFlagChecks($values);
+                $this->assertAclLockoutSafe($resourceName, $values);
             }
 
             return true;
+        }
+    }
+
+    /**
+     * Reject a permission write that would leave no role able to administer
+     * permission, role, userrole, and user-write resources (see
+     * `AclLockoutGuard`).
+     *
+     * Only relevant for module-action writes on lockout-covered resource names
+     * that set an explicit deny; granting access, and writes to any other
+     * module, are always safe.
+     *
+     * @method assertAclLockoutSafe
+     * @param  string $resourceName
+     * @param  array  $values
+     * @throws \Gaia\Exception\Permission
+     * @return void
+     */
+    private function assertAclLockoutSafe($resourceName, $values)
+    {
+        if (!in_array($resourceName, AclLockoutGuard::getLockoutResources(), true)) {
+            return;
+        }
+
+        $roleId = isset($values['roleId']) ? $values['roleId'] : null;
+        if (!$roleId) {
+            return;
+        }
+
+        $proposedValue = isset($values['allowed']) ? $values['allowed'] : '';
+        if (AclLockoutGuard::normalizeFlag($proposedValue) === 1) {
+            return;
+        }
+
+        if (!AclLockoutGuard::systemRetainsAdminPath([
+            'permissionOverrides' => [$roleId => [$resourceName => $proposedValue]],
+        ])) {
+            throw new \Gaia\Exception\Permission(
+                "This change would leave no role able to manage permissions, roles, role assignments, and users.",
+                null,
+                null,
+                [
+                    'suggestion' => 'Keep at least one role with full permission, role, userrole, and user write access assigned to an active user before making this change.'
+                ]
+            );
         }
     }
 

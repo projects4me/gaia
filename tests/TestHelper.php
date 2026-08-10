@@ -1,21 +1,22 @@
 <?php
+
 /**
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
 use Phalcon\DI;
 use Phalcon\DI\FactoryDefault;
-use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Logger;
 use Phalcon\Logger\Adapter\Stream as StreamAdapter;
 use Gaia\Libraries\Meta\Manager as metaManager;
-use Phalcon\Mvc\Model\Manager as ModelsManager;
+use Gaia\Db\Factory\ConnectionFactory;
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-define('APP_PATH', realpath('../'));
-if (!defined('DS')) { define('DS', DIRECTORY_SEPARATOR);
+define('APP_PATH', realpath(__DIR__ . '/..'));
+if (!defined('DS')) {
+    define('DS', DIRECTORY_SEPARATOR);
 }
 
 require APP_PATH . '/autoload.php';
@@ -25,7 +26,7 @@ require APP_PATH . '/tests/autoload.php';
 require APP_PATH . '/tests/UnitTestCase.php';
 
 global $logger;
-$loggerAdapter = new StreamAdapter(APP_PATH.'/logs/application.log');
+$loggerAdapter = new StreamAdapter(APP_PATH . '/logs/application.log');
 $logger = new Logger(
     'applicationlog',
     [
@@ -67,24 +68,26 @@ $di->set(
 
 // Add any needed services to the DI here
 $di->set(
-    'db', function () {
-        // global $logger;
-        $connection = new DbAdapter($GLOBALS['settings']['database']->toArray());
+    'db',
+    function () {
+        $config = $GLOBALS['settings']['database']->toArray();
+        $connection = ConnectionFactory::create($config);
         $eventsManager = new Phalcon\Events\Manager();
         $dbLoggerAdapter = new StreamAdapter(APP_PATH . "/logs/tests/db.log");
         $dblogger = new Logger(
             'dblog',
             [
-            'local'   => $dbLoggerAdapter,
+                'local'   => $dbLoggerAdapter,
             ]
         );
         $dblogger = $dblogger->setLogLevel(Logger::DEBUG);
         //Listen all the database events
         $eventsManager->attach(
-            'db', function ($event, $connection) use ($dblogger) {
+            'db',
+            function ($event, $connection) use ($dblogger) {
                 if ($event->getType() == 'beforeQuery') {
                     // $GLOBALS['timer']->diff();
-            
+
                     $sqlVariables = $connection->getSQLVariables();
                     if (isset($sqlVariables)) {
                         $dblogger->debug(print_r($connection->getSQLBindTypes(), 1) . ' ' . join(', ', $sqlVariables));

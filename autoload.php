@@ -20,34 +20,34 @@
  * * Custom Routes
  */
 
-require APP_PATH.'/vendor/autoload.php';
+require APP_PATH . '/vendor/autoload.php';
 
-require_once APP_PATH.'/core/libs/file/handler.php';
+require_once APP_PATH . '/core/libs/file/handler.php';
 
-require_once APP_PATH.'/core/libs/meta/manager.php';
-require_once APP_PATH.'/core/libs/meta/migration.php';
-require_once(APP_PATH.'/core/libs/meta/migration/driver.php');
+require_once APP_PATH . '/core/libs/meta/manager.php';
+require_once APP_PATH . '/core/libs/meta/migration.php';
+require_once(APP_PATH . '/core/libs/meta/migration/driver.php');
 
-require_once APP_PATH.'/core/libs/config.php';
+require_once APP_PATH . '/core/libs/config.php';
 
-require_once APP_PATH.'/core/libs/utils/executiontime.php';
-require_once(APP_PATH.'/core/libs/utils/utility_functions.php');
-require_once APP_PATH.'/core/libs/utils/Util.php';
+require_once APP_PATH . '/core/libs/utils/executiontime.php';
+require_once(APP_PATH . '/core/libs/utils/utility_functions.php');
+require_once APP_PATH . '/core/libs/utils/Util.php';
 
-require_once(APP_PATH.'/core/libs/security/acl.php');
+require_once(APP_PATH . '/core/libs/security/acl.php');
+require_once(APP_PATH . '/core/libs/security/aclLockoutGuard.php');
 
-require_once(APP_PATH.'/core/libs/oauth2.0/storage/pdo.php');
+require_once(APP_PATH . '/core/libs/oauth2.0/storage/pdo.php');
 
 $request = new \Phalcon\Http\Request();
-$appVersions = include(APP_PATH.'/version.php');
+$appVersions = include(APP_PATH . '/version.php');
 $apiVersion = $appVersions['apiVersion'];
 // if api version is available in the request then load it
 /**
  * @todo add more validation
  * @todo move over to config
  */
-if (preg_match('@api/?(v[^/]+)@',$request->getURI(),$matches))
-{
+if (preg_match('@api/?(v[^/]+)@', $request->getURI(), $matches)) {
     $apiVersion = $matches[1];
 }
 
@@ -56,37 +56,37 @@ $loader = new \Phalcon\Loader();
 
 $loader->registerNamespaces(
     [
-        "Gaia\\MVC\\REST\\Controllers" => APP_PATH.'/app/api/'.$apiVersion.'/controllers/',
-        "Gaia\\MVC\\REST\\Controllers\\Components" => APP_PATH.'/app/api/'.$apiVersion.'/controllers/components/',
-        "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Config" => APP_PATH.'/app/api/'.$apiVersion.'/controllers/components/notifications/config/',
-        "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Modules" => APP_PATH.'/app/api/'.$apiVersion.'/controllers/components/notifications/modules/',
-        "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Services" => APP_PATH.'/app/api/'.$apiVersion.'/controllers/components/notifications/services/',
-        "Gaia\\MVC\\Models\\Behaviors" => APP_PATH.'/core/mvc/models/behaviors/',
-        "Gaia\\MVC\\Models" => APP_PATH. '/app/models/',
-        "Gaia\\Db\\Factory" => APP_PATH. '/core/mvc/db/factory/',
-        "Gaia\\Db\\Dialect" => APP_PATH. '/core/mvc/db/dialect/',
-        "Gaia\\Db\\Migration" => APP_PATH. '/core/mvc/db/migration/',
-        "Gaia\\Core\\MVC\\Models" => APP_PATH. '/core/mvc/models/',
-        "Gaia\\Core\\MVC\\Models\\Relationships" => APP_PATH. '/core/mvc/models/relationships',
-        "Gaia\\Core\\MVC\\REST\\Controllers" => APP_PATH. '/core/mvc/controllers/',
-        "Gaia\\Core\\MVC\\Models\\Relationships\\Factory" => APP_PATH. '/core/mvc/models/relationships/factory',
-        "Gaia\\Core\\MVC\\Models\\Query" => APP_PATH. '/core/mvc/models/query/',
-        "Gaia\\Core\\MVC\\Models\\Query" => APP_PATH. '/core/mvc/models/query/',
-        "Gaia\\Libraries\\Authorization" => APP_PATH. '/core/libs/authorization/',
-        "Gaia\\Exception" => APP_PATH. '/core/exceptions/',
-        "Gaia\\Events\\Notification" => APP_PATH. '/core/events/notifications/',
-        "Gaia\\Events" => APP_PATH. '/core/events/',
-        "Gaia\\Templates\\Email" => APP_PATH. '/app/templates/email/',
-        "Gaia\\Workflows\\Process" => APP_PATH. '/app/workflows/process/',
-        "Gaia\\Workflows\\Actions" => APP_PATH. '/core/workflows/actions/',
-        "Gaia\\Libraries\\Utils" => APP_PATH. '/core/libs/utils/',
-        "Gaia\\Services" => APP_PATH. '/core/services/',
+        "Gaia\\MVC\\REST\\Controllers" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/',
+        "Gaia\\MVC\\REST\\Controllers\\Components" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/components/',
+        "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Config" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/components/notifications/config/',
+        "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Modules" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/components/notifications/modules/',
+        "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Services" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/components/notifications/services/',
+        "Gaia\\MVC\\Models\\Behaviors" => APP_PATH . '/core/mvc/models/behaviors/',
+        "Gaia\\MVC\\Models" => APP_PATH . '/app/models/',
+        "Gaia\\Db\\Factory" => APP_PATH . '/core/mvc/db/factory/',
+        "Gaia\\Db\\Dialect" => APP_PATH . '/core/mvc/db/dialect/',
+        "Gaia\\Db\\Migration" => APP_PATH . '/core/mvc/db/migration/',
+        "Gaia\\Core\\MVC\\Models" => APP_PATH . '/core/mvc/models/',
+        "Gaia\\Core\\MVC\\Models\\Relationships" => APP_PATH . '/core/mvc/models/relationships',
+        "Gaia\\Core\\MVC\\REST\\Controllers" => APP_PATH . '/core/mvc/controllers/',
+        "Gaia\\Core\\MVC\\Models\\Relationships\\Factory" => APP_PATH . '/core/mvc/models/relationships/factory',
+        "Gaia\\Core\\MVC\\Models\\Query" => APP_PATH . '/core/mvc/models/query/',
+        "Gaia\\Core\\MVC\\Models\\Query" => APP_PATH . '/core/mvc/models/query/',
+        "Gaia\\Libraries\\Authorization" => APP_PATH . '/core/libs/authorization/',
+        "Gaia\\Exception" => APP_PATH . '/core/exceptions/',
+        "Gaia\\Events\\Notification" => APP_PATH . '/core/events/notifications/',
+        "Gaia\\Events" => APP_PATH . '/core/events/',
+        "Gaia\\Templates\\Email" => APP_PATH . '/app/templates/email/',
+        "Gaia\\Workflows\\Process" => APP_PATH . '/app/workflows/process/',
+        "Gaia\\Workflows\\Actions" => APP_PATH . '/core/workflows/actions/',
+        "Gaia\\Libraries\\Utils" => APP_PATH . '/core/libs/utils/',
+        "Gaia\\Services" => APP_PATH . '/core/services/',
     ]
 );
 
 $loader->registerClasses(
     [
-        'Gaia\\MVC\\Router' => APP_PATH.'/core/mvc/router.php',
+        'Gaia\\MVC\\Router' => APP_PATH . '/core/mvc/router.php',
     ]
 );
 

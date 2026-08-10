@@ -150,6 +150,7 @@ BEGIN
   FROM user_roles ur
   JOIN permissions p ON p."roleId" = ur."roleId"
   WHERE ur."userId" = p_user_id
+    AND ur.deleted = false
     AND p."resourceName" = resource_name;
 
   RETURN lvl;
@@ -167,6 +168,7 @@ AS $function$
   JOIN user_roles ur ON ur."userId" = m."userId"
   JOIN permissions p ON p."roleId" = ur."roleId"
   WHERE m."userId" = 'api-test-user-0001'
+    AND ur.deleted = false
     AND p."resourceName" = 'issue.get'
   GROUP BY m."projectId";
 $function$;
@@ -238,25 +240,18 @@ echo "==> Seeding deterministic fixture entities modeled on pr4m patterns"
 # - accountStatus = 'active' (lowercase)
 # - membership.projectId for project membership
 # - user_roles for application-wide role assignment
-# - Admin roleId = '1' for seeded user_roles
-# - Global role for system-level user_roles (role from pr4m Global roles)
+# - Admin roleId = '1' for seeded user_roles (Global role retired — D-050)
 # - system issue types/statuses from copied catalog
 # - project name STARTS A/P for query DSL coverage
 psql_db "$TEST_DB" -v ON_ERROR_STOP=1 <<'SQL'
 BEGIN;
 
--- Resolve Global role and system status/type from copied catalogs
+-- Resolve system status/type from copied catalogs
 DO $$
 DECLARE
-  v_global_role text;
   v_bug_type text;
   v_new_status text;
 BEGIN
-  SELECT id INTO v_global_role FROM roles WHERE name = 'Global' AND deleted = 0 ORDER BY id LIMIT 1;
-  IF v_global_role IS NULL THEN
-    v_global_role := '1';
-  END IF;
-
   SELECT id INTO v_bug_type FROM issue_types WHERE system = 1 AND name = 'Bug' AND deleted = 0 LIMIT 1;
   IF v_bug_type IS NULL THEN
     SELECT id INTO v_bug_type FROM issue_types WHERE system = 1 AND deleted = 0 ORDER BY id LIMIT 1;
@@ -268,11 +263,10 @@ BEGIN
   END IF;
 
   CREATE TEMP TABLE seed_ctx (
-    global_role text,
     bug_type text,
     new_status text
   ) ON COMMIT DROP;
-  INSERT INTO seed_ctx VALUES (v_global_role, v_bug_type, v_new_status);
+  INSERT INTO seed_ctx VALUES (v_bug_type, v_new_status);
 END $$;
 
 -- Remove leftover runtime tags from previous api-tester runs (unique on tag).
@@ -415,7 +409,7 @@ ON CONFLICT (id) DO UPDATE SET
   "userId" = EXCLUDED."userId",
   "projectId" = EXCLUDED."projectId";
 
--- Application-wide role assignments
+-- Application-wide role assignment (Admin only; Global retired)
 INSERT INTO user_roles (
   id, "createdUser", "modifiedUser", "userId", "roleId",
   "createdUserName", "modifiedUserName"
@@ -423,42 +417,36 @@ INSERT INTO user_roles (
 (
   'api-test-userrole-1', 'api-test-user-0001', 'api-test-user-0001',
   'api-test-user-0001', '1', 'API Tester', 'API Tester'
-),
-(
-  'api-test-userrole-g', 'api-test-user-0001', 'api-test-user-0001',
-  'api-test-user-0001', (SELECT global_role FROM seed_ctx), 'API Tester', 'API Tester'
 )
 ON CONFLICT (id) DO UPDATE SET
   "userId" = EXCLUDED."userId",
   "roleId" = EXCLUDED."roleId";
 
--- Action-based ACL grants for Admin + Global roles used by the test user.
+-- Drop legacy Global assignment from older prepare runs.
+DELETE FROM user_roles WHERE id = 'api-test-userrole-g';
+
+-- Action-based ACL grants for the Admin role used by the test user.
 -- Covers default RestController actions for modules exercised by api-tester.
 DELETE FROM permissions
 WHERE id LIKE 'atp-%'
-   OR "roleId" IN ('1', (SELECT global_role FROM seed_ctx));
+   OR "roleId" = '1';
 
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
 SELECT
   -- id is varchar(36): "atp-" (4) + md5 hex (32)
-  'atp-' || md5(r.role_id || ':' || m.module || '.' || a.action),
-  r.role_id,
+  'atp-' || md5('1:' || m.module || '.' || a.action),
+  '1',
   m.module || '.' || a.action,
   1,
   NOW(),
   NOW()
 FROM (
-  SELECT '1'::text AS role_id
-  UNION
-  SELECT global_role FROM seed_ctx
-) r
-CROSS JOIN (
   VALUES
     ('activity'), ('comment'), ('conversationroom'), ('issue'), ('issuetype'),
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting')
+    ('systemsetting'), ('userrole')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
