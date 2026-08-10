@@ -182,10 +182,40 @@ class Postgres
         }
 
         if (isset($schema['default']) && $fieldOptions['type'] === Column::TYPE_BOOLEAN) {
-            $fieldOptions['default'] = $schema['default'] ? 'true' : 'false';
+            $fieldOptions['default'] = self::booleanDefaultLiteral($schema['default']);
         }
 
         return $fieldOptions;
+    }
+
+    /**
+     * Normalize a metadata / Phalcon default into a Postgres boolean literal.
+     *
+     * PHP treats the non-empty string "false" as truthy, so string defaults from
+     * an earlier pass must not use bare `(bool)` / ternary coercion.
+     *
+     * @param mixed $value
+     * @return string
+     */
+    private static function booleanDefaultLiteral($value)
+    {
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+        if (is_int($value) || is_float($value)) {
+            return ((int) $value) > 0 ? 'true' : 'false';
+        }
+        if (is_string($value)) {
+            $normalized = strtolower(trim($value));
+            if (in_array($normalized, array('1', 'true', 't', 'yes', 'y', 'on'), true)) {
+                return 'true';
+            }
+            if (in_array($normalized, array('0', 'false', 'f', 'no', 'n', 'off', ''), true)) {
+                return 'false';
+            }
+        }
+
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN) ? 'true' : 'false';
     }
 
     /**
@@ -238,7 +268,7 @@ class Postgres
         if ($column->hasDefault()) {
             $default = $column->getDefault();
             if ($column->getType() === Column::TYPE_BOOLEAN) {
-                $definition['default'] = $default ? 'true' : 'false';
+                $definition['default'] = self::booleanDefaultLiteral($default);
             } else {
                 $definition['default'] = $default;
             }

@@ -301,11 +301,14 @@ Objectives:
 
 Objectives:
 
-- Secure permission, role, and ACL administration endpoints.
-- Remove or repair temporary bypasses in ACL administration controllers.
-- Define who may grant permissions and whether grantors may grant access they do not possess.
-- Expose resolution mode through application config.
-- Add audit records for permission and role changes.
+- [x] Secure permission, role, and ACL administration endpoints — authorized like any other module via `permission.*`/`role.*`/`userrole.*` (D-054).
+- [x] Remove temporary bypasses in ACL administration controllers — `AclAdminController` (hardcoded `return true;`) removed; `PermissionController` extends `RestController` directly.
+- [x] Retire the "Global" default role and its auto-assignment on user create (D-050).
+- [x] Bootstrap a full-catalog "Admin" role without an `Acl` bypass (D-051; seeded via baseline/ops — CLI ensure task deferred).
+- [x] Prevent ACL admin lockout: capability-based invariant (no `isSystem` flag) enforced on role delete, permission demotion, last usable-membership removal, and last Active admin deactivate/delete (D-052, `AclLockoutGuard`; modules `permission`/`role`/`userrole` plus `user.{create,update,delete}`; usable = Active `accountStatus`).
+- [ ] Define who may grant permissions and whether grantors may grant access they do not possess.
+- [ ] Expose resolution mode through application config.
+- [ ] Add audit records for permission and role changes.
 
 ### Phase 6 — Observability and failure handling
 
@@ -390,3 +393,5 @@ RBAC implementation is complete when the generated test matrix passes and existi
 |------|--------|
 | 2026-07-21 | Initial RBAC architecture and implementation plan |
 | 2026-07-27 | Updated for action-based RBAC: modern `$aclMap`, `AclMapCatalog`, `resourceName`/`allowed` permissions, role-only grants, removed `$aclMapReplace` |
+| 2026-08-10 | D-052 usable-member lockout: Active `accountStatus` required; user deactivate/delete guarded in `UserController` |
+| 2026-08-09 | Phase 5: retired Global default role, bootstrapped full-catalog Admin role, removed `AclAdminController` bypass, added capability-based `AclLockoutGuard` invariant (see decisions D-050–D-054) |
