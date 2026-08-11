@@ -9,7 +9,7 @@ Behavioral policy belongs in [decisions.md](./decisions.md). This document cover
 | Status | In progress |
 | Scope | Gaia backend RBAC |
 | Policy source | `docs/architecture/rbac/decisions.md` |
-| Primary code | `core/libs/security/acl.php`, `core/libs/security/aclMapCatalog.php`, `app/models/Permission.php`, `core/mvc/controllers/RestController.php`, `app/api/v1/controllers/PermissionController.php` |
+| Primary code | `core/libs/security/Acl.php`, `core/libs/security/AclMapCatalog.php`, `app/models/Permission.php`, `core/mvc/controllers/RestController.php`, `app/api/v1/controllers/PermissionController.php` |
 
 ---
 
@@ -279,7 +279,7 @@ Objectives:
 Objectives:
 
 - [x] Define permissive/restrictive combination rules for multiple role grants.
-- [ ] Decide default-allow vs default-deny when no permission row exists for an action.
+- [x] Catalog defaults materialize at role create from `resolutionMode` (D-011); missing rows still follow live mode (catalog growth / unseeded roles).
 - [ ] Define precedence between project and system memberships, if project scope returns.
 - [ ] Stop deriving security scope from loosely parsed request query strings where a trustworthy resource context can be resolved.
 
@@ -304,10 +304,10 @@ Objectives:
 - [x] Secure permission, role, and ACL administration endpoints — authorized like any other module via `permission.*`/`role.*`/`userrole.*` (D-054).
 - [x] Remove temporary bypasses in ACL administration controllers — `AclAdminController` (hardcoded `return true;`) removed; `PermissionController` extends `RestController` directly.
 - [x] Retire the "Global" default role and its auto-assignment on user create (D-050).
-- [x] Bootstrap a full-catalog "Admin" role without an `Acl` bypass (D-051; seeded via baseline/ops — CLI ensure task deferred).
+- [x] Bootstrap a full-catalog "Admin" role without an `Acl` bypass (D-051; privilege is capability in stored grants — create seed follows `resolutionMode` for every role name; existing roles remain ops-managed).
 - [x] Prevent ACL admin lockout: capability-based invariant (no `isSystem` flag) enforced on role delete, permission demotion, last usable-membership removal, and last Active admin deactivate/delete (D-052, `AclLockoutGuard`; modules `permission`/`role`/`userrole` plus `user.{create,update,delete}`; usable = Active `accountStatus`).
 - [ ] Define who may grant permissions and whether grantors may grant access they do not possess.
-- [ ] Expose resolution mode through application config.
+- [x] Expose resolution mode through application config (`system.acl.resolutionMode`; server-side only).
 - [ ] Add audit records for permission and role changes.
 
 ### Phase 6 — Observability and failure handling

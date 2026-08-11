@@ -733,7 +733,7 @@
         "shape": "json",
         "attributesEqual": {
           "resourceName": "issue.status",
-          "allowed": "",
+          "allowed": "none",
           "roleId": "{developerRoleId}"
         }
       },
@@ -757,6 +757,54 @@
           "issue.typeId",
           "issue.createdUserName"
         ]
+      },
+      "source": "acl-permission"
+    },
+    {
+      "id": "acl-role-create-seeds-catalog",
+      "method": "POST",
+      "path": "/api/v1/role",
+      "resource": "role",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "role",
+          "attributes": {
+            "name": "API Test Seeded Role",
+            "description": "Materialized catalog at create"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "store": { "runtime.seededRoleId": "data.id" },
+      "source": "acl-permission"
+    },
+    {
+      "id": "acl-role-seeded-permission-list-explicit",
+      "method": "GET",
+      "path": "/api/v1/permission",
+      "resource": "permission",
+      "auth": true,
+      "query": { "roleId": "{runtime.seededRoleId}", "limit": 1000, "page": 1 },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "resourceNamesPresent": ["issue.get", "issue.subject", "permission.get"]
+      },
+      "source": "acl-permission"
+    },
+    {
+      "id": "acl-role-seeded-cleanup-delete",
+      "method": "DELETE",
+      "path": "/api/v1/role/{runtime.seededRoleId}",
+      "resource": "role",
+      "auth": true,
+      "expects": {
+        "status": [200, 204],
+        "shape": "json"
       },
       "source": "acl-permission"
     }

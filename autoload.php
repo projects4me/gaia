@@ -34,9 +34,6 @@ require_once APP_PATH . '/core/libs/utils/executiontime.php';
 require_once(APP_PATH . '/core/libs/utils/utility_functions.php');
 require_once APP_PATH . '/core/libs/utils/Util.php';
 
-require_once(APP_PATH . '/core/libs/security/acl.php');
-require_once(APP_PATH . '/core/libs/security/aclLockoutGuard.php');
-
 require_once(APP_PATH . '/core/libs/oauth2.0/storage/pdo.php');
 
 $request = new \Phalcon\Http\Request();
@@ -73,6 +70,7 @@ $loader->registerNamespaces(
         "Gaia\\Core\\MVC\\Models\\Query" => APP_PATH . '/core/mvc/models/query/',
         "Gaia\\Core\\MVC\\Models\\Query" => APP_PATH . '/core/mvc/models/query/',
         "Gaia\\Libraries\\Authorization" => APP_PATH . '/core/libs/authorization/',
+        "Gaia\\Libraries\\Security" => APP_PATH . '/core/libs/security/',
         "Gaia\\Exception" => APP_PATH . '/core/exceptions/',
         "Gaia\\Events\\Notification" => APP_PATH . '/core/events/notifications/',
         "Gaia\\Events" => APP_PATH . '/core/events/',

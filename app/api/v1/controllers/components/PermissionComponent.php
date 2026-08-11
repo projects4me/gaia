@@ -34,6 +34,9 @@ class PermissionComponent
 
         $model->resourceName = $modelAttributes['resourceName'] ?? $model->resourceName;
         $model->allowed = isset($modelAttributes['allowed']) ? (string) $modelAttributes['allowed'] : $model->allowed;
+        if ($model->allowed === '') {
+            $model->allowed = '0';
+        }
 
         // Preserve server-generated id when the client omits one (idempotent test creates).
         if (!empty($requestValues['data']['id'])) {

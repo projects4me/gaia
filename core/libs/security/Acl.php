@@ -44,10 +44,12 @@ class Acl
     protected $di;
 
     /**
-     * Strategy used to combine permission flags from multiple applicable roles.
+     * Strategy used to combine permission flags from multiple applicable roles,
+     * resolve missing rows, and seed catalog defaults at role create.
      *
-     * Class-level default until exposed through application configuration.
-     * Selectable through the constructor or setPermissionResolutionMode().
+     * Default comes from `system.acl.resolutionMode` when constructed via
+     * RestController. Selectable through the constructor or
+     * setPermissionResolutionMode().
      *
      * @var string
      */
@@ -64,24 +66,56 @@ class Acl
      * The constructor of the Acl class.
      * 
      * @param \Phalcon\Di\FactoryDefault $di
-     * @param string $resolutionMode
+     * @param string|null $resolutionMode Null resolves from system.acl.resolutionMode.
      */
     public function __construct(
         \Phalcon\Di\FactoryDefault $di,
-        $resolutionMode = self::RESOLUTION_PERMISSIVE
+        $resolutionMode = null
     ) {
         $this->di = $di;
-        $this->setPermissionResolutionMode($resolutionMode);
+        $this->setPermissionResolutionMode(
+            $resolutionMode === null
+                ? self::resolveConfiguredResolutionMode()
+                : $resolutionMode
+        );
     }
 
     /**
-     * Select how flags from multiple roles are combined.
+     * Read resolution mode from `system.acl.resolutionMode` (default permissive).
+     *
+     * @return string
+     */
+    public static function resolveConfiguredResolutionMode()
+    {
+        global $settings;
+
+        $mode = self::RESOLUTION_PERMISSIVE;
+        if (isset($settings['system']['acl']['resolutionMode'])) {
+            $mode = (string) $settings['system']['acl']['resolutionMode'];
+        }
+
+        return self::normalizeResolutionMode($mode);
+    }
+
+    /**
+     * Select how flags from multiple roles are combined / missing rows resolved.
      *
      * @param  string $resolutionMode
      * @return $this
      * @throws \InvalidArgumentException
      */
     public function setPermissionResolutionMode($resolutionMode)
+    {
+        self::$resolutionMode = self::normalizeResolutionMode($resolutionMode);
+        return $this;
+    }
+
+    /**
+     * @param  string $resolutionMode
+     * @return string
+     * @throws \InvalidArgumentException
+     */
+    public static function normalizeResolutionMode($resolutionMode)
     {
         $supportedModes = [
             self::RESOLUTION_PERMISSIVE,
@@ -94,8 +128,7 @@ class Acl
             );
         }
 
-        self::$resolutionMode = $resolutionMode;
-        return $this;
+        return $resolutionMode;
     }
 
     /**

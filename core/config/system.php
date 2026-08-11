@@ -1,7 +1,5 @@
 <?php
 
-require_once APP_PATH . '/core/libs/security/aclMapCatalog.php';
-
 // Get groups for each model.
 $models = $this->di->get('fileHandler')->readFile(APP_PATH . '/core/config/models.php');
 $modelGroups = [];
@@ -18,16 +16,17 @@ foreach ($models['models'] as $modelName) {
 // This contains the system settings.
 $config['system'] = [
     'acl' => [
-            'apiOptions' => [
-                'allow' => '1',
-                'none' => '0'
-            ],
-            'modelGroups' => $modelGroups,
-            'moduleActions' => \Gaia\Libraries\Security\AclMapCatalog::buildModuleActions(),
-            'moduleFields' => \Gaia\Libraries\Security\AclMapCatalog::buildModuleFields(
-                $this->di->get('metaManager')
-            ),
-        ]
-    ];
+        'apiOptions' => [
+            'allow' => '1',
+            'none' => '0'
+        ],
+        'resolutionMode' => 'permissive',
+        'modelGroups' => $modelGroups,
+        'moduleActions' => \Gaia\Libraries\Security\AclMapCatalog::buildModuleActions(),
+        'moduleFields' => \Gaia\Libraries\Security\AclMapCatalog::buildModuleFields(
+            $this->di->get('metaManager')
+        ),
+    ]
+];
 
 return $config;
