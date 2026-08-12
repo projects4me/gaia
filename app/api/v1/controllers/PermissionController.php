@@ -17,10 +17,10 @@ use function Gaia\Libraries\Utils\create_guid;
 /**
  * Permissions Controller
  *
- * Module actions use binary allowed (0/1/'').
+ * Module actions use binary allowed (0/1; '' coerces to 0).
  * Field ACL is administered as one mode resource per field
  * (`issue.subject` + allowed none|read|write|''); storage expands to
- * get/create/update triples internally.
+ * get/create/update triples internally. Empty field mode coerces to none.
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Foundation
@@ -235,6 +235,10 @@ class PermissionController extends RestController
             if ($this->isFieldModeResourceName($attributes['resourceName'])) {
                 return $this->saveFieldModePermission($attributes);
             }
+            if ((string) ($attributes['allowed'] ?? '') === '') {
+                $attributes['allowed'] = '0';
+                return $this->saveBinaryPermission($attributes);
+            }
             return parent::postAction();
         } else {
             throw new \Gaia\Exception\Exception("Permission cannot be created due to some reasons");
@@ -261,11 +265,50 @@ class PermissionController extends RestController
             if ($this->isFieldModeResourceName($attributes['resourceName'])) {
                 return $this->saveFieldModePermission($attributes);
             }
+            if ((string) ($attributes['allowed'] ?? '') === '') {
+                $attributes['allowed'] = '0';
+                return $this->saveBinaryPermission($attributes);
+            }
             return parent::patchAction();
         } else {
             throw new \Gaia\Exception\Permission("Permission cannot be updated due to some reasons");
         }
         $logger->debug('-Gaia.core.controllers.permission->patchAction');
+    }
+
+    /**
+     * Replace-delete: set explicit deny (module action) or field mode none.
+     * Never remove the row so live resolution mode cannot reinterpret the gap.
+     *
+     * @method deleteAction
+     * @throws \Gaia\Exception\Permission
+     * @return \Phalcon\Http\Response
+     */
+    public function deleteAction()
+    {
+        $model = Permission::findFirst('id = "' . $this->id . '"');
+        if ($model === false) {
+            return parent::deleteAction();
+        }
+
+        $resourceName = (string) $model->resourceName;
+        $roleId = (string) $model->roleId;
+
+        if (AclMapCatalog::isFieldActionResource($resourceName)) {
+            $parts = explode('.', $resourceName);
+            $modeResource = $parts[0] . '.' . $parts[1];
+            return $this->saveFieldModePermission([
+                'resourceName' => $modeResource,
+                'roleId' => $roleId,
+                'allowed' => Permission::FIELD_ACCESS_NONE,
+            ]);
+        }
+
+        return $this->saveBinaryPermission([
+            'resourceName' => $resourceName,
+            'roleId' => $roleId,
+            'allowed' => '0',
+        ]);
     }
 
     /**
@@ -368,7 +411,7 @@ class PermissionController extends RestController
                 null,
                 null,
                 [
-                    'suggestion' => 'You can only set 0 (none) or 1 (allow)'
+                    'suggestion' => 'You can only set 0 (deny) or 1 (allow); empty becomes 0'
                 ]
             );
         }
@@ -392,7 +435,7 @@ class PermissionController extends RestController
                 null,
                 null,
                 [
-                    'suggestion' => 'You can only set none, read, write, or leave unset'
+                    'suggestion' => 'You can only set none, read, or write; empty becomes none'
                 ]
             );
         }
@@ -401,7 +444,52 @@ class PermissionController extends RestController
     }
 
     /**
-     * Expand a field-mode write into get/create/update rows (or clear them when unset).
+     * Upsert a module-action permission (explicit 0/1) and return a singular response.
+     *
+     * @param  array $attributes
+     * @return \Phalcon\Http\Response
+     */
+    private function saveBinaryPermission(array $attributes)
+    {
+        $resourceName = $attributes['resourceName'];
+        $roleId = isset($attributes['roleId']) ? $attributes['roleId'] : '';
+        $allowed = isset($attributes['allowed']) ? (string) $attributes['allowed'] : '0';
+        if ($allowed === '') {
+            $allowed = '0';
+        }
+
+        if (!$roleId) {
+            throw new \Gaia\Exception\Exception("Please specify roleId");
+        }
+
+        $this->assertAclLockoutSafe($resourceName, [
+            'roleId' => $roleId,
+            'allowed' => $allowed,
+        ]);
+
+        $rowId = $this->upsertPermissionRow($roleId, $resourceName, $allowed);
+
+        $this->response->setStatusCode(200, 'OK');
+        $this->finalData = [
+            'data' => [
+                'type' => 'Permission',
+                'id' => $rowId,
+                'attributes' => [
+                    'resourceName' => $resourceName,
+                    'allowed' => $allowed,
+                    'roleId' => $roleId,
+                ],
+            ],
+            'meta' => [
+                'count' => 1,
+            ],
+        ];
+        return $this->returnResponse($this->finalData);
+    }
+
+    /**
+     * Expand a field-mode write into get/create/update rows.
+     * Empty allowed coerces to none (explicit deny triples) — rows are never deleted.
      *
      * @param  array $attributes
      * @return \Phalcon\Http\Response
@@ -421,38 +509,32 @@ class PermissionController extends RestController
         $field = $parts[1];
 
         if ($mode === '') {
-            $this->deleteFieldActionRows($roleId, $moduleName, $field);
-            $synthetic = $this->buildSyntheticFieldPermission(
-                create_guid(),
-                $resourceName,
-                '',
-                $roleId
-            );
-        } else {
-            $flags = Permission::expandFieldAccessMode($mode);
-            $primaryId = null;
-            foreach (AclMapCatalog::FIELD_ACTIONS as $action) {
-                $actionResource = AclMapCatalog::buildFieldActionResourceName(
-                    $moduleName,
-                    $field,
-                    $action
-                );
-                $rowId = $this->upsertPermissionRow(
-                    $roleId,
-                    $actionResource,
-                    $flags[$action]
-                );
-                if ($action === 'get') {
-                    $primaryId = $rowId;
-                }
-            }
-            $synthetic = $this->buildSyntheticFieldPermission(
-                $primaryId ? $primaryId : create_guid(),
-                $resourceName,
-                $mode,
-                $roleId
-            );
+            $mode = Permission::FIELD_ACCESS_NONE;
         }
+
+        $flags = Permission::expandFieldAccessMode($mode);
+        $primaryId = null;
+        foreach (AclMapCatalog::FIELD_ACTIONS as $action) {
+            $actionResource = AclMapCatalog::buildFieldActionResourceName(
+                $moduleName,
+                $field,
+                $action
+            );
+            $rowId = $this->upsertPermissionRow(
+                $roleId,
+                $actionResource,
+                $flags[$action]
+            );
+            if ($action === 'get') {
+                $primaryId = $rowId;
+            }
+        }
+        $synthetic = $this->buildSyntheticFieldPermission(
+            $primaryId ? $primaryId : create_guid(),
+            $resourceName,
+            $mode,
+            $roleId
+        );
 
         $this->response->setStatusCode(200, 'OK');
         // Singular JSON:API resource (same shape as RestController create/update).
@@ -502,35 +584,6 @@ class PermissionController extends RestController
         }
 
         return $model->id;
-    }
-
-    /**
-     * Delete all field-action triples for a role + field.
-     *
-     * @param  string $roleId
-     * @param  string $moduleName
-     * @param  string $field
-     * @return void
-     */
-    private function deleteFieldActionRows($roleId, $moduleName, $field)
-    {
-        foreach (AclMapCatalog::FIELD_ACTIONS as $action) {
-            $actionResource = AclMapCatalog::buildFieldActionResourceName(
-                $moduleName,
-                $field,
-                $action
-            );
-            $model = Permission::findFirst([
-                'conditions' => 'roleId = :roleId: AND resourceName = :resourceName:',
-                'bind' => [
-                    'roleId' => $roleId,
-                    'resourceName' => $actionResource,
-                ],
-            ]);
-            if ($model) {
-                $model->delete();
-            }
-        }
     }
 
     /**

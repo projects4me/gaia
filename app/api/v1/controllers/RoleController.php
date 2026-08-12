@@ -20,6 +20,13 @@ use Gaia\Libraries\Security\AclLockoutGuard;
 class RoleController extends RestController
 {
     /**
+     * Seed full ACL catalog on role create (RoleComponent::afterCreate).
+     *
+     * @var array
+     */
+    public $uses = ['Role'];
+
+    /**
      * Project authorization flag
      * @var bool
      */
@@ -30,6 +37,40 @@ class RoleController extends RestController
      * @var bool
      */
     protected $systemLevel = true;
+
+    /**
+     * Create a role and materialize its permission catalog atomically.
+     *
+     * Role + seed share one DB transaction: a failed seed rolls the role back.
+     *
+     * @method postAction
+     * @return \Phalcon\Http\Response
+     */
+    public function postAction()
+    {
+        $db = $this->di->get('db');
+        $db->begin();
+
+        try {
+            $response = parent::postAction();
+            $statusCode = (int) $response->getStatusCode();
+
+            if ($statusCode >= 200 && $statusCode < 300) {
+                $db->commit();
+            } else {
+                $db->rollback();
+            }
+
+            return $response;
+        } catch (\Throwable $e) {
+            try {
+                $db->rollback();
+            } catch (\Throwable $ignored) {
+                // No open transaction (or already rolled back).
+            }
+            throw $e;
+        }
+    }
 
     /**
      * Reject deleting a role when no other role would remain able to

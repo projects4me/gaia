@@ -6,7 +6,7 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 |-------|-------|
 | Status | In progress |
 | Scope | Gaia backend authorization |
-| Primary code | `core/libs/security/acl.php`, `app/models/Permission.php`, `core/mvc/controllers/RestController.php` |
+| Primary code | `core/libs/security/Acl.php`, `app/models/Permission.php`, `core/mvc/controllers/RestController.php` |
 
 ---
 
@@ -60,14 +60,14 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 | Rationale | Preserve current stored data behavior until a migration cleans legacy values. |
 | Implications | Tests must cover `0`, `1`, `null`, empty string, and legacy values such as `2`. |
 
-### D-011 — Missing permission row means allow
+### D-011 — Catalog defaults materialize at role create; missing rows follow live mode
 
 | | |
 |---|---|
-| Status | Accepted (legacy) |
-| Decision | If a resource has no permission entry for the user/role context, access is allowed. |
-| Rationale | Existing Gaia behavior. Changing default-deny is out of scope for the current relationship work. |
-| Implications | Explicit `readF = 0` is required to deny a resource. |
+| Status | Accepted |
+| Decision | On role create, `RolePermissionSeeder` writes an explicit permission row for every resource in the current ACL catalog (module actions + field get/create/update triples). Seed values come from the then-current `system.acl.resolutionMode`: **permissive** → allow / field `write`; **restrictive** → deny / field `none`. Role **name** does not change the seed (privilege is capability in stored grants, D-052). After seeding, those rows are durable — flipping resolution mode later does **not** rewrite or reinterpret them. If a resource has **no** permission row for the user/role context (catalog growth, unseeded legacy roles, role-less users), access still follows live mode: allow under permissive, deny under restrictive. |
+| Rationale | Administrators need each role’s birth catalog to be explicit and durable, while new catalog entries keep the same missing-row backend model until an admin sets them. |
+| Implications | Permission unset/delete must become explicit deny / field `none` (D-037), not row removal that resurrects live-mode gaps for formerly seeded resources. Existing roles are not auto-backfilled. |
 
 ### D-012 — Direct resource denial returns 403
 
@@ -96,12 +96,12 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | `Acl` combines normalized flags from all applicable roles using an explicit resolution mode. |
-| Permissive | Any applicable role with `1` allows access. Access is denied only when permission rows exist and none allow it. |
-| Restrictive | Any applicable role with `0` denies access. Access is allowed only when permission rows exist, at least one allows it, and none deny it. |
-| Default | `permissive`, preserving existing Gaia behavior. |
-| Developer API | Select with the `Acl` constructor or `setPermissionResolutionMode()` using `Acl::RESOLUTION_PERMISSIVE` / `Acl::RESOLUTION_RESTRICTIVE`. |
-| Future configuration | The same mode will later be read from application configuration without changing policy evaluation code. |
+| Decision | `Acl` combines normalized flags from all applicable roles using an explicit resolution mode. The same mode also seeds catalog defaults at role create (D-011) and resolves missing rows when no grant exists. |
+| Permissive | Any applicable role with `1` allows access. Missing rows allow. Access is denied only when permission rows exist and none allow it. |
+| Restrictive | Any applicable role with `0` denies access. Missing rows deny. Access is allowed only when permission rows exist, at least one allows it, and none deny it. |
+| Default | `permissive`, preserved as `system.acl.resolutionMode`. |
+| Configuration | Read from `system.acl.resolutionMode` (server-side config only; not required on the Systemsetting API for clients). Selectable at runtime via the `Acl` constructor or `setPermissionResolutionMode()`. Flipping the mode does **not** rewrite stored permission rows. |
+| Developer API | `Acl::RESOLUTION_PERMISSIVE` / `Acl::RESOLUTION_RESTRICTIVE`; `Acl::resolveConfiguredResolutionMode()` reads config; `setPermissionResolutionMode()` overrides in-process. |
 | Project scope | `Permission` must return permission rows for every role the user holds in the selected project; `Acl` owns their aggregation. |
 
 ---
@@ -266,7 +266,7 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 | Status | Accepted |
 | Decision | Field ACL is administered as one of three modes per field, not as independent get/create/update toggles. Modes expand to stored `{module}.{field}.{action}` flags: **None** → get/create/update = 0; **Read Only** → get = 1, create/update = 0; **Write + Read** → get/create/update = 1. There is no write-only mode — write always includes read. |
 | API surface | Clients see/write one permission per field: `resourceName = {module}.{field}` (e.g. `issue.subject`) with `allowed` ∈ `''` \| `none` \| `read` \| `write`. Direct writes to `{module}.{field}.{get\|create\|update}` are rejected. |
-| Storage | Same action triples in `permissions` (`issue.subject.get`, `…create`, `…update`). `Permission::expandFieldAccessMode` / `deriveFieldAccessMode` and `PermissionController` own collapse/expand. Unset (`allowed=''`) deletes the three rows (permissive missing). |
+| Storage | Same action triples in `permissions` (`issue.subject.get`, `…create`, `…update`). `Permission::expandFieldAccessMode` / `deriveFieldAccessMode` and `PermissionController` own collapse/expand. Unset (`allowed=''`) and DELETE coerce to **`none`** (triples = 0) — rows are never removed so live mode cannot reinterpret a cleared grant. |
 | Evaluation | If create or update is **explicitly** allowed (`allowed = 1`), field `get` is also allowed (write⇒read). Missing write rows do not promote get (preserves D-011 / explicit deny). |
 | Implications | After PATCH/POST, no special read-after-write path is required: a writable field is always readable under this combo. Frontend sends one request per field mode change. |
 
@@ -288,16 +288,16 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | A role named `Admin` is the bootstrap full-catalog administration role and is seeded with an explicit `allowed = 1` permission row for every entry in the current module-action and field-mode catalog (via baseline dump / ops seeding; a dedicated CLI ensure task is deferred). `Acl` contains no code path that treats the `Admin` name, or any role name, as an automatic allow. Admin's access is exactly what its `permissions` rows grant, evaluated the same way as any other role. |
-| Rationale | Keeps a single enforcement path (`Acl` + `permissions` rows). Avoids a second, implicit definition of "administrator" living outside the permission store. |
-| Implications | When the ACL catalog grows (new modules/actions/fields), Admin's grants must be refreshed by reseeding or a future maintenance task. Renaming, editing, or deleting the `Admin` role is permitted subject to D-052. |
+| Decision | A role named `Admin` is the conventional bootstrap full-catalog administration role in baseline dump / ops data. It is **not** privileged by name at create or evaluation time: `RolePermissionSeeder` seeds it like any other role from the then-current resolution mode, and `Acl` never treats a role name as an automatic allow. Admin-capable access is exactly what `permissions` rows grant (D-052). Existing Admin grants remain dump/ops managed for pre-existing installs; no automatic backfill. |
+| Rationale | Keeps a single enforcement path (`Acl` + `permissions` rows). Avoids a second, implicit definition of "administrator" living in role names or outside the permission store. |
+| Implications | Creating or renaming a role to `Admin` under restrictive mode does not grant power — operators must raise grants (or create under permissive) like any other role. Catalog growth gaps follow live mode (D-011) until refreshed. Renaming, editing, or deleting the bootstrap `Admin` role is permitted subject to D-052. |
 
 ### D-052 — Security-core lockout invariant (capability-based, not a role flag)
 
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | No `isSystem` (or similar) column exists on `roles`. Instead, a role is **admin-capable** when it has no explicit deny (`allowed` normalizing to `0`, including `''`) for any of the fifteen lockout-covered resource names `{permission,role,userrole}.{get,create,update,delete}` plus `user.{create,update,delete}` (`user.get` is out of scope) — a missing row is capable under the default permissive resolution mode (mirrors `Acl::isResourceAllowed()`/D-011/D-014). The system must always have at least one non-deleted role that is admin-capable **and** has at least one **usable** `user_roles` membership (non-deleted assignment whose user is non-deleted and `accountStatus` is `Active`, case-insensitive). `Gaia\Libraries\Security\AclLockoutGuard` (`core/libs/security/aclLockoutGuard.php`) is the single implementation of this predicate. |
+| Decision | No `isSystem` (or similar) column exists on `roles`. Instead, a role is **admin-capable** when it has no explicit deny (`allowed` normalizing to `0`, including `''`) for any of the fifteen lockout-covered resource names `{permission,role,userrole}.{get,create,update,delete}` plus `user.{create,update,delete}` (`user.get` is out of scope) — a missing row is capable under the default permissive resolution mode (mirrors `Acl::isResourceAllowed()`/D-011/D-014). The system must always have at least one non-deleted role that is admin-capable **and** has at least one **usable** `user_roles` membership (non-deleted assignment whose user is non-deleted and `accountStatus` is `Active`, case-insensitive). `Gaia\Libraries\Security\AclLockoutGuard` (`core/libs/security/AclLockoutGuard.php`) is the single implementation of this predicate. |
 | Enforced at | `RoleController::deleteAction()` (role delete), `PermissionController::assertAclLockoutSafe()` (a lockout-covered resource write that would set an explicit deny), `UserroleController::deleteAction()` (removing the last usable membership of the last capable role), `UserController::patchAction()` / `deleteAction()` (deactivating or deleting the last usable member of the last capable role). Each simulates the pending change and rejects with `Gaia\Exception\Permission` (422) when no role would remain capable-with-a-usable-member. |
 | Rationale | Consistent with action-based RBAC: capability lives in `permissions` rows, not in role metadata. Supports renaming/replacing/deleting the bootstrap `Admin` role, or having multiple admin-capable roles, as long as the invariant holds. Avoids a second, role-flag-based source of privilege alongside the permission store. Includes `user` write actions so the last capable role cannot lose the ability to create/update/delete users while still administering ACL. Membership must be *usable* so deactivating (`accountStatus` away from Active) or deleting the sole active admin cannot lock operators out while a dormant `user_roles` row still exists. |
 | Non-goals | Granting/removing access to modules *other than* `permission`, `role`, `userrole`, and `user` write actions is never blocked by this invariant. `user.get` and field ACL on these modules are out of scope for the predicate. Only `accountStatus` Active (case-insensitive) counts as usable; other statuses (`invited`, `Inactive`, etc.) do not. This decision assumes the default `RESOLUTION_PERMISSIVE` mode; if restrictive mode is ever exposed through configuration (Phase 3 of the implementation plan), the predicate must be revisited. |
@@ -400,7 +400,7 @@ These scenarios are settled and should become tests later:
 
 Track unsettled policy here. Do not generate tests from these until accepted.
 
-- [ ] Should missing permission rows eventually become default-deny?
+- [ ] Should missing permission rows eventually become default-deny? *(Partially addressed by D-011 materialization: birth catalog is explicit; missing rows still follow live mode for catalog growth / unseeded roles.)*
 - [ ] How should project-scoped permissions interact with global/system memberships for relationship filtering?
 - [ ] Is row-level / ownership-based access in scope for the next RBAC phase?
 - [ ] Should denied eager relationships appear as empty linkage (`data: []` / `null`) instead of being omitted entirely?
@@ -416,6 +416,7 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 
 | Date | Change |
 |------|--------|
+| 2026-08-11 | D-011 revised: full-catalog materialization at role create via `RolePermissionSeeder`, seeded from resolution mode only (no role-name force-allow; privilege stays capability-based, D-052); missing rows still follow live resolution mode (catalog growth). D-014: `system.acl.resolutionMode` is create-time seed + aggregation + missing-row policy; flips do not rewrite rows. D-037: unset/DELETE → explicit `none`/deny (no row delete) |
 | 2026-08-10 | D-052: usable membership = Active `accountStatus` (case-insensitive); enforced on user deactivate/delete via `UserController`; `roleMemberCount` joins users and ignores non-Active/deleted members |
 | 2026-08-10 | Removed deferred `AclTask` CLI (ensureAdmin / cleanupGlobalRole); D-050/D-051 now describe dump/ops seeding instead of that task |
 | 2026-08-10 | D-052: renamed implementation to `AclLockoutGuard` (`getLockoutResources`, `findLockoutPermissionRows`, `isAdminCapableRole`, `systemRetainsAdminPath`); capability also requires `user.{create,update,delete}` (`user.get` out of scope); resource set is fifteen |

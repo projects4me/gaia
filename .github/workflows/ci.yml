@@ -83,10 +83,10 @@ jobs:
         PGPASSWORD: nouman
       run: bash tools/api-tester/harness/prepare-test-db.sh
 
-    - name: Run PHPUnit (AclLockoutGuard)
+    - name: Run PHPUnit (ACL)
       run: |
         mkdir -p logs/tests
-        ./vendor/bin/phpunit -c tests/phpunit.xml --filter AclLockoutGuardTest
+        ./vendor/bin/phpunit -c tests/phpunit.xml --filter 'AclLockoutGuardTest|RolePermissionSeederTest'
 
     - name: Start Apache
       run: |
