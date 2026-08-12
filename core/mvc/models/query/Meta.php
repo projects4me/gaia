@@ -183,14 +183,14 @@ class Meta
      */
     protected function loadWhereConditions($where)
     {
-        preg_match_all('@\([^(]*[^)]\)@', $where, $matches);
-        $substatements = $matches[0];
+        $substatements = $this->extractWhereSubstatements($where);
         foreach ($substatements as $substatement) {
-            //regex for extracting model or rel name
-            $regex = "/(?<=[(])[A-z]+/";
-            preg_match($regex, $substatement, $modelName);
+            if (!preg_match('/[A-Za-z_][A-Za-z0-9_]*\.[A-Za-z_][A-Za-z0-9_]*/', $substatement, $fieldMatch)) {
+                continue;
+            }
 
-            $this->whereConditions[$modelName[0]][] = $substatement;
+            $modelName = explode('.', $fieldMatch[0])[0];
+            $this->whereConditions[$modelName][] = $substatement;
         }
     }
 
@@ -201,19 +201,30 @@ class Meta
      */
     protected function loadWhereClauseOperators($where)
     {
-        //extract operators used in where clause
-        $regex = '@\([^(]*[^)]\)@';
-        //now where clause will have only opening and closing brackets with some spaces, so remove these.
-        $whereWithOutConditions = preg_replace($regex, '', $where);
+        $substatements = $this->extractWhereSubstatements($where);
 
-        //set number of conditions used in where clause
-        preg_match_all($regex, $where, $matches);
-        $this->totalConditionsInWhere = $matches ? count($matches[0]) : 0;
+        $this->totalConditionsInWhere = count($substatements);
 
-        //extract list of unique operators 
-        $regex = '@(\w+)(?!.*\1)@';
-        preg_match_all($regex, $whereWithOutConditions, $matches);
+        // Strip all substatements, leaving only the AND/OR connectors.
+        $whereWithOutConditions = str_replace($substatements, '', $where);
+
+        preg_match_all('@(\w+)(?!.*\1)@', $whereWithOutConditions, $matches);
         $this->operators = $matches[0] ? $matches[0] : array();
+    }
+
+    /**
+     * Extract all leaf-level WHERE substatements from a translated where string.
+     * Handles substatements with at most one level of inner parentheses
+     * (e.g. plain conditions and CAST(... AS ...) forms alike).
+     *
+     * @param string $where
+     * @return array
+     */
+    protected function extractWhereSubstatements($where)
+    {
+        $expression = '@\([^()]*(?:\([^()]*\)[^()]*)*\)@';
+        preg_match_all($expression, $where, $matches);
+        return $matches[0] ?? [];
     }
 
     /**

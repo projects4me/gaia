@@ -182,53 +182,63 @@ class Clause
                     $this->whereConditions['original'][$fieldParts[0]][] = $substatement;
 
                     $translatedStatement = '';
+                    $likeField = $this->prepareLikeField($field, $query);
+                    $comparisonField = $this->prepareComparisonField($field, $value, $query);
                     // parse based on the operator
                     switch ($operator) {
                         case ':':
-                            $translatedStatement = "(" . $field . " = '" . $value . "')";
+                            if ($this->isNullSentinelValue($value)) {
+                                $translatedStatement = "(" . $field . " IS NULL)";
+                            } else {
+                                $translatedStatement = "(" . $comparisonField . " = '" . $value . "')";
+                            }
                             break;
                         case '!:':
-                            $translatedStatement = "(" . $field . " != '" . $value . "')";
+                            if ($this->isNullSentinelValue($value)) {
+                                $translatedStatement = "(" . $field . " IS NOT NULL)";
+                            } else {
+                                $translatedStatement = "(" . $comparisonField . " != '" . $value . "')";
+                            }
                             break;
                         case '>':
-                            $translatedStatement = "(" . $field . " > '" . $value . "')";
+                            $translatedStatement = "(" . $comparisonField . " > '" . $value . "')";
                             break;
                         case '<':
-                            $translatedStatement = "(" . $field . " < '" . $value . "')";
+                            $translatedStatement = "(" . $comparisonField . " < '" . $value . "')";
                             break;
                         case '>:':
-                            $translatedStatement = "(" . $field . " >= '" . $value . "')";
+                            $translatedStatement = "(" . $comparisonField . " >= '" . $value . "')";
                             break;
                         case '<:':
-                            $translatedStatement = "(" . $field . " <= '" . $value . "')";
+                            $translatedStatement = "(" . $comparisonField . " <= '" . $value . "')";
                             break;
                         case 'CONTAINS':
                             if (preg_match("@','@", $value)) {
                                 $translatedStatement = "(" . $field . " IN ('" . $value . "'))";
                             }
                             else {
-                                $translatedStatement = "(" . $field . " LIKE '%" . $value . "%')";
+                                $translatedStatement = "(" . $likeField . " LIKE '%" . $value . "%')";
                             }
                             break;
                         case 'STARTS':
-                            $translatedStatement = "(" . $field . " LIKE '" . $value . "%')";
+                            $translatedStatement = "(" . $likeField . " LIKE '" . $value . "%')";
                             break;
                         case 'ENDS':
-                            $translatedStatement = "(" . $field . " LIKE '%" . $value . "')";
+                            $translatedStatement = "(" . $likeField . " LIKE '%" . $value . "')";
                             break;
                         case '!CONTAINS':
                             if (preg_match("@','@", $value)) {
                                 $translatedStatement = "(" . $field . " NOT IN ('" . $value . "'))";
                             }
                             else {
-                                $translatedStatement = "(" . $field . " NOT LIKE '%" . $value . "%')";
+                                $translatedStatement = "(" . $likeField . " NOT LIKE '%" . $value . "%')";
                             }
                             break;
                         case '!STARTS':
-                            $translatedStatement = "(" . $field . " NOT LIKE '" . $value . "%')";
+                            $translatedStatement = "(" . $likeField . " NOT LIKE '" . $value . "%')";
                             break;
                         case '!ENDS':
-                            $translatedStatement = "(" . $field . " NOT LIKE '%" . $value . "')";
+                            $translatedStatement = "(" . $likeField . " NOT LIKE '%" . $value . "')";
                             break;
                         case 'NULL':
                             $translatedStatement = "(" . $field . " IS NULL)";
@@ -263,6 +273,9 @@ class Clause
                             break;
                     }
 
+                    if ($translatedStatement) {
+                        $this->whereConditions['translated'][$fieldParts[0]][] = $translatedStatement;
+                    }
                     $this->where = str_replace($substatement, $translatedStatement, $this->where);
                     // make sure that we were able to parse all substatements
                     if (!$translatedStatement) {
@@ -331,26 +344,202 @@ class Clause
      */
     public function getFilteredRels()
     {
-        $rels = [];
+        return array_keys($this->whereConditions['original'] ?? []);
+    }
 
-        preg_match_all('@\([^(]*[^)]\)@', $this->where, $matches);
-        $whereConditions = $matches[0];
+    /**
+     * Extract all leaf-level WHERE substatements from a translated where string.
+     * Handles substatements with at most one level of inner parentheses
+     * (e.g. plain conditions and CAST(... AS ...) forms alike).
+     *
+     * @param string $where
+     * @return array
+     */
+    public function extractWhereSubstatements($where)
+    {
+        $expression = '@\([^()]*(?:\([^()]*\)[^()]*)*\)@';
+        preg_match_all($expression, $where, $matches);
+        return $matches[0] ?? [];
+    }
 
-        foreach ($whereConditions as $whereCondition) {
-            //regex for extracting model or rel name
-            $regex = "/(?<=[(])[A-z]+/";
-            preg_match($regex, $whereCondition, $relName);
-
-            $this->whereConditions['translated'][$relName[0]][] = $whereCondition;
-
-            //regex for extracting field by removing '(' ')' brackets
-            $regex = '/(?<=[(])[A-z]+[.][A-z]+/';
-            preg_match($regex, $whereCondition, $field);
-
-            !(in_array($relName[0], $rels)) && ($rels[] = $relName[0]);
+    /**
+     * Wrap non-text fields in CAST(... AS TEXT) for Postgres LIKE/NOT LIKE.
+     *
+     * @param string $field
+     * @param \Gaia\Core\MVC\Models\Query $query
+     * @return string
+     */
+    protected function prepareLikeField($field, $query)
+    {
+        if (!$this->isPostgresAdapter()) {
+            return $field;
         }
 
-        return $rels;
+        $type = $this->resolveFieldType($field, $query);
+        if ($type === null || $this->isStringFieldType($type)) {
+            return $field;
+        }
+
+        return 'CAST(' . $field . ' AS TEXT)';
+    }
+
+    /**
+     * Wrap non-text fields in CAST(... AS TEXT) when the comparison value is
+     * not valid for the column type. Postgres rejects e.g. bigint <> 'asdf'.
+     *
+     * @param string $field
+     * @param string $value
+     * @param \Gaia\Core\MVC\Models\Query $query
+     * @return string
+     */
+    protected function prepareComparisonField($field, $value, $query)
+    {
+        if (!$this->isPostgresAdapter()) {
+            return $field;
+        }
+
+        $type = $this->resolveFieldType($field, $query);
+        if ($type === null || $this->isStringFieldType($type)) {
+            return $field;
+        }
+
+        if ($this->isValueCompatibleWithType($value, $type)) {
+            return $field;
+        }
+
+        return 'CAST(' . $field . ' AS TEXT)';
+    }
+
+    /**
+     * Frontend JS interpolation of undefined/null becomes these literals.
+     *
+     * @param string $value
+     * @return bool
+     */
+    protected function isNullSentinelValue($value)
+    {
+        $normalized = strtolower(trim((string) $value));
+        return $normalized === 'undefined' || $normalized === 'null';
+    }
+
+    /**
+     * Whether $value can be compared against a column of $type without casting.
+     *
+     * @param string $value
+     * @param string $type
+     * @return bool
+     */
+    protected function isValueCompatibleWithType($value, $type)
+    {
+        if ($this->isNumericFieldType($type)) {
+            return is_numeric($value);
+        }
+
+        return true;
+    }
+
+    /**
+     * Whether a metadata field type is numeric.
+     *
+     * @param string $type
+     * @return bool
+     */
+    protected function isNumericFieldType($type)
+    {
+        return in_array(
+            strtolower((string) $type),
+            array(
+                'int',
+                'integer',
+                'bigint',
+                'smallint',
+                'tinyint',
+                'mediumint',
+                'float',
+                'double',
+                'decimal',
+                'numeric',
+                'real',
+            ),
+            true
+        );
+    }
+
+    /**
+     * Whether the configured database adapter is PostgreSQL.
+     *
+     * @return bool
+     */
+    protected function isPostgresAdapter()
+    {
+        if (!$this->di->has('config')) {
+            return false;
+        }
+
+        $database = $this->di->get('config')->get('database');
+        if (!$database) {
+            return false;
+        }
+
+        $adapter = (string) $database['adapter'];
+
+        return strcasecmp($adapter, 'Postgres') === 0
+            || strcasecmp($adapter, 'Postgresql') === 0;
+    }
+
+    /**
+     * Resolve metadata field type for Model.field or Rel.field.
+     *
+     * @param string $field
+     * @param \Gaia\Core\MVC\Models\Query $query
+     * @return string|null
+     */
+    protected function resolveFieldType($field, $query)
+    {
+        $parts = explode('.', $field);
+        if (count($parts) !== 2 || !$this->di->has('metaManager')) {
+            return null;
+        }
+
+        list($alias, $fieldName) = $parts;
+        $metaManager = $this->di->get('metaManager');
+        $modelName = $alias;
+
+        if ($alias !== $query->modelAlias) {
+            $relMeta = $metaManager->getRelationshipMeta($query->modelAlias, $alias, false);
+            if (!empty($relMeta)) {
+                $modelName = $metaManager->getRelatedModelName($query->modelAlias, $alias);
+            }
+        } else {
+            $modelName = $query->modelAlias;
+        }
+
+        try {
+            $meta = $metaManager->getModelMeta($modelName);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        if (!isset($meta['fields'][$fieldName]['type'])) {
+            return null;
+        }
+
+        return $meta['fields'][$fieldName]['type'];
+    }
+
+    /**
+     * Whether a metadata field type can be used with LIKE without casting.
+     *
+     * @param string $type
+     * @return bool
+     */
+    protected function isStringFieldType($type)
+    {
+        return in_array(
+            strtolower((string) $type),
+            array('varchar', 'text', 'char', 'tinytext', 'mediumtext', 'longtext'),
+            true
+        );
     }
 
     /**
