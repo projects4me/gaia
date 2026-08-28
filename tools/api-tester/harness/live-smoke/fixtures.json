@@ -1,0 +1,17 @@
+{
+  "description": "Fixtures for live-smoke Gaia stand-in (no Docker).",
+  "auth": {
+    "clientId": "projects4me",
+    "clientSecret": "smoke-secret",
+    "email": "api-tester@example.com",
+    "password": "unit-testing",
+    "tokenPath": "/api/v1/token"
+  },
+  "values": {
+    "userId": "api-test-user-0001",
+    "projectId": "api-test-project-001",
+    "projectShortcode": "ATP",
+    "issuestatusId": "bf3f206262c6-8e43-047e-2160cab7abb6",
+    "issuetypeId": "5"
+  }
+}

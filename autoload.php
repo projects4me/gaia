@@ -58,6 +58,8 @@ $loader->registerNamespaces(
     [
         "Gaia\\MVC\\REST\\Controllers" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/',
         "Gaia\\MVC\\REST\\Controllers\\Components" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/components/',
+        "Gaia\\MVC\\REST\\Controllers\\Components\\Events" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/components/events/',
+        "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\Support" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/components/events/support/',
         "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Config" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/components/notifications/config/',
         "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Modules" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/components/notifications/modules/',
         "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Services" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/components/notifications/services/',

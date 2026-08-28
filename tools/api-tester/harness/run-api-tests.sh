@@ -8,6 +8,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 MODES=()
 FILTER="${FILTER:-}"
 BASE_URI="${BASE_URI:-}"
+HERMES_URL="${HERMES_URL:-}"
 FIXTURES="${FIXTURES:-$ROOT_DIR/tools/api-tester/fixtures/default.json}"
 REPORT=""
 
@@ -20,8 +21,9 @@ Required:
   --base-uri <url>                    Running API base URI (local, staging, or production)
 
 Options:
-  --mode <client|backend|acl>[,<mode>...]
+  --mode <client|backend|acl|live>[,<mode>...]
                                       API catalog(s) to run (repeatable; default: backend)
+  --hermes-url <url>                  Live Hermes URL (required for live happy-path cases)
   --filter <text|a|b>                 Optional filter (supports OR with |)
   --report <file>                     Report output path (single --mode only)
   --fixtures <file>                   Fixtures file path
@@ -38,6 +40,8 @@ Examples:
   ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode acl
   ./tools/api-tester/harness/run-api-tests.sh --base-uri https://api.staging.example.com --mode client
   ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode client,backend,acl
+  ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode live --hermes-url http://localhost:9001
+  ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8082 --mode live --filter fail-open
 HELP
 }
 
@@ -81,8 +85,11 @@ resolve_mode_paths() {
     acl)
       echo "$ROOT_DIR/tools/api-tester/apis/acl.json|$ROOT_DIR/output/api-tester-acl-report.json"
       ;;
+    live)
+      echo "$ROOT_DIR/tools/api-tester/apis/live.json|$ROOT_DIR/output/api-tester-live-report.json"
+      ;;
     *)
-      echo "Invalid --mode: $mode (expected client|backend|acl)" >&2
+      echo "Invalid --mode: $mode (expected client|backend|acl|live)" >&2
       return 1
       ;;
   esac
@@ -104,6 +111,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --base-uri)
       BASE_URI="${2:-}"
+      shift 2
+      ;;
+    --hermes-url)
+      HERMES_URL="${2:-}"
       shift 2
       ;;
     --fixtures)
@@ -131,6 +142,7 @@ fi
 
 # Normalize trailing slash
 BASE_URI="${BASE_URI%/}"
+HERMES_URL="${HERMES_URL%/}"
 
 if [[ ${#MODES[@]} -eq 0 ]]; then
   MODES=(backend)
@@ -152,6 +164,7 @@ echo "==> api-tester"
 echo "    modes: ${MODES[*]}"
 echo "    base-uri: $BASE_URI"
 echo "    fixtures: $FIXTURES"
+[[ -n "$HERMES_URL" ]] && echo "    hermes-url: $HERMES_URL"
 [[ -n "$FILTER" ]] && echo "    filter: $FILTER"
 
 OVERALL_STATUS=0
@@ -180,6 +193,9 @@ for mode in "${MODES[@]}"; do
   )
   if [[ -n "$FILTER" ]]; then
     ARGS+=(--filter "$FILTER")
+  fi
+  if [[ -n "$HERMES_URL" ]]; then
+    ARGS+=(--hermes-url "$HERMES_URL")
   fi
 
   set +e
