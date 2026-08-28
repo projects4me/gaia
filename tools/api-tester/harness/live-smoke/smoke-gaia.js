@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Minimal Gaia stand-in for exercising api-tester --mode live without Docker.
- * Handles OAuth token + the live.json write paths, and POSTs V2 envelopes to Hermes.
+ * Handles OAuth token + the live.json write paths, and POSTs domain-event envelopes to Hermes.
  */
 'use strict';
 
@@ -49,7 +49,7 @@ function jsonApiResource(type, id, attributes) {
 
 async function publish(eventName, resourceType, resourceId, changes) {
 	const envelope = {
-		schemaVersion: 2,
+		schemaVersion: 1,
 		eventId: randomUUID(),
 		eventName,
 		occurredAt: new Date().toISOString(),

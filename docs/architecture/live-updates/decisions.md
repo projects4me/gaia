@@ -27,7 +27,7 @@ are out of scope here.
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | After a successful persist, Gaia POSTs a V2 envelope to Hermes. It does not name Socket.IO rooms, keep socket sessions, or target browsers. |
+| Decision | After a successful persist, Gaia POSTs a domain-event envelope to Hermes. It does not name Socket.IO rooms, keep socket sessions, or target browsers. |
 | Rationale | Persist and authorization stay in Gaia. Fan-out is Hermes. UI application is Prometheus. |
 | Implications | Controllers and models call `HermesPublisher`. They never emit Socket.IO events. |
 

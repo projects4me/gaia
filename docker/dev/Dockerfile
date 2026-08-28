@@ -2,6 +2,8 @@ FROM rananoman/gaia:env-dev
 
 COPY ./ /var/www/html
 
+ENV HERMES_URL=http://hermes.projects4.me
+
 # Set ownership and permissions for the web root directory
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html

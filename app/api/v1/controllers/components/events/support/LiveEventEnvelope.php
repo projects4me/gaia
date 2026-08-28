@@ -9,7 +9,7 @@ namespace Gaia\MVC\REST\Controllers\Components\Events\Support;
 use function Gaia\Libraries\Utils\create_guid;
 
 /**
- * This class builds the V2 Hermes domain-event envelope Gaia posts to
+ * This class builds the Hermes domain-event envelope Gaia posts to
  * POST /publish.
  *
  * @class   LiveEventEnvelope
@@ -22,10 +22,10 @@ class LiveEventEnvelope
      *
      * @var int
      */
-    const SCHEMA_VERSION = 2;
+    const SCHEMA_VERSION = 1;
 
     /**
-     * Builds a V2 envelope. actorId is the current user or null.
+     * Builds a domain-event envelope. actorId is the current user or null.
      *
      * @param  string $eventName    Allowlisted event name.
      * @param  string $projectId    Project id, or user:<userId> for notifications.

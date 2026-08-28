@@ -275,7 +275,7 @@ class LiveEventsComponentsTest extends TestCase
             'conversation.vote.added',
             'conversation.created',
         ), array_column($posted, 'eventName'));
-        $this->assertEquals(2, $posted[0]['schemaVersion']);
+        $this->assertEquals(1, $posted[0]['schemaVersion']);
         $this->assertNotEmpty($posted[0]['eventId']);
         $this->assertEquals('project-1', $posted[0]['projectId']);
     }
@@ -360,7 +360,7 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertEquals('You were mentioned', $posted[0]['changes']['message']);
         $this->assertEquals('snr-1', $posted[0]['meta']['recipientId']);
         $this->assertEquals('user-42', $posted[0]['meta']['recipientUserId']);
-        $this->assertEquals(2, $posted[0]['schemaVersion']);
+        $this->assertEquals(1, $posted[0]['schemaVersion']);
     }
 
     public function testNotificationLiveEventsPicksAllowlistedFields()
