@@ -1,0 +1,310 @@
+{
+  "description": "Gaia → Hermes live publish smoke cases. Happy-path cases need --hermes-url. Fail-open cases need Gaia with unreachable HERMES_URL (filter fail-open).",
+  "apis": [
+    {
+      "id": "live-setup-issuestatus-for-status-change",
+      "method": "POST",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "attributes": {
+            "name": "ls-{runId}",
+            "system": 0,
+            "done": 0,
+            "projectId": "{projectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.liveStatusId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "live-issue-create-publishes-issue-created",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Live Hermes Issue {runId}",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "statusId": "{issuestatusId}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.liveIssueId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "expect": [
+          {
+            "eventName": "issue.created",
+            "projectId": "{projectId}",
+            "resourceType": "issue"
+          }
+        ],
+        "timeoutMs": 5000
+      }
+    },
+    {
+      "id": "live-issue-patch-status-publishes-issue-status-changed",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{runtime.liveIssueId}",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{runtime.liveIssueId}",
+          "attributes": {
+            "statusId": "{runtime.liveStatusId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "expect": [
+          {
+            "eventName": "issue.status.changed",
+            "projectId": "{projectId}",
+            "resourceType": "issue",
+            "resourceId": "{runtime.liveIssueId}"
+          }
+        ],
+        "timeoutMs": 5000
+      }
+    },
+    {
+      "id": "live-conversationroom-create-publishes-conversation-created",
+      "method": "POST",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "conversationroom",
+          "attributes": {
+            "subject": "Live Hermes Room {runId}",
+            "roomType": "discussion",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}"
+          }
+        }
+      },
+      "store": {
+        "runtime.liveConversationroomId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "expect": [
+          {
+            "eventName": "conversation.created",
+            "projectId": "{projectId}",
+            "resourceType": "conversationroom"
+          }
+        ],
+        "timeoutMs": 5000
+      }
+    },
+    {
+      "id": "live-conversation-comment-create-publishes-comment-created",
+      "method": "POST",
+      "path": "/api/v1/comment",
+      "resource": "comment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "comment",
+          "attributes": {
+            "comment": "Live Hermes comment {runId}",
+            "relatedTo": "conversationrooms",
+            "relatedId": "{runtime.liveConversationroomId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.liveCommentId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "expect": [
+          {
+            "eventName": "conversation.comment.created",
+            "projectId": "{projectId}",
+            "resourceType": "comment"
+          }
+        ],
+        "timeoutMs": 5000
+      }
+    },
+    {
+      "id": "live-fail-open-setup-issuestatus",
+      "method": "POST",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "attributes": {
+            "name": "fo-{runId}",
+            "system": 0,
+            "done": 0,
+            "projectId": "{projectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.failOpenStatusId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    },
+    {
+      "id": "live-issue-create-succeeds-when-hermes-unreachable-fail-open",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Live Hermes Fail-Open Issue {runId}",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "statusId": "{issuestatusId}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.failOpenIssueId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    },
+    {
+      "id": "live-issue-patch-status-succeeds-when-hermes-unreachable-fail-open",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{runtime.failOpenIssueId}",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{runtime.failOpenIssueId}",
+          "attributes": {
+            "statusId": "{runtime.failOpenStatusId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    },
+    {
+      "id": "live-conversationroom-create-succeeds-when-hermes-unreachable-fail-open",
+      "method": "POST",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "conversationroom",
+          "attributes": {
+            "subject": "Fail-Open Room {runId}",
+            "roomType": "discussion",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}"
+          }
+        }
+      },
+      "store": {
+        "runtime.failOpenConversationroomId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    },
+    {
+      "id": "live-conversation-comment-create-succeeds-when-hermes-unreachable-fail-open",
+      "method": "POST",
+      "path": "/api/v1/comment",
+      "resource": "comment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "comment",
+          "attributes": {
+            "comment": "Fail-open comment {runId}",
+            "relatedTo": "conversationrooms",
+            "relatedId": "{runtime.failOpenConversationroomId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    }
+  ]
+}

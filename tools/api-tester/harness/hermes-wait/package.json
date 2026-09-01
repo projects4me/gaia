@@ -1,0 +1,10 @@
+{
+  "name": "api-tester-hermes-wait",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Socket.IO observer for api-tester live Hermes assertions",
+  "main": "wait.js",
+  "dependencies": {
+    "socket.io-client": "^4.8.3"
+  }
+}

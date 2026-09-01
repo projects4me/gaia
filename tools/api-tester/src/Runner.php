@@ -9,22 +9,29 @@ class Runner
     private $fixturesPath;
     private $reportPath;
     private $filter;
+    private $hermesUrl;
     private $client;
     private $fixtures;
     private $asserter;
+    private $hermesObserver;
     private $token;
     private $tokens = [];
+    private $hermesHealthyChecked = false;
 
-    public function __construct($baseUri, $apisPath, $fixturesPath, $reportPath, $filter = null)
+    public function __construct($baseUri, $apisPath, $fixturesPath, $reportPath, $filter = null, $hermesUrl = null)
     {
         $this->baseUri = $baseUri;
         $this->apisPath = $apisPath;
         $this->fixturesPath = $fixturesPath;
         $this->reportPath = $reportPath;
         $this->filter = $filter;
+        $this->hermesUrl = $hermesUrl ? rtrim($hermesUrl, '/') : null;
         $this->client = new HttpClient($baseUri);
         $this->fixtures = new Fixtures($fixturesPath);
         $this->asserter = new Asserter();
+        if ($this->hermesUrl) {
+            $this->hermesObserver = new HermesObserver($this->hermesUrl);
+        }
     }
 
     public function run()
@@ -106,6 +113,7 @@ class Runner
             'baseUri' => $this->baseUri,
             'apisFile' => $this->apisPath,
             'fixturesFile' => $this->fixturesPath,
+            'hermesUrl' => $this->hermesUrl,
             'summary' => [
                 'passed' => $passed,
                 'failed' => $failed,
@@ -151,6 +159,7 @@ class Runner
         }
 
         $needsAuth = !isset($api['auth']) || $api['auth'] !== false;
+        $token = null;
         if ($needsAuth) {
             $authProfile = null;
             if (isset($api['auth']) && is_string($api['auth']) && $api['auth'] !== '') {
@@ -161,7 +170,7 @@ class Runner
         }
 
         // Token endpoint special form body for oauth
-        if ($api['resource'] === 'token' && $method === 'POST') {
+        if (isset($api['resource']) && $api['resource'] === 'token' && $method === 'POST') {
             $auth = $this->fixtures->authConfig();
             if ($auth['clientSecret'] === '' || $auth['email'] === '' || $auth['password'] === '') {
                 return [
@@ -181,13 +190,55 @@ class Runner
             ];
         }
 
-        $response = $this->client->request($method, $path, $options);
-        $expects = isset($api['expects']) ? $api['expects'] : ['status' => 200, 'shape' => 'json'];
-        $expects = $this->fixtures->resolve($expects);
-        $failures = $this->asserter->assert($expects, $response);
+        $hermes = isset($api['hermes']) && is_array($api['hermes']) ? $api['hermes'] : null;
+        $expectEvents = ($hermes && !empty($hermes['expect']) && is_array($hermes['expect']))
+            ? $this->fixtures->resolve($hermes['expect'])
+            : null;
 
-        if (empty($failures) && !empty($api['store'])) {
-            $this->storeRuntimeValues($api['store'], $response);
+        $observer = null;
+        if ($expectEvents !== null) {
+            if ($hermes && array_key_exists('requireUp', $hermes) && $hermes['requireUp'] === false) {
+                throw new \RuntimeException("Case {$id}: hermes.expect cannot be used with hermes.requireUp=false");
+            }
+            if (!$this->hermesUrl || !$this->hermesObserver) {
+                throw new \RuntimeException(
+                    "Case {$id} declares hermes.expect but --hermes-url was not provided"
+                );
+            }
+            if ($token === null) {
+                throw new \RuntimeException("Case {$id}: hermes.expect requires an authenticated case");
+            }
+            $this->ensureHermesHealthy();
+            $timeoutMs = isset($hermes['timeoutMs']) ? (int) $hermes['timeoutMs'] : 5000;
+            $observer = $this->hermesObserver->arm($token, $expectEvents, $timeoutMs);
+        }
+
+        try {
+            $response = $this->client->request($method, $path, $options);
+            $expects = isset($api['expects']) ? $api['expects'] : ['status' => 200, 'shape' => 'json'];
+            $expects = $this->fixtures->resolve($expects);
+            $failures = $this->asserter->assert($expects, $response);
+
+            if (empty($failures) && !empty($api['store'])) {
+                $this->storeRuntimeValues($api['store'], $response);
+            }
+
+            if ($observer !== null && empty($failures)) {
+                try {
+                    $matched = $observer['finish']();
+                    $hermesFailures = $this->assertHermesEnvelopes($expectEvents, $matched);
+                    $failures = array_merge($failures, $hermesFailures);
+                } catch (\Exception $e) {
+                    $failures[] = $e->getMessage();
+                }
+            } elseif ($observer !== null) {
+                $observer['cancel']();
+            }
+        } catch (\Exception $e) {
+            if ($observer !== null) {
+                $observer['cancel']();
+            }
+            throw $e;
         }
 
         return [
@@ -204,6 +255,70 @@ class Runner
             'expects' => $expects,
             'failures' => $failures,
         ];
+    }
+
+    private function ensureHermesHealthy()
+    {
+        if ($this->hermesHealthyChecked || !$this->hermesObserver) {
+            return;
+        }
+        $this->hermesObserver->assertHealthy();
+        $this->hermesHealthyChecked = true;
+    }
+
+    /**
+     * Soft-check matched envelopes against expect entries (order-independent).
+     */
+    private function assertHermesEnvelopes(array $expectEvents, array $matched)
+    {
+        $failures = [];
+        if (count($matched) < count($expectEvents)) {
+            $failures[] = 'Hermes matched fewer events than expected ('
+                . count($matched) . ' < ' . count($expectEvents) . ')';
+            return $failures;
+        }
+
+        $remaining = $matched;
+        foreach ($expectEvents as $index => $expect) {
+            $foundAt = null;
+            foreach ($remaining as $i => $envelope) {
+                if ($this->envelopeMatchesExpect($envelope, $expect)) {
+                    $foundAt = $i;
+                    break;
+                }
+            }
+            if ($foundAt === null) {
+                $failures[] = 'Hermes missing expected event #' . $index . ': ' . json_encode($expect);
+                continue;
+            }
+            unset($remaining[$foundAt]);
+            $remaining = array_values($remaining);
+        }
+
+        return $failures;
+    }
+
+    private function envelopeMatchesExpect(array $envelope, array $expect)
+    {
+        if (isset($expect['eventName']) && (!isset($envelope['eventName']) || $envelope['eventName'] !== $expect['eventName'])) {
+            return false;
+        }
+        if (isset($expect['projectId']) && (!isset($envelope['projectId']) || $envelope['projectId'] !== $expect['projectId'])) {
+            return false;
+        }
+        if (isset($expect['resourceType'])) {
+            $type = isset($envelope['resource']['type']) ? $envelope['resource']['type'] : null;
+            if ($type !== $expect['resourceType']) {
+                return false;
+            }
+        }
+        if (isset($expect['resourceId'])) {
+            $id = isset($envelope['resource']['id']) ? $envelope['resource']['id'] : null;
+            if ((string) $id !== (string) $expect['resourceId']) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

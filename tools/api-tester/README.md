@@ -52,6 +52,9 @@ Optional: `--filter project` (OR terms with `|`, e.g. `milestone|timelog`)
 # both
 ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode client,backend,acl
 
+# live (Gaia → Hermes) — requires hermes-test (:9001) + --hermes-url
+./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode live --hermes-url http://localhost:9001
+
 # remote
 ./tools/api-tester/harness/run-api-tests.sh --base-uri https://api.staging.example.com --mode backend
 ```
@@ -79,6 +82,11 @@ Optional: `--filter project` (OR terms with `|`, e.g. `milestone|timelog`)
       - `priority` Read Only (`get=1`, create/update=0)
       - `project.name.get=0`
   - covers: group cascade deny (project / conversation); mixed rels; clause 403 (query/sort/group/having bare + related); structural FK bypass; `fields=` / default omit; write body discard; write⇒read; permission create (module + field-mode write→read→none→clear); catalog excludes structural FKs; list collapses field modes (no triples)
+- `tools/api-tester/apis/live.json`
+  - **Gaia → Hermes** publish smoke (opt-in; not part of portable Gaia-only runs)
+  - Happy path: REST write + Socket.IO `domain:event` via live Hermes (`--hermes-url`)
+  - Fail-open: REST still succeeds when Gaia cannot reach Hermes (`requireUp: false`)
+
 Generate catalogs:
 
 ```bash
@@ -96,7 +104,8 @@ These are **not** part of api-tester. Use them only when you need a local seeded
 | Script | Purpose |
 |---|---|
 | `prepare-test-db.sh` | Create `pr4m_test`, clone schema from `pr4m`, seed fixtures, write fixtures JSON |
-| `use-test-db.sh` | Optional: start local `gaia-test` on `:8081` |
+| `use-test-db.sh` | Optional: start local `gaia-test` on `:8081` (or `TEST_SERVICE=gaia-test-hermes-down` on `:8082`) |
+| `hermes-wait/` | Node Socket.IO observer used by `--mode live` happy-path cases |
 
 ```bash
 # 1) seed DB + fixtures (optional)
@@ -108,6 +117,51 @@ These are **not** part of api-tester. Use them only when you need a local seeded
 
 # 3) run tests against that URI
 ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode backend
+```
+
+## Live mode (Gaia → Hermes)
+
+Opt-in catalog `apis/live.json`. Default `backend` / `client` / `acl` modes never assert Hermes.
+
+Local compose uses **two** Hermes services (sibling `hermes` repo):
+
+| Hermes service | Port | `GAIA_URL` | Used by |
+|---|---|---|---|
+| `hermes` | `:9000` | OG Gaia `:8080` | Prometheus / daily dev |
+| `hermes-test` | `:9001` | `gaia-test` `:8081` | api-tester `--mode live` |
+
+Do **not** retarget the main Hermes `GAIA_URL` for live tests.
+
+**Happy path** (hermes-test up — REST success **and** matching `domain:event`):
+
+1. In the hermes repo: `docker compose up -d hermes-test` (`GAIA_URL=…:8081`, port `9001`, same `HERMES_SECRET`).
+2. Start `gaia-test` (`HERMES_URL=http://host.docker.internal:9001` is set in compose).
+3. Requires Node (for `harness/hermes-wait`; resolves `socket.io-client` from local `node_modules` or sibling `hermes/node_modules`).
+
+```bash
+# hermes repo
+docker compose up -d hermes-test
+
+# gaia repo
+./tools/api-tester/harness/use-test-db.sh
+./tools/api-tester/harness/run-api-tests.sh \
+  --base-uri http://localhost:8081 \
+  --mode live \
+  --hermes-url http://localhost:9001
+```
+
+Cases with `hermes.expect` subscribe via Socket.IO **before** the Gaia write, then match envelopes by `eventName` / `projectId` / resource.
+
+**Fail-open** (Hermes unreachable — user still gets REST success):
+
+Run against `gaia-test-hermes-down` (`HERMES_URL=http://127.0.0.1:9`). Covers issue create/status patch, conversation room create, and conversation comment create — all with `"hermes": { "requireUp": false }` (no Socket.IO).
+
+```bash
+TEST_SERVICE=gaia-test-hermes-down ./tools/api-tester/harness/use-test-db.sh
+./tools/api-tester/harness/run-api-tests.sh \
+  --base-uri http://localhost:8082 \
+  --mode live \
+  --filter fail-open
 ```
 
 ## Sources
@@ -167,3 +221,19 @@ Supported selectors: `data.id`, `data.attributes.<field>`.
 Use `{runtime.milestoneId}` in later `path` / `body` / `expects`. Order in `apis` matters (create → get → patch → delete).
 
 Disabled entries (`enabled: false`) cover custom/auth/file/Socket.IO/ACL endpoints, missing metadata, or known broken routes (e.g. mention).
+
+## Hermes live assertions
+
+Cases may declare a `hermes` block (used by `apis/live.json`):
+
+```json
+"hermes": {
+  "expect": [
+    { "eventName": "issue.created", "projectId": "{projectId}", "resourceType": "issue" }
+  ],
+  "timeoutMs": 5000
+}
+```
+
+- Requires `--hermes-url`. Runner arms `harness/hermes-wait` before the HTTP request.
+- Fail-open cases use `"hermes": { "requireUp": false }` and never touch Socket.IO.

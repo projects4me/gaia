@@ -19,5 +19,11 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class VoteController extends RestController
 {
-
+    /**
+     * Components that this controller uses.
+     *
+     * @var $uses
+     * @type array
+     */
+    public $uses = array('Events\\ConversationVoteLiveEvents');
 }
