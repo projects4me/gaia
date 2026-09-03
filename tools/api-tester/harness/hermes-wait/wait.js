@@ -179,7 +179,7 @@ async function main() {
 	let ack;
 	try {
 		ack = await client.emitWithAck('intents:set', {
-			protocolVersion: 2,
+			protocolVersion: 1,
 			revision: 0,
 			intents
 		});

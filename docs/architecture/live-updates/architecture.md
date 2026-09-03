@@ -1,10 +1,10 @@
 # Live updates — Gaia
 
 Gaia is the source of truth for live updates. After a successful persist it
-posts a V2 domain-event envelope to Hermes. It does not name Socket.IO rooms,
+posts a domain-event envelope to Hermes. It does not name Socket.IO rooms,
 keep socket sessions, or know which Prometheus screens are open.
 
-Hermes relay contract: sibling repo `hermes/ARCHITECTURE.md`.
+Hermes relay contract: sibling repo `hermes/docs/architecture/`.
 Prometheus consumption: sibling repo `prometheus/docs/architecture/live-updates/`.
 
 ```
@@ -41,7 +41,7 @@ unchanged.
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 1,
   "eventId": "event-uuid",
   "eventName": "issue.status.changed",
   "occurredAt": "2026-08-20T10:00:00Z",

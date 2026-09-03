@@ -7,7 +7,7 @@
 namespace Gaia\MVC\REST\Controllers\Components\Events\Support;
 
 /**
- * This class posts a V2 domain-event envelope to Hermes. Failures are logged
+ * This class posts a domain-event envelope to Hermes. Failures are logged
  * and swallowed so the REST save is not rolled back.
  *
  * @class   HermesPublisher
@@ -83,7 +83,7 @@ class HermesPublisher
     /**
      * POSTs the envelope to Hermes /publish. Catch and log any throwable.
      *
-     * @param  array $envelope The V2 envelope built by LiveEventEnvelope.
+     * @param  array $envelope The envelope built by LiveEventEnvelope.
      * @method postEnvelope
      * @return void
      */
@@ -93,13 +93,13 @@ class HermesPublisher
 
         try {
             if (is_callable($this->httpClient)) {
-                call_user_func($this->httpClient, $envelope);
+                ($this->httpClient)($envelope);
                 return;
             }
 
             $client = $this->httpClient ?: new \GuzzleHttp\Client(array(
                 'timeout' => 2.0,
-                'connect_timeout' => 1.0,
+                'connect_timeout' => 0.5,
             ));
             $client->post($this->publishUrl(), array(
                 'headers' => array(
@@ -110,7 +110,7 @@ class HermesPublisher
             ));
         } catch (\Throwable $e) {
             if ($logger) {
-                $logger->error('Hermes V2 ingest failed: ' . $e->getMessage());
+                $logger->error('Hermes ingest failed: ' . $e->getMessage());
             }
         }
     }
