@@ -396,13 +396,30 @@ These scenarios are settled and should become tests later:
 
 ---
 
+## Record scope decisions
+
+### D-060 — Project.get record scopes (none / all / members)
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | `project.get` uses numeric record scopes in `permissions.allowed`: **`0` = none**, **`1` = all**, **`2` = members**. Other module actions remain binary `0`/`1`. UI labels for `project.get` are None / All / Members (`system.acl.scopedApiOptions`); default modules keep Allow / None (`apiOptions`). |
+| Boolean gate | Scope `1` or `2` allows the module action; `0` denies (403). Unknown non-zero values on scoped resources do **not** allow. |
+| Members filter | Scope `2` restricts Project rows to `memberships` for the current user, and cascades to models with `acl.groups` containing `Project` via `acl.groupKeys` (direct `projectId` or path metadata for Comment/Activity). Scope `1` applies no row filter. |
+| Aggregation | Under permissive mode, privilege rank is `1 (all) > 2 (members) > 0 (none)` — not raw numeric max. |
+| Seeding | Permissive `RolePermissionSeeder` seeds `project.get` as **`2` (members)**. Existing stored `1` continues to mean all (no migration). Bootstrap Admin dumps that need org-wide access keep/set `1`. |
+| Writes | Create/update/delete on Project-grouped models assert the target `projectId` (and existing record) are in scope when `project.get` is members. Creating a Project under members scope remains allowed when `project.create` is granted (onboard membership follows). |
+| Implications | `system.acl.scopedResources` lists scoped resource names (`project.get`). RestController applies `Acl::applyRecordScope` / `assertRecordIdInScope` / `assertWriteInScope`. Membership predicates and project-id resolution live on `Gaia\MVC\Models\Project`; `Acl` only orchestrates when to filter/deny. |
+
+---
+
 ## Open questions
 
 Track unsettled policy here. Do not generate tests from these until accepted.
 
 - [ ] Should missing permission rows eventually become default-deny? *(Partially addressed by D-011 materialization: birth catalog is explicit; missing rows still follow live mode for catalog growth / unseeded roles.)*
-- [ ] How should project-scoped permissions interact with global/system memberships for relationship filtering?
-- [ ] Is row-level / ownership-based access in scope for the next RBAC phase?
+- [x] How should project-scoped permissions interact with global/system memberships for relationship filtering? *(D-060: membership filters which projects; roles remain global via `user_roles`.)*
+- [x] Is row-level / ownership-based access in scope for the next RBAC phase? *(Membership record scope for `project.get` accepted in D-060; assignee/`own` rules remain out of scope.)*
 - [ ] Should denied eager relationships appear as empty linkage (`data: []` / `null`) instead of being omitted entirely?
 - [ ] Exact behavior for unauthorized fields inside already-authorized included records under all serializer paths
 - [ ] Now that Global is retired (D-050) and role assignment is optional (D-053), a user can have zero roles. Under current permissive default (D-011) this does not restrict them. Revisit if/when default-allow becomes default-deny.
@@ -416,6 +433,7 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 
 | Date | Change |
 |------|--------|
+| 2026-09-15 | D-060: `project.get` scopes 0/1/2 (none/all/members); membership cascade via `groupKeys`; seed default members |
 | 2026-08-11 | D-011 revised: full-catalog materialization at role create via `RolePermissionSeeder`, seeded from resolution mode only (no role-name force-allow; privilege stays capability-based, D-052); missing rows still follow live resolution mode (catalog growth). D-014: `system.acl.resolutionMode` is create-time seed + aggregation + missing-row policy; flips do not rewrite rows. D-037: unset/DELETE → explicit `none`/deny (no row delete) |
 | 2026-08-10 | D-052: usable membership = Active `accountStatus` (case-insensitive); enforced on user deactivate/delete via `UserController`; `roleMemberCount` joins users and ignores non-Active/deleted members |
 | 2026-08-10 | Removed deferred `AclTask` CLI (ensureAdmin / cleanupGlobalRole); D-050/D-051 now describe dump/ops seeding instead of that task |

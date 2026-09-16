@@ -158,6 +158,26 @@ $models['Comment'] = array(
     ),
     'acl' => [
         'groups' => ['Project', 'Conversationroom'],
+        'groupKeys' => [
+            'Project' => [
+                'paths' => [
+                    [
+                        'when' => ['relatedTo' => 'issues'],
+                        'relatedModel' => 'Issue',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'projectId',
+                    ],
+                    [
+                        'when' => ['relatedTo' => 'conversationrooms'],
+                        'relatedModel' => 'Conversationroom',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'projectId',
+                    ],
+                ],
+            ],
+        ],
     ],
 );
 

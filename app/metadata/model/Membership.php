@@ -116,13 +116,10 @@ $models['Membership'] = array(
         'modifiedUserBehavior'
     ),
     'acl' => [
-        'assignment' => [
-            'field' => 'createdUser',
-            'condition' => 'Membership.createdUser=:userId:'
+        'groups' => ['Project'],
+        'groupKeys' => [
+            'Project' => 'projectId',
         ],
-        'groupExplicitKeys' => [
-            'project' => 'projectId'
-        ]
     ]
 );
 

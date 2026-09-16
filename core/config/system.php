@@ -20,6 +20,16 @@ $config['system'] = [
             'allow' => '1',
             'none' => '0'
         ],
+        // Numeric scopes for record-scoped resources (e.g. project.get).
+        // 0 = none, 1 = all, 2 = members (membership-filtered).
+        'scopedApiOptions' => [
+            'all' => '1',
+            'members' => '2',
+            'none' => '0',
+        ],
+        'scopedResources' => [
+            'project.get',
+        ],
         'resolutionMode' => 'permissive',
         'modelGroups' => $modelGroups,
         'moduleActions' => \Gaia\Libraries\Security\AclMapCatalog::buildModuleActions(),

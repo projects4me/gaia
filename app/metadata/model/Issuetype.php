@@ -118,6 +118,9 @@ $models['Issuetype'] = array(
     ),
     'acl' => [
         'groups' => ['Project'],
+        'groupKeys' => [
+            'Project' => 'projectId',
+        ],
     ],
 );
 

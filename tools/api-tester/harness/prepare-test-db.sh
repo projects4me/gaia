@@ -359,6 +359,20 @@ INSERT INTO users (
   'API Tester',
   'active',
   0
+),
+(
+  -- Project.get members (2): only member projects + child rows
+  'api-test-user-acl-mem',
+  '$2y$10$OH8mqmGV2uLOLyoSdLGm/ejzhLXVOsOz/Ld2fi610E/qWWTqQ6e1G',
+  'api-tester-acl-members@example.com',
+  'API Tester ACL Members',
+  0,
+  'api-test-user-0001',
+  'api-test-user-0001',
+  'API Tester',
+  'API Tester',
+  'active',
+  0
 )
 ON CONFLICT (id) DO UPDATE SET
   password = EXCLUDED.password,
@@ -404,6 +418,10 @@ INSERT INTO memberships (
 (
   'api-test-membership-2', 'api-test-user-0001', 'api-test-user-0001',
   'api-test-user-0001', 'API Tester', 'API Tester', 'api-test-project-002'
+),
+(
+  'api-test-membership-mem', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-acl-mem', 'API Tester', 'API Tester', 'api-test-project-001'
 )
 ON CONFLICT (id) DO UPDATE SET
   "userId" = EXCLUDED."userId",
@@ -471,6 +489,10 @@ INSERT INTO roles (
 (
   'api-test-role-acl-nc', 'ACL No Conversation', 'project+comment allowed, conversationroom.get denied', 0,
   'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
+),
+(
+  'api-test-role-acl-mem', 'ACL Project Members', 'project.get=2 members scope', 0,
+  'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
 )
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, deleted = 0;
 
@@ -496,6 +518,10 @@ INSERT INTO user_roles (
 (
   'api-test-userrole-acl-nc', 'api-test-user-0001', 'api-test-user-0001',
   'api-test-user-acl-nc', 'api-test-role-acl-nc', 'API Tester', 'API Tester'
+),
+(
+  'api-test-userrole-acl-mem', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-acl-mem', 'api-test-role-acl-mem', 'API Tester', 'API Tester'
 )
 ON CONFLICT (id) DO UPDATE SET
   "userId" = EXCLUDED."userId",
@@ -525,6 +551,15 @@ VALUES
   ('atp-acl-nc-issue-get', 'api-test-role-acl-nc', 'issue.get', 1, NOW(), NOW()),
   ('atp-acl-nc-comment-get', 'api-test-role-acl-nc', 'comment.get', 1, NOW(), NOW()),
   ('atp-acl-nc-conv-get', 'api-test-role-acl-nc', 'conversationroom.get', 0, NOW(), NOW());
+
+-- Members-scope role: project.get=2; can read issues/comments in member projects only
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-mem-project-get', 'api-test-role-acl-mem', 'project.get', 2, NOW(), NOW()),
+  ('atp-acl-mem-issue-get', 'api-test-role-acl-mem', 'issue.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-issue-create', 'api-test-role-acl-mem', 'issue.create', 1, NOW(), NOW()),
+  ('atp-acl-mem-comment-get', 'api-test-role-acl-mem', 'comment.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-conv-get', 'api-test-role-acl-mem', 'conversationroom.get', 1, NOW(), NOW());
 
 -- Field ACL role: module access + field matrix
 -- subject = None (0/0/0)
@@ -608,6 +643,12 @@ INSERT INTO issues (
   'api-test-user-0001', 'api-test-user-0001', 'api-test-user-0001', 'api-test-user-0001', 'api-test-user-0001',
   'low', 'new', 'api-test-project-001', NULL, (SELECT bug_type FROM seed_ctx),
   'API Tester', 'API Tester', (SELECT new_status FROM seed_ctx), 'ATP', 0, 0, 2
+),
+(
+  'api-test-issue-000003', 'Other Project Issue', 0,
+  'api-test-user-0001', 'api-test-user-0001', 'api-test-user-0001', 'api-test-user-0001', 'api-test-user-0001',
+  'low', 'new', 'api-test-project-002', NULL, (SELECT bug_type FROM seed_ctx),
+  'API Tester', 'API Tester', (SELECT new_status FROM seed_ctx), 'P4MM', 0, 0, 3
 )
 ON CONFLICT (id) DO UPDATE SET subject = EXCLUDED.subject, deleted = 0, "milestoneId" = EXCLUDED."milestoneId";
 
@@ -711,14 +752,20 @@ data = {
     "aclNoConversation": {
       "email": "api-tester-acl-noconv@example.com",
       "password": "unit-testing"
+    },
+    "aclMembers": {
+      "email": "api-tester-acl-members@example.com",
+      "password": "unit-testing"
     }
   },
   "values": {
     "userId": "api-test-user-0001",
     "memberUserId": "api-test-user-0002",
     "projectId": "api-test-project-001",
+    "otherProjectId": "api-test-project-002",
     "projectShortcode": "ATP",
     "issueId": "api-test-issue-000001",
+    "otherProjectIssueId": "api-test-issue-000003",
     "issueSubject": "API Tester Seed Issue",
     "milestoneId": "api-test-milestone-01",
     "roleId": "1",

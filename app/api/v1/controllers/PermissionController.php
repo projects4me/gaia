@@ -8,6 +8,7 @@ namespace Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
 use Gaia\Libraries\Utils\Util;
+use Gaia\Libraries\Security\Acl;
 use Gaia\Libraries\Security\AclMapCatalog;
 use Gaia\Libraries\Security\AclLockoutGuard;
 use Gaia\MVC\Models\Permission;
@@ -18,6 +19,7 @@ use function Gaia\Libraries\Utils\create_guid;
  * Permissions Controller
  *
  * Module actions use binary allowed (0/1; '' coerces to 0).
+ * Scoped resources (e.g. project.get) also accept 2 (members).
  * Field ACL is administered as one mode resource per field
  * (`issue.subject` + allowed none|read|write|''); storage expands to
  * get/create/update triples internally. Empty field mode coerces to none.
@@ -395,7 +397,8 @@ class PermissionController extends RestController
     }
 
     /**
-     * Validate permission flags are binary allow/deny values (0 or 1).
+     * Validate permission flags are allow/deny (0/1), or scoped 0/1/2 for
+     * record-scoped resources such as project.get.
      *
      * @method passBinaryFlagChecks
      * @param  array $values          Array containing values of the request.
@@ -403,15 +406,25 @@ class PermissionController extends RestController
      */
     private function passBinaryFlagChecks($values)
     {
-        $allowedValues = ['0', '1', ''];
+        $resourceName = isset($values['resourceName']) ? (string) $values['resourceName'] : '';
         $value = isset($values['allowed']) ? (string) $values['allowed'] : '';
+
+        $acl = new Acl($this->getDI());
+        if ($acl->isScopedResource($resourceName)) {
+            $allowedValues = ['0', '1', '2', ''];
+            $suggestion = 'You can only set 0 (none), 1 (all), or 2 (members); empty becomes 0';
+        } else {
+            $allowedValues = ['0', '1', ''];
+            $suggestion = 'You can only set 0 (deny) or 1 (allow); empty becomes 0';
+        }
+
         if (!in_array($value, $allowedValues, true)) {
             throw new \Gaia\Exception\Permission(
                 "You're not allowed to set {$value}",
                 null,
                 null,
                 [
-                    'suggestion' => 'You can only set 0 (deny) or 1 (allow); empty becomes 0'
+                    'suggestion' => $suggestion
                 ]
             );
         }

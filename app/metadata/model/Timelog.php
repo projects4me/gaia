@@ -175,6 +175,9 @@ $models['Timelog'] = array(
     ),
     'acl' => [
         'groups' => ['Project'],
+        'groupKeys' => [
+            'Project' => 'projectId',
+        ],
     ],
 );
 

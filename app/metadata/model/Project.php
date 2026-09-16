@@ -269,6 +269,7 @@ $models['Project'] = array(
     ),
     'acl' => [
         'group' => true,
+        'recordScopeResource' => 'project.get',
     ],
 );
 

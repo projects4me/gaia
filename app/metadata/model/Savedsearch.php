@@ -109,6 +109,9 @@ $models['Savedsearch'] = array(
     ),
     'acl' => [
         'groups' => ['Project'],
+        'groupKeys' => [
+            'Project' => 'projectId',
+        ],
     ],
 );
 

@@ -162,6 +162,26 @@ $models['Activity'] = array(
     ),
     'acl' => [
         'groups' => ['Project'],
+        'groupKeys' => [
+            'Project' => [
+                'paths' => [
+                    [
+                        'when' => ['relatedTo' => 'project'],
+                        'relatedModel' => 'Project',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'id',
+                    ],
+                    [
+                        'when' => ['relatedTo' => 'issue'],
+                        'relatedModel' => 'Issue',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'projectId',
+                    ],
+                ],
+            ],
+        ],
     ],
 );
 

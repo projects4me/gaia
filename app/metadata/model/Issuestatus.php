@@ -106,15 +106,10 @@ $models['Issuestatus'] = array(
     'indexes' => array(
         'id' => 'primary',
     ),
-    'foriegnKeys' => array(
-
-    ) ,
-    'triggers' => array(
-
-    ),
+    'foriegnKeys' => array(),
+    'triggers' => array(),
     'functions' => array(),
-    'relationships' => array(
-    ),
+    'relationships' => array(),
     'behaviors' => array(
         'auditBehavior',
         'dateCreatedBehavior',
@@ -123,9 +118,7 @@ $models['Issuestatus'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior'
     ),
-    'acl' => [
-        'groups' => ['Project'],
-    ],
+    'acl' => [],
 );
 
 return $models;

@@ -364,6 +364,22 @@ class RolePermissionSeederTest extends TestCase
         $this->assertTrue(AclMapCatalog::isFieldActionResource('issue.subject.get'));
     }
 
+    public function testPermissiveCatalogSeedsProjectGetAsMembersScope(): void
+    {
+        $rows = RolePermissionSeeder::buildCatalogRows('probe', Acl::SCOPE_ALL, [
+            'get' => '1',
+            'create' => '1',
+            'update' => '1',
+        ]);
+        $byResource = [];
+        foreach ($rows as $row) {
+            $byResource[$row['resourceName']] = (int) $row['allowed'];
+        }
+        $this->assertSame(Acl::SCOPE_MEMBERS, $byResource['project.get']);
+        $this->assertSame(Acl::SCOPE_ALL, $byResource['issue.get']);
+        $this->assertSame(Acl::SCOPE_ALL, $byResource['project.create']);
+    }
+
     public function testResolveConfiguredResolutionModeDefaultsPermissive(): void
     {
         $mode = Acl::resolveConfiguredResolutionMode();
