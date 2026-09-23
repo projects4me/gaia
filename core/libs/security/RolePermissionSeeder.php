@@ -105,7 +105,16 @@ class RolePermissionSeeder
                     continue;
                 }
                 $seen[$resourceName] = true;
-                $rows[] = self::makeRow($roleId, $resourceName, $moduleAllowed);
+                // New roles default project.get to members (2) under permissive
+                // seed; bootstrap Admin dumps retain 1 (all) where already set.
+                $allowed = $moduleAllowed;
+                if (
+                    $resourceName === 'project.get'
+                    && (int) $moduleAllowed === Acl::SCOPE_ALL
+                ) {
+                    $allowed = Acl::SCOPE_MEMBERS;
+                }
+                $rows[] = self::makeRow($roleId, $resourceName, $allowed);
             }
         }
 

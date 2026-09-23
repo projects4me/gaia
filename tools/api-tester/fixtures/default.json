@@ -23,14 +23,20 @@
     "aclNoConversation": {
       "email": "api-tester-acl-noconv@example.com",
       "password": "unit-testing"
+    },
+    "aclMembers": {
+      "email": "api-tester-acl-members@example.com",
+      "password": "unit-testing"
     }
   },
   "values": {
     "userId": "api-test-user-0001",
     "memberUserId": "api-test-user-0002",
     "projectId": "api-test-project-001",
+    "otherProjectId": "api-test-project-002",
     "projectShortcode": "ATP",
     "issueId": "api-test-issue-000001",
+    "otherProjectIssueId": "api-test-issue-000003",
     "issueSubject": "API Tester Seed Issue",
     "milestoneId": "api-test-milestone-01",
     "roleId": "1",

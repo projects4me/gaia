@@ -807,6 +807,85 @@
         "shape": "json"
       },
       "source": "acl-permission"
+    },
+    {
+      "id": "acl-members-project-list-includes-member-project",
+      "method": "GET",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": ["{projectId}"]
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-project-detail-member-allowed",
+      "method": "GET",
+      "path": "/api/v1/project/{projectId}",
+      "resource": "project",
+      "auth": "aclMembers",
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{projectId}"]
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-project-detail-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/project/{otherProjectId}",
+      "resource": "project",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-issue-list-includes-member-issue",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": ["{issueId}"]
+      },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-issue-detail-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/issue/{otherProjectIssueId}",
+      "resource": "issue",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-issue-create-non-member-project-denied",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Members scope create deny",
+            "projectId": "{otherProjectId}",
+            "priority": "low",
+            "status": "new"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
     }
   ]
 }

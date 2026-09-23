@@ -75,6 +75,7 @@ Optional: `--filter project` (OR terms with `|`, e.g. `milestone|timelog`)
   - uses fixture `authProfiles`:
     - `aclNoProject` — child modules allowed, `project.get` denied
     - `aclProjectOnly` — `project.get` allowed, `issue.get` denied
+    - `aclMembers` — `project.get=2` (members); member of project-001 only
     - `aclNoConversation` — project+comment allowed, `conversationroom.get` denied
     - `aclFields` — issue+project allowed with field matrix:
       - `subject` None (0/0/0)
@@ -205,6 +206,7 @@ ACL mode uses:
 
 - `aclNoProject` — `issue.get`/`comment.get`/`conversationroom.get` allowed, `project.get` denied
 - `aclProjectOnly` — `project.get` allowed, `issue.get` denied
+- `aclMembers` — `project.get=2` (members); member of `api-test-project-001` only
 - `aclNoConversation` — `project.get`/`comment.get` allowed, `conversationroom.get` denied
 - `aclFields` — field ACL matrix on Issue (see `apis/acl.json` description above)
 

@@ -36,6 +36,8 @@ class SystemsettingController extends RestController
         $configPaths = [
             'aclSettings' => [
                 'acl.apiOptions',
+                'acl.scopedApiOptions',
+                'acl.scopedResources',
                 'acl.modelGroups',
                 'acl.moduleActions'
             ]

@@ -7,6 +7,7 @@
 namespace Gaia\Libraries\Security;
 
 use Gaia\MVC\Models\Permission;
+use Gaia\MVC\Models\Project;
 
 /**
  * RBAC/ACL policy layer for REST authorization.
@@ -21,6 +22,8 @@ use Gaia\MVC\Models\Permission;
  * - Filter relationship aliases the user may not read (denial omits)
  * - Authorize related-resource routes (denial throws)
  * - Authorize and filter field-level ACL (`{module}.{field}.{action}`)
+ * - Orchestrate record scopes (none/all/members); Project membership semantics
+ *   live on {@see Project}
  *
  * @author  Rana Nouman <ranamnouman@gmail.com>
  * @package Core\Libraries\Security
@@ -37,6 +40,21 @@ class Acl
      * A permission is denied when any applicable role denies it.
      */
     public const RESOLUTION_RESTRICTIVE = 'restrictive';
+
+    /**
+     * Record scope: no access.
+     */
+    public const SCOPE_NONE = 0;
+
+    /**
+     * Record scope: all rows (org-wide).
+     */
+    public const SCOPE_ALL = 1;
+
+    /**
+     * Record scope: membership-filtered rows only.
+     */
+    public const SCOPE_MEMBERS = 2;
 
     /**
      * @var \Phalcon\Di\FactoryDefault
@@ -61,6 +79,20 @@ class Acl
      * @var array
      */
     private $allowedFields = [];
+
+    /**
+     * User id whose permissions were loaded for this request.
+     *
+     * @var string|null
+     */
+    protected $userId = null;
+
+    /**
+     * Cached membership project ids for the current user (members scope).
+     *
+     * @var array|null
+     */
+    protected $accessibleProjectIds = null;
 
     /**
      * The constructor of the Acl class.
@@ -139,6 +171,8 @@ class Acl
      */
     protected function loadPermissions($userId)
     {
+        $this->userId = (string) $userId;
+        $this->accessibleProjectIds = null;
         Permission::loadEffectivePermissions($userId);
     }
 
@@ -619,6 +653,8 @@ class Acl
      *
      * Missing grants follow resolution mode: permissive allows, restrictive denies.
      * Permissive: any allow wins. Restrictive: every row must allow.
+     * Scoped resources (e.g. project.get) treat 1 (all) and 2 (members) as allow;
+     * unknown non-zero values do not allow.
      *
      * @param  string $resourceName
      * @return bool
@@ -629,8 +665,15 @@ class Acl
             return self::$resolutionMode === self::RESOLUTION_PERMISSIVE;
         }
 
+        $isScoped = $this->isScopedResource($resourceName);
+
         foreach (Permission::getPermissionsForResource($resourceName) as $permission) {
-            $allowed = $this->normalizeFlag($permission['allowed'] ?? null) === 1;
+            if ($isScoped) {
+                $scope = $this->normalizeScopeValue($permission['allowed'] ?? null);
+                $allowed = ($scope === self::SCOPE_ALL || $scope === self::SCOPE_MEMBERS);
+            } else {
+                $allowed = $this->normalizeFlag($permission['allowed'] ?? null) === 1;
+            }
 
             if (self::$resolutionMode === self::RESOLUTION_PERMISSIVE && $allowed) {
                 return true;
@@ -642,6 +685,309 @@ class Acl
         }
 
         return self::$resolutionMode === self::RESOLUTION_RESTRICTIVE;
+    }
+
+    /**
+     * Whether a resource uses record-scope values (0/1/2) instead of binary 0/1.
+     *
+     * @param  string $resourceName
+     * @return bool
+     */
+    public function isScopedResource($resourceName)
+    {
+        global $settings;
+
+        $scoped = ['project.get'];
+        if (isset($settings['system']['acl']['scopedResources'])) {
+            $configured = $settings['system']['acl']['scopedResources'];
+            if (is_object($configured) && method_exists($configured, 'toArray')) {
+                $configured = $configured->toArray();
+            }
+            if (is_array($configured) && !empty($configured)) {
+                $scoped = array_values($configured);
+            }
+        }
+
+        return in_array($resourceName, $scoped, true);
+    }
+
+    /**
+     * Resolve the effective record scope for a scoped resource.
+     *
+     * Privilege rank (not numeric magnitude): all (1) > members (2) > none (0).
+     *
+     * @param  string $resourceName
+     * @return int One of SCOPE_NONE, SCOPE_ALL, SCOPE_MEMBERS
+     */
+    public function getEffectiveScope($resourceName)
+    {
+        if (!$this->isScopedResource($resourceName)) {
+            return $this->isResourceAllowed($resourceName)
+                ? self::SCOPE_ALL
+                : self::SCOPE_NONE;
+        }
+
+        if (!Permission::hasResource($resourceName)) {
+            return self::$resolutionMode === self::RESOLUTION_PERMISSIVE
+                ? self::SCOPE_ALL
+                : self::SCOPE_NONE;
+        }
+
+        $ranks = [
+            self::SCOPE_NONE => 0,
+            self::SCOPE_MEMBERS => 1,
+            self::SCOPE_ALL => 2,
+        ];
+
+        if (self::$resolutionMode === self::RESOLUTION_PERMISSIVE) {
+            $best = self::SCOPE_NONE;
+            foreach (Permission::getPermissionsForResource($resourceName) as $permission) {
+                $scope = $this->normalizeScopeValue($permission['allowed'] ?? null);
+                if ($ranks[$scope] > $ranks[$best]) {
+                    $best = $scope;
+                }
+            }
+            return $best;
+        }
+
+        $worst = self::SCOPE_ALL;
+        $sawRow = false;
+        foreach (Permission::getPermissionsForResource($resourceName) as $permission) {
+            $sawRow = true;
+            $scope = $this->normalizeScopeValue($permission['allowed'] ?? null);
+            if ($ranks[$scope] < $ranks[$worst]) {
+                $worst = $scope;
+            }
+        }
+
+        return $sawRow ? $worst : self::SCOPE_NONE;
+    }
+
+    /**
+     * Normalize a stored allowed value to a scope constant for scoped resources.
+     *
+     * Only 0, 1, and 2 are recognized; other non-zero values become none.
+     *
+     * @param  mixed $flagValue
+     * @return int
+     */
+    public function normalizeScopeValue($flagValue)
+    {
+        if ($flagValue === null || $flagValue === '') {
+            return self::SCOPE_NONE;
+        }
+
+        $value = (int) $flagValue;
+        if (
+            $value === self::SCOPE_NONE
+            || $value === self::SCOPE_ALL
+            || $value === self::SCOPE_MEMBERS
+        ) {
+            return $value;
+        }
+
+        return self::SCOPE_NONE;
+    }
+
+    /**
+     * Project ids the current user may access under members scope.
+     *
+     * @return array
+     */
+    public function getAccessibleProjectIds()
+    {
+        if ($this->accessibleProjectIds !== null) {
+            return $this->accessibleProjectIds;
+        }
+
+        $this->accessibleProjectIds = Project::accessibleIdsForUser(
+            $this->userId === null ? '' : $this->userId
+        );
+        return $this->accessibleProjectIds;
+    }
+
+    /**
+     * Inject membership record-scope into list/get query params when needed.
+     *
+     * Sets `$params['aclWhere']` (raw PHQL) consumed by Query.
+     *
+     * @param  string $modelName
+     * @param  array  $params
+     * @return void
+     */
+    public function applyRecordScope($modelName, array &$params)
+    {
+        $binding = $this->resolveRecordScopeBinding($modelName);
+        if ($binding === null) {
+            return;
+        }
+
+        if ($binding['scope'] === self::SCOPE_ALL) {
+            return;
+        }
+
+        if ($binding['scope'] === self::SCOPE_NONE) {
+            $params['aclWhere'] = '1 = 0';
+            return;
+        }
+
+        $params['aclWhere'] = Project::buildAclWhere(
+            $modelName,
+            $binding['binding'],
+            $this->getAccessibleProjectIds()
+        );
+    }
+
+    /**
+     * Deny when a project id is outside the effective members scope.
+     *
+     * @param  string|null $projectId
+     * @return void
+     * @throws \Gaia\Exception\Access
+     */
+    public function assertProjectIdInScope($projectId)
+    {
+        $scope = $this->getEffectiveScope('project.get');
+        if ($scope === self::SCOPE_ALL) {
+            return;
+        }
+        if ($scope === self::SCOPE_NONE) {
+            $this->denyAccess('Access denied: project scope is none');
+        }
+
+        $projectId = (string) $projectId;
+        if ($projectId === '' || !in_array($projectId, $this->getAccessibleProjectIds(), true)) {
+            $this->denyAccess('Access denied to project outside membership scope');
+        }
+    }
+
+    /**
+     * Deny when a record (by id) is outside membership scope.
+     *
+     * @param  string $modelName
+     * @param  string $recordId
+     * @return void
+     * @throws \Gaia\Exception\Access
+     */
+    public function assertRecordIdInScope($modelName, $recordId)
+    {
+        $binding = $this->resolveRecordScopeBinding($modelName);
+        if ($binding === null || $binding['scope'] === self::SCOPE_ALL) {
+            return;
+        }
+        if ($binding['scope'] === self::SCOPE_NONE) {
+            $this->denyAccess('Access denied: project scope is none');
+        }
+
+        $projectId = Project::resolveProjectIdForRecord(
+            $modelName,
+            $recordId,
+            $binding['binding']
+        );
+        if ($projectId === null || $projectId === '') {
+            // Missing record: leave not-found handling to the normal get path.
+            return;
+        }
+        $this->assertProjectIdInScope($projectId);
+    }
+
+    /**
+     * Deny when write attributes target a project outside membership scope.
+     *
+     * @param  string $modelName
+     * @param  array  $attributes
+     * @param  string|null $existingId Record id for updates
+     * @return void
+     * @throws \Gaia\Exception\Access
+     */
+    public function assertWriteInScope($modelName, array $attributes, $existingId = null)
+    {
+        $binding = $this->resolveRecordScopeBinding($modelName);
+        if ($binding === null || $binding['scope'] === self::SCOPE_ALL) {
+            return;
+        }
+        if ($binding['scope'] === self::SCOPE_NONE) {
+            $this->denyAccess('Access denied: project scope is none');
+        }
+
+        if ($existingId) {
+            $this->assertRecordIdInScope($modelName, $existingId);
+        }
+
+        $field = isset($binding['binding']['field']) ? $binding['binding']['field'] : null;
+        if ($field && array_key_exists($field, $attributes)) {
+            if ($field === 'id' && $modelName === 'Project') {
+                $this->assertProjectIdInScope($attributes[$field]);
+            } elseif ($field === 'projectId') {
+                $this->assertProjectIdInScope($attributes[$field]);
+            }
+        } elseif (
+            $modelName === 'Project'
+            && $existingId === null
+            && $binding['scope'] === self::SCOPE_MEMBERS
+        ) {
+            // Creating a project under members scope is allowed when project.create
+            // is granted; onboarding adds membership after create.
+            return;
+        } elseif (
+            $existingId === null
+            && $field === 'projectId'
+            && !array_key_exists('projectId', $attributes)
+        ) {
+            // create without projectId — model validation handles required fields
+            return;
+        }
+    }
+
+    /**
+     * Resolve whether/how project.get record scope applies to a model.
+     *
+     * Policy (effective scope) stays here; Project groupKeys / membership
+     * mapping comes from {@see Project}.
+     *
+     * @param  string $modelName
+     * @return array|null
+     */
+    protected function resolveRecordScopeBinding($modelName)
+    {
+        $metadata = $this->di->get('metaManager')->getModelMeta($modelName);
+        $aclMeta = isset($metadata['acl']) && is_array($metadata['acl'])
+            ? $metadata['acl']
+            : [];
+
+        $groups = isset($aclMeta['groups']) && is_array($aclMeta['groups'])
+            ? $aclMeta['groups']
+            : [];
+
+        // Project-grouped models (including nested groups like Conversationroom)
+        // inherit project.get record scope via groupKeys.
+        if (in_array('Project', $groups, true)) {
+            $groupKey = isset($aclMeta['groupKeys']['Project'])
+                ? $aclMeta['groupKeys']['Project']
+                : 'projectId';
+
+            return [
+                'resource' => 'project.get',
+                'scope' => $this->getEffectiveScope('project.get'),
+                'binding' => Project::normalizeGroupKeyBinding($groupKey),
+            ];
+        }
+
+        if (!empty($aclMeta['group'])) {
+            $resource = isset($aclMeta['recordScopeResource'])
+                ? (string) $aclMeta['recordScopeResource']
+                : $this->buildResourceName($modelName, 'get');
+            if (!$this->isScopedResource($resource)) {
+                return null;
+            }
+            return [
+                'resource' => $resource,
+                'scope' => $this->getEffectiveScope($resource),
+                'binding' => Project::selfBinding(),
+            ];
+        }
+
+        return null;
     }
 
     /**

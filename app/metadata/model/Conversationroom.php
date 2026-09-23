@@ -192,6 +192,9 @@ $models['Conversationroom'] = array(
     'acl' => [
         'group' => true,
         'groups' => ['Project'],
+        'groupKeys' => [
+            'Project' => 'projectId',
+        ],
     ],
 );
 

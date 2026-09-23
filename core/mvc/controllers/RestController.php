@@ -482,6 +482,13 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             'addRelFields' => $addRelFields
         );
 
+        $modelAlias = Util::extractClassFromNamespace($modelName);
+        if ($this->getDI()->has('acl')) {
+            $acl = $this->getDI()->get('acl');
+            $acl->assertRecordIdInScope($modelAlias, $this->id);
+            $acl->applyRecordScope($modelAlias, $params);
+        }
+
         $model = new $modelName();
 
         $data = $model->read($params);
@@ -543,6 +550,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             'offset' => $offset,
         );
 
+        $modelAlias = Util::extractClassFromNamespace($modelName);
+        if ($this->getDI()->has('acl')) {
+            $this->getDI()->get('acl')->assertRecordIdInScope($modelAlias, $this->id);
+        }
+
         $model = new $modelName();
 
         $data = $model->readRelated($params);
@@ -601,6 +613,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         );
 
         $params = $export ? $this->updateParamsForExport($params) : $params;
+
+        $modelAlias = Util::extractClassFromNamespace($modelName);
+        if ($this->getDI()->has('acl')) {
+            $this->getDI()->get('acl')->applyRecordScope($modelAlias, $params);
+        }
 
         $model = new $modelName();
         $data = $model->readAll($params);
@@ -679,7 +696,9 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
                 $modelAlias = Util::extractClassFromNamespace($modelName);
                 if ($this->getDI()->has('acl')) {
-                    $value = $this->getDI()->get('acl')->authorizeWritableFields($modelAlias, $value, 'update');
+                    $acl = $this->getDI()->get('acl');
+                    $value = $acl->authorizeWritableFields($modelAlias, $value, 'update');
+                    $acl->assertWriteInScope($modelAlias, $value, $value['id']);
                 }
 
                 //if passed by url
@@ -816,7 +835,13 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             $modelAlias = Util::extractClassFromNamespace($modelName);
             $writeAction = isset($this->id) ? 'update' : 'create';
             if ($this->getDI()->has('acl')) {
-                $value = $this->getDI()->get('acl')->authorizeWritableFields($modelAlias, $value, $writeAction);
+                $acl = $this->getDI()->get('acl');
+                $value = $acl->authorizeWritableFields($modelAlias, $value, $writeAction);
+                $acl->assertWriteInScope(
+                    $modelAlias,
+                    $value,
+                    isset($this->id) ? $this->id : null
+                );
             }
 
             //if have param then update
@@ -880,6 +905,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         // need to evaluate if we need to use this function
         $modelName = $this->modelName;
+
+        $modelAlias = Util::extractClassFromNamespace($modelName);
+        if ($this->getDI()->has('acl')) {
+            $this->getDI()->get('acl')->assertRecordIdInScope($modelAlias, $this->id);
+        }
 
         $model = $modelName::findFirst('id = "' . $this->id . '"');
 

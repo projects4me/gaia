@@ -170,6 +170,9 @@ $models['Milestone'] = array(
     ),
     'acl' => [
         'groups' => ['Project'],
+        'groupKeys' => [
+            'Project' => 'projectId',
+        ],
     ],
 );
 

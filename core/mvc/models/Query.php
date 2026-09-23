@@ -141,6 +141,10 @@ class Query
         $this->queryBuilder->where($this->clause->where);
         $this->queryBuilder->having($this->clause->having);
 
+        if (!empty($params['aclWhere'])) {
+            $this->queryBuilder->andWhere($params['aclWhere']);
+        }
+
         // if pagination params are set then set them up
         if (isset($params['limit']) && !empty($params['limit'])) {
             if (isset($params['offset']) && !empty($params['offset'])) {
