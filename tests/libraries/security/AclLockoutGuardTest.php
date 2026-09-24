@@ -541,6 +541,22 @@ class AclLockoutGuardTest extends TestCase
     }
 
     /**
+     * Active and Invited may authenticate; Inactive/Disabled and empty may not.
+     */
+    public function testIsAuthenticatableAccountStatus(): void
+    {
+        $this->assertTrue(AclLockoutGuard::isAuthenticatableAccountStatus('Active'));
+        $this->assertTrue(AclLockoutGuard::isAuthenticatableAccountStatus('active'));
+        $this->assertTrue(AclLockoutGuard::isAuthenticatableAccountStatus('Invited'));
+        $this->assertTrue(AclLockoutGuard::isAuthenticatableAccountStatus('invited'));
+        $this->assertFalse(AclLockoutGuard::isAuthenticatableAccountStatus('Inactive'));
+        $this->assertFalse(AclLockoutGuard::isAuthenticatableAccountStatus('inactive'));
+        $this->assertFalse(AclLockoutGuard::isAuthenticatableAccountStatus('disabled'));
+        $this->assertFalse(AclLockoutGuard::isAuthenticatableAccountStatus(''));
+        $this->assertFalse(AclLockoutGuard::isAuthenticatableAccountStatus(null));
+    }
+
+    /**
      * Non-Active memberships do not satisfy roleMemberCount / the invariant.
      */
     public function testInactiveMembershipDoesNotCount(): void
@@ -622,6 +638,67 @@ class AclLockoutGuardTest extends TestCase
         $method = $this->getUserLockoutMethod();
         $method->invoke(new UserController(), $currentUser->id);
         $this->assertTrue(true);
+    }
+
+    /**
+     * Soft-disable revokes OAuth tokens and expires the user session.
+     */
+    public function testUserControllerRevokesSessionsOnDeactivate(): void
+    {
+        $target = $this->createUser('active');
+        // oauth_*.user_id is varchar(36); keep email within that limit.
+        $target->email = substr(str_replace('-', '', create_guid()), 0, 20) . '@t.io';
+        $target->sessionExpires = gmdate('Y-m-d H:i:s', strtotime('+1 day'));
+        $target->save();
+
+        $accessTokenValue = substr(str_replace('-', '', create_guid()) . str_replace('-', '', create_guid()), 0, 40);
+        $refreshTokenValue = substr(str_replace('-', '', create_guid()) . str_replace('-', '', create_guid()), 0, 40);
+
+        $access = new \Gaia\MVC\Models\Oauthaccesstoken();
+        $access->assign([
+            'access_token' => $accessTokenValue,
+            'client_id' => 'projects4me',
+            'user_id' => $target->email,
+            'expires' => gmdate('Y-m-d H:i:s', strtotime('+1 hour')),
+            'scope' => null,
+        ]);
+        $access->save();
+        $this->createdModels[] = $access;
+
+        $refresh = new \Gaia\MVC\Models\Oauthrefreshtoken();
+        $refresh->assign([
+            'refresh_token' => $refreshTokenValue,
+            'client_id' => 'projects4me',
+            'user_id' => $target->email,
+            'expires' => gmdate('Y-m-d H:i:s', strtotime('+1 day')),
+            'scope' => null,
+        ]);
+        $refresh->save();
+        $this->createdModels[] = $refresh;
+
+        $reflection = new \ReflectionClass(UserController::class);
+        $method = $reflection->getMethod('revokeSessionsIfDeactivated');
+        $method->setAccessible(true);
+        $method->invoke(new UserController(), [
+            'id' => $target->id,
+            'accountStatus' => 'inactive',
+        ]);
+
+        $this->assertFalse(
+            (bool) \Gaia\MVC\Models\Oauthaccesstoken::findFirst([
+                'conditions' => 'access_token = :token:',
+                'bind' => ['token' => $accessTokenValue],
+            ])
+        );
+        $this->assertFalse(
+            (bool) \Gaia\MVC\Models\Oauthrefreshtoken::findFirst([
+                'conditions' => 'refresh_token = :token:',
+                'bind' => ['token' => $refreshTokenValue],
+            ])
+        );
+
+        $reloaded = User::findFirstById($target->id);
+        $this->assertLessThanOrEqual(gmdate('Y-m-d H:i:s'), $reloaded->sessionExpires);
     }
 
     /**

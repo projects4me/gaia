@@ -68,6 +68,23 @@ class AclLockoutGuard
     public const USABLE_ACCOUNT_STATUS = 'Active';
 
     /**
+     * Account statuses that may authenticate (login, refresh, API).
+     *
+     * Compared case-insensitively. `invited` is included so first-login
+     * promotion to Active still works.
+     *
+     * @var array
+     */
+    public const AUTHENTICATABLE_ACCOUNT_STATUSES = ['Active', 'Invited'];
+
+    /**
+     * Stable error code for soft-disabled accounts (login / refresh / API).
+     *
+     * @var string
+     */
+    public const ACCOUNT_INACTIVE_ERROR = 'account_inactive';
+
+    /**
      * Build the full list of `{module}.{action}` resource names in scope for
      * the lockout invariant.
      *
@@ -100,6 +117,31 @@ class AclLockoutGuard
         }
 
         return strcasecmp((string) $accountStatus, self::USABLE_ACCOUNT_STATUS) === 0;
+    }
+
+    /**
+     * Whether an account status is allowed to authenticate.
+     *
+     * Active and Invited may authenticate; Inactive, Disabled, and any other
+     * value may not.
+     *
+     * @param  mixed $accountStatus
+     * @return bool
+     */
+    public static function isAuthenticatableAccountStatus($accountStatus)
+    {
+        if ($accountStatus === null || $accountStatus === '') {
+            return false;
+        }
+
+        $status = (string) $accountStatus;
+        foreach (self::AUTHENTICATABLE_ACCOUNT_STATUSES as $allowed) {
+            if (strcasecmp($status, $allowed) === 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -7,6 +7,7 @@ use Phalcon\Di;
 use Gaia\MVC\Models\Oauthrefreshtoken;
 use Gaia\MVC\Models\User;
 use Gaia\Exception\UnAuthorized;
+use Gaia\Libraries\Security\AclLockoutGuard;
 
 /**
  * OAuthServer class to handle OAuth2 server setup and token management.
@@ -104,6 +105,10 @@ class OAuthServer
             $email = $refreshTokenModel->user_id;
             $user = User::findFirst("email = '$email'");
             $currentDate = gmdate('Y-m-d H:i:s');
+
+            if (!$user || !AclLockoutGuard::isAuthenticatableAccountStatus($user->accountStatus)) {
+                throw new UnAuthorized(AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
+            }
 
             // If session is expired, then refresh token will not be issued
             if ($user->sessionExpires > $currentDate) {

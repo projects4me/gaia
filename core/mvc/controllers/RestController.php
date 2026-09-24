@@ -15,6 +15,7 @@ use Phalcon\Events\ManagerInterface as EventsManagerInterface;
 use Gaia\Libraries\Utils\Csv;
 use Gaia\Libraries\Utils\Zip;
 use Gaia\Core\MVC\Models\ResultStream;
+use Gaia\Libraries\Security\AclLockoutGuard;
 
 use function Gaia\Libraries\Utils\create_guid;
 
@@ -299,6 +300,9 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $oAuthAccessToken = \Gaia\MVC\Models\Oauthaccesstoken::findFirst(array("access_token='" . $token . "'"));
         if (isset($oAuthAccessToken->user_id)) {
             $currentUser = \Gaia\MVC\Models\User::findFirst("email ='" . $oAuthAccessToken->user_id . "'");
+            if (!$currentUser || !AclLockoutGuard::isAuthenticatableAccountStatus($currentUser->accountStatus)) {
+                throw new \Gaia\Exception\UnAuthorized(AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
+            }
         } else {
             throw new \Gaia\Exception\Access("Invalid Token");
         }
