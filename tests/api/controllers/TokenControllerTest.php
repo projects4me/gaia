@@ -221,6 +221,143 @@ class TokenControllerTest extends TestCase
     }
 
     /**
+     * Inactive users must not receive a password-grant access token.
+     *
+     * @return void
+     */
+    public function testInactiveUserCannotGetAccessToken(): void
+    {
+        $user = User::findFirstByEmail('test@gmail.com');
+        $previousStatus = $user->accountStatus;
+        $user->accountStatus = 'inactive';
+        $user->save();
+
+        try {
+            $this->mockOAuthRequest();
+            $this->mockOAuthServer();
+            $this->expectException(\Gaia\Exception\UnAuthorized::class);
+            $this->expectExceptionMessage(\Gaia\Libraries\Security\AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
+            $this->getAccessToken();
+        } finally {
+            $user = User::findFirstByEmail('test@gmail.com');
+            $user->accountStatus = $previousStatus ?: 'Active';
+            $user->save();
+        }
+    }
+
+    /**
+     * Disabled users must not receive a password-grant access token.
+     *
+     * @return void
+     */
+    public function testDisabledUserCannotGetAccessToken(): void
+    {
+        $user = User::findFirstByEmail('test@gmail.com');
+        $previousStatus = $user->accountStatus;
+        $user->accountStatus = 'disabled';
+        $user->save();
+
+        try {
+            $this->mockOAuthRequest();
+            $this->mockOAuthServer();
+            $this->expectException(\Gaia\Exception\UnAuthorized::class);
+            $this->expectExceptionMessage(\Gaia\Libraries\Security\AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
+            $this->getAccessToken();
+        } finally {
+            $user = User::findFirstByEmail('test@gmail.com');
+            $user->accountStatus = $previousStatus ?: 'Active';
+            $user->save();
+        }
+    }
+
+    /**
+     * Invited users may still authenticate (first-login promotion path).
+     *
+     * @return void
+     */
+    public function testInvitedUserCanGetAccessToken(): void
+    {
+        $user = User::findFirstByEmail('test@gmail.com');
+        $previousStatus = $user->accountStatus;
+        $user->accountStatus = 'invited';
+        $user->save();
+
+        try {
+            $this->mockOAuthRequest();
+            $this->mockOAuthServer();
+            $response = $this->getAccessToken();
+            $this->assertEquals(200, $response->getStatusCode());
+        } finally {
+            $user = User::findFirstByEmail('test@gmail.com');
+            $user->accountStatus = $previousStatus ?: 'Active';
+            $user->save();
+        }
+    }
+
+    /**
+     * Refresh is rejected when the account has become inactive.
+     *
+     * @return void
+     */
+    public function testInactiveUserCannotRefreshToken(): void
+    {
+        $this->mockOAuthRequest(false);
+        $this->mockOAuthServer();
+        $response = $this->getAccessToken();
+        $refreshToken = (json_decode($response->getContent()))->refresh_token;
+
+        $user = User::findFirstByEmail('test@gmail.com');
+        $previousStatus = $user->accountStatus;
+        $user->accountStatus = 'inactive';
+        $user->save();
+
+        try {
+            $this->expectException(\Gaia\Exception\UnAuthorized::class);
+            $this->expectExceptionMessage(\Gaia\Libraries\Security\AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
+            $this->getRefreshToken($refreshToken);
+        } finally {
+            $user = User::findFirstByEmail('test@gmail.com');
+            $user->accountStatus = $previousStatus ?: 'Active';
+            $user->save();
+        }
+    }
+
+    /**
+     * Bearer API auth rejects inactive users even if a token row still exists.
+     *
+     * @return void
+     */
+    public function testInactiveUserCannotAuthorizeApiRequest(): void
+    {
+        $this->mockOAuthRequest();
+        $this->mockOAuthServer();
+        $response = $this->getAccessToken();
+        $accessToken = (json_decode($response->getContent()))->access_token;
+
+        $user = User::findFirstByEmail('test@gmail.com');
+        $previousStatus = $user->accountStatus;
+        $user->accountStatus = 'inactive';
+        $user->save();
+
+        try {
+            list($userControllerReflection, $userMock) = $this->getUser();
+
+            $request = new Request();
+            $request->headers = ['AUTHORIZATION' => "Bearer $accessToken"];
+
+            $setUser = $userControllerReflection->getMethod('setUser');
+            $setUser->setAccessible(true);
+            $this->expectException(\Gaia\Exception\UnAuthorized::class);
+            $this->expectExceptionMessage(\Gaia\Libraries\Security\AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
+            $setUser->invoke($userMock, $request);
+        } finally {
+            $user = User::findFirstByEmail('test@gmail.com');
+            $user->accountStatus = $previousStatus ?: 'Active';
+            $user->save();
+        }
+    }
+
+    /**
      * Get the access token.
      *
      * This method sends a POST request to the controller's postAction() method
@@ -377,28 +514,42 @@ class TokenControllerTest extends TestCase
      */
     private static function createTestUser()
     {
-        $userReflection = new \ReflectionClass(User::class);
-        $instance = $userReflection->newInstanceWithoutConstructor();
+        global $currentUser;
 
-        // For now just explicitly generate hash password, in future use behavior to generate hash password.
+        $db = \Phalcon\Di::getDefault()->get('db');
         $passwordHash = password_hash('unit-testing', PASSWORD_DEFAULT);
+        $existing = $db->fetchOne(
+            "SELECT id FROM users WHERE id = 'test-user-oauth1' OR email = 'test@gmail.com' LIMIT 1"
+        );
 
-        $constuct = $userReflection->getMethod('__construct');
-        $constuct->invoke($instance);
+        if ($existing) {
+            $db->execute(
+                "UPDATE users
+                 SET deleted = 0,
+                     \"accountStatus\" = 'Active',
+                     email = 'test@gmail.com',
+                     password = ?,
+                     \"failedLoginAttempts\" = 0,
+                     \"sessionExpires\" = NULL
+                 WHERE id = ?",
+                [$passwordHash, $existing['id']]
+            );
+        } else {
+            $db->execute(
+                "INSERT INTO users (
+                    id, password, email, name, deleted,
+                    \"createdUser\", \"modifiedUser\", \"createdUserName\", \"modifiedUserName\",
+                    \"accountStatus\", \"failedLoginAttempts\"
+                 ) VALUES (
+                    'test-user-oauth1', ?, 'test@gmail.com', 'test oauth user', 0,
+                    'test-user-oauth1', 'test-user-oauth1', 'testUser', 'testUser',
+                    'Active', 0
+                 )",
+                [$passwordHash]
+            );
+        }
 
-        $values = [
-            'id' => 'test-user-oauth1',
-            'email' => 'test@gmail.com',
-            'name' => 'test oauth user',
-            'password' => $passwordHash,
-            'accountStatus' => 'Active',
-            'createdUserName' => 'testUser',
-            'modifiedUserName' => 'testUser',
-            'createdUser' => 'test-user',
-            'modifiedUser' => 'test-user'
-        ];
-        $userReflection->getMethod('assign')->invoke($instance, $values);
-        $userReflection->getMethod('save')->invoke($instance);
+        $currentUser = User::findFirstByEmail('test@gmail.com');
     }
 
     /**
@@ -409,6 +560,8 @@ class TokenControllerTest extends TestCase
     public static function tearDownAfterClass(): void
     {
         $user = User::findFirstByEmail('test@gmail.com');
-        $user->delete();
+        if ($user) {
+            $user->delete();
+        }
     }
 }
