@@ -345,6 +345,14 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id'
             ),
+            'setting' => array(
+                'path' => '/api/:version/setting',
+                'allowedMethods' => array(
+                    'GET',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'systemsetting' => [
                 'path' => '/api/:version/systemsetting',
                 'allowedMethods' => [
