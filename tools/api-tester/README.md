@@ -209,6 +209,7 @@ ACL mode uses:
 - `aclMembers` — `project.get=2` (members); member of `api-test-project-001` only
 - `aclNoConversation` — `project.get`/`comment.get` allowed, `conversationroom.get` denied
 - `aclFields` — field ACL matrix on Issue (see `apis/acl.json` description above)
+- `aclNoSetting` — `issuestatus.*`/`issuetype.*`/`project.get` allowed, `setting.get`/`setting.update` denied (system status/type writes and status issue counts are refused)
 
 ## Runtime capture (mutation lifecycle)
 

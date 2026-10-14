@@ -102,6 +102,20 @@ $models['Issuestatus'] = array(
             'length' => '1',
             'null' => false,
         ),
+        'color' => array(
+            'name' => 'color',
+            'label' => 'LBL_ISSUE_STATUSES_COLOR',
+            'type' => 'varchar',
+            'length' => '7',
+            'null' => true,
+        ),
+        'sortOrder' => array(
+            'name' => 'sortOrder',
+            'label' => 'LBL_ISSUE_STATUSES_SORT_ORDER',
+            'type' => 'int',
+            'length' => '11',
+            'null' => true,
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',

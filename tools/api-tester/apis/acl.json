@@ -1107,6 +1107,26 @@
       },
       "expects": { "status": 200, "shape": "jsonapi.resource" },
       "source": "acl-setting"
+    },
+    {
+      "id": "acl-issuestatus-issue-count-denied-without-setting",
+      "method": "GET",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": "aclNoSetting",
+      "query": { "issueCount": "true", "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-issuestatus-list-allowed-without-setting",
+      "method": "GET",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-setting"
     }
   ]
 }
