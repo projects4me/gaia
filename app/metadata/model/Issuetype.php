@@ -121,6 +121,11 @@ $models['Issuetype'] = array(
         'groupKeys' => [
             'Project' => 'projectId',
         ],
+        // System types are the defaults copied into new projects (Settings > Issue Types).
+        'systemRecords' => [
+            'field' => 'system',
+            'resource' => 'setting.update',
+        ],
     ],
 );
 

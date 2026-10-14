@@ -933,6 +933,180 @@
       "query": { "limit": 5, "page": 1 },
       "expects": { "status": 200, "shape": "jsonapi.collection" },
       "source": "acl-setting"
+    },
+    {
+      "id": "acl-system-status-update-denied-without-setting",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{issuestatusId}",
+      "resource": "issuestatus",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{issuestatusId}",
+          "attributes": {
+            "description": "Denied without setting.update"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-system-status-delete-denied-without-setting",
+      "method": "DELETE",
+      "path": "/api/v1/issuestatus/{issuestatusId}",
+      "resource": "issuestatus",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-system-status-create-denied-without-setting",
+      "method": "POST",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "attributes": {
+            "name": "api_test_denied",
+            "system": 1,
+            "done": 0
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-system-type-update-denied-without-setting",
+      "method": "PATCH",
+      "path": "/api/v1/issuetype/{issuetypeId}",
+      "resource": "issuetype",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "id": "{issuetypeId}",
+          "attributes": {
+            "description": "Denied without setting.update"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-system-type-delete-denied-without-setting",
+      "method": "DELETE",
+      "path": "/api/v1/issuetype/{issuetypeId}",
+      "resource": "issuetype",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-system-type-create-denied-without-setting",
+      "method": "POST",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "attributes": {
+            "name": "API Test Denied Type",
+            "system": 1
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-project-type-create-allowed-without-setting",
+      "method": "POST",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "attributes": {
+            "name": "API Test Project Type",
+            "system": 0,
+            "projectId": "{projectId}"
+          }
+        }
+      },
+      "expects": { "status": 201, "shape": "jsonapi.resource" },
+      "store": { "runtime.noSettingProjectTypeId": "data.id" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-project-type-mark-system-denied-without-setting",
+      "method": "PATCH",
+      "path": "/api/v1/issuetype/{runtime.noSettingProjectTypeId}",
+      "resource": "issuetype",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "id": "{runtime.noSettingProjectTypeId}",
+          "attributes": {
+            "system": 1
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-project-type-update-allowed-without-setting",
+      "method": "PATCH",
+      "path": "/api/v1/issuetype/{runtime.noSettingProjectTypeId}",
+      "resource": "issuetype",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "id": "{runtime.noSettingProjectTypeId}",
+          "attributes": {
+            "description": "Project types are not settings"
+          }
+        }
+      },
+      "expects": { "status": 200, "shape": "jsonapi.resource" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-project-type-delete-allowed-without-setting",
+      "method": "DELETE",
+      "path": "/api/v1/issuetype/{runtime.noSettingProjectTypeId}",
+      "resource": "issuetype",
+      "auth": "aclNoSetting",
+      "expects": { "status": [200, 204], "shape": "json" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-system-status-update-allowed-with-setting",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{issuestatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{issuestatusId}",
+          "attributes": {
+            "description": "Updated with setting.update"
+          }
+        }
+      },
+      "expects": { "status": 200, "shape": "jsonapi.resource" },
+      "source": "acl-setting"
     }
   ]
 }
