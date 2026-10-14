@@ -234,6 +234,9 @@ copy_csv   "COPY (SELECT id,name,\"dateCreated\",\"dateModified\",deleted,descri
 
 copy_csv   "COPY (SELECT id,name,\"dateCreated\",\"dateModified\",deleted,description,\"createdUser\",\"createdUserName\",\"modifiedUser\",\"modifiedUserName\",system,\"projectId\",done FROM issue_statuses WHERE system=1 AND deleted=0) TO STDOUT WITH CSV"   "COPY issue_statuses (id,name,\"dateCreated\",\"dateModified\",deleted,description,\"createdUser\",\"createdUserName\",\"modifiedUser\",\"modifiedUserName\",system,\"projectId\",done) FROM STDIN WITH CSV"
 
+echo "==> Seeding issue status colours and order (db/seeds/issue_statuses.sql)"
+psql_db "$TEST_DB" -v ON_ERROR_STOP=1 < "$ROOT_DIR/db/seeds/issue_statuses.sql" >/dev/null
+
 echo "==> Seeding application settings (db/seeds/settings.sql)"
 psql_db "$TEST_DB" -v ON_ERROR_STOP=1 < "$ROOT_DIR/db/seeds/settings.sql" >/dev/null
 

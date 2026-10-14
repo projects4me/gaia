@@ -1928,6 +1928,217 @@
         "status": 400,
         "shape": "error"
       }
+    },
+    {
+      "id": "issuestatus-list-sorted-with-issue-count",
+      "method": "GET",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "query": {
+        "sort": "sortOrder",
+        "order": "ASC",
+        "limit": 1,
+        "page": 1,
+        "issueCount": "true"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesPresent": [
+          "color",
+          "sortOrder",
+          "done",
+          "issueCount"
+        ],
+        "attributesEqual": {
+          "name": "new",
+          "sortOrder": 1,
+          "color": "#80b5d3"
+        }
+      }
+    },
+    {
+      "id": "issuestatus-get-with-issue-count",
+      "method": "GET",
+      "path": "/api/v1/issuestatus/{issuestatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "query": {
+        "issueCount": "true"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "issueCount"
+        ]
+      }
+    },
+    {
+      "id": "issuestatus-list-without-issue-count",
+      "method": "GET",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "query": {
+        "sort": "sortOrder",
+        "order": "ASC",
+        "limit": 1,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesAbsent": [
+          "issueCount"
+        ]
+      }
+    },
+    {
+      "id": "issuestatus-create-with-color-and-order",
+      "method": "POST",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "attributes": {
+            "name": "api_test_settings_status",
+            "description": "Settings status",
+            "color": "#5ac594",
+            "sortOrder": 9,
+            "done": 0,
+            "system": 1
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "color": "#5ac594",
+          "sortOrder": 9
+        }
+      },
+      "store": {
+        "runtime.settingsStatusId": "data.id"
+      }
+    },
+    {
+      "id": "issuestatus-create-color-outside-palette-rejected",
+      "method": "POST",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "attributes": {
+            "name": "api_test_bad_color",
+            "color": "#123456",
+            "done": 0,
+            "system": 1
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "issuestatus-patch-color-outside-palette-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.settingsStatusId}",
+          "attributes": {
+            "color": "red"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "issuestatus-reorder-patch-sort-order",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.settingsStatusId}",
+          "attributes": {
+            "sortOrder": 0,
+            "color": "#e98a7e"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "sortOrder": 0,
+          "color": "#e98a7e"
+        }
+      }
+    },
+    {
+      "id": "issuestatus-list-follows-new-order",
+      "method": "GET",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "query": {
+        "sort": "sortOrder",
+        "order": "ASC",
+        "limit": 1,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesEqual": {
+          "name": "api_test_settings_status",
+          "sortOrder": 0
+        }
+      }
+    },
+    {
+      "id": "issuestatus-delete-in-use-rejected",
+      "method": "DELETE",
+      "path": "/api/v1/issuestatus/{issuestatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      },
+      "note": "seeded issues use the new status"
+    },
+    {
+      "id": "issuestatus-delete-unused-allowed",
+      "method": "DELETE",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ],
+        "shape": "json"
+      }
     }
   ]
 }
