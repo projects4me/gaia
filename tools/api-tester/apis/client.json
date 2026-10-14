@@ -2139,6 +2139,190 @@
         ],
         "shape": "json"
       }
+    },
+    {
+      "id": "issuetype-default-create",
+      "method": "POST",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "attributes": {
+            "name": "API Test Default Type",
+            "description": "Default type",
+            "system": 1
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "store": {
+        "runtime.defaultTypeId": "data.id"
+      }
+    },
+    {
+      "id": "issuetype-project-copy-create",
+      "method": "POST",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "attributes": {
+            "name": "API Test Default Type",
+            "description": "Default type",
+            "system": 0,
+            "projectId": "{projectId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "store": {
+        "runtime.projectCopyTypeId": "data.id"
+      }
+    },
+    {
+      "id": "issuetype-default-get-with-project-count",
+      "method": "GET",
+      "path": "/api/v1/issuetype/{runtime.defaultTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "query": {
+        "projectCount": "true"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "projectCount": 1
+        }
+      }
+    },
+    {
+      "id": "issuetype-list-with-project-count",
+      "method": "GET",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "query": {
+        "projectCount": "true",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesPresent": [
+          "projectCount"
+        ]
+      }
+    },
+    {
+      "id": "issuetype-list-without-project-count",
+      "method": "GET",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesAbsent": [
+          "projectCount"
+        ]
+      }
+    },
+    {
+      "id": "issuetype-default-rename",
+      "method": "PATCH",
+      "path": "/api/v1/issuetype/{runtime.defaultTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "id": "{runtime.defaultTypeId}",
+          "attributes": {
+            "name": "API Test Default Type Renamed",
+            "description": "Renamed default"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Test Default Type Renamed"
+        }
+      }
+    },
+    {
+      "id": "issuetype-project-copy-unchanged-after-default-rename",
+      "method": "GET",
+      "path": "/api/v1/issuetype/{runtime.projectCopyTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Test Default Type",
+          "description": "Default type"
+        }
+      }
+    },
+    {
+      "id": "issuetype-default-delete",
+      "method": "DELETE",
+      "path": "/api/v1/issuetype/{runtime.defaultTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ],
+        "shape": "json"
+      }
+    },
+    {
+      "id": "issuetype-project-copy-kept-after-default-delete",
+      "method": "GET",
+      "path": "/api/v1/issuetype/{runtime.projectCopyTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Test Default Type"
+        }
+      }
+    },
+    {
+      "id": "issuetype-project-copy-cleanup",
+      "method": "DELETE",
+      "path": "/api/v1/issuetype/{runtime.projectCopyTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ],
+        "shape": "json"
+      }
     }
   ]
 }

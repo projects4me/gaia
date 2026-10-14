@@ -1127,6 +1127,16 @@
       "query": { "limit": 5, "page": 1 },
       "expects": { "status": 200, "shape": "jsonapi.collection" },
       "source": "acl-setting"
+    },
+    {
+      "id": "acl-issuetype-project-count-denied-without-setting",
+      "method": "GET",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": "aclNoSetting",
+      "query": { "projectCount": "true", "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
     }
   ]
 }
