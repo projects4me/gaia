@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
 /**
@@ -38,9 +38,9 @@ $models['Setting'] = array(
             'length' => '50',
             'null' => false
         ),
-        'value' => array(
-            'name' => 'value',
-            'label' => 'LBL_SETTING_VALUE',
+        'settingValue' => array(
+            'name' => 'settingValue',
+            'label' => 'LBL_SETTING_SETTING_VALUE',
             'type' => 'text',
             'null' => true
         ),

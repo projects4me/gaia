@@ -1,4 +1,4 @@
--- Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+-- Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
 --
 -- Application settings (Setting model, table `settings`).
 -- The migration creates the table; this seed creates the rows the Settings API reads and updates.
@@ -7,7 +7,7 @@
 -- Values start empty: email falls back to the SMTP_* env vars until a value is saved.
 -- IDs are deterministic (uuid5 of the setting name) so every environment has the same rows.
 
-INSERT INTO settings (id, name, "groupName", value, secure, "dateCreated", "dateModified", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName")
+INSERT INTO settings (id, name, "groupName", "settingValue", secure, "dateCreated", "dateModified", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName")
 VALUES
     ('d3ed81e7-bfc2-5382-8032-b2b17c450039', 'email.smtpHost', 'email', NULL, FALSE, NOW(), NOW(), FALSE, '1', 'Hammad Hassan', '1', 'Hammad Hassan'),
     ('dd8caf82-9091-573c-b753-576346dd9500', 'email.smtpPort', 'email', NULL, FALSE, NOW(), NOW(), FALSE, '1', 'Hammad Hassan', '1', 'Hammad Hassan'),

@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
 namespace Gaia\MVC\Models\Behaviors;
 
-use Gaia\Libraries\Security\SettingsCipher;
+use Gaia\Libraries\Utils\SettingsCipher;
 use Phalcon\Messages\Message;
 use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\BehaviorInterface;
@@ -68,7 +68,7 @@ class settingBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeValidationOnCreate($model)
     {
-        if (!$this->isSecure($model) || $this->isEmpty($model->value)) {
+        if (!$this->isSecure($model) || $this->isEmpty($model->settingValue)) {
             return true;
         }
 
@@ -93,17 +93,17 @@ class settingBehavior extends Behavior implements BehaviorInterface
             return true;
         }
 
-        $storedValue = isset($original['value']) ? $original['value'] : null;
+        $storedValue = isset($original['settingValue']) ? $original['settingValue'] : null;
 
         // Blank means "keep the current secret".
-        if ($this->isEmpty($model->value)) {
-            $model->value = $storedValue;
+        if ($this->isEmpty($model->settingValue)) {
+            $model->settingValue = $storedValue;
             return true;
         }
 
         // Unchanged ciphertext is fine; any other pre-encrypted value is not accepted from clients.
-        if (SettingsCipher::isEncrypted($model->value)) {
-            return $model->value === $storedValue
+        if (SettingsCipher::isEncrypted($model->settingValue)) {
+            return $model->settingValue === $storedValue
                 ? true
                 : $this->reject($model, 'Secure settings must be sent as plain text.');
         }
@@ -122,7 +122,7 @@ class settingBehavior extends Behavior implements BehaviorInterface
             return $this->reject($model, 'Secure settings cannot be saved: SETTINGS_ENCRYPTION_KEY is not configured.');
         }
 
-        $model->value = $cipher->encrypt($model->value);
+        $model->settingValue = $cipher->encrypt($model->settingValue);
         return true;
     }
 
@@ -165,7 +165,7 @@ class settingBehavior extends Behavior implements BehaviorInterface
      */
     private function reject($model, $message)
     {
-        $model->appendMessage(new Message($message, 'value', 'InvalidValue'));
+        $model->appendMessage(new Message($message, 'settingValue', 'InvalidValue'));
         return false;
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Gaia\Libraries\Security;
+namespace Gaia\Libraries\Utils;
 
 /**
  * Encrypts and decrypts secure application settings (e.g. the SMTP password).
@@ -15,7 +15,7 @@ namespace Gaia\Libraries\Security;
  * prefix versions the format so the scheme can change later.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
- * @package Gaia\Libraries\Security
+ * @package Gaia\Libraries\Utils
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class SettingsCipher

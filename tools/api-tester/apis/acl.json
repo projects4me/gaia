@@ -917,7 +917,7 @@
           "type": "setting",
           "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
           "attributes": {
-            "value": "denied.example.com"
+            "settingValue": "denied.example.com"
           }
         }
       },

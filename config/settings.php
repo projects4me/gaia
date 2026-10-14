@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ */
+
+/**
  * Application settings configuration.
  *
  * encryptionKey: 32 random bytes, base64 encoded, used to encrypt secure settings

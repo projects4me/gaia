@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Gaia\Tests\Libraries\Security;
+namespace Gaia\Tests\Libraries\Utils;
 
-use Gaia\Libraries\Security\SettingsCipher;
+use Gaia\Libraries\Utils\SettingsCipher;
 use PHPUnit\Framework\TestCase;
 
 /**

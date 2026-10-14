@@ -1,19 +1,19 @@
 <?php
 
 /**
- * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Gaia\Libraries\Security;
+namespace Gaia\Libraries\Utils;
 
 /**
  * Hides the value of secure settings in API documents.
  *
- * Secure settings never leave the server: `value` becomes null and `isSet`
+ * Secure settings never leave the server: `settingValue` becomes null and `isSet`
  * tells the client whether a value is stored (so the UI can say "saved").
  *
  * @author Hammad Hassan <gollomer@gmail.com>
- * @package Gaia\Libraries\Security
+ * @package Gaia\Libraries\Utils
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class SecureSettingMasker
@@ -60,7 +60,7 @@ class SecureSettingMasker
         }
 
         $attributes = $resource['attributes'];
-        $value = isset($attributes['value']) ? $attributes['value'] : null;
+        $value = isset($attributes['settingValue']) ? $attributes['settingValue'] : null;
 
         // `secure` may be missing when the client limits `fields`; ciphertext is masked regardless.
         $isSecure = (isset($attributes['secure']) && (int) $attributes['secure'] === 1)
@@ -69,8 +69,8 @@ class SecureSettingMasker
             return $resource;
         }
 
-        $attributes['isSet'] = isset($attributes['value']) && $attributes['value'] !== '';
-        $attributes['value'] = null;
+        $attributes['isSet'] = isset($attributes['settingValue']) && $attributes['settingValue'] !== '';
+        $attributes['settingValue'] = null;
         $resource['attributes'] = $attributes;
 
         return $resource;
