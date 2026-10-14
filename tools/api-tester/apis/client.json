@@ -1728,6 +1728,206 @@
           "api-test-issue-000002"
         ]
       }
+    },
+    {
+      "id": "settings-list-email-group",
+      "method": "GET",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "query": {
+        "query": "(Setting.groupName : email)",
+        "limit": -1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesPresent": [
+          "name",
+          "groupName",
+          "value",
+          "secure"
+        ],
+        "idsIncludes": [
+          "d3ed81e7-bfc2-5382-8032-b2b17c450039",
+          "ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f"
+        ]
+      }
+    },
+    {
+      "id": "settings-patch-plain-value",
+      "method": "PATCH",
+      "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
+          "attributes": {
+            "value": "smtp.api-tester.local"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "email.smtpHost",
+          "value": "smtp.api-tester.local"
+        }
+      }
+    },
+    {
+      "id": "settings-get-plain-value",
+      "method": "GET",
+      "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+      "resource": "setting",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "value": "smtp.api-tester.local"
+        },
+        "attributesAbsent": [
+          "isSet"
+        ]
+      }
+    },
+    {
+      "id": "settings-patch-secure-value-is-masked",
+      "method": "PATCH",
+      "path": "/api/v1/setting/ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+          "attributes": {
+            "value": "api-tester-secret"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "value": null,
+          "isSet": true
+        }
+      }
+    },
+    {
+      "id": "settings-get-secure-value-is-masked",
+      "method": "GET",
+      "path": "/api/v1/setting/ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+      "resource": "setting",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "value": null,
+          "isSet": true,
+          "secure": true
+        }
+      }
+    },
+    {
+      "id": "settings-list-secure-value-is-masked",
+      "method": "GET",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "query": {
+        "query": "(Setting.name : email.smtpPassword)"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesEqual": {
+          "value": null,
+          "isSet": true
+        }
+      }
+    },
+    {
+      "id": "settings-fields-value-still-masked",
+      "method": "GET",
+      "path": "/api/v1/setting/ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+      "resource": "setting",
+      "auth": true,
+      "query": {
+        "fields": "value"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "value": null
+        }
+      }
+    },
+    {
+      "id": "settings-patch-empty-secure-keeps-value",
+      "method": "PATCH",
+      "path": "/api/v1/setting/ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+          "attributes": {
+            "value": ""
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "value": null,
+          "isSet": true
+        }
+      }
+    },
+    {
+      "id": "settings-patch-fixed-field-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/setting/ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+          "attributes": {
+            "secure": false
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "error"
+      },
+      "note": "patchAction reports model errors with HTTP 200 and status ERROR (existing behaviour for every resource)"
+    },
+    {
+      "id": "settings-export-rejected",
+      "method": "GET",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "query": {
+        "export": "true"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error"
+      }
     }
   ]
 }

@@ -234,6 +234,9 @@ copy_csv   "COPY (SELECT id,name,\"dateCreated\",\"dateModified\",deleted,descri
 
 copy_csv   "COPY (SELECT id,name,\"dateCreated\",\"dateModified\",deleted,description,\"createdUser\",\"createdUserName\",\"modifiedUser\",\"modifiedUserName\",system,\"projectId\",done FROM issue_statuses WHERE system=1 AND deleted=0) TO STDOUT WITH CSV"   "COPY issue_statuses (id,name,\"dateCreated\",\"dateModified\",deleted,description,\"createdUser\",\"createdUserName\",\"modifiedUser\",\"modifiedUserName\",system,\"projectId\",done) FROM STDIN WITH CSV"
 
+echo "==> Seeding application settings (db/seeds/settings.sql)"
+psql_db "$TEST_DB" -v ON_ERROR_STOP=1 < "$ROOT_DIR/db/seeds/settings.sql" >/dev/null
+
 echo "==> Seeding deterministic fixture entities modeled on pr4m patterns"
 # password hash for: unit-testing
 # Patterns mirrored from pr4m:
@@ -533,7 +536,10 @@ VALUES
   ('atp-acl-np-issue-get', 'api-test-role-acl-np', 'issue.get', 1, NOW(), NOW()),
   ('atp-acl-np-comment-get', 'api-test-role-acl-np', 'comment.get', 1, NOW(), NOW()),
   ('atp-acl-np-conv-get', 'api-test-role-acl-np', 'conversationroom.get', 1, NOW(), NOW()),
-  ('atp-acl-np-project-get', 'api-test-role-acl-np', 'project.get', 0, NOW(), NOW());
+  ('atp-acl-np-project-get', 'api-test-role-acl-np', 'project.get', 0, NOW(), NOW()),
+  -- Settings area: explicitly denied (missing grants are allowed in permissive mode).
+  ('atp-acl-np-setting-get', 'api-test-role-acl-np', 'setting.get', 0, NOW(), NOW()),
+  ('atp-acl-np-setting-update', 'api-test-role-acl-np', 'setting.update', 0, NOW(), NOW());
 
 -- Project-only role: can read projects, cannot read issues (rel omit / related 403)
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")

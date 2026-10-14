@@ -29,6 +29,7 @@ $config['models'] = [
     'Savedsearch',
     'Scoreboard',
     'Tag',
+    'Setting',
     'Tagged',
     'Timelog',
     'Upload',

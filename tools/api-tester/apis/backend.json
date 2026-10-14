@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 130,
-        "enabled": 120,
-        "disabled": 10,
-        "routeResources": 37,
-        "withMetadata": 25,
+        "total": 132,
+        "enabled": 121,
+        "disabled": 11,
+        "routeResources": 38,
+        "withMetadata": 26,
         "skippedResources": 10
     },
     "apis": [
@@ -2214,6 +2214,36 @@
                 ],
                 "shape": "json"
             },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-setting-api-v1-setting",
+            "method": "GET",
+            "path": "/api/v1/setting",
+            "resource": "setting",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "patch-setting-api-v1-setting-id",
+            "method": "PATCH",
+            "path": "/api/v1/setting/{settingId}",
+            "resource": "setting",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "json"
+            },
+            "enabled": false,
+            "skipReason": "No POST lifecycle to create disposable runtime id",
             "source": "backend-metadata"
         },
         {

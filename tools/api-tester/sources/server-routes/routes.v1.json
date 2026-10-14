@@ -320,6 +320,14 @@
             ],
             "identifier": "id"
         },
+        "setting": {
+            "path": "/api/:version/setting",
+            "allowedMethods": [
+                "GET",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "systemsetting": {
             "path": "/api/:version/systemsetting",
             "allowedMethods": [

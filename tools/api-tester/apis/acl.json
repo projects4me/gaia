@@ -886,6 +886,53 @@
       },
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
+    },
+    {
+      "id": "acl-setting-list-denied",
+      "method": "GET",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": "aclNoProject",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-setting-get-denied",
+      "method": "GET",
+      "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+      "resource": "setting",
+      "auth": "aclNoProject",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-setting-update-denied",
+      "method": "PATCH",
+      "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+      "resource": "setting",
+      "auth": "aclNoProject",
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
+          "attributes": {
+            "value": "denied.example.com"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-setting-list-allowed",
+      "method": "GET",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-setting"
     }
   ]
 }
