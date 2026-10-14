@@ -809,7 +809,8 @@ class Acl
     /**
      * Inject membership record-scope into list/get query params when needed.
      *
-     * Sets `$params['aclWhere']` (raw PHQL) consumed by Query.
+     * Sets `$params['aclWhere']` (raw PHQL) consumed by Query. Under members
+     * scope, models declaring `acl.systemRecords` also return their system rows.
      *
      * @param  string $modelName
      * @param  array  $params
@@ -831,11 +832,21 @@ class Acl
             return;
         }
 
-        $params['aclWhere'] = Project::buildAclWhere(
+        $aclWhere = Project::buildAclWhere(
             $modelName,
             $binding['binding'],
             $this->getAccessibleProjectIds()
         );
+
+        // System records (e.g. default issue types, projectId NULL) belong to no
+        // project, so membership must not hide them; writes need setting.update.
+        $metadata = $this->di->get('metaManager')->getModelMeta($modelName);
+        if (!empty($metadata['acl']['systemRecords']['field'])) {
+            $field = (string) $metadata['acl']['systemRecords']['field'];
+            $aclWhere = "({$aclWhere} OR {$modelName}.{$field} = 1)";
+        }
+
+        $params['aclWhere'] = $aclWhere;
     }
 
     /**

@@ -153,7 +153,9 @@ class Asserter
             }
         }
 
-        if (!empty($expects['idsIncludes']) && is_array($expects['idsIncludes'])) {
+        $checkIncludes = !empty($expects['idsIncludes']) && is_array($expects['idsIncludes']);
+        $checkExcludes = !empty($expects['idsExcludes']) && is_array($expects['idsExcludes']);
+        if ($checkIncludes || $checkExcludes) {
             $ids = [];
             if (isset($json['data']) && is_array($json['data'])) {
                 if (isset($json['data']['id'])) {
@@ -166,9 +168,14 @@ class Asserter
                     }
                 }
             }
-            foreach ($expects['idsIncludes'] as $expectedId) {
+            foreach ($checkIncludes ? $expects['idsIncludes'] : [] as $expectedId) {
                 if (!in_array(trim((string) $expectedId), $ids, true)) {
                     $failures[] = "idsIncludes: missing id {$expectedId}";
+                }
+            }
+            foreach ($checkExcludes ? $expects['idsExcludes'] : [] as $unexpectedId) {
+                if (in_array(trim((string) $unexpectedId), $ids, true)) {
+                    $failures[] = "idsExcludes: unexpectedly found id {$unexpectedId}";
                 }
             }
         }

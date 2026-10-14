@@ -1137,6 +1137,44 @@
       "query": { "projectCount": "true", "limit": 5, "page": 1 },
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-setting"
+    },
+    {
+      "id": "acl-members-issuetype-list-includes-system-types",
+      "method": "GET",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": "aclMembers",
+      "query": { "limit": 100, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{issuetypeId}", "api-test-issuetype-p1"], "idsExcludes": ["api-test-issuetype-p2"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-issuetype-system-query-includes-defaults",
+      "method": "GET",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": "aclMembers",
+      "query": { "query": "(Issuetype.system : 1)", "limit": -1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{issuetypeId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-issuetype-detail-system-type-allowed",
+      "method": "GET",
+      "path": "/api/v1/issuetype/{issuetypeId}",
+      "resource": "issuetype",
+      "auth": "aclMembers",
+      "expects": { "status": 200, "shape": "jsonapi.resource", "idsIncludes": ["{issuetypeId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-issuetype-detail-non-member-type-hidden",
+      "method": "GET",
+      "path": "/api/v1/issuetype/api-test-issuetype-p2",
+      "resource": "issuetype",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
     }
   ]
 }

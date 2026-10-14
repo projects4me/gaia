@@ -194,6 +194,7 @@ Each API entry can declare `expects`:
 - `attributesPresent` / `attributesAbsent`: attribute keys on resource (or first collection item)
 - `attributesEqual`: map of attribute key → expected value
 - `idsIncludes`: expected resource ids
+- `idsExcludes`: resource ids that must not appear
 
 ## Auth profiles
 
