@@ -639,6 +639,22 @@ INSERT INTO acl_controllers (
 )
 ON CONFLICT (id) DO UPDATE SET "relatedId" = EXCLUDED."relatedId", deleted = 0;
 
+-- Project issue types (system = 0) for members-scope cases: one in the member's
+-- project, one in a project the members user does not belong to.
+INSERT INTO issue_types (
+  id, name, deleted, "createdUser", "modifiedUser", system, "projectId",
+  "createdUserName", "modifiedUserName"
+) VALUES
+(
+  'api-test-issuetype-p1', 'API Test Member Type', 0, 'api-test-user-0001', 'api-test-user-0001',
+  0, 'api-test-project-001', 'API Tester', 'API Tester'
+),
+(
+  'api-test-issuetype-p2', 'API Test Other Type', 0, 'api-test-user-0001', 'api-test-user-0001',
+  0, 'api-test-project-002', 'API Tester', 'API Tester'
+)
+ON CONFLICT (id) DO UPDATE SET deleted = 0, "projectId" = EXCLUDED."projectId";
+
 INSERT INTO milestones (
   id, name, deleted, "createdUser", "modifiedUser", status, "milestoneType", "projectId",
   "createdUserName", "modifiedUserName"
