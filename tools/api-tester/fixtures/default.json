@@ -27,6 +27,10 @@
     "aclMembers": {
       "email": "api-tester-acl-members@example.com",
       "password": "unit-testing"
+    },
+    "aclNoSetting": {
+      "email": "api-tester-acl-nosetting@example.com",
+      "password": "unit-testing"
     }
   },
   "values": {

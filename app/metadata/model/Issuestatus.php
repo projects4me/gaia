@@ -118,7 +118,13 @@ $models['Issuestatus'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior'
     ),
-    'acl' => [],
+    'acl' => [
+        // System statuses are application settings (Settings > Issue Statuses).
+        'systemRecords' => [
+            'field' => 'system',
+            'resource' => 'setting.update',
+        ],
+    ],
 );
 
 return $models;

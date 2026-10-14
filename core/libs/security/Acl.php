@@ -940,6 +940,50 @@ class Acl
     }
 
     /**
+     * Deny writes to system records unless the user holds the resource that
+     * guards them (e.g. setting.update for system issue statuses and types).
+     *
+     * Declared per model in metadata as
+     * `'acl' => ['systemRecords' => ['field' => 'system', 'resource' => 'setting.update']]`.
+     * A write touches a system record when the existing record has the flag
+     * set (update, delete, or clearing the flag) or the payload sets it.
+     *
+     * @param  string $modelName
+     * @param  array  $attributes Write payload (empty for deletes)
+     * @param  string|null $existingId Record id for updates and deletes
+     * @return void
+     * @throws \Gaia\Exception\Access
+     */
+    public function assertSystemRecordWrite($modelName, array $attributes, $existingId = null)
+    {
+        $metadata = $this->di->get('metaManager')->getModelMeta($modelName);
+        if (empty($metadata['acl']['systemRecords']['field']) || empty($metadata['acl']['systemRecords']['resource'])) {
+            return;
+        }
+
+        $field = (string) $metadata['acl']['systemRecords']['field'];
+        $resource = (string) $metadata['acl']['systemRecords']['resource'];
+
+        // Fail closed on the payload: anything that isn't clearly false
+        // (e.g. true, "1", "true") counts as setting the flag.
+        $isSystem = array_key_exists($field, $attributes)
+            && !in_array($attributes[$field], [null, '', 0, '0', false, 'false'], true);
+
+        if (!$isSystem && $existingId) {
+            $modelClass = '\\Gaia\\MVC\\Models\\' . $modelName;
+            $record = $modelClass::findFirst([
+                'conditions' => 'id = :id:',
+                'bind' => ['id' => (string) $existingId],
+            ]);
+            $isSystem = $record && $this->normalizeFlag($record->{$field}) === 1;
+        }
+
+        if ($isSystem) {
+            $this->checkAccess($resource);
+        }
+    }
+
+    /**
      * Resolve whether/how project.get record scope applies to a model.
      *
      * Policy (effective scope) stays here; Project groupKeys / membership

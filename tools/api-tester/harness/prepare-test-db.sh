@@ -376,6 +376,20 @@ INSERT INTO users (
   'API Tester',
   'active',
   0
+),
+(
+  -- Settings denied: issue status/type writes allowed, setting.get/update denied
+  'api-test-user-acl-ns',
+  '$2y$10$OH8mqmGV2uLOLyoSdLGm/ejzhLXVOsOz/Ld2fi610E/qWWTqQ6e1G',
+  'api-tester-acl-nosetting@example.com',
+  'API Tester ACL No Setting',
+  0,
+  'api-test-user-0001',
+  'api-test-user-0001',
+  'API Tester',
+  'API Tester',
+  'active',
+  0
 )
 ON CONFLICT (id) DO UPDATE SET
   password = EXCLUDED.password,
@@ -496,6 +510,10 @@ INSERT INTO roles (
 (
   'api-test-role-acl-mem', 'ACL Project Members', 'project.get=2 members scope', 0,
   'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
+),
+(
+  'api-test-role-acl-ns', 'ACL No Setting', 'issuestatus/issuetype allowed, setting.* denied', 0,
+  'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
 )
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, deleted = 0;
 
@@ -525,6 +543,10 @@ INSERT INTO user_roles (
 (
   'api-test-userrole-acl-mem', 'api-test-user-0001', 'api-test-user-0001',
   'api-test-user-acl-mem', 'api-test-role-acl-mem', 'API Tester', 'API Tester'
+),
+(
+  'api-test-userrole-acl-ns', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-acl-ns', 'api-test-role-acl-ns', 'API Tester', 'API Tester'
 )
 ON CONFLICT (id) DO UPDATE SET
   "userId" = EXCLUDED."userId",
@@ -566,6 +588,22 @@ VALUES
   ('atp-acl-mem-issue-create', 'api-test-role-acl-mem', 'issue.create', 1, NOW(), NOW()),
   ('atp-acl-mem-comment-get', 'api-test-role-acl-mem', 'comment.get', 1, NOW(), NOW()),
   ('atp-acl-mem-conv-get', 'api-test-role-acl-mem', 'conversationroom.get', 1, NOW(), NOW());
+
+-- No-setting role: full issuestatus/issuetype access, setting.* denied.
+-- System statuses/types (system = 1) are settings: writes need setting.update.
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-ns-project-get', 'api-test-role-acl-ns', 'project.get', 1, NOW(), NOW()),
+  ('atp-acl-ns-status-get', 'api-test-role-acl-ns', 'issuestatus.get', 1, NOW(), NOW()),
+  ('atp-acl-ns-status-create', 'api-test-role-acl-ns', 'issuestatus.create', 1, NOW(), NOW()),
+  ('atp-acl-ns-status-update', 'api-test-role-acl-ns', 'issuestatus.update', 1, NOW(), NOW()),
+  ('atp-acl-ns-status-delete', 'api-test-role-acl-ns', 'issuestatus.delete', 1, NOW(), NOW()),
+  ('atp-acl-ns-type-get', 'api-test-role-acl-ns', 'issuetype.get', 1, NOW(), NOW()),
+  ('atp-acl-ns-type-create', 'api-test-role-acl-ns', 'issuetype.create', 1, NOW(), NOW()),
+  ('atp-acl-ns-type-update', 'api-test-role-acl-ns', 'issuetype.update', 1, NOW(), NOW()),
+  ('atp-acl-ns-type-delete', 'api-test-role-acl-ns', 'issuetype.delete', 1, NOW(), NOW()),
+  ('atp-acl-ns-setting-get', 'api-test-role-acl-ns', 'setting.get', 0, NOW(), NOW()),
+  ('atp-acl-ns-setting-update', 'api-test-role-acl-ns', 'setting.update', 0, NOW(), NOW());
 
 -- Field ACL role: module access + field matrix
 -- subject = None (0/0/0)
@@ -761,6 +799,10 @@ data = {
     },
     "aclMembers": {
       "email": "api-tester-acl-members@example.com",
+      "password": "unit-testing"
+    },
+    "aclNoSetting": {
+      "email": "api-tester-acl-nosetting@example.com",
       "password": "unit-testing"
     }
   },
