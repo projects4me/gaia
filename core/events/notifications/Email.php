@@ -3,14 +3,13 @@
 namespace Gaia\Events\Notification;
 
 use Phalcon\Events\Event;
-use Gaia\Libraries\Utils\SmtpSettings;
 use Gaia\Templates\Email\ResetPassword;
 use Gaia\Templates\Email\WelcomePassword;
 
 /**
  * This class is used to send email notifications.
  *
- * SMTP comes from {@see Mailer} (Settings > Email, falling back to the smtp config).
+ * It builds the messages; delivery (and its settings) belongs to {@see Mailer}.
  *
  * @author   Rana Nouman <ranamnouman@gmail.com>
  * @package  Foundation
@@ -19,6 +18,13 @@ use Gaia\Templates\Email\WelcomePassword;
  */
 class Email
 {
+    /**
+     * Reset link lifetime when the config doesn't set one (seconds).
+     *
+     * @var int
+     */
+    public const DEFAULT_RESET_TOKEN_TIMEOUT = 3600;
+
     /**
      * This function is used to send the password reset link to the user.
      *
@@ -31,21 +37,19 @@ class Email
     public function resetPassword(Event $event, $user)
     {
         try {
-            $smtp = $this->smtpSettings();
             $host = getenv('FRONTEND_HOST');
             $resetToken = $this->createResetToken(20);
-            $mail = $this->createMailer($smtp);
             ResetPassword::setEmailBody($user, $host, $resetToken);
 
-            $mail->addAddress($user->email, $user->name);
-            $mail->isHTML(true);
-            $mail->Subject = ResetPassword::getEmailSubject();
-            $mail->Body    = ResetPassword::getEmailBody($user, $host, $resetToken);
-            $mail->AltBody = ResetPassword::getEmailAltBody($host, $resetToken);
+            $this->send(
+                'resetPassword',
+                $user,
+                ResetPassword::getEmailSubject(),
+                ResetPassword::getEmailBody($user, $host, $resetToken),
+                ResetPassword::getEmailAltBody($host, $resetToken)
+            );
 
-            $this->send($mail, 'resetPassword');
-
-            $this->saveResetToken($user, $resetToken, $smtp['resetTokenTimeout']);
+            $this->saveResetToken($user, $resetToken, $this->resetTokenTimeout());
         } catch (\Exception $e) {
             throw new \Gaia\Exception\Exception("Message could not be sent. Mailer Error: {$e->getMessage()}");
         }
@@ -68,66 +72,71 @@ class Email
     public function emailPassword(Event $event, $user, $password)
     {
         try {
-            $mail = $this->createMailer($this->smtpSettings());
             $host = getenv('FRONTEND_HOST');
             WelcomePassword::setEmailBody($user, $host, $password);
 
-            $mail->addAddress($user->email, $user->name);
-            $mail->isHTML(true);
-            $mail->Subject = WelcomePassword::getEmailSubject();
-            $mail->Body    = WelcomePassword::getEmailBody();
-            $mail->AltBody = WelcomePassword::getEmailAltBody($user, $password);
-
-            $this->send($mail, 'emailPassword');
+            $this->send(
+                'emailPassword',
+                $user,
+                WelcomePassword::getEmailSubject(),
+                WelcomePassword::getEmailBody(),
+                WelcomePassword::getEmailAltBody($user, $password)
+            );
         } catch (\Exception $e) {
             throw new \Gaia\Exception\Exception("Message could not be sent. Mailer Error: {$e->getMessage()}");
         }
     }
 
     /**
-     * The effective SMTP configuration (Settings > Email over the smtp config).
-     *
-     * @method smtpSettings
-     * @return array
-     */
-    protected function smtpSettings()
-    {
-        return SmtpSettings::load();
-    }
-
-    /**
-     * Create the mailer for one message.
+     * The mailer that delivers the messages.
      *
      * @method createMailer
-     * @param  array $smtp Output of {@see SmtpSettings::resolve()}
-     * @return \PHPMailer\PHPMailer\PHPMailer
+     * @return Mailer
      */
-    protected function createMailer(array $smtp)
+    protected function createMailer()
     {
-        return Mailer::create($smtp);
+        return new Mailer();
     }
 
     /**
-     * Send a message. A failed send is logged, not thrown, so the user's
-     * request still succeeds (side effects fail open), as before.
+     * Send a message to the user. A failed send is logged, not thrown, so the
+     * user's request still succeeds (side effects fail open), as before.
      *
      * @method send
-     * @param  \PHPMailer\PHPMailer\PHPMailer $mail
-     * @param  string                         $context
+     * @param  string                $context
+     * @param  \Gaia\MVC\Models\User $user
+     * @param  string                $subject
+     * @param  string                $htmlBody
+     * @param  string                $altBody
      * @return bool
      */
-    protected function send($mail, $context)
+    protected function send($context, $user, $subject, $htmlBody, $altBody)
     {
         global $logger;
 
-        if ($mail->send()) {
+        $mailer = $this->createMailer();
+        if ($mailer->send($user->email, $user->name, $subject, $htmlBody, $altBody)) {
             return true;
         }
 
         if (isset($logger)) {
-            $logger->error("Email {$context} could not be sent: {$mail->ErrorInfo}");
+            $logger->error("Email {$context} could not be sent: {$mailer->getError()}");
         }
         return false;
+    }
+
+    /**
+     * How long a reset link stays valid, in seconds (smtp.resetTokenTimeout).
+     *
+     * @method resetTokenTimeout
+     * @return int
+     */
+    protected function resetTokenTimeout()
+    {
+        $config = \Phalcon\Di::getDefault()->get('config')->get('smtp');
+        return isset($config['resetTokenTimeout'])
+            ? (int) $config['resetTokenTimeout']
+            : self::DEFAULT_RESET_TOKEN_TIMEOUT;
     }
 
     /**

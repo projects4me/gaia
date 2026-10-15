@@ -10,8 +10,12 @@ use Gaia\Libraries\Utils\SmtpSettings;
 use PHPMailer\PHPMailer\PHPMailer;
 
 /**
- * Builds PHPMailer instances configured for SMTP from {@see SmtpSettings}
- * (saved settings first, then the `smtp` config).
+ * Sends email for the notifications.
+ *
+ * Owns the transport: today SMTP through PHPMailer, configured from
+ * {@see SmtpSettings} (Settings > Email first, then the smtp config).
+ * Callers only hand over a message, so switching transport (e.g. to an
+ * HTTP API) only changes this class.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
@@ -21,31 +25,91 @@ use PHPMailer\PHPMailer\PHPMailer;
 class Mailer
 {
     /**
-     * Create a mailer from the current SMTP settings.
+     * Resolved SMTP configuration, loaded on first use.
      *
-     * @param  bool     $exceptions Whether PHPMailer throws on errors
-     * @param  int|null $timeout    SMTP timeout in seconds (null keeps PHPMailer's default)
-     * @return PHPMailer
+     * @var array|null
      */
-    public static function fromSettings($exceptions = false, $timeout = null)
+    protected $smtp;
+
+    /**
+     * SMTP timeout in seconds (null keeps PHPMailer's default).
+     *
+     * @var int|null
+     */
+    protected $timeout;
+
+    /**
+     * Error from the last failed send.
+     *
+     * @var string
+     */
+    protected $error = '';
+
+    /**
+     * @param int|null   $timeout SMTP timeout in seconds (null keeps PHPMailer's default)
+     * @param array|null $smtp    Resolved SMTP configuration; null reads the current settings
+     */
+    public function __construct($timeout = null, array $smtp = null)
     {
-        return self::create(SmtpSettings::load(), $exceptions, $timeout);
+        $this->timeout = $timeout;
+        $this->smtp = $smtp;
     }
 
     /**
-     * Create a mailer from a resolved SMTP configuration.
+     * Send one HTML message with a plain-text alternative.
      *
-     * @param  array    $smtp       Output of {@see SmtpSettings::resolve()}
-     * @param  bool     $exceptions Whether PHPMailer throws on errors
-     * @param  int|null $timeout    SMTP timeout in seconds (null keeps PHPMailer's default)
+     * @param  string $toEmail
+     * @param  string $toName
+     * @param  string $subject
+     * @param  string $htmlBody
+     * @param  string $altBody
+     * @return bool Whether the server accepted the message; see getError() when false
+     */
+    public function send($toEmail, $toName, $subject, $htmlBody, $altBody)
+    {
+        $this->error = '';
+
+        $mail = $this->createTransport();
+        $mail->addAddress($toEmail, $toName);
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = $htmlBody;
+        $mail->AltBody = $altBody;
+
+        if ($mail->send()) {
+            return true;
+        }
+
+        $this->error = $mail->ErrorInfo;
+        return false;
+    }
+
+    /**
+     * Error from the last failed send (empty after a successful one).
+     *
+     * @return string
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    /**
+     * Build the PHPMailer instance for one message from the SMTP configuration.
+     *
      * @return PHPMailer
      */
-    public static function create(array $smtp, $exceptions = false, $timeout = null)
+    protected function createTransport()
     {
-        $mail = new PHPMailer($exceptions);
+        if ($this->smtp === null) {
+            $this->smtp = SmtpSettings::load();
+        }
+        $smtp = $this->smtp;
+
+        $mail = new PHPMailer(false);
         $mail->isSMTP();
-        if ($timeout !== null) {
-            $mail->Timeout = (int) $timeout;
+        if ($this->timeout !== null) {
+            $mail->Timeout = (int) $this->timeout;
         }
         $mail->Host = (string) $smtp['host'];
         $mail->Port = (int) $smtp['port'];

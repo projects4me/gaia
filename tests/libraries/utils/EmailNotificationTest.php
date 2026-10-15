@@ -16,8 +16,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for the notification emails with the mailer stubbed: no SMTP
- * connection is made (agaia-3959). Real delivery is agaia-3974.
+ * Unit tests for the notification emails and the Mailer, with delivery
+ * stubbed: no SMTP connection is made (agaia-3959). Real delivery is
+ * agaia-3974.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Tests
@@ -35,41 +36,41 @@ class EmailNotificationTest extends TestCase
 
     public function testWelcomePasswordIsSentToTheNewUser()
     {
-        $email = new StubbedEmail(true);
-        $user = new FakeUser();
+        $email = new StubbedEmail(new FakeMailer(true));
 
-        $email->emailPassword(new Event('emailPassword', $this), $user, 'S3cret!');
+        $email->emailPassword(new Event('emailPassword', $this), new FakeUser(), 'S3cret!');
 
-        $mail = $email->mailer;
-        $this->assertSame(1, $mail->sendCount);
-        $this->assertSame([['new.user@example.com', 'New User']], $mail->getToAddresses());
-        $this->assertSame(WelcomePassword::getEmailSubject(), $mail->Subject);
-        $this->assertStringContainsString('S3cret!', $mail->AltBody);
+        $sent = $email->mailer->sent;
+        $this->assertCount(1, $sent);
+        $this->assertSame('new.user@example.com', $sent[0]['toEmail']);
+        $this->assertSame('New User', $sent[0]['toName']);
+        $this->assertSame(WelcomePassword::getEmailSubject(), $sent[0]['subject']);
+        $this->assertStringContainsString('S3cret!', $sent[0]['altBody']);
     }
 
     public function testFailedWelcomeSendDoesNotThrow()
     {
-        $email = new StubbedEmail(false);
+        $email = new StubbedEmail(new FakeMailer(false));
 
         $email->emailPassword(new Event('emailPassword', $this), new FakeUser(), 'S3cret!');
 
-        $this->assertSame(1, $email->mailer->sendCount);
+        $this->assertCount(1, $email->mailer->sent);
     }
 
     public function testResetPasswordSendsLinkAndSavesToken()
     {
-        $email = new StubbedEmail(true, ['resetTokenTimeout' => 600]);
+        $email = new StubbedEmail(new FakeMailer(true), 600);
         $user = new FakeUser();
 
         $before = time();
         $email->resetPassword(new Event('resetPassword', $this), $user);
 
-        $mail = $email->mailer;
-        $this->assertSame(1, $mail->sendCount);
-        $this->assertSame([['new.user@example.com', 'New User']], $mail->getToAddresses());
-        $this->assertSame(ResetPassword::getEmailSubject(), $mail->Subject);
+        $sent = $email->mailer->sent;
+        $this->assertCount(1, $sent);
+        $this->assertSame('new.user@example.com', $sent[0]['toEmail']);
+        $this->assertSame(ResetPassword::getEmailSubject(), $sent[0]['subject']);
         $this->assertSame(40, strlen($user->resetToken));
-        $this->assertStringContainsString($user->resetToken, $mail->AltBody);
+        $this->assertStringContainsString($user->resetToken, $sent[0]['altBody']);
         $this->assertSame(1, $user->saveCount);
 
         $expiry = strtotime($user->resetTokenExpiry . ' UTC');
@@ -80,69 +81,125 @@ class EmailNotificationTest extends TestCase
     public function testFailedResetSendDoesNotThrowAndStillSavesToken()
     {
         // Unchanged behaviour: the token is saved even when sending fails.
-        $email = new StubbedEmail(false);
+        $email = new StubbedEmail(new FakeMailer(false));
         $user = new FakeUser();
 
         $email->resetPassword(new Event('resetPassword', $this), $user);
 
-        $this->assertSame(1, $email->mailer->sendCount);
+        $this->assertCount(1, $email->mailer->sent);
         $this->assertSame(1, $user->saveCount);
     }
 
-    public function testMailerTimeoutIsOptional()
+    public function testMailerSendBuildsTheMessage()
     {
-        $smtp = SmtpSettings::resolve(['host' => 'mail.example.com', 'port' => 25, 'username' => 'u@example.com'], []);
+        $mailer = new StubTransportMailer(true);
 
-        $this->assertSame((new PHPMailer())->Timeout, Mailer::create($smtp)->Timeout);
-        $this->assertSame(5, Mailer::create($smtp, false, 5)->Timeout);
+        $this->assertTrue($mailer->send('to@example.com', 'To', 'Subject', '<p>Hi</p>', 'Hi'));
+
+        $mail = $mailer->transport;
+        $this->assertSame([['to@example.com', 'To']], $mail->getToAddresses());
+        $this->assertSame('Subject', $mail->Subject);
+        $this->assertSame('<p>Hi</p>', $mail->Body);
+        $this->assertSame('Hi', $mail->AltBody);
+        $this->assertSame('text/html', $mail->ContentType);
+        $this->assertSame('', $mailer->getError());
+    }
+
+    public function testMailerReportsTheTransportError()
+    {
+        $mailer = new StubTransportMailer(false);
+
+        $this->assertFalse($mailer->send('to@example.com', 'To', 'Subject', '<p>Hi</p>', 'Hi'));
+        $this->assertSame('stubbed failure', $mailer->getError());
     }
 }
 
 /**
- * Email with fixed SMTP settings and a stub mailer.
+ * Email with a given mailer and reset-link lifetime.
  */
 class StubbedEmail extends Email
 {
-    /** @var StubMailer|null */
+    /** @var FakeMailer */
     public $mailer;
 
-    /** @var bool */
-    private $sendResult;
+    /** @var int */
+    private $timeout;
 
-    /** @var array */
-    private $smtpOverrides;
-
-    public function __construct($sendResult, array $smtpOverrides = [])
+    public function __construct(FakeMailer $mailer, $resetTokenTimeout = 3600)
     {
-        $this->sendResult = $sendResult;
-        $this->smtpOverrides = $smtpOverrides;
+        $this->mailer = $mailer;
+        $this->timeout = $resetTokenTimeout;
     }
 
-    protected function smtpSettings()
+    protected function createMailer()
     {
-        return array_merge(SmtpSettings::resolve([
+        return $this->mailer;
+    }
+
+    protected function resetTokenTimeout()
+    {
+        return $this->timeout;
+    }
+}
+
+/**
+ * Mailer that records messages instead of delivering them.
+ */
+class FakeMailer extends Mailer
+{
+    /** @var array */
+    public $sent = [];
+
+    /** @var bool */
+    private $result;
+
+    public function __construct($result)
+    {
+        $this->result = $result;
+    }
+
+    public function send($toEmail, $toName, $subject, $htmlBody, $altBody)
+    {
+        $this->sent[] = compact('toEmail', 'toName', 'subject', 'htmlBody', 'altBody');
+        $this->error = $this->result ? '' : 'stubbed failure';
+        return $this->result;
+    }
+}
+
+/**
+ * Mailer whose transport is a stub PHPMailer, to test send() itself.
+ */
+class StubTransportMailer extends Mailer
+{
+    /** @var StubPhpMailer|null */
+    public $transport;
+
+    /** @var bool */
+    private $result;
+
+    public function __construct($result)
+    {
+        parent::__construct(null, SmtpSettings::resolve([
             'host' => 'mail.example.com',
             'port' => 25,
             'username' => 'sender@example.com',
             'user' => 'Projects4me',
-        ], []), $this->smtpOverrides);
+        ], []));
+        $this->result = $result;
     }
 
-    protected function createMailer(array $smtp)
+    protected function createTransport()
     {
-        $this->mailer = new StubMailer($this->sendResult);
-        return $this->mailer;
+        $this->transport = new StubPhpMailer($this->result);
+        return $this->transport;
     }
 }
 
 /**
- * PHPMailer that records sends instead of connecting to a server.
+ * PHPMailer that never connects.
  */
-class StubMailer extends PHPMailer
+class StubPhpMailer extends PHPMailer
 {
-    /** @var int */
-    public $sendCount = 0;
-
     /** @var bool */
     private $result;
 
@@ -154,7 +211,6 @@ class StubMailer extends PHPMailer
 
     public function send()
     {
-        $this->sendCount++;
         if (!$this->result) {
             $this->ErrorInfo = 'stubbed failure';
         }

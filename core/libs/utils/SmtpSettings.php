@@ -68,7 +68,7 @@ class SmtpSettings
      *
      * @param  array $config   The `smtp` config (host, port, username, password, user, auth, ...)
      * @param  array $settings Setting values keyed by name, e.g. `email.smtpHost`
-     * @return array host, port, encryption, auth, username, password, fromName, fromEmail, resetTokenTimeout
+     * @return array host, port, encryption, auth, username, password, fromName, fromEmail
      */
     public static function resolve(array $config, array $settings)
     {
@@ -111,7 +111,6 @@ class SmtpSettings
             'fromName' => $pick($value('email.fromName'), 'user'),
             // Today the sender address is the SMTP username.
             'fromEmail' => $fromEmail !== null ? $fromEmail : $username,
-            'resetTokenTimeout' => isset($config['resetTokenTimeout']) ? $config['resetTokenTimeout'] : 3600,
         ];
     }
 

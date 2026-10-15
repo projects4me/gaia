@@ -49,7 +49,7 @@ class SmtpSettingsTest extends TestCase
         $this->assertSame('env-secret', $smtp['password']);
         $this->assertSame('Projects4me', $smtp['fromName']);
         $this->assertSame('env-user@example.com', $smtp['fromEmail']);
-        $this->assertSame(3600, $smtp['resetTokenTimeout']);
+        $this->assertArrayNotHasKey('resetTokenTimeout', $smtp);
     }
 
     public function testBlankAndNullSettingsFallBackToConfig()
@@ -108,7 +108,7 @@ class SmtpSettingsTest extends TestCase
     public function testMailerMapsEncryption($encryption, $secure, $autoTls)
     {
         $smtp = SmtpSettings::resolve($this->config, ['email.smtpEncryption' => $encryption]);
-        $mail = Mailer::create($smtp);
+        $mail = (new TransportMailer(null, $smtp))->transport();
 
         $this->assertSame($secure, $mail->SMTPSecure);
         $this->assertSame($autoTls, $mail->SMTPAutoTLS);
@@ -125,11 +125,11 @@ class SmtpSettingsTest extends TestCase
 
     public function testMailerUsesResolvedServerAndSender()
     {
-        $mail = Mailer::create(SmtpSettings::resolve($this->config, [
+        $mail = (new TransportMailer(null, SmtpSettings::resolve($this->config, [
             'email.smtpHost' => 'mail.example.com',
             'email.fromEmail' => 'noreply@example.com',
             'email.fromName' => 'Acme PM',
-        ]));
+        ])))->transport();
 
         $this->assertSame('smtp', $mail->Mailer);
         $this->assertSame('mail.example.com', $mail->Host);
@@ -140,5 +140,25 @@ class SmtpSettingsTest extends TestCase
         $this->assertSame('noreply@example.com', $mail->From);
         $this->assertSame('Acme PM', $mail->FromName);
         $this->assertSame(0, $mail->SMTPDebug);
+    }
+
+    public function testMailerTimeoutIsOptional()
+    {
+        $smtp = SmtpSettings::resolve(['host' => 'mail.example.com', 'port' => 25, 'username' => 'u@example.com'], []);
+
+        $this->assertSame((new PHPMailer())->Timeout, (new TransportMailer(null, $smtp))->transport()->Timeout);
+        $this->assertSame(5, (new TransportMailer(5, $smtp))->transport()->Timeout);
+    }
+}
+
+/**
+ * Exposes the PHPMailer transport Mailer builds, so its setup can be checked
+ * without sending.
+ */
+class TransportMailer extends Mailer
+{
+    public function transport()
+    {
+        return $this->createTransport();
     }
 }
