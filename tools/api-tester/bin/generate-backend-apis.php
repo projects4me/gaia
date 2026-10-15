@@ -85,7 +85,7 @@ $relatedDefaults = [
     'activity' => ['relatedTo' => 'issue', 'relatedId' => '{issueId}'],
     'comment' => ['relatedTo' => 'conversationrooms', 'relatedId' => '{conversationroomId}'],
     'vote' => ['relatedTo' => 'conversationrooms', 'relatedId' => '{conversationroomId}'],
-    'membership' => ['relatedTo' => 'project', 'relatedId' => '{projectId}', 'userId' => '{memberUserId}', 'roleId' => '{developerRoleId}'],
+    'membership' => ['projectId' => '{projectId}', 'userId' => '{memberUserId}'],
     'tagged' => ['relatedTo' => 'issue', 'relatedId' => '{issueId}'],
 ];
 
