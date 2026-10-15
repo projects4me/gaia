@@ -1175,6 +1175,16 @@
       "auth": "aclMembers",
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
+    },
+    {
+      "id": "acl-setting-testemail-denied-without-setting-update",
+      "method": "POST",
+      "path": "/api/v1/setting/testemail",
+      "resource": "setting",
+      "auth": "aclNoSetting",
+      "body": {"recipient": "not-an-email"},
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
     }
   ]
 }

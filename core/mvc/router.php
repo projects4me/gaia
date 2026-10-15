@@ -108,6 +108,19 @@ class Router extends PhalconRouter\Router
                                 break;
                             } // end switch on method
                         } // end foreach on $allowedMethods
+
+                        // Custom actions, e.g. 'actions' => ['testemail' => ['POST']] adds
+                        // POST {path}/testemail -> {module}Controller::testemailAction().
+                        // Added after the entity routes so they win over {path}/{id}.
+                        if (isset($moduleRoutes->actions))
+                        {
+                            foreach($moduleRoutes->actions as $action => $actionMethods)
+                            {
+                                $path = (($basepath[0] === '/')?'':'/').$basepath.'/'.$action;
+                                $this->add($path,array('controller'=> $module,'action' => $action),$actionMethods->toArray());
+                            }
+                        }
+
                         $path = (($basepath[0] === '/')?'':'/').$basepath;
                         $this->addOptions($path,array('controller'=> $module,'action' => 'options'));
                     } // end foreach on $versionRoutes
