@@ -3,13 +3,13 @@
 namespace Gaia\Events\Notification;
 
 use Phalcon\Events\Event;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 use Gaia\Templates\Email\ResetPassword;
 use Gaia\Templates\Email\WelcomePassword;
 
 /**
  * This class is used to send email notifications.
+ *
+ * It builds the messages; delivery (and its settings) belongs to {@see Mailer}.
  *
  * @author   Rana Nouman <ranamnouman@gmail.com>
  * @package  Foundation
@@ -18,6 +18,13 @@ use Gaia\Templates\Email\WelcomePassword;
  */
 class Email
 {
+    /**
+     * Reset link lifetime when the config doesn't set one (seconds).
+     *
+     * @var int
+     */
+    public const DEFAULT_RESET_TOKEN_TIMEOUT = 3600;
+
     /**
      * This function is used to send the password reset link to the user.
      *
@@ -30,35 +37,21 @@ class Email
     public function resetPassword(Event $event, $user)
     {
         try {
-            $di = \Phalcon\Di::getDefault();
-            $smtpConfig = $di->get('config')->get('smtp');
-            $request = \OAuth2\Request::createFromGlobals();
             $host = getenv('FRONTEND_HOST');
             $resetToken = $this->createResetToken(20);
-            $mail = new PHPMailer();
             ResetPassword::setEmailBody($user, $host, $resetToken);
 
-            $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-            $mail->isSMTP();
-            $mail->Host       = $smtpConfig['host'];
-            $mail->SMTPAuth   = $smtpConfig['auth'];
-            $mail->Username   = $smtpConfig['username'];
-            $mail->Password   = $smtpConfig['password'];
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = $smtpConfig['port'];
+            $this->send(
+                'resetPassword',
+                $user,
+                ResetPassword::getEmailSubject(),
+                ResetPassword::getEmailBody($user, $host, $resetToken),
+                ResetPassword::getEmailAltBody($host, $resetToken)
+            );
 
-            $mail->setFrom($smtpConfig['username'], $smtpConfig['user']);
-            $mail->addAddress($user->email, $user->name);
-            $mail->isHTML(true);
-            $mail->Subject = ResetPassword::getEmailSubject();
-            $mail->Body    = ResetPassword::getEmailBody($user, $host, $resetToken);
-            $mail->AltBody = ResetPassword::getEmailAltBody($host, $resetToken);
-
-            $mail->send();
-
-            $this->saveResetToken($user, $resetToken, $smtpConfig['resetTokenTimeout']);
-        } catch (Exception $e) {
-            throw new \Gaia\Exception\Exception("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+            $this->saveResetToken($user, $resetToken, $this->resetTokenTimeout());
+        } catch (\Exception $e) {
+            throw new \Gaia\Exception\Exception("Message could not be sent. Mailer Error: {$e->getMessage()}");
         }
     }
 
@@ -79,32 +72,71 @@ class Email
     public function emailPassword(Event $event, $user, $password)
     {
         try {
-            $di = \Phalcon\Di::getDefault();
-            $smtpConfig = $di->get('config')->get('smtp');
-            $mail = new PHPMailer();
             $host = getenv('FRONTEND_HOST');
             WelcomePassword::setEmailBody($user, $host, $password);
 
-            $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-            $mail->isSMTP();
-            $mail->Host       = $smtpConfig['host'];
-            $mail->SMTPAuth   = $smtpConfig['auth'];
-            $mail->Username   = $smtpConfig['username'];
-            $mail->Password   = $smtpConfig['password'];
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = $smtpConfig['port'];
-
-            $mail->setFrom($smtpConfig['username'], $smtpConfig['user']);
-            $mail->addAddress($user->email, $user->name);
-            $mail->isHTML(true);
-            $mail->Subject = WelcomePassword::getEmailSubject();
-            $mail->Body    = WelcomePassword::getEmailBody();
-            $mail->AltBody = WelcomePassword::getEmailAltBody($user, $password);
-
-            $mail->send();
-        } catch (Exception $e) {
-            throw new \Gaia\Exception\Exception("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+            $this->send(
+                'emailPassword',
+                $user,
+                WelcomePassword::getEmailSubject(),
+                WelcomePassword::getEmailBody(),
+                WelcomePassword::getEmailAltBody($user, $password)
+            );
+        } catch (\Exception $e) {
+            throw new \Gaia\Exception\Exception("Message could not be sent. Mailer Error: {$e->getMessage()}");
         }
+    }
+
+    /**
+     * The mailer that delivers the messages.
+     *
+     * @method createMailer
+     * @return Mailer
+     */
+    protected function createMailer()
+    {
+        return new Mailer();
+    }
+
+    /**
+     * Send a message to the user. A failed send is logged, not thrown, so the
+     * user's request still succeeds (side effects fail open), as before.
+     *
+     * @method send
+     * @param  string                $context
+     * @param  \Gaia\MVC\Models\User $user
+     * @param  string                $subject
+     * @param  string                $htmlBody
+     * @param  string                $altBody
+     * @return bool
+     */
+    protected function send($context, $user, $subject, $htmlBody, $altBody)
+    {
+        global $logger;
+
+        $mailer = $this->createMailer();
+        if ($mailer->send($user->email, $user->name, $subject, $htmlBody, $altBody)) {
+            return true;
+        }
+
+        if (isset($logger)) {
+            $logger->error("Email {$context} could not be sent: {$mailer->getError()}");
+        }
+        return false;
+    }
+
+    /**
+     * How long a reset link stays valid, in seconds (smtp.resetTokenTimeout).
+     *
+     * @method resetTokenTimeout
+     * @return int
+     */
+    protected function resetTokenTimeout()
+    {
+        $config = \Phalcon\Di::getDefault()->get('config')->get('smtp');
+        return isset($config['resetTokenTimeout'])
+            ? (int) $config['resetTokenTimeout']
+            : self::DEFAULT_RESET_TOKEN_TIMEOUT;
     }
 
     /**
