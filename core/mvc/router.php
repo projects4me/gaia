@@ -121,7 +121,7 @@ class Router extends PhalconRouter\Router
                 {
                     $path = (isset($approute->path))?$approute->path:'/';
                     unset($approute->path);
-                    $this->add($path,(array) $approute);
+                    $this->add($path,$approute->toArray());
                 }
             }
 
