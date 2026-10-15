@@ -161,6 +161,10 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             'action' => 'update',
             'controllerAction' => 'patchAction',
         ),
+        'patchCollection' => array(
+            'action' => 'update',
+            'controllerAction' => 'patchCollectionAction',
+        ),
         'delete' => array(
             'action' => 'delete',
             'controllerAction' => 'deleteAction',
@@ -659,6 +663,28 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     }
 
     /**
+     * Apply the per-record write checks for an update: writable fields,
+     * project scope and the system-record guard.
+     *
+     * @param  array $value Record payload including its id
+     * @return array The payload with denied fields removed
+     */
+    private function authorizeRecordUpdate(array $value)
+    {
+        if (!$this->getDI()->has('acl')) {
+            return $value;
+        }
+
+        $modelAlias = Util::extractClassFromNamespace($this->modelName);
+        $acl = $this->getDI()->get('acl');
+        $value = $acl->authorizeWritableFields($modelAlias, $value, 'update');
+        $acl->assertWriteInScope($modelAlias, $value, $value['id']);
+        $acl->assertSystemRecordWrite($modelAlias, $value, $value['id']);
+
+        return $value;
+    }
+
+    /**
      * Method Http accept: PATCH (update only the given fields)
      * Save/update data
      */
@@ -694,13 +720,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             if (isset($value['id'])) {
                 $this->id = $value['id'];
 
-                $modelAlias = Util::extractClassFromNamespace($modelName);
-                if ($this->getDI()->has('acl')) {
-                    $acl = $this->getDI()->get('acl');
-                    $value = $acl->authorizeWritableFields($modelAlias, $value, 'update');
-                    $acl->assertWriteInScope($modelAlias, $value, $value['id']);
-                    $acl->assertSystemRecordWrite($modelAlias, $value, $value['id']);
-                }
+                $value = $this->authorizeRecordUpdate($value);
 
                 //if passed by url
                 $model = $modelName::findFirst('id = "' . $value['id'] . '"');
@@ -765,8 +785,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 return $this->returnResponse($data);
             }
 
-            $model = $modelName::findFirst($temp['id']);
-            //$model = \Notes::findFirst($temp['id']);
+            $temp = $this->authorizeRecordUpdate($temp);
+            $model = $modelName::findFirst([
+                'conditions' => 'id = :id:',
+                'bind' => ['id' => (string) $temp['id']],
+            ]);
             if (!isset($model->id)) {
                 $data = array('error' => array('code' => 400, 'description' => 'Invalid record with identifier ' . $temp['id']));
                 $transaction->rollback("Invalid record with identifier " . $temp['id']);
