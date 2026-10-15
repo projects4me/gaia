@@ -723,6 +723,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                     foreach ($model->getMessages() as $message) {
                         $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
                     }
+                    $this->response->setStatusCode(422, "Unprocessable Entity");
                     $this->response->setJsonContent(
                         array(
                             'status' => 'ERROR',

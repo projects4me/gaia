@@ -1910,10 +1910,10 @@
         }
       },
       "expects": {
-        "status": 200,
+        "status": 422,
         "shape": "error"
       },
-      "note": "patchAction reports model errors with HTTP 200 and status ERROR (existing behaviour for every resource)"
+      "note": "patchAction reports model errors with HTTP 422 and status ERROR, like postAction"
     },
     {
       "id": "settings-export-rejected",
