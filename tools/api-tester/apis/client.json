@@ -615,10 +615,8 @@
         "data": {
           "type": "membership",
           "attributes": {
-            "roleId": "3",
             "userId": "{memberUserId}",
-            "relatedTo": "project",
-            "relatedId": "{projectId}"
+            "projectId": "{projectId}"
           }
         }
       },
@@ -629,16 +627,12 @@
         "status": 201,
         "shape": "jsonapi.resource",
         "attributesPresent": [
-          "roleId",
           "userId",
-          "relatedTo",
-          "relatedId"
+          "projectId"
         ],
         "attributesEqual": {
-          "roleId": "3",
           "userId": "{memberUserId}",
-          "relatedTo": "project",
-          "relatedId": "{projectId}"
+          "projectId": "{projectId}"
         }
       }
     },
@@ -667,7 +661,7 @@
           "type": "membership",
           "id": "{runtime.membershipId}",
           "attributes": {
-            "roleId": "2"
+            "userId": "{memberUserId}"
           }
         }
       },
@@ -675,7 +669,7 @@
         "status": 200,
         "shape": "jsonapi.resource",
         "attributesEqual": {
-          "roleId": "2"
+          "userId": "{memberUserId}"
         }
       }
     },
