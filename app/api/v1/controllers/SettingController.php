@@ -53,6 +53,10 @@ class SettingController extends RestController
             'action' => 'update',
             'controllerAction' => 'patchAction',
         ),
+        'patchCollection' => array(
+            'action' => 'update',
+            'controllerAction' => 'patchCollectionAction',
+        ),
     );
 
     /**

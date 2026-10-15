@@ -953,6 +953,34 @@
       "source": "acl-setting"
     },
     {
+      "id": "acl-system-status-patch-collection-denied-without-setting",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": "aclNoSetting",
+      "body": {
+        "collection": [
+          { "id": "{issuestatusId}", "description": "Denied without setting.update" }
+        ]
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-system-status-patch-collection-allowed-with-setting",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "collection": [
+          { "id": "{issuestatusId}", "description": "Updated with setting.update" }
+        ]
+      },
+      "expects": { "status": 200, "shape": "json" },
+      "source": "acl-setting"
+    },
+    {
       "id": "acl-system-status-delete-denied-without-setting",
       "method": "DELETE",
       "path": "/api/v1/issuestatus/{issuestatusId}",
