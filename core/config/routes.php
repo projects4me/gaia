@@ -352,10 +352,6 @@ $config['routes'] = array(
                     'PATCH',
                 ),
                 'identifier' => 'id',
-                // Settings > Email: send a test message (requires setting.update)
-                'actions' => array(
-                    'testemail' => array('POST'),
-                ),
             ),
             'systemsetting' => [
                 'path' => '/api/:version/systemsetting',

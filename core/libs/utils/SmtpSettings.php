@@ -48,7 +48,19 @@ class SmtpSettings
             $config = $config->toArray();
         }
 
-        return self::resolve(is_array($config) ? $config : [], self::readEmailSettings());
+        // Email is a side effect: if settings can't be read, send with the config
+        // rather than fail the user's request (forgot password, user create).
+        try {
+            $settings = self::readEmailSettings();
+        } catch (\Exception $e) {
+            global $logger;
+            if (isset($logger)) {
+                $logger->error('Email settings could not be read; using the smtp config: ' . $e->getMessage());
+            }
+            $settings = [];
+        }
+
+        return self::resolve(is_array($config) ? $config : [], $settings);
     }
 
     /**

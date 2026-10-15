@@ -31,10 +31,10 @@ class Email
     public function resetPassword(Event $event, $user)
     {
         try {
-            $smtp = SmtpSettings::load();
+            $smtp = $this->smtpSettings();
             $host = getenv('FRONTEND_HOST');
             $resetToken = $this->createResetToken(20);
-            $mail = Mailer::create($smtp);
+            $mail = $this->createMailer($smtp);
             ResetPassword::setEmailBody($user, $host, $resetToken);
 
             $mail->addAddress($user->email, $user->name);
@@ -68,7 +68,7 @@ class Email
     public function emailPassword(Event $event, $user, $password)
     {
         try {
-            $mail = Mailer::fromSettings();
+            $mail = $this->createMailer($this->smtpSettings());
             $host = getenv('FRONTEND_HOST');
             WelcomePassword::setEmailBody($user, $host, $password);
 
@@ -82,6 +82,29 @@ class Email
         } catch (\Exception $e) {
             throw new \Gaia\Exception\Exception("Message could not be sent. Mailer Error: {$e->getMessage()}");
         }
+    }
+
+    /**
+     * The effective SMTP configuration (Settings > Email over the smtp config).
+     *
+     * @method smtpSettings
+     * @return array
+     */
+    protected function smtpSettings()
+    {
+        return SmtpSettings::load();
+    }
+
+    /**
+     * Create the mailer for one message.
+     *
+     * @method createMailer
+     * @param  array $smtp Output of {@see SmtpSettings::resolve()}
+     * @return \PHPMailer\PHPMailer\PHPMailer
+     */
+    protected function createMailer(array $smtp)
+    {
+        return Mailer::create($smtp);
     }
 
     /**

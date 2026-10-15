@@ -23,25 +23,30 @@ class Mailer
     /**
      * Create a mailer from the current SMTP settings.
      *
-     * @param  bool $exceptions Whether PHPMailer throws on errors
+     * @param  bool     $exceptions Whether PHPMailer throws on errors
+     * @param  int|null $timeout    SMTP timeout in seconds (null keeps PHPMailer's default)
      * @return PHPMailer
      */
-    public static function fromSettings($exceptions = false)
+    public static function fromSettings($exceptions = false, $timeout = null)
     {
-        return self::create(SmtpSettings::load(), $exceptions);
+        return self::create(SmtpSettings::load(), $exceptions, $timeout);
     }
 
     /**
      * Create a mailer from a resolved SMTP configuration.
      *
-     * @param  array $smtp       Output of {@see SmtpSettings::resolve()}
-     * @param  bool  $exceptions Whether PHPMailer throws on errors
+     * @param  array    $smtp       Output of {@see SmtpSettings::resolve()}
+     * @param  bool     $exceptions Whether PHPMailer throws on errors
+     * @param  int|null $timeout    SMTP timeout in seconds (null keeps PHPMailer's default)
      * @return PHPMailer
      */
-    public static function create(array $smtp, $exceptions = false)
+    public static function create(array $smtp, $exceptions = false, $timeout = null)
     {
         $mail = new PHPMailer($exceptions);
         $mail->isSMTP();
+        if ($timeout !== null) {
+            $mail->Timeout = (int) $timeout;
+        }
         $mail->Host = (string) $smtp['host'];
         $mail->Port = (int) $smtp['port'];
         $mail->SMTPAuth = (bool) $smtp['auth'];
