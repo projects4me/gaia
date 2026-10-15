@@ -55,6 +55,9 @@ Optional: `--filter project` (OR terms with `|`, e.g. `milestone|timelog`)
 # live (Gaia → Hermes) — requires hermes-test (:9001) + --hermes-url
 ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode live --hermes-url http://localhost:9001
 
+# mail (Gaia → SMTP sink) — requires the mailpit sink (:8025) + --mail-url
+./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode mail --mail-url http://localhost:8025
+
 # remote
 ./tools/api-tester/harness/run-api-tests.sh --base-uri https://api.staging.example.com --mode backend
 ```
@@ -87,6 +90,10 @@ Optional: `--filter project` (OR terms with `|`, e.g. `milestone|timelog`)
   - **Gaia → Hermes** publish smoke (opt-in; not part of portable Gaia-only runs)
   - Happy path: REST write + Socket.IO `domain:event` via live Hermes (`--hermes-url`)
   - Fail-open: REST still succeeds when Gaia cannot reach Hermes (`requireUp: false`)
+
+- `tools/api-tester/apis/mail.json`
+  - **Gaia → SMTP** delivery check (opt-in; needs `--mail-url`, not run by default or in CI)
+  - Saves Settings > Email pointing at the Mailpit sink, creates a user (welcome password email), calls `POST /api/v1/forgetpassword` (reset email), asserts recipient, sender, subject and link/content on the captured messages, then blanks the email settings again
 
 Generate catalogs:
 
@@ -164,6 +171,35 @@ TEST_SERVICE=gaia-test-hermes-down ./tools/api-tester/harness/use-test-db.sh
   --mode live \
   --filter fail-open
 ```
+
+## Mail mode (Gaia → SMTP sink)
+
+Proves a message is really sent through the settings-configured SMTP. The sink is
+[Mailpit](https://mailpit.axllent.org) (`mailpit` service in `docker-compose.yaml`, on the `backend`
+network): it captures messages and delivers nothing. The suite uses only public flows (settings API,
+`POST /api/v1/user`, `POST /api/v1/forgetpassword`) and the sink's HTTP API; Gaia has no test-only code for it.
+
+`gaia-test` and `gaia-test-hermes-down` have no real SMTP credentials: their `smtp` config points at an
+unreachable host (`SMTP_HOST=127.0.0.1`, `SMTP_PORT=9`), so default runs never reach a real mail server (a
+send fails open and is logged). Only this suite redirects mail, by saving the sink host in Settings > Email.
+
+```bash
+docker compose up -d mailpit gaia-test        # saving the SMTP password needs SETTINGS_ENCRYPTION_KEY in the environment
+./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode mail --mail-url http://localhost:8025
+```
+
+Without PHP on the host, run it inside the container (the sink is `http://mailpit:8025` on the network):
+
+```bash
+docker exec -w /var/www/html gaia-test php tools/api-tester/bin/api-tester run --base-uri http://localhost:80   --apis tools/api-tester/apis/mail.json --fixtures tools/api-tester/fixtures/default.json --mail-url http://mailpit:8025
+```
+
+Cases may declare a `mail` block (`to`, `subject`, `fromEmail`, `fromName`, `bodyContains`, `timeoutMs`); the runner
+expects exactly one matching message for `to` + `subject` and asserts the rest. A case body can be form-encoded
+with `"form": {...}` instead of `"body"` (used by `forgetpassword`).
+
+The suite restores Settings > Email by blanking the values it set (blank means unset, so the `smtp` config applies
+again). It does not run in CI: CI has no sink; enable it by adding the `mailpit` service there and a `--mode mail` step.
 
 ## Sources
 

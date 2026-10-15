@@ -39,8 +39,13 @@ services:
     container_name: gaia-test
     environment:
       FRONTEND_HOST: localhost:4200
-      SMTP_USERNAME: 'projectsfourme@gmail.com'
-      SMTP_PASSWORD: 'acgl zdcf txkc oixp'
+      # Never the real mail server: default runs fail open against a dead port; the
+      # mail-sink suite saves the mailpit host in Settings > Email instead.
+      SMTP_HOST: 127.0.0.1
+      SMTP_PORT: "9"
+      SMTP_ENCRYPTION: none
+      SMTP_USERNAME: api-tester
+      SMTP_PASSWORD: api-tester
       DB_ADAPTER: Postgres
       DB_HOST: postgres
       DB_PORT: "5432"
@@ -73,8 +78,13 @@ services:
     container_name: gaia-test-hermes-down
     environment:
       FRONTEND_HOST: localhost:4200
-      SMTP_USERNAME: 'projectsfourme@gmail.com'
-      SMTP_PASSWORD: 'acgl zdcf txkc oixp'
+      # Never the real mail server: default runs fail open against a dead port; the
+      # mail-sink suite saves the mailpit host in Settings > Email instead.
+      SMTP_HOST: 127.0.0.1
+      SMTP_PORT: "9"
+      SMTP_ENCRYPTION: none
+      SMTP_USERNAME: api-tester
+      SMTP_PASSWORD: api-tester
       DB_ADAPTER: Postgres
       DB_HOST: postgres
       DB_PORT: "5432"
@@ -99,6 +109,19 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      - backend
+
+  # SMTP sink for the opt-in mail suite (api-tester --mode mail): captures messages,
+  # delivers nothing. SMTP :1025 stays on the backend network; the HTTP API/UI is :8025.
+  mailpit:
+    container_name: mailpit
+    image: axllent/mailpit:v1.21
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "1"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "1"
+    ports:
+      - '8025:8025'
     networks:
       - backend
 

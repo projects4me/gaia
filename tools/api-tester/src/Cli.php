@@ -33,6 +33,7 @@ class Cli
             : (getcwd() . '/api-tester-report.json');
         $filter = isset($options['filter']) ? $options['filter'] : null;
         $hermesUrl = isset($options['hermes-url']) ? rtrim($options['hermes-url'], '/') : null;
+        $mailUrl = isset($options['mail-url']) ? rtrim($options['mail-url'], '/') : null;
 
         if (!$baseUri) {
             fwrite(STDERR, "Missing required --base-uri\n");
@@ -49,7 +50,7 @@ class Cli
             return 1;
         }
 
-        $runner = new Runner($baseUri, $apisPath, $fixturesPath, $reportPath, $filter, $hermesUrl);
+        $runner = new Runner($baseUri, $apisPath, $fixturesPath, $reportPath, $filter, $hermesUrl, $mailUrl);
         return $runner->run();
     }
 
@@ -105,6 +106,7 @@ Options:
   --report <file>          Report output path (default: ./api-tester-report.json)
   --filter <substring>     Only run API ids/paths containing this substring
   --hermes-url <url>       Live Hermes base URL (required for cases with hermes.expect)
+  --mail-url <url>         SMTP sink HTTP API base URL (required for cases with a mail block)
   --help                   Show this help
 
 Auth env vars (optional; can also come from fixtures.auth):
@@ -118,6 +120,7 @@ Examples:
   php tools/api-tester/bin/api-tester run --base-uri https://api.staging.example.com --apis tools/api-tester/apis/backend.json
   php tools/api-tester/bin/api-tester run --base-uri http://localhost:8081 --filter project
   php tools/api-tester/bin/api-tester run --base-uri http://localhost:8081 --apis tools/api-tester/apis/live.json --hermes-url http://localhost:9001
+  php tools/api-tester/bin/api-tester run --base-uri http://localhost:8081 --apis tools/api-tester/apis/mail.json --mail-url http://localhost:8025
 
 HELP;
     }

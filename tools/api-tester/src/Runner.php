@@ -10,6 +10,7 @@ class Runner
     private $reportPath;
     private $filter;
     private $hermesUrl;
+    private $mailSink;
     private $client;
     private $fixtures;
     private $asserter;
@@ -18,7 +19,7 @@ class Runner
     private $tokens = [];
     private $hermesHealthyChecked = false;
 
-    public function __construct($baseUri, $apisPath, $fixturesPath, $reportPath, $filter = null, $hermesUrl = null)
+    public function __construct($baseUri, $apisPath, $fixturesPath, $reportPath, $filter = null, $hermesUrl = null, $mailUrl = null)
     {
         $this->baseUri = $baseUri;
         $this->apisPath = $apisPath;
@@ -31,6 +32,9 @@ class Runner
         $this->asserter = new Asserter();
         if ($this->hermesUrl) {
             $this->hermesObserver = new HermesObserver($this->hermesUrl);
+        }
+        if ($mailUrl) {
+            $this->mailSink = new MailSink($mailUrl);
         }
     }
 
@@ -156,6 +160,8 @@ class Runner
         }
         if (isset($api['body'])) {
             $options['json'] = $this->fixtures->resolve($api['body']);
+        } elseif (isset($api['form'])) {
+            $options['form'] = $this->fixtures->resolve($api['form']);
         }
 
         $needsAuth = !isset($api['auth']) || $api['auth'] !== false;
@@ -213,6 +219,14 @@ class Runner
             $observer = $this->hermesObserver->arm($token, $expectEvents, $timeoutMs);
         }
 
+        $mail = isset($api['mail']) && is_array($api['mail']) ? $this->fixtures->resolve($api['mail']) : null;
+        if ($mail !== null) {
+            if (!$this->mailSink) {
+                throw new \RuntimeException("Case {$id} declares mail but --mail-url was not provided");
+            }
+            $this->mailSink->assertHealthy();
+        }
+
         try {
             $response = $this->client->request($method, $path, $options);
             $expects = isset($api['expects']) ? $api['expects'] : ['status' => 200, 'shape' => 'json'];
@@ -221,6 +235,10 @@ class Runner
 
             if (empty($failures) && !empty($api['store'])) {
                 $this->storeRuntimeValues($api['store'], $response);
+            }
+
+            if ($mail !== null && empty($failures)) {
+                $failures = $this->assertMail($mail);
             }
 
             if ($observer !== null && empty($failures)) {
@@ -255,6 +273,50 @@ class Runner
             'expects' => $expects,
             'failures' => $failures,
         ];
+    }
+
+    /**
+     * Check the sink received the message a case expects.
+     *
+     * Expectation keys: to (required), fromEmail, fromName, subject,
+     * bodyContains (list, matched against the HTML and text parts), timeoutMs.
+     */
+    private function assertMail(array $expect)
+    {
+        $timeoutMs = isset($expect['timeoutMs']) ? (int) $expect['timeoutMs'] : 5000;
+        $messages = $this->mailSink->messagesTo($expect['to'], isset($expect['subject']) ? $expect['subject'] : null, $timeoutMs);
+        if (count($messages) !== 1) {
+            return ['Mail sink holds ' . count($messages) . ' message(s) for ' . $expect['to'] . ', expected exactly 1'];
+        }
+
+        $message = $messages[0];
+        $failures = [];
+        $recipients = array_map(function ($to) {
+            return isset($to['Address']) ? $to['Address'] : '';
+        }, isset($message['To']) ? $message['To'] : []);
+        if ($recipients !== [$expect['to']]) {
+            $failures[] = 'Mail recipients ' . json_encode($recipients) . ' != ' . json_encode([$expect['to']]);
+        }
+        foreach (['fromEmail' => 'Address', 'fromName' => 'Name'] as $key => $field) {
+            $actual = isset($message['From'][$field]) ? $message['From'][$field] : null;
+            if (isset($expect[$key]) && $actual !== $expect[$key]) {
+                $failures[] = "Mail {$key} " . json_encode($actual) . ' != ' . json_encode($expect[$key]);
+            }
+        }
+        if (isset($expect['subject']) && (!isset($message['Subject']) || $message['Subject'] !== $expect['subject'])) {
+            $failures[] = 'Mail subject ' . json_encode(isset($message['Subject']) ? $message['Subject'] : null)
+                . ' != ' . json_encode($expect['subject']);
+        }
+        $content = (isset($message['HTML']) ? $message['HTML'] : '') . "
+" . (isset($message['Text']) ? $message['Text'] : '');
+        $needles = isset($expect['bodyContains']) ? $expect['bodyContains'] : [];
+        foreach ($needles as $needle) {
+            if (strpos($content, $needle) === false) {
+                $failures[] = 'Mail body does not contain ' . json_encode($needle);
+            }
+        }
+
+        return $failures;
     }
 
     private function ensureHermesHealthy()
