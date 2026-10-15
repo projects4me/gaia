@@ -1,0 +1,356 @@
+{
+  "description": "Opt-in: real notification emails through settings-configured SMTP, captured by the Mailpit sink (--mail-url). Saves email settings pointing at the sink, drives POST /api/v1/user (welcome) and POST /api/v1/forgetpassword, checks the captured messages, then blanks the email settings again (blank = unset, falling back to the smtp config).",
+  "apis": [
+    {
+      "id": "mail-setup-setting-smtpHost",
+      "method": "PATCH",
+      "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
+          "attributes": {
+            "settingValue": "mailpit"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-setup-setting-smtpPort",
+      "method": "PATCH",
+      "path": "/api/v1/setting/dd8caf82-9091-573c-b753-576346dd9500",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "dd8caf82-9091-573c-b753-576346dd9500",
+          "attributes": {
+            "settingValue": "1025"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-setup-setting-smtpEncryption",
+      "method": "PATCH",
+      "path": "/api/v1/setting/fa6c9c5d-bc32-596b-90db-5ead3ddc6009",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "fa6c9c5d-bc32-596b-90db-5ead3ddc6009",
+          "attributes": {
+            "settingValue": "none"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-setup-setting-smtpUsername",
+      "method": "PATCH",
+      "path": "/api/v1/setting/23131b90-65c9-5b8d-992f-50949a0d06c1",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "23131b90-65c9-5b8d-992f-50949a0d06c1",
+          "attributes": {
+            "settingValue": "mail-sink"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-setup-setting-smtpPassword",
+      "method": "PATCH",
+      "path": "/api/v1/setting/ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+          "attributes": {
+            "settingValue": "mail-sink"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-setup-setting-fromName",
+      "method": "PATCH",
+      "path": "/api/v1/setting/b4d38728-4a3a-50bb-a67d-fd2b7e940b68",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "b4d38728-4a3a-50bb-a67d-fd2b7e940b68",
+          "attributes": {
+            "settingValue": "Mail Sink Sender"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-setup-setting-fromEmail",
+      "method": "PATCH",
+      "path": "/api/v1/setting/b727da8f-a3fd-5913-b74a-2afcb43a9d62",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "b727da8f-a3fd-5913-b74a-2afcb43a9d62",
+          "attributes": {
+            "settingValue": "sender@mail-sink.test"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-welcome-password-email-is-delivered",
+      "method": "POST",
+      "path": "/api/v1/user",
+      "resource": "user",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "user",
+          "attributes": {
+            "name": "Mail Sink {runId}",
+            "email": "mail-{runId}@example.com",
+            "accountStatus": "active"
+          }
+        }
+      },
+      "store": {
+        "runtime.mailUserId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "mail": {
+        "to": "mail-{runId}@example.com",
+        "fromEmail": "sender@mail-sink.test",
+        "fromName": "Mail Sink Sender",
+        "subject": "Your account has been created",
+        "bodyContains": [
+          "mail-{runId}@example.com",
+          "Password:",
+          "/signin"
+        ]
+      }
+    },
+    {
+      "id": "mail-reset-password-email-is-delivered",
+      "method": "POST",
+      "path": "/api/v1/forgetpassword",
+      "resource": "forgetpassword",
+      "auth": false,
+      "form": {
+        "email": "mail-{runId}@example.com"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      },
+      "mail": {
+        "to": "mail-{runId}@example.com",
+        "fromEmail": "sender@mail-sink.test",
+        "fromName": "Mail Sink Sender",
+        "subject": "Reset Link",
+        "bodyContains": [
+          "/reset-password?token="
+        ]
+      }
+    },
+    {
+      "id": "mail-cleanup-delete-created-user",
+      "method": "DELETE",
+      "path": "/api/v1/user/{runtime.mailUserId}",
+      "resource": "user",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "mail-restore-setting-smtpHost",
+      "method": "PATCH",
+      "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
+          "attributes": {
+            "settingValue": ""
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-restore-setting-smtpPort",
+      "method": "PATCH",
+      "path": "/api/v1/setting/dd8caf82-9091-573c-b753-576346dd9500",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "dd8caf82-9091-573c-b753-576346dd9500",
+          "attributes": {
+            "settingValue": ""
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-restore-setting-smtpEncryption",
+      "method": "PATCH",
+      "path": "/api/v1/setting/fa6c9c5d-bc32-596b-90db-5ead3ddc6009",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "fa6c9c5d-bc32-596b-90db-5ead3ddc6009",
+          "attributes": {
+            "settingValue": ""
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-restore-setting-smtpUsername",
+      "method": "PATCH",
+      "path": "/api/v1/setting/23131b90-65c9-5b8d-992f-50949a0d06c1",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "23131b90-65c9-5b8d-992f-50949a0d06c1",
+          "attributes": {
+            "settingValue": ""
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-restore-setting-smtpPassword",
+      "method": "PATCH",
+      "path": "/api/v1/setting/ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+          "attributes": {
+            "settingValue": ""
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-restore-setting-fromName",
+      "method": "PATCH",
+      "path": "/api/v1/setting/b4d38728-4a3a-50bb-a67d-fd2b7e940b68",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "b4d38728-4a3a-50bb-a67d-fd2b7e940b68",
+          "attributes": {
+            "settingValue": ""
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-restore-setting-fromEmail",
+      "method": "PATCH",
+      "path": "/api/v1/setting/b727da8f-a3fd-5913-b74a-2afcb43a9d62",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "setting",
+          "id": "b727da8f-a3fd-5913-b74a-2afcb43a9d62",
+          "attributes": {
+            "settingValue": ""
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    }
+  ]
+}

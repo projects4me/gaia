@@ -1,11 +1,13 @@
 <?php
 
-// SMTP configuration for Gmail
+// SMTP configuration. Defaults to Gmail; SMTP_HOST / SMTP_PORT / SMTP_ENCRYPTION override it
+// (the test services point it at an unreachable host, so default runs never reach a real mail server).
 $config['smtp'] = [
-    'host' => 'smtp.gmail.com',
+    'host' => getenv('SMTP_HOST') ?: 'smtp.gmail.com',
     'user' => 'Projects4me',
     'auth' => true,
-    'port' => 587,
+    'port' => (int) (getenv('SMTP_PORT') ?: 587),
+    'encryption' => getenv('SMTP_ENCRYPTION') ?: 'tls',
     'username' => getenv('SMTP_USERNAME'),
     'password' => getenv('SMTP_PASSWORD'),
     'resetTokenTimeout' => 3600 //seconds,
