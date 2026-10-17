@@ -7,6 +7,7 @@
 namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
+use Gaia\Libraries\Security\AclLockoutGuard;
 
 /**
  * This controller is used to provide API interface for OAuth 2.- based
@@ -156,6 +157,20 @@ class TokenController extends RestController
     }
 
     /**
+     * Reject password grant when the account is soft-disabled.
+     *
+     * @param  \Gaia\MVC\Models\User $user
+     * @throws \Gaia\Exception\UnAuthorized
+     * @return void
+     */
+    private function assertUserCanAuthenticate(\Gaia\MVC\Models\User $user)
+    {
+        if (!AclLockoutGuard::isAuthenticatableAccountStatus($user->accountStatus)) {
+            throw new \Gaia\Exception\UnAuthorized(AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
+        }
+    }
+
+    /**
      * Handle failed login attempts for OAuth2 authentication.
      *
      * @param  \OAuth2\Request $request
@@ -165,6 +180,7 @@ class TokenController extends RestController
     {
         $email = $request->request('email');
         $user = $this->getUserByEmail($email);
+        $this->assertUserCanAuthenticate($user);
         $oauthConfig = $this->config->get('oauth');
         $failedLimit = $oauthConfig['failedLoginAttemptsLimit'];
 
