@@ -2364,6 +2364,10 @@
           {
             "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
             "settingValue": "127.0.0.1"
+          },
+          {
+            "id": "ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+            "settingValue": "test-password"
           }
         ],
         "test": true,
@@ -2388,6 +2392,10 @@
           {
             "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
             "settingValue": "127.0.0.1"
+          },
+          {
+            "id": "ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+            "settingValue": "test-password"
           }
         ],
         "test": true
@@ -2422,7 +2430,7 @@
           },
           {
             "id": "ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
-            "settingValue": ""
+            "settingValue": "test-password"
           },
           {
             "id": "b727da8f-a3fd-5913-b74a-2afcb43a9d62",
@@ -2439,7 +2447,61 @@
           "testResult": "SMTP_CONNECTION_FAILED"
         }
       },
-      "note": "nothing listens on 127.0.0.1:1; a blank password means the stored one, as on save"
+      "note": "nothing listens on 127.0.0.1:1"
+    },
+    {
+      "id": "settings-test-changed-host-needs-password",
+      "method": "PATCH",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
+            "settingValue": "127.0.0.1"
+          },
+          {
+            "id": "ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+            "settingValue": ""
+          }
+        ],
+        "test": true,
+        "recipient": "admin@example.com"
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "testResult": "SMTP_PASSWORD_REQUIRED"
+        }
+      },
+      "note": "the stored password is never sent to a changed host; a blank password means the stored one"
+    },
+    {
+      "id": "settings-test-changed-username-needs-password",
+      "method": "PATCH",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "23131b90-65c9-5b8d-992f-50949a0d06c1",
+            "settingValue": "someone-else@example.com"
+          }
+        ],
+        "test": true,
+        "recipient": "admin@example.com"
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "testResult": "SMTP_PASSWORD_REQUIRED"
+        }
+      },
+      "note": "the password record is omitted: the stored one stays protected"
     },
     {
       "id": "settings-test-missing-collection",

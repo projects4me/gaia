@@ -101,6 +101,46 @@ class SmtpSettings
     }
 
     /**
+     * Whether a resolved configuration would send a stored password (the
+     * saved setting or the config) to a server or account other than the
+     * stored one. A test with a changed host, port, encryption or username
+     * must bring its own password, so the stored one can't be sent elsewhere.
+     *
+     * @param  array $stored    The stored configuration ({@see load()})
+     * @param  array $resolved  The configuration with the submitted values ({@see loadWith()})
+     * @param  array $submitted Submitted setting values keyed by name
+     * @return bool
+     */
+    public static function reusesStoredPassword(array $stored, array $resolved, array $submitted)
+    {
+        if (!$resolved['auth'] || $resolved['password'] === null || $resolved['password'] === '') {
+            return false;
+        }
+        if (self::isNewSecret(isset($submitted['email.smtpPassword']) ? $submitted['email.smtpPassword'] : null)) {
+            return false;
+        }
+        foreach (['host', 'port', 'encryption', 'username'] as $key) {
+            if ($stored[$key] !== $resolved[$key]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Whether a submitted secure value replaces the saved one: not blank and
+     * not ciphertext.
+     *
+     * @param  mixed $value
+     * @return bool
+     */
+    private static function isNewSecret($value)
+    {
+        return $value !== null && trim((string) $value) !== '' && !SettingsCipher::isEncrypted($value);
+    }
+
+    /**
      * Merge saved settings over config. Blank settings count as unset.
      *
      * @param  array $config   The `smtp` config (host, port, username, password, user, auth, ...)

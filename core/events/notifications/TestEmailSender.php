@@ -37,6 +37,14 @@ class TestEmailSender
     public const INVALID_RECIPIENT = 'INVALID_RECIPIENT';
 
     /**
+     * The test changes the server or account but brings no password, and
+     * the stored one is never sent elsewhere; nothing was sent.
+     *
+     * @var string
+     */
+    public const SMTP_PASSWORD_REQUIRED = 'SMTP_PASSWORD_REQUIRED';
+
+    /**
      * SMTP timeout in seconds, so an unreachable host fails within the request.
      *
      * @var int

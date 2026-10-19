@@ -42,6 +42,7 @@ class SettingController extends RestController
     private const TEST_RESULT_STATUS = [
         TestEmailSender::TEST_EMAIL_SENT => 200,
         TestEmailSender::INVALID_RECIPIENT => 422,
+        TestEmailSender::SMTP_PASSWORD_REQUIRED => 422,
         MailerErrorMapper::SMTP_AUTH_FAILED => 502,
         MailerErrorMapper::SMTP_CONNECTION_FAILED => 502,
         MailerErrorMapper::UNKNOWN_ERROR => 502,
@@ -114,6 +115,7 @@ class SettingController extends RestController
      * Send a test email with the submitted email settings, over the saved
      * settings and the smtp config. Runs the same per-record checks as a
      * save, but never saves, opens a transaction or fires rest:afterUpdate.
+     * A test that changes the server or account must bring its own password.
      *
      * @param  object $data The request body
      * @return \Phalcon\Http\Response {"testResult": "<code>"}
@@ -155,7 +157,9 @@ class SettingController extends RestController
 
         $smtp = SmtpSettings::loadWith($submitted, $secureNames);
         $recipient = isset($data->recipient) ? $data->recipient : null;
-        $code = (new TestEmailSender())->send($recipient, $smtp);
+        $code = SmtpSettings::reusesStoredPassword(SmtpSettings::load(), $smtp, $submitted)
+            ? TestEmailSender::SMTP_PASSWORD_REQUIRED
+            : (new TestEmailSender())->send($recipient, $smtp);
 
         $this->response->setStatusCode(isset(self::TEST_RESULT_STATUS[$code]) ? self::TEST_RESULT_STATUS[$code] : 502);
         return $this->returnResponse(array('testResult' => $code));
