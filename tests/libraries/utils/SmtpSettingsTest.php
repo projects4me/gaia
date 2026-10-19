@@ -7,6 +7,7 @@
 namespace Gaia\Tests\Libraries\Utils;
 
 use Gaia\Events\Notification\Mailer;
+use Gaia\Libraries\Utils\SettingsCipher;
 use Gaia\Libraries\Utils\SmtpSettings;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPUnit\Framework\TestCase;
@@ -93,6 +94,148 @@ class SmtpSettingsTest extends TestCase
         $smtp = SmtpSettings::resolve($this->config, ['email.smtpUsername' => 'db-user@example.com']);
 
         $this->assertSame('db-user@example.com', $smtp['fromEmail']);
+    }
+
+    public function testSubmittedValuesWinOverSavedOverConfig()
+    {
+        $saved = [
+            'email.smtpHost' => 'saved.example.com',
+            'email.smtpPort' => '2525',
+            'email.smtpUsername' => 'saved-user@example.com',
+            'email.smtpPassword' => 'saved-secret',
+        ];
+        $smtp = SmtpSettings::resolve($this->config, SmtpSettings::overlay($saved, [
+            'email.smtpHost' => 'submitted.example.com',
+            'email.smtpPassword' => 'submitted-secret',
+        ], ['email.smtpPassword']));
+
+        $this->assertSame('submitted.example.com', $smtp['host']);
+        $this->assertSame('submitted-secret', $smtp['password']);
+        // Not submitted: the saved value, then the config.
+        $this->assertSame(2525, $smtp['port']);
+        $this->assertSame('saved-user@example.com', $smtp['username']);
+        $this->assertSame('Projects4me', $smtp['fromName']);
+    }
+
+    public function testSubmittedBlankClearsAPlainSettingLikeASave()
+    {
+        $smtp = SmtpSettings::resolve($this->config, SmtpSettings::overlay(
+            ['email.smtpHost' => 'saved.example.com'],
+            ['email.smtpHost' => ''],
+            ['email.smtpPassword']
+        ));
+
+        $this->assertSame('smtp.gmail.com', $smtp['host']);
+    }
+
+    /**
+     * @dataProvider keptSecrets
+     */
+    public function testBlankOrEncryptedPasswordKeepsTheSavedOne($submitted)
+    {
+        $smtp = SmtpSettings::resolve($this->config, SmtpSettings::overlay(
+            ['email.smtpPassword' => 'saved-secret'],
+            ['email.smtpPassword' => $submitted],
+            ['email.smtpPassword']
+        ));
+
+        $this->assertSame('saved-secret', $smtp['password']);
+    }
+
+    public function keptSecrets()
+    {
+        return [
+            'blank' => [''],
+            'null' => [null],
+            'ciphertext' => [SettingsCipher::PREFIX . 'not-decrypted'],
+        ];
+    }
+
+    public function testBlankPasswordWithNothingSavedUsesTheConfig()
+    {
+        $smtp = SmtpSettings::resolve($this->config, SmtpSettings::overlay(
+            [],
+            ['email.smtpPassword' => ''],
+            ['email.smtpPassword']
+        ));
+
+        $this->assertSame('env-secret', $smtp['password']);
+    }
+
+    /**
+     * A test that points the stored password at another server or account
+     * must bring its own password (PR #190 review).
+     *
+     * @dataProvider connectionChanges
+     */
+    public function testChangedConnectionWithoutAPasswordReusesTheStoredOne($submitted)
+    {
+        $saved = ['email.smtpHost' => 'smtp.example.com', 'email.smtpPassword' => 'saved-secret'];
+        $stored = SmtpSettings::resolve($this->config, $saved);
+        $resolved = SmtpSettings::resolve($this->config, SmtpSettings::overlay($saved, $submitted, ['email.smtpPassword']));
+
+        $this->assertTrue(SmtpSettings::reusesStoredPassword($stored, $resolved, $submitted));
+    }
+
+    public function connectionChanges()
+    {
+        return [
+            'host' => [['email.smtpHost' => 'attacker.example.com']],
+            'port' => [['email.smtpPort' => '2525']],
+            'encryption' => [['email.smtpEncryption' => 'none']],
+            'username' => [['email.smtpUsername' => 'someone@example.com']],
+            'host, blank password' => [['email.smtpHost' => 'attacker.example.com', 'email.smtpPassword' => '']],
+            'host, ciphertext password' => [['email.smtpHost' => 'attacker.example.com', 'email.smtpPassword' => SettingsCipher::PREFIX . 'x']],
+        ];
+    }
+
+    public function testChangedConnectionWithoutAPasswordReusesTheConfigOne()
+    {
+        $stored = SmtpSettings::resolve($this->config, []);
+        $submitted = ['email.smtpHost' => 'attacker.example.com'];
+        $resolved = SmtpSettings::resolve($this->config, SmtpSettings::overlay([], $submitted, ['email.smtpPassword']));
+
+        $this->assertSame('env-secret', $resolved['password']);
+        $this->assertTrue(SmtpSettings::reusesStoredPassword($stored, $resolved, $submitted));
+    }
+
+    public function testChangedConnectionWithANewPasswordIsAllowed()
+    {
+        $saved = ['email.smtpPassword' => 'saved-secret'];
+        $stored = SmtpSettings::resolve($this->config, $saved);
+        $submitted = ['email.smtpHost' => 'other.example.com', 'email.smtpPassword' => 'new-secret'];
+        $resolved = SmtpSettings::resolve($this->config, SmtpSettings::overlay($saved, $submitted, ['email.smtpPassword']));
+
+        $this->assertFalse(SmtpSettings::reusesStoredPassword($stored, $resolved, $submitted));
+    }
+
+    public function testUnchangedConnectionMayUseTheStoredPassword()
+    {
+        $saved = ['email.smtpHost' => 'smtp.example.com', 'email.smtpPassword' => 'saved-secret'];
+        $stored = SmtpSettings::resolve($this->config, $saved);
+        $submitted = ['email.smtpHost' => 'smtp.example.com', 'email.fromName' => 'Changed', 'email.smtpPassword' => ''];
+        $resolved = SmtpSettings::resolve($this->config, SmtpSettings::overlay($saved, $submitted, ['email.smtpPassword']));
+
+        $this->assertFalse(SmtpSettings::reusesStoredPassword($stored, $resolved, $submitted));
+    }
+
+    public function testNoAuthOrNoStoredPasswordHasNothingToReuse()
+    {
+        $submitted = ['email.smtpHost' => 'other.example.com'];
+
+        $noAuth = array_merge($this->config, ['auth' => false]);
+        $this->assertFalse(SmtpSettings::reusesStoredPassword(
+            SmtpSettings::resolve($noAuth, []),
+            SmtpSettings::resolve($noAuth, $submitted),
+            $submitted
+        ));
+
+        $noPassword = array_merge($this->config, ['password' => null]);
+        $this->assertFalse(SmtpSettings::reusesStoredPassword(
+            SmtpSettings::resolve($noPassword, []),
+            SmtpSettings::resolve($noPassword, $submitted),
+            $submitted
+        ));
     }
 
     public function testUnknownEncryptionFallsBackToTls()

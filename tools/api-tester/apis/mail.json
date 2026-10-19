@@ -1,5 +1,5 @@
 {
-  "description": "Opt-in: real notification emails through settings-configured SMTP, captured by the Mailpit sink (--mail-url). Saves email settings pointing at the sink, drives POST /api/v1/user (welcome) and POST /api/v1/forgetpassword, checks the captured messages, then blanks the email settings again (blank = unset, falling back to the smtp config).",
+  "description": "Opt-in: real notification emails through settings-configured SMTP, captured by the Mailpit sink (--mail-url). Saves email settings pointing at the sink, drives POST /api/v1/user (welcome) and POST /api/v1/forgetpassword, checks the captured messages, then blanks the email settings again (blank = unset, falling back to the smtp config). Finally sends a settings test email (PATCH /api/v1/setting with test: true) with the sink values submitted but not saved.",
   "apis": [
     {
       "id": "mail-setup-setting-smtpHost",
@@ -350,6 +350,93 @@
       "expects": {
         "status": 200,
         "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mail-settings-test-before-host",
+      "method": "GET",
+      "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+      "resource": "setting",
+      "auth": true,
+      "store": {
+        "runtime.mailTestHostModified": "data.attributes.dateModified"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      },
+      "note": "agaia-4017: the email settings are blank again here, so the test email can only reach the sink through the submitted values"
+    },
+    {
+      "id": "mail-settings-test-email-is-delivered",
+      "method": "PATCH",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
+            "settingValue": "mailpit"
+          },
+          {
+            "id": "dd8caf82-9091-573c-b753-576346dd9500",
+            "settingValue": "1025"
+          },
+          {
+            "id": "fa6c9c5d-bc32-596b-90db-5ead3ddc6009",
+            "settingValue": "none"
+          },
+          {
+            "id": "23131b90-65c9-5b8d-992f-50949a0d06c1",
+            "settingValue": "mail-sink"
+          },
+          {
+            "id": "ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+            "settingValue": "mail-sink"
+          },
+          {
+            "id": "b4d38728-4a3a-50bb-a67d-fd2b7e940b68",
+            "settingValue": "Mail Sink Sender"
+          },
+          {
+            "id": "b727da8f-a3fd-5913-b74a-2afcb43a9d62",
+            "settingValue": "sender@mail-sink.test"
+          }
+        ],
+        "test": true,
+        "recipient": "settings-test-{runId}@example.com"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "testResult": "TEST_EMAIL_SENT"
+        }
+      },
+      "mail": {
+        "to": "settings-test-{runId}@example.com",
+        "fromEmail": "sender@mail-sink.test",
+        "fromName": "Mail Sink Sender",
+        "subject": "Projects4Me test email",
+        "bodyContains": [
+          "test email from Projects4Me"
+        ]
+      }
+    },
+    {
+      "id": "mail-settings-test-saved-nothing",
+      "method": "GET",
+      "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+      "resource": "setting",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "settingValue": "",
+          "dateModified": "{runtime.mailTestHostModified}"
+        }
       }
     }
   ]

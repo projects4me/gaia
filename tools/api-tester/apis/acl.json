@@ -1203,6 +1203,25 @@
       "auth": "aclMembers",
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
+    },
+    {
+      "id": "acl-setting-test-email-denied-without-setting",
+      "method": "PATCH",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": "aclNoSetting",
+      "body": {
+        "collection": [
+          {
+            "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
+            "settingValue": "127.0.0.1"
+          }
+        ],
+        "test": true,
+        "recipient": "admin@example.com"
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
     }
   ]
 }

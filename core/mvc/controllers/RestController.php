@@ -673,7 +673,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * @param  array $value Record payload including its id
      * @return array The payload with denied fields removed
      */
-    private function authorizeRecordUpdate(array $value)
+    protected function authorizeRecordUpdate(array $value)
     {
         if (!$this->getDI()->has('acl')) {
             return $value;
@@ -773,7 +773,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         //get data
         $data = $this->request->getJsonRawBody();
 
-        if (!isset($data->collection) && is_array($data->collection)) {
+        if (!isset($data->collection) || !is_array($data->collection)) {
             $data = array('error' => array('code' => 400, 'description' => 'Collection missing'));
             return $this->returnResponse($data);
         }

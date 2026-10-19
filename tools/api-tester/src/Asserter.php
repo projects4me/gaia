@@ -81,6 +81,16 @@ class Asserter
             }
         }
 
+        if (!empty($expects['jsonEqual']) && is_array($expects['jsonEqual'])) {
+            foreach ($expects['jsonEqual'] as $key => $expected) {
+                $actual = is_array($json) && array_key_exists($key, $json) ? $json[$key] : null;
+                if (!is_scalar($actual) || (string) $actual !== (string) $expected) {
+                    $failures[] = "jsonEqual: {$key} expected '{$expected}', got '" .
+                        (is_scalar($actual) ? $actual : json_encode($actual)) . "'";
+                }
+            }
+        }
+
         if (!empty($expects['includedTypesAbsent']) && is_array($expects['includedTypesAbsent'])) {
             $includedTypes = [];
             if (isset($json['included']) && is_array($json['included'])) {

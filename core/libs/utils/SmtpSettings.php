@@ -43,6 +43,19 @@ class SmtpSettings
      */
     public static function load()
     {
+        return self::loadWith([], []);
+    }
+
+    /**
+     * Resolve the SMTP configuration a set of unsaved setting values would
+     * give: submitted values over saved settings over the `smtp` config.
+     *
+     * @param  array $submitted   Setting values keyed by name, e.g. `email.smtpHost`
+     * @param  array $secureNames Names of the secure settings among them
+     * @return array See {@see resolve()}.
+     */
+    public static function loadWith(array $submitted, array $secureNames)
+    {
         $config = \Phalcon\Di::getDefault()->get('config')->get('smtp');
         if (is_object($config) && method_exists($config, 'toArray')) {
             $config = $config->toArray();
@@ -60,7 +73,71 @@ class SmtpSettings
             $settings = [];
         }
 
-        return self::resolve(is_array($config) ? $config : [], $settings);
+        return self::resolve(is_array($config) ? $config : [], self::overlay($settings, $submitted, $secureNames));
+    }
+
+    /**
+     * Put submitted setting values over the saved ones, the way saving them
+     * would: a blank value clears a setting (config fallback), except on a
+     * secure setting, where blank keeps the saved secret. Ciphertext sent for
+     * a secure setting also keeps the saved one; it is never decrypted.
+     *
+     * @param  array $saved       Saved values keyed by name (secure values decrypted)
+     * @param  array $submitted   Submitted values keyed by name
+     * @param  array $secureNames Names of the secure settings
+     * @return array Values keyed by name
+     */
+    public static function overlay(array $saved, array $submitted, array $secureNames)
+    {
+        foreach ($submitted as $name => $value) {
+            $isSecure = in_array($name, $secureNames, true);
+            if ($isSecure && ($value === null || $value === '' || SettingsCipher::isEncrypted($value))) {
+                continue;
+            }
+            $saved[$name] = $value;
+        }
+
+        return $saved;
+    }
+
+    /**
+     * Whether a resolved configuration would send a stored password (the
+     * saved setting or the config) to a server or account other than the
+     * stored one. A test with a changed host, port, encryption or username
+     * must bring its own password, so the stored one can't be sent elsewhere.
+     *
+     * @param  array $stored    The stored configuration ({@see load()})
+     * @param  array $resolved  The configuration with the submitted values ({@see loadWith()})
+     * @param  array $submitted Submitted setting values keyed by name
+     * @return bool
+     */
+    public static function reusesStoredPassword(array $stored, array $resolved, array $submitted)
+    {
+        if (!$resolved['auth'] || $resolved['password'] === null || $resolved['password'] === '') {
+            return false;
+        }
+        if (self::isNewSecret(isset($submitted['email.smtpPassword']) ? $submitted['email.smtpPassword'] : null)) {
+            return false;
+        }
+        foreach (['host', 'port', 'encryption', 'username'] as $key) {
+            if ($stored[$key] !== $resolved[$key]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Whether a submitted secure value replaces the saved one: not blank and
+     * not ciphertext.
+     *
+     * @param  mixed $value
+     * @return bool
+     */
+    private static function isNewSecret($value)
+    {
+        return $value !== null && trim((string) $value) !== '' && !SettingsCipher::isEncrypted($value);
     }
 
     /**
