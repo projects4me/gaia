@@ -7,6 +7,7 @@
 namespace Gaia\Tests\Libraries\Utils;
 
 use Gaia\Events\Notification\Mailer;
+use Gaia\Libraries\Utils\SettingsCipher;
 use Gaia\Libraries\Utils\SmtpSettings;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPUnit\Framework\TestCase;
@@ -93,6 +94,72 @@ class SmtpSettingsTest extends TestCase
         $smtp = SmtpSettings::resolve($this->config, ['email.smtpUsername' => 'db-user@example.com']);
 
         $this->assertSame('db-user@example.com', $smtp['fromEmail']);
+    }
+
+    public function testSubmittedValuesWinOverSavedOverConfig()
+    {
+        $saved = [
+            'email.smtpHost' => 'saved.example.com',
+            'email.smtpPort' => '2525',
+            'email.smtpUsername' => 'saved-user@example.com',
+            'email.smtpPassword' => 'saved-secret',
+        ];
+        $smtp = SmtpSettings::resolve($this->config, SmtpSettings::overlay($saved, [
+            'email.smtpHost' => 'submitted.example.com',
+            'email.smtpPassword' => 'submitted-secret',
+        ], ['email.smtpPassword']));
+
+        $this->assertSame('submitted.example.com', $smtp['host']);
+        $this->assertSame('submitted-secret', $smtp['password']);
+        // Not submitted: the saved value, then the config.
+        $this->assertSame(2525, $smtp['port']);
+        $this->assertSame('saved-user@example.com', $smtp['username']);
+        $this->assertSame('Projects4me', $smtp['fromName']);
+    }
+
+    public function testSubmittedBlankClearsAPlainSettingLikeASave()
+    {
+        $smtp = SmtpSettings::resolve($this->config, SmtpSettings::overlay(
+            ['email.smtpHost' => 'saved.example.com'],
+            ['email.smtpHost' => ''],
+            ['email.smtpPassword']
+        ));
+
+        $this->assertSame('smtp.gmail.com', $smtp['host']);
+    }
+
+    /**
+     * @dataProvider keptSecrets
+     */
+    public function testBlankOrEncryptedPasswordKeepsTheSavedOne($submitted)
+    {
+        $smtp = SmtpSettings::resolve($this->config, SmtpSettings::overlay(
+            ['email.smtpPassword' => 'saved-secret'],
+            ['email.smtpPassword' => $submitted],
+            ['email.smtpPassword']
+        ));
+
+        $this->assertSame('saved-secret', $smtp['password']);
+    }
+
+    public function keptSecrets()
+    {
+        return [
+            'blank' => [''],
+            'null' => [null],
+            'ciphertext' => [SettingsCipher::PREFIX . 'not-decrypted'],
+        ];
+    }
+
+    public function testBlankPasswordWithNothingSavedUsesTheConfig()
+    {
+        $smtp = SmtpSettings::resolve($this->config, SmtpSettings::overlay(
+            [],
+            ['email.smtpPassword' => ''],
+            ['email.smtpPassword']
+        ));
+
+        $this->assertSame('env-secret', $smtp['password']);
     }
 
     public function testUnknownEncryptionFallsBackToTls()

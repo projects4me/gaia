@@ -7,6 +7,7 @@
 namespace Gaia\Events\Notification;
 
 use Gaia\Libraries\Utils\SmtpSettings;
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 /**
@@ -69,18 +70,25 @@ class Mailer
     {
         $this->error = '';
 
-        $mail = $this->createTransport();
-        $mail->addAddress($toEmail, $toName);
-        $mail->isHTML(true);
-        $mail->Subject = $subject;
-        $mail->Body = $htmlBody;
-        $mail->AltBody = $altBody;
+        // PHPMailer runs with exceptions on: without them every connect, TLS or
+        // auth failure is reported as the same "SMTP connect() failed." text.
+        try {
+            $mail = $this->createTransport();
+            $mail->addAddress($toEmail, $toName);
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body = $htmlBody;
+            $mail->AltBody = $altBody;
 
-        if ($mail->send()) {
-            return true;
+            if ($mail->send()) {
+                return true;
+            }
+
+            $this->error = $mail->ErrorInfo;
+        } catch (Exception $e) {
+            $this->error = $e->getMessage();
         }
 
-        $this->error = $mail->ErrorInfo;
         return false;
     }
 
@@ -106,8 +114,10 @@ class Mailer
         }
         $smtp = $this->smtp;
 
-        $mail = new PHPMailer(false);
+        $mail = new PHPMailer(true);
         $mail->isSMTP();
+        // Never echo the SMTP conversation (it includes the AUTH exchange).
+        $mail->SMTPDebug = 0;
         if ($this->timeout !== null) {
             $mail->Timeout = (int) $this->timeout;
         }

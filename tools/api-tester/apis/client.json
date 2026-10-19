@@ -2317,6 +2317,244 @@
         ],
         "shape": "json"
       }
+    },
+    {
+      "id": "settings-test-before-host",
+      "method": "GET",
+      "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+      "resource": "setting",
+      "auth": true,
+      "store": {
+        "runtime.settingsTestHostModified": "data.attributes.dateModified"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "settingValue": "smtp.api-tester.local"
+        }
+      },
+      "note": "agaia-4017: remember the row before the test emails, to check they change nothing"
+    },
+    {
+      "id": "settings-test-before-password",
+      "method": "GET",
+      "path": "/api/v1/setting/ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+      "resource": "setting",
+      "auth": true,
+      "store": {
+        "runtime.settingsTestPasswordModified": "data.attributes.dateModified"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "isSet": true
+        }
+      }
+    },
+    {
+      "id": "settings-test-invalid-recipient",
+      "method": "PATCH",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
+            "settingValue": "127.0.0.1"
+          }
+        ],
+        "test": true,
+        "recipient": "not-an-email"
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "testResult": "INVALID_RECIPIENT"
+        }
+      }
+    },
+    {
+      "id": "settings-test-missing-recipient",
+      "method": "PATCH",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
+            "settingValue": "127.0.0.1"
+          }
+        ],
+        "test": true
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "testResult": "INVALID_RECIPIENT"
+        }
+      }
+    },
+    {
+      "id": "settings-test-connection-failed",
+      "method": "PATCH",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
+            "settingValue": "127.0.0.1"
+          },
+          {
+            "id": "dd8caf82-9091-573c-b753-576346dd9500",
+            "settingValue": "1"
+          },
+          {
+            "id": "fa6c9c5d-bc32-596b-90db-5ead3ddc6009",
+            "settingValue": "none"
+          },
+          {
+            "id": "ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+            "settingValue": ""
+          },
+          {
+            "id": "b727da8f-a3fd-5913-b74a-2afcb43a9d62",
+            "settingValue": "sender@api-tester.local"
+          }
+        ],
+        "test": true,
+        "recipient": "admin@example.com"
+      },
+      "expects": {
+        "status": 502,
+        "shape": "json",
+        "jsonEqual": {
+          "testResult": "SMTP_CONNECTION_FAILED"
+        }
+      },
+      "note": "nothing listens on 127.0.0.1:1; a blank password means the stored one, as on save"
+    },
+    {
+      "id": "settings-test-missing-collection",
+      "method": "PATCH",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "test": true,
+        "recipient": "admin@example.com"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "settings-test-unknown-record",
+      "method": "PATCH",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "00000000-0000-0000-0000-000000000000",
+            "settingValue": "127.0.0.1"
+          }
+        ],
+        "test": true,
+        "recipient": "admin@example.com"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "settings-test-host-unchanged",
+      "method": "GET",
+      "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+      "resource": "setting",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "settingValue": "smtp.api-tester.local",
+          "dateModified": "{runtime.settingsTestHostModified}"
+        }
+      }
+    },
+    {
+      "id": "settings-test-password-unchanged",
+      "method": "GET",
+      "path": "/api/v1/setting/ee0416ea-a6ce-5e83-abcb-ab0a5cefa53f",
+      "resource": "setting",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "isSet": true,
+          "dateModified": "{runtime.settingsTestPasswordModified}"
+        }
+      }
+    },
+    {
+      "id": "settings-save-collection-missing-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "body": {},
+      "expects": {
+        "status": 400,
+        "shape": "error"
+      },
+      "note": "a save without a collection used to fall through and report success"
+    },
+    {
+      "id": "settings-save-collection-without-test-flag",
+      "method": "PATCH",
+      "path": "/api/v1/setting",
+      "resource": "setting",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "d3ed81e7-bfc2-5382-8032-b2b17c450039",
+            "settingValue": "smtp-saved.api-tester.local"
+          }
+        ]
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "status": "Data saved successfully"
+        }
+      }
+    },
+    {
+      "id": "settings-save-collection-without-test-flag-saved",
+      "method": "GET",
+      "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+      "resource": "setting",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "settingValue": "smtp-saved.api-tester.local"
+        }
+      }
     }
   ]
 }

@@ -43,6 +43,19 @@ class SmtpSettings
      */
     public static function load()
     {
+        return self::loadWith([], []);
+    }
+
+    /**
+     * Resolve the SMTP configuration a set of unsaved setting values would
+     * give: submitted values over saved settings over the `smtp` config.
+     *
+     * @param  array $submitted   Setting values keyed by name, e.g. `email.smtpHost`
+     * @param  array $secureNames Names of the secure settings among them
+     * @return array See {@see resolve()}.
+     */
+    public static function loadWith(array $submitted, array $secureNames)
+    {
         $config = \Phalcon\Di::getDefault()->get('config')->get('smtp');
         if (is_object($config) && method_exists($config, 'toArray')) {
             $config = $config->toArray();
@@ -60,7 +73,31 @@ class SmtpSettings
             $settings = [];
         }
 
-        return self::resolve(is_array($config) ? $config : [], $settings);
+        return self::resolve(is_array($config) ? $config : [], self::overlay($settings, $submitted, $secureNames));
+    }
+
+    /**
+     * Put submitted setting values over the saved ones, the way saving them
+     * would: a blank value clears a setting (config fallback), except on a
+     * secure setting, where blank keeps the saved secret. Ciphertext sent for
+     * a secure setting also keeps the saved one; it is never decrypted.
+     *
+     * @param  array $saved       Saved values keyed by name (secure values decrypted)
+     * @param  array $submitted   Submitted values keyed by name
+     * @param  array $secureNames Names of the secure settings
+     * @return array Values keyed by name
+     */
+    public static function overlay(array $saved, array $submitted, array $secureNames)
+    {
+        foreach ($submitted as $name => $value) {
+            $isSecure = in_array($name, $secureNames, true);
+            if ($isSecure && ($value === null || $value === '' || SettingsCipher::isEncrypted($value))) {
+                continue;
+            }
+            $saved[$name] = $value;
+        }
+
+        return $saved;
     }
 
     /**
