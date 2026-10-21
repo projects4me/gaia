@@ -149,7 +149,7 @@ $models['Issue'] = array(
             'name' => 'status',
             'label' => 'LBL_ISSUES_STATUS',
             'type' => 'varchar',
-            'length' => '12',
+            'length' => '30',
             'null' => true
         ),
         'statusId' => array(

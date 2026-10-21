@@ -19,7 +19,7 @@ $models['Issuestatus'] = array(
             'name' => 'name',
             'label' => 'LBL_ISSUE_STATUSES_NAME',
             'type' => 'varchar',
-            'length' => '255',
+            'length' => '30',
             'null' => false,
         ),
         'dateCreated' => array(
@@ -121,7 +121,16 @@ $models['Issuestatus'] = array(
         'id' => 'primary',
     ),
     'foriegnKeys' => array(),
-    'triggers' => array(),
+    'triggers' => array(
+        'renameIssueStatus' => array(
+            'triggerName' => 'rename_issue_status',
+            'eventType' => 'AFTER UPDATE',
+            'statement' => 'IF NEW.name <> OLD.name THEN
+                               UPDATE issues SET status = NEW.name
+                               WHERE statusId = NEW.id;
+                            END IF;'
+        )
+    ),
     'functions' => array(),
     'relationships' => array(),
     'behaviors' => array(

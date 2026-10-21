@@ -9,6 +9,7 @@ namespace  Gaia\MVC\REST\Controllers;
 use Gaia\Core\MVC\REST\Controllers\RestController;
 use Gaia\Libraries\Utils\Util;
 use Gaia\MVC\Models\Issue;
+use Gaia\MVC\Models\Issuestatus;
 
 /**
  * Issue statuses controller
@@ -32,6 +33,14 @@ class IssuestatusController extends RestController
      * @var array
      */
     public const COLORS = ['#80b5d3', '#b3244f', '#f7bf65', '#5ac594', '#e98a7e'];
+
+    /**
+     * Longest name a status may have: the length of issue_statuses.name and
+     * of issues.status, which copies the name.
+     *
+     * @var int
+     */
+    public const NAME_MAX_LENGTH = 30;
 
     /**
      * Issue counts by status id, loaded when the request asks for them.
@@ -63,23 +72,25 @@ class IssuestatusController extends RestController
     }
 
     /**
-     * Create a status; the colour must come from the palette.
+     * Create a status; the colour must come from the palette and the name
+     * must fit NAME_MAX_LENGTH.
      *
      * @return \Phalcon\Http\Response
      */
     public function postAction()
     {
-        return $this->rejectInvalidColor() ?: parent::postAction();
+        return $this->rejectInvalidColor() ?: $this->rejectLongName() ?: parent::postAction();
     }
 
     /**
-     * Update a status; the colour must come from the palette.
+     * Update a status; the colour must come from the palette and a changed
+     * name must fit NAME_MAX_LENGTH.
      *
      * @return \Phalcon\Http\Response
      */
     public function patchAction()
     {
-        return $this->rejectInvalidColor() ?: parent::patchAction();
+        return $this->rejectInvalidColor() ?: $this->rejectLongName($this->id) ?: parent::patchAction();
     }
 
     /**
@@ -186,11 +197,7 @@ class IssuestatusController extends RestController
      */
     protected function rejectInvalidColor()
     {
-        $util = new Util();
-        $body = $util->objectToArray($this->request->getJsonRawBody());
-        $attributes = isset($body['data']['attributes']) && is_array($body['data']['attributes'])
-            ? $body['data']['attributes']
-            : (is_array($body) ? $body : []);
+        $attributes = $this->requestAttributes();
 
         if (!array_key_exists('color', $attributes) || $attributes['color'] === null) {
             return null;
@@ -200,10 +207,68 @@ class IssuestatusController extends RestController
             return null;
         }
 
+        return $this->unprocessable('Colour must be one of: ' . implode(', ', self::COLORS) . '.');
+    }
+
+    /**
+     * Return a 422 response when the payload sets a name longer than the
+     * column allows. On update the check only applies when the name changes.
+     *
+     * @param  string|null $statusId Id of the status being updated, null on create
+     * @return \Phalcon\Http\Response|null
+     */
+    protected function rejectLongName($statusId = null)
+    {
+        $attributes = $this->requestAttributes();
+
+        if (!isset($attributes['name']) || !is_string($attributes['name'])) {
+            return null;
+        }
+
+        if (mb_strlen($attributes['name']) <= self::NAME_MAX_LENGTH) {
+            return null;
+        }
+
+        if ($statusId !== null) {
+            $status = Issuestatus::findFirst([
+                'conditions' => 'id = :id:',
+                'bind' => ['id' => (string) $statusId],
+            ]);
+            if ($status && $status->name === $attributes['name']) {
+                return null;
+            }
+        }
+
+        return $this->unprocessable('Name must be at most ' . self::NAME_MAX_LENGTH . ' characters.');
+    }
+
+    /**
+     * Read the attributes from the JSON:API request body.
+     *
+     * @return array
+     */
+    protected function requestAttributes()
+    {
+        $util = new Util();
+        $body = $util->objectToArray($this->request->getJsonRawBody());
+
+        return isset($body['data']['attributes']) && is_array($body['data']['attributes'])
+            ? $body['data']['attributes']
+            : (is_array($body) ? $body : []);
+    }
+
+    /**
+     * Build a 422 response with one message.
+     *
+     * @param  string $message
+     * @return \Phalcon\Http\Response
+     */
+    protected function unprocessable($message)
+    {
         $this->response->setStatusCode(422, 'Unprocessable Entity');
         $this->response->setJsonContent([
             'status' => 'ERROR',
-            'messages' => ['Colour must be one of: ' . implode(', ', self::COLORS) . '.'],
+            'messages' => [$message],
         ]);
         return $this->response;
     }
