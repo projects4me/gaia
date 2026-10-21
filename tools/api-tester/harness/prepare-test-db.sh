@@ -484,7 +484,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -590,7 +590,15 @@ VALUES
   ('atp-acl-mem-issue-get', 'api-test-role-acl-mem', 'issue.get', 1, NOW(), NOW()),
   ('atp-acl-mem-issue-create', 'api-test-role-acl-mem', 'issue.create', 1, NOW(), NOW()),
   ('atp-acl-mem-comment-get', 'api-test-role-acl-mem', 'comment.get', 1, NOW(), NOW()),
-  ('atp-acl-mem-conv-get', 'api-test-role-acl-mem', 'conversationroom.get', 1, NOW(), NOW());
+  ('atp-acl-mem-conv-get', 'api-test-role-acl-mem', 'conversationroom.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-idea-get', 'api-test-role-acl-mem', 'idea.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-idea-create', 'api-test-role-acl-mem', 'idea.create', 1, NOW(), NOW()),
+  ('atp-acl-mem-ideamessage-get', 'api-test-role-acl-mem', 'ideamessage.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-ideamessage-create', 'api-test-role-acl-mem', 'ideamessage.create', 1, NOW(), NOW()),
+  ('atp-acl-mem-ideaplan-get', 'api-test-role-acl-mem', 'ideaplan.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-ideaplan-create', 'api-test-role-acl-mem', 'ideaplan.create', 1, NOW(), NOW()),
+  ('atp-acl-mem-ideaplanissue-get', 'api-test-role-acl-mem', 'ideaplanissue.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-ideaplanissue-create', 'api-test-role-acl-mem', 'ideaplanissue.create', 1, NOW(), NOW());
 
 -- No-setting role: full issuestatus/issuetype access, setting.* denied.
 -- System statuses/types (system = 1) are settings: writes need setting.update.
@@ -688,6 +696,41 @@ INSERT INTO comments (
   'API Tester', 'API Tester', 'conversationrooms', 'api-test-convroom-001'
 )
 ON CONFLICT (id) DO UPDATE SET deleted = 0, "relatedId" = EXCLUDED."relatedId";
+
+-- Ideas: one per project so members scope can be checked through the idea's children
+INSERT INTO ideas (
+  id, "projectId", title, description, status, deleted,
+  "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-idea-000001', 'api-test-project-001', 'API Tester Idea', 'Seed idea', 'open', FALSE,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-idea-000002', 'api-test-project-002', 'API Tester Other Idea', 'Seed idea outside membership', 'open', FALSE,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO idea_messages (
+  id, "ideaId", body, kind, deleted, "createdUser", "createdUserName", "dateCreated"
+) VALUES
+  ('api-test-ideamsg-00001', 'api-test-idea-000001', 'Seed message', 'message', FALSE, 'api-test-user-0001', 'API Tester', NOW()),
+  ('api-test-ideamsg-00002', 'api-test-idea-000002', 'Seed message', 'message', FALSE, 'api-test-user-0001', 'API Tester', NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO idea_plans (
+  id, "ideaId", version, body, status, deleted,
+  "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-ideaplan-0001', 'api-test-idea-000001', 1, '{"summary":"Seed plan","issues":[]}', 'proposed', FALSE,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-ideaplan-0002', 'api-test-idea-000002', 1, '{"summary":"Seed plan","issues":[]}', 'proposed', FALSE,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO idea_plan_issues (
+  id, "ideaId", "ideaplanId", key, "issueId", deleted, "dateCreated"
+) VALUES
+  ('api-test-ideaplanis-01', 'api-test-idea-000001', 'api-test-ideaplan-0001', 'A1', 'api-test-issue-000001', FALSE, NOW()),
+  ('api-test-ideaplanis-02', 'api-test-idea-000002', 'api-test-ideaplan-0002', 'B1', 'api-test-issue-000003', FALSE, NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
 -- Issue with milestone + one without milestone (NULL/EMPTY query coverage)
 INSERT INTO issues (
@@ -844,6 +887,14 @@ data = {
     "systemnotificationrecipientId": "api-test-sysnotifrec01",
     "conversationroomId": "api-test-convroom-001",
     "commentId": "api-test-comment-000001",
+    "ideaId": "api-test-idea-000001",
+    "otherProjectIdeaId": "api-test-idea-000002",
+    "ideamessageId": "api-test-ideamsg-00001",
+    "otherProjectIdeamessageId": "api-test-ideamsg-00002",
+    "ideaplanId": "api-test-ideaplan-0001",
+    "otherProjectIdeaplanId": "api-test-ideaplan-0002",
+    "ideaplanissueId": "api-test-ideaplanis-01",
+    "otherProjectIdeaplanissueId": "api-test-ideaplanis-02",
     "activityId": "api-test-activity-0001",
     "timelogId": "api-test-timelog-00001",
     "dashboardId": "api-test-dashboard-001",

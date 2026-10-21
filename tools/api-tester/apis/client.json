@@ -2988,6 +2988,215 @@
         "status": 422,
         "shape": "error"
       }
+    },
+    {
+      "id": "client-idea-create",
+      "method": "POST",
+      "path": "/api/v1/idea",
+      "resource": "idea",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "idea",
+          "attributes": {
+            "projectId": "{projectId}",
+            "title": "Client idea versions"
+          }
+        }
+      },
+      "store": {
+        "runtime.clientIdeaId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "open"
+        }
+      }
+    },
+    {
+      "id": "client-ideaplan-create-version-1",
+      "method": "POST",
+      "path": "/api/v1/ideaplan",
+      "resource": "ideaplan",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "ideaplan",
+          "attributes": {
+            "ideaId": "{runtime.clientIdeaId}",
+            "body": "{\"summary\":\"v1\",\"issues\":[]}"
+          }
+        }
+      },
+      "store": {
+        "runtime.clientPlan1Id": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "version": 1,
+          "status": "proposed"
+        }
+      }
+    },
+    {
+      "id": "client-ideaplan-create-version-2",
+      "method": "POST",
+      "path": "/api/v1/ideaplan",
+      "resource": "ideaplan",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "ideaplan",
+          "attributes": {
+            "ideaId": "{runtime.clientIdeaId}",
+            "body": "{\"summary\":\"v2\",\"issues\":[]}",
+            "version": 99
+          }
+        }
+      },
+      "store": {
+        "runtime.clientPlan2Id": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "version": 2
+        }
+      }
+    },
+    {
+      "id": "client-ideaplan-create-version-3",
+      "method": "POST",
+      "path": "/api/v1/ideaplan",
+      "resource": "ideaplan",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "ideaplan",
+          "attributes": {
+            "ideaId": "{runtime.clientIdeaId}",
+            "body": "{\"summary\":\"v3\",\"issues\":[]}"
+          }
+        }
+      },
+      "store": {
+        "runtime.clientPlan3Id": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "version": 3
+        }
+      }
+    },
+    {
+      "id": "client-ideaplan-patch-keeps-version",
+      "method": "PATCH",
+      "path": "/api/v1/ideaplan/{runtime.clientPlan1Id}",
+      "resource": "ideaplan",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "ideaplan",
+          "id": "{runtime.clientPlan1Id}",
+          "attributes": {
+            "version": 7,
+            "status": "superseded"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "version": 1,
+          "status": "superseded"
+        }
+      }
+    },
+    {
+      "id": "client-ideamessage-create",
+      "method": "POST",
+      "path": "/api/v1/ideamessage",
+      "resource": "ideamessage",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "ideamessage",
+          "attributes": {
+            "ideaId": "{runtime.clientIdeaId}",
+            "body": "Plan v1 is ready",
+            "ideaplanId": "{runtime.clientPlan1Id}",
+            "steps": "[]"
+          }
+        }
+      },
+      "store": {
+        "runtime.clientMessageId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "kind": "message"
+        }
+      }
+    },
+    {
+      "id": "client-ideaplanissue-create",
+      "method": "POST",
+      "path": "/api/v1/ideaplanissue",
+      "resource": "ideaplanissue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "ideaplanissue",
+          "attributes": {
+            "ideaId": "{runtime.clientIdeaId}",
+            "ideaplanId": "{runtime.clientPlan3Id}",
+            "key": "A1",
+            "issueId": "{issueId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.clientPlanissueId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "key": "A1"
+        }
+      }
+    },
+    {
+      "id": "client-idea-get-with-children",
+      "method": "GET",
+      "path": "/api/v1/idea/{runtime.clientIdeaId}",
+      "resource": "idea",
+      "auth": true,
+      "query": {
+        "rels": "messages,plans,planissues"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.clientIdeaId}"
+        ],
+        "includedTypesPresent": [
+          "ideamessage",
+          "ideaplan",
+          "ideaplanissue"
+        ]
+      }
     }
   ]
 }

@@ -219,7 +219,9 @@ class Postgres
         }
 
         $existing = [];
+        $existingNames = [];
         foreach ($connection->describeIndexes($tableName) as $index) {
+            $existingNames[$index->getName()] = true;
             foreach ($index->getColumns() as $columnName) {
                 $existing[$columnName] = true;
             }
@@ -227,6 +229,10 @@ class Postgres
 
         $quotedTable = $connection->escapeIdentifier($tableName);
         foreach ($indexes as $field => $type) {
+            if (is_array($type)) {
+                $this->syncMultiColumnIndex($connection, $tableName, $field, $type, $existingNames);
+                continue;
+            }
             if ($type === 'primary' || isset($existing[$field])) {
                 continue;
             }
@@ -238,6 +244,36 @@ class Postgres
                 "CREATE {$unique}INDEX IF NOT EXISTS {$indexName} ON {$quotedTable} ({$quotedField})"
             );
         }
+    }
+
+    /**
+     * Ensure a multi-column index from metadata exists, matched by its name
+     * (`{table}_{key}`) because its columns may also appear in other indexes.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param string $tableName
+     * @param string $key Index key in metadata
+     * @param array  $definition ['type' => 'unique'|'index', 'columns' => [...]]
+     * @param array  $existingNames Index names already on the table (name => true)
+     * @return void
+     */
+    private function syncMultiColumnIndex($connection, $tableName, $key, array $definition, array $existingNames)
+    {
+        $name = $tableName . '_' . $key;
+        if (isset($existingNames[$name]) || empty($definition['columns'])) {
+            return;
+        }
+
+        $quotedColumns = [];
+        foreach ($definition['columns'] as $column) {
+            $quotedColumns[] = $connection->escapeIdentifier($column);
+        }
+        $unique = (isset($definition['type']) && $definition['type'] === 'unique') ? 'UNIQUE ' : '';
+        $connection->execute(
+            "CREATE {$unique}INDEX IF NOT EXISTS " . $connection->escapeIdentifier($name)
+            . ' ON ' . $connection->escapeIdentifier($tableName)
+            . ' (' . implode(', ', $quotedColumns) . ')'
+        );
     }
 
     /**

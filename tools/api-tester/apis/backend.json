@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 132,
-        "enabled": 121,
+        "total": 154,
+        "enabled": 143,
         "disabled": 11,
-        "routeResources": 38,
-        "withMetadata": 26,
+        "routeResources": 42,
+        "withMetadata": 30,
         "skippedResources": 10
     },
     "apis": [
@@ -422,6 +422,396 @@
             },
             "enabled": false,
             "skipReason": "Custom auth endpoint; no model metadata",
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-idea-api-v1-idea",
+            "method": "GET",
+            "path": "/api/v1/idea",
+            "resource": "idea",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-idea-api-v1-idea-id",
+            "method": "GET",
+            "path": "/api/v1/idea/{ideaId}",
+            "resource": "idea",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{ideaId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-idea-api-v1-idea",
+            "method": "POST",
+            "path": "/api/v1/idea",
+            "resource": "idea",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "idea",
+                    "attributes": {
+                        "projectId": "{projectId}",
+                        "title": "api-idea-title"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.ideaId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-idea-api-v1-idea-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/idea/{runtime.ideaId}",
+            "resource": "idea",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.ideaId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "patch-idea-api-v1-idea-id",
+            "method": "PATCH",
+            "path": "/api/v1/idea/{runtime.ideaId}",
+            "resource": "idea",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "idea",
+                    "id": "{runtime.ideaId}",
+                    "attributes": {
+                        "description": "API Tester Updated"
+                    }
+                }
+            },
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "attributesEqual": {
+                    "description": "API Tester Updated"
+                }
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-idea-api-v1-idea-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/idea/{runtime.ideaId}",
+            "resource": "idea",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-ideamessage-api-v1-ideamessage",
+            "method": "GET",
+            "path": "/api/v1/ideamessage",
+            "resource": "ideamessage",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-ideamessage-api-v1-ideamessage-id",
+            "method": "GET",
+            "path": "/api/v1/ideamessage/{ideamessageId}",
+            "resource": "ideamessage",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{ideamessageId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-ideamessage-api-v1-ideamessage",
+            "method": "POST",
+            "path": "/api/v1/ideamessage",
+            "resource": "ideamessage",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "ideamessage",
+                    "attributes": {
+                        "ideaId": "{ideaId}",
+                        "body": "API Tester ideamessage body"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.ideamessageId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-ideamessage-api-v1-ideamessage-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/ideamessage/{runtime.ideamessageId}",
+            "resource": "ideamessage",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.ideamessageId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "patch-ideamessage-api-v1-ideamessage-id",
+            "method": "PATCH",
+            "path": "/api/v1/ideamessage/{runtime.ideamessageId}",
+            "resource": "ideamessage",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "ideamessage",
+                    "id": "{runtime.ideamessageId}",
+                    "attributes": {
+                        "body": "API Tester ideamessage body Updated"
+                    }
+                }
+            },
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "attributesEqual": {
+                    "body": "API Tester ideamessage body Updated"
+                }
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-ideamessage-api-v1-ideamessage-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/ideamessage/{runtime.ideamessageId}",
+            "resource": "ideamessage",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-ideaplan-api-v1-ideaplan",
+            "method": "GET",
+            "path": "/api/v1/ideaplan",
+            "resource": "ideaplan",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-ideaplan-api-v1-ideaplan-id",
+            "method": "GET",
+            "path": "/api/v1/ideaplan/{ideaplanId}",
+            "resource": "ideaplan",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{ideaplanId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-ideaplan-api-v1-ideaplan",
+            "method": "POST",
+            "path": "/api/v1/ideaplan",
+            "resource": "ideaplan",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "ideaplan",
+                    "attributes": {
+                        "ideaId": "{ideaId}",
+                        "version": 1
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.ideaplanId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-ideaplan-api-v1-ideaplan-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/ideaplan/{runtime.ideaplanId}",
+            "resource": "ideaplan",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.ideaplanId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-ideaplan-api-v1-ideaplan-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/ideaplan/{runtime.ideaplanId}",
+            "resource": "ideaplan",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-ideaplanissue-api-v1-ideaplanissue",
+            "method": "GET",
+            "path": "/api/v1/ideaplanissue",
+            "resource": "ideaplanissue",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-ideaplanissue-api-v1-ideaplanissue-id",
+            "method": "GET",
+            "path": "/api/v1/ideaplanissue/{ideaplanissueId}",
+            "resource": "ideaplanissue",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{ideaplanissueId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-ideaplanissue-api-v1-ideaplanissue",
+            "method": "POST",
+            "path": "/api/v1/ideaplanissue",
+            "resource": "ideaplanissue",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "ideaplanissue",
+                    "attributes": {
+                        "ideaId": "{ideaId}",
+                        "ideaplanId": "{ideaplanId}",
+                        "key": "api-ideaplanissue-key",
+                        "issueId": "{issueId}"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.ideaplanissueId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-ideaplanissue-api-v1-ideaplanissue-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/ideaplanissue/{runtime.ideaplanissueId}",
+            "resource": "ideaplanissue",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.ideaplanissueId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-ideaplanissue-api-v1-ideaplanissue-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/ideaplanissue/{runtime.ideaplanissueId}",
+            "resource": "ideaplanissue",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
             "source": "backend-metadata"
         },
         {

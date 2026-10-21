@@ -149,4 +149,80 @@ class ProjectAclScopeTest extends TestCase
             $where
         );
     }
+
+    public function testBuildAclWhereForPathWithoutWhenAppliesToEveryRow()
+    {
+        $where = \Gaia\MVC\Models\Project::buildAclWhere(
+            'Ideamessage',
+            $this->ideaPathBinding(),
+            ['proj-a']
+        );
+
+        $this->assertSame(
+            "((1 = 1 AND Ideamessage.ideaId IN (SELECT Idea.id FROM [Gaia\\MVC\\Models\\Idea] AS Idea "
+            . "WHERE Idea.projectId IN ('proj-a'))))",
+            $where
+        );
+    }
+
+    public function testResolveProjectIdForAttributesSkipsFieldBindings()
+    {
+        $this->assertFalse(
+            \Gaia\MVC\Models\Project::resolveProjectIdForAttributes(
+                ['field' => 'projectId'],
+                ['projectId' => 'proj-a']
+            )
+        );
+    }
+
+    public function testResolveProjectIdForAttributesSkipsPayloadWithoutParent()
+    {
+        $this->assertFalse(
+            \Gaia\MVC\Models\Project::resolveProjectIdForAttributes(
+                $this->ideaPathBinding(),
+                ['body' => 'Edited message']
+            )
+        );
+    }
+
+    public function testResolveProjectIdForAttributesSkipsPathsWhoseWhenDoesNotMatch()
+    {
+        $binding = [
+            'paths' => [
+                [
+                    'when' => ['relatedTo' => 'issues'],
+                    'relatedModel' => 'Issue',
+                    'localKey' => 'relatedId',
+                    'relatedKey' => 'id',
+                    'projectField' => 'projectId',
+                ],
+            ],
+        ];
+
+        $this->assertFalse(
+            \Gaia\MVC\Models\Project::resolveProjectIdForAttributes(
+                $binding,
+                ['relatedTo' => 'wikis', 'relatedId' => 'wiki-1']
+            )
+        );
+    }
+
+    /**
+     * Binding of a model that reaches its project through its idea.
+     *
+     * @return array
+     */
+    private function ideaPathBinding()
+    {
+        return [
+            'paths' => [
+                [
+                    'relatedModel' => 'Idea',
+                    'localKey' => 'ideaId',
+                    'relatedKey' => 'id',
+                    'projectField' => 'projectId',
+                ],
+            ],
+        ];
+    }
 }

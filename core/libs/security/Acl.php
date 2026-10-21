@@ -925,6 +925,13 @@ class Acl
             $this->assertRecordIdInScope($modelName, $existingId);
         }
 
+        // Path-bound models (e.g. Ideamessage -> Idea): the parent named in the
+        // payload must belong to a project in scope.
+        $pathProjectId = Project::resolveProjectIdForAttributes($binding['binding'], $attributes);
+        if ($pathProjectId !== false) {
+            $this->assertProjectIdInScope($pathProjectId);
+        }
+
         $field = isset($binding['binding']['field']) ? $binding['binding']['field'] : null;
         if ($field && array_key_exists($field, $attributes)) {
             if ($field === 'id' && $modelName === 'Project') {
