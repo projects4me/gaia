@@ -2617,6 +2617,377 @@
           "settingValue": "smtp-saved.api-tester.local"
         }
       }
+    },
+    {
+      "id": "issuestatus-rename-create-system-status",
+      "method": "POST",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "attributes": {
+            "name": "api_rn_sys",
+            "color": "#5ac594",
+            "done": 0,
+            "system": 1
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "store": {
+        "runtime.renameSystemStatusId": "data.id"
+      }
+    },
+    {
+      "id": "issuestatus-rename-create-project-copy",
+      "method": "POST",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "attributes": {
+            "name": "api_rn_sys",
+            "color": "#5ac594",
+            "done": 0,
+            "system": 0,
+            "projectId": "{projectId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "store": {
+        "runtime.renameProjectStatusId": "data.id"
+      }
+    },
+    {
+      "id": "issue-rename-create-on-system-status",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "API Tester Rename System Status",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{runtime.renameSystemStatusId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "store": {
+        "runtime.renameSystemIssueId": "data.id"
+      }
+    },
+    {
+      "id": "issue-rename-create-on-project-copy",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "API Tester Rename Project Status",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{runtime.renameProjectStatusId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "store": {
+        "runtime.renameProjectIssueId": "data.id"
+      }
+    },
+    {
+      "id": "issuestatus-rename-system-status",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.renameSystemStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.renameSystemStatusId}",
+          "attributes": {
+            "name": "api_rn_new"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "api_rn_new"
+        }
+      }
+    },
+    {
+      "id": "issue-rename-follows-system-status",
+      "method": "GET",
+      "path": "/api/v1/issue/{runtime.renameSystemIssueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "api_rn_new",
+          "statusId": "{runtime.renameSystemStatusId}"
+        }
+      }
+    },
+    {
+      "id": "issuestatus-rename-system-leaves-project-copy",
+      "method": "GET",
+      "path": "/api/v1/issuestatus/{runtime.renameProjectStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "api_rn_sys"
+        }
+      }
+    },
+    {
+      "id": "issue-rename-system-leaves-project-copy-issue",
+      "method": "GET",
+      "path": "/api/v1/issue/{runtime.renameProjectIssueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "api_rn_sys"
+        }
+      }
+    },
+    {
+      "id": "issuestatus-rename-project-status",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.renameProjectStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.renameProjectStatusId}",
+          "attributes": {
+            "name": "api_rn_prj"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "api_rn_prj"
+        }
+      }
+    },
+    {
+      "id": "issue-rename-follows-project-status",
+      "method": "GET",
+      "path": "/api/v1/issue/{runtime.renameProjectIssueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "api_rn_prj"
+        }
+      }
+    },
+    {
+      "id": "issuestatus-name-30-chars-create",
+      "method": "POST",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "attributes": {
+            "name": "api_status_name_thirty_chars_a",
+            "color": "#5ac594",
+            "done": 0,
+            "system": 1
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "api_status_name_thirty_chars_a"
+        }
+      },
+      "store": {
+        "runtime.longNameStatusId": "data.id"
+      }
+    },
+    {
+      "id": "issue-create-on-30-char-status-name",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "API Tester 30 Char Status",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{runtime.longNameStatusId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "store": {
+        "runtime.longNameIssueId": "data.id"
+      }
+    },
+    {
+      "id": "issue-on-30-char-status-name-has-status",
+      "method": "GET",
+      "path": "/api/v1/issue/{runtime.longNameIssueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "api_status_name_thirty_chars_a"
+        }
+      }
+    },
+    {
+      "id": "issuestatus-name-31-chars-create-rejected",
+      "method": "POST",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "attributes": {
+            "name": "api_status_name_thirty_chars_ax",
+            "color": "#5ac594",
+            "done": 0,
+            "system": 1
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "issuestatus-rename-to-30-chars",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.renameSystemStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.renameSystemStatusId}",
+          "attributes": {
+            "name": "api_renamed_to_thirty_chars_bb"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "api_renamed_to_thirty_chars_bb"
+        }
+      }
+    },
+    {
+      "id": "issue-rename-follows-30-char-name",
+      "method": "GET",
+      "path": "/api/v1/issue/{runtime.renameSystemIssueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "api_renamed_to_thirty_chars_bb"
+        }
+      }
+    },
+    {
+      "id": "issuestatus-rename-to-31-chars-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.renameSystemStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.renameSystemStatusId}",
+          "attributes": {
+            "name": "api_renamed_to_thirty_chars_bbx"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
     }
   ]
 }
