@@ -139,36 +139,12 @@ class Project extends Model
         }
 
         if (!empty($binding['paths']) && is_array($binding['paths'])) {
-            foreach ($binding['paths'] as $path) {
-                if (empty($path['when']) || !is_array($path['when'])) {
-                    continue;
-                }
-                $matches = true;
-                foreach ($path['when'] as $whenField => $whenValue) {
-                    if ((string) $record->{$whenField} !== (string) $whenValue) {
-                        $matches = false;
-                        break;
-                    }
-                }
-                if (!$matches) {
-                    continue;
-                }
-
-                $relatedModel = (string) $path['relatedModel'];
-                $localKey = isset($path['localKey']) ? (string) $path['localKey'] : 'relatedId';
-                $relatedKey = isset($path['relatedKey']) ? (string) $path['relatedKey'] : 'id';
-                $projectField = (string) $path['projectField'];
-                $relatedClass = '\\Gaia\\MVC\\Models\\' . $relatedModel;
-                if (!class_exists($relatedClass)) {
-                    return null;
-                }
-                $related = $relatedClass::findFirst([
-                    'conditions' => "{$relatedKey} = :rid:",
-                    'bind' => ['rid' => $record->{$localKey}],
-                ]);
-                return $related ? (string) $related->{$projectField} : null;
+            $path = self::matchPath($binding['paths'], $record->toArray());
+            if ($path === null) {
+                return null;
             }
-            return null;
+            $localKey = isset($path['localKey']) ? (string) $path['localKey'] : 'relatedId';
+            return self::resolveProjectIdThroughPath($path, $record->{$localKey});
         }
 
         $field = isset($binding['field']) ? (string) $binding['field'] : 'projectId';
@@ -177,6 +153,88 @@ class Project extends Model
         }
 
         return isset($record->{$field}) ? (string) $record->{$field} : null;
+    }
+
+    /**
+     * Resolve the project a write payload points at through a paths binding,
+     * e.g. the idea an idea message is created for.
+     *
+     * Returns false when the payload does not name the parent (nothing to
+     * check), null when the parent is unknown, else the project id.
+     *
+     * @param  array $binding
+     * @param  array $attributes
+     * @return string|null|false
+     */
+    public static function resolveProjectIdForAttributes(array $binding, array $attributes)
+    {
+        if (empty($binding['paths']) || !is_array($binding['paths'])) {
+            return false;
+        }
+
+        $path = self::matchPath($binding['paths'], $attributes);
+        if ($path === null) {
+            return false;
+        }
+
+        $localKey = isset($path['localKey']) ? (string) $path['localKey'] : 'relatedId';
+        if (!array_key_exists($localKey, $attributes)) {
+            return false;
+        }
+
+        return self::resolveProjectIdThroughPath($path, $attributes[$localKey]);
+    }
+
+    /**
+     * First path whose `when` conditions hold for the values. A path without
+     * `when` always applies (single-parent models such as Ideamessage -> Idea),
+     * so it must be the model's only path or come last.
+     *
+     * @param  array $paths
+     * @param  array $values
+     * @return array|null
+     */
+    protected static function matchPath(array $paths, array $values)
+    {
+        foreach ($paths as $path) {
+            if (empty($path['relatedModel']) || empty($path['projectField'])) {
+                continue;
+            }
+            if (empty($path['when']) || !is_array($path['when'])) {
+                return $path;
+            }
+            foreach ($path['when'] as $whenField => $whenValue) {
+                $value = isset($values[$whenField]) ? (string) $values[$whenField] : null;
+                if ($value !== (string) $whenValue) {
+                    continue 2;
+                }
+            }
+            return $path;
+        }
+
+        return null;
+    }
+
+    /**
+     * Load the related record a path points at and read its project id.
+     *
+     * @param  array  $path
+     * @param  mixed  $localValue
+     * @return string|null
+     */
+    protected static function resolveProjectIdThroughPath(array $path, $localValue)
+    {
+        $relatedKey = isset($path['relatedKey']) ? (string) $path['relatedKey'] : 'id';
+        $projectField = (string) $path['projectField'];
+        $relatedClass = '\\Gaia\\MVC\\Models\\' . (string) $path['relatedModel'];
+        if (!class_exists($relatedClass)) {
+            return null;
+        }
+        $related = $relatedClass::findFirst([
+            'conditions' => "{$relatedKey} = :rid:",
+            'bind' => ['rid' => (string) $localValue],
+        ]);
+        return $related ? (string) $related->{$projectField} : null;
     }
 
     /**

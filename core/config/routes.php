@@ -93,6 +93,50 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'idea' => array(
+                'path' => '/api/:version/idea',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'ideamessage' => array(
+                'path' => '/api/:version/ideamessage',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'ideaplan' => array(
+                'path' => '/api/:version/ideaplan',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'ideaplanissue' => array(
+                'path' => '/api/:version/ideaplanissue',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'issue' => array(
                 'path' => '/api/:version/issue',
                 'allowedMethods' => array(

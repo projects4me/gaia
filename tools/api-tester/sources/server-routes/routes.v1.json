@@ -66,6 +66,50 @@
             ],
             "identifier": "id"
         },
+        "idea": {
+            "path": "/api/:version/idea",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "ideamessage": {
+            "path": "/api/:version/ideamessage",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "ideaplan": {
+            "path": "/api/:version/ideaplan",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "ideaplanissue": {
+            "path": "/api/:version/ideaplanissue",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "issue": {
             "path": "/api/:version/issue",
             "allowedMethods": [

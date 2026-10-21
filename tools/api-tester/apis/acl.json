@@ -1222,6 +1222,222 @@
       },
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-setting"
+    },
+    {
+      "id": "acl-members-idea-list-member-only",
+      "method": "GET",
+      "path": "/api/v1/idea",
+      "resource": "idea",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{ideaId}"], "idsExcludes": ["{otherProjectIdeaId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-idea-detail-member-allowed",
+      "method": "GET",
+      "path": "/api/v1/idea/{ideaId}",
+      "resource": "idea",
+      "auth": "aclMembers",
+      "expects": { "status": 200, "shape": "jsonapi.resource", "idsIncludes": ["{ideaId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-idea-detail-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/idea/{otherProjectIdeaId}",
+      "resource": "idea",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-ideamessage-list-member-only",
+      "method": "GET",
+      "path": "/api/v1/ideamessage",
+      "resource": "ideamessage",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{ideamessageId}"], "idsExcludes": ["{otherProjectIdeamessageId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-ideamessage-detail-member-allowed",
+      "method": "GET",
+      "path": "/api/v1/ideamessage/{ideamessageId}",
+      "resource": "ideamessage",
+      "auth": "aclMembers",
+      "expects": { "status": 200, "shape": "jsonapi.resource", "idsIncludes": ["{ideamessageId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-ideamessage-detail-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/ideamessage/{otherProjectIdeamessageId}",
+      "resource": "ideamessage",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-ideaplan-list-member-only",
+      "method": "GET",
+      "path": "/api/v1/ideaplan",
+      "resource": "ideaplan",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{ideaplanId}"], "idsExcludes": ["{otherProjectIdeaplanId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-ideaplan-detail-member-allowed",
+      "method": "GET",
+      "path": "/api/v1/ideaplan/{ideaplanId}",
+      "resource": "ideaplan",
+      "auth": "aclMembers",
+      "expects": { "status": 200, "shape": "jsonapi.resource", "idsIncludes": ["{ideaplanId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-ideaplan-detail-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/ideaplan/{otherProjectIdeaplanId}",
+      "resource": "ideaplan",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-ideaplanissue-list-member-only",
+      "method": "GET",
+      "path": "/api/v1/ideaplanissue",
+      "resource": "ideaplanissue",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{ideaplanissueId}"], "idsExcludes": ["{otherProjectIdeaplanissueId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-ideaplanissue-detail-member-allowed",
+      "method": "GET",
+      "path": "/api/v1/ideaplanissue/{ideaplanissueId}",
+      "resource": "ideaplanissue",
+      "auth": "aclMembers",
+      "expects": { "status": 200, "shape": "jsonapi.resource", "idsIncludes": ["{ideaplanissueId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-ideaplanissue-detail-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/ideaplanissue/{otherProjectIdeaplanissueId}",
+      "resource": "ideaplanissue",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-idea-rels-member-children-included",
+      "method": "GET",
+      "path": "/api/v1/idea/{ideaId}",
+      "resource": "idea",
+      "auth": "aclMembers",
+      "query": { "rels": "messages,plans,planissues" },
+      "expects": { "status": 200, "shape": "jsonapi.resource", "idsIncludes": ["{ideaId}"], "includedTypesPresent": ["ideamessage", "ideaplan", "ideaplanissue"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-idea-rels-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/idea/{otherProjectIdeaId}",
+      "resource": "idea",
+      "auth": "aclMembers",
+      "query": { "rels": "messages,plans,planissues" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-idea-create-non-member-project-denied",
+      "method": "POST",
+      "path": "/api/v1/idea",
+      "resource": "idea",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "idea",
+          "attributes": {
+            "projectId": "{otherProjectId}",
+            "title": "Members scope create deny"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-ideamessage-create-non-member-idea-denied",
+      "method": "POST",
+      "path": "/api/v1/ideamessage",
+      "resource": "ideamessage",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "ideamessage",
+          "attributes": {
+            "ideaId": "{otherProjectIdeaId}",
+            "body": "Members scope create deny"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-ideaplan-create-non-member-idea-denied",
+      "method": "POST",
+      "path": "/api/v1/ideaplan",
+      "resource": "ideaplan",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "ideaplan",
+          "attributes": {
+            "ideaId": "{otherProjectIdeaId}",
+            "body": "{}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-ideaplanissue-create-non-member-idea-denied",
+      "method": "POST",
+      "path": "/api/v1/ideaplanissue",
+      "resource": "ideaplanissue",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "ideaplanissue",
+          "attributes": {
+            "ideaId": "{otherProjectIdeaId}",
+            "ideaplanId": "{otherProjectIdeaplanId}",
+            "key": "DENY1",
+            "issueId": "{otherProjectIssueId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-idea-denied-without-project-group",
+      "method": "GET",
+      "path": "/api/v1/idea",
+      "resource": "idea",
+      "auth": "aclNoProject",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
     }
   ]
 }

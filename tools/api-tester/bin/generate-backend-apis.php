@@ -67,6 +67,10 @@ $skipMutations = [
 $fixtureIds = [
     'activity' => '{activityId}',
     'conversationroom' => '{conversationroomId}',
+    'idea' => '{ideaId}',
+    'ideamessage' => '{ideamessageId}',
+    'ideaplan' => '{ideaplanId}',
+    'ideaplanissue' => '{ideaplanissueId}',
     'issue' => '{issueId}',
     'issuestatus' => '{issuestatusId}',
     'issuetype' => '{issuetypeId}',
@@ -286,6 +290,8 @@ function sampleValue($resource, $name, array $fieldMeta, array $relatedDefaults)
         'projectShortcode' => '{projectShortcode}',
         'userId' => '{userId}',
         'issueId' => '{issueId}',
+        'ideaId' => '{ideaId}',
+        'ideaplanId' => '{ideaplanId}',
         'milestoneId' => '{milestoneId}',
         'roleId' => '{roleId}',
         'typeId' => '{issuetypeId}',
@@ -391,6 +397,12 @@ function fitLength($value, $length)
 function patchChange(array $attrs, array $meta = [])
 {
     static $avoid = [
+        'ideaId' => true,
+        'ideaplanId' => true,
+        'issueId' => true,
+        'version' => true,
+        'kind' => true,
+        'key' => true,
         'relatedTo' => true,
         'relatedId' => true,
         'type' => true,

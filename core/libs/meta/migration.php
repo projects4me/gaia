@@ -250,6 +250,13 @@ class Migration extends PhalconMigration
             if ($type === 'primary' && !$handler->shouldEmitPrimaryIndex()) {
                 continue;
             }
+            // Multi-column index: 'name' => ['type' => 'unique'|'index', 'columns' => [...]]
+            if (is_array($type)) {
+                $name = $meta[$model]['tableName'] . '_' . $field;
+                $indexType = (isset($type['type']) && $type['type'] === 'unique') ? 'UNIQUE' : '';
+                $tableDescription['indexes'][] = new Index($name, $type['columns'], $indexType);
+                continue;
+            }
             // need to be able to recognize all types of indexes
             $indexType = '';
             $name = '';
