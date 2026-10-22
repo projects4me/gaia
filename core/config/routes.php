@@ -462,6 +462,16 @@ $config['routes'] = array(
             'controller' => 'userimage',
             'action' => 'get',
         ),
+        'translations' => array(
+            'path' => '/translations',
+            'controller' => 'translation',
+            'action' => 'list',
+        ),
+        'translation' => array(
+            'path' => '/translations/{locale}',
+            'controller' => 'translation',
+            'action' => 'get',
+        ),
         'download' => array(
             'path' => '/download',
             'controller' => 'download',

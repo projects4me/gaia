@@ -3264,6 +3264,65 @@
           "ideaplanissue"
         ]
       }
+    },
+    {
+      "id": "get-translations-locales-without-token",
+      "method": "GET",
+      "path": "/translations",
+      "resource": "translation",
+      "auth": false,
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "0": "en-us"
+        }
+      }
+    },
+    {
+      "id": "get-translations-en-us-without-token",
+      "method": "GET",
+      "path": "/translations/en-us",
+      "resource": "translation",
+      "auth": false,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "get-translations-unsupported-locale-404",
+      "method": "GET",
+      "path": "/translations/ur-pk",
+      "resource": "translation",
+      "auth": false,
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "Locale not supported"
+      }
+    },
+    {
+      "id": "get-translations-dot-dot-locale-404",
+      "method": "GET",
+      "path": "/translations/%2E%2E",
+      "resource": "translation",
+      "auth": false,
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "Locale not supported"
+      }
+    },
+    {
+      "id": "get-translations-encoded-traversal-404",
+      "method": "GET",
+      "path": "/translations/..%2Fen-us",
+      "resource": "translation",
+      "auth": false,
+      "expects": {
+        "status": 404
+      }
     }
   ]
 }
