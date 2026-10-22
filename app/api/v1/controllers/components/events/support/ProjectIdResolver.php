@@ -28,6 +28,7 @@ class ProjectIdResolver
         'wiki' => 'Wiki',
         'project' => 'Project',
         'milestone' => 'Milestone',
+        'idea' => 'Idea',
     );
 
     /**
