@@ -53,6 +53,8 @@ class IdeaScreensBehaviorTest extends TestCase
         $this->assertNull($behavior->uploadIds('[{"key":"A1"}]'));
         $this->assertNull($behavior->uploadIds('[{"uploadId":""}]'));
         $this->assertNull($behavior->uploadIds('["u1"]'));
+        $this->assertNull($behavior->uploadIds('{"0":{"uploadId":"u1"}}'));
+        $this->assertNull($behavior->uploadIds('[["u1"]]'));
     }
 
     /**

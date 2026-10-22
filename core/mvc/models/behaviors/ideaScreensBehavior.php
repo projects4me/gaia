@@ -122,19 +122,21 @@ class ideaScreensBehavior extends Behavior implements BehaviorInterface
      */
     public function uploadIds($screens)
     {
-        $decoded = json_decode((string) $screens, true);
-        if (!is_array($decoded) || array_values($decoded) !== $decoded) {
+        // Decoded without assoc so a JSON object stays an object and is not
+        // mistaken for a list (e.g. {"0":{...}}).
+        $decoded = json_decode((string) $screens);
+        if (!is_array($decoded)) {
             return null;
         }
 
         $uploadIds = [];
         foreach ($decoded as $screen) {
-            if (!is_array($screen) || !isset($screen['uploadId'])
-                || !is_string($screen['uploadId']) || $screen['uploadId'] === ''
+            if (!is_object($screen) || !isset($screen->uploadId)
+                || !is_string($screen->uploadId) || $screen->uploadId === ''
             ) {
                 return null;
             }
-            $uploadIds[] = $screen['uploadId'];
+            $uploadIds[] = $screen->uploadId;
         }
 
         return array_values(array_unique($uploadIds));
