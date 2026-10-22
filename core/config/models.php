@@ -36,6 +36,7 @@ $config['models'] = [
     'Setting',
     'Tagged',
     'Timelog',
+    'Translation',
     'Upload',
     'User',
     'Usercollaboration',

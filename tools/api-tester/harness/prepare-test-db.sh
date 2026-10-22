@@ -240,6 +240,9 @@ psql_db "$TEST_DB" -v ON_ERROR_STOP=1 < "$ROOT_DIR/db/seeds/issue_statuses.sql" 
 echo "==> Seeding application settings (db/seeds/settings.sql)"
 psql_db "$TEST_DB" -v ON_ERROR_STOP=1 < "$ROOT_DIR/db/seeds/settings.sql" >/dev/null
 
+echo "==> Seeding translations (db/seeds/translations.sql)"
+psql_db "$TEST_DB" -v ON_ERROR_STOP=1 < "$ROOT_DIR/db/seeds/translations.sql" >/dev/null
+
 echo "==> Seeding deterministic fixture entities modeled on pr4m patterns"
 # password hash for: unit-testing
 # Patterns mirrored from pr4m:
