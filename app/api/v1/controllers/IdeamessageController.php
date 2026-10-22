@@ -18,4 +18,11 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class IdeamessageController extends RestController
 {
+    /**
+     * Components that this controller uses.
+     *
+     * @var $uses
+     * @type array
+     */
+    public $uses = array('Events\\IdeamessageLiveEvents');
 }

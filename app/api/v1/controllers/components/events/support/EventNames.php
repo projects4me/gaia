@@ -121,6 +121,48 @@ class EventNames
     const NOTIFICATION_CREATED = 'notification.created';
 
     /**
+     * Idea created.
+     *
+     * @var string
+     */
+    const IDEA_CREATED = 'idea.created';
+
+    /**
+     * Idea title, description or status changed.
+     *
+     * @var string
+     */
+    const IDEA_UPDATED = 'idea.updated';
+
+    /**
+     * Idea message created.
+     *
+     * @var string
+     */
+    const IDEA_MESSAGE_CREATED = 'idea.message.created';
+
+    /**
+     * Idea plan created.
+     *
+     * @var string
+     */
+    const IDEA_PLAN_CREATED = 'idea.plan.created';
+
+    /**
+     * Idea plan status or error changed.
+     *
+     * @var string
+     */
+    const IDEA_PLAN_STATUS_CHANGED = 'idea.plan.status.changed';
+
+    /**
+     * Idea plan issue created.
+     *
+     * @var string
+     */
+    const IDEA_PLANISSUE_CREATED = 'idea.planissue.created';
+
+    /**
      * Every name HermesPublisher is allowed to post.
      *
      * @var   array
@@ -142,6 +184,12 @@ class EventNames
         self::CONVERSATION_VOTE_REMOVED,
         self::CONVERSATION_CREATED,
         self::NOTIFICATION_CREATED,
+        self::IDEA_CREATED,
+        self::IDEA_UPDATED,
+        self::IDEA_MESSAGE_CREATED,
+        self::IDEA_PLAN_CREATED,
+        self::IDEA_PLAN_STATUS_CHANGED,
+        self::IDEA_PLANISSUE_CREATED,
     );
 
     /**
