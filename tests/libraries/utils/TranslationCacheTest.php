@@ -83,6 +83,21 @@ class TranslationCacheTest extends TestCase
         $this->assertNotSame($afterFirst, $cache->version('en-us'));
     }
 
+    public function testForgetReportsFailureWhenTheVersionCannotChange()
+    {
+        $cache = new TranslationCache($this->directory);
+        $cache->write('en-us', '{}');
+        mkdir($this->directory . '/en-us.version');
+
+        try {
+            $this->assertFalse($cache->forget('en-us'));
+            $this->assertNull($cache->read('en-us'));
+            $this->assertSame([], glob($this->directory . '/*.tmp'));
+        } finally {
+            rmdir($this->directory . '/en-us.version');
+        }
+    }
+
     public function testADocumentBuiltBeforeAForgetIsNotWritten()
     {
         $cache = new TranslationCache($this->directory);

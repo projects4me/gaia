@@ -118,8 +118,12 @@ class TranslationCache
     }
 
     /**
+     * The document is deleted even when the version cannot advance, but then
+     * forget() reports failure: a build started before it could still write a
+     * stale document.
+     *
      * @param  string $locale
-     * @return bool True when no cached document is left.
+     * @return bool True when the version advanced and no cached document is left.
      */
     public function forget($locale)
     {
@@ -130,10 +134,33 @@ class TranslationCache
         }
 
         return $this->underLock($locale, function () use ($locale, $file) {
-            @file_put_contents($this->versionFileFor($locale), bin2hex(random_bytes(8)));
+            $advanced = $this->replace($this->versionFileFor($locale), bin2hex(random_bytes(8)));
+            $deleted = !is_file($file) || @unlink($file);
 
-            return !is_file($file) || @unlink($file);
+            return $advanced && $deleted;
         });
+    }
+
+    /**
+     * Writes $content to a temporary file and renames it over $file.
+     *
+     * @param  string $file
+     * @param  string $content
+     * @return bool
+     */
+    private function replace($file, $content)
+    {
+        $temporary = $file . '.' . bin2hex(random_bytes(6)) . '.tmp';
+        if (@file_put_contents($temporary, $content) === false) {
+            return false;
+        }
+
+        if (!@rename($temporary, $file)) {
+            @unlink($temporary);
+            return false;
+        }
+
+        return true;
     }
 
     /**
