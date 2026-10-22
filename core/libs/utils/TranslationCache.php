@@ -105,12 +105,16 @@ class TranslationCache
             return false;
         }
 
-        if (($builtAtVersion !== null && $this->version($locale) !== $builtAtVersion) || !@rename($temporary, $file)) {
+        $written = $this->underLock($locale, function () use ($locale, $temporary, $file, $builtAtVersion) {
+            return ($builtAtVersion === null || $this->version($locale) === $builtAtVersion)
+                && @rename($temporary, $file);
+        });
+
+        if (!$written) {
             @unlink($temporary);
-            return false;
         }
 
-        return true;
+        return $written;
     }
 
     /**
@@ -121,11 +125,39 @@ class TranslationCache
     {
         $file = $this->fileFor($locale);
 
-        if ($this->ensureDirectory()) {
-            @file_put_contents($this->versionFileFor($locale), bin2hex(random_bytes(8)));
+        if (!$this->ensureDirectory()) {
+            return !is_file($file) || @unlink($file);
         }
 
-        return !is_file($file) || @unlink($file);
+        return $this->underLock($locale, function () use ($locale, $file) {
+            @file_put_contents($this->versionFileFor($locale), bin2hex(random_bytes(8)));
+
+            return !is_file($file) || @unlink($file);
+        });
+    }
+
+    /**
+     * Runs $critical holding the locale's lock, so a write() cannot check the
+     * version and rename around a forget() that changes the version and deletes
+     * the document. False when the lock cannot be taken.
+     *
+     * @param  string   $locale
+     * @param  callable $critical
+     * @return bool
+     */
+    private function underLock($locale, callable $critical)
+    {
+        $handle = @fopen($this->lockFileFor($locale), 'c');
+        if ($handle === false) {
+            return false;
+        }
+
+        try {
+            return flock($handle, LOCK_EX) && $critical();
+        } finally {
+            flock($handle, LOCK_UN);
+            fclose($handle);
+        }
     }
 
     /**
@@ -157,5 +189,14 @@ class TranslationCache
     private function versionFileFor($locale)
     {
         return substr($this->fileFor($locale), 0, -strlen('.json')) . '.version';
+    }
+
+    /**
+     * @param  string $locale
+     * @return string
+     */
+    private function lockFileFor($locale)
+    {
+        return substr($this->fileFor($locale), 0, -strlen('.json')) . '.lock';
     }
 }

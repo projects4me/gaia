@@ -53,7 +53,7 @@ class TranslationCacheTest extends TestCase
 
         $this->assertSame('{"a":"A"}', file_get_contents($this->directory . '/en-us.json'));
         $this->assertSame('{"a":"A"}', $cache->read('en-us'));
-        $this->assertSame(['en-us.json'], array_values(array_diff(scandir($this->directory), ['.', '..'])));
+        $this->assertSame([], glob($this->directory . '/*.tmp'));
     }
 
     public function testForgetDeletesOnlyThatLocale()

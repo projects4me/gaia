@@ -62,7 +62,7 @@ class TranslationCacheBehaviorTest extends TestCase
 
     public function testARowMovedToAnotherLocaleDropsBothCaches()
     {
-        (new translationCacheBehavior($this->cache))->notify('afterUpdate', $this->model('en-us', ['locale' => 'ur-pk']));
+        (new translationCacheBehavior($this->cache))->notify('afterUpdate', $this->model('ur-pk', ['locale' => 'en-us']));
 
         $this->assertNull($this->cache->read('en-us'));
         $this->assertNull($this->cache->read('ur-pk'));
@@ -83,17 +83,17 @@ class TranslationCacheBehaviorTest extends TestCase
     }
 
     /**
-     * @param  string $locale
-     * @param  array  $snapshot
+     * @param  string $locale        The saved locale (current snapshot).
+     * @param  array  $oldSnapshot   The snapshot before the save.
      * @return ModelInterface
      */
-    private function model($locale, array $snapshot)
+    private function model($locale, array $oldSnapshot)
     {
         $model = $this->getMockBuilder(ModelInterface::class)
-            ->addMethods(['hasSnapshotData', 'getSnapshotData'])
+            ->addMethods(['getSnapshotData', 'getOldSnapshotData'])
             ->getMockForAbstractClass();
-        $model->method('hasSnapshotData')->willReturn(!empty($snapshot));
-        $model->method('getSnapshotData')->willReturn($snapshot);
+        $model->method('getSnapshotData')->willReturn(['locale' => $locale]);
+        $model->method('getOldSnapshotData')->willReturn($oldSnapshot);
         $model->locale = $locale;
         return $model;
     }

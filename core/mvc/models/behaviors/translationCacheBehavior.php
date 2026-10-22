@@ -56,7 +56,8 @@ class translationCacheBehavior extends Behavior implements BehaviorInterface
     {
         $locales = [$model->locale];
 
-        $snapshot = $model->hasSnapshotData() ? $model->getSnapshotData() : [];
+        // Saving refreshes the snapshot before afterUpdate, so the pre-update locale is in the old one.
+        $snapshot = $model->getOldSnapshotData();
         if (isset($snapshot['locale'])) {
             $locales[] = $snapshot['locale'];
         }
