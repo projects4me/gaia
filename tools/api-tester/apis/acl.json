@@ -1280,6 +1280,35 @@
       "source": "acl-group"
     },
     {
+      "id": "acl-members-idea-upload-member-allowed",
+      "method": "GET",
+      "path": "/api/v1/upload",
+      "resource": "upload",
+      "auth": "aclMembers",
+      "query": { "id": "{ideaUploadId}" },
+      "expects": { "status": 200 },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-idea-upload-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/upload",
+      "resource": "upload",
+      "auth": "aclMembers",
+      "query": { "id": "{otherProjectIdeaUploadId}" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-idea-upload-file-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/upload/{otherProjectIdeaUploadId}",
+      "resource": "upload",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
       "id": "acl-members-ideaplan-list-member-only",
       "method": "GET",
       "path": "/api/v1/ideaplan",

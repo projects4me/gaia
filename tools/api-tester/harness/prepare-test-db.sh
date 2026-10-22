@@ -715,6 +715,17 @@ INSERT INTO idea_messages (
   ('api-test-ideamsg-00002', 'api-test-idea-000002', 'Seed message', 'message', FALSE, 'api-test-user-0001', 'API Tester', NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
+-- Uploads related to each idea (screens); no file on disk, so only the record is read
+INSERT INTO uploads (
+  id, name, status, "relatedTo", "relatedId", "fileType", "fileMime", "fileSize",
+  "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-upload-idea-01', 'screen-a1.png', 'uploaded', 'idea', 'api-test-idea-000001', 'image/png', 'image/png', '0',
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-upload-idea-02', 'screen-b1.png', 'uploaded', 'idea', 'api-test-idea-000002', 'image/png', 'image/png', '0',
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET "relatedTo" = EXCLUDED."relatedTo", "relatedId" = EXCLUDED."relatedId";
+
 INSERT INTO idea_plans (
   id, "ideaId", version, body, status, deleted,
   "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
@@ -895,6 +906,8 @@ data = {
     "otherProjectIdeaplanId": "api-test-ideaplan-0002",
     "ideaplanissueId": "api-test-ideaplanis-01",
     "otherProjectIdeaplanissueId": "api-test-ideaplanis-02",
+    "ideaUploadId": "api-test-upload-idea-01",
+    "otherProjectIdeaUploadId": "api-test-upload-idea-02",
     "activityId": "api-test-activity-0001",
     "timelogId": "api-test-timelog-00001",
     "dashboardId": "api-test-dashboard-001",

@@ -167,7 +167,25 @@ $models['Upload'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-    )
+    ),
+    // Uploads of an idea (e.g. Agent Nestor's screens) reach the project
+    // through the idea; other relatedTo values are not record-scoped here.
+    'acl' => [
+        'groups' => ['Project'],
+        'groupKeys' => [
+            'Project' => [
+                'paths' => [
+                    [
+                        'when' => ['relatedTo' => 'idea'],
+                        'relatedModel' => 'Idea',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'projectId',
+                    ],
+                ],
+            ],
+        ],
+    ],
 );
 
 return $models;

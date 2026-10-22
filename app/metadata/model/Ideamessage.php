@@ -43,6 +43,12 @@ $models['Ideamessage'] = array(
             'type' => 'text',
             'null' => true,
         ),
+        'screens' => array(
+            'name' => 'screens',
+            'label' => 'LBL_IDEA_MESSAGES_SCREENS',
+            'type' => 'text',
+            'null' => true,
+        ),
         'ideaplanId' => array(
             'name' => 'ideaplanId',
             'label' => 'LBL_IDEA_MESSAGES_IDEAPLAN',
@@ -112,7 +118,8 @@ $models['Ideamessage'] = array(
         'auditBehavior',
         'dateCreatedBehavior',
         'createdUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'ideaScreensBehavior'
     ),
     'acl' => [
         'groups' => ['Project'],

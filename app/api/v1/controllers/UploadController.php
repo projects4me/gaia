@@ -37,6 +37,8 @@ class UploadController extends RestController
             throw new \Phalcon\Exception('Id must be set, please refer to guides.');
         }
 
+        $this->assertUploadInScope($this->id);
+
         $model = new Upload();
         $data = $model->read(['id' => $this->id]);
 
@@ -72,6 +74,8 @@ class UploadController extends RestController
         if (!(isset($id) && !empty($id))) {
             throw new \Phalcon\Exception('Id must be set, please refer to guides.');
         }
+
+        $this->assertUploadInScope($id);
 
         // Check if the user wants to download the files of not
         $download = $this->request->get('download', null, false);
@@ -130,6 +134,8 @@ class UploadController extends RestController
         global $logger;
         $logger->debug("Gaia.Controllers.Upload->deleteAction()");
 
+        $this->assertUploadInScope($this->id);
+
         // Fetch, handle and then call the deletion action
         $modelName = $this->modelName;
         $model = $modelName::findFirst('id = "'.$this->id.'"');
@@ -177,6 +183,21 @@ class UploadController extends RestController
     }
 
     /**
+     * Deny access to an upload whose parent (e.g. an idea) is in a project
+     * outside the user's membership scope.
+     *
+     * @param  string $id The upload id.
+     * @return void
+     * @throws \Gaia\Exception\Access
+     */
+    protected function assertUploadInScope($id)
+    {
+        if ($this->getDI()->has('acl')) {
+            $this->getDI()->get('acl')->assertRecordIdInScope('Upload', $id);
+        }
+    }
+
+    /**
      *  This function is used to get the file and place that in the filesystem
      *
      * @method postAction
@@ -188,6 +209,13 @@ class UploadController extends RestController
 
         // Fetch the store path from a configuration
         $storeFolder = 'filesystem'.DS.'uploads';
+
+        if ($this->getDI()->has('acl')) {
+            $this->getDI()->get('acl')->assertWriteInScope('Upload', array(
+                'relatedTo' => $_REQUEST['relatedTo'] ?? null,
+                'relatedId' => $_REQUEST['relatedId'] ?? null,
+            ));
+        }
 
         // If files were uploaded then good otherwise generate an error
         if (!empty($_FILES['file'])) {

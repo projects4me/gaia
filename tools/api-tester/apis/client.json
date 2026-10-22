@@ -3149,6 +3149,73 @@
       }
     },
     {
+      "id": "client-ideamessage-create-with-screens",
+      "method": "POST",
+      "path": "/api/v1/ideamessage",
+      "resource": "ideamessage",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "ideamessage",
+          "attributes": {
+            "ideaId": "{ideaId}",
+            "body": "Screens for plan v1",
+            "screens": "[{\"uploadId\":\"api-test-upload-idea-01\",\"key\":\"A1\",\"title\":\"Board\",\"version\":1,\"width\":1280,\"height\":800}]"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "screens": "[{\"uploadId\":\"api-test-upload-idea-01\",\"key\":\"A1\",\"title\":\"Board\",\"version\":1,\"width\":1280,\"height\":800}]"
+        }
+      }
+    },
+    {
+      "id": "client-ideamessage-screens-of-another-idea-rejected",
+      "method": "POST",
+      "path": "/api/v1/ideamessage",
+      "resource": "ideamessage",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "ideamessage",
+          "attributes": {
+            "ideaId": "{ideaId}",
+            "body": "Screens of another idea",
+            "screens": "[{\"uploadId\":\"api-test-upload-idea-02\",\"key\":\"B1\"}]"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      },
+      "note": "every screens uploadId must be an upload related to the message's idea"
+    },
+    {
+      "id": "client-ideamessage-malformed-screens-rejected",
+      "method": "POST",
+      "path": "/api/v1/ideamessage",
+      "resource": "ideamessage",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "ideamessage",
+          "attributes": {
+            "ideaId": "{ideaId}",
+            "body": "Screens without upload ids",
+            "screens": "[{\"key\":\"A1\"}]"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
       "id": "client-ideaplanissue-create",
       "method": "POST",
       "path": "/api/v1/ideaplanissue",
