@@ -10,8 +10,13 @@ use Gaia\MVC\REST\Controllers\Components\Events\ConversationCommentLiveEventsCom
 use Gaia\MVC\REST\Controllers\Components\Events\ConversationVoteLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\ConversationLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\NotificationLiveEvents;
+use Gaia\MVC\REST\Controllers\Components\Events\IdeaLiveEventsComponent;
+use Gaia\MVC\REST\Controllers\Components\Events\IdeamessageLiveEventsComponent;
+use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanLiveEventsComponent;
+use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanissueLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\EventNames;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\HermesPublisher;
+use Gaia\MVC\REST\Controllers\Components\Events\Support\ProjectIdResolver;
 
 /**
  * Unit tests for selective Hermes live-event components.
@@ -395,6 +400,158 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertArrayNotHasKey('metadata', $posted[0]['changes']);
     }
 
+    public function testIdeaCreatePublishesTitleAndStatus()
+    {
+        $posted = array();
+        $this->fire($this->make(IdeaLiveEventsComponent::class, $posted), 'afterCreate', (object) array(
+            'id' => 'idea-1',
+            'projectId' => 'project-9',
+            'title' => 'Faster boards',
+            'description' => 'Long text',
+            'status' => 'draft',
+        ));
+
+        $this->assertCount(1, $posted);
+        $this->assertEquals('idea.created', $posted[0]['eventName']);
+        $this->assertEquals('project-9', $posted[0]['projectId']);
+        $this->assertEquals('idea', $posted[0]['resource']['type']);
+        $this->assertEquals('idea-1', $posted[0]['resource']['id']);
+        $this->assertEquals(array('title' => 'Faster boards', 'status' => 'draft'), $posted[0]['changes']);
+        $this->assertEquals(array('ideaId' => 'idea-1'), $this->metaWithoutActor($posted[0]));
+    }
+
+    public function testIdeaUpdatePublishesOnlyChangedTrackedFields()
+    {
+        $posted = array();
+        $component = $this->make(IdeaLiveEventsComponent::class, $posted);
+        $this->fire($component, 'afterUpdate', (object) array(
+            'id' => 'idea-1',
+            'projectId' => 'project-1',
+            'audit' => array(
+                'status' => array('old' => 'draft', 'new' => 'planning'),
+                'modifiedUser' => array('old' => 'u1', 'new' => 'u2'),
+            ),
+        ));
+        $this->fire($component, 'afterUpdate', (object) array(
+            'id' => 'idea-1',
+            'projectId' => 'project-1',
+            'audit' => array(
+                'modifiedUser' => array('old' => 'u1', 'new' => 'u2'),
+            ),
+        ));
+
+        $this->assertCount(1, $posted);
+        $this->assertEquals('idea.updated', $posted[0]['eventName']);
+        $this->assertEquals(array('status' => 'planning'), $posted[0]['changes']);
+        $this->assertEquals('idea-1', $posted[0]['meta']['ideaId']);
+    }
+
+    public function testIdeaMessageCreatePublishesKindWithoutBody()
+    {
+        $posted = array();
+        $this->fire($this->make(IdeamessageLiveEventsComponent::class, $posted), 'afterCreate', (object) array(
+            'id' => 'msg-1',
+            'ideaId' => 'idea-1',
+            'body' => 'secret text',
+            'kind' => 'user',
+        ));
+
+        $this->assertCount(1, $posted);
+        $this->assertEquals('idea.message.created', $posted[0]['eventName']);
+        $this->assertEquals('ideamessage', $posted[0]['resource']['type']);
+        $this->assertEquals(array('kind' => 'user'), $posted[0]['changes']);
+        $this->assertEquals(array('ideaId' => 'idea-1'), $this->metaWithoutActor($posted[0]));
+    }
+
+    public function testIdeaPlanCreatePublishesVersionAndStatusWithoutBody()
+    {
+        $posted = array();
+        $this->fire($this->make(IdeaplanLiveEventsComponent::class, $posted), 'afterCreate', (object) array(
+            'id' => 'plan-1',
+            'ideaId' => 'idea-1',
+            'version' => 2,
+            'body' => 'plan text',
+            'status' => 'draft',
+        ));
+
+        $this->assertCount(1, $posted);
+        $this->assertEquals('idea.plan.created', $posted[0]['eventName']);
+        $this->assertEquals('ideaplan', $posted[0]['resource']['type']);
+        $this->assertEquals(array('version' => 2, 'status' => 'draft'), $posted[0]['changes']);
+        $this->assertEquals(array('ideaId' => 'idea-1', 'version' => 2), $this->metaWithoutActor($posted[0]));
+    }
+
+    public function testIdeaPlanStatusChangedOnlyWhenStatusOrErrorChanged()
+    {
+        $posted = array();
+        $component = $this->make(IdeaplanLiveEventsComponent::class, $posted);
+        $this->fire($component, 'afterUpdate', (object) array(
+            'id' => 'plan-1',
+            'ideaId' => 'idea-1',
+            'version' => 2,
+            'status' => 'failed',
+            'error' => 'Ares timeout',
+            'audit' => array(
+                'error' => array('old' => null, 'new' => 'Ares timeout'),
+            ),
+        ));
+        $this->fire($component, 'afterUpdate', (object) array(
+            'id' => 'plan-1',
+            'ideaId' => 'idea-1',
+            'version' => 2,
+            'status' => 'failed',
+            'audit' => array(
+                'body' => array('old' => 'a', 'new' => 'b'),
+            ),
+        ));
+
+        $this->assertCount(1, $posted);
+        $this->assertEquals('idea.plan.status.changed', $posted[0]['eventName']);
+        $this->assertEquals(array('status' => 'failed', 'error' => 'Ares timeout'), $posted[0]['changes']);
+        $this->assertEquals(array('ideaId' => 'idea-1', 'version' => 2), $this->metaWithoutActor($posted[0]));
+    }
+
+    public function testIdeaPlanIssueCreatePublishesKeyAndIssueId()
+    {
+        $posted = array();
+        $this->fire($this->make(IdeaplanissueLiveEventsComponent::class, $posted), 'afterCreate', (object) array(
+            'id' => 'pi-1',
+            'ideaId' => 'idea-1',
+            'ideaplanId' => 'plan-1',
+            'key' => 'T1',
+            'issueId' => 'issue-7',
+        ));
+
+        $this->assertCount(1, $posted);
+        $this->assertEquals('idea.planissue.created', $posted[0]['eventName']);
+        $this->assertEquals('ideaplanissue', $posted[0]['resource']['type']);
+        $this->assertEquals(array('key' => 'T1', 'issueId' => 'issue-7'), $posted[0]['changes']);
+        $this->assertEquals(array('ideaId' => 'idea-1', 'ideaplanId' => 'plan-1'), $this->metaWithoutActor($posted[0]));
+    }
+
+    public function testResolverResolvesIdeaChildrenThroughTheIdea()
+    {
+        $resolver = new class extends ProjectIdResolver {
+            public $lookups = array();
+            protected function findById($shortName, $id)
+            {
+                $this->lookups[] = array($shortName, $id);
+                return (object) array('id' => $id, 'projectId' => 'project-idea');
+            }
+        };
+
+        $this->assertEquals('project-idea', $resolver->resolve((object) array('ideaId' => 'idea-1')));
+        $this->assertEquals(array(array('Idea', 'idea-1')), $resolver->lookups);
+
+        $resolver->lookups = array();
+        $resolver->resolve((object) array('ideaId' => 'idea-1', 'issueId' => 'issue-1'));
+        $this->assertEquals(array(array('Idea', 'idea-1')), $resolver->lookups);
+
+        $resolver->lookups = array();
+        $resolver->resolve((object) array('issueId' => 'issue-1'));
+        $this->assertEquals(array(array('Issue', 'issue-1')), $resolver->lookups);
+    }
+
     public function testPublisherRejectsUnknownEventNames()
     {
         $posted = array();
@@ -409,6 +566,15 @@ class LiveEventsComponentsTest extends TestCase
             'issue-1'
         ));
         $this->assertSame(array(), $posted);
+    }
+
+    /**
+     * @param array $envelope
+     * @return array
+     */
+    protected function metaWithoutActor(array $envelope)
+    {
+        return array_diff_key($envelope['meta'], array('actorName' => true));
     }
 
     /**

@@ -31,7 +31,19 @@ class ProjectIdResolver
     );
 
     /**
-     * Returns the project id for the model, walking relatedTo / issueId when
+     * Parent foreign keys checked in order when the row has no projectId and
+     * no relatedTo. ideaId wins over issueId (an Ideaplanissue has both).
+     *
+     * @var  array
+     * @type array
+     */
+    protected $parentKeys = array(
+        'ideaId' => 'Idea',
+        'issueId' => 'Issue',
+    );
+
+    /**
+     * Returns the project id for the model, walking relatedTo / ideaId / issueId when
      * projectId is not on the row.
      *
      * @param  mixed $model The persisted model.
@@ -60,8 +72,10 @@ class ProjectIdResolver
             }
         }
 
-        if (!empty($model->issueId)) {
-            return $this->projectIdFromRelated('Issue', $model->issueId);
+        foreach ($this->parentKeys as $key => $parentClass) {
+            if (!empty($model->$key)) {
+                return $this->projectIdFromRelated($parentClass, $model->$key);
+            }
         }
 
         return null;
