@@ -66,6 +66,7 @@ class Systemnotificationrecipient extends Model
      * @param string $relatedTo The type of the entity the notifications belong to, e.g. issue
      * @param string $relatedId The ID of the entity the notifications belong to
      * @return int The number of notifications marked as read
+     * @throws \RuntimeException When a row cannot be updated; no rows are changed then
      */
     public static function markRelatedAsRead($userId, $relatedTo, $relatedId)
     {
@@ -82,13 +83,24 @@ class Systemnotificationrecipient extends Model
             ->execute();
 
         // Update row by row, not with one UPDATE, so model behaviours
-        // (e.g. modified user and date) still run.
-        $markedCount = 0;
-        foreach ($recipients as $recipient) {
-            $recipient->isRead = 1;
-            if ($recipient->update()) {
+        // (e.g. modified user and date) still run. All rows change or none.
+        $db = $di->get('db');
+        $db->begin();
+        try {
+            $markedCount = 0;
+            foreach ($recipients as $recipient) {
+                $recipient->isRead = 1;
+                if (!$recipient->update()) {
+                    throw new \RuntimeException(
+                        'Could not mark notification recipient ' . $recipient->id . ' as read'
+                    );
+                }
                 $markedCount++;
             }
+            $db->commit();
+        } catch (\Throwable $e) {
+            $db->rollback();
+            throw $e;
         }
         return $markedCount;
     }
