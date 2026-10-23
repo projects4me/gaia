@@ -224,7 +224,7 @@ Each API entry can declare `expects`:
 - `status`: number or array
 - `shape`: `json` | `jsonapi.collection` | `jsonapi.resource` | `oauth.token` | `error`
 - `errorEqual`: exact `error` string (used by ACL 403 cases)
-- `jsonEqual`: map of top-level body key → expected scalar value, for non-JSON:API bodies (e.g. `{"testResult": "TEST_EMAIL_SENT"}`)
+- `jsonEqual`: map of body key (top-level, or a dotted path such as `meta.unreadCount`) → expected scalar value, for non-JSON:API bodies (e.g. `{"testResult": "TEST_EMAIL_SENT"}`)
 - `includedTypesAbsent`: list of JSON:API `included[].type` values that must not appear
 - `includedTypesPresent`: list of JSON:API `included[].type` values that must appear
 - `resourceNamesAbsent` / `resourceNamesPresent`: `attributes.resourceName` values across a permission (or similar) collection

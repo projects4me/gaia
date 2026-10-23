@@ -31,34 +31,61 @@ class SystemnotificationrecipientController extends RestController
 
     /**
      * Handles POST requests to the notification recipient endpoint.
-     * Primarily used to mark notifications as read for a specific user.
+     * Marks the current user's notifications as read: all of them
+     * (markAllAsRead) or those about one entity (relatedTo and relatedId).
+     * Any userId in the body is ignored.
      *
      * @return \Phalcon\Http\Response The HTTP response object
      */
     public function postAction()
     {
-        global $logger;
+        global $logger, $currentUser;
         $logger->debug("Gaia.Controllers.Systemnotificationrecipient->postAction");
 
         try {
             $util = new Util();
             $requestData = $util->objectToArray($this->request->getJsonRawBody());
-            $markAllAsRead = filter_var($requestData['markAllAsRead'], FILTER_VALIDATE_BOOLEAN);
-            $userId = $requestData['userId'];
-            if ($markAllAsRead) {
-                $result = Systemnotificationrecipient::updateAllAsRead($userId);
+            if (!is_array($requestData)) {
+                $requestData = [];
             }
-            if ($result->success()) {
-                $this->response->setStatusCode(200, "OK");
-                $this->response->setJsonContent(
-                    [
+            $markAllAsRead = filter_var($requestData['markAllAsRead'] ?? false, FILTER_VALIDATE_BOOLEAN);
+            $relatedTo = $requestData['relatedTo'] ?? null;
+            $relatedId = $requestData['relatedId'] ?? null;
+            $hasRelated = is_string($relatedTo) && $relatedTo !== '' && is_string($relatedId) && $relatedId !== '';
+
+            if ($markAllAsRead) {
+                $result = Systemnotificationrecipient::updateAllAsRead($currentUser->id);
+                if (!$result->success()) {
+                    throw new \Exception('An error occurred while processing your request');
+                }
+                $responseData = [
                     'success' => true,
                     'message' => 'All notifications marked as read'
+                ];
+            } elseif ($hasRelated) {
+                $responseData = [
+                    'success' => true,
+                    'markedCount' => Systemnotificationrecipient::markRelatedAsRead(
+                        $currentUser->id,
+                        $relatedTo,
+                        $relatedId
+                    )
+                ];
+            } else {
+                $this->response->setStatusCode(400, "Bad Request");
+                $this->response->setJsonContent(
+                    [
+                    'success' => false,
+                    'message' => 'Send markAllAsRead, or both relatedTo and relatedId'
                     ]
                 );
-            } else {
-                throw new \Exception('An error occurred while processing your request');
+                $logger->debug("-Gaia.Controllers.Systemnotificationrecipient->postAction");
+                return $this->response;
             }
+
+            $responseData['meta']['unreadCount'] = Systemnotificationrecipient::countUnread($currentUser->id);
+            $this->response->setStatusCode(200, "OK");
+            $this->response->setJsonContent($responseData);
             $logger->debug("-Gaia.Controllers.Systemnotificationrecipient->postAction");
         } catch (\Exception $e) {
             $logger->error("Gaia.Controllers.Systemnotificationrecipient->postAction Error: " . $e->getMessage());
@@ -89,14 +116,11 @@ class SystemnotificationrecipientController extends RestController
             $response = parent::patchAction();
             
             // Check for unread notifications
-            $unreadCount = Systemnotificationrecipient::count([
-                'conditions' => 'userId = :userId: AND isRead = 0',
-                'bind' => ['userId' => $currentUser->id]
-            ]);
+            $unreadCount = Systemnotificationrecipient::countUnread($currentUser->id);
             
             // Add unread notifications flag to response
             $responseData = json_decode($response->getContent(), true);
-            $responseData['meta']['unreadCount'] = (int)$unreadCount;
+            $responseData['meta']['unreadCount'] = $unreadCount;
             $response->setContent(json_encode($responseData));
             
             $logger->debug("-Gaia.Controllers.Systemnotificationrecipient->patchAction");
