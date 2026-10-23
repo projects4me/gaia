@@ -59,6 +59,8 @@ class MilestoneNotification implements NotificationModuleInterface
 
             $notificationData = [
                 'description' => "{{User@{$currentUser->id}}} has created {{Milestone@{$model->id}}} milestone for {{Project@{$project->id}}}",
+                'relatedTo' => 'milestone',
+                'relatedId' => $model->id,
                 'context' => json_encode(
                     [
                     "projectShortcode" => $project->shortCode,

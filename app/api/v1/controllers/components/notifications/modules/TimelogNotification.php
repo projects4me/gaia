@@ -90,6 +90,8 @@ class TimelogNotification implements NotificationModuleInterface
 
             $notificationData = [
                 'description' => $description,
+                'relatedTo' => 'issue',
+                'relatedId' => $issue->id,
                 'context' => json_encode($contextData)
             ];
 

@@ -69,6 +69,8 @@ class CommentNotification implements NotificationModuleInterface
 
             $notificationData = [
                 'description' => "{{User@{$currentUser->id}}} has {{Comment@{$model->id}}} on {{Issue@{$conversationroom->issueId}}}",
+                'relatedTo' => 'issue',
+                'relatedId' => $conversationroom->issueId,
                 'context' => json_encode(
                     [
                     "projectShortcode" => $project->shortCode,

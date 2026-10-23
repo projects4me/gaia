@@ -61,6 +61,8 @@ class MembershipNotification implements NotificationModuleInterface
             // First notification - to project members
             $notificationData = [
                 'description' => "{{createdUser:{$currentUser->id}}} has added {{User@{$user->id}}} to {{Project@{$project->id}}}",
+                'relatedTo' => 'project',
+                'relatedId' => $project->id,
                 'context' => json_encode(
                     [
                     "projectShortcode" => $project->shortCode,
@@ -78,6 +80,8 @@ class MembershipNotification implements NotificationModuleInterface
                 // Second notification - to the user who was added
                 $notificationData = [
                     'description' => "{{createdUser:{$currentUser->id}}} has added you to {{Project@{$project->id}}}",
+                    'relatedTo' => 'project',
+                    'relatedId' => $project->id,
                     'context' => json_encode(
                         [
                         "projectShortcode" => $project->shortCode,
@@ -136,6 +140,8 @@ class MembershipNotification implements NotificationModuleInterface
             if ($currentUser->id !== $user->id) {
                 $notificationData = [
                     'description' => "{{createdUser:{$currentUser->id}}} has removed you from {{Project@{$project->id}}}",
+                    'relatedTo' => 'project',
+                    'relatedId' => $project->id,
                     'context' => json_encode(
                         [
                         "projectShortcode" => $project->shortCode,

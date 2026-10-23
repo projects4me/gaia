@@ -58,6 +58,8 @@ class IssueNotification implements NotificationModuleInterface
             if ($model->assignee && $model->assignee !== $currentUser->id) {
                 $notificationData = [
                     'description' => "{{User@{$currentUser->id}}} has assigned issue {{Issue@{$model->id}}} to you",
+                    'relatedTo' => 'issue',
+                    'relatedId' => $model->id,
                     'context' => json_encode(
                         [
                         "projectShortcode" => $project->shortCode,
@@ -78,6 +80,8 @@ class IssueNotification implements NotificationModuleInterface
             if ($model->owner && $model->owner !== $currentUser->id) {
                 $notificationData = [
                     'description' => "{{User@{$currentUser->id}}} has made you the owner of {{Issue@{$model->id}}}",
+                    'relatedTo' => 'issue',
+                    'relatedId' => $model->id,
                     'context' => json_encode(
                         [
                         "projectShortcode" => $project->shortCode,
@@ -158,6 +162,8 @@ class IssueNotification implements NotificationModuleInterface
 
         $notificationData = [
             'description' => "{{User@{$currentUser->id}}} has updated the {{Issue@{$model->id}}} status to {{status:{$model->status}}}",
+            'relatedTo' => 'issue',
+            'relatedId' => $model->id,
             'context' => json_encode(
                 [
                 "projectShortcode" => $project->shortCode,
@@ -192,6 +198,8 @@ class IssueNotification implements NotificationModuleInterface
         $newAssigneeId = $model->audit['assignee']['new'];
         $notificationData = [
             'description' => "{{User@{$currentUser->id}}} has updated the {{Issue@{$model->id}}} assignee to {{User@{$newAssigneeId}}}",
+            'relatedTo' => 'issue',
+            'relatedId' => $model->id,
             'context' => json_encode(
                 [
                 "projectShortcode" => $project->shortCode,
@@ -230,6 +238,8 @@ class IssueNotification implements NotificationModuleInterface
             if ($newOwnerId && $newOwnerId !== $currentUser->id) {
                 $notificationData = [
                     'description' => "{{User@{$currentUser->id}}} has made you the owner of {{Issue@{$model->id}}}",
+                    'relatedTo' => 'issue',
+                    'relatedId' => $model->id,
                     'context' => json_encode(
                         [
                         "projectShortcode" => $project->shortCode,
@@ -249,6 +259,8 @@ class IssueNotification implements NotificationModuleInterface
             if ($oldOwnerId && $oldOwnerId !== $currentUser->id) {
                 $notificationData = [
                     'description' => "{{User@{$currentUser->id}}} has removed you as the owner from {{Issue@{$model->id}}}",
+                    'relatedTo' => 'issue',
+                    'relatedId' => $model->id,
                     'context' => json_encode(
                         [
                         "projectShortcode" => $project->shortCode,
@@ -281,6 +293,8 @@ class IssueNotification implements NotificationModuleInterface
 
         $notificationData = [
             'description' => "{{User@{$currentUser->id}}} has assigned you {{Issue@{$model->id}}}",
+            'relatedTo' => 'issue',
+            'relatedId' => $model->id,
             'context' => json_encode(
                 [
                 "projectShortcode" => $project->shortCode,
@@ -311,6 +325,8 @@ class IssueNotification implements NotificationModuleInterface
         $oldAssigneeId = $model->audit['assignee']['old'];
         $notificationData = [
             'description' => "{{User@{$currentUser->id}}} has removed you as the assignee from {{Issue@{$model->id}}}",
+            'relatedTo' => 'issue',
+            'relatedId' => $model->id,
             'context' => json_encode(
                 [
                 "projectShortcode" => $project->shortCode,
