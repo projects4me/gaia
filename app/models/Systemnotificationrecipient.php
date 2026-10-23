@@ -58,4 +58,52 @@ class Systemnotificationrecipient extends Model
         $query = $di->get('modelsManager')->createQuery("UPDATE \Gaia\MVC\Models\Systemnotificationrecipient SET isRead = 1 WHERE userId = :userId:");
         return $query->execute(['userId' => $userId]);
     }
+
+    /**
+     * Marks a user's unread notifications about one entity as read
+     *
+     * @param string $userId    The ID of the user whose notifications should be marked as read
+     * @param string $relatedTo The type of the entity the notifications belong to, e.g. issue
+     * @param string $relatedId The ID of the entity the notifications belong to
+     * @return int The number of notifications marked as read
+     */
+    public static function markRelatedAsRead($userId, $relatedTo, $relatedId)
+    {
+        $di = \Phalcon\Di::getDefault();
+        $recipients = $di->get('modelsManager')->createBuilder()
+            ->from(['recipient' => self::class])
+            ->innerJoin(Systemnotification::class, 'sn.id = recipient.systemNotificationId', 'sn')
+            ->where(
+                'recipient.userId = :userId: AND recipient.isRead = 0'
+                . ' AND sn.relatedTo = :relatedTo: AND sn.relatedId = :relatedId:',
+                ['userId' => $userId, 'relatedTo' => $relatedTo, 'relatedId' => $relatedId]
+            )
+            ->getQuery()
+            ->execute();
+
+        // Update row by row, not with one UPDATE, so model behaviours
+        // (e.g. modified user and date) still run.
+        $markedCount = 0;
+        foreach ($recipients as $recipient) {
+            $recipient->isRead = 1;
+            if ($recipient->update()) {
+                $markedCount++;
+            }
+        }
+        return $markedCount;
+    }
+
+    /**
+     * Counts a user's unread notifications
+     *
+     * @param string $userId The ID of the user
+     * @return int The number of unread notifications
+     */
+    public static function countUnread($userId)
+    {
+        return (int)self::count([
+            'conditions' => 'userId = :userId: AND isRead = 0',
+            'bind' => ['userId' => $userId]
+        ]);
+    }
 }

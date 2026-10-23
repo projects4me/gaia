@@ -815,6 +815,42 @@ INSERT INTO system_notification_recipients (
 )
 ON CONFLICT (id) DO UPDATE SET "isRead" = 0, "userId" = EXCLUDED."userId";
 
+-- Notifications about one entity, for the mark-related-as-read cases (agaia-4065).
+-- The aclNoProject user receives no other notifications, so its counts are exact.
+INSERT INTO system_notifications (
+  id, description, "relatedTo", "relatedId",
+  "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", context
+) VALUES
+  ('api-test-sysnotif-rel-issue', 'Issue@api-test-issue-000001 updated', 'issue', 'api-test-issue-000001',
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', '{"source":"api-tester"}'),
+  ('api-test-sysnotif-rel-comment', 'Comment on Issue@api-test-issue-000001', 'issue', 'api-test-issue-000001',
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', '{"source":"api-tester"}'),
+  ('api-test-sysnotif-rel-timelog', 'Timelog on Issue@api-test-issue-000001', 'issue', 'api-test-issue-000001',
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', '{"source":"api-tester"}'),
+  ('api-test-sysnotif-rel-other', 'Issue@api-test-issue-000002 updated', 'issue', 'api-test-issue-000002',
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', '{"source":"api-tester"}'),
+  ('api-test-sysnotif-rel-mstone', 'Milestone with the issue id', 'milestone', 'api-test-issue-000001',
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', '{"source":"api-tester"}')
+ON CONFLICT (id) DO UPDATE SET "relatedTo" = EXCLUDED."relatedTo", "relatedId" = EXCLUDED."relatedId";
+
+INSERT INTO system_notification_recipients (
+  id, "systemNotificationId", "userId", "isRead",
+  "createdUser", "createdUserName", "modifiedUser", "modifiedUserName"
+) VALUES
+  ('api-test-snr-rel-issue-np', 'api-test-sysnotif-rel-issue', 'api-test-user-acl-np', 0,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester'),
+  ('api-test-snr-rel-issue-mb', 'api-test-sysnotif-rel-issue', 'api-test-user-0002', 0,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester'),
+  ('api-test-snr-rel-comment-np', 'api-test-sysnotif-rel-comment', 'api-test-user-acl-np', 0,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester'),
+  ('api-test-snr-rel-timelog-np', 'api-test-sysnotif-rel-timelog', 'api-test-user-acl-np', 0,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester'),
+  ('api-test-snr-rel-other-np', 'api-test-sysnotif-rel-other', 'api-test-user-acl-np', 0,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester'),
+  ('api-test-snr-rel-mstone-np', 'api-test-sysnotif-rel-mstone', 'api-test-user-acl-np', 0,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester')
+ON CONFLICT (id) DO UPDATE SET "isRead" = 0, "userId" = EXCLUDED."userId";
+
 INSERT INTO dashboards (
   id, "userId", name, deleted, widgets
 ) VALUES (

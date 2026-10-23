@@ -3607,6 +3607,172 @@
           "relatedId": "{projectId}"
         }
       }
+    },
+    {
+      "id": "notification-mark-related-read-issue",
+      "method": "POST",
+      "path": "/api/v1/systemnotificationrecipient",
+      "resource": "systemnotificationrecipient",
+      "auth": "aclNoProject",
+      "body": {
+        "relatedTo": "issue",
+        "relatedId": "{issueId}",
+        "userId": "{memberUserId}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "success": true,
+          "markedCount": 3,
+          "meta.unreadCount": 2
+        }
+      }
+    },
+    {
+      "id": "notification-mark-related-read-issue-row-read",
+      "method": "GET",
+      "path": "/api/v1/systemnotificationrecipient/api-test-snr-rel-comment-np",
+      "resource": "systemnotificationrecipient",
+      "auth": "aclNoProject",
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "isRead": "1"
+        }
+      }
+    },
+    {
+      "id": "notification-mark-related-read-other-entity-untouched",
+      "method": "GET",
+      "path": "/api/v1/systemnotificationrecipient/api-test-snr-rel-other-np",
+      "resource": "systemnotificationrecipient",
+      "auth": "aclNoProject",
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "isRead": "0"
+        }
+      }
+    },
+    {
+      "id": "notification-mark-related-read-other-type-untouched",
+      "method": "GET",
+      "path": "/api/v1/systemnotificationrecipient/api-test-snr-rel-mstone-np",
+      "resource": "systemnotificationrecipient",
+      "auth": "aclNoProject",
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "isRead": "0"
+        }
+      }
+    },
+    {
+      "id": "notification-mark-related-read-other-user-untouched",
+      "method": "GET",
+      "path": "/api/v1/systemnotificationrecipient/api-test-snr-rel-issue-mb",
+      "resource": "systemnotificationrecipient",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "isRead": "0"
+        }
+      }
+    },
+    {
+      "id": "notification-mark-related-read-repeat",
+      "method": "POST",
+      "path": "/api/v1/systemnotificationrecipient",
+      "resource": "systemnotificationrecipient",
+      "auth": "aclNoProject",
+      "body": {
+        "relatedTo": "issue",
+        "relatedId": "{issueId}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "markedCount": 0,
+          "meta.unreadCount": 2
+        }
+      }
+    },
+    {
+      "id": "notification-mark-read-empty-body",
+      "method": "POST",
+      "path": "/api/v1/systemnotificationrecipient",
+      "resource": "systemnotificationrecipient",
+      "auth": "aclNoProject",
+      "body": {},
+      "expects": {
+        "status": 400
+      }
+    },
+    {
+      "id": "notification-mark-read-related-to-only",
+      "method": "POST",
+      "path": "/api/v1/systemnotificationrecipient",
+      "resource": "systemnotificationrecipient",
+      "auth": "aclNoProject",
+      "body": {
+        "relatedTo": "issue"
+      },
+      "expects": {
+        "status": 400
+      }
+    },
+    {
+      "id": "notification-mark-read-related-id-only",
+      "method": "POST",
+      "path": "/api/v1/systemnotificationrecipient",
+      "resource": "systemnotificationrecipient",
+      "auth": "aclNoProject",
+      "body": {
+        "relatedId": "{issueId}"
+      },
+      "expects": {
+        "status": 400
+      }
+    },
+    {
+      "id": "notification-mark-all-read-ignores-body-user",
+      "method": "POST",
+      "path": "/api/v1/systemnotificationrecipient",
+      "resource": "systemnotificationrecipient",
+      "auth": "aclNoProject",
+      "body": {
+        "markAllAsRead": true,
+        "userId": "{memberUserId}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "success": true,
+          "meta.unreadCount": 0
+        }
+      }
+    },
+    {
+      "id": "notification-mark-all-read-other-user-untouched",
+      "method": "GET",
+      "path": "/api/v1/systemnotificationrecipient/api-test-snr-rel-issue-mb",
+      "resource": "systemnotificationrecipient",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "isRead": "0"
+        }
+      }
     }
   ]
 }

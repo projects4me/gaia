@@ -83,7 +83,7 @@ class Asserter
 
         if (!empty($expects['jsonEqual']) && is_array($expects['jsonEqual'])) {
             foreach ($expects['jsonEqual'] as $key => $expected) {
-                $actual = is_array($json) && array_key_exists($key, $json) ? $json[$key] : null;
+                $actual = $this->jsonValue($json, $key);
                 if (!is_scalar($actual) || (string) $actual !== (string) $expected) {
                     $failures[] = "jsonEqual: {$key} expected '{$expected}', got '" .
                         (is_scalar($actual) ? $actual : json_encode($actual)) . "'";
@@ -209,6 +209,24 @@ class Asserter
         }
 
         return $failures;
+    }
+
+    /**
+     * Reads a top-level key, or a nested one by dotted path (e.g. meta.unreadCount).
+     */
+    private function jsonValue($json, $key)
+    {
+        if (is_array($json) && array_key_exists($key, $json)) {
+            return $json[$key];
+        }
+        $value = $json;
+        foreach (explode('.', $key) as $part) {
+            if (!is_array($value) || !array_key_exists($part, $value)) {
+                return null;
+            }
+            $value = $value[$part];
+        }
+        return $value;
     }
 
     /**
