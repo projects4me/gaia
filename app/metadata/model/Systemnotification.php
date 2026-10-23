@@ -67,9 +67,28 @@ $models['Systemnotification'] = array(
             'type' => 'text',
             'null' => true,
         ],
+        // relatedTo/relatedId name the parent entity the user would open (issue, milestone, project),
+        // so notifications can be found by entity. context.relatedTo is finer (issue, comment, timelog,
+        // milestone, project) and drives the links Prometheus builds; the two are set independently.
+        'relatedTo' => [
+            'name' => 'relatedTo',
+            'label' => 'LBL_SYSTEM_NOTIFICATION_RELATED_TO',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => true,
+        ],
+        'relatedId' => [
+            'name' => 'relatedId',
+            'label' => 'LBL_SYSTEM_NOTIFICATION_RELATED_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+        ],
     ],
     'indexes' => [
-        'id' => 'primary'
+        'id' => 'primary',
+        'relatedTo' => 'index',
+        'relatedId' => 'index',
     ],
     'foriegnKeys' => [],
     'triggers' => [],

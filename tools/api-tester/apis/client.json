@@ -3323,6 +3323,290 @@
       "expects": {
         "status": 404
       }
+    },
+    {
+      "id": "notification-related-issue-create",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "API Tester Notification Issue",
+            "owner": "{userId}",
+            "assignee": "{memberUserId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.notifIssueId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "notification-related-issue-points-at-issue",
+      "method": "GET",
+      "path": "/api/v1/systemnotification",
+      "resource": "systemnotification",
+      "auth": true,
+      "query": {
+        "query": "((Systemnotification.description CONTAINS Issue@{runtime.notifIssueId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesEqual": {
+          "relatedTo": "issue",
+          "relatedId": "{runtime.notifIssueId}"
+        }
+      }
+    },
+    {
+      "id": "notification-related-comment-room-create",
+      "method": "POST",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "conversationroom",
+          "attributes": {
+            "subject": "API Tester Notification Room",
+            "roomType": "discussion",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "issueId": "{issueId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.notifRoomId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "notification-related-comment-create",
+      "method": "POST",
+      "path": "/api/v1/comment",
+      "resource": "comment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "comment",
+          "attributes": {
+            "relatedTo": "conversationrooms",
+            "relatedId": "{runtime.notifRoomId}",
+            "comment": "<p>API Tester Notification Comment</p>"
+          }
+        }
+      },
+      "store": {
+        "runtime.notifCommentId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "notification-related-comment-points-at-issue",
+      "method": "GET",
+      "path": "/api/v1/systemnotification",
+      "resource": "systemnotification",
+      "auth": true,
+      "query": {
+        "query": "((Systemnotification.description CONTAINS Comment@{runtime.notifCommentId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesEqual": {
+          "relatedTo": "issue",
+          "relatedId": "{issueId}"
+        }
+      }
+    },
+    {
+      "id": "notification-related-timelog-create",
+      "method": "POST",
+      "path": "/api/v1/timelog",
+      "resource": "timelog",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "timelog",
+          "attributes": {
+            "issueId": "{issueId}",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "minutes": 5,
+            "hours": 0,
+            "days": 0,
+            "context": "spent",
+            "description": "API Tester notification timelog"
+          }
+        }
+      },
+      "store": {
+        "runtime.notifTimelogId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "notification-related-timelog-points-at-issue",
+      "method": "GET",
+      "path": "/api/v1/systemnotification",
+      "resource": "systemnotification",
+      "auth": true,
+      "query": {
+        "query": "((Systemnotification.description CONTAINS Timelog@{runtime.notifTimelogId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesEqual": {
+          "relatedTo": "issue",
+          "relatedId": "{issueId}"
+        }
+      }
+    },
+    {
+      "id": "notification-related-milestone-create",
+      "method": "POST",
+      "path": "/api/v1/milestone",
+      "resource": "milestone",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "milestone",
+          "attributes": {
+            "name": "API Tester Notification Sprint",
+            "status": "planned",
+            "milestoneType": "sprint",
+            "projectId": "{projectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.notifMilestoneId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "notification-related-milestone-points-at-milestone",
+      "method": "GET",
+      "path": "/api/v1/systemnotification",
+      "resource": "systemnotification",
+      "auth": true,
+      "query": {
+        "query": "((Systemnotification.description CONTAINS Milestone@{runtime.notifMilestoneId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesEqual": {
+          "relatedTo": "milestone",
+          "relatedId": "{runtime.notifMilestoneId}"
+        }
+      }
+    },
+    {
+      "id": "notification-related-membership-user-create",
+      "method": "POST",
+      "path": "/api/v1/user",
+      "resource": "user",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "user",
+          "attributes": {
+            "name": "API Tester Notification Member",
+            "email": "api-tester-notification-member@example.com",
+            "password": "unit-testing",
+            "accountStatus": "active"
+          }
+        }
+      },
+      "store": {
+        "runtime.notifMemberId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "notification-related-membership-create",
+      "method": "POST",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "attributes": {
+            "userId": "{runtime.notifMemberId}",
+            "projectId": "{projectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.notifMembershipId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "notification-related-membership-points-at-project",
+      "method": "GET",
+      "path": "/api/v1/systemnotification",
+      "resource": "systemnotification",
+      "auth": true,
+      "query": {
+        "query": "((Systemnotification.description CONTAINS User@{runtime.notifMemberId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesEqual": {
+          "relatedTo": "project",
+          "relatedId": "{projectId}"
+        }
+      }
     }
   ]
 }
