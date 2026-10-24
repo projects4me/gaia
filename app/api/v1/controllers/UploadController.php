@@ -24,9 +24,12 @@ class UploadController extends RestController
 {
     public $uses = array('Fileattachment');
     /**
-     * Get method is not supported for upload
+     * Streams the uploaded file's bytes.
      *
      * @method getAction
+     * @return \Phalcon\Http\Response
+     * @throws \Gaia\Exception\ResourceNotFound When the upload does not exist.
+     * @throws \Gaia\Exception\FileNotFound     When its file is missing on disk.
      */
     public function getAction()
     {
@@ -41,23 +44,31 @@ class UploadController extends RestController
 
         $model = new Upload();
         $data = $model->read(['id' => $this->id]);
+        $data = $data['baseModel'];
 
-        if (isset($data[0]) and !empty($data[0]->id)) {
-            if (file_exists($data[0]->filePath)) {
-
-                $this->response->setStatusCode(200, "OK");
-                $this->response->setContentType($data[0]->fileType);
-                $this->response->setHeader("Expires", '0');
-                $this->response->setHeader("Content-Type", $data[0]->fileType);
-                $this->response->setHeader("Cache-Control", 'must-revalidate');
-                $this->response->setHeader("Content-Length", $data[0]->fileSize);
-                readfile($data[0]->filePath);
-            } else {
-                throw new \Gaia\Exception\FileNotfound("File not found");
-            }
-        } else {
+        if (!(isset($data[0]) && !empty($data[0]->id))) {
             throw new \Gaia\Exception\ResourceNotFound();
         }
+
+        $upload = $data[0];
+        if (empty($upload->filePath) || !is_file($upload->filePath) || !is_readable($upload->filePath)) {
+            throw new \Gaia\Exception\FileNotFound("File not found");
+        }
+
+        $content = file_get_contents($upload->filePath);
+        if ($content === false) {
+            throw new \Gaia\Exception\FileNotFound("File could not be read");
+        }
+
+        $this->response->setStatusCode(200, "OK");
+        $this->response->setContentType($upload->fileType);
+        $this->response->setHeader("Expires", '0');
+        $this->response->setHeader("Cache-Control", 'must-revalidate');
+        $this->response->setHeader("Content-Length", strlen($content));
+        $this->response->setContent($content);
+
+        $logger->debug("-Gaia.Controllers.Upload->getAction");
+        return $this->response;
     }
     /**
      * This is the list action for uploads, it is used to either get the preview

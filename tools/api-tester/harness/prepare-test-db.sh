@@ -718,16 +718,20 @@ INSERT INTO idea_messages (
   ('api-test-ideamsg-00002', 'api-test-idea-000002', 'Seed message', 'message', FALSE, 'api-test-user-0001', 'API Tester', NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
--- Uploads related to each idea (screens); no file on disk, so only the record is read
+-- Uploads related to each idea (screens). The member's points at a committed PNG so
+-- GET /upload/{id} can stream it; the other project's has no file on disk.
 INSERT INTO uploads (
-  id, name, status, "relatedTo", "relatedId", "fileType", "fileMime", "fileSize",
+  id, name, status, "relatedTo", "relatedId", "fileType", "fileMime", "fileSize", "filePath",
   "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
 ) VALUES
-  ('api-test-upload-idea-01', 'screen-a1.png', 'uploaded', 'idea', 'api-test-idea-000001', 'image/png', 'image/png', '0',
+  ('api-test-upload-idea-01', 'screen-a1.png', 'uploaded', 'idea', 'api-test-idea-000001', 'image/png', 'image/png', '69',
+   '/var/www/html/tools/api-tester/fixtures/files/idea-screen.png',
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
   ('api-test-upload-idea-02', 'screen-b1.png', 'uploaded', 'idea', 'api-test-idea-000002', 'image/png', 'image/png', '0',
+   NULL,
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
-ON CONFLICT (id) DO UPDATE SET "relatedTo" = EXCLUDED."relatedTo", "relatedId" = EXCLUDED."relatedId";
+ON CONFLICT (id) DO UPDATE SET "relatedTo" = EXCLUDED."relatedTo", "relatedId" = EXCLUDED."relatedId",
+  "fileSize" = EXCLUDED."fileSize", "filePath" = EXCLUDED."filePath";
 
 INSERT INTO idea_plans (
   id, "ideaId", version, body, status, deleted,
