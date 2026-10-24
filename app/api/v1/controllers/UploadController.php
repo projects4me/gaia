@@ -51,16 +51,21 @@ class UploadController extends RestController
         }
 
         $upload = $data[0];
-        if (empty($upload->filePath) || !file_exists($upload->filePath)) {
+        if (empty($upload->filePath) || !is_file($upload->filePath) || !is_readable($upload->filePath)) {
             throw new \Gaia\Exception\FileNotFound("File not found");
+        }
+
+        $content = file_get_contents($upload->filePath);
+        if ($content === false) {
+            throw new \Gaia\Exception\FileNotFound("File could not be read");
         }
 
         $this->response->setStatusCode(200, "OK");
         $this->response->setContentType($upload->fileType);
         $this->response->setHeader("Expires", '0');
         $this->response->setHeader("Cache-Control", 'must-revalidate');
-        $this->response->setHeader("Content-Length", filesize($upload->filePath));
-        $this->response->setContent(file_get_contents($upload->filePath));
+        $this->response->setHeader("Content-Length", strlen($content));
+        $this->response->setContent($content);
 
         $logger->debug("-Gaia.Controllers.Upload->getAction");
         return $this->response;
