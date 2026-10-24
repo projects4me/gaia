@@ -1300,6 +1300,15 @@
       "source": "acl-group"
     },
     {
+      "id": "acl-members-idea-upload-file-member-allowed",
+      "method": "GET",
+      "path": "/api/v1/upload/{ideaUploadId}",
+      "resource": "upload",
+      "auth": "aclMembers",
+      "expects": { "status": 200 },
+      "source": "acl-group"
+    },
+    {
       "id": "acl-members-idea-upload-file-non-member-denied",
       "method": "GET",
       "path": "/api/v1/upload/{otherProjectIdeaUploadId}",
