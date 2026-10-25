@@ -168,8 +168,8 @@ $models['Upload'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
     ),
-    // Uploads of an idea (e.g. Agent Nestor's screens) reach the project
-    // through the idea; other relatedTo values are not record-scoped here.
+    // Uploads of an idea, issue or wiki page reach the project through that
+    // record; other relatedTo values are not record-scoped here.
     'acl' => [
         'groups' => ['Project'],
         'groupKeys' => [
@@ -178,6 +178,20 @@ $models['Upload'] = array(
                     [
                         'when' => ['relatedTo' => 'idea'],
                         'relatedModel' => 'Idea',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'projectId',
+                    ],
+                    [
+                        'when' => ['relatedTo' => 'issue'],
+                        'relatedModel' => 'Issue',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'projectId',
+                    ],
+                    [
+                        'when' => ['relatedTo' => 'wiki'],
+                        'relatedModel' => 'Wiki',
                         'localKey' => 'relatedId',
                         'relatedKey' => 'id',
                         'projectField' => 'projectId',
