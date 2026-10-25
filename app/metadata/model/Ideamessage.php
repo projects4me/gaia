@@ -119,7 +119,8 @@ $models['Ideamessage'] = array(
         'dateCreatedBehavior',
         'createdUserBehavior',
         'softDeleteBehavior',
-        'ideaScreensBehavior'
+        'ideaScreensBehavior',
+        'ideaReferencesBehavior'
     ),
     'acl' => [
         'groups' => ['Project'],

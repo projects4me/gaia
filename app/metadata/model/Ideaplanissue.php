@@ -87,7 +87,8 @@ $models['Ideaplanissue'] = array(
     'behaviors' => array(
         'auditBehavior',
         'dateCreatedBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'ideaReferencesBehavior'
     ),
     'acl' => [
         'groups' => ['Project'],
@@ -101,6 +102,16 @@ $models['Ideaplanissue'] = array(
                         'projectField' => 'projectId',
                     ],
                 ],
+            ],
+        ],
+        // The linked issue may be in another project (e.g. an API issue in
+        // the backend project for a frontend idea); the writer must be able
+        // to read that project.
+        'references' => [
+            'issueId' => [
+                'relatedModel' => 'Issue',
+                'relatedKey' => 'id',
+                'projectField' => 'projectId',
             ],
         ],
     ],
