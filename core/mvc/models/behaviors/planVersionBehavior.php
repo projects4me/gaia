@@ -6,6 +6,7 @@
 
 namespace Gaia\MVC\Models\Behaviors;
 
+use Gaia\MVC\Models\Idea;
 use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\BehaviorInterface;
 use Phalcon\Mvc\Model\Behavior;
@@ -14,6 +15,9 @@ use Phalcon\Mvc\Model\Behavior;
  * This behavior numbers the plan versions of an idea: a new plan gets the
  * idea's highest version + 1 (1, 2, 3, ...), and the version never changes
  * afterwards. Deleted plans keep their number, so it is never reused.
+ * The idea row is locked while numbering, so plans created for one idea at
+ * the same moment take turns instead of colliding on (ideaId, version); the
+ * model saves in a transaction that holds the lock until commit.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
@@ -45,6 +49,7 @@ class planVersionBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeValidationOnCreate(&$model)
     {
+        $this->lockIdea($model);
         $model->version = $this->nextVersion($this->getLatestVersion($model));
     }
 
@@ -59,6 +64,7 @@ class planVersionBehavior extends Behavior implements BehaviorInterface
     {
         $snapshot = $model->getSnapshotData();
         if (isset($snapshot['ideaId']) && (string) $snapshot['ideaId'] !== (string) $model->ideaId) {
+            $this->lockIdea($model);
             $model->version = $this->nextVersion($this->getLatestVersion($model));
             return;
         }
@@ -76,6 +82,29 @@ class planVersionBehavior extends Behavior implements BehaviorInterface
     public function nextVersion($latestVersion)
     {
         return ((int) $latestVersion) + 1;
+    }
+
+    /**
+     * Lock the plan's idea row (SELECT ... FOR UPDATE) until the save's
+     * transaction ends, so only one plan of the idea is numbered at a time.
+     * Outside a transaction the lock would end with the SELECT, so the model
+     * must save in one (see Ideaplan::save).
+     *
+     * @param ModelInterface $model
+     * @return void
+     * @throws \LogicException When the save is not in a transaction
+     */
+    protected function lockIdea($model)
+    {
+        if (!$model->getWriteConnection()->isUnderTransaction()) {
+            throw new \LogicException(get_class($model) . ' must save in a transaction to number plan versions');
+        }
+
+        Idea::findFirst([
+            'conditions' => 'id = :ideaId:',
+            'bind' => ['ideaId' => (string) $model->ideaId],
+            'for_update' => true,
+        ]);
     }
 
     /**

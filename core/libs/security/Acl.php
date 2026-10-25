@@ -926,11 +926,20 @@ class Acl
         }
 
         // Path-bound models (e.g. Ideamessage -> Idea): the parent named in the
-        // payload must belong to a project in scope.
-        $pathProjectId = Project::resolveProjectIdForAttributes($binding['binding'], $attributes);
+        // payload must belong to a project in scope. A partial update is read
+        // over the stored record, so sending relatedId alone still resolves
+        // the new parent through the stored relatedTo.
+        $pathAttributes = ($existingId && !empty($binding['binding']['paths']))
+            ? $this->mergeOverStoredRecord($modelName, $attributes, $existingId)
+            : $attributes;
+        $pathProjectId = Project::resolveProjectIdForAttributes($binding['binding'], $pathAttributes);
         if ($pathProjectId !== false) {
             $this->assertProjectIdInScope($pathProjectId);
         }
+
+        // Only references the payload sets are checked; a stored reference was
+        // checked when it was written.
+        $this->assertReferencesInScope($modelName, $attributes);
 
         $field = isset($binding['binding']['field']) ? $binding['binding']['field'] : null;
         if ($field && array_key_exists($field, $attributes)) {
@@ -955,6 +964,82 @@ class Acl
             // create without projectId — model validation handles required fields
             return;
         }
+    }
+
+    /**
+     * Deny when a reference field in the payload points at a record in a
+     * project outside membership scope. References are declared per model as
+     * `'acl' => ['references' => [field => ['relatedModel', 'relatedKey', 'projectField']]]`;
+     * a missing record is left to the model's validation.
+     *
+     * @param  string $modelName
+     * @param  array  $attributes
+     * @return void
+     * @throws \Gaia\Exception\Access
+     */
+    public function assertReferencesInScope($modelName, array $attributes)
+    {
+        $metadata = $this->di->get('metaManager')->getModelMeta($modelName);
+        if (empty($metadata['acl']['references']) || !is_array($metadata['acl']['references'])) {
+            return;
+        }
+
+        foreach ($metadata['acl']['references'] as $field => $reference) {
+            if (!isset($attributes[$field]) || (string) $attributes[$field] === '' || !is_array($reference)) {
+                continue;
+            }
+            $projectId = $this->resolveReferenceProjectId($reference, $attributes[$field]);
+            if ($projectId !== null && $projectId !== '') {
+                $this->assertProjectIdInScope($projectId);
+            }
+        }
+    }
+
+    /**
+     * Project id of the record a reference field points at.
+     *
+     * @param  array $reference
+     * @param  mixed $value
+     * @return string|null
+     */
+    protected function resolveReferenceProjectId(array $reference, $value)
+    {
+        return Project::resolveProjectIdForReference($reference, $value);
+    }
+
+    /**
+     * The stored record's attributes with the payload laid over them, so a
+     * partial update is checked against the values it will end up with.
+     *
+     * @param  string $modelName
+     * @param  array  $attributes
+     * @param  string $existingId
+     * @return array
+     */
+    public function mergeOverStoredRecord($modelName, array $attributes, $existingId)
+    {
+        return array_merge($this->loadStoredAttributes($modelName, $existingId), $attributes);
+    }
+
+    /**
+     * Attributes of a stored record, or an empty array when it is missing.
+     *
+     * @param  string $modelName
+     * @param  string $recordId
+     * @return array
+     */
+    protected function loadStoredAttributes($modelName, $recordId)
+    {
+        $modelClass = '\\Gaia\\MVC\\Models\\' . $modelName;
+        if (!class_exists($modelClass)) {
+            return [];
+        }
+        $record = $modelClass::findFirst([
+            'conditions' => 'id = :id:',
+            'bind' => ['id' => (string) $recordId],
+        ]);
+
+        return $record ? $record->toArray() : [];
     }
 
     /**

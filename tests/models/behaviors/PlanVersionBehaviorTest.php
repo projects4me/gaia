@@ -53,7 +53,7 @@ class PlanVersionBehaviorTest extends TestCase
     public function testCreateAssignsTheIdeasNextVersion()
     {
         $behavior = $this->getMockBuilder(planVersionBehavior::class)
-            ->setMethods(['getLatestVersion'])
+            ->setMethods(['getLatestVersion', 'lockIdea'])
             ->getMock();
         $behavior->method('getLatestVersion')->willReturn('2');
 
@@ -63,5 +63,36 @@ class PlanVersionBehaviorTest extends TestCase
         $behavior->notify('beforeValidationOnCreate', $model);
 
         $this->assertSame(3, $model->version);
+    }
+
+    /**
+     * The idea row is locked before its latest version is read, so plans
+     * created at the same moment are numbered one after the other.
+     *
+     * @return void
+     */
+    public function testCreateLocksTheIdeaBeforeReadingTheLatestVersion()
+    {
+        $calls = [];
+        $behavior = $this->getMockBuilder(planVersionBehavior::class)
+            ->setMethods(['getLatestVersion', 'lockIdea'])
+            ->getMock();
+        $behavior->expects($this->once())->method('lockIdea')
+            ->willReturnCallback(function () use (&$calls) {
+                $calls[] = 'lock';
+            });
+        $behavior->method('getLatestVersion')
+            ->willReturnCallback(function () use (&$calls) {
+                $calls[] = 'latest';
+                return '1';
+            });
+
+        $model = $this->createMock(ModelInterface::class);
+        $model->ideaId = 'idea-1';
+
+        $behavior->notify('beforeValidationOnCreate', $model);
+
+        $this->assertSame(['lock', 'latest'], $calls);
+        $this->assertSame(2, $model->version);
     }
 }

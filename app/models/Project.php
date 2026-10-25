@@ -186,6 +186,24 @@ class Project extends Model
     }
 
     /**
+     * Project id of the record a reference field points at, e.g. the issue
+     * of Ideaplanissue.issueId. Declared per model in metadata as
+     * `'acl' => ['references' => ['issueId' => ['relatedModel' => 'Issue', 'projectField' => 'projectId']]]`.
+     *
+     * @param  array $reference
+     * @param  mixed $value
+     * @return string|null Null when the reference is malformed or the record is missing
+     */
+    public static function resolveProjectIdForReference(array $reference, $value)
+    {
+        if (empty($reference['relatedModel']) || empty($reference['projectField'])) {
+            return null;
+        }
+
+        return self::resolveProjectIdThroughPath($reference, $value);
+    }
+
+    /**
      * First path whose `when` conditions hold for the values. A path without
      * `when` always applies (single-parent models such as Ideamessage -> Idea),
      * so it must be the model's only path or come last.
