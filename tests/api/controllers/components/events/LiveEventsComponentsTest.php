@@ -400,6 +400,40 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertArrayNotHasKey('metadata', $posted[0]['changes']);
     }
 
+    public function testNotificationLiveEventsIncludesRelatedToAndRelatedIdWhenSet()
+    {
+        $posted = array();
+        $publisher = new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        });
+        $events = new NotificationLiveEvents($publisher);
+
+        $events->publishCreated(
+            (object) array('id' => 'snr-1', 'userId' => 'user-42'),
+            (object) array(
+                'id' => 'sn-3',
+                'description' => 'Assigned',
+                'relatedTo' => 'issue',
+                'relatedId' => 'i1',
+            )
+        );
+        $events->publishCreated(
+            (object) array('id' => 'snr-2', 'userId' => 'user-42'),
+            (object) array(
+                'id' => 'sn-4',
+                'description' => 'Legacy',
+                'relatedTo' => null,
+                'relatedId' => null,
+            )
+        );
+
+        $this->assertCount(2, $posted);
+        $this->assertEquals('issue', $posted[0]['changes']['relatedTo']);
+        $this->assertEquals('i1', $posted[0]['changes']['relatedId']);
+        $this->assertArrayNotHasKey('relatedTo', $posted[1]['changes']);
+        $this->assertArrayNotHasKey('relatedId', $posted[1]['changes']);
+    }
+
     public function testIdeaCreatePublishesTitleAndStatus()
     {
         $posted = array();
