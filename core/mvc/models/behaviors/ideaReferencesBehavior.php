@@ -17,6 +17,9 @@ use Phalcon\Mvc\Model\Behavior;
  * This behavior checks the references of a record that belongs to an idea
  * (idea messages, plan issues): its ideaplanId must name a plan of the same
  * idea, and its issueId, when the model has one, must name an existing issue.
+ * An empty reference passes only when the model's metadata declares the
+ * field nullable (an idea message's plan), not when it is required (a plan
+ * issue's plan and issue).
  * The issue may be in another project; whether the user may link it is an
  * ACL decision (see the model's acl references).
  *
@@ -72,7 +75,8 @@ class ideaReferencesBehavior extends Behavior implements BehaviorInterface
     }
 
     /**
-     * Reject an ideaplanId that is not a plan of the record's idea.
+     * Reject an ideaplanId that is not a plan of the record's idea, or an
+     * empty one where the field is required.
      *
      * @param  ModelInterface $model
      * @return bool
@@ -80,7 +84,10 @@ class ideaReferencesBehavior extends Behavior implements BehaviorInterface
     protected function checkPlan($model)
     {
         $planId = isset($model->ideaplanId) ? (string) $model->ideaplanId : '';
-        if ($planId === '' || $this->planBelongsToIdea($planId, (string) $model->ideaId)) {
+        if ($planId === '') {
+            return $this->checkEmpty($model, 'ideaplanId');
+        }
+        if ($this->planBelongsToIdea($planId, (string) $model->ideaId)) {
             return true;
         }
 
@@ -88,8 +95,8 @@ class ideaReferencesBehavior extends Behavior implements BehaviorInterface
     }
 
     /**
-     * Reject an issueId that names no issue. Records without one pass; the
-     * column's own null rule covers models that require it.
+     * Reject an issueId that names no issue, or an empty one where the field
+     * is required.
      *
      * @param  ModelInterface $model
      * @return bool
@@ -97,11 +104,31 @@ class ideaReferencesBehavior extends Behavior implements BehaviorInterface
     protected function checkIssue($model)
     {
         $issueId = isset($model->issueId) ? (string) $model->issueId : '';
-        if ($issueId === '' || $this->issueExists($issueId)) {
+        if ($issueId === '') {
+            return $this->checkEmpty($model, 'issueId');
+        }
+        if ($this->issueExists($issueId)) {
             return true;
         }
 
         return $this->reject($model, 'issueId', 'issueId must be an existing issue.');
+    }
+
+    /**
+     * An empty reference passes unless the model's metadata declares the
+     * field not null. A model without the field (an idea message has no
+     * issueId) passes too.
+     *
+     * @param  ModelInterface $model
+     * @param  string         $field
+     * @return bool
+     */
+    protected function checkEmpty($model, $field)
+    {
+        $metadata = $model->getMetaData();
+        $required = isset($metadata['fields'][$field]['null']) && $metadata['fields'][$field]['null'] === false;
+
+        return $required ? $this->reject($model, $field, $field . ' is required.') : true;
     }
 
     /**

@@ -87,6 +87,49 @@ class IdeaReferencesBehaviorTest extends TestCase
     }
 
     /**
+     * A plan issue must name its plan and its issue: an empty value is
+     * rejected when the field is declared not null.
+     *
+     * @return void
+     */
+    public function testCreateRejectsEmptyRequiredReferences()
+    {
+        $behavior = $this->behavior(true, true);
+        $model = $this->model(
+            ['ideaId' => 'idea-1', 'ideaplanId' => '', 'issueId' => 'issue-1'],
+            [],
+            ['ideaplanId' => ['null' => false], 'issueId' => ['null' => false]]
+        );
+        $model->expects($this->once())->method('appendMessage')
+            ->with($this->callback(function ($message) {
+                return $message->getField() === 'ideaplanId';
+            }));
+
+        $this->assertFalse($behavior->notify('beforeValidationOnCreate', $model));
+    }
+
+    /**
+     * An empty required issueId is rejected on issueId.
+     *
+     * @return void
+     */
+    public function testCreateRejectsAnEmptyRequiredIssue()
+    {
+        $behavior = $this->behavior(true, true);
+        $model = $this->model(
+            ['ideaId' => 'idea-1', 'ideaplanId' => 'plan-1', 'issueId' => ''],
+            [],
+            ['ideaplanId' => ['null' => false], 'issueId' => ['null' => false]]
+        );
+        $model->expects($this->once())->method('appendMessage')
+            ->with($this->callback(function ($message) {
+                return $message->getField() === 'issueId';
+            }));
+
+        $this->assertFalse($behavior->notify('beforeValidationOnCreate', $model));
+    }
+
+    /**
      * An update that keeps the references does not check them again.
      *
      * @return void
@@ -139,14 +182,16 @@ class IdeaReferencesBehaviorTest extends TestCase
     /**
      * @param  array $values
      * @param  array $snapshot
+     * @param  array $fields   field metadata, e.g. ['issueId' => ['null' => false]]
      * @return ModelInterface
      */
-    private function model(array $values, array $snapshot = [])
+    private function model(array $values, array $snapshot = [], array $fields = [])
     {
         $model = $this->getMockBuilder(ModelInterface::class)
-            ->addMethods(['getSnapshotData'])
+            ->addMethods(['getSnapshotData', 'getMetaData'])
             ->getMockForAbstractClass();
         $model->method('getSnapshotData')->willReturn($snapshot);
+        $model->method('getMetaData')->willReturn(['fields' => $fields]);
         foreach ($values as $field => $value) {
             $model->{$field} = $value;
         }
