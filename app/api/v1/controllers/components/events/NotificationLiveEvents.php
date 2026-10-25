@@ -31,6 +31,8 @@ class NotificationLiveEvents
         'createdUser',
         'createdUserName',
         'dateCreated',
+        'relatedTo',
+        'relatedId',
     );
 
     /**
