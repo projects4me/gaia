@@ -729,6 +729,12 @@ INSERT INTO uploads (
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
   ('api-test-upload-idea-02', 'screen-b1.png', 'uploaded', 'idea', 'api-test-idea-000002', 'image/png', 'image/png', '0',
    NULL,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-upload-issue-01', 'shot-i1.png', 'uploaded', 'issue', 'api-test-issue-000001', 'image/png', 'image/png', '69',
+   '/var/www/html/tools/api-tester/fixtures/files/idea-screen.png',
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-upload-issue-02', 'shot-i3.png', 'uploaded', 'issue', 'api-test-issue-000003', 'image/png', 'image/png', '0',
+   NULL,
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET "relatedTo" = EXCLUDED."relatedTo", "relatedId" = EXCLUDED."relatedId",
   "fileSize" = EXCLUDED."fileSize", "filePath" = EXCLUDED."filePath";
@@ -951,6 +957,8 @@ data = {
     "otherProjectIdeaplanissueId": "api-test-ideaplanis-02",
     "ideaUploadId": "api-test-upload-idea-01",
     "otherProjectIdeaUploadId": "api-test-upload-idea-02",
+    "issueUploadId": "api-test-upload-issue-01",
+    "otherProjectIssueUploadId": "api-test-upload-issue-02",
     "activityId": "api-test-activity-0001",
     "timelogId": "api-test-timelog-00001",
     "dashboardId": "api-test-dashboard-001",

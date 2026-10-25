@@ -62,6 +62,8 @@
     "otherProjectIdeaplanissueId": "api-test-ideaplanis-02",
     "ideaUploadId": "api-test-upload-idea-01",
     "otherProjectIdeaUploadId": "api-test-upload-idea-02",
+    "issueUploadId": "api-test-upload-issue-01",
+    "otherProjectIssueUploadId": "api-test-upload-issue-02",
     "activityId": "api-test-activity-0001",
     "timelogId": "api-test-timelog-00001",
     "dashboardId": "api-test-dashboard-001",
