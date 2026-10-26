@@ -110,7 +110,8 @@ class IssuestatusController extends RestController
         $attributes = $this->requestAttributes();
         $statusId = isset($attributes['id']) ? $attributes['id'] : $this->requestedId();
 
-        return $this->rejectInvalidColor()
+        return $this->rejectConflictingIds($attributes)
+            ?: $this->rejectInvalidColor()
             ?: $this->rejectRename($statusId, $attributes)
             ?: $this->rejectInvalidTranslations(false)
             ?: $this->assertSharedLabelWrite($this->statusValue($statusId))
@@ -325,6 +326,26 @@ class IssuestatusController extends RestController
         }
 
         return $resource;
+    }
+
+    /**
+     * Return a 422 response when `attributes.id` and `data.id` name different
+     * statuses: RestController::patchAction saves `data.id`, so the checks
+     * here must run on that same status.
+     *
+     * @param  array $attributes
+     * @return \Phalcon\Http\Response|null
+     */
+    protected function rejectConflictingIds(array $attributes)
+    {
+        $body = $this->request->getJsonRawBody(true);
+        if (!isset($attributes['id']) || empty($body['data']['id'])) {
+            return null;
+        }
+
+        return (string) $attributes['id'] === (string) $body['data']['id']
+            ? null
+            : $this->unprocessable('attributes.id must match data.id.');
     }
 
     /**

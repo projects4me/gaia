@@ -2069,6 +2069,27 @@
       }
     },
     {
+      "id": "issuestatus-patch-conflicting-ids-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.settingsStatusId}",
+          "attributes": {
+            "id": "{issuestatusId}",
+            "description": "Checked against one status, saved to another"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
       "id": "issuestatus-reorder-patch-sort-order",
       "method": "PATCH",
       "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",

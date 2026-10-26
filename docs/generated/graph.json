@@ -2403,6 +2403,12 @@
       "attributes": {}
     },
     {
+      "id": "assertion:jsonPathAbsent",
+      "type": "assertion",
+      "key": "jsonPathAbsent",
+      "attributes": {}
+    },
+    {
       "id": "assertion:mail.bodyContains",
       "type": "assertion",
       "key": "mail.bodyContains",
@@ -4362,6 +4368,24 @@
         "source": "acl-setting",
         "placeholders": [
           "issuestatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-system-status-labels-via-project-copy-denied-without-setting",
+      "type": "case",
+      "key": "acl/acl-system-status-labels-via-project-copy-denied-without-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/issuestatus",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": "acl-setting",
+        "placeholders": [
+          "projectId"
         ],
         "stores": []
       }
@@ -7506,6 +7530,42 @@
       }
     },
     {
+      "id": "case:client/delete-issuestatus-project-copy-of-system-value",
+      "type": "case",
+      "key": "client/delete-issuestatus-project-copy-of-system-value",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/issuestatus/{runtime.sharedValueStatusId}",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.sharedValueStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/delete-issuestatus-with-labels",
+      "type": "case",
+      "key": "client/delete-issuestatus-with-labels",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/issuestatus/{runtime.labelStatusId}",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.labelStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/delete-issuetype-api-v1-issuetype-runtime-id",
       "type": "case",
       "key": "client/delete-issuetype-api-v1-issuetype-runtime-id",
@@ -7916,6 +7976,42 @@
       }
     },
     {
+      "id": "case:client/get-issuestatus-returns-labels",
+      "type": "case",
+      "key": "client/get-issuestatus-returns-labels",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issuestatus/{runtime.labelStatusId}",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.labelStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/get-issuestatus-value-unchanged-after-rename",
+      "type": "case",
+      "key": "client/get-issuestatus-value-unchanged-after-rename",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issuestatus/{runtime.labelStatusId}",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.labelStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/get-issuetype-api-v1-issuetype",
       "type": "case",
       "key": "client/get-issuetype-api-v1-issuetype",
@@ -8294,6 +8390,86 @@
       }
     },
     {
+      "id": "case:client/get-translations-en-us-deleted-status-label-gone",
+      "type": "case",
+      "key": "client/get-translations-en-us-deleted-status-label-gone",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/translations/en-us",
+        "resource": "translation",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/get-translations-en-us-has-created-status-label",
+      "type": "case",
+      "key": "client/get-translations-en-us-has-created-status-label",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/translations/en-us",
+        "resource": "translation",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/get-translations-en-us-has-updated-status-label",
+      "type": "case",
+      "key": "client/get-translations-en-us-has-updated-status-label",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/translations/en-us",
+        "resource": "translation",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/get-translations-en-us-rejected-creates-saved-no-label",
+      "type": "case",
+      "key": "client/get-translations-en-us-rejected-creates-saved-no-label",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/translations/en-us",
+        "resource": "translation",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/get-translations-en-us-shared-label-kept",
+      "type": "case",
+      "key": "client/get-translations-en-us-shared-label-kept",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/translations/en-us",
+        "resource": "translation",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/get-translations-en-us-without-token",
       "type": "case",
       "key": "client/get-translations-en-us-without-token",
@@ -8622,61 +8798,6 @@
       }
     },
     {
-      "id": "case:client/issue-rename-follows-30-char-name",
-      "type": "case",
-      "key": "client/issue-rename-follows-30-char-name",
-      "attributes": {
-        "catalog": "client",
-        "file": "tools/api-tester/apis/client.json",
-        "method": "GET",
-        "path": "/api/v1/issue/{runtime.renameSystemIssueId}",
-        "resource": "issue",
-        "enabled": true,
-        "source": null,
-        "placeholders": [
-          "runtime.renameSystemIssueId"
-        ],
-        "stores": []
-      }
-    },
-    {
-      "id": "case:client/issue-rename-follows-project-status",
-      "type": "case",
-      "key": "client/issue-rename-follows-project-status",
-      "attributes": {
-        "catalog": "client",
-        "file": "tools/api-tester/apis/client.json",
-        "method": "GET",
-        "path": "/api/v1/issue/{runtime.renameProjectIssueId}",
-        "resource": "issue",
-        "enabled": true,
-        "source": null,
-        "placeholders": [
-          "runtime.renameProjectIssueId"
-        ],
-        "stores": []
-      }
-    },
-    {
-      "id": "case:client/issue-rename-follows-system-status",
-      "type": "case",
-      "key": "client/issue-rename-follows-system-status",
-      "attributes": {
-        "catalog": "client",
-        "file": "tools/api-tester/apis/client.json",
-        "method": "GET",
-        "path": "/api/v1/issue/{runtime.renameSystemIssueId}",
-        "resource": "issue",
-        "enabled": true,
-        "source": null,
-        "placeholders": [
-          "runtime.renameSystemIssueId",
-          "runtime.renameSystemStatusId"
-        ],
-        "stores": []
-      }
-    },
-    {
       "id": "case:client/issue-rename-system-leaves-project-copy-issue",
       "type": "case",
       "key": "client/issue-rename-system-leaves-project-copy-issue",
@@ -8690,6 +8811,43 @@
         "source": null,
         "placeholders": [
           "runtime.renameProjectIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-status-unchanged-after-rejected-project-rename",
+      "type": "case",
+      "key": "client/issue-status-unchanged-after-rejected-project-rename",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{runtime.renameProjectIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.renameProjectIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-status-unchanged-after-rejected-system-rename",
+      "type": "case",
+      "key": "client/issue-status-unchanged-after-rejected-system-rename",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{runtime.renameSystemIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.renameSystemIssueId",
+          "runtime.renameSystemStatusId"
         ],
         "stores": []
       }
@@ -8883,6 +9041,25 @@
       }
     },
     {
+      "id": "case:client/issuestatus-patch-conflicting-ids-rejected",
+      "type": "case",
+      "key": "client/issuestatus-patch-conflicting-ids-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "runtime.settingsStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/issuestatus-rename-create-project-copy",
       "type": "case",
       "key": "client/issuestatus-rename-create-project-copy",
@@ -8921,9 +9098,9 @@
       }
     },
     {
-      "id": "case:client/issuestatus-rename-project-status",
+      "id": "case:client/issuestatus-rename-project-status-rejected",
       "type": "case",
-      "key": "client/issuestatus-rename-project-status",
+      "key": "client/issuestatus-rename-project-status-rejected",
       "attributes": {
         "catalog": "client",
         "file": "tools/api-tester/apis/client.json",
@@ -8957,27 +9134,9 @@
       }
     },
     {
-      "id": "case:client/issuestatus-rename-system-status",
+      "id": "case:client/issuestatus-rename-system-status-rejected",
       "type": "case",
-      "key": "client/issuestatus-rename-system-status",
-      "attributes": {
-        "catalog": "client",
-        "file": "tools/api-tester/apis/client.json",
-        "method": "PATCH",
-        "path": "/api/v1/issuestatus/{runtime.renameSystemStatusId}",
-        "resource": "issuestatus",
-        "enabled": true,
-        "source": null,
-        "placeholders": [
-          "runtime.renameSystemStatusId"
-        ],
-        "stores": []
-      }
-    },
-    {
-      "id": "case:client/issuestatus-rename-to-30-chars",
-      "type": "case",
-      "key": "client/issuestatus-rename-to-30-chars",
+      "key": "client/issuestatus-rename-system-status-rejected",
       "attributes": {
         "catalog": "client",
         "file": "tools/api-tester/apis/client.json",
@@ -9203,6 +9362,22 @@
         "placeholders": [
           "runtime.projectCopyTypeId"
         ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/list-issuestatus-rejected-creates-saved-nothing",
+      "type": "case",
+      "key": "client/list-issuestatus-rejected-creates-saved-nothing",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issuestatus",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
         "stores": []
       }
     },
@@ -9687,6 +9862,78 @@
       }
     },
     {
+      "id": "case:client/patch-issuestatus-collection-labels-rejected",
+      "type": "case",
+      "key": "client/patch-issuestatus-collection-labels-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuestatus",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/patch-issuestatus-collection-rename-rejected",
+      "type": "case",
+      "key": "client/patch-issuestatus-collection-rename-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuestatus",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.labelStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/patch-issuestatus-rename-rejected",
+      "type": "case",
+      "key": "client/patch-issuestatus-rename-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuestatus/{runtime.labelStatusId}",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.labelStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/patch-issuestatus-updates-labels",
+      "type": "case",
+      "key": "client/patch-issuestatus-updates-labels",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuestatus/{runtime.labelStatusId}",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.labelStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/patch-issuetype-api-v1-issuetype-id",
       "type": "case",
       "key": "client/patch-issuetype-api-v1-issuetype-id",
@@ -9946,6 +10193,100 @@
         "source": null,
         "placeholders": [
           "params.issue_number"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/post-issuestatus-invalid-value-rejected",
+      "type": "case",
+      "key": "client/post-issuestatus-invalid-value-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuestatus",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/post-issuestatus-project-copy-of-system-value",
+      "type": "case",
+      "key": "client/post-issuestatus-project-copy-of-system-value",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuestatus",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": [
+          "runtime.sharedValueStatusId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/post-issuestatus-unsupported-locale-rejected",
+      "type": "case",
+      "key": "client/post-issuestatus-unsupported-locale-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuestatus",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/post-issuestatus-with-labels",
+      "type": "case",
+      "key": "client/post-issuestatus-with-labels",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuestatus",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": [
+          "runtime.labelStatusId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/post-issuestatus-without-en-us-label-rejected",
+      "type": "case",
+      "key": "client/post-issuestatus-without-en-us-label-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuestatus",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
         ],
         "stores": []
       }
@@ -28855,6 +29196,41 @@
       "to": "fixture:issuestatusId"
     },
     {
+      "from": "case:acl/acl-system-status-labels-via-project-copy-denied-without-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-system-status-labels-via-project-copy-denied-without-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-system-status-labels-via-project-copy-denied-without-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-system-status-labels-via-project-copy-denied-without-setting",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:acl/acl-system-status-labels-via-project-copy-denied-without-setting",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuestatus"
+    },
+    {
+      "from": "case:acl/acl-system-status-labels-via-project-copy-denied-without-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-system-status-labels-via-project-copy-denied-without-setting",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
       "from": "case:acl/acl-system-status-patch-collection-allowed-with-setting",
       "type": "asserts",
       "to": "assertion:shape"
@@ -34305,6 +34681,66 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/delete-issuestatus-project-copy-of-system-value",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/delete-issuestatus-project-copy-of-system-value",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/delete-issuestatus-project-copy-of-system-value",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/delete-issuestatus-project-copy-of-system-value",
+      "type": "depends_on",
+      "to": "case:client/post-issuestatus-project-copy-of-system-value"
+    },
+    {
+      "from": "case:client/delete-issuestatus-project-copy-of-system-value",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/issuestatus/{id}"
+    },
+    {
+      "from": "case:client/delete-issuestatus-project-copy-of-system-value",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/delete-issuestatus-with-labels",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/delete-issuestatus-with-labels",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/delete-issuestatus-with-labels",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/delete-issuestatus-with-labels",
+      "type": "depends_on",
+      "to": "case:client/post-issuestatus-with-labels"
+    },
+    {
+      "from": "case:client/delete-issuestatus-with-labels",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/issuestatus/{id}"
+    },
+    {
+      "from": "case:client/delete-issuestatus-with-labels",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/delete-issuetype-api-v1-issuetype-runtime-id",
       "type": "asserts",
       "to": "assertion:status"
@@ -34963,6 +35399,76 @@
       "from": "case:client/get-issuestatus-api-v1-issuestatus-id",
       "type": "uses_fixture",
       "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/get-issuestatus-returns-labels",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/get-issuestatus-returns-labels",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-issuestatus-returns-labels",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-issuestatus-returns-labels",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/get-issuestatus-returns-labels",
+      "type": "depends_on",
+      "to": "case:client/post-issuestatus-with-labels"
+    },
+    {
+      "from": "case:client/get-issuestatus-returns-labels",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuestatus/{id}"
+    },
+    {
+      "from": "case:client/get-issuestatus-returns-labels",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/get-issuestatus-value-unchanged-after-rename",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/get-issuestatus-value-unchanged-after-rename",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-issuestatus-value-unchanged-after-rename",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-issuestatus-value-unchanged-after-rename",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/get-issuestatus-value-unchanged-after-rename",
+      "type": "depends_on",
+      "to": "case:client/post-issuestatus-with-labels"
+    },
+    {
+      "from": "case:client/get-issuestatus-value-unchanged-after-rename",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuestatus/{id}"
+    },
+    {
+      "from": "case:client/get-issuestatus-value-unchanged-after-rename",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/get-issuetype-api-v1-issuetype",
@@ -35625,6 +36131,156 @@
       "to": "profile:anonymous"
     },
     {
+      "from": "case:client/get-translations-en-us-deleted-status-label-gone",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/get-translations-en-us-deleted-status-label-gone",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-translations-en-us-deleted-status-label-gone",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-translations-en-us-deleted-status-label-gone",
+      "type": "covers",
+      "to": "controller:translation"
+    },
+    {
+      "from": "case:client/get-translations-en-us-deleted-status-label-gone",
+      "type": "exercises",
+      "to": "route:ANY /translations/{locale}"
+    },
+    {
+      "from": "case:client/get-translations-en-us-deleted-status-label-gone",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/get-translations-en-us-has-created-status-label",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/get-translations-en-us-has-created-status-label",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-translations-en-us-has-created-status-label",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-translations-en-us-has-created-status-label",
+      "type": "covers",
+      "to": "controller:translation"
+    },
+    {
+      "from": "case:client/get-translations-en-us-has-created-status-label",
+      "type": "exercises",
+      "to": "route:ANY /translations/{locale}"
+    },
+    {
+      "from": "case:client/get-translations-en-us-has-created-status-label",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/get-translations-en-us-has-updated-status-label",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/get-translations-en-us-has-updated-status-label",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-translations-en-us-has-updated-status-label",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-translations-en-us-has-updated-status-label",
+      "type": "covers",
+      "to": "controller:translation"
+    },
+    {
+      "from": "case:client/get-translations-en-us-has-updated-status-label",
+      "type": "exercises",
+      "to": "route:ANY /translations/{locale}"
+    },
+    {
+      "from": "case:client/get-translations-en-us-has-updated-status-label",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/get-translations-en-us-rejected-creates-saved-no-label",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/get-translations-en-us-rejected-creates-saved-no-label",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-translations-en-us-rejected-creates-saved-no-label",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-translations-en-us-rejected-creates-saved-no-label",
+      "type": "covers",
+      "to": "controller:translation"
+    },
+    {
+      "from": "case:client/get-translations-en-us-rejected-creates-saved-no-label",
+      "type": "exercises",
+      "to": "route:ANY /translations/{locale}"
+    },
+    {
+      "from": "case:client/get-translations-en-us-rejected-creates-saved-no-label",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/get-translations-en-us-shared-label-kept",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/get-translations-en-us-shared-label-kept",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-translations-en-us-shared-label-kept",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-translations-en-us-shared-label-kept",
+      "type": "covers",
+      "to": "controller:translation"
+    },
+    {
+      "from": "case:client/get-translations-en-us-shared-label-kept",
+      "type": "exercises",
+      "to": "route:ANY /translations/{locale}"
+    },
+    {
+      "from": "case:client/get-translations-en-us-shared-label-kept",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
       "from": "case:client/get-translations-en-us-without-token",
       "type": "asserts",
       "to": "assertion:shape"
@@ -36220,147 +36876,112 @@
       "to": "fixture:userId"
     },
     {
-      "from": "case:client/issue-rename-follows-30-char-name",
+      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
       "type": "asserts",
       "to": "assertion:attributesEqual"
     },
     {
-      "from": "case:client/issue-rename-follows-30-char-name",
+      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
       "type": "asserts",
       "to": "assertion:shape"
     },
     {
-      "from": "case:client/issue-rename-follows-30-char-name",
+      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
       "type": "asserts",
       "to": "assertion:status"
     },
     {
-      "from": "case:client/issue-rename-follows-30-char-name",
+      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
       "type": "covers",
       "to": "controller:issue"
     },
     {
-      "from": "case:client/issue-rename-follows-30-char-name",
-      "type": "depends_on",
-      "to": "case:client/issue-rename-create-on-system-status"
-    },
-    {
-      "from": "case:client/issue-rename-follows-30-char-name",
-      "type": "exercises",
-      "to": "route:GET /api/v1/issue/{id}"
-    },
-    {
-      "from": "case:client/issue-rename-follows-30-char-name",
-      "type": "runs_as",
-      "to": "profile:default"
-    },
-    {
-      "from": "case:client/issue-rename-follows-project-status",
-      "type": "asserts",
-      "to": "assertion:attributesEqual"
-    },
-    {
-      "from": "case:client/issue-rename-follows-project-status",
-      "type": "asserts",
-      "to": "assertion:shape"
-    },
-    {
-      "from": "case:client/issue-rename-follows-project-status",
-      "type": "asserts",
-      "to": "assertion:status"
-    },
-    {
-      "from": "case:client/issue-rename-follows-project-status",
-      "type": "covers",
-      "to": "controller:issue"
-    },
-    {
-      "from": "case:client/issue-rename-follows-project-status",
+      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
       "type": "depends_on",
       "to": "case:client/issue-rename-create-on-project-copy"
     },
     {
-      "from": "case:client/issue-rename-follows-project-status",
+      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
       "type": "exercises",
       "to": "route:GET /api/v1/issue/{id}"
     },
     {
-      "from": "case:client/issue-rename-follows-project-status",
+      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
       "type": "runs_as",
       "to": "profile:default"
     },
     {
-      "from": "case:client/issue-rename-follows-system-status",
+      "from": "case:client/issue-status-unchanged-after-rejected-project-rename",
       "type": "asserts",
       "to": "assertion:attributesEqual"
     },
     {
-      "from": "case:client/issue-rename-follows-system-status",
+      "from": "case:client/issue-status-unchanged-after-rejected-project-rename",
       "type": "asserts",
       "to": "assertion:shape"
     },
     {
-      "from": "case:client/issue-rename-follows-system-status",
+      "from": "case:client/issue-status-unchanged-after-rejected-project-rename",
       "type": "asserts",
       "to": "assertion:status"
     },
     {
-      "from": "case:client/issue-rename-follows-system-status",
+      "from": "case:client/issue-status-unchanged-after-rejected-project-rename",
       "type": "covers",
       "to": "controller:issue"
     },
     {
-      "from": "case:client/issue-rename-follows-system-status",
+      "from": "case:client/issue-status-unchanged-after-rejected-project-rename",
+      "type": "depends_on",
+      "to": "case:client/issue-rename-create-on-project-copy"
+    },
+    {
+      "from": "case:client/issue-status-unchanged-after-rejected-project-rename",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/issue-status-unchanged-after-rejected-project-rename",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-status-unchanged-after-rejected-system-rename",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/issue-status-unchanged-after-rejected-system-rename",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-status-unchanged-after-rejected-system-rename",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-status-unchanged-after-rejected-system-rename",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-status-unchanged-after-rejected-system-rename",
       "type": "depends_on",
       "to": "case:client/issue-rename-create-on-system-status"
     },
     {
-      "from": "case:client/issue-rename-follows-system-status",
+      "from": "case:client/issue-status-unchanged-after-rejected-system-rename",
       "type": "depends_on",
       "to": "case:client/issuestatus-rename-create-system-status"
     },
     {
-      "from": "case:client/issue-rename-follows-system-status",
+      "from": "case:client/issue-status-unchanged-after-rejected-system-rename",
       "type": "exercises",
       "to": "route:GET /api/v1/issue/{id}"
     },
     {
-      "from": "case:client/issue-rename-follows-system-status",
-      "type": "runs_as",
-      "to": "profile:default"
-    },
-    {
-      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
-      "type": "asserts",
-      "to": "assertion:attributesEqual"
-    },
-    {
-      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
-      "type": "asserts",
-      "to": "assertion:shape"
-    },
-    {
-      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
-      "type": "asserts",
-      "to": "assertion:status"
-    },
-    {
-      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
-      "type": "covers",
-      "to": "controller:issue"
-    },
-    {
-      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
-      "type": "depends_on",
-      "to": "case:client/issue-rename-create-on-project-copy"
-    },
-    {
-      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
-      "type": "exercises",
-      "to": "route:GET /api/v1/issue/{id}"
-    },
-    {
-      "from": "case:client/issue-rename-system-leaves-project-copy-issue",
+      "from": "case:client/issue-status-unchanged-after-rejected-system-rename",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -36695,6 +37316,41 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/issuestatus-patch-conflicting-ids-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuestatus-patch-conflicting-ids-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuestatus-patch-conflicting-ids-rejected",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/issuestatus-patch-conflicting-ids-rejected",
+      "type": "depends_on",
+      "to": "case:client/issuestatus-create-with-color-and-order"
+    },
+    {
+      "from": "case:client/issuestatus-patch-conflicting-ids-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuestatus/{id}"
+    },
+    {
+      "from": "case:client/issuestatus-patch-conflicting-ids-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuestatus-patch-conflicting-ids-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
       "from": "case:client/issuestatus-rename-create-project-copy",
       "type": "asserts",
       "to": "assertion:shape"
@@ -36750,37 +37406,32 @@
       "to": "profile:default"
     },
     {
-      "from": "case:client/issuestatus-rename-project-status",
-      "type": "asserts",
-      "to": "assertion:attributesEqual"
-    },
-    {
-      "from": "case:client/issuestatus-rename-project-status",
+      "from": "case:client/issuestatus-rename-project-status-rejected",
       "type": "asserts",
       "to": "assertion:shape"
     },
     {
-      "from": "case:client/issuestatus-rename-project-status",
+      "from": "case:client/issuestatus-rename-project-status-rejected",
       "type": "asserts",
       "to": "assertion:status"
     },
     {
-      "from": "case:client/issuestatus-rename-project-status",
+      "from": "case:client/issuestatus-rename-project-status-rejected",
       "type": "covers",
       "to": "controller:issuestatus"
     },
     {
-      "from": "case:client/issuestatus-rename-project-status",
+      "from": "case:client/issuestatus-rename-project-status-rejected",
       "type": "depends_on",
       "to": "case:client/issuestatus-rename-create-project-copy"
     },
     {
-      "from": "case:client/issuestatus-rename-project-status",
+      "from": "case:client/issuestatus-rename-project-status-rejected",
       "type": "exercises",
       "to": "route:PATCH /api/v1/issuestatus/{id}"
     },
     {
-      "from": "case:client/issuestatus-rename-project-status",
+      "from": "case:client/issuestatus-rename-project-status-rejected",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -36820,72 +37471,32 @@
       "to": "profile:default"
     },
     {
-      "from": "case:client/issuestatus-rename-system-status",
-      "type": "asserts",
-      "to": "assertion:attributesEqual"
-    },
-    {
-      "from": "case:client/issuestatus-rename-system-status",
+      "from": "case:client/issuestatus-rename-system-status-rejected",
       "type": "asserts",
       "to": "assertion:shape"
     },
     {
-      "from": "case:client/issuestatus-rename-system-status",
+      "from": "case:client/issuestatus-rename-system-status-rejected",
       "type": "asserts",
       "to": "assertion:status"
     },
     {
-      "from": "case:client/issuestatus-rename-system-status",
+      "from": "case:client/issuestatus-rename-system-status-rejected",
       "type": "covers",
       "to": "controller:issuestatus"
     },
     {
-      "from": "case:client/issuestatus-rename-system-status",
+      "from": "case:client/issuestatus-rename-system-status-rejected",
       "type": "depends_on",
       "to": "case:client/issuestatus-rename-create-system-status"
     },
     {
-      "from": "case:client/issuestatus-rename-system-status",
+      "from": "case:client/issuestatus-rename-system-status-rejected",
       "type": "exercises",
       "to": "route:PATCH /api/v1/issuestatus/{id}"
     },
     {
-      "from": "case:client/issuestatus-rename-system-status",
-      "type": "runs_as",
-      "to": "profile:default"
-    },
-    {
-      "from": "case:client/issuestatus-rename-to-30-chars",
-      "type": "asserts",
-      "to": "assertion:attributesEqual"
-    },
-    {
-      "from": "case:client/issuestatus-rename-to-30-chars",
-      "type": "asserts",
-      "to": "assertion:shape"
-    },
-    {
-      "from": "case:client/issuestatus-rename-to-30-chars",
-      "type": "asserts",
-      "to": "assertion:status"
-    },
-    {
-      "from": "case:client/issuestatus-rename-to-30-chars",
-      "type": "covers",
-      "to": "controller:issuestatus"
-    },
-    {
-      "from": "case:client/issuestatus-rename-to-30-chars",
-      "type": "depends_on",
-      "to": "case:client/issuestatus-rename-create-system-status"
-    },
-    {
-      "from": "case:client/issuestatus-rename-to-30-chars",
-      "type": "exercises",
-      "to": "route:PATCH /api/v1/issuestatus/{id}"
-    },
-    {
-      "from": "case:client/issuestatus-rename-to-30-chars",
+      "from": "case:client/issuestatus-rename-system-status-rejected",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -37266,6 +37877,36 @@
     },
     {
       "from": "case:client/issuetype-project-copy-unchanged-after-default-rename",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/list-issuestatus-rejected-creates-saved-nothing",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/list-issuestatus-rejected-creates-saved-nothing",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/list-issuestatus-rejected-creates-saved-nothing",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/list-issuestatus-rejected-creates-saved-nothing",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/list-issuestatus-rejected-creates-saved-nothing",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuestatus"
+    },
+    {
+      "from": "case:client/list-issuestatus-rejected-creates-saved-nothing",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -38145,6 +38786,131 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/patch-issuestatus-collection-labels-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/patch-issuestatus-collection-labels-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/patch-issuestatus-collection-labels-rejected",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/patch-issuestatus-collection-labels-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuestatus"
+    },
+    {
+      "from": "case:client/patch-issuestatus-collection-labels-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/patch-issuestatus-collection-labels-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/patch-issuestatus-collection-rename-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/patch-issuestatus-collection-rename-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/patch-issuestatus-collection-rename-rejected",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/patch-issuestatus-collection-rename-rejected",
+      "type": "depends_on",
+      "to": "case:client/post-issuestatus-with-labels"
+    },
+    {
+      "from": "case:client/patch-issuestatus-collection-rename-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuestatus"
+    },
+    {
+      "from": "case:client/patch-issuestatus-collection-rename-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/patch-issuestatus-rename-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/patch-issuestatus-rename-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/patch-issuestatus-rename-rejected",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/patch-issuestatus-rename-rejected",
+      "type": "depends_on",
+      "to": "case:client/post-issuestatus-with-labels"
+    },
+    {
+      "from": "case:client/patch-issuestatus-rename-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuestatus/{id}"
+    },
+    {
+      "from": "case:client/patch-issuestatus-rename-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/patch-issuestatus-updates-labels",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/patch-issuestatus-updates-labels",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/patch-issuestatus-updates-labels",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/patch-issuestatus-updates-labels",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/patch-issuestatus-updates-labels",
+      "type": "depends_on",
+      "to": "case:client/post-issuestatus-with-labels"
+    },
+    {
+      "from": "case:client/patch-issuestatus-updates-labels",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuestatus/{id}"
+    },
+    {
+      "from": "case:client/patch-issuestatus-updates-labels",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/patch-issuetype-api-v1-issuetype-id",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -38673,6 +39439,166 @@
       "from": "case:client/post-issueplanning-api-v1-issueplanning",
       "type": "uses_fixture",
       "to": "fixture:params.issue_number"
+    },
+    {
+      "from": "case:client/post-issuestatus-invalid-value-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/post-issuestatus-invalid-value-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/post-issuestatus-invalid-value-rejected",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/post-issuestatus-invalid-value-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuestatus"
+    },
+    {
+      "from": "case:client/post-issuestatus-invalid-value-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/post-issuestatus-invalid-value-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/post-issuestatus-project-copy-of-system-value",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/post-issuestatus-project-copy-of-system-value",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/post-issuestatus-project-copy-of-system-value",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/post-issuestatus-project-copy-of-system-value",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/post-issuestatus-project-copy-of-system-value",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuestatus"
+    },
+    {
+      "from": "case:client/post-issuestatus-project-copy-of-system-value",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/post-issuestatus-project-copy-of-system-value",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/post-issuestatus-unsupported-locale-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/post-issuestatus-unsupported-locale-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/post-issuestatus-unsupported-locale-rejected",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/post-issuestatus-unsupported-locale-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuestatus"
+    },
+    {
+      "from": "case:client/post-issuestatus-unsupported-locale-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/post-issuestatus-unsupported-locale-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/post-issuestatus-with-labels",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/post-issuestatus-with-labels",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/post-issuestatus-with-labels",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/post-issuestatus-with-labels",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/post-issuestatus-with-labels",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuestatus"
+    },
+    {
+      "from": "case:client/post-issuestatus-with-labels",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/post-issuestatus-with-labels",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/post-issuestatus-without-en-us-label-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/post-issuestatus-without-en-us-label-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/post-issuestatus-without-en-us-label-rejected",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/post-issuestatus-without-en-us-label-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuestatus"
+    },
+    {
+      "from": "case:client/post-issuestatus-without-en-us-label-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/post-issuestatus-without-en-us-label-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
     },
     {
       "from": "case:client/post-issuetype-api-v1-issuetype",
