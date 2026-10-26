@@ -108,6 +108,47 @@ class ScaffoldLiveEventsTest extends TestCase
         $this->assertSame([], (new LiveEventsCheck(self::ROOT))->problems());
     }
 
+    public function testTheCheckReportsAConstantMissingFromAllAndOneNoComponentEmits()
+    {
+        $root = $this->copyOfTheEventFiles();
+        $changes = (new LiveEventsScaffold($root))->plan(new LiveEventsSpec('Report', ['events' => 'created']));
+        $namesPath = 'app/api/v1/controllers/components/events/support/EventNames.php';
+        file_put_contents($root . '/' . $namesPath, str_replace('self::REPORT_CREATED,', '', $changes[$namesPath]));
+
+        $this->assertSame([
+            'EventNames::REPORT_CREATED is not in EventNames::ALL',
+            'EventNames::REPORT_CREATED (report.created) is emitted by no component',
+            'EventNames::REPORT_CREATED (report.created) has no case in tests/api/controllers/components/events/LiveEventsComponentsTest.php',
+        ], (new LiveEventsCheck($root))->problems());
+    }
+
+    public function testACommentedOrLongerConstantReferenceIsNotAnEmission()
+    {
+        $root = $this->copyOfTheEventFiles();
+        $changes = (new LiveEventsScaffold($root))->plan(new LiveEventsSpec('Report', ['events' => 'created']));
+        $namesPath = 'app/api/v1/controllers/components/events/support/EventNames.php';
+        file_put_contents($root . '/' . $namesPath, $changes[$namesPath]);
+        file_put_contents($root . '/app/api/v1/controllers/components/events/StrayLiveEventsComponent.php', "<?php\n// EventNames::REPORT_CREATED\n\$x = EventNames::REPORT_CREATED_LATER;\n");
+
+        $this->assertContains('EventNames::REPORT_CREATED (report.created) is emitted by no component', (new LiveEventsCheck($root))->problems());
+    }
+
+    public function testAConflictingParentMappingIsRejected()
+    {
+        $this->expectException(ScaffoldException::class);
+        (new LiveEventsScaffold($this->copyOfTheEventFiles()))->plan(new LiveEventsSpec('Report', ['parent' => 'ideaId:Issue']));
+    }
+
+    public function testATrailingCommaInTheUsesListIsNotDoubled()
+    {
+        $root = $this->copyOfTheEventFiles();
+        file_put_contents($root . '/app/api/v1/controllers/ReportController.php', "<?php\nclass ReportController extends RestController\n{\n    public \$uses = array(\n        'Notification',\n    );\n}\n");
+        $text = (new LiveEventsScaffold($root))->plan(new LiveEventsSpec('Report', []))['app/api/v1/controllers/ReportController.php'];
+
+        $this->assertStringNotContainsString(',,', $text);
+        $this->assertNotEmpty(token_get_all($text, TOKEN_PARSE));
+    }
+
     public function testTheCheckReportsAComponentNoControllerUsesAndANameWithNoTest()
     {
         $root = $this->copyOfTheEventFiles();

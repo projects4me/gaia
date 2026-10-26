@@ -52,7 +52,7 @@ class LiveEventsCheck
             }
             $emitted = false;
             foreach ($components as $source) {
-                $emitted = $emitted || strpos($source, "EventNames::{$constant}") !== false;
+                $emitted = $emitted || preg_match('/EventNames::' . $constant . '\b/', $this->code($source)) === 1;
             }
             if (!$emitted) {
                 $problems[] = "EventNames::{$constant} ({$value}) is emitted by no component";
@@ -76,6 +76,27 @@ class LiveEventsCheck
         }
 
         return $problems;
+    }
+
+    /**
+     * @param string $source
+     * @return string the PHP source without comments, so a commented reference does not count
+     */
+    private function code(string $source): string
+    {
+        $code = '';
+        foreach (token_get_all($source) as $token) {
+            if (is_array($token)) {
+                if (in_array($token[0], [T_COMMENT, T_DOC_COMMENT], true)) {
+                    continue;
+                }
+                $code .= $token[1];
+            } else {
+                $code .= $token;
+            }
+        }
+
+        return $code;
     }
 
     /**

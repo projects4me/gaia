@@ -109,7 +109,10 @@ class LiveEventsScaffold
         if (!preg_match('/(\$parentKeys = array\(\n)(.*?)(\n    \);)/s', $text, $match, PREG_OFFSET_CAPTURE)) {
             throw new ScaffoldException(self::RESOLVER_PATH . ' has no $parentKeys array');
         }
-        if (strpos($match[2][0], "'{$key}'") !== false) {
+        if (preg_match("/(?:^|\n)\s*'{$key}'\s*=>\s*'([^']+)'\s*,/", $match[2][0], $existing)) {
+            if ($existing[1] !== $parent) {
+                throw new ScaffoldException("ProjectIdResolver already maps '{$key}' to '{$existing[1]}', not '{$parent}'");
+            }
             return null;
         }
 
@@ -134,7 +137,7 @@ class LiveEventsScaffold
         }
         if (preg_match('/(\$uses = )(array\(|\[)([^\]\)]*)(\)|\])/', $text, $match, PREG_OFFSET_CAPTURE)) {
             $list = $match[3][0];
-            $list = trim($list) === '' ? $entry : rtrim($list) . ', ' . $entry;
+            $list = trim($list, " \t\r\n,") === '' ? $entry : rtrim($list, " \t\r\n,") . ', ' . $entry;
             return substr_replace($text, $list, $match[3][1], strlen($match[3][0]));
         }
         $declaration = "    /**\n     * Components that this controller uses.\n     *\n     * @var  \$uses\n     * @type array\n     */\n"
