@@ -125,12 +125,15 @@ with the nearest names on stderr and exits 1. Re-run `graph export` first when y
 ```bash
 php tools/gaia-dev/bin/gaia-dev model Idea                 # table, fields, relationships, behaviours, ACL, routes, components, cases
 php tools/gaia-dev/bin/gaia-dev route idea                 # all routes of a resource; or "POST /api/v1/idea" / a path for one
-php tools/gaia-dev/bin/gaia-dev acl idea [aclNoProject]    # per profile allow / members / deny, or one profile's full row
+php tools/gaia-dev/bin/gaia-dev acl idea aclNoProject      # per profile allow / members / deny, or one profile's full row
 php tools/gaia-dev/bin/gaia-dev cases idea --method=POST   # also --profile=<name>, --all; or a case id
-php tools/gaia-dev/bin/gaia-dev assertions [name]          # vocabulary with a failure message and a real example case
-php tools/gaia-dev/bin/gaia-dev profiles [name]            # role, allow/members/deny counts, case counts
-php tools/gaia-dev/bin/gaia-dev fixtures [name]            # placeholder names, cases using them, source file
+php tools/gaia-dev/bin/gaia-dev assertions                 # vocabulary with a failure message and a real example case
+php tools/gaia-dev/bin/gaia-dev profiles                   # role, allow/members/deny counts, case counts
+php tools/gaia-dev/bin/gaia-dev fixtures                   # placeholder names, cases using them, source file
 ```
+
+`acl`, `assertions`, `profiles` and `fixtures` also take one name to narrow the answer to a single row; `--method`,
+`--profile` and `--all` belong to `cases` only and are rejected elsewhere.
 
 `route` prints the hook sequence from a fixed map of REST action to the `rest:` events `RestController` fires
 (`post` fires `beforeCreate` and `afterCreate`, `get`/`list` `afterRead`, updates `afterUpdate`, `delete`

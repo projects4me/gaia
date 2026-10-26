@@ -66,7 +66,12 @@ class GraphReader
             );
         }
         $document = json_decode(file_get_contents($path), true);
-        if (!is_array($document) || !isset($document['nodes'], $document['edges'])) {
+        if (
+            !is_array($document)
+            || !isset($document['nodes'], $document['edges'])
+            || !is_array($document['nodes'])
+            || !is_array($document['edges'])
+        ) {
             throw new QueryException($path . ' is not a gaia-dev graph; run gaia-dev graph export');
         }
 

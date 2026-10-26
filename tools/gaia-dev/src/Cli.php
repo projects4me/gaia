@@ -22,9 +22,8 @@ class Cli
      * Options each command accepts: name => true when it needs a value.
      */
     private const EXPORT_OPTIONS = ['root' => true, 'output' => true, 'check' => false];
-    private const QUERY_OPTIONS = [
-        'root' => true, 'json' => false, 'method' => true, 'profile' => true, 'all' => false,
-    ];
+    private const QUERY_OPTIONS = ['root' => true, 'json' => false];
+    private const CASES_OPTIONS = ['method' => true, 'profile' => true, 'all' => false];
 
     /**
      * @param string[] $argv
@@ -54,7 +53,10 @@ class Cli
         }
 
         if (isset(QueryCommand::queries()[$words[0]])) {
-            $error = self::validateOptions($options, self::QUERY_OPTIONS);
+            $error = self::validateOptions(
+                $options,
+                $words[0] === 'cases' ? array_merge(self::QUERY_OPTIONS, self::CASES_OPTIONS) : self::QUERY_OPTIONS
+            );
             if ($error !== null) {
                 fwrite($stderr, $error . "\n");
                 return 1;

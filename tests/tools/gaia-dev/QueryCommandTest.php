@@ -159,4 +159,28 @@ class QueryCommandTest extends TestCase
         $this->assertSame(1, $code);
         $this->assertStringContainsString('graph export', $err);
     }
+
+    public function testCasesOnlyOptionsAreRejectedByOtherQueries()
+    {
+        [$code, , $err] = $this->gaiaDev('acl', 'idea', '--profile=aclNoProject');
+
+        $this->assertSame(1, $code);
+        $this->assertStringContainsString('Unknown option --profile', $err);
+    }
+
+    public function testGraphWithMalformedCollectionsFailsWithAHint()
+    {
+        $root = sys_get_temp_dir() . '/gaia-dev-bad-graph-' . uniqid();
+        mkdir($root . '/docs/generated', 0777, true);
+        file_put_contents($root . '/docs/generated/graph.json', '{"nodes":"x","edges":1}');
+
+        [$code, , $err] = $this->gaiaDev('model', 'Idea', '--root=' . $root);
+        unlink($root . '/docs/generated/graph.json');
+        rmdir($root . '/docs/generated');
+        rmdir($root . '/docs');
+        rmdir($root);
+
+        $this->assertSame(1, $code);
+        $this->assertStringContainsString('is not a gaia-dev graph', $err);
+    }
 }
