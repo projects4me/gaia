@@ -8,6 +8,7 @@ namespace GaiaDev\Command;
 
 use GaiaDev\Check\ApiCasesCheck;
 use GaiaDev\Check\BackendCatalogDrift;
+use GaiaDev\Check\BehaviorCheck;
 use GaiaDev\Check\ResourceCheck;
 use GaiaDev\Query\GraphReader;
 use GaiaDev\Query\QueryException;
@@ -74,6 +75,26 @@ class CheckCommand
             return 1;
         }
         fwrite($this->stdout, "api-cases: ok\n");
+
+        return 0;
+    }
+
+    /**
+     * @param string $root repository root
+     * @param bool $run whether to run each behaviour test alone
+     * @return int exit code: 0 consistent, 1 problems found
+     */
+    public function runBehavior(string $root, bool $run): int
+    {
+        $problems = (new BehaviorCheck($root))->problems($run);
+        foreach ($problems as $problem) {
+            fwrite($this->stderr, $problem . "\n");
+        }
+        if ($problems) {
+            fwrite($this->stderr, count($problems) . " behavior problem(s)\n");
+            return 1;
+        }
+        fwrite($this->stdout, "behavior: ok\n");
 
         return 0;
     }

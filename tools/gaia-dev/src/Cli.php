@@ -10,6 +10,7 @@ use GaiaDev\Command\CheckCommand;
 use GaiaDev\Command\DocsCommand;
 use GaiaDev\Command\GraphExportCommand;
 use GaiaDev\Command\QueryCommand;
+use GaiaDev\Command\ScaffoldBehaviorCommand;
 use GaiaDev\Command\ScaffoldCommand;
 use GaiaDev\Command\ScaffoldResourceCommand;
 
@@ -97,6 +98,28 @@ class Cli
             $root = isset($options['root']) ? $options['root'] : $defaultRoot;
 
             return (new ScaffoldResourceCommand($stdout, $stderr))->run(array_slice($words, 2), $options, $root);
+        }
+
+        if ($words[0] === 'scaffold' && ($words[1] ?? null) === 'behavior') {
+            $error = self::validateOptions($options, ['root' => true, 'model' => true, 'events' => true, 'dry-run' => false]);
+            if ($error !== null) {
+                fwrite($stderr, $error . "\n");
+                return 1;
+            }
+            $root = isset($options['root']) ? $options['root'] : $defaultRoot;
+
+            return (new ScaffoldBehaviorCommand($stdout, $stderr))->run(array_slice($words, 2), $options, $root);
+        }
+
+        if ($words === ['check', 'behavior']) {
+            $error = self::validateOptions($options, ['root' => true, 'skip-tests' => false]);
+            if ($error !== null) {
+                fwrite($stderr, $error . "\n");
+                return 1;
+            }
+            $root = isset($options['root']) ? $options['root'] : $defaultRoot;
+
+            return (new CheckCommand($stdout, $stderr))->runBehavior($root, empty($options['skip-tests']));
         }
 
         if ($words[0] === 'check' && ($words[1] ?? null) === 'resource') {
@@ -206,6 +229,10 @@ Commands:
                           [--behaviors=a,b] [--acl=profile:allow|members|deny,...] [--table=] [--dry-run]
                           Write every touchpoint of a new REST resource from the Idea reference files,
                           regenerate backend.json, the graph and the docs, and add acl cases for the profiles
+  scaffold behavior <name> --model=<Model> [--events=beforeSave,afterFetch,...] [--dry-run]
+                          Write the behaviour class, a failing unit test and the model metadata entry
+  check behavior [--skip-tests]
+                          Exit 1 when a registered behaviour has no class or test, or a test fails alone
   check resource <Name>   Exit 1 when the resource's metadata, model, controller, route, catalog or cases disagree
   check api-cases [<endpoint>]
                           Exit 1 when acl cases, placeholders, assertion names or backend.json are inconsistent
