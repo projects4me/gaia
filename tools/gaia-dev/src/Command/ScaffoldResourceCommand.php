@@ -120,14 +120,24 @@ class ScaffoldResourceCommand
         }
 
         $quiet = fopen('php://memory', 'w+');
-        (new GraphExportCommand($quiet, $quiet))->run($root);
-        if ($spec->acl !== []) {
-            $left = array_merge($left, $this->aclCases($root, $spec));
-            (new GraphExportCommand($quiet, $quiet))->run($root);
+        try {
+            $failed = (new GraphExportCommand($quiet, $quiet))->run($root) !== 0;
+            if ($spec->acl !== []) {
+                $left = array_merge($left, $this->aclCases($root, $spec));
+                $failed = (new GraphExportCommand($quiet, $quiet))->run($root) !== 0 || $failed;
+            }
+            $failed = (new DocsCommand($quiet, $quiet))->run($root) !== 0 || $failed;
+        } catch (\Throwable $e) {
+            $failed = true;
+            $left[] = 'regeneration threw: ' . $e->getMessage();
         }
-        (new DocsCommand($quiet, $quiet))->run($root);
         fclose($quiet);
-        fwrite($this->stdout, "regenerated docs/generated/graph.json and the pages\n");
+        if ($failed) {
+            $left[] = 'graph.json or the docs were not regenerated; run gaia-dev graph export and gaia-dev docs generate';
+        } else {
+            fwrite($this->stdout, "regenerated docs/generated/graph.json and the pages
+");
+        }
 
         return $left;
     }

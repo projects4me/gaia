@@ -72,8 +72,8 @@ class ResourceSpec
         }
         $this->fields = isset($options['fields']) ? $this->parseFields((string) $options['fields']) : [];
         if (isset($options['parent'])) {
-            if (!preg_match('/^[A-Z][a-z0-9]+$/', (string) $options['parent'])) {
-                throw new ScaffoldException("--parent={$options['parent']} must be a model name such as Project");
+            if ((string) $options['parent'] !== 'Project') {
+                throw new ScaffoldException("--parent={$options['parent']} is not supported; the harness seed only knows Project");
             }
             $this->parent = (string) $options['parent'];
         }

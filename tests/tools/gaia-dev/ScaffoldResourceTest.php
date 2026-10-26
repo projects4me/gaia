@@ -120,7 +120,7 @@ class ScaffoldResourceTest extends TestCase
 
     public function testBadInputIsRejectedWithAnExplanation()
     {
-        foreach ([['idea', []], ['Idea', ['fields' => 'title:varchar']], ['Idea', ['fields' => 'title:blob']], ['Idea', ['acl' => 'x']]] as $case) {
+        foreach ([['idea', []], ['Idea', ['fields' => 'title:varchar']], ['Idea', ['fields' => 'title:blob']], ['Idea', ['acl' => 'x']], ['Report', ['parent' => 'Epic']]] as $case) {
             try {
                 new ResourceSpec($case[0], $case[1]);
                 $this->fail('Expected a ScaffoldException for ' . $case[0] . json_encode($case[1]));
@@ -128,6 +128,17 @@ class ScaffoldResourceTest extends TestCase
                 $this->assertNotSame('', $e->getMessage());
             }
         }
+    }
+
+    public function testUserFieldsAreNotRenamedLikeTheReference()
+    {
+        $spec = new ResourceSpec('Report', ['fields' => 'userIdea:varchar:50:default=Ideas rock']);
+        $files = (new ResourceScaffold(self::ROOT))->plan($spec, []);
+
+        $metadata = $files['app/metadata/model/Report.php'];
+        $this->assertStringContainsString("'name' => 'userIdea'", $metadata);
+        $this->assertStringContainsString('Ideas rock', $metadata);
+        $this->assertStringContainsString("'LBL_REPORTS_USER_IDEA'", $metadata);
     }
 
     public function testTheCommandDryRunWritesNothing()

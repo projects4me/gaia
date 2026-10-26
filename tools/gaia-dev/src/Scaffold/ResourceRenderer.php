@@ -107,7 +107,7 @@ class ResourceRenderer
      */
     private function metadata(ResourceSpec $spec): string
     {
-        $text = $this->golden('app/metadata/model/' . self::GOLDEN . '.php');
+        $text = $this->rename($spec, $this->golden('app/metadata/model/' . self::GOLDEN . '.php'));
         if (!preg_match('/(        \'id\' => array\(.*?\n        \),\n)/s', $text, $id)) {
             throw new ScaffoldException('The golden metadata has no id field');
         }
@@ -116,7 +116,7 @@ class ResourceRenderer
             $fields .= $this->parentField($spec, $text);
         }
         foreach ($spec->fields as $field) {
-            $fields .= $this->field($field);
+            $fields .= $this->field($spec, $field);
         }
         foreach (self::AUDIT_FIELDS as $name) {
             $fields .= $this->fieldBlock($text, $name);
@@ -129,9 +129,7 @@ class ResourceRenderer
             $list = "        '" . implode("',\n        '", $spec->behaviors) . "'";
             $text = $this->replaceOnce('/(\'behaviors\' => array\(\n).*?(\n    \),)/s', '$1' . $this->escape($list, true) . '$2', $text);
         }
-        $text = $this->acl($spec, $text);
-
-        return $this->rename($spec, $text);
+        return $this->acl($spec, $text);
     }
 
     /**
@@ -164,12 +162,13 @@ class ResourceRenderer
     }
 
     /**
+     * @param ResourceSpec $spec
      * @param array $field
      * @return string the field in the reference's layout
      */
-    private function field(array $field): string
+    private function field(ResourceSpec $spec, array $field): string
     {
-        $label = 'LBL_' . strtoupper(ResourceRenderer::GOLDEN_TABLE) . '_' . strtoupper(preg_replace('/(?<=[a-z0-9])(?=[A-Z])/', '_', $field['name']));
+        $label = 'LBL_' . strtoupper($spec->table) . '_' . strtoupper(preg_replace('/(?<=[a-z0-9])(?=[A-Z])/', '_', $field['name']));
         $lines = [
             "            'name' => '{$field['name']}',",
             "            'label' => '{$label}',",
