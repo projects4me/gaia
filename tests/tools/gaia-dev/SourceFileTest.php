@@ -46,4 +46,15 @@ class SourceFileTest extends TestCase
 
         $this->assertSame(['a' => ["one\ntwo", 3]], SourceFile::readJson($this->path));
     }
+
+    public function testFailingPhpIncludeIsReportedWithItsPath()
+    {
+        $this->path = tempnam(sys_get_temp_dir(), 'gaia-dev');
+        file_put_contents($this->path, "<?php\nthrow new \\RuntimeException('boom');\n");
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage($this->path . ': boom');
+
+        SourceFile::readPhpArray($this->path);
+    }
 }

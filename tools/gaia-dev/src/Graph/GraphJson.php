@@ -40,6 +40,9 @@ class GraphJson
             $document,
             JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION
         );
+        if ($json === false) {
+            throw new \RuntimeException('Cannot encode the graph: ' . json_last_error_msg());
+        }
 
         return self::indent($json) . "\n";
     }

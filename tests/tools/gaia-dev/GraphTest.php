@@ -94,6 +94,17 @@ class GraphTest extends TestCase
         $this->assertStringNotContainsString("\r", $json);
     }
 
+    public function testJsonRejectsInvalidUtf8InsteadOfWritingAnEmptyGraph()
+    {
+        $graph = new Graph();
+        $graph->addNode(Schema::BEHAVIOUR, 'auditBehavior', ['label' => "bad \xB1 byte"]);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Cannot encode the graph: Malformed UTF-8');
+
+        GraphJson::encode($graph);
+    }
+
     public function testEverySchemaEdgeConnectsKnownNodeTypes()
     {
         foreach (Schema::EDGES as $type => $ends) {
