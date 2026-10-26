@@ -38,6 +38,22 @@ class BackendCatalogDrift
     }
 
     /**
+     * Runs the generator in place, so backend.json and routes.v1.json follow the sources.
+     *
+     * @return string|null null when the repository has no generator, '' on success, else the generator's output
+     */
+    public function regenerate(): ?string
+    {
+        if (!is_file($this->root . '/' . self::GENERATOR)) {
+            return null;
+        }
+        $output = [];
+        exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($this->root . '/' . self::GENERATOR) . ' 2>&1', $output, $code);
+
+        return $code === 0 ? '' : trim(implode(' ', $output));
+    }
+
+    /**
      * @return string[]|null the problems, or null when the repository has no generator to run
      */
     public function problems(): ?array
