@@ -21,6 +21,8 @@ php tools/gaia-dev/bin/gaia-dev scaffold api-cases --cases-file=cases.json --cat
 php tools/gaia-dev/bin/gaia-dev check api-cases [<endpoint>]   # exit 1 on inconsistent catalogs
 php tools/gaia-dev/bin/gaia-dev scaffold resource Report --parent=Project --fields=title:varchar:100:required,body:text --acl=aclMembers:members
 php tools/gaia-dev/bin/gaia-dev check resource Report            # exit 1 when a touchpoint is missing or inconsistent
+php tools/gaia-dev/bin/gaia-dev scaffold behavior reportTotals --model=Report --events=beforeSave   # class, failing test, metadata entry
+php tools/gaia-dev/bin/gaia-dev check behavior [--skip-tests]   # exit 1 on a missing class or test, or a test failing alone
 ```
 
 `scaffold api-cases` reads `docs/generated/graph.json` (run `graph export` first when you changed sources) and appends to the catalog in that file's own style (`acl.json` keeps `query`, `expects` and `store` on one line; the rest is two-space JSON), so the diff holds only the new cases. It refuses a case id that already exists and `backend.json` (generated). `--dry-run` prints what it would write. Edit the asserted values afterwards, then run `graph export`, `docs generate` and `check api-cases`.
