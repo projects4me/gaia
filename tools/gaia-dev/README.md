@@ -13,6 +13,23 @@ php tools/gaia-dev/bin/gaia-dev docs generate          # write the pages under d
 php tools/gaia-dev/bin/gaia-dev docs generate --check  # exit 1 when a committed page is stale, missing or orphaned
 ```
 
+```bash
+php tools/gaia-dev/bin/gaia-dev scaffold api-cases GET /api/v1/idea --profile=aclMembers --catalog=acl   # append cases
+php tools/gaia-dev/bin/gaia-dev scaffold api-cases POST comment --assert=attributesPresent=["comment"]  # client happy path
+php tools/gaia-dev/bin/gaia-dev scaffold api-cases --new-profile=aclReports --role="ACL Reports" --permissions=issue.get=1,project.get=2
+php tools/gaia-dev/bin/gaia-dev scaffold api-cases --cases-file=cases.json --catalog=client             # append hand-written cases
+php tools/gaia-dev/bin/gaia-dev check api-cases [<endpoint>]   # exit 1 on inconsistent catalogs
+```
+
+`scaffold api-cases` reads `docs/generated/graph.json` (run `graph export` first when you changed sources) and appends to the catalog in that file's own style (`acl.json` keeps `query`, `expects` and `store` on one line; the rest is two-space JSON), so the diff holds only the new cases. It refuses a case id that already exists and `backend.json` (generated). `--dry-run` prints what it would write. Edit the asserted values afterwards, then run `graph export`, `docs generate` and `check api-cases`.
+
+- `client` (default): the happy path as `--profile` (default: the default profile); a POST stores `runtime.<resource>Id`. Path ids become the `<segment>Id` fixture when the seed has one, else `runtime.<segment>Id`.
+- `acl`: per profile with a rule on the endpoint's permission (or only `--profile`): a denial (`403 Access Denied`) for a deny, the allowed read or write for a grant, and for a members-only grant the allowed case plus a non-member denial using `otherProject<Resource>Id`. Notes list the seed rows or fixtures still missing.
+- `--assert=name=value,...` adds `expects` entries; names must be assertions the Asserter implements (`gaia-dev assertions`). A bare name asserts `null`, to be edited.
+- `--new-profile` writes the user, role, user_role and permission rows into `prepare-test-db.sh` and the `authProfiles` entry into `fixtures/default.json` (and the script's copy of it) in one go; nothing is written when any of them cannot be.
+
+`check api-cases` fails when a profile is restricted (deny or members-only) on a resource with no `acl` case, when an enabled hand-written case uses a placeholder that is no fixture, stored runtime id or runner value (`runId`), when a case asserts a name the Asserter does not implement, or when a fresh run of `generate-backend-apis.php` (in a scratch copy) differs from the committed `backend.json` and route snapshot. The generated `backend` catalog is exempt from the placeholder rule. CI runs it in the `graph-drift` job.
+
 Options: `--root=<dir>` (repository root, default this checkout), `--output=<file>` (relative to the root).
 
 CI runs `graph export --check` and `docs generate --check` in the `graph-drift` job. When you change metadata, routes, the model list or
