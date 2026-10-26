@@ -705,6 +705,12 @@
       "attributes": {}
     },
     {
+      "id": "action:image.get",
+      "type": "action",
+      "key": "image.get",
+      "attributes": {}
+    },
+    {
       "id": "action:index.index",
       "type": "action",
       "key": "index.index",
@@ -2346,205 +2352,445 @@
       "id": "assertion:attributesAbsent",
       "type": "assertion",
       "key": "attributesAbsent",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 155,
+        "messages": [
+          "attributesAbsent: unexpectedly found attributes.…"
+        ],
+        "values": [],
+        "example": "acl/acl-field-explicit-fields-omits-denied-subject"
+      }
     },
     {
       "id": "assertion:attributesEqual",
       "type": "assertion",
       "key": "attributesEqual",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 193,
+        "messages": [
+          "attributesEqual: missing attributes.…",
+          "attributesEqual: attributes.… expected '…', got '"
+        ],
+        "values": [],
+        "example": "acl/acl-field-verify-patch-discard-as-admin"
+      }
     },
     {
       "id": "assertion:attributesPresent",
       "type": "assertion",
       "key": "attributesPresent",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 144,
+        "messages": [
+          "attributesPresent: missing attributes.…"
+        ],
+        "values": [],
+        "example": "acl/acl-field-default-select-keeps-structural-projectId"
+      }
     },
     {
       "id": "assertion:errorEqual",
       "type": "assertion",
       "key": "errorEqual",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 78,
+        "messages": [
+          "errorEqual: expected '…', got '"
+        ],
+        "values": [],
+        "example": "acl/acl-issue-denied-without-project-group"
+      }
     },
     {
       "id": "assertion:hermes.expect",
       "type": "assertion",
       "key": "hermes.expect",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Runner.php",
+        "line": 200,
+        "messages": [],
+        "values": [],
+        "example": "live/live-issue-create-publishes-issue-created"
+      }
     },
     {
       "id": "assertion:idsExcludes",
       "type": "assertion",
       "key": "idsExcludes",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 167,
+        "messages": [
+          "idsExcludes: unexpectedly found id …"
+        ],
+        "values": [],
+        "example": "acl/acl-members-issuetype-list-includes-system-types"
+      }
     },
     {
       "id": "assertion:idsIncludes",
       "type": "assertion",
       "key": "idsIncludes",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 166,
+        "messages": [
+          "idsIncludes: missing id …"
+        ],
+        "values": [],
+        "example": "acl/acl-project-rels-issues-omitted"
+      }
     },
     {
       "id": "assertion:includedTypesAbsent",
       "type": "assertion",
       "key": "includedTypesAbsent",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 94,
+        "messages": [
+          "includedTypesAbsent: unexpectedly found type …"
+        ],
+        "values": [],
+        "example": "acl/acl-project-rels-issues-omitted"
+      }
     },
     {
       "id": "assertion:includedTypesPresent",
       "type": "assertion",
       "key": "includedTypesPresent",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 110,
+        "messages": [
+          "includedTypesPresent: missing type …"
+        ],
+        "values": [],
+        "example": "acl/acl-project-rels-mixed-issues-omitted-members-kept"
+      }
     },
     {
       "id": "assertion:jsonEqual",
       "type": "assertion",
       "key": "jsonEqual",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 84,
+        "messages": [
+          "jsonEqual: … expected '…', got '"
+        ],
+        "values": [],
+        "example": "client/settings-test-invalid-recipient"
+      }
     },
     {
       "id": "assertion:mail.bodyContains",
       "type": "assertion",
       "key": "mail.bodyContains",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Runner.php",
+        "line": 312,
+        "messages": [],
+        "values": [],
+        "example": "mail/mail-welcome-password-email-is-delivered"
+      }
     },
     {
       "id": "assertion:mail.fromEmail",
       "type": "assertion",
       "key": "mail.fromEmail",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Runner.php",
+        "line": 300,
+        "messages": [],
+        "values": [],
+        "example": "mail/mail-welcome-password-email-is-delivered"
+      }
     },
     {
       "id": "assertion:mail.fromName",
       "type": "assertion",
       "key": "mail.fromName",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Runner.php",
+        "line": 300,
+        "messages": [],
+        "values": [],
+        "example": "mail/mail-welcome-password-email-is-delivered"
+      }
     },
     {
       "id": "assertion:mail.subject",
       "type": "assertion",
       "key": "mail.subject",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Runner.php",
+        "line": 287,
+        "messages": [],
+        "values": [],
+        "example": "mail/mail-welcome-password-email-is-delivered"
+      }
     },
     {
       "id": "assertion:mail.to",
       "type": "assertion",
       "key": "mail.to",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Runner.php",
+        "line": 287,
+        "messages": [],
+        "values": [],
+        "example": "mail/mail-welcome-password-email-is-delivered"
+      }
     },
     {
       "id": "assertion:resourceNamesAbsent",
       "type": "assertion",
       "key": "resourceNamesAbsent",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 126,
+        "messages": [
+          "resourceNamesAbsent: unexpectedly found resourceName …"
+        ],
+        "values": [],
+        "example": "acl/acl-perm-list-collapses-field-mode-not-triples"
+      }
     },
     {
       "id": "assertion:resourceNamesPresent",
       "type": "assertion",
       "key": "resourceNamesPresent",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 135,
+        "messages": [
+          "resourceNamesPresent: missing resourceName …"
+        ],
+        "values": [],
+        "example": "acl/acl-perm-list-collapses-field-mode-not-triples"
+      }
     },
     {
       "id": "assertion:shape",
       "type": "assertion",
       "key": "shape",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 24,
+        "messages": [],
+        "values": [
+          "error",
+          "json",
+          "jsonapi.collection",
+          "jsonapi.resource",
+          "oauth.token"
+        ],
+        "example": "acl/acl-issue-denied-without-project-group"
+      }
     },
     {
       "id": "assertion:status",
       "type": "assertion",
       "key": "status",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 11,
+        "messages": [
+          "status: expected %s, got %s"
+        ],
+        "values": [],
+        "example": "acl/acl-issue-denied-without-project-group"
+      }
     },
     {
       "id": "behaviour:auditBehavior",
       "type": "behaviour",
       "key": "auditBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\auditBehavior",
+        "file": "core/mvc/models/behaviors/auditBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
     },
     {
       "id": "behaviour:createdUserBehavior",
       "type": "behaviour",
       "key": "createdUserBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\createdUserBehavior",
+        "file": "core/mvc/models/behaviors/createdUserBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
     },
     {
       "id": "behaviour:currentUserBehavior",
       "type": "behaviour",
       "key": "currentUserBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\currentUserBehavior",
+        "file": "core/mvc/models/behaviors/currentUserBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
     },
     {
       "id": "behaviour:dateCreatedBehavior",
       "type": "behaviour",
       "key": "dateCreatedBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\dateCreatedBehavior",
+        "file": "core/mvc/models/behaviors/dateCreatedBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
     },
     {
       "id": "behaviour:dateModifiedBehavior",
       "type": "behaviour",
       "key": "dateModifiedBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\dateModifiedBehavior",
+        "file": "core/mvc/models/behaviors/dateModifiedBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
     },
     {
       "id": "behaviour:encryptPasswordBehavior",
       "type": "behaviour",
       "key": "encryptPasswordBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\encryptPasswordBehavior",
+        "file": "core/mvc/models/behaviors/encryptPasswordBehavior.php",
+        "hooks": [
+          "notify",
+          "createHash"
+        ]
+      }
     },
     {
       "id": "behaviour:ideaReferencesBehavior",
       "type": "behaviour",
       "key": "ideaReferencesBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\ideaReferencesBehavior",
+        "file": "core/mvc/models/behaviors/ideaReferencesBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
     },
     {
       "id": "behaviour:ideaScreensBehavior",
       "type": "behaviour",
       "key": "ideaScreensBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\ideaScreensBehavior",
+        "file": "core/mvc/models/behaviors/ideaScreensBehavior.php",
+        "hooks": [
+          "notify",
+          "uploadIds"
+        ]
+      }
     },
     {
       "id": "behaviour:modelIdentifierBehavior",
       "type": "behaviour",
       "key": "modelIdentifierBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\modelIdentifierBehavior",
+        "file": "core/mvc/models/behaviors/modelIdentifierBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
     },
     {
       "id": "behaviour:modifiedUserBehavior",
       "type": "behaviour",
       "key": "modifiedUserBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\modifiedUserBehavior",
+        "file": "core/mvc/models/behaviors/modifiedUserBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
     },
     {
       "id": "behaviour:planVersionBehavior",
       "type": "behaviour",
       "key": "planVersionBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\planVersionBehavior",
+        "file": "core/mvc/models/behaviors/planVersionBehavior.php",
+        "hooks": [
+          "notify",
+          "nextVersion"
+        ]
+      }
     },
     {
       "id": "behaviour:settingBehavior",
       "type": "behaviour",
       "key": "settingBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\settingBehavior",
+        "file": "core/mvc/models/behaviors/settingBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
     },
     {
       "id": "behaviour:shortCodeBehavior",
       "type": "behaviour",
       "key": "shortCodeBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\shortCodeBehavior",
+        "file": "core/mvc/models/behaviors/shortCodeBehavior.php",
+        "hooks": [
+          "notify",
+          "generateShortCode",
+          "getProjectsByShortCode"
+        ]
+      }
     },
     {
       "id": "behaviour:softDeleteBehavior",
       "type": "behaviour",
       "key": "softDeleteBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\softDeleteBehavior",
+        "file": "core/mvc/models/behaviors/softDeleteBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
     },
     {
       "id": "behaviour:translationCacheBehavior",
       "type": "behaviour",
       "key": "translationCacheBehavior",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\translationCacheBehavior",
+        "file": "core/mvc/models/behaviors/translationCacheBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
     },
     {
       "id": "case:acl/acl-admin-comment-allowed",
@@ -11181,46 +11427,642 @@
       }
     },
     {
+      "id": "component:Dashboard",
+      "type": "component",
+      "key": "Dashboard",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\DashboardComponent",
+        "file": "app/api/v1/controllers/components/DashboardComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\ConversationCommentLiveEvents",
+      "type": "component",
+      "key": "Events\\ConversationCommentLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\ConversationCommentLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/ConversationCommentLiveEventsComponent.php",
+        "extends": "LiveEventsComponent",
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate",
+          "afterDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\ConversationLiveEvents",
+      "type": "component",
+      "key": "Events\\ConversationLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\ConversationLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/ConversationLiveEventsComponent.php",
+        "extends": "LiveEventsComponent",
+        "implements": [],
+        "hooks": [
+          "afterCreate"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\ConversationVoteLiveEvents",
+      "type": "component",
+      "key": "Events\\ConversationVoteLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\ConversationVoteLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/ConversationVoteLiveEventsComponent.php",
+        "extends": "LiveEventsComponent",
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\IdeaLiveEvents",
+      "type": "component",
+      "key": "Events\\IdeaLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\IdeaLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/IdeaLiveEventsComponent.php",
+        "extends": "LiveEventsComponent",
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\IdeamessageLiveEvents",
+      "type": "component",
+      "key": "Events\\IdeamessageLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\IdeamessageLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/IdeamessageLiveEventsComponent.php",
+        "extends": "LiveEventsComponent",
+        "implements": [],
+        "hooks": [
+          "afterCreate"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\IdeaplanLiveEvents",
+      "type": "component",
+      "key": "Events\\IdeaplanLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\IdeaplanLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/IdeaplanLiveEventsComponent.php",
+        "extends": "LiveEventsComponent",
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\IdeaplanissueLiveEvents",
+      "type": "component",
+      "key": "Events\\IdeaplanissueLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\IdeaplanissueLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/IdeaplanissueLiveEventsComponent.php",
+        "extends": "LiveEventsComponent",
+        "implements": [],
+        "hooks": [
+          "afterCreate"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\IssueLiveEvents",
+      "type": "component",
+      "key": "Events\\IssueLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\IssueLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/IssueLiveEventsComponent.php",
+        "extends": "LiveEventsComponent",
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\LiveEvents",
+      "type": "component",
+      "key": "Events\\LiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\LiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/LiveEventsComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate",
+          "afterDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\MilestoneLiveEvents",
+      "type": "component",
+      "key": "Events\\MilestoneLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\MilestoneLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/MilestoneLiveEventsComponent.php",
+        "extends": "LiveEventsComponent",
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\NotificationLiveEvents",
+      "type": "component",
+      "key": "Events\\NotificationLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\NotificationLiveEvents",
+        "file": "app/api/v1/controllers/components/events/NotificationLiveEvents.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "publishCreated"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\Support\\EventNames",
+      "type": "component",
+      "key": "Events\\Support\\EventNames",
+      "attributes": {
+        "kind": "support",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\Support\\EventNames",
+        "file": "app/api/v1/controllers/components/events/support/EventNames.php",
+        "extends": null,
+        "implements": [],
+        "hooks": []
+      }
+    },
+    {
+      "id": "component:Events\\Support\\HermesPublisher",
+      "type": "component",
+      "key": "Events\\Support\\HermesPublisher",
+      "attributes": {
+        "kind": "support",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\Support\\HermesPublisher",
+        "file": "app/api/v1/controllers/components/events/support/HermesPublisher.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "publishDomainEvent"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\Support\\LiveEventEnvelope",
+      "type": "component",
+      "key": "Events\\Support\\LiveEventEnvelope",
+      "attributes": {
+        "kind": "support",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\Support\\LiveEventEnvelope",
+        "file": "app/api/v1/controllers/components/events/support/LiveEventEnvelope.php",
+        "extends": null,
+        "implements": [],
+        "hooks": []
+      }
+    },
+    {
+      "id": "component:Events\\Support\\ProjectIdResolver",
+      "type": "component",
+      "key": "Events\\Support\\ProjectIdResolver",
+      "attributes": {
+        "kind": "support",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\Support\\ProjectIdResolver",
+        "file": "app/api/v1/controllers/components/events/support/ProjectIdResolver.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "resolve"
+        ]
+      }
+    },
+    {
+      "id": "component:Fileattachment",
+      "type": "component",
+      "key": "Fileattachment",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\FileattachmentComponent",
+        "file": "app/api/v1/controllers/components/FileattachmentComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Filethumb",
+      "type": "component",
+      "key": "Filethumb",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\FilethumbComponent",
+        "file": "app/api/v1/controllers/components/FilethumbComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterRead"
+        ]
+      }
+    },
+    {
+      "id": "component:GeneratePassword",
+      "type": "component",
+      "key": "GeneratePassword",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\GeneratePasswordComponent",
+        "file": "app/api/v1/controllers/components/GeneratePasswordComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "beforeCreate",
+          "afterCreate"
+        ]
+      }
+    },
+    {
+      "id": "component:Issueactivities",
+      "type": "component",
+      "key": "Issueactivities",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\IssueactivitiesComponent",
+        "file": "app/api/v1/controllers/components/IssueactivitiesComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterUpdate",
+          "afterCreate"
+        ]
+      }
+    },
+    {
+      "id": "component:Issuemention",
+      "type": "component",
+      "key": "Issuemention",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\IssuementionComponent",
+        "file": "app/api/v1/controllers/components/IssuementionComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate"
+        ]
+      }
+    },
+    {
+      "id": "component:Notification",
+      "type": "component",
+      "key": "Notification",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\NotificationComponent",
+        "file": "app/api/v1/controllers/components/NotificationComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterUpdate",
+          "afterCreate",
+          "afterDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Notifications\\Config\\NotificationConfig",
+      "type": "component",
+      "key": "Notifications\\Config\\NotificationConfig",
+      "attributes": {
+        "kind": "support",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Config\\NotificationConfig",
+        "file": "app/api/v1/controllers/components/notifications/config/NotificationConfig.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "getModuleClass"
+        ]
+      }
+    },
+    {
+      "id": "component:Notifications\\Modules\\CommentNotification",
+      "type": "component",
+      "key": "Notifications\\Modules\\CommentNotification",
+      "attributes": {
+        "kind": "notification",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Modules\\CommentNotification",
+        "file": "app/api/v1/controllers/components/notifications/modules/CommentNotification.php",
+        "extends": null,
+        "implements": [
+          "NotificationModuleInterface"
+        ],
+        "hooks": [
+          "onCreate",
+          "onUpdate",
+          "onDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Notifications\\Modules\\IssueNotification",
+      "type": "component",
+      "key": "Notifications\\Modules\\IssueNotification",
+      "attributes": {
+        "kind": "notification",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Modules\\IssueNotification",
+        "file": "app/api/v1/controllers/components/notifications/modules/IssueNotification.php",
+        "extends": null,
+        "implements": [
+          "NotificationModuleInterface"
+        ],
+        "hooks": [
+          "onCreate",
+          "onUpdate",
+          "onDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Notifications\\Modules\\MembershipNotification",
+      "type": "component",
+      "key": "Notifications\\Modules\\MembershipNotification",
+      "attributes": {
+        "kind": "notification",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Modules\\MembershipNotification",
+        "file": "app/api/v1/controllers/components/notifications/modules/MembershipNotification.php",
+        "extends": null,
+        "implements": [
+          "NotificationModuleInterface"
+        ],
+        "hooks": [
+          "onCreate",
+          "onUpdate",
+          "onDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Notifications\\Modules\\MilestoneNotification",
+      "type": "component",
+      "key": "Notifications\\Modules\\MilestoneNotification",
+      "attributes": {
+        "kind": "notification",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Modules\\MilestoneNotification",
+        "file": "app/api/v1/controllers/components/notifications/modules/MilestoneNotification.php",
+        "extends": null,
+        "implements": [
+          "NotificationModuleInterface"
+        ],
+        "hooks": [
+          "onCreate",
+          "onUpdate",
+          "onDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Notifications\\Modules\\NotificationModuleInterface",
+      "type": "component",
+      "key": "Notifications\\Modules\\NotificationModuleInterface",
+      "attributes": {
+        "kind": "notification",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Modules\\NotificationModuleInterface",
+        "file": "app/api/v1/controllers/components/notifications/modules/NotificationModuleInterface.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "onCreate",
+          "onUpdate",
+          "onDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Notifications\\Modules\\TimelogNotification",
+      "type": "component",
+      "key": "Notifications\\Modules\\TimelogNotification",
+      "attributes": {
+        "kind": "notification",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Modules\\TimelogNotification",
+        "file": "app/api/v1/controllers/components/notifications/modules/TimelogNotification.php",
+        "extends": null,
+        "implements": [
+          "NotificationModuleInterface"
+        ],
+        "hooks": [
+          "onCreate",
+          "onUpdate",
+          "onDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Notifications\\Services\\RecipientService",
+      "type": "component",
+      "key": "Notifications\\Services\\RecipientService",
+      "attributes": {
+        "kind": "support",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Services\\RecipientService",
+        "file": "app/api/v1/controllers/components/notifications/services/RecipientService.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "notifyIssueRecipients",
+          "notifyProjectRecipients",
+          "addRecipient",
+          "notifyUsers"
+        ]
+      }
+    },
+    {
+      "id": "component:OnboardMember",
+      "type": "component",
+      "key": "OnboardMember",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\OnboardMemberComponent",
+        "file": "app/api/v1/controllers/components/OnboardMemberComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate"
+        ]
+      }
+    },
+    {
+      "id": "component:Permission",
+      "type": "component",
+      "key": "Permission",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\PermissionComponent",
+        "file": "app/api/v1/controllers/components/PermissionComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "beforeCreate"
+        ]
+      }
+    },
+    {
+      "id": "component:ProjectActivities",
+      "type": "component",
+      "key": "ProjectActivities",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\ProjectActivitiesComponent",
+        "file": "app/api/v1/controllers/components/ProjectActivitiesComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterUpdate",
+          "afterCreate"
+        ]
+      }
+    },
+    {
+      "id": "component:Role",
+      "type": "component",
+      "key": "Role",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\RoleComponent",
+        "file": "app/api/v1/controllers/components/RoleComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate"
+        ]
+      }
+    },
+    {
+      "id": "component:Timelogged",
+      "type": "component",
+      "key": "Timelogged",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\TimeloggedComponent",
+        "file": "app/api/v1/controllers/components/TimeloggedComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate"
+        ]
+      }
+    },
+    {
       "id": "controller:activity",
       "type": "controller",
       "key": "activity",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ActivityController",
+        "file": "app/api/v1/controllers/ActivityController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:badge",
       "type": "controller",
       "key": "badge",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\BadgeController",
+        "file": "app/api/v1/controllers/BadgeController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:chatroom",
       "type": "controller",
       "key": "chatroom",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ChatroomController",
+        "file": "app/api/v1/controllers/ChatroomController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:comment",
       "type": "controller",
       "key": "comment",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\CommentController",
+        "file": "app/api/v1/controllers/CommentController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:conversationroom",
       "type": "controller",
       "key": "conversationroom",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ConversationroomController",
+        "file": "app/api/v1/controllers/ConversationroomController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:converser",
       "type": "controller",
       "key": "converser",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ConverserController",
+        "file": "app/api/v1/controllers/ConverserController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:download",
       "type": "controller",
       "key": "download",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\REST\\Controllers\\DownloadController",
+        "file": "app/api/v1/controllers/DownloadController.php",
+        "extends": "Phalcon\\Mvc\\Controller"
+      }
     },
     {
       "id": "controller:error",
@@ -11232,235 +12074,437 @@
       "id": "controller:forgetpassword",
       "type": "controller",
       "key": "forgetpassword",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ForgetpasswordController",
+        "file": "app/api/v1/controllers/ForgetpasswordController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:idea",
       "type": "controller",
       "key": "idea",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\IdeaController",
+        "file": "app/api/v1/controllers/IdeaController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:ideamessage",
       "type": "controller",
       "key": "ideamessage",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\IdeamessageController",
+        "file": "app/api/v1/controllers/IdeamessageController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:ideaplan",
       "type": "controller",
       "key": "ideaplan",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\IdeaplanController",
+        "file": "app/api/v1/controllers/IdeaplanController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:ideaplanissue",
       "type": "controller",
       "key": "ideaplanissue",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\IdeaplanissueController",
+        "file": "app/api/v1/controllers/IdeaplanissueController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:image",
+      "type": "controller",
+      "key": "image",
+      "attributes": {
+        "class": "Gaia\\MVC\\REST\\Controllers\\ImageController",
+        "file": "app/api/v1/controllers/ImageController.php",
+        "extends": "Phalcon\\Mvc\\Controller"
+      }
     },
     {
       "id": "controller:index",
       "type": "controller",
       "key": "index",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\REST\\Controllers\\IndexController",
+        "file": "app/api/v1/controllers/IndexController.php",
+        "extends": "Phalcon\\Mvc\\Controller"
+      }
     },
     {
       "id": "controller:issue",
       "type": "controller",
       "key": "issue",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\IssueController",
+        "file": "app/api/v1/controllers/IssueController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:issueplanning",
       "type": "controller",
       "key": "issueplanning",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\IssueplanningController",
+        "file": "app/api/v1/controllers/IssueplanningController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:issuestatus",
       "type": "controller",
       "key": "issuestatus",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\IssuestatusController",
+        "file": "app/api/v1/controllers/IssuestatusController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:issuetype",
       "type": "controller",
       "key": "issuetype",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\IssuetypeController",
+        "file": "app/api/v1/controllers/IssuetypeController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:issuewatcher",
       "type": "controller",
       "key": "issuewatcher",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\IssuewatcherController",
+        "file": "app/api/v1/controllers/IssuewatcherController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:membership",
       "type": "controller",
       "key": "membership",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\MembershipController",
+        "file": "app/api/v1/controllers/MembershipController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:mention",
       "type": "controller",
       "key": "mention",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\MentionController",
+        "file": "app/api/v1/controllers/MentionController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:milestone",
       "type": "controller",
       "key": "milestone",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\MilestoneController",
+        "file": "app/api/v1/controllers/MilestoneController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:milestoneoverview",
       "type": "controller",
       "key": "milestoneoverview",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\MilestoneoverviewController",
+        "file": "app/api/v1/controllers/MilestoneoverviewController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:permission",
       "type": "controller",
       "key": "permission",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\PermissionController",
+        "file": "app/api/v1/controllers/PermissionController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:preview",
       "type": "controller",
       "key": "preview",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\REST\\Controllers\\PreviewController",
+        "file": "app/api/v1/controllers/PreviewController.php",
+        "extends": "Phalcon\\Mvc\\Controller"
+      }
     },
     {
       "id": "controller:project",
       "type": "controller",
       "key": "project",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ProjectController",
+        "file": "app/api/v1/controllers/ProjectController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:resetpassword",
       "type": "controller",
       "key": "resetpassword",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ResetpasswordController",
+        "file": "app/api/v1/controllers/ResetpasswordController.php",
+        "extends": "Phalcon\\Mvc\\Controller"
+      }
     },
     {
       "id": "controller:role",
       "type": "controller",
       "key": "role",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\RoleController",
+        "file": "app/api/v1/controllers/RoleController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:savedsearch",
       "type": "controller",
       "key": "savedsearch",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\SavedsearchController",
+        "file": "app/api/v1/controllers/SavedsearchController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:scoreboard",
       "type": "controller",
       "key": "scoreboard",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ScoreboardController",
+        "file": "app/api/v1/controllers/ScoreboardController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:setting",
       "type": "controller",
       "key": "setting",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\SettingController",
+        "file": "app/api/v1/controllers/SettingController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:systemnotification",
       "type": "controller",
       "key": "systemnotification",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\SystemnotificationController",
+        "file": "app/api/v1/controllers/SystemnotificationController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:systemnotificationrecipient",
       "type": "controller",
       "key": "systemnotificationrecipient",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\SystemnotificationrecipientController",
+        "file": "app/api/v1/controllers/SystemnotificationrecipientController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:systemsetting",
       "type": "controller",
       "key": "systemsetting",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\SystemsettingController",
+        "file": "app/api/v1/controllers/SystemsettingController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:tag",
       "type": "controller",
       "key": "tag",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\TagController",
+        "file": "app/api/v1/controllers/TagController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:tagged",
       "type": "controller",
       "key": "tagged",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\TaggedController",
+        "file": "app/api/v1/controllers/TaggedController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:timelog",
       "type": "controller",
       "key": "timelog",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\TimelogController",
+        "file": "app/api/v1/controllers/TimelogController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:token",
       "type": "controller",
       "key": "token",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\TokenController",
+        "file": "app/api/v1/controllers/TokenController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:translation",
       "type": "controller",
       "key": "translation",
-      "attributes": {}
+      "attributes": {
+        "class": "Gaia\\MVC\\REST\\Controllers\\TranslationController",
+        "file": "app/api/v1/controllers/TranslationController.php",
+        "extends": "Phalcon\\Mvc\\Controller"
+      }
     },
     {
       "id": "controller:upload",
       "type": "controller",
       "key": "upload",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\UploadController",
+        "file": "app/api/v1/controllers/UploadController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:user",
       "type": "controller",
       "key": "user",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\UserController",
+        "file": "app/api/v1/controllers/UserController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:userimage",
       "type": "controller",
       "key": "userimage",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\UserimageController",
+        "file": "app/api/v1/controllers/UserimageController.php",
+        "extends": "Phalcon\\Mvc\\Controller"
+      }
     },
     {
       "id": "controller:userqualification",
       "type": "controller",
       "key": "userqualification",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\UserqualificationController",
+        "file": "app/api/v1/controllers/UserqualificationController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:userrole",
       "type": "controller",
       "key": "userrole",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\UserroleController",
+        "file": "app/api/v1/controllers/UserroleController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:userskill",
       "type": "controller",
       "key": "userskill",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\UserskillController",
+        "file": "app/api/v1/controllers/UserskillController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:vote",
       "type": "controller",
       "key": "vote",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\VoteController",
+        "file": "app/api/v1/controllers/VoteController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "controller:wiki",
       "type": "controller",
       "key": "wiki",
-      "attributes": {}
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\WikiController",
+        "file": "app/api/v1/controllers/WikiController.php",
+        "extends": "RestController"
+      }
     },
     {
       "id": "field:Aclcontroller.createdUser",
@@ -19218,11 +20262,1416 @@
       }
     },
     {
+      "id": "permission:activity.create",
+      "type": "permission",
+      "key": "activity.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:activity.delete",
+      "type": "permission",
+      "key": "activity.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:activity.get",
+      "type": "permission",
+      "key": "activity.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:activity.update",
+      "type": "permission",
+      "key": "activity.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:badge.create",
+      "type": "permission",
+      "key": "badge.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:badge.delete",
+      "type": "permission",
+      "key": "badge.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:badge.get",
+      "type": "permission",
+      "key": "badge.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:badge.update",
+      "type": "permission",
+      "key": "badge.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:chatroom.create",
+      "type": "permission",
+      "key": "chatroom.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:chatroom.delete",
+      "type": "permission",
+      "key": "chatroom.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:chatroom.get",
+      "type": "permission",
+      "key": "chatroom.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:chatroom.update",
+      "type": "permission",
+      "key": "chatroom.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:comment.create",
+      "type": "permission",
+      "key": "comment.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:comment.delete",
+      "type": "permission",
+      "key": "comment.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:comment.get",
+      "type": "permission",
+      "key": "comment.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:comment.update",
+      "type": "permission",
+      "key": "comment.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:conversationroom.create",
+      "type": "permission",
+      "key": "conversationroom.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:conversationroom.delete",
+      "type": "permission",
+      "key": "conversationroom.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:conversationroom.get",
+      "type": "permission",
+      "key": "conversationroom.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:conversationroom.update",
+      "type": "permission",
+      "key": "conversationroom.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:converser.create",
+      "type": "permission",
+      "key": "converser.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:converser.delete",
+      "type": "permission",
+      "key": "converser.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:converser.get",
+      "type": "permission",
+      "key": "converser.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:converser.update",
+      "type": "permission",
+      "key": "converser.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:forgetpassword.create",
+      "type": "permission",
+      "key": "forgetpassword.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:forgetpassword.get",
+      "type": "permission",
+      "key": "forgetpassword.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:idea.create",
+      "type": "permission",
+      "key": "idea.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:idea.delete",
+      "type": "permission",
+      "key": "idea.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:idea.get",
+      "type": "permission",
+      "key": "idea.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:idea.update",
+      "type": "permission",
+      "key": "idea.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:ideamessage.create",
+      "type": "permission",
+      "key": "ideamessage.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:ideamessage.delete",
+      "type": "permission",
+      "key": "ideamessage.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:ideamessage.get",
+      "type": "permission",
+      "key": "ideamessage.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:ideamessage.update",
+      "type": "permission",
+      "key": "ideamessage.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:ideaplan.create",
+      "type": "permission",
+      "key": "ideaplan.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:ideaplan.delete",
+      "type": "permission",
+      "key": "ideaplan.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:ideaplan.get",
+      "type": "permission",
+      "key": "ideaplan.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:ideaplan.update",
+      "type": "permission",
+      "key": "ideaplan.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:ideaplanissue.create",
+      "type": "permission",
+      "key": "ideaplanissue.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:ideaplanissue.delete",
+      "type": "permission",
+      "key": "ideaplanissue.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:ideaplanissue.get",
+      "type": "permission",
+      "key": "ideaplanissue.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:ideaplanissue.update",
+      "type": "permission",
+      "key": "ideaplanissue.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.create",
+      "type": "permission",
+      "key": "issue.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.delete",
+      "type": "permission",
+      "key": "issue.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.description.create",
+      "type": "permission",
+      "key": "issue.description.create",
+      "attributes": {
+        "kind": "field",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.description.get",
+      "type": "permission",
+      "key": "issue.description.get",
+      "attributes": {
+        "kind": "field",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.description.update",
+      "type": "permission",
+      "key": "issue.description.update",
+      "attributes": {
+        "kind": "field",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.get",
+      "type": "permission",
+      "key": "issue.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.priority.create",
+      "type": "permission",
+      "key": "issue.priority.create",
+      "attributes": {
+        "kind": "field",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.priority.get",
+      "type": "permission",
+      "key": "issue.priority.get",
+      "attributes": {
+        "kind": "field",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.priority.update",
+      "type": "permission",
+      "key": "issue.priority.update",
+      "attributes": {
+        "kind": "field",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.subject.create",
+      "type": "permission",
+      "key": "issue.subject.create",
+      "attributes": {
+        "kind": "field",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.subject.get",
+      "type": "permission",
+      "key": "issue.subject.get",
+      "attributes": {
+        "kind": "field",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.subject.update",
+      "type": "permission",
+      "key": "issue.subject.update",
+      "attributes": {
+        "kind": "field",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issue.update",
+      "type": "permission",
+      "key": "issue.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issueplanning.create",
+      "type": "permission",
+      "key": "issueplanning.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuestatus.create",
+      "type": "permission",
+      "key": "issuestatus.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuestatus.delete",
+      "type": "permission",
+      "key": "issuestatus.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuestatus.get",
+      "type": "permission",
+      "key": "issuestatus.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuestatus.update",
+      "type": "permission",
+      "key": "issuestatus.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuetype.create",
+      "type": "permission",
+      "key": "issuetype.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuetype.delete",
+      "type": "permission",
+      "key": "issuetype.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuetype.get",
+      "type": "permission",
+      "key": "issuetype.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuetype.update",
+      "type": "permission",
+      "key": "issuetype.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuewatcher.create",
+      "type": "permission",
+      "key": "issuewatcher.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuewatcher.update",
+      "type": "permission",
+      "key": "issuewatcher.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:membership.create",
+      "type": "permission",
+      "key": "membership.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:membership.delete",
+      "type": "permission",
+      "key": "membership.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:membership.get",
+      "type": "permission",
+      "key": "membership.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:membership.update",
+      "type": "permission",
+      "key": "membership.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:mention.create",
+      "type": "permission",
+      "key": "mention.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:mention.delete",
+      "type": "permission",
+      "key": "mention.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:mention.get",
+      "type": "permission",
+      "key": "mention.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:mention.update",
+      "type": "permission",
+      "key": "mention.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:milestone.create",
+      "type": "permission",
+      "key": "milestone.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:milestone.delete",
+      "type": "permission",
+      "key": "milestone.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:milestone.get",
+      "type": "permission",
+      "key": "milestone.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:milestone.update",
+      "type": "permission",
+      "key": "milestone.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:milestoneoverview.get",
+      "type": "permission",
+      "key": "milestoneoverview.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:permission.create",
+      "type": "permission",
+      "key": "permission.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:permission.delete",
+      "type": "permission",
+      "key": "permission.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:permission.get",
+      "type": "permission",
+      "key": "permission.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:permission.update",
+      "type": "permission",
+      "key": "permission.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:project.create",
+      "type": "permission",
+      "key": "project.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:project.delete",
+      "type": "permission",
+      "key": "project.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:project.get",
+      "type": "permission",
+      "key": "project.get",
+      "attributes": {
+        "scoped": true,
+        "scopes": {
+          "none": 0,
+          "all": 1,
+          "members": 2
+        },
+        "kind": "action"
+      }
+    },
+    {
+      "id": "permission:project.name.get",
+      "type": "permission",
+      "key": "project.name.get",
+      "attributes": {
+        "kind": "field",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:project.update",
+      "type": "permission",
+      "key": "project.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:resetpassword.get",
+      "type": "permission",
+      "key": "resetpassword.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:resetpassword.update",
+      "type": "permission",
+      "key": "resetpassword.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:role.create",
+      "type": "permission",
+      "key": "role.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:role.delete",
+      "type": "permission",
+      "key": "role.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:role.get",
+      "type": "permission",
+      "key": "role.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:role.update",
+      "type": "permission",
+      "key": "role.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:savedsearch.create",
+      "type": "permission",
+      "key": "savedsearch.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:savedsearch.delete",
+      "type": "permission",
+      "key": "savedsearch.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:savedsearch.get",
+      "type": "permission",
+      "key": "savedsearch.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:savedsearch.update",
+      "type": "permission",
+      "key": "savedsearch.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:scoreboard.create",
+      "type": "permission",
+      "key": "scoreboard.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:scoreboard.delete",
+      "type": "permission",
+      "key": "scoreboard.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:scoreboard.get",
+      "type": "permission",
+      "key": "scoreboard.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:scoreboard.update",
+      "type": "permission",
+      "key": "scoreboard.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:setting.get",
+      "type": "permission",
+      "key": "setting.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:setting.update",
+      "type": "permission",
+      "key": "setting.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:systemnotification.get",
+      "type": "permission",
+      "key": "systemnotification.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:systemnotificationrecipient.create",
+      "type": "permission",
+      "key": "systemnotificationrecipient.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:systemnotificationrecipient.get",
+      "type": "permission",
+      "key": "systemnotificationrecipient.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:systemnotificationrecipient.update",
+      "type": "permission",
+      "key": "systemnotificationrecipient.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:systemsetting.create",
+      "type": "permission",
+      "key": "systemsetting.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:systemsetting.delete",
+      "type": "permission",
+      "key": "systemsetting.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:systemsetting.get",
+      "type": "permission",
+      "key": "systemsetting.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:systemsetting.update",
+      "type": "permission",
+      "key": "systemsetting.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:tag.create",
+      "type": "permission",
+      "key": "tag.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:tag.delete",
+      "type": "permission",
+      "key": "tag.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:tag.get",
+      "type": "permission",
+      "key": "tag.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:tag.update",
+      "type": "permission",
+      "key": "tag.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:tagged.create",
+      "type": "permission",
+      "key": "tagged.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:tagged.delete",
+      "type": "permission",
+      "key": "tagged.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:tagged.get",
+      "type": "permission",
+      "key": "tagged.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:tagged.update",
+      "type": "permission",
+      "key": "tagged.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:timelog.create",
+      "type": "permission",
+      "key": "timelog.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:timelog.delete",
+      "type": "permission",
+      "key": "timelog.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:timelog.get",
+      "type": "permission",
+      "key": "timelog.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:timelog.update",
+      "type": "permission",
+      "key": "timelog.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:token.create",
+      "type": "permission",
+      "key": "token.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:upload.create",
+      "type": "permission",
+      "key": "upload.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:upload.delete",
+      "type": "permission",
+      "key": "upload.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:upload.get",
+      "type": "permission",
+      "key": "upload.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:upload.update",
+      "type": "permission",
+      "key": "upload.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:user.create",
+      "type": "permission",
+      "key": "user.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:user.delete",
+      "type": "permission",
+      "key": "user.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:user.get",
+      "type": "permission",
+      "key": "user.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:user.update",
+      "type": "permission",
+      "key": "user.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userimage.create",
+      "type": "permission",
+      "key": "userimage.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userimage.get",
+      "type": "permission",
+      "key": "userimage.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userqualification.create",
+      "type": "permission",
+      "key": "userqualification.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userqualification.delete",
+      "type": "permission",
+      "key": "userqualification.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userqualification.get",
+      "type": "permission",
+      "key": "userqualification.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userqualification.update",
+      "type": "permission",
+      "key": "userqualification.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userrole.create",
+      "type": "permission",
+      "key": "userrole.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userrole.delete",
+      "type": "permission",
+      "key": "userrole.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userrole.get",
+      "type": "permission",
+      "key": "userrole.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userrole.update",
+      "type": "permission",
+      "key": "userrole.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userskill.create",
+      "type": "permission",
+      "key": "userskill.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userskill.delete",
+      "type": "permission",
+      "key": "userskill.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userskill.get",
+      "type": "permission",
+      "key": "userskill.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:userskill.update",
+      "type": "permission",
+      "key": "userskill.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:vote.create",
+      "type": "permission",
+      "key": "vote.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:vote.delete",
+      "type": "permission",
+      "key": "vote.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:vote.get",
+      "type": "permission",
+      "key": "vote.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:vote.update",
+      "type": "permission",
+      "key": "vote.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:wiki.create",
+      "type": "permission",
+      "key": "wiki.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:wiki.delete",
+      "type": "permission",
+      "key": "wiki.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:wiki.get",
+      "type": "permission",
+      "key": "wiki.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:wiki.update",
+      "type": "permission",
+      "key": "wiki.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
       "id": "profile:aclFields",
       "type": "profile",
       "key": "aclFields",
       "attributes": {
-        "file": "tools/api-tester/fixtures/default.json"
+        "file": "tools/api-tester/fixtures/default.json",
+        "userId": "api-test-user-acl-ff",
+        "email": "api-tester-acl-fields@example.com",
+        "roleId": "api-test-role-acl-ff",
+        "role": "ACL Field Restricted",
+        "roleDescription": "issue field ACL matrix for api-tester"
       }
     },
     {
@@ -19230,7 +21679,12 @@
       "type": "profile",
       "key": "aclMembers",
       "attributes": {
-        "file": "tools/api-tester/fixtures/default.json"
+        "file": "tools/api-tester/fixtures/default.json",
+        "userId": "api-test-user-acl-mem",
+        "email": "api-tester-acl-members@example.com",
+        "roleId": "api-test-role-acl-mem",
+        "role": "ACL Project Members",
+        "roleDescription": "project.get=2 members scope"
       }
     },
     {
@@ -19238,7 +21692,12 @@
       "type": "profile",
       "key": "aclNoConversation",
       "attributes": {
-        "file": "tools/api-tester/fixtures/default.json"
+        "file": "tools/api-tester/fixtures/default.json",
+        "userId": "api-test-user-acl-nc",
+        "email": "api-tester-acl-noconv@example.com",
+        "roleId": "api-test-role-acl-nc",
+        "role": "ACL No Conversation",
+        "roleDescription": "project+comment allowed, conversationroom.get denied"
       }
     },
     {
@@ -19246,7 +21705,12 @@
       "type": "profile",
       "key": "aclNoProject",
       "attributes": {
-        "file": "tools/api-tester/fixtures/default.json"
+        "file": "tools/api-tester/fixtures/default.json",
+        "userId": "api-test-user-acl-np",
+        "email": "api-tester-acl-noproject@example.com",
+        "roleId": "api-test-role-acl-np",
+        "role": "ACL No Project",
+        "roleDescription": "issue/comment allowed, project.get denied"
       }
     },
     {
@@ -19254,7 +21718,12 @@
       "type": "profile",
       "key": "aclNoSetting",
       "attributes": {
-        "file": "tools/api-tester/fixtures/default.json"
+        "file": "tools/api-tester/fixtures/default.json",
+        "userId": "api-test-user-acl-ns",
+        "email": "api-tester-acl-nosetting@example.com",
+        "roleId": "api-test-role-acl-ns",
+        "role": "ACL No Setting",
+        "roleDescription": "issuestatus/issuetype allowed, setting.* denied"
       }
     },
     {
@@ -19262,7 +21731,12 @@
       "type": "profile",
       "key": "aclProjectOnly",
       "attributes": {
-        "file": "tools/api-tester/fixtures/default.json"
+        "file": "tools/api-tester/fixtures/default.json",
+        "userId": "api-test-user-acl-pi",
+        "email": "api-tester-acl-project@example.com",
+        "roleId": "api-test-role-acl-pi",
+        "role": "ACL Project Only",
+        "roleDescription": "project allowed, issue.get denied"
       }
     },
     {
@@ -19276,7 +21750,12 @@
       "type": "profile",
       "key": "default",
       "attributes": {
-        "file": "tools/api-tester/fixtures/default.json"
+        "file": "tools/api-tester/fixtures/default.json",
+        "userId": "api-test-user-0001",
+        "email": "api-tester@example.com",
+        "roleId": "1",
+        "role": "Admin",
+        "roleDescription": "Admin role of the seeded main user"
       }
     },
     {
@@ -25369,6 +27848,1411 @@
     }
   ],
   "edges": [
+    {
+      "from": "action:activity.delete",
+      "type": "requires",
+      "to": "permission:activity.delete"
+    },
+    {
+      "from": "action:activity.get",
+      "type": "requires",
+      "to": "permission:activity.get"
+    },
+    {
+      "from": "action:activity.list",
+      "type": "requires",
+      "to": "permission:activity.get"
+    },
+    {
+      "from": "action:activity.patch",
+      "type": "requires",
+      "to": "permission:activity.update"
+    },
+    {
+      "from": "action:activity.patchCollection",
+      "type": "requires",
+      "to": "permission:activity.update"
+    },
+    {
+      "from": "action:activity.post",
+      "type": "requires",
+      "to": "permission:activity.create"
+    },
+    {
+      "from": "action:activity.put",
+      "type": "requires",
+      "to": "permission:activity.update"
+    },
+    {
+      "from": "action:activity.related",
+      "type": "requires",
+      "to": "permission:activity.get"
+    },
+    {
+      "from": "action:badge.delete",
+      "type": "requires",
+      "to": "permission:badge.delete"
+    },
+    {
+      "from": "action:badge.get",
+      "type": "requires",
+      "to": "permission:badge.get"
+    },
+    {
+      "from": "action:badge.list",
+      "type": "requires",
+      "to": "permission:badge.get"
+    },
+    {
+      "from": "action:badge.patch",
+      "type": "requires",
+      "to": "permission:badge.update"
+    },
+    {
+      "from": "action:badge.patchCollection",
+      "type": "requires",
+      "to": "permission:badge.update"
+    },
+    {
+      "from": "action:badge.post",
+      "type": "requires",
+      "to": "permission:badge.create"
+    },
+    {
+      "from": "action:badge.put",
+      "type": "requires",
+      "to": "permission:badge.update"
+    },
+    {
+      "from": "action:badge.related",
+      "type": "requires",
+      "to": "permission:badge.get"
+    },
+    {
+      "from": "action:chatroom.delete",
+      "type": "requires",
+      "to": "permission:chatroom.delete"
+    },
+    {
+      "from": "action:chatroom.get",
+      "type": "requires",
+      "to": "permission:chatroom.get"
+    },
+    {
+      "from": "action:chatroom.list",
+      "type": "requires",
+      "to": "permission:chatroom.get"
+    },
+    {
+      "from": "action:chatroom.patch",
+      "type": "requires",
+      "to": "permission:chatroom.update"
+    },
+    {
+      "from": "action:chatroom.patchCollection",
+      "type": "requires",
+      "to": "permission:chatroom.update"
+    },
+    {
+      "from": "action:chatroom.post",
+      "type": "requires",
+      "to": "permission:chatroom.create"
+    },
+    {
+      "from": "action:chatroom.put",
+      "type": "requires",
+      "to": "permission:chatroom.update"
+    },
+    {
+      "from": "action:chatroom.related",
+      "type": "requires",
+      "to": "permission:chatroom.get"
+    },
+    {
+      "from": "action:comment.delete",
+      "type": "requires",
+      "to": "permission:comment.delete"
+    },
+    {
+      "from": "action:comment.get",
+      "type": "requires",
+      "to": "permission:comment.get"
+    },
+    {
+      "from": "action:comment.list",
+      "type": "requires",
+      "to": "permission:comment.get"
+    },
+    {
+      "from": "action:comment.patch",
+      "type": "requires",
+      "to": "permission:comment.update"
+    },
+    {
+      "from": "action:comment.patchCollection",
+      "type": "requires",
+      "to": "permission:comment.update"
+    },
+    {
+      "from": "action:comment.post",
+      "type": "requires",
+      "to": "permission:comment.create"
+    },
+    {
+      "from": "action:comment.put",
+      "type": "requires",
+      "to": "permission:comment.update"
+    },
+    {
+      "from": "action:comment.related",
+      "type": "requires",
+      "to": "permission:comment.get"
+    },
+    {
+      "from": "action:conversationroom.delete",
+      "type": "requires",
+      "to": "permission:conversationroom.delete"
+    },
+    {
+      "from": "action:conversationroom.get",
+      "type": "requires",
+      "to": "permission:conversationroom.get"
+    },
+    {
+      "from": "action:conversationroom.list",
+      "type": "requires",
+      "to": "permission:conversationroom.get"
+    },
+    {
+      "from": "action:conversationroom.patch",
+      "type": "requires",
+      "to": "permission:conversationroom.update"
+    },
+    {
+      "from": "action:conversationroom.patchCollection",
+      "type": "requires",
+      "to": "permission:conversationroom.update"
+    },
+    {
+      "from": "action:conversationroom.post",
+      "type": "requires",
+      "to": "permission:conversationroom.create"
+    },
+    {
+      "from": "action:conversationroom.put",
+      "type": "requires",
+      "to": "permission:conversationroom.update"
+    },
+    {
+      "from": "action:conversationroom.related",
+      "type": "requires",
+      "to": "permission:conversationroom.get"
+    },
+    {
+      "from": "action:converser.delete",
+      "type": "requires",
+      "to": "permission:converser.delete"
+    },
+    {
+      "from": "action:converser.get",
+      "type": "requires",
+      "to": "permission:converser.get"
+    },
+    {
+      "from": "action:converser.list",
+      "type": "requires",
+      "to": "permission:converser.get"
+    },
+    {
+      "from": "action:converser.patch",
+      "type": "requires",
+      "to": "permission:converser.update"
+    },
+    {
+      "from": "action:converser.patchCollection",
+      "type": "requires",
+      "to": "permission:converser.update"
+    },
+    {
+      "from": "action:converser.post",
+      "type": "requires",
+      "to": "permission:converser.create"
+    },
+    {
+      "from": "action:converser.put",
+      "type": "requires",
+      "to": "permission:converser.update"
+    },
+    {
+      "from": "action:converser.related",
+      "type": "requires",
+      "to": "permission:converser.get"
+    },
+    {
+      "from": "action:forgetpassword.get",
+      "type": "requires",
+      "to": "permission:forgetpassword.get"
+    },
+    {
+      "from": "action:forgetpassword.list",
+      "type": "requires",
+      "to": "permission:forgetpassword.get"
+    },
+    {
+      "from": "action:forgetpassword.post",
+      "type": "requires",
+      "to": "permission:forgetpassword.create"
+    },
+    {
+      "from": "action:forgetpassword.related",
+      "type": "requires",
+      "to": "permission:forgetpassword.get"
+    },
+    {
+      "from": "action:idea.delete",
+      "type": "requires",
+      "to": "permission:idea.delete"
+    },
+    {
+      "from": "action:idea.get",
+      "type": "requires",
+      "to": "permission:idea.get"
+    },
+    {
+      "from": "action:idea.list",
+      "type": "requires",
+      "to": "permission:idea.get"
+    },
+    {
+      "from": "action:idea.patch",
+      "type": "requires",
+      "to": "permission:idea.update"
+    },
+    {
+      "from": "action:idea.patchCollection",
+      "type": "requires",
+      "to": "permission:idea.update"
+    },
+    {
+      "from": "action:idea.post",
+      "type": "requires",
+      "to": "permission:idea.create"
+    },
+    {
+      "from": "action:idea.put",
+      "type": "requires",
+      "to": "permission:idea.update"
+    },
+    {
+      "from": "action:idea.related",
+      "type": "requires",
+      "to": "permission:idea.get"
+    },
+    {
+      "from": "action:ideamessage.delete",
+      "type": "requires",
+      "to": "permission:ideamessage.delete"
+    },
+    {
+      "from": "action:ideamessage.get",
+      "type": "requires",
+      "to": "permission:ideamessage.get"
+    },
+    {
+      "from": "action:ideamessage.list",
+      "type": "requires",
+      "to": "permission:ideamessage.get"
+    },
+    {
+      "from": "action:ideamessage.patch",
+      "type": "requires",
+      "to": "permission:ideamessage.update"
+    },
+    {
+      "from": "action:ideamessage.patchCollection",
+      "type": "requires",
+      "to": "permission:ideamessage.update"
+    },
+    {
+      "from": "action:ideamessage.post",
+      "type": "requires",
+      "to": "permission:ideamessage.create"
+    },
+    {
+      "from": "action:ideamessage.put",
+      "type": "requires",
+      "to": "permission:ideamessage.update"
+    },
+    {
+      "from": "action:ideamessage.related",
+      "type": "requires",
+      "to": "permission:ideamessage.get"
+    },
+    {
+      "from": "action:ideaplan.delete",
+      "type": "requires",
+      "to": "permission:ideaplan.delete"
+    },
+    {
+      "from": "action:ideaplan.get",
+      "type": "requires",
+      "to": "permission:ideaplan.get"
+    },
+    {
+      "from": "action:ideaplan.list",
+      "type": "requires",
+      "to": "permission:ideaplan.get"
+    },
+    {
+      "from": "action:ideaplan.patch",
+      "type": "requires",
+      "to": "permission:ideaplan.update"
+    },
+    {
+      "from": "action:ideaplan.patchCollection",
+      "type": "requires",
+      "to": "permission:ideaplan.update"
+    },
+    {
+      "from": "action:ideaplan.post",
+      "type": "requires",
+      "to": "permission:ideaplan.create"
+    },
+    {
+      "from": "action:ideaplan.put",
+      "type": "requires",
+      "to": "permission:ideaplan.update"
+    },
+    {
+      "from": "action:ideaplan.related",
+      "type": "requires",
+      "to": "permission:ideaplan.get"
+    },
+    {
+      "from": "action:ideaplanissue.delete",
+      "type": "requires",
+      "to": "permission:ideaplanissue.delete"
+    },
+    {
+      "from": "action:ideaplanissue.get",
+      "type": "requires",
+      "to": "permission:ideaplanissue.get"
+    },
+    {
+      "from": "action:ideaplanissue.list",
+      "type": "requires",
+      "to": "permission:ideaplanissue.get"
+    },
+    {
+      "from": "action:ideaplanissue.patch",
+      "type": "requires",
+      "to": "permission:ideaplanissue.update"
+    },
+    {
+      "from": "action:ideaplanissue.patchCollection",
+      "type": "requires",
+      "to": "permission:ideaplanissue.update"
+    },
+    {
+      "from": "action:ideaplanissue.post",
+      "type": "requires",
+      "to": "permission:ideaplanissue.create"
+    },
+    {
+      "from": "action:ideaplanissue.put",
+      "type": "requires",
+      "to": "permission:ideaplanissue.update"
+    },
+    {
+      "from": "action:ideaplanissue.related",
+      "type": "requires",
+      "to": "permission:ideaplanissue.get"
+    },
+    {
+      "from": "action:issue.delete",
+      "type": "requires",
+      "to": "permission:issue.delete"
+    },
+    {
+      "from": "action:issue.get",
+      "type": "requires",
+      "to": "permission:issue.get"
+    },
+    {
+      "from": "action:issue.list",
+      "type": "requires",
+      "to": "permission:issue.get"
+    },
+    {
+      "from": "action:issue.patch",
+      "type": "requires",
+      "to": "permission:issue.update"
+    },
+    {
+      "from": "action:issue.patchCollection",
+      "type": "requires",
+      "to": "permission:issue.update"
+    },
+    {
+      "from": "action:issue.post",
+      "type": "requires",
+      "to": "permission:issue.create"
+    },
+    {
+      "from": "action:issue.put",
+      "type": "requires",
+      "to": "permission:issue.update"
+    },
+    {
+      "from": "action:issue.related",
+      "type": "requires",
+      "to": "permission:issue.get"
+    },
+    {
+      "from": "action:issueplanning.post",
+      "type": "requires",
+      "to": "permission:issueplanning.create"
+    },
+    {
+      "from": "action:issuestatus.delete",
+      "type": "requires",
+      "to": "permission:issuestatus.delete"
+    },
+    {
+      "from": "action:issuestatus.get",
+      "type": "requires",
+      "to": "permission:issuestatus.get"
+    },
+    {
+      "from": "action:issuestatus.list",
+      "type": "requires",
+      "to": "permission:issuestatus.get"
+    },
+    {
+      "from": "action:issuestatus.patch",
+      "type": "requires",
+      "to": "permission:issuestatus.update"
+    },
+    {
+      "from": "action:issuestatus.patchCollection",
+      "type": "requires",
+      "to": "permission:issuestatus.update"
+    },
+    {
+      "from": "action:issuestatus.post",
+      "type": "requires",
+      "to": "permission:issuestatus.create"
+    },
+    {
+      "from": "action:issuestatus.put",
+      "type": "requires",
+      "to": "permission:issuestatus.update"
+    },
+    {
+      "from": "action:issuestatus.related",
+      "type": "requires",
+      "to": "permission:issuestatus.get"
+    },
+    {
+      "from": "action:issuetype.delete",
+      "type": "requires",
+      "to": "permission:issuetype.delete"
+    },
+    {
+      "from": "action:issuetype.get",
+      "type": "requires",
+      "to": "permission:issuetype.get"
+    },
+    {
+      "from": "action:issuetype.list",
+      "type": "requires",
+      "to": "permission:issuetype.get"
+    },
+    {
+      "from": "action:issuetype.patch",
+      "type": "requires",
+      "to": "permission:issuetype.update"
+    },
+    {
+      "from": "action:issuetype.patchCollection",
+      "type": "requires",
+      "to": "permission:issuetype.update"
+    },
+    {
+      "from": "action:issuetype.post",
+      "type": "requires",
+      "to": "permission:issuetype.create"
+    },
+    {
+      "from": "action:issuetype.put",
+      "type": "requires",
+      "to": "permission:issuetype.update"
+    },
+    {
+      "from": "action:issuetype.related",
+      "type": "requires",
+      "to": "permission:issuetype.get"
+    },
+    {
+      "from": "action:issuewatcher.patch",
+      "type": "requires",
+      "to": "permission:issuewatcher.update"
+    },
+    {
+      "from": "action:issuewatcher.patchCollection",
+      "type": "requires",
+      "to": "permission:issuewatcher.update"
+    },
+    {
+      "from": "action:issuewatcher.post",
+      "type": "requires",
+      "to": "permission:issuewatcher.create"
+    },
+    {
+      "from": "action:membership.delete",
+      "type": "requires",
+      "to": "permission:membership.delete"
+    },
+    {
+      "from": "action:membership.get",
+      "type": "requires",
+      "to": "permission:membership.get"
+    },
+    {
+      "from": "action:membership.list",
+      "type": "requires",
+      "to": "permission:membership.get"
+    },
+    {
+      "from": "action:membership.patch",
+      "type": "requires",
+      "to": "permission:membership.update"
+    },
+    {
+      "from": "action:membership.patchCollection",
+      "type": "requires",
+      "to": "permission:membership.update"
+    },
+    {
+      "from": "action:membership.post",
+      "type": "requires",
+      "to": "permission:membership.create"
+    },
+    {
+      "from": "action:membership.put",
+      "type": "requires",
+      "to": "permission:membership.update"
+    },
+    {
+      "from": "action:membership.related",
+      "type": "requires",
+      "to": "permission:membership.get"
+    },
+    {
+      "from": "action:mention.delete",
+      "type": "requires",
+      "to": "permission:mention.delete"
+    },
+    {
+      "from": "action:mention.get",
+      "type": "requires",
+      "to": "permission:mention.get"
+    },
+    {
+      "from": "action:mention.list",
+      "type": "requires",
+      "to": "permission:mention.get"
+    },
+    {
+      "from": "action:mention.patch",
+      "type": "requires",
+      "to": "permission:mention.update"
+    },
+    {
+      "from": "action:mention.patchCollection",
+      "type": "requires",
+      "to": "permission:mention.update"
+    },
+    {
+      "from": "action:mention.post",
+      "type": "requires",
+      "to": "permission:mention.create"
+    },
+    {
+      "from": "action:mention.put",
+      "type": "requires",
+      "to": "permission:mention.update"
+    },
+    {
+      "from": "action:mention.related",
+      "type": "requires",
+      "to": "permission:mention.get"
+    },
+    {
+      "from": "action:milestone.delete",
+      "type": "requires",
+      "to": "permission:milestone.delete"
+    },
+    {
+      "from": "action:milestone.get",
+      "type": "requires",
+      "to": "permission:milestone.get"
+    },
+    {
+      "from": "action:milestone.list",
+      "type": "requires",
+      "to": "permission:milestone.get"
+    },
+    {
+      "from": "action:milestone.patch",
+      "type": "requires",
+      "to": "permission:milestone.update"
+    },
+    {
+      "from": "action:milestone.patchCollection",
+      "type": "requires",
+      "to": "permission:milestone.update"
+    },
+    {
+      "from": "action:milestone.post",
+      "type": "requires",
+      "to": "permission:milestone.create"
+    },
+    {
+      "from": "action:milestone.put",
+      "type": "requires",
+      "to": "permission:milestone.update"
+    },
+    {
+      "from": "action:milestone.related",
+      "type": "requires",
+      "to": "permission:milestone.get"
+    },
+    {
+      "from": "action:milestoneoverview.get",
+      "type": "requires",
+      "to": "permission:milestoneoverview.get"
+    },
+    {
+      "from": "action:milestoneoverview.list",
+      "type": "requires",
+      "to": "permission:milestoneoverview.get"
+    },
+    {
+      "from": "action:milestoneoverview.related",
+      "type": "requires",
+      "to": "permission:milestoneoverview.get"
+    },
+    {
+      "from": "action:permission.delete",
+      "type": "requires",
+      "to": "permission:permission.delete"
+    },
+    {
+      "from": "action:permission.get",
+      "type": "requires",
+      "to": "permission:permission.get"
+    },
+    {
+      "from": "action:permission.list",
+      "type": "requires",
+      "to": "permission:permission.get"
+    },
+    {
+      "from": "action:permission.patch",
+      "type": "requires",
+      "to": "permission:permission.update"
+    },
+    {
+      "from": "action:permission.patchCollection",
+      "type": "requires",
+      "to": "permission:permission.update"
+    },
+    {
+      "from": "action:permission.post",
+      "type": "requires",
+      "to": "permission:permission.create"
+    },
+    {
+      "from": "action:permission.put",
+      "type": "requires",
+      "to": "permission:permission.update"
+    },
+    {
+      "from": "action:permission.related",
+      "type": "requires",
+      "to": "permission:permission.get"
+    },
+    {
+      "from": "action:project.delete",
+      "type": "requires",
+      "to": "permission:project.delete"
+    },
+    {
+      "from": "action:project.get",
+      "type": "requires",
+      "to": "permission:project.get"
+    },
+    {
+      "from": "action:project.list",
+      "type": "requires",
+      "to": "permission:project.get"
+    },
+    {
+      "from": "action:project.patch",
+      "type": "requires",
+      "to": "permission:project.update"
+    },
+    {
+      "from": "action:project.patchCollection",
+      "type": "requires",
+      "to": "permission:project.update"
+    },
+    {
+      "from": "action:project.post",
+      "type": "requires",
+      "to": "permission:project.create"
+    },
+    {
+      "from": "action:project.put",
+      "type": "requires",
+      "to": "permission:project.update"
+    },
+    {
+      "from": "action:project.related",
+      "type": "requires",
+      "to": "permission:project.get"
+    },
+    {
+      "from": "action:resetpassword.get",
+      "type": "requires",
+      "to": "permission:resetpassword.get"
+    },
+    {
+      "from": "action:resetpassword.list",
+      "type": "requires",
+      "to": "permission:resetpassword.get"
+    },
+    {
+      "from": "action:resetpassword.patch",
+      "type": "requires",
+      "to": "permission:resetpassword.update"
+    },
+    {
+      "from": "action:resetpassword.patchCollection",
+      "type": "requires",
+      "to": "permission:resetpassword.update"
+    },
+    {
+      "from": "action:resetpassword.related",
+      "type": "requires",
+      "to": "permission:resetpassword.get"
+    },
+    {
+      "from": "action:role.delete",
+      "type": "requires",
+      "to": "permission:role.delete"
+    },
+    {
+      "from": "action:role.get",
+      "type": "requires",
+      "to": "permission:role.get"
+    },
+    {
+      "from": "action:role.list",
+      "type": "requires",
+      "to": "permission:role.get"
+    },
+    {
+      "from": "action:role.patch",
+      "type": "requires",
+      "to": "permission:role.update"
+    },
+    {
+      "from": "action:role.patchCollection",
+      "type": "requires",
+      "to": "permission:role.update"
+    },
+    {
+      "from": "action:role.post",
+      "type": "requires",
+      "to": "permission:role.create"
+    },
+    {
+      "from": "action:role.put",
+      "type": "requires",
+      "to": "permission:role.update"
+    },
+    {
+      "from": "action:role.related",
+      "type": "requires",
+      "to": "permission:role.get"
+    },
+    {
+      "from": "action:savedsearch.delete",
+      "type": "requires",
+      "to": "permission:savedsearch.delete"
+    },
+    {
+      "from": "action:savedsearch.get",
+      "type": "requires",
+      "to": "permission:savedsearch.get"
+    },
+    {
+      "from": "action:savedsearch.list",
+      "type": "requires",
+      "to": "permission:savedsearch.get"
+    },
+    {
+      "from": "action:savedsearch.patch",
+      "type": "requires",
+      "to": "permission:savedsearch.update"
+    },
+    {
+      "from": "action:savedsearch.patchCollection",
+      "type": "requires",
+      "to": "permission:savedsearch.update"
+    },
+    {
+      "from": "action:savedsearch.post",
+      "type": "requires",
+      "to": "permission:savedsearch.create"
+    },
+    {
+      "from": "action:savedsearch.put",
+      "type": "requires",
+      "to": "permission:savedsearch.update"
+    },
+    {
+      "from": "action:savedsearch.related",
+      "type": "requires",
+      "to": "permission:savedsearch.get"
+    },
+    {
+      "from": "action:scoreboard.delete",
+      "type": "requires",
+      "to": "permission:scoreboard.delete"
+    },
+    {
+      "from": "action:scoreboard.get",
+      "type": "requires",
+      "to": "permission:scoreboard.get"
+    },
+    {
+      "from": "action:scoreboard.list",
+      "type": "requires",
+      "to": "permission:scoreboard.get"
+    },
+    {
+      "from": "action:scoreboard.patch",
+      "type": "requires",
+      "to": "permission:scoreboard.update"
+    },
+    {
+      "from": "action:scoreboard.patchCollection",
+      "type": "requires",
+      "to": "permission:scoreboard.update"
+    },
+    {
+      "from": "action:scoreboard.post",
+      "type": "requires",
+      "to": "permission:scoreboard.create"
+    },
+    {
+      "from": "action:scoreboard.put",
+      "type": "requires",
+      "to": "permission:scoreboard.update"
+    },
+    {
+      "from": "action:scoreboard.related",
+      "type": "requires",
+      "to": "permission:scoreboard.get"
+    },
+    {
+      "from": "action:setting.get",
+      "type": "requires",
+      "to": "permission:setting.get"
+    },
+    {
+      "from": "action:setting.list",
+      "type": "requires",
+      "to": "permission:setting.get"
+    },
+    {
+      "from": "action:setting.patch",
+      "type": "requires",
+      "to": "permission:setting.update"
+    },
+    {
+      "from": "action:setting.patchCollection",
+      "type": "requires",
+      "to": "permission:setting.update"
+    },
+    {
+      "from": "action:setting.related",
+      "type": "requires",
+      "to": "permission:setting.get"
+    },
+    {
+      "from": "action:systemnotification.get",
+      "type": "requires",
+      "to": "permission:systemnotification.get"
+    },
+    {
+      "from": "action:systemnotification.list",
+      "type": "requires",
+      "to": "permission:systemnotification.get"
+    },
+    {
+      "from": "action:systemnotification.related",
+      "type": "requires",
+      "to": "permission:systemnotification.get"
+    },
+    {
+      "from": "action:systemnotificationrecipient.get",
+      "type": "requires",
+      "to": "permission:systemnotificationrecipient.get"
+    },
+    {
+      "from": "action:systemnotificationrecipient.list",
+      "type": "requires",
+      "to": "permission:systemnotificationrecipient.get"
+    },
+    {
+      "from": "action:systemnotificationrecipient.patch",
+      "type": "requires",
+      "to": "permission:systemnotificationrecipient.update"
+    },
+    {
+      "from": "action:systemnotificationrecipient.patchCollection",
+      "type": "requires",
+      "to": "permission:systemnotificationrecipient.update"
+    },
+    {
+      "from": "action:systemnotificationrecipient.post",
+      "type": "requires",
+      "to": "permission:systemnotificationrecipient.create"
+    },
+    {
+      "from": "action:systemnotificationrecipient.related",
+      "type": "requires",
+      "to": "permission:systemnotificationrecipient.get"
+    },
+    {
+      "from": "action:systemsetting.get",
+      "type": "requires",
+      "to": "permission:systemsetting.get"
+    },
+    {
+      "from": "action:systemsetting.list",
+      "type": "requires",
+      "to": "permission:systemsetting.get"
+    },
+    {
+      "from": "action:systemsetting.related",
+      "type": "requires",
+      "to": "permission:systemsetting.get"
+    },
+    {
+      "from": "action:tag.delete",
+      "type": "requires",
+      "to": "permission:tag.delete"
+    },
+    {
+      "from": "action:tag.get",
+      "type": "requires",
+      "to": "permission:tag.get"
+    },
+    {
+      "from": "action:tag.list",
+      "type": "requires",
+      "to": "permission:tag.get"
+    },
+    {
+      "from": "action:tag.patch",
+      "type": "requires",
+      "to": "permission:tag.update"
+    },
+    {
+      "from": "action:tag.patchCollection",
+      "type": "requires",
+      "to": "permission:tag.update"
+    },
+    {
+      "from": "action:tag.post",
+      "type": "requires",
+      "to": "permission:tag.create"
+    },
+    {
+      "from": "action:tag.put",
+      "type": "requires",
+      "to": "permission:tag.update"
+    },
+    {
+      "from": "action:tag.related",
+      "type": "requires",
+      "to": "permission:tag.get"
+    },
+    {
+      "from": "action:tagged.delete",
+      "type": "requires",
+      "to": "permission:tagged.delete"
+    },
+    {
+      "from": "action:tagged.get",
+      "type": "requires",
+      "to": "permission:tagged.get"
+    },
+    {
+      "from": "action:tagged.list",
+      "type": "requires",
+      "to": "permission:tagged.get"
+    },
+    {
+      "from": "action:tagged.post",
+      "type": "requires",
+      "to": "permission:tagged.create"
+    },
+    {
+      "from": "action:tagged.related",
+      "type": "requires",
+      "to": "permission:tagged.get"
+    },
+    {
+      "from": "action:timelog.delete",
+      "type": "requires",
+      "to": "permission:timelog.delete"
+    },
+    {
+      "from": "action:timelog.get",
+      "type": "requires",
+      "to": "permission:timelog.get"
+    },
+    {
+      "from": "action:timelog.list",
+      "type": "requires",
+      "to": "permission:timelog.get"
+    },
+    {
+      "from": "action:timelog.patch",
+      "type": "requires",
+      "to": "permission:timelog.update"
+    },
+    {
+      "from": "action:timelog.patchCollection",
+      "type": "requires",
+      "to": "permission:timelog.update"
+    },
+    {
+      "from": "action:timelog.post",
+      "type": "requires",
+      "to": "permission:timelog.create"
+    },
+    {
+      "from": "action:timelog.put",
+      "type": "requires",
+      "to": "permission:timelog.update"
+    },
+    {
+      "from": "action:timelog.related",
+      "type": "requires",
+      "to": "permission:timelog.get"
+    },
+    {
+      "from": "action:token.post",
+      "type": "requires",
+      "to": "permission:token.create"
+    },
+    {
+      "from": "action:upload.delete",
+      "type": "requires",
+      "to": "permission:upload.delete"
+    },
+    {
+      "from": "action:upload.get",
+      "type": "requires",
+      "to": "permission:upload.get"
+    },
+    {
+      "from": "action:upload.list",
+      "type": "requires",
+      "to": "permission:upload.get"
+    },
+    {
+      "from": "action:upload.patch",
+      "type": "requires",
+      "to": "permission:upload.update"
+    },
+    {
+      "from": "action:upload.patchCollection",
+      "type": "requires",
+      "to": "permission:upload.update"
+    },
+    {
+      "from": "action:upload.post",
+      "type": "requires",
+      "to": "permission:upload.create"
+    },
+    {
+      "from": "action:upload.put",
+      "type": "requires",
+      "to": "permission:upload.update"
+    },
+    {
+      "from": "action:upload.related",
+      "type": "requires",
+      "to": "permission:upload.get"
+    },
+    {
+      "from": "action:user.delete",
+      "type": "requires",
+      "to": "permission:user.delete"
+    },
+    {
+      "from": "action:user.get",
+      "type": "requires",
+      "to": "permission:user.get"
+    },
+    {
+      "from": "action:user.list",
+      "type": "requires",
+      "to": "permission:user.get"
+    },
+    {
+      "from": "action:user.patch",
+      "type": "requires",
+      "to": "permission:user.update"
+    },
+    {
+      "from": "action:user.patchCollection",
+      "type": "requires",
+      "to": "permission:user.update"
+    },
+    {
+      "from": "action:user.post",
+      "type": "requires",
+      "to": "permission:user.create"
+    },
+    {
+      "from": "action:user.put",
+      "type": "requires",
+      "to": "permission:user.update"
+    },
+    {
+      "from": "action:user.related",
+      "type": "requires",
+      "to": "permission:user.get"
+    },
+    {
+      "from": "action:userimage.get",
+      "type": "requires",
+      "to": "permission:userimage.get"
+    },
+    {
+      "from": "action:userimage.post",
+      "type": "requires",
+      "to": "permission:userimage.create"
+    },
+    {
+      "from": "action:userqualification.delete",
+      "type": "requires",
+      "to": "permission:userqualification.delete"
+    },
+    {
+      "from": "action:userqualification.get",
+      "type": "requires",
+      "to": "permission:userqualification.get"
+    },
+    {
+      "from": "action:userqualification.list",
+      "type": "requires",
+      "to": "permission:userqualification.get"
+    },
+    {
+      "from": "action:userqualification.patch",
+      "type": "requires",
+      "to": "permission:userqualification.update"
+    },
+    {
+      "from": "action:userqualification.patchCollection",
+      "type": "requires",
+      "to": "permission:userqualification.update"
+    },
+    {
+      "from": "action:userqualification.post",
+      "type": "requires",
+      "to": "permission:userqualification.create"
+    },
+    {
+      "from": "action:userqualification.put",
+      "type": "requires",
+      "to": "permission:userqualification.update"
+    },
+    {
+      "from": "action:userqualification.related",
+      "type": "requires",
+      "to": "permission:userqualification.get"
+    },
+    {
+      "from": "action:userrole.delete",
+      "type": "requires",
+      "to": "permission:userrole.delete"
+    },
+    {
+      "from": "action:userrole.get",
+      "type": "requires",
+      "to": "permission:userrole.get"
+    },
+    {
+      "from": "action:userrole.list",
+      "type": "requires",
+      "to": "permission:userrole.get"
+    },
+    {
+      "from": "action:userrole.patch",
+      "type": "requires",
+      "to": "permission:userrole.update"
+    },
+    {
+      "from": "action:userrole.patchCollection",
+      "type": "requires",
+      "to": "permission:userrole.update"
+    },
+    {
+      "from": "action:userrole.post",
+      "type": "requires",
+      "to": "permission:userrole.create"
+    },
+    {
+      "from": "action:userrole.put",
+      "type": "requires",
+      "to": "permission:userrole.update"
+    },
+    {
+      "from": "action:userrole.related",
+      "type": "requires",
+      "to": "permission:userrole.get"
+    },
+    {
+      "from": "action:userskill.delete",
+      "type": "requires",
+      "to": "permission:userskill.delete"
+    },
+    {
+      "from": "action:userskill.get",
+      "type": "requires",
+      "to": "permission:userskill.get"
+    },
+    {
+      "from": "action:userskill.list",
+      "type": "requires",
+      "to": "permission:userskill.get"
+    },
+    {
+      "from": "action:userskill.patch",
+      "type": "requires",
+      "to": "permission:userskill.update"
+    },
+    {
+      "from": "action:userskill.patchCollection",
+      "type": "requires",
+      "to": "permission:userskill.update"
+    },
+    {
+      "from": "action:userskill.post",
+      "type": "requires",
+      "to": "permission:userskill.create"
+    },
+    {
+      "from": "action:userskill.put",
+      "type": "requires",
+      "to": "permission:userskill.update"
+    },
+    {
+      "from": "action:userskill.related",
+      "type": "requires",
+      "to": "permission:userskill.get"
+    },
+    {
+      "from": "action:vote.delete",
+      "type": "requires",
+      "to": "permission:vote.delete"
+    },
+    {
+      "from": "action:vote.get",
+      "type": "requires",
+      "to": "permission:vote.get"
+    },
+    {
+      "from": "action:vote.list",
+      "type": "requires",
+      "to": "permission:vote.get"
+    },
+    {
+      "from": "action:vote.patch",
+      "type": "requires",
+      "to": "permission:vote.update"
+    },
+    {
+      "from": "action:vote.patchCollection",
+      "type": "requires",
+      "to": "permission:vote.update"
+    },
+    {
+      "from": "action:vote.post",
+      "type": "requires",
+      "to": "permission:vote.create"
+    },
+    {
+      "from": "action:vote.put",
+      "type": "requires",
+      "to": "permission:vote.update"
+    },
+    {
+      "from": "action:vote.related",
+      "type": "requires",
+      "to": "permission:vote.get"
+    },
+    {
+      "from": "action:wiki.delete",
+      "type": "requires",
+      "to": "permission:wiki.delete"
+    },
+    {
+      "from": "action:wiki.get",
+      "type": "requires",
+      "to": "permission:wiki.get"
+    },
+    {
+      "from": "action:wiki.list",
+      "type": "requires",
+      "to": "permission:wiki.get"
+    },
+    {
+      "from": "action:wiki.patch",
+      "type": "requires",
+      "to": "permission:wiki.update"
+    },
+    {
+      "from": "action:wiki.patchCollection",
+      "type": "requires",
+      "to": "permission:wiki.update"
+    },
+    {
+      "from": "action:wiki.post",
+      "type": "requires",
+      "to": "permission:wiki.create"
+    },
+    {
+      "from": "action:wiki.put",
+      "type": "requires",
+      "to": "permission:wiki.update"
+    },
+    {
+      "from": "action:wiki.related",
+      "type": "requires",
+      "to": "permission:wiki.get"
+    },
     {
       "from": "case:acl/acl-admin-comment-allowed",
       "type": "asserts",
@@ -41160,6 +45044,21 @@
       "to": "model:Comment"
     },
     {
+      "from": "controller:comment",
+      "type": "uses_component",
+      "to": "component:Events\\ConversationCommentLiveEvents"
+    },
+    {
+      "from": "controller:comment",
+      "type": "uses_component",
+      "to": "component:Issuemention"
+    },
+    {
+      "from": "controller:comment",
+      "type": "uses_component",
+      "to": "component:Notification"
+    },
+    {
       "from": "controller:conversationroom",
       "type": "has_action",
       "to": "action:conversationroom.delete"
@@ -41218,6 +45117,11 @@
       "from": "controller:conversationroom",
       "type": "serves",
       "to": "model:Conversationroom"
+    },
+    {
+      "from": "controller:conversationroom",
+      "type": "uses_component",
+      "to": "component:Events\\ConversationLiveEvents"
     },
     {
       "from": "controller:converser",
@@ -41375,6 +45279,11 @@
       "to": "model:Idea"
     },
     {
+      "from": "controller:idea",
+      "type": "uses_component",
+      "to": "component:Events\\IdeaLiveEvents"
+    },
+    {
       "from": "controller:ideamessage",
       "type": "has_action",
       "to": "action:ideamessage.delete"
@@ -41433,6 +45342,11 @@
       "from": "controller:ideamessage",
       "type": "serves",
       "to": "model:Ideamessage"
+    },
+    {
+      "from": "controller:ideamessage",
+      "type": "uses_component",
+      "to": "component:Events\\IdeamessageLiveEvents"
     },
     {
       "from": "controller:ideaplan",
@@ -41495,6 +45409,11 @@
       "to": "model:Ideaplan"
     },
     {
+      "from": "controller:ideaplan",
+      "type": "uses_component",
+      "to": "component:Events\\IdeaplanLiveEvents"
+    },
+    {
       "from": "controller:ideaplanissue",
       "type": "has_action",
       "to": "action:ideaplanissue.delete"
@@ -41553,6 +45472,16 @@
       "from": "controller:ideaplanissue",
       "type": "serves",
       "to": "model:Ideaplanissue"
+    },
+    {
+      "from": "controller:ideaplanissue",
+      "type": "uses_component",
+      "to": "component:Events\\IdeaplanissueLiveEvents"
+    },
+    {
+      "from": "controller:image",
+      "type": "has_action",
+      "to": "action:image.get"
     },
     {
       "from": "controller:index",
@@ -41618,6 +45547,26 @@
       "from": "controller:issue",
       "type": "serves",
       "to": "model:Issue"
+    },
+    {
+      "from": "controller:issue",
+      "type": "uses_component",
+      "to": "component:Events\\IssueLiveEvents"
+    },
+    {
+      "from": "controller:issue",
+      "type": "uses_component",
+      "to": "component:Filethumb"
+    },
+    {
+      "from": "controller:issue",
+      "type": "uses_component",
+      "to": "component:Issueactivities"
+    },
+    {
+      "from": "controller:issue",
+      "type": "uses_component",
+      "to": "component:Notification"
     },
     {
       "from": "controller:issueplanning",
@@ -41835,6 +45784,16 @@
       "to": "model:Membership"
     },
     {
+      "from": "controller:membership",
+      "type": "uses_component",
+      "to": "component:Notification"
+    },
+    {
+      "from": "controller:membership",
+      "type": "uses_component",
+      "to": "component:ProjectActivities"
+    },
+    {
       "from": "controller:mention",
       "type": "has_action",
       "to": "action:mention.delete"
@@ -41955,6 +45914,21 @@
       "to": "model:Milestone"
     },
     {
+      "from": "controller:milestone",
+      "type": "uses_component",
+      "to": "component:Events\\MilestoneLiveEvents"
+    },
+    {
+      "from": "controller:milestone",
+      "type": "uses_component",
+      "to": "component:Notification"
+    },
+    {
+      "from": "controller:milestone",
+      "type": "uses_component",
+      "to": "component:ProjectActivities"
+    },
+    {
       "from": "controller:milestoneoverview",
       "type": "has_action",
       "to": "action:milestoneoverview.get"
@@ -42035,6 +46009,11 @@
       "to": "model:Permission"
     },
     {
+      "from": "controller:permission",
+      "type": "uses_component",
+      "to": "component:Permission"
+    },
+    {
       "from": "controller:preview",
       "type": "has_action",
       "to": "action:preview.get"
@@ -42098,6 +46077,21 @@
       "from": "controller:project",
       "type": "serves",
       "to": "model:Project"
+    },
+    {
+      "from": "controller:project",
+      "type": "uses_component",
+      "to": "component:Notification"
+    },
+    {
+      "from": "controller:project",
+      "type": "uses_component",
+      "to": "component:OnboardMember"
+    },
+    {
+      "from": "controller:project",
+      "type": "uses_component",
+      "to": "component:ProjectActivities"
     },
     {
       "from": "controller:resetpassword",
@@ -42188,6 +46182,11 @@
       "from": "controller:role",
       "type": "serves",
       "to": "model:Role"
+    },
+    {
+      "from": "controller:role",
+      "type": "uses_component",
+      "to": "component:Role"
     },
     {
       "from": "controller:savedsearch",
@@ -42590,6 +46589,16 @@
       "to": "model:Timelog"
     },
     {
+      "from": "controller:timelog",
+      "type": "uses_component",
+      "to": "component:Notification"
+    },
+    {
+      "from": "controller:timelog",
+      "type": "uses_component",
+      "to": "component:Timelogged"
+    },
+    {
       "from": "controller:token",
       "type": "has_action",
       "to": "action:token.options"
@@ -42670,6 +46679,11 @@
       "to": "model:Upload"
     },
     {
+      "from": "controller:upload",
+      "type": "uses_component",
+      "to": "component:Fileattachment"
+    },
+    {
       "from": "controller:user",
       "type": "has_action",
       "to": "action:user.delete"
@@ -42728,6 +46742,16 @@
       "from": "controller:user",
       "type": "serves",
       "to": "model:User"
+    },
+    {
+      "from": "controller:user",
+      "type": "uses_component",
+      "to": "component:Dashboard"
+    },
+    {
+      "from": "controller:user",
+      "type": "uses_component",
+      "to": "component:GeneratePassword"
     },
     {
       "from": "controller:userimage",
@@ -42985,6 +47009,11 @@
       "to": "model:Vote"
     },
     {
+      "from": "controller:vote",
+      "type": "uses_component",
+      "to": "component:Events\\ConversationVoteLiveEvents"
+    },
+    {
       "from": "controller:wiki",
       "type": "has_action",
       "to": "action:wiki.delete"
@@ -43043,6 +47072,11 @@
       "from": "controller:wiki",
       "type": "serves",
       "to": "model:Wiki"
+    },
+    {
+      "from": "controller:wiki",
+      "type": "uses_component",
+      "to": "component:Filethumb"
     },
     {
       "from": "field:Activity.createdUserName",
@@ -48078,6 +52112,861 @@
       "from": "model:Wiki",
       "type": "uses_behaviour",
       "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "permission:issue.description.create",
+      "type": "guards",
+      "to": "field:Issue.description"
+    },
+    {
+      "from": "permission:issue.description.get",
+      "type": "guards",
+      "to": "field:Issue.description"
+    },
+    {
+      "from": "permission:issue.description.update",
+      "type": "guards",
+      "to": "field:Issue.description"
+    },
+    {
+      "from": "permission:issue.priority.create",
+      "type": "guards",
+      "to": "field:Issue.priority"
+    },
+    {
+      "from": "permission:issue.priority.get",
+      "type": "guards",
+      "to": "field:Issue.priority"
+    },
+    {
+      "from": "permission:issue.priority.update",
+      "type": "guards",
+      "to": "field:Issue.priority"
+    },
+    {
+      "from": "permission:issue.subject.create",
+      "type": "guards",
+      "to": "field:Issue.subject"
+    },
+    {
+      "from": "permission:issue.subject.get",
+      "type": "guards",
+      "to": "field:Issue.subject"
+    },
+    {
+      "from": "permission:issue.subject.update",
+      "type": "guards",
+      "to": "field:Issue.subject"
+    },
+    {
+      "from": "permission:project.name.get",
+      "type": "guards",
+      "to": "field:Project.name"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "denies",
+      "to": "permission:issue.description.get"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "denies",
+      "to": "permission:issue.priority.create"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "denies",
+      "to": "permission:issue.priority.update"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "denies",
+      "to": "permission:issue.subject.create"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "denies",
+      "to": "permission:issue.subject.get"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "denies",
+      "to": "permission:issue.subject.update"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "denies",
+      "to": "permission:project.name.get"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "grants",
+      "to": "permission:issue.create"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "grants",
+      "to": "permission:issue.description.create"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "grants",
+      "to": "permission:issue.description.update"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "grants",
+      "to": "permission:issue.get"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "grants",
+      "to": "permission:issue.priority.get"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "grants",
+      "to": "permission:issue.update"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "grants",
+      "to": "permission:project.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:comment.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:conversationroom.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:idea.create"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:idea.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:ideamessage.create"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:ideamessage.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:ideaplan.create"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:ideaplan.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:ideaplanissue.create"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:ideaplanissue.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:issue.create"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:issue.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants_members",
+      "to": "permission:project.get"
+    },
+    {
+      "from": "profile:aclNoConversation",
+      "type": "denies",
+      "to": "permission:conversationroom.get"
+    },
+    {
+      "from": "profile:aclNoConversation",
+      "type": "grants",
+      "to": "permission:comment.get"
+    },
+    {
+      "from": "profile:aclNoConversation",
+      "type": "grants",
+      "to": "permission:issue.get"
+    },
+    {
+      "from": "profile:aclNoConversation",
+      "type": "grants",
+      "to": "permission:project.get"
+    },
+    {
+      "from": "profile:aclNoProject",
+      "type": "denies",
+      "to": "permission:project.get"
+    },
+    {
+      "from": "profile:aclNoProject",
+      "type": "denies",
+      "to": "permission:setting.get"
+    },
+    {
+      "from": "profile:aclNoProject",
+      "type": "denies",
+      "to": "permission:setting.update"
+    },
+    {
+      "from": "profile:aclNoProject",
+      "type": "grants",
+      "to": "permission:comment.get"
+    },
+    {
+      "from": "profile:aclNoProject",
+      "type": "grants",
+      "to": "permission:conversationroom.get"
+    },
+    {
+      "from": "profile:aclNoProject",
+      "type": "grants",
+      "to": "permission:issue.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:setting.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:setting.update"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:issuestatus.create"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:issuestatus.delete"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:issuestatus.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:issuestatus.update"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:issuetype.create"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:issuetype.delete"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:issuetype.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:issuetype.update"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:project.get"
+    },
+    {
+      "from": "profile:aclProjectOnly",
+      "type": "denies",
+      "to": "permission:issue.get"
+    },
+    {
+      "from": "profile:aclProjectOnly",
+      "type": "grants",
+      "to": "permission:comment.get"
+    },
+    {
+      "from": "profile:aclProjectOnly",
+      "type": "grants",
+      "to": "permission:conversationroom.get"
+    },
+    {
+      "from": "profile:aclProjectOnly",
+      "type": "grants",
+      "to": "permission:project.get"
+    },
+    {
+      "from": "profile:aclProjectOnly",
+      "type": "grants",
+      "to": "permission:user.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:activity.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:activity.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:activity.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:activity.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:comment.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:comment.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:comment.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:comment.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:conversationroom.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:conversationroom.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:conversationroom.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:conversationroom.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:idea.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:idea.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:idea.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:idea.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:ideamessage.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:ideamessage.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:ideamessage.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:ideamessage.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:ideaplan.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:ideaplan.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:ideaplan.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:ideaplan.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:ideaplanissue.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:ideaplanissue.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:ideaplanissue.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:ideaplanissue.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issue.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issue.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issue.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issue.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issuestatus.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issuestatus.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issuestatus.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issuestatus.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issuetype.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issuetype.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issuetype.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issuetype.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:membership.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:membership.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:membership.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:membership.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:milestone.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:milestone.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:milestone.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:milestone.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:permission.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:permission.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:permission.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:permission.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:project.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:project.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:project.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:project.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:role.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:role.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:role.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:role.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:savedsearch.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:savedsearch.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:savedsearch.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:savedsearch.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:systemsetting.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:systemsetting.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:systemsetting.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:systemsetting.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:tag.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:tag.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:tag.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:tag.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:tagged.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:tagged.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:tagged.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:tagged.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:timelog.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:timelog.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:timelog.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:timelog.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:upload.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:upload.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:upload.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:upload.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:user.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:user.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:user.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:user.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:userqualification.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:userqualification.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:userqualification.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:userqualification.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:userrole.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:userrole.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:userrole.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:userrole.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:userskill.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:userskill.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:userskill.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:userskill.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:vote.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:vote.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:vote.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:vote.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:wiki.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:wiki.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:wiki.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:wiki.update"
     },
     {
       "from": "relationship:Activity.createdBy",

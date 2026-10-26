@@ -11,7 +11,7 @@ use GaiaDev\Graph\Schema;
 
 /**
  * Maps route records onto route, controller and action nodes, and links each
- * REST controller to the model it serves.
+ * REST controller (marked `rest`) to the model it serves.
  *
  * Run it after ModelMapper: a REST controller serves the model whose lowercase
  * name equals the resource name (`issue` -> `Issue`), the convention
@@ -42,7 +42,11 @@ class RouteMapper
                 'method' => $route['method'],
                 'path' => $route['path'],
             ]);
-            $controllerId = $graph->addNode(Schema::CONTROLLER, $route['controller']);
+            $controllerId = $graph->addNode(
+                Schema::CONTROLLER,
+                $route['controller'],
+                $route['type'] === 'rest' ? ['rest' => true] : []
+            );
             $actionId = $graph->addNode(Schema::ACTION, $route['controller'] . '.' . $route['action']);
 
             $graph->addEdge($controllerId, 'has_action', $actionId);

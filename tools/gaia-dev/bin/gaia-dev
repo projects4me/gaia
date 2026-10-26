@@ -7,7 +7,8 @@
 
 /**
  * gaia-dev: developer tooling over the Gaia sources (graph export, and later
- * scaffolders and queries). Plain PHP, no application or Composer imports.
+ * scaffolders and queries). Plain PHP, no application imports; the only Composer
+ * package it uses is nikic/php-parser, to read the PHP sources.
  */
 
 if (PHP_SAPI !== 'cli') {
@@ -16,6 +17,13 @@ if (PHP_SAPI !== 'cli') {
 }
 
 define('GAIA_DEV_ROOT', realpath(dirname(__DIR__)));
+
+$composerAutoload = dirname(GAIA_DEV_ROOT, 2) . '/vendor/autoload.php';
+if (!is_file($composerAutoload)) {
+    fwrite(STDERR, "gaia-dev needs nikic/php-parser: run `composer install` in the gaia root first.\n");
+    exit(1);
+}
+require $composerAutoload;
 
 spl_autoload_register(function ($class) {
     $prefix = 'GaiaDev\\';
