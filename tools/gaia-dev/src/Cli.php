@@ -6,6 +6,7 @@
 
 namespace GaiaDev;
 
+use GaiaDev\Command\DocsCommand;
 use GaiaDev\Command\GraphExportCommand;
 use GaiaDev\Command\QueryCommand;
 
@@ -66,6 +67,17 @@ class Cli
             return (new QueryCommand($stdout, $stderr))->run($words[0], array_slice($words, 1), $options, $root);
         }
 
+        if ($words === ['docs', 'generate']) {
+            $error = self::validateOptions($options, ['root' => true, 'check' => false]);
+            if ($error !== null) {
+                fwrite($stderr, $error . "\n");
+                return 1;
+            }
+            $root = isset($options['root']) ? $options['root'] : $defaultRoot;
+
+            return (new DocsCommand($stdout, $stderr))->run($root, !empty($options['check']));
+        }
+
         if ($words !== ['graph', 'export']) {
             fwrite($stderr, self::usage());
             return 1;
@@ -120,6 +132,8 @@ Usage: gaia-dev <command> [options]
 Commands:
   graph export            Write docs/generated/graph.json from the repository sources
   graph export --check    Exit 1 when the committed graph.json is stale
+  docs generate           Write the pages under docs/generated from the committed graph
+  docs generate --check   Exit 1 when the committed pages are stale
   model <Name>            Table, fields, relationships, behaviours, ACL, routes, components, cases
   route <endpoint|path>   Controller, action, hook sequence and the components that fire
   acl <resource> [profile]  What each auth profile may do on the resource, or one profile's row

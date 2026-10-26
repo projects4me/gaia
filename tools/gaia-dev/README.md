@@ -9,12 +9,16 @@ dependency, already installed by `composer install`), to read the PHP sources: t
 ```bash
 php tools/gaia-dev/bin/gaia-dev graph export           # write docs/generated/graph.json
 php tools/gaia-dev/bin/gaia-dev graph export --check   # exit 1 when the committed graph.json is stale
+php tools/gaia-dev/bin/gaia-dev docs generate          # write the pages under docs/generated from graph.json
+php tools/gaia-dev/bin/gaia-dev docs generate --check  # exit 1 when a committed page is stale, missing or orphaned
 ```
 
 Options: `--root=<dir>` (repository root, default this checkout), `--output=<file>` (relative to the root).
 
-CI runs `graph export --check` in the `graph-drift` job. When you change metadata, routes, the model list or
-the api-tester catalogs and fixtures, run `graph export` and commit `docs/generated/graph.json` with the change.
+CI runs `graph export --check` and `docs generate --check` in the `graph-drift` job. When you change metadata, routes, the model list or
+the api-tester catalogs and fixtures, run `graph export` and commit `docs/generated/graph.json` with the change; then run `docs generate` and commit `docs/generated/` too. Do not edit the pages by hand.
+
+`docs generate` writes one page per model (`models/<Model>.md`), `routes.md`, `acl-matrix.md`, `assertions.md`, `profiles.md` and one guide per bundle of `docs/dev/bundles.md` (`bundles/<letter>.md`, with the exemplar PRs and golden files linked), plus a `README.md` index. Every section starts with an `<a id="..."></a>` anchor, has its own heading and is at most 40 lines, so one section can be served alone. The pages are built from the same queries as the `gaia-dev` commands (`Docs/*Pages`, `Docs/*Page`, `Docs/BundleGuides`); `Command/DocsCommand` writes or checks them.
 
 ## Layout
 
@@ -147,3 +151,10 @@ Layers: `src/Query/GraphReader` (read the graph), one `Query` class per command 
 `tests/tools/gaia-dev/` (PHPUnit, each file passes alone) against a small fixture repository in
 `tests/tools/gaia-dev/fixtures/repo`, plus checks that every model, route and case of this repository is in the
 graph and that the committed graph is current.
+
+## Decisions docs
+
+The hand-written "why" docs stay in `docs/architecture/*/decisions.md`. `tests/tools/gaia-dev/DecisionsCitationsTest`
+runs `Docs/CitationChecker` over them: every file path, `Class::member`, class name, call and verb-first method name in
+backticks must exist in the sources (paths into hermes/, prometheus/ and ares/ are not checked). To mention code that
+was removed, write it without backticks (for example in italics).
