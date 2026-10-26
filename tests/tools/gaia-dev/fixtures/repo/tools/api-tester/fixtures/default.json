@@ -1,0 +1,19 @@
+{
+  "auth": {
+    "clientId": "fixture-client",
+    "clientSecret": "fixture-secret",
+    "email": "fixture@example.com",
+    "password": "fixture-password",
+    "tokenPath": "/api/v1/token"
+  },
+  "authProfiles": {
+    "limited": {
+      "email": "limited@example.com",
+      "password": "fixture-password"
+    }
+  },
+  "values": {
+    "widgetId": "fixture-widget-1",
+    "projectId": "fixture-project-1"
+  }
+}
