@@ -9,6 +9,8 @@ $loader->registerNamespaces(
     "Gaia\\Tests\\Models\\Behaviors" => APP_PATH . '/tests/models/behaviors',
     "Gaia\\Tests\\Libraries\\Security" => APP_PATH . '/tests/libraries/security',
     "Gaia\\Tests\\Libraries\\Utils" => APP_PATH . '/tests/libraries/utils',
+    "Gaia\\Tests\\Tools\\GaiaDev" => APP_PATH . '/tests/tools/gaia-dev',
+    "GaiaDev" => APP_PATH . '/tools/gaia-dev/src',
     ]
 );
 

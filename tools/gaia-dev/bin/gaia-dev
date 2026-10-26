@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ */
+
+/**
+ * gaia-dev: developer tooling over the Gaia sources (graph export, and later
+ * scaffolders and queries). Plain PHP, no application or Composer imports.
+ */
+
+if (PHP_SAPI !== 'cli') {
+    fwrite(STDERR, "gaia-dev must be run from CLI\n");
+    exit(1);
+}
+
+define('GAIA_DEV_ROOT', realpath(dirname(__DIR__)));
+
+spl_autoload_register(function ($class) {
+    $prefix = 'GaiaDev\\';
+    if (strpos($class, $prefix) !== 0) {
+        return;
+    }
+    $relative = str_replace('\\', '/', substr($class, strlen($prefix)));
+    $file = GAIA_DEV_ROOT . '/src/' . $relative . '.php';
+    if (is_file($file)) {
+        require $file;
+    }
+});
+
+exit(GaiaDev\Cli::main($argv, dirname(GAIA_DEV_ROOT, 2)));

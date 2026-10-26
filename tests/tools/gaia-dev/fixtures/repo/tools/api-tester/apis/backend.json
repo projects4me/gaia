@@ -1,0 +1,51 @@
+{
+  "name": "fixture backend catalog",
+  "apis": [
+    {
+      "id": "post-widget",
+      "method": "POST",
+      "path": "/api/v1/widget",
+      "resource": "widget",
+      "auth": true,
+      "body": {"data": {"type": "widget", "attributes": {"projectId": "{projectId}", "name": "w-{runId}"}}},
+      "store": {"runtime.widgetId": "data.id"},
+      "expects": {"status": 201, "shape": "jsonapi.resource"},
+      "source": "backend-metadata"
+    },
+    {
+      "id": "get-created-widget",
+      "method": "GET",
+      "path": "/api/v1/widget/{runtime.widgetId}",
+      "resource": "widget",
+      "auth": true,
+      "expects": {"status": 200, "shape": "jsonapi.resource", "attributesEqual": {"id": "{runtime.widgetId}"}}
+    },
+    {
+      "id": "list-widgets-limited",
+      "method": "get",
+      "path": "/api/v1/widget?limit=5",
+      "resource": "widget",
+      "auth": "limited",
+      "expects": {"status": 403, "errorEqual": "Access Denied"},
+      "hermes": {"expect": [], "timeoutMs": 500, "requireUp": true}
+    },
+    {
+      "id": "export-anonymous",
+      "method": "GET",
+      "path": "/export/csv",
+      "resource": "export",
+      "auth": false,
+      "enabled": false,
+      "skipReason": "fixture",
+      "expects": {"status": 401}
+    },
+    {
+      "id": "delete-widget-not-routed",
+      "method": "DELETE",
+      "path": "/api/v1/widget/{widgetId}",
+      "resource": "widget",
+      "auth": true,
+      "expects": {"status": 405}
+    }
+  ]
+}
