@@ -20,6 +20,18 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Cache Composer packages
+      id: composer-packages
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: vendor-cache-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-
+
+    - name: Install dependencies
+      if: steps.composer-packages.outputs.cache-hit != 'true'
+      run: composer install
+
     - name: Check docs/generated/graph.json is up to date
       run: php tools/gaia-dev/bin/gaia-dev graph export --check
 
