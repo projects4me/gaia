@@ -3,7 +3,8 @@
 Developer tooling over the Gaia sources. It reads the repository into one typed graph that the scaffolders,
 generated docs and query commands share, so each of them stops parsing the sources on its own.
 
-Plain PHP (7.x), no Composer or Phalcon imports, no runtime dependencies.
+Plain PHP (7.x), no Phalcon imports. The one Composer package it uses is `nikic/php-parser` (a `require-dev`
+dependency, already installed by `composer install`), to read the PHP sources: they are parsed, never included.
 
 ```bash
 php tools/gaia-dev/bin/gaia-dev graph export           # write docs/generated/graph.json
@@ -34,6 +35,12 @@ Layered like the app (data source → domain → presentation):
 | `RouteExtractor` | `core/config/routes.php` | type, name, version, method, path, controller, action — REST resources expanded the way `Gaia\MVC\Router` registers them |
 | `CatalogExtractor` | `tools/api-tester/apis/*.json` | per catalog: endpoints and cases (method, path, resource, profile, enabled, source, assertions, placeholders, stores) |
 | `FixtureExtractor` | `tools/api-tester/fixtures/default.json` | profile names and value keys; credentials are left out |
+| `ControllerExtractor` | `app/api/v1/controllers/*Controller.php` | name, class, file, parent, `$uses`, actions (public `<name>Action` methods) |
+| `ComponentExtractor` | `app/api/v1/controllers/components/**` | key (as in `$uses`), kind (component, event, notification, support), class, file, parent, interfaces, hooks (public methods) |
+| `BehaviourExtractor` | `core/mvc/models/behaviors/*.php` | name, class, file, hooks |
+| `AclExtractor` | `core/libs/security/Acl.php`, `core/mvc/controllers/RestController.php` | record scopes, resolution modes, default scoped resources, public API; the REST action to permission action map (`post` needs `create`) |
+| `AssertionExtractor` | `tools/api-tester/src/Asserter.php`, `Runner.php` | `expects[...]` keys, `mail.*` and `hermes.expect`: where checked, failure messages, `shape` values |
+| `ProfileExtractor` | `tools/api-tester/harness/prepare-test-db.sh` | per fixture profile: user, role, permissions (`resource => 0 deny, 1 allow, 2 members`); reads the seed SQL with patterns, so keep its layout (credentials are never read) |
 
 ## Graph schema (version 1)
 
@@ -59,16 +66,16 @@ checkout gives the same file as CI.
 | `model` | `Issue` | file, tableName, isView, registered (in models.php), hasMetadata, acl (the model's `acl` block) | metadata, models.php |
 | `field` | `Issue.subject` | the field's metadata (type, length, null, label, identifier, linkedTo, `acl`, `secure`, …) | metadata |
 | `relationship` | `Issue.project` | kind (hasOne, hasMany, belongsTo, hasManyToMany) and its keys/conditions | metadata |
-| `behaviour` | `auditBehavior` | — | metadata |
+| `behaviour` | `auditBehavior` | class, file, hooks | metadata, behaviours |
 | `route` | `GET /api/v1/issue/{id}`, `ANY /translations/{locale}`, `system:not_found` | type (rest, app, system), name, version, method, path | routes.php |
-| `controller` | `issue` | — | routes.php |
-| `action` | `issue.get` | — | routes.php |
-| `profile` | `default`, `anonymous`, `aclNoProject` | file (when declared in the fixtures) | fixtures, catalogs |
+| `controller` | `issue` | rest (REST resource), class, file, extends | routes.php, controllers |
+| `action` | `issue.get` | — | routes.php, controllers |
+| `profile` | `default`, `anonymous`, `aclNoProject` | file (when declared in the fixtures), userId, email, roleId, role, roleDescription | fixtures, catalogs, harness |
 | `case` | `acl/acl-issue-denied-without-project-group` | catalog, file, method, path, resource, enabled, source, placeholders, stores | catalogs |
-| `assertion` | `status`, `attributesEqual`, `hermes.expect`, `mail.subject` | — | catalogs |
+| `assertion` | `status`, `attributesEqual`, `hermes.expect`, `mail.subject` | source, line, messages (what its failure says), values (`shape`), example (first enabled case using it) | catalogs, api-tester code |
 | `fixture` | `projectId` | file | fixtures |
-| `component` | reserved | | code extractors (follow-up) |
-| `permission` | reserved | | code extractors (follow-up) |
+| `component` | `Events\IssueLiveEvents` (as in `$uses`) | kind, class, file, extends, implements, hooks | components |
+| `permission` | `issue.get`, `issue.subject.get` | kind (action, field), scoped, scopes (none 0, all 1, members 2) | profiles, ACL, REST routes |
 
 `default` is the fixture's main `auth` user (`"auth": true`); `anonymous` is `"auth": false`.
 
@@ -91,9 +98,17 @@ checkout gives the same file as CI.
 | `asserts` | case → assertion | keys under `expects`, plus `hermes.expect` and `mail.*` |
 | `uses_fixture` | case → fixture | placeholder resolved from the fixtures |
 | `depends_on` | case → case | the case reads a `runtime.*` value an earlier case in the same catalog stores |
-| `uses_component` | controller → component | reserved for the code extractors |
-| `requires` | action → permission | reserved for the code extractors |
-| `guards` | permission → field | reserved for the code extractors |
+| `uses_component` | controller → component | the component is listed in the controller's `$uses` |
+| `requires` | action → permission | a REST action needs `<controller>.<permission action>` (`issue.post` requires `issue.create`) |
+| `guards` | permission → field | `<model>.<field>.<action>` protects that field |
+| `grants` | profile → permission | the profile's role allows it (1) |
+| `grants_members` | profile → permission | allowed for member projects only (2, scoped resources such as `project.get`) |
+| `denies` | profile → permission | the profile's role denies it (0) |
+
+Questions the graph answers without reading source: which profile may do what on which resource (`profile`
+-> `grants`/`grants_members`/`denies` -> `permission` <- `requires` <- `action`), which component fires on which
+controller (`controller` -> `uses_component`), and what assertion X means (`assertion` attributes `messages`,
+`values`, `example`).
 
 ### Extending
 

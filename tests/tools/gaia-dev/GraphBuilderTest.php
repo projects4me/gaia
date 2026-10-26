@@ -146,6 +146,62 @@ class GraphBuilderTest extends TestCase
         $this->assertSame(['fixture:widgetId'], $this->targets('case:backend/delete-widget-not-routed', 'uses_fixture'));
     }
 
+    public function testControllersUseComponentsAndDeclareActions()
+    {
+        $this->assertSame(
+            ['component:Events\WidgetLiveEvents', 'component:Notify'],
+            $this->targets('controller:widget', 'uses_component')
+        );
+        $this->assertSame('event', $this->node('component:Events\WidgetLiveEvents')['attributes']['kind']);
+        $this->assertSame(['action:export.get', 'action:export.index'], $this->targets('controller:export', 'has_action'));
+        $this->assertSame(
+            'app/api/v1/controllers/WidgetController.php',
+            $this->node('controller:widget')['attributes']['file']
+        );
+    }
+
+    public function testBehavioursCarryTheirSource()
+    {
+        $this->assertSame(
+            'core/mvc/models/behaviors/softDeleteBehavior.php',
+            $this->node('behaviour:softDeleteBehavior')['attributes']['file']
+        );
+    }
+
+    public function testRestActionsRequirePermissionsAndFieldPermissionsGuardFields()
+    {
+        $this->assertSame(['permission:widget.get'], $this->targets('action:widget.get', 'requires'));
+        $this->assertSame(['permission:widget.create'], $this->targets('action:widget.post', 'requires'));
+        $this->assertSame([], $this->targets('action:widget.options', 'requires'));
+        $this->assertTrue($this->node('permission:widget.get')['attributes']['scoped']);
+        $this->assertFalse($this->node('permission:widget.create')['attributes']['scoped']);
+        $this->assertSame(['field:Widget.secret'], $this->targets('permission:widget.secret.get', 'guards'));
+    }
+
+    public function testProfilesGrantAndDenyPermissionsByScope()
+    {
+        $this->assertSame('Limited', $this->node('profile:limited')['attributes']['role']);
+        $this->assertSame(['permission:widget.get'], $this->targets('profile:limited', 'grants_members'));
+        $this->assertSame(
+            ['permission:widget.create', 'permission:widget.secret.get'],
+            $this->targets('profile:limited', 'denies')
+        );
+        $this->assertSame(
+            ['permission:tag.create', 'permission:tag.get', 'permission:widget.create', 'permission:widget.get'],
+            $this->targets('profile:default', 'grants')
+        );
+    }
+
+    public function testAssertionsCarryTheirMeaningAndARealExample()
+    {
+        $status = $this->node('assertion:status')['attributes'];
+
+        $this->assertSame(['status: expected %s, got %s'], $status['messages']);
+        $this->assertSame('backend/post-widget', $status['example']);
+        $this->assertSame('tools/api-tester/src/Asserter.php', $status['source']);
+        $this->assertSame('backend/list-widgets-limited', $this->node('assertion:hermes.expect')['attributes']['example']);
+    }
+
     public function testEveryRepositoryModelRouteAndCaseIsInTheGraph()
     {
         $root = dirname(__DIR__, 3);
