@@ -133,6 +133,11 @@ class GraphBuilderTest extends TestCase
         $this->assertSame(['route:GET /api/v1/widget/{id}'], $this->targets('case:backend/get-created-widget', 'exercises'));
     }
 
+    public function testADisabledCaseIsNeverTheProducerOfAStoredValue()
+    {
+        $this->assertNotContains('case:backend/post-widget-disabled', $this->targets('case:backend/get-created-widget', 'depends_on'));
+    }
+
     public function testProfilesFromFixturesAndCases()
     {
         $this->assertSame(['profile:limited'], $this->targets('case:backend/list-widgets-limited', 'runs_as'));

@@ -41,7 +41,7 @@ class CatalogMapper
 
     /**
      * Stored runtime values are scoped to one catalog run, so a case depends
-     * on the first earlier case in the same catalog that stores what it reads.
+     * on the first earlier enabled case in the same catalog that stores what it reads.
      *
      * @param Graph $graph
      * @param RouteMatcher $matcher
@@ -74,8 +74,9 @@ class CatalogMapper
                 }
             }
 
+            // The runner skips disabled cases, so they never store a value for later cases.
             foreach ($case['stores'] as $key) {
-                if (!isset($storedBy[$key])) {
+                if ($case['enabled'] && !isset($storedBy[$key])) {
                     $storedBy[$key] = $caseId;
                 }
             }

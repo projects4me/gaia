@@ -2,6 +2,17 @@
   "name": "fixture backend catalog",
   "apis": [
     {
+      "id": "post-widget-disabled",
+      "method": "POST",
+      "path": "/api/v1/widget",
+      "resource": "widget",
+      "auth": true,
+      "enabled": false,
+      "skipReason": "fixture",
+      "store": {"runtime.widgetId": "data.id"},
+      "expects": {"status": 201}
+    },
+    {
       "id": "post-widget",
       "method": "POST",
       "path": "/api/v1/widget",
