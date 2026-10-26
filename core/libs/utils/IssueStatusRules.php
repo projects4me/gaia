@@ -30,7 +30,7 @@ class IssueStatusRules
     /**
      * @var string
      */
-    public const VALUE_PATTERN = '/^[a-z0-9_]+$/';
+    public const VALUE_PATTERN = '/^[a-z0-9_]+\z/';
 
     /**
      * The locale whose label every status must have.

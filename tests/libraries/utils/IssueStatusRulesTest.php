@@ -34,7 +34,7 @@ class IssueStatusRulesTest extends TestCase
 
     public function testRejectsValuesOutsideThePattern()
     {
-        foreach (['In Progress', 'in-progress', 'In_progress', '', 'a.b', 'ünder', null, 12] as $value) {
+        foreach (['In Progress', 'in-progress', 'In_progress', '', 'a.b', 'ünder', "in_progress\n", null, 12] as $value) {
             $this->assertNotNull($this->rules->valueError($value), var_export($value, true));
         }
     }

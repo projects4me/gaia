@@ -92,6 +92,7 @@ class IssuestatusController extends RestController
         return $this->rejectInvalidColor()
             ?: $this->rejectInvalidValue()
             ?: $this->rejectInvalidTranslations(true)
+            ?: $this->assertSharedLabelWrite($this->requestAttributes()['name'])
             ?: $this->inTransaction(function () {
                 return parent::postAction();
             });
@@ -112,6 +113,7 @@ class IssuestatusController extends RestController
         return $this->rejectInvalidColor()
             ?: $this->rejectRename($statusId, $attributes)
             ?: $this->rejectInvalidTranslations(false)
+            ?: $this->assertSharedLabelWrite($this->statusValue($statusId))
             ?: $this->inTransaction(function () {
                 return parent::patchAction();
             });
@@ -379,6 +381,49 @@ class IssuestatusController extends RestController
         $error = $status ? IssueStatusRules::fromConfig()->valueChangeError($status->name, $attributes['name']) : null;
 
         return $error === null ? null : $this->unprocessable($error);
+    }
+
+    /**
+     * Require the system-record resource (setting.update) to send labels for a
+     * value a system status uses: labels are shared by value, so a project
+     * status's labels would otherwise change the system status's labels too.
+     *
+     * @param  mixed $value Value of the status the labels are saved for
+     * @return null
+     * @throws \Gaia\Exception\Access
+     */
+    protected function assertSharedLabelWrite($value)
+    {
+        if ($this->requestedTranslations() === null || !is_string($value) || !$this->getDI()->has('acl')) {
+            return null;
+        }
+
+        if ($this->statusLabels()->isSystemValue($value)) {
+            $metadata = $this->getDI()->get('metaManager')->getModelMeta('Issuestatus');
+            $this->getDI()->get('acl')->checkAccess((string) $metadata['acl']['systemRecords']['resource']);
+        }
+
+        return null;
+    }
+
+    /**
+     * The value of a stored status, or null when there is none.
+     *
+     * @param  mixed $statusId
+     * @return string|null
+     */
+    protected function statusValue($statusId)
+    {
+        if (!is_scalar($statusId)) {
+            return null;
+        }
+
+        $status = Issuestatus::findFirst([
+            'conditions' => 'id = :id:',
+            'bind' => ['id' => (string) $statusId],
+        ]);
+
+        return $status ? (string) $status->name : null;
     }
 
     /**

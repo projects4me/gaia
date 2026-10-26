@@ -1010,6 +1010,27 @@
       "source": "acl-setting"
     },
     {
+      "id": "acl-system-status-labels-via-project-copy-denied-without-setting",
+      "method": "POST",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "attributes": {
+            "name": "new",
+            "system": 0,
+            "done": 0,
+            "projectId": "{projectId}",
+            "translations": { "en-us": "Relabelled without setting.update" }
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
       "id": "acl-system-type-update-denied-without-setting",
       "method": "PATCH",
       "path": "/api/v1/issuetype/{issuetypeId}",

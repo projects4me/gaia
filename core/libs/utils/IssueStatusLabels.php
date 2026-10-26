@@ -133,6 +133,21 @@ class IssueStatusLabels
     }
 
     /**
+     * Whether an active system status uses the value, so its labels are
+     * system labels too.
+     *
+     * @param  string $value Status value
+     * @return bool
+     */
+    public function isSystemValue($value)
+    {
+        return Issuestatus::count([
+            'conditions' => 'name = :name: AND system = :system: AND deleted = :deleted:',
+            'bind' => ['name' => (string) $value, 'system' => 1, 'deleted' => 0],
+        ]) > 0;
+    }
+
+    /**
      * Delete the labels of a status value unless another status still uses it.
      *
      * @param  string $value Status value
