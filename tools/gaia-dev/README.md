@@ -15,7 +15,7 @@ php tools/gaia-dev/bin/gaia-dev docs generate --check  # exit 1 when a committed
 
 ```bash
 php tools/gaia-dev/bin/gaia-dev scaffold api-cases GET /api/v1/idea --profile=aclMembers --catalog=acl   # append cases
-php tools/gaia-dev/bin/gaia-dev scaffold api-cases POST comment --assert=attributesPresent=["comment"]  # client happy path
+php tools/gaia-dev/bin/gaia-dev scaffold api-cases POST comment '--assert=attributesPresent=["comment"]'  # client happy path
 php tools/gaia-dev/bin/gaia-dev scaffold api-cases --new-profile=aclReports --role="ACL Reports" --permissions=issue.get=1,project.get=2
 php tools/gaia-dev/bin/gaia-dev scaffold api-cases --cases-file=cases.json --catalog=client             # append hand-written cases
 php tools/gaia-dev/bin/gaia-dev check api-cases [<endpoint>]   # exit 1 on inconsistent catalogs

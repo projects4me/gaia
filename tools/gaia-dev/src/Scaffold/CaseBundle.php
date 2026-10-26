@@ -83,7 +83,9 @@ class CaseBundle
             return $this->aclCases($request, $resource, $permission);
         }
 
-        return [$this->happyCase($request, $resource, $request->profile ?: 'default', 'client')];
+        $profile = $request->profile ? $this->graph->find('profile', $request->profile)['key'] : 'default';
+
+        return [$this->happyCase($request, $resource, $profile, 'client')];
     }
 
     /**

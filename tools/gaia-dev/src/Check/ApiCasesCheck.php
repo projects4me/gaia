@@ -83,7 +83,7 @@ class ApiCasesCheck
     {
         $covered = [];
         foreach ($this->graph->nodes('case') as $case) {
-            if ($case['attributes']['catalog'] === 'acl') {
+            if ($case['attributes']['catalog'] === 'acl' && $case['attributes']['enabled']) {
                 $covered[$case['attributes']['resource']] = true;
             }
         }
@@ -116,25 +116,23 @@ class ApiCasesCheck
      */
     private function placeholders(array $cases): array
     {
-        $stored = [];
-        foreach ($this->graph->nodes('case') as $case) {
-            foreach ($case['attributes']['stores'] as $key) {
-                $stored[$key] = true;
-            }
-        }
-
+        // The runner executes a catalog top to bottom; the graph links a case to the earlier case that stores what it reads.
         $problems = [];
         foreach ($cases as $case) {
             if (!$case['attributes']['enabled'] || in_array($case['attributes']['catalog'], self::GENERATED_CATALOGS, true)) {
                 continue;
             }
+            $stored = [];
+            foreach ($this->graph->out($case, 'depends_on') as $producer) {
+                $stored = array_merge($stored, $producer['attributes']['stores']);
+            }
             foreach ($case['attributes']['placeholders'] as $key) {
                 $resolved = $this->graph->node('fixture', $key) !== null
-                    || isset($stored[$key])
+                    || in_array($key, $stored, true)
                     || in_array($key, self::RUNNER_VALUES, true)
                     || strpos($key, '(') !== false;
                 if (!$resolved) {
-                    $problems[] = "placeholder: {$case['key']} uses {{$key}}, which is no fixture, stored runtime id or runner value";
+                    $problems[] = "placeholder: {$case['key']} uses {{$key}}, which is no fixture, no id stored by an earlier case or runner value";
                 }
             }
         }

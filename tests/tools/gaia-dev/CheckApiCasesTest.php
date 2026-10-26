@@ -70,21 +70,38 @@ class CheckApiCasesTest extends TestCase
         $this->assertSame([], (new ApiCasesCheck($graph))->problems('other'));
     }
 
+    public function testADisabledAclCaseDoesNotCoverItsResource()
+    {
+        $disabled = $this->caseNode('acl/widget', 'acl', 'widget');
+        $disabled[1]['enabled'] = false;
+        $graph = $this->graph(
+            [['profile:aclX', []], ['permission:widget.get', ['kind' => 'action']], $disabled],
+            [['profile:aclX', 'denies', 'permission:widget.get']]
+        );
+
+        $this->assertSame(
+            ['acl: aclX is restricted on widget.get but no acl case covers resource widget'],
+            (new ApiCasesCheck($graph))->problems()
+        );
+    }
+
     public function testReportsPlaceholdersNothingResolvesAndUnknownAssertions()
     {
         $graph = $this->graph(
             [
                 ['fixture:projectId', []],
                 $this->caseNode('client/a', 'client', 'widget', ['projectId', 'runtime.widgetId', 'runId', 'missingId']),
-                $this->caseNode('client/b', 'client', 'widget', ['runtime.widgetId'], ['runtime.widgetId']),
+                $this->caseNode('client/b', 'client', 'widget', [], ['runtime.widgetId']),
+                $this->caseNode('client/c', 'client', 'widget', ['runtime.widgetId']),
                 ['assertion:status', ['source' => 'Asserter.php']],
                 ['assertion:statuz', []],
             ],
-            [['case:client/a', 'asserts', 'assertion:status'], ['case:client/a', 'asserts', 'assertion:statuz']]
+            [['case:client/a', 'depends_on', 'case:client/b'], ['case:client/a', 'asserts', 'assertion:status'], ['case:client/a', 'asserts', 'assertion:statuz']]
         );
 
         $this->assertSame([
-            'placeholder: client/a uses {missingId}, which is no fixture, stored runtime id or runner value',
+            'placeholder: client/a uses {missingId}, which is no fixture, no id stored by an earlier case or runner value',
+            'placeholder: client/c uses {runtime.widgetId}, which is no fixture, no id stored by an earlier case or runner value',
             "assertion: client/a asserts 'statuz', which the Asserter does not implement",
         ], (new ApiCasesCheck($graph))->problems());
     }

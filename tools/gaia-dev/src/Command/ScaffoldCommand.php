@@ -92,7 +92,11 @@ class ScaffoldCommand
 
         $relative = CatalogExtractor::SOURCE_DIR . '/' . $catalog . '.json';
         if (empty($options['dry-run'])) {
-            file_put_contents($path, $text);
+            if (file_put_contents($path, $text) === false) {
+                fwrite($this->stderr, "Cannot write {$path}
+");
+                return 1;
+            }
         }
         fwrite($this->stdout, (empty($options['dry-run']) ? 'appended ' : 'would append ') . count($cases) . " case(s) to {$relative}:\n");
         foreach ($cases as $case) {
@@ -129,8 +133,14 @@ class ScaffoldCommand
             file_get_contents($fixturesPath)
         );
         if (empty($options['dry-run'])) {
-            file_put_contents($harnessPath, $harness);
-            file_put_contents($fixturesPath, $fixtures);
+            $original = file_get_contents($harnessPath);
+            if (file_put_contents($harnessPath, $harness) === false) {
+                throw new ScaffoldException("Cannot write {$harnessPath}");
+            }
+            if (file_put_contents($fixturesPath, $fixtures) === false) {
+                file_put_contents($harnessPath, $original);
+                throw new ScaffoldException("Cannot write {$fixturesPath}; {$harnessPath} was restored");
+            }
         }
         fwrite($this->stdout, (empty($options['dry-run']) ? 'defined' : 'would define') . " profile {$options['new-profile']} in "
             . ProfileExtractor::SOURCE . " and " . FixtureExtractor::SOURCE . "\n");
