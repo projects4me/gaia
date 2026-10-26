@@ -18,11 +18,11 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
 
     - name: Cache Composer packages
       id: composer-packages
-      uses: actions/cache@v3
+      uses: actions/cache@v5
       with:
         path: vendor
         key: vendor-cache-${{ hashFiles('composer.json') }}
@@ -67,11 +67,11 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v5
 
     - name: Cache Composer packages
       id: composer-packages
-      uses: actions/cache@v3
+      uses: actions/cache@v5
       with:
         path: vendor
         key: vendor-cache-${{ hashFiles('composer.json') }}
