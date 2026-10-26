@@ -8,6 +8,7 @@ namespace GaiaDev\Command;
 
 use GaiaDev\Check\ApiCasesCheck;
 use GaiaDev\Check\BackendCatalogDrift;
+use GaiaDev\Check\ResourceCheck;
 use GaiaDev\Query\GraphReader;
 use GaiaDev\Query\QueryException;
 
@@ -73,6 +74,38 @@ class CheckCommand
             return 1;
         }
         fwrite($this->stdout, "api-cases: ok\n");
+
+        return 0;
+    }
+
+    /**
+     * @param string|null $name model name
+     * @param string $root repository root
+     * @return int exit code
+     */
+    public function runResource(?string $name, string $root): int
+    {
+        if ($name === null || !preg_match('/^[A-Z][A-Za-z0-9]*$/', $name)) {
+            fwrite($this->stderr, "Usage: gaia-dev check resource <Name>\n");
+            return 1;
+        }
+        $root = rtrim($root, '/\\');
+        try {
+            $graph = GraphReader::fromFile($root . '/' . GraphExportCommand::DEFAULT_OUTPUT);
+        } catch (QueryException $e) {
+            fwrite($this->stderr, $e->getMessage() . "\n");
+            return 1;
+        }
+
+        $problems = (new ResourceCheck($root, $graph))->problems($name);
+        foreach ($problems as $problem) {
+            fwrite($this->stderr, $problem . "\n");
+        }
+        if ($problems) {
+            fwrite($this->stderr, count($problems) . " problem(s) in resource {$name}\n");
+            return 1;
+        }
+        fwrite($this->stdout, "resource {$name}: ok\n");
 
         return 0;
     }

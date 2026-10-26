@@ -11,6 +11,7 @@ use GaiaDev\Command\DocsCommand;
 use GaiaDev\Command\GraphExportCommand;
 use GaiaDev\Command\QueryCommand;
 use GaiaDev\Command\ScaffoldCommand;
+use GaiaDev\Command\ScaffoldResourceCommand;
 
 /**
  * Parses the gaia-dev command line and dispatches to the command.
@@ -29,6 +30,9 @@ class Cli
     private const SCAFFOLD_OPTIONS = [
         'root' => true, 'profile' => true, 'assert' => true, 'catalog' => true, 'cases-file' => true,
         'new-profile' => true, 'role' => true, 'permissions' => true, 'dry-run' => false,
+    ];
+    private const RESOURCE_OPTIONS = [
+        'root' => true, 'fields' => true, 'parent' => true, 'behaviors' => true, 'acl' => true, 'table' => true, 'dry-run' => false,
     ];
     private const CASES_OPTIONS = ['method' => true, 'profile' => true, 'all' => false];
 
@@ -82,6 +86,28 @@ class Cli
             $root = isset($options['root']) ? $options['root'] : $defaultRoot;
 
             return (new ScaffoldCommand($stdout, $stderr))->run(array_slice($words, 2), $options, $root);
+        }
+
+        if ($words[0] === 'scaffold' && ($words[1] ?? null) === 'resource') {
+            $error = self::validateOptions($options, self::RESOURCE_OPTIONS);
+            if ($error !== null) {
+                fwrite($stderr, $error . "\n");
+                return 1;
+            }
+            $root = isset($options['root']) ? $options['root'] : $defaultRoot;
+
+            return (new ScaffoldResourceCommand($stdout, $stderr))->run(array_slice($words, 2), $options, $root);
+        }
+
+        if ($words[0] === 'check' && ($words[1] ?? null) === 'resource') {
+            $error = self::validateOptions($options, ['root' => true]);
+            if ($error !== null) {
+                fwrite($stderr, $error . "\n");
+                return 1;
+            }
+            $root = isset($options['root']) ? $options['root'] : $defaultRoot;
+
+            return (new CheckCommand($stdout, $stderr))->runResource($words[2] ?? null, $root);
         }
 
         if ($words[0] === 'check' && ($words[1] ?? null) === 'api-cases') {
@@ -176,6 +202,11 @@ Commands:
                           Append the cases in a JSON file, matching the catalog's style
   scaffold api-cases --new-profile=<name> --role=<role> --permissions=<resource.action=0|1|2,...>
                           Define an auth profile in the harness seed and the fixtures together
+  scaffold resource <Name> [--fields=name:type[:length][:required][:default=x],...] [--parent=Project]
+                          [--behaviors=a,b] [--acl=profile:allow|members|deny,...] [--table=] [--dry-run]
+                          Write every touchpoint of a new REST resource from the Idea reference files,
+                          regenerate backend.json, the graph and the docs, and add acl cases for the profiles
+  check resource <Name>   Exit 1 when the resource's metadata, model, controller, route, catalog or cases disagree
   check api-cases [<endpoint>]
                           Exit 1 when acl cases, placeholders, assertion names or backend.json are inconsistent
 
