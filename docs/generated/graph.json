@@ -2354,7 +2354,7 @@
       "key": "attributesAbsent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 155,
+        "line": 163,
         "messages": [
           "attributesAbsent: unexpectedly found attributes.…"
         ],
@@ -2368,7 +2368,7 @@
       "key": "attributesEqual",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 193,
+        "line": 201,
         "messages": [
           "attributesEqual: missing attributes.…",
           "attributesEqual: attributes.… expected '…', got '"
@@ -2383,7 +2383,7 @@
       "key": "attributesPresent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 144,
+        "line": 152,
         "messages": [
           "attributesPresent: missing attributes.…"
         ],
@@ -2423,7 +2423,7 @@
       "key": "idsExcludes",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 167,
+        "line": 175,
         "messages": [
           "idsExcludes: unexpectedly found id …"
         ],
@@ -2437,7 +2437,7 @@
       "key": "idsIncludes",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 166,
+        "line": 174,
         "messages": [
           "idsIncludes: missing id …"
         ],
@@ -2451,7 +2451,7 @@
       "key": "includedTypesAbsent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 94,
+        "line": 102,
         "messages": [
           "includedTypesAbsent: unexpectedly found type …"
         ],
@@ -2465,7 +2465,7 @@
       "key": "includedTypesPresent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 110,
+        "line": 118,
         "messages": [
           "includedTypesPresent: missing type …"
         ],
@@ -2491,7 +2491,15 @@
       "id": "assertion:jsonPathAbsent",
       "type": "assertion",
       "key": "jsonPathAbsent",
-      "attributes": {}
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 94,
+        "messages": [
+          "jsonPathAbsent: unexpectedly found …"
+        ],
+        "values": [],
+        "example": "client/list-issuestatus-rejected-creates-saved-nothing"
+      }
     },
     {
       "id": "assertion:mail.bodyContains",
@@ -2559,7 +2567,7 @@
       "key": "resourceNamesAbsent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 126,
+        "line": 134,
         "messages": [
           "resourceNamesAbsent: unexpectedly found resourceName …"
         ],
@@ -2573,7 +2581,7 @@
       "key": "resourceNamesPresent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 135,
+        "line": 143,
         "messages": [
           "resourceNamesPresent: missing resourceName …"
         ],
@@ -12087,6 +12095,23 @@
         "implements": [],
         "hooks": [
           "afterCreate"
+        ]
+      }
+    },
+    {
+      "id": "component:Issuestatus",
+      "type": "component",
+      "key": "Issuestatus",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\IssuestatusComponent",
+        "file": "app/api/v1/controllers/components/IssuestatusComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate",
+          "afterDelete"
         ]
       }
     },
@@ -46563,6 +46588,11 @@
       "from": "controller:issuestatus",
       "type": "serves",
       "to": "model:Issuestatus"
+    },
+    {
+      "from": "controller:issuestatus",
+      "type": "uses_component",
+      "to": "component:Issuestatus"
     },
     {
       "from": "controller:issuetype",

@@ -116,6 +116,32 @@ A new source is one extractor (data source) plus one mapper (domain), wired into
 edge types go in `Schema` and in the tables above; `Graph` rejects types and edge ends the schema doesn't
 declare. Adding types or attributes keeps `schemaVersion`; renaming or removing them bumps it.
 
+## Queries
+
+Terse answers (at most about 40 lines) read from the committed `docs/generated/graph.json`, so they replace reading
+`core/` and the api-tester sources. Add `--json` for the structured answer. An unknown name prints a one-line hint
+with the nearest names on stderr and exits 1. Re-run `graph export` first when you changed metadata, routes or cases.
+
+```bash
+php tools/gaia-dev/bin/gaia-dev model Idea                 # table, fields, relationships, behaviours, ACL, routes, components, cases
+php tools/gaia-dev/bin/gaia-dev route idea                 # all routes of a resource; or "POST /api/v1/idea" / a path for one
+php tools/gaia-dev/bin/gaia-dev acl idea aclNoProject      # per profile allow / members / deny, or one profile's full row
+php tools/gaia-dev/bin/gaia-dev cases idea --method=POST   # also --profile=<name>, --all; or a case id
+php tools/gaia-dev/bin/gaia-dev assertions                 # vocabulary with a failure message and a real example case
+php tools/gaia-dev/bin/gaia-dev profiles                   # role, allow/members/deny counts, case counts
+php tools/gaia-dev/bin/gaia-dev fixtures                   # placeholder names, cases using them, source file
+```
+
+`acl`, `assertions`, `profiles` and `fixtures` also take one name to narrow the answer to a single row; `--method`,
+`--profile` and `--all` belong to `cases` only and are rejected elsewhere.
+
+`route` prints the hook sequence from a fixed map of REST action to the `rest:` events `RestController` fires
+(`post` fires `beforeCreate` and `afterCreate`, `get`/`list` `afterRead`, updates `afterUpdate`, `delete`
+`afterDelete`); update `RouteQuery::EVENTS` when `RestController` fires a new one.
+
+Layers: `src/Query/GraphReader` (read the graph), one `Query` class per command (domain: the answer as an array),
+`Renderer` (text or JSON) and `src/Command/QueryCommand` (load, run, print).
+
 ## Tests
 
 `tests/tools/gaia-dev/` (PHPUnit, each file passes alone) against a small fixture repository in

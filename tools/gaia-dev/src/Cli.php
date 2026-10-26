@@ -7,6 +7,7 @@
 namespace GaiaDev;
 
 use GaiaDev\Command\GraphExportCommand;
+use GaiaDev\Command\QueryCommand;
 
 /**
  * Parses the gaia-dev command line and dispatches to the command.
@@ -21,6 +22,8 @@ class Cli
      * Options each command accepts: name => true when it needs a value.
      */
     private const EXPORT_OPTIONS = ['root' => true, 'output' => true, 'check' => false];
+    private const QUERY_OPTIONS = ['root' => true, 'json' => false];
+    private const CASES_OPTIONS = ['method' => true, 'profile' => true, 'all' => false];
 
     /**
      * @param string[] $argv
@@ -47,6 +50,20 @@ class Cli
         if ($words === [] || $words === ['help'] || isset($options['help'])) {
             fwrite($stdout, self::usage());
             return 0;
+        }
+
+        if (isset(QueryCommand::queries()[$words[0]])) {
+            $error = self::validateOptions(
+                $options,
+                $words[0] === 'cases' ? array_merge(self::QUERY_OPTIONS, self::CASES_OPTIONS) : self::QUERY_OPTIONS
+            );
+            if ($error !== null) {
+                fwrite($stderr, $error . "\n");
+                return 1;
+            }
+            $root = isset($options['root']) ? $options['root'] : $defaultRoot;
+
+            return (new QueryCommand($stdout, $stderr))->run($words[0], array_slice($words, 1), $options, $root);
         }
 
         if ($words !== ['graph', 'export']) {
@@ -103,6 +120,15 @@ Usage: gaia-dev <command> [options]
 Commands:
   graph export            Write docs/generated/graph.json from the repository sources
   graph export --check    Exit 1 when the committed graph.json is stale
+  model <Name>            Table, fields, relationships, behaviours, ACL, routes, components, cases
+  route <endpoint|path>   Controller, action, hook sequence and the components that fire
+  acl <resource> [profile]  What each auth profile may do on the resource, or one profile's row
+  cases <endpoint|id>     api-tester cases (--method=, --profile=, --all)
+  assertions [name]       The assertion vocabulary with one real example each
+  profiles [name]         Auth profiles: role, grants, case counts
+  fixtures [name]         Placeholder names and where they come from
+
+Queries read docs/generated/graph.json and take --json for machine output.
 
 Options:
   --root=<dir>            Repository root (default: this checkout)
