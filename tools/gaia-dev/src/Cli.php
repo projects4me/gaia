@@ -6,9 +6,11 @@
 
 namespace GaiaDev;
 
+use GaiaDev\Command\CheckCommand;
 use GaiaDev\Command\DocsCommand;
 use GaiaDev\Command\GraphExportCommand;
 use GaiaDev\Command\QueryCommand;
+use GaiaDev\Command\ScaffoldCommand;
 
 /**
  * Parses the gaia-dev command line and dispatches to the command.
@@ -24,6 +26,10 @@ class Cli
      */
     private const EXPORT_OPTIONS = ['root' => true, 'output' => true, 'check' => false];
     private const QUERY_OPTIONS = ['root' => true, 'json' => false];
+    private const SCAFFOLD_OPTIONS = [
+        'root' => true, 'profile' => true, 'assert' => true, 'catalog' => true, 'cases-file' => true,
+        'new-profile' => true, 'role' => true, 'permissions' => true, 'dry-run' => false,
+    ];
     private const CASES_OPTIONS = ['method' => true, 'profile' => true, 'all' => false];
 
     /**
@@ -65,6 +71,28 @@ class Cli
             $root = isset($options['root']) ? $options['root'] : $defaultRoot;
 
             return (new QueryCommand($stdout, $stderr))->run($words[0], array_slice($words, 1), $options, $root);
+        }
+
+        if ($words[0] === 'scaffold' && ($words[1] ?? null) === 'api-cases') {
+            $error = self::validateOptions($options, self::SCAFFOLD_OPTIONS);
+            if ($error !== null) {
+                fwrite($stderr, $error . "\n");
+                return 1;
+            }
+            $root = isset($options['root']) ? $options['root'] : $defaultRoot;
+
+            return (new ScaffoldCommand($stdout, $stderr))->run(array_slice($words, 2), $options, $root);
+        }
+
+        if ($words[0] === 'check' && ($words[1] ?? null) === 'api-cases') {
+            $error = self::validateOptions($options, ['root' => true]);
+            if ($error !== null) {
+                fwrite($stderr, $error . "\n");
+                return 1;
+            }
+            $root = isset($options['root']) ? $options['root'] : $defaultRoot;
+
+            return (new CheckCommand($stdout, $stderr))->run($words[2] ?? null, $root);
         }
 
         if ($words === ['docs', 'generate']) {
@@ -141,6 +169,15 @@ Commands:
   assertions [name]       The assertion vocabulary with one real example each
   profiles [name]         Auth profiles: role, grants, case counts
   fixtures [name]         Placeholder names and where they come from
+  scaffold api-cases <METHOD> <endpoint>
+                          Append the cases for a REST endpoint to a catalog in its own style
+                          (--profile=, --assert=name=value,..., --catalog=client|acl, --dry-run)
+  scaffold api-cases --cases-file=<json> --catalog=<name>
+                          Append the cases in a JSON file, matching the catalog's style
+  scaffold api-cases --new-profile=<name> --role=<role> --permissions=<resource.action=0|1|2,...>
+                          Define an auth profile in the harness seed and the fixtures together
+  check api-cases [<endpoint>]
+                          Exit 1 when acl cases, placeholders, assertion names or backend.json are inconsistent
 
 Queries read docs/generated/graph.json and take --json for machine output.
 

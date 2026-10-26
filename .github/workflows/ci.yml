@@ -38,6 +38,9 @@ jobs:
     - name: Check docs/generated pages are up to date
       run: php tools/gaia-dev/bin/gaia-dev docs generate --check
 
+    - name: Check the api-tester catalogs are consistent
+      run: php tools/gaia-dev/bin/gaia-dev check api-cases
+
   api-testing:
     name: API + PHPUnit
     runs-on: ubuntu-latest
