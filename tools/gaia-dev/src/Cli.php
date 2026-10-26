@@ -12,6 +12,7 @@ use GaiaDev\Command\GraphExportCommand;
 use GaiaDev\Command\QueryCommand;
 use GaiaDev\Command\ScaffoldBehaviorCommand;
 use GaiaDev\Command\ScaffoldCommand;
+use GaiaDev\Command\ScaffoldLiveEventsCommand;
 use GaiaDev\Command\ScaffoldResourceCommand;
 
 /**
@@ -109,6 +110,28 @@ class Cli
             $root = isset($options['root']) ? $options['root'] : $defaultRoot;
 
             return (new ScaffoldBehaviorCommand($stdout, $stderr))->run(array_slice($words, 2), $options, $root);
+        }
+
+        if ($words[0] === 'scaffold' && ($words[1] ?? null) === 'live-events') {
+            $error = self::validateOptions($options, ['root' => true, 'events' => true, 'prefix' => true, 'fields' => true, 'parent' => true, 'dry-run' => false]);
+            if ($error !== null) {
+                fwrite($stderr, $error . "\n");
+                return 1;
+            }
+            $root = isset($options['root']) ? $options['root'] : $defaultRoot;
+
+            return (new ScaffoldLiveEventsCommand($stdout, $stderr))->run(array_slice($words, 2), $options, $root);
+        }
+
+        if ($words === ['check', 'live-events']) {
+            $error = self::validateOptions($options, ['root' => true]);
+            if ($error !== null) {
+                fwrite($stderr, $error . "\n");
+                return 1;
+            }
+            $root = isset($options['root']) ? $options['root'] : $defaultRoot;
+
+            return (new CheckCommand($stdout, $stderr))->runLiveEvents($root);
         }
 
         if ($words === ['check', 'behavior']) {
@@ -231,6 +254,11 @@ Commands:
                           regenerate backend.json, the graph and the docs, and add acl cases for the profiles
   scaffold behavior <name> --model=<Model> [--events=beforeSave,afterFetch,...] [--dry-run]
                           Write the behaviour class, a failing unit test and the model metadata entry
+  scaffold live-events <Model> [--events=created,updated,deleted] [--prefix=idea.message] [--fields=a,b]
+                          [--parent=ideaId:Idea] [--dry-run]
+                          Write the component, EventNames constants, controller wiring and test cases;
+                          print the names to add to hermes/src/contract/names.js
+  check live-events       Exit 1 when an event name has no component or test, or a component is in no \$uses
   check behavior [--skip-tests]
                           Exit 1 when a registered behaviour has no class or test, or a test fails alone
   check resource <Name>   Exit 1 when the resource's metadata, model, controller, route, catalog or cases disagree

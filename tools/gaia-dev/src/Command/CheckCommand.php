@@ -9,6 +9,7 @@ namespace GaiaDev\Command;
 use GaiaDev\Check\ApiCasesCheck;
 use GaiaDev\Check\BackendCatalogDrift;
 use GaiaDev\Check\BehaviorCheck;
+use GaiaDev\Check\LiveEventsCheck;
 use GaiaDev\Check\ResourceCheck;
 use GaiaDev\Query\GraphReader;
 use GaiaDev\Query\QueryException;
@@ -95,6 +96,25 @@ class CheckCommand
             return 1;
         }
         fwrite($this->stdout, "behavior: ok\n");
+
+        return 0;
+    }
+
+    /**
+     * @param string $root repository root
+     * @return int exit code: 0 consistent, 1 problems found
+     */
+    public function runLiveEvents(string $root): int
+    {
+        $problems = (new LiveEventsCheck($root))->problems();
+        foreach ($problems as $problem) {
+            fwrite($this->stderr, $problem . "\n");
+        }
+        if ($problems) {
+            fwrite($this->stderr, count($problems) . " live-events problem(s)\n");
+            return 1;
+        }
+        fwrite($this->stdout, "live-events: ok\n");
 
         return 0;
     }

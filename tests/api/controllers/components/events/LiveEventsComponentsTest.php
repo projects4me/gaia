@@ -180,6 +180,24 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertEquals('conversation.comment.deleted', $deleted[0]['eventName']);
     }
 
+    public function testCommentUpdatePublishesTheChangedFields()
+    {
+        $posted = array();
+        $this->fire($this->make(ConversationCommentLiveEventsComponent::class, $posted), 'afterUpdate', (object) array(
+            'id' => 'c2',
+            'relatedTo' => 'conversationrooms',
+            'relatedId' => 'room-1',
+            'audit' => array(
+                'comment' => array('old' => 'hello', 'new' => 'hello again'),
+            ),
+        ));
+
+        $this->assertCount(1, $posted);
+        $this->assertEquals('conversation.comment.updated', $posted[0]['eventName']);
+        $this->assertEquals('c2', $posted[0]['resource']['id']);
+        $this->assertEquals(array('comment' => 'hello again'), $posted[0]['changes']);
+    }
+
     public function testVoteEventsIgnoreNonConversationVotes()
     {
         $ignored = array();
