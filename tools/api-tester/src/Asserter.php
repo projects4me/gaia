@@ -91,6 +91,14 @@ class Asserter
             }
         }
 
+        if (!empty($expects['jsonPathAbsent']) && is_array($expects['jsonPathAbsent'])) {
+            foreach ($expects['jsonPathAbsent'] as $path) {
+                if ($this->valueAtPath($json, $path, $actual)) {
+                    $failures[] = "jsonPathAbsent: unexpectedly found {$path}";
+                }
+            }
+        }
+
         if (!empty($expects['includedTypesAbsent']) && is_array($expects['includedTypesAbsent'])) {
             $includedTypes = [];
             if (isset($json['included']) && is_array($json['included'])) {
@@ -227,6 +235,28 @@ class Asserter
             $value = $value[$part];
         }
         return $value;
+    }
+
+    /**
+     * Find the value at a dotted path (e.g. `data.attributes.translations.en-us`).
+     *
+     * @param  mixed  $json
+     * @param  string $path
+     * @param  mixed  $value Set to the value when found
+     * @return bool Whether the path exists
+     */
+    private function valueAtPath($json, $path, &$value)
+    {
+        $value = $json;
+        foreach (explode('.', $path) as $key) {
+            if (!is_array($value) || !array_key_exists($key, $value)) {
+                $value = null;
+                return false;
+            }
+            $value = $value[$key];
+        }
+
+        return true;
     }
 
     /**

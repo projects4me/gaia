@@ -130,6 +130,10 @@ $extraAttributes = [
         'title' => 'API Tester Degree',
     ],
     'tag' => ['tag' => 'api-tester-tag-{runId}'],
+    'issuestatus' => [
+        'name' => 'api_tester_status',
+        'translations' => ['en-us' => 'API Tester Status'],
+    ],
     'wiki' => ['name' => 'API Tester Wiki', 'projectId' => '{projectId}'],
     'savedsearch' => [
         'name' => 'API Tester Saved Search',
@@ -143,6 +147,11 @@ $extraAttributes = [
         'allowed' => '1',
         'roleId' => '{roleId}',
     ],
+];
+
+/** Fields an update may not change, so PATCH cases pick another field. */
+$immutableFields = [
+    'issuestatus' => ['name'],
 ];
 
 /** Custom non-JSON:API request bodies. */
@@ -686,7 +695,12 @@ foreach ($routeResources as $resource => $routeCfg) {
                     $stats['enabled']++;
                 }
 
-                $change = patchChange($attrs, $meta);
+                $immutable = isset($immutableFields[$resource]) ? array_flip($immutableFields[$resource]) : [];
+                $patchMeta = $meta;
+                if (isset($patchMeta['fields']) && is_array($patchMeta['fields'])) {
+                    $patchMeta['fields'] = array_diff_key($patchMeta['fields'], $immutable);
+                }
+                $change = patchChange(array_diff_key($attrs, $immutable), $patchMeta);
                 if (in_array('PATCH', $methods, true) && $change) {
                     list($field, $newVal) = $change;
                     $apis[] = [

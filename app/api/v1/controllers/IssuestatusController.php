@@ -7,6 +7,9 @@
 namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
+use Gaia\Libraries\Utils\IssueStatusLabels;
+use Gaia\Libraries\Utils\IssueStatusRules;
+use Gaia\Libraries\Utils\TransactionScope;
 use Gaia\Libraries\Utils\Util;
 use Gaia\MVC\Models\Issue;
 use Gaia\MVC\Models\Issuestatus;
@@ -19,6 +22,14 @@ use Gaia\MVC\Models\Issuestatus;
  * controller adds what the Settings page needs on top of the REST defaults:
  * colours limited to the status palette, no deleting a status that issues
  * still use, and an opt-in issue count per status (`?issueCount=true`).
+ *
+ * A status is saved with its translated labels in one transaction: create and
+ * update accept `translations` (locale => label) with the other attributes,
+ * the en-us label is required on create, and every status read returns its
+ * labels as `translations`. The status value (`name`) is the key of the labels
+ * (see IssueStatusLabels), so it cannot be changed once created; statuses with
+ * the same value share their labels. PATCH on the collection does not save
+ * labels.
  *
  * @author Rana Nouman <ranamnouman@gmail.com>
  * @package Foundation
@@ -34,13 +45,7 @@ class IssuestatusController extends RestController
      */
     public const COLORS = ['#80b5d3', '#b3244f', '#f7bf65', '#5ac594', '#e98a7e'];
 
-    /**
-     * Longest name a status may have: the length of issue_statuses.name and
-     * of issues.status, which copies the name.
-     *
-     * @var int
-     */
-    public const NAME_MAX_LENGTH = 30;
+    public $uses = ['Issuestatus'];
 
     /**
      * Issue counts by status id, loaded when the request asks for them.
@@ -48,6 +53,11 @@ class IssuestatusController extends RestController
      * @var array|null
      */
     protected $issueCounts = null;
+
+    /**
+     * @var IssueStatusLabels|null
+     */
+    protected $statusLabels = null;
 
     /**
      * List statuses, with issue counts when `issueCount=true`.
@@ -72,25 +82,67 @@ class IssuestatusController extends RestController
     }
 
     /**
-     * Create a status; the colour must come from the palette and the name
-     * must fit NAME_MAX_LENGTH.
+     * Create a status with its labels; the colour must come from the palette
+     * and the value and labels must follow IssueStatusRules.
      *
      * @return \Phalcon\Http\Response
      */
     public function postAction()
     {
-        return $this->rejectInvalidColor() ?: $this->rejectLongName() ?: parent::postAction();
+        return $this->rejectInvalidColor()
+            ?: $this->rejectInvalidValue()
+            ?: $this->rejectInvalidTranslations(true)
+            ?: $this->inTransaction(function () {
+                return parent::postAction();
+            });
     }
 
     /**
-     * Update a status; the colour must come from the palette and a changed
-     * name must fit NAME_MAX_LENGTH.
+     * Update a status and the labels sent with it; the colour must come from
+     * the palette and the value cannot change. The status updated is the one
+     * in the body (RestController::patchAction), so that is the one checked.
      *
      * @return \Phalcon\Http\Response
      */
     public function patchAction()
     {
-        return $this->rejectInvalidColor() ?: $this->rejectLongName($this->id) ?: parent::patchAction();
+        $attributes = $this->requestAttributes();
+        $statusId = isset($attributes['id']) ? $attributes['id'] : $this->requestedId();
+
+        return $this->rejectInvalidColor()
+            ?: $this->rejectRename($statusId, $attributes)
+            ?: $this->rejectInvalidTranslations(false)
+            ?: $this->inTransaction(function () {
+                return parent::patchAction();
+            });
+    }
+
+    /**
+     * Update several statuses; none of their values may change, and labels
+     * are saved one status at a time (PATCH /issuestatus/{id}).
+     *
+     * @return \Phalcon\Http\Response
+     */
+    public function patchCollectionAction()
+    {
+        $body = $this->request->getJsonRawBody(true);
+        $collection = is_array($body) && isset($body['collection']) && is_array($body['collection'])
+            ? $body['collection']
+            : [];
+
+        foreach ($collection as $record) {
+            if (is_array($record) && array_key_exists('translations', $record)) {
+                return $this->unprocessable('Labels are saved one status at a time.');
+            }
+            if (is_array($record) && isset($record['id'])) {
+                $rejected = $this->rejectRename($record['id'], $record);
+                if ($rejected) {
+                    return $rejected;
+                }
+            }
+        }
+
+        return parent::patchCollectionAction();
     }
 
     /**
@@ -121,30 +173,113 @@ class IssuestatusController extends RestController
             );
         }
 
-        return parent::deleteAction();
+        // The status and the labels it leaves unused are deleted together.
+        return $this->inTransaction(function () {
+            return parent::deleteAction();
+        });
     }
 
     /**
-     * Add `issueCount` to every status in the response when it was requested.
+     * The labels sent with the status (`translations`), or null when none were sent.
+     *
+     * @return array|null
+     */
+    public function requestedTranslations()
+    {
+        $attributes = $this->requestAttributes();
+
+        return isset($attributes['translations']) && is_array($attributes['translations'])
+            ? $attributes['translations']
+            : null;
+    }
+
+    /**
+     * The labels of the statuses this request saves or reads.
+     *
+     * @return IssueStatusLabels
+     */
+    public function statusLabels()
+    {
+        if ($this->statusLabels === null) {
+            $this->statusLabels = new IssueStatusLabels();
+        }
+
+        return $this->statusLabels;
+    }
+
+    /**
+     * Run a write action in one transaction with the labels its components
+     * save, committing only a 2xx response. The written locales' caches are
+     * dropped once the transaction is over.
+     *
+     * @param  callable $action Returns the response.
+     * @return \Phalcon\Http\Response
+     */
+    protected function inTransaction(callable $action)
+    {
+        $scope = new TransactionScope($this->di->get('db'));
+
+        try {
+            return $scope->run($action, function ($response) {
+                $statusCode = (int) ($response->getStatusCode() ?: 200);
+                return $statusCode >= 200 && $statusCode < 300;
+            });
+        } finally {
+            $this->statusLabels()->forgetWrittenLocales();
+        }
+    }
+
+    /**
+     * Add `translations` to every status in the response, and `issueCount`
+     * when it was requested.
      *
      * @param  array $data
      * @return \Phalcon\Http\Response
      */
     protected function returnResponse(array $data)
     {
-        if ($this->issueCounts !== null && !empty($data['data']) && is_array($data['data'])) {
-            if (isset($data['data']['attributes'])) {
-                $data['data'] = $this->addIssueCount($data['data']);
-            } else {
-                foreach ($data['data'] as $index => $resource) {
-                    if (is_array($resource)) {
-                        $data['data'][$index] = $this->addIssueCount($resource);
-                    }
-                }
+        if (!empty($data['data']) && is_array($data['data'])) {
+            $single = isset($data['data']['attributes']);
+            $resources = $single ? [$data['data']] : array_filter($data['data'], 'is_array');
+
+            $resources = $this->addTranslations($resources);
+            if ($this->issueCounts !== null) {
+                $resources = array_map([$this, 'addIssueCount'], $resources);
             }
+
+            $data['data'] = $single ? reset($resources) : array_replace($data['data'], $resources);
         }
 
         return parent::returnResponse($data);
+    }
+
+    /**
+     * Set `translations` (locale => label) on each status resource that has its value.
+     *
+     * @param  array $resources
+     * @return array
+     */
+    protected function addTranslations(array $resources)
+    {
+        $values = [];
+        foreach ($resources as $resource) {
+            if (isset($resource['attributes']['name']) && is_string($resource['attributes']['name'])) {
+                $values[] = $resource['attributes']['name'];
+            }
+        }
+        if (empty($values)) {
+            return $resources;
+        }
+
+        $labels = $this->statusLabels()->labelsFor($values);
+        foreach ($resources as $index => $resource) {
+            if (isset($resource['attributes']['name']) && is_string($resource['attributes']['name'])) {
+                $name = $resource['attributes']['name'];
+                $resources[$index]['attributes']['translations'] = isset($labels[$name]) ? $labels[$name] : (object) [];
+            }
+        }
+
+        return $resources;
     }
 
     /**
@@ -211,35 +346,66 @@ class IssuestatusController extends RestController
     }
 
     /**
-     * Return a 422 response when the payload sets a name longer than the
-     * column allows. On update the check only applies when the name changes.
+     * Return a 422 response when the new status's value breaks IssueStatusRules.
      *
-     * @param  string|null $statusId Id of the status being updated, null on create
      * @return \Phalcon\Http\Response|null
      */
-    protected function rejectLongName($statusId = null)
+    protected function rejectInvalidValue()
     {
         $attributes = $this->requestAttributes();
+        $error = IssueStatusRules::fromConfig()->valueError(isset($attributes['name']) ? $attributes['name'] : null);
 
-        if (!isset($attributes['name']) || !is_string($attributes['name'])) {
+        return $error === null ? null : $this->unprocessable($error);
+    }
+
+    /**
+     * Return a 422 response when an update changes the status value, which
+     * keys the status labels.
+     *
+     * @param  mixed $statusId   Id of the status being updated
+     * @param  array $attributes The attributes the update sends
+     * @return \Phalcon\Http\Response|null
+     */
+    protected function rejectRename($statusId, array $attributes)
+    {
+        if (!array_key_exists('name', $attributes) || !is_scalar($statusId)) {
             return null;
         }
 
-        if (mb_strlen($attributes['name']) <= self::NAME_MAX_LENGTH) {
-            return null;
-        }
+        $status = Issuestatus::findFirst([
+            'conditions' => 'id = :id:',
+            'bind' => ['id' => (string) $statusId],
+        ]);
+        $error = $status ? IssueStatusRules::fromConfig()->valueChangeError($status->name, $attributes['name']) : null;
 
-        if ($statusId !== null) {
-            $status = Issuestatus::findFirst([
-                'conditions' => 'id = :id:',
-                'bind' => ['id' => (string) $statusId],
-            ]);
-            if ($status && $status->name === $attributes['name']) {
-                return null;
-            }
-        }
+        return $error === null ? null : $this->unprocessable($error);
+    }
 
-        return $this->unprocessable('Name must be at most ' . self::NAME_MAX_LENGTH . ' characters.');
+    /**
+     * Return a 422 response when the labels sent break IssueStatusRules.
+     *
+     * @param  bool $creating
+     * @return \Phalcon\Http\Response|null
+     */
+    protected function rejectInvalidTranslations($creating)
+    {
+        $attributes = $this->requestAttributes();
+        $translations = isset($attributes['translations']) ? $attributes['translations'] : null;
+        $error = IssueStatusRules::fromConfig()->translationsError($translations, $creating);
+
+        return $error === null ? null : $this->unprocessable($error);
+    }
+
+    /**
+     * The id in the request body (JSON:API `data.id`), else the one in the URL.
+     *
+     * @return mixed
+     */
+    protected function requestedId()
+    {
+        $body = $this->request->getJsonRawBody(true);
+
+        return isset($body['data']['id']) ? $body['data']['id'] : $this->id;
     }
 
     /**

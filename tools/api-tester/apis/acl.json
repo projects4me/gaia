@@ -1001,7 +1001,8 @@
           "attributes": {
             "name": "api_test_denied",
             "system": 1,
-            "done": 0
+            "done": 0,
+            "translations": { "en-us": "API Test Denied" }
           }
         }
       },
