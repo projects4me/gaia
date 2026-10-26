@@ -58,12 +58,12 @@ are out of scope here.
 | Rationale | Nested recipient rows are not created through REST, so a controller mixin never runs for them. |
 | Implications | Do not reintroduce a generic model `afterCreate` live-sync for REST resources. Do not attach `NotificationLiveEvents` as a controller `$uses` mixin expecting recipient creates. |
 
-### D-005 — Domain rules stay in components; HTTP/contract stay in `support/`
+### D-005 — Domain rules stay in components; HTTP/contract stay in `app/api/v1/controllers/components/events/support/`
 
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | `EventNames`, `LiveEventEnvelope`, `HermesPublisher`, and `ProjectIdResolver` live under `events/support/`. Each `*LiveEventsComponent` owns which fields and which event name fire for its resource. |
+| Decision | `EventNames`, `LiveEventEnvelope`, `HermesPublisher`, and `ProjectIdResolver` live under `app/api/v1/controllers/components/events/support/`. Each `*LiveEventsComponent` owns which fields and which event name fire for its resource. |
 | Rationale | Envelope shape and ingest should not be copied per resource. Resource-specific “did status change?” logic should not live in the HTTP client. |
 | Implications | New resources add a component (and `$uses`), not a new publisher class. |
 

@@ -7,7 +7,7 @@ on:
 jobs:
 
   graph-drift:
-    name: Graph drift (gaia-dev)
+    name: Graph and docs drift (gaia-dev)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -34,6 +34,9 @@ jobs:
 
     - name: Check docs/generated/graph.json is up to date
       run: php tools/gaia-dev/bin/gaia-dev graph export --check
+
+    - name: Check docs/generated pages are up to date
+      run: php tools/gaia-dev/bin/gaia-dev docs generate --check
 
   api-testing:
     name: API + PHPUnit

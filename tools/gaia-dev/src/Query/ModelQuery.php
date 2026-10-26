@@ -58,8 +58,8 @@ class ModelQuery implements Query
         }
 
         $answer = [
-            'title' => 'Model ' . $model['key'] . ($attributes['isView'] ? ' (view ' : ' (table ')
-                . $attributes['tableName'] . ($attributes['registered'] ? ', registered' : ', not registered') . ')',
+            'title' => 'Model ' . $model['key'] . ' (' . $this->describeSource($attributes)
+                . ($attributes['registered'] ? ', registered' : ', not registered') . ')',
             'fields' => $fields,
             'relationships' => $relationships,
             'behaviours' => implode(', ', $this->keys($graph->out($model, 'uses_behaviour'))) ?: '-',
@@ -74,6 +74,19 @@ class ModelQuery implements Query
         }
 
         return $answer;
+    }
+
+    /**
+     * @param array $attributes the model node's attributes
+     * @return string e.g. "table issues", or "no metadata" for a model without a metadata file
+     */
+    private function describeSource(array $attributes): string
+    {
+        if (!isset($attributes['tableName'])) {
+            return 'no metadata';
+        }
+
+        return ($attributes['isView'] ? 'view ' : 'table ') . $attributes['tableName'];
     }
 
     /**

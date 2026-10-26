@@ -44,7 +44,7 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | `Permission::findEffectivePermissions($userId, $action, $projectId)` returns effective permission rows keyed by resource entity. It does not throw access exceptions or filter API responses. |
+| Decision | `Permission::loadEffectivePermissions($userId)` loads the effective permission rows keyed by resource entity once per user. It does not throw access exceptions or filter API responses. |
 | Rationale | Data loading and policy evaluation are separate concerns. |
 
 ---
@@ -279,7 +279,7 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | There is no default role automatically created or assigned on user creation. The `GlobalroleComponent` behavior (`app/api/v1/controllers/components/GlobalroleComponent.php`) is removed, along with its wiring on `UserController::$uses`. Existing `Global` role memberships, its permission rows, and the role itself are removed through data/ops cleanup (a dedicated CLI cleanup task is deferred). |
+| Decision | There is no default role automatically created or assigned on user creation. The *GlobalroleComponent* behavior (`app/api/v1/controllers/components/`, removed in #170) is removed, along with its wiring on `UserController::$uses`. Existing `Global` role memberships, its permission rows, and the role itself are removed through data/ops cleanup (a dedicated CLI cleanup task is deferred). |
 | Rationale | Role assignment is explicit (userrole API / role detail UI / optional role picker on user create). An implicit default membership is a silent, unaudited access grant that no longer matches the action-based RBAC model. |
 | Implications | A newly created user has zero roles unless one is explicitly assigned. Under D-011 (missing permission row means allow), a role-less user is not automatically locked out of anything — this is unchanged legacy behavior and is tracked as an open question below, not solved by this decision. |
 
@@ -297,7 +297,7 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | No `isSystem` (or similar) column exists on `roles`. Instead, a role is **admin-capable** when it has no explicit deny (`allowed` normalizing to `0`, including `''`) for any of the fifteen lockout-covered resource names `{permission,role,userrole}.{get,create,update,delete}` plus `user.{create,update,delete}` (`user.get` is out of scope) — a missing row is capable under the default permissive resolution mode (mirrors `Acl::isResourceAllowed()`/D-011/D-014). The system must always have at least one non-deleted role that is admin-capable **and** has at least one **usable** `user_roles` membership (non-deleted assignment whose user is non-deleted and `accountStatus` is `Active`, case-insensitive). `Gaia\Libraries\Security\AclLockoutGuard` (`core/libs/security/AclLockoutGuard.php`) is the single implementation of this predicate. |
+| Decision | No *isSystem* (or similar) column exists on `roles`. Instead, a role is **admin-capable** when it has no explicit deny (`allowed` normalizing to `0`, including `''`) for any of the fifteen lockout-covered resource names `{permission,role,userrole}.{get,create,update,delete}` plus `user.{create,update,delete}` (`user.get` is out of scope) — a missing row is capable under the default permissive resolution mode (mirrors `Acl::isResourceAllowed()`/D-011/D-014). The system must always have at least one non-deleted role that is admin-capable **and** has at least one **usable** `user_roles` membership (non-deleted assignment whose user is non-deleted and `accountStatus` is `Active`, case-insensitive). `Gaia\Libraries\Security\AclLockoutGuard` (`core/libs/security/AclLockoutGuard.php`) is the single implementation of this predicate. |
 | Enforced at | `RoleController::deleteAction()` (role delete), `PermissionController::assertAclLockoutSafe()` (a lockout-covered resource write that would set an explicit deny), `UserroleController::deleteAction()` (removing the last usable membership of the last capable role), `UserController::patchAction()` / `deleteAction()` (deactivating or deleting the last usable member of the last capable role). Each simulates the pending change and rejects with `Gaia\Exception\Permission` (422) when no role would remain capable-with-a-usable-member. |
 | Rationale | Consistent with action-based RBAC: capability lives in `permissions` rows, not in role metadata. Supports renaming/replacing/deleting the bootstrap `Admin` role, or having multiple admin-capable roles, as long as the invariant holds. Avoids a second, role-flag-based source of privilege alongside the permission store. Includes `user` write actions so the last capable role cannot lose the ability to create/update/delete users while still administering ACL. Membership must be *usable* so deactivating (`accountStatus` away from Active) or deleting the sole active admin cannot lock operators out while a dormant `user_roles` row still exists. |
 | Non-goals | Granting/removing access to modules *other than* `permission`, `role`, `userrole`, and `user` write actions is never blocked by this invariant. `user.get` and field ACL on these modules are out of scope for the predicate. Only `accountStatus` Active (case-insensitive) counts as usable; other statuses (`invited`, `Inactive`, etc.) do not. This decision assumes the default `RESOLUTION_PERMISSIVE` mode; if restrictive mode is ever exposed through configuration (Phase 3 of the implementation plan), the predicate must be revisited. |
@@ -308,7 +308,7 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | Role assignment on user creation remains optional on both frontend (`AppUserCreateController`) and backend (no implicit role created). A user may exist with zero `user_roles` memberships. |
+| Decision | Role assignment on user creation remains optional on both frontend (Prometheus `prometheus/app/controllers/app/user/create.js`) and backend (no implicit role created). A user may exist with zero `user_roles` memberships. |
 | Rationale | Matches retiring the Global default (D-050); administrators choose roles explicitly through the existing optional picker or later assignment via the role detail page. |
 | Implications | Default-allow vs default-deny for missing permission rows (D-011) still determines what a role-less user can do; that remains an open question, not resolved here. |
 
@@ -317,7 +317,7 @@ Agreed authorization decisions for Gaia. This file is the living source of truth
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | `AclAdminController` and its role-name-based `checkAdminAccess()` bypass are removed. `PermissionController` extends `RestController` directly and is authorized the same way as every module: through `RestController::authorize()` resolving `permission.{get\|create\|update\|delete}` against the requesting user's effective permissions. |
+| Decision | *AclAdminController* and its role-name-based *checkAdminAccess()* bypass are removed. `PermissionController` extends `RestController` directly and is authorized the same way as every module: through `RestController::authorize()` resolving `permission.{get\|create\|update\|delete}` against the requesting user's effective permissions. |
 | Rationale | Removes a second, disabled admin gate (`return true;`) in favor of the one enforcement path the rest of RBAC already relies on. A role only administers permissions if it actually holds `permission.*` grants (as `Admin` does via D-051). |
 | Implications | Any role granted `permission.*` / `role.*` / `userrole.*` / `user.{create,update,delete}` can administer security-critical modules — by design (D-052 guards against losing every such role, not against there being more than one). |
 
@@ -436,9 +436,9 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 | 2026-09-15 | D-060: `project.get` scopes 0/1/2 (none/all/members); membership cascade via `groupKeys`; seed default members |
 | 2026-08-11 | D-011 revised: full-catalog materialization at role create via `RolePermissionSeeder`, seeded from resolution mode only (no role-name force-allow; privilege stays capability-based, D-052); missing rows still follow live resolution mode (catalog growth). D-014: `system.acl.resolutionMode` is create-time seed + aggregation + missing-row policy; flips do not rewrite rows. D-037: unset/DELETE → explicit `none`/deny (no row delete) |
 | 2026-08-10 | D-052: usable membership = Active `accountStatus` (case-insensitive); enforced on user deactivate/delete via `UserController`; `roleMemberCount` joins users and ignores non-Active/deleted members |
-| 2026-08-10 | Removed deferred `AclTask` CLI (ensureAdmin / cleanupGlobalRole); D-050/D-051 now describe dump/ops seeding instead of that task |
+| 2026-08-10 | Removed deferred *AclTask* CLI (ensureAdmin / cleanupGlobalRole); D-050/D-051 now describe dump/ops seeding instead of that task |
 | 2026-08-10 | D-052: renamed implementation to `AclLockoutGuard` (`getLockoutResources`, `findLockoutPermissionRows`, `isAdminCapableRole`, `systemRetainsAdminPath`); capability also requires `user.{create,update,delete}` (`user.get` out of scope); resource set is fifteen |
-| 2026-08-09 | D-050–D-054: retire Global default role; Admin is a bootstrap full-catalog role (no Acl bypass); capability-based security-core lockout invariant (no `isSystem` flag); optional userrole on create; `AclAdminController` bypass removed, `PermissionController` authorized like any other module |
+| 2026-08-09 | D-050–D-054: retire Global default role; Admin is a bootstrap full-catalog role (no Acl bypass); capability-based security-core lockout invariant (no *isSystem* flag); optional userrole on create; *AclAdminController* bypass removed, `PermissionController` authorized like any other module |
 | 2026-08-04 | D-037: Permission API collapses/expands field modes; clients use `{module}.{field}` + none\|read\|write only |
 | 2026-08-04 | D-033 revised: denied `fields=` entries are omitted (not 403); clause field denial still 403 |
 | 2026-08-03 | D-037: field ACL administered as None / Read Only / Write + Read; write implies read |

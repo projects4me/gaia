@@ -9,13 +9,12 @@
 - Migrations are declarative and DROP columns removed from metadata; run them only against your local DB.
 
 ## Architecture
-- Entry `public/index.php`; routes `core/config/routes.php`; all CRUD in `core/mvc/controllers/RestController.php`.
-- Schema, relationships, behaviours and ACL per model live in `app/metadata/model/<Model>.php` (source of truth).
-- New entity = metadata file + empty model in `app/models/` + controller in `app/api/v1/controllers/` + entries in `core/config/routes.php` and `core/config/models.php` + migrate + regenerate `tools/api-tester` backend catalog.
-- Controller side effects = components in `app/api/v1/controllers/components/` listed in `$uses`.
+- Don't read source to learn the structure: use `php tools/gaia-dev/bin/gaia-dev` (`model <Name>`, `route <path>`, `acl <resource> [profile]`, `cases <endpoint>`, `assertions`, `profiles`, `fixtures`) or the generated pages in `docs/generated/` (start at `README.md`: models, route table, ACL matrix, assertion vocabulary, one guide per change bundle). Both come from `docs/generated/graph.json`; refresh them with `graph export` and `docs generate` (CI checks both).
+- Kinds of change (new resource, behaviour, live events, upload scope, ...): the guide in `docs/generated/bundles/` (catalog `docs/dev/bundles.md`).
+- Why a design is the way it is: `docs/architecture/*/decisions.md` (kept in step with the code by a test).
+- Entry `public/index.php`; routes `core/config/routes.php`; all CRUD in `core/mvc/controllers/RestController.php`. Model metadata `app/metadata/model/<Model>.php` is the source of truth.
 - Query param `query` uses Gaia's own language, e.g. `((Issue.projectId : X))` — see `core/mvc/models/query/Clause.php`.
-- Live events: `components/events/support/HermesPublisher.php`; event names in `EventNames.php` MUST match `hermes/src/contract/names.js`.
-- AI planning: `core/services/LLM.php` -> Ares `POST /planissue`.
+- Live events: `app/api/v1/controllers/components/events/support/HermesPublisher.php`; names in `EventNames.php` MUST match `hermes/src/contract/names.js`. AI planning: `core/services/LLM.php` -> Ares `POST /planissue`.
 
 ## Rules
 - Never build SQL/PHQL by string concatenation; use bound parameters.
