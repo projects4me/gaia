@@ -23,4 +23,4 @@
 - controller: Gaia\MVC\REST\Controllers\PermissionController
 - routes: DELETE /api/v1/permission, DELETE /api/v1/permission/{id}, GET /api/v1/permission, GET /api/v1/permission/{id}, GET /api/v1/permission/{id}/{relation}, OPTIONS /api/v1/permission, PATCH /api/v1/permission, PATCH /api/v1/permission/{id}, POST /api/v1/permission, PUT /api/v1/permission, PUT /api/v1/permission/{id}
 - components: Permission
-- cases: 15 (acl 12, backend 2, client 1); gaia-dev cases permission
+- cases: 16 (acl 13, backend 2, client 1); gaia-dev cases permission

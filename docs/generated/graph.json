@@ -3027,6 +3027,24 @@
       }
     },
     {
+      "id": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "case",
+      "key": "acl/acl-agent-own-role-permission-body-id-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/permission/atp-acl-np-issue-get",
+        "resource": "permission",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentPermissionId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-agent-own-role-permission-collection-denied",
       "type": "case",
       "key": "acl/acl-agent-own-role-permission-collection-denied",
@@ -31026,6 +31044,41 @@
       "from": "case:acl/acl-agent-multi-record-body-refused",
       "type": "uses_fixture",
       "to": "fixture:roleId"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "covers",
+      "to": "controller:permission"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/permission/{id}"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentPermissionId"
     },
     {
       "from": "case:acl/acl-agent-own-role-permission-collection-denied",

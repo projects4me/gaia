@@ -1717,6 +1717,25 @@
       ],
       "expects": { "status": 422, "shape": "error", "errorEqual": "Send one record per request." },
       "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-own-role-permission-body-id-denied",
+      "method": "PATCH",
+      "path": "/api/v1/permission/atp-acl-np-issue-get",
+      "resource": "permission",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "permission",
+          "id": "{agentPermissionId}",
+          "attributes": {
+            "resourceName": "agent.get",
+            "allowed": "1"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change the permissions of its own roles." },
+      "source": "acl-agent"
     }
   ]
 }
