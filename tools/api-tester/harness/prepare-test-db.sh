@@ -872,7 +872,11 @@ INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "
 VALUES
   ('atp-acl-no-setting-agent-get', 'api-test-role-acl-ns', 'agent.get', 0, NOW(), NOW()),
   ('atp-acl-no-setting-agent-create', 'api-test-role-acl-ns', 'agent.create', 0, NOW(), NOW()),
-  ('atp-acl-ns-agentcred-get', 'api-test-role-acl-ns', 'agentcredential.get', 0, NOW(), NOW());
+  ('atp-acl-ns-agentcred-get', 'api-test-role-acl-ns', 'agentcredential.get', 0, NOW(), NOW()),
+  -- credential grants without agent.update: issuing or revoking still needs update access to the agent
+  ('atp-acl-ns-agent-update', 'api-test-role-acl-ns', 'agent.update', 0, NOW(), NOW()),
+  ('atp-acl-ns-agentcred-create', 'api-test-role-acl-ns', 'agentcredential.create', 1, NOW(), NOW()),
+  ('atp-acl-ns-agentcred-delete', 'api-test-role-acl-ns', 'agentcredential.delete', 1, NOW(), NOW());
 
 -- Profile aclAgent (gaia-dev scaffold api-cases --new-profile)
 INSERT INTO users (

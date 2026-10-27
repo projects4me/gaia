@@ -25,4 +25,4 @@
 - controller: Gaia\MVC\REST\Controllers\AgentcredentialController
 - routes: DELETE /api/v1/agentcredential, DELETE /api/v1/agentcredential/{id}, GET /api/v1/agentcredential, GET /api/v1/agentcredential/{id}, GET /api/v1/agentcredential/{id}/{relation}, OPTIONS /api/v1/agentcredential, PATCH /api/v1/agentcredential, PATCH /api/v1/agentcredential/{id}, POST /api/v1/agentcredential, PUT /api/v1/agentcredential, PUT /api/v1/agentcredential/{id}
 - components: -
-- cases: 16 (acl 6, backend 3, client 7); gaia-dev cases agentcredential
+- cases: 18 (acl 8, backend 3, client 7); gaia-dev cases agentcredential

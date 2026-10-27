@@ -152,12 +152,40 @@ class AgentCredentials
      */
     public function recordUse($clientId)
     {
-        $db = \Phalcon\Di::getDefault()->getShared('db');
+        try {
+            return (bool) $this->db()->execute(
+                'UPDATE agentcredentials SET "lastUsedAt" = ? WHERE "clientId" = ? AND deleted = false',
+                [gmdate('Y-m-d H:i:s'), (string) $clientId]
+            );
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
 
-        return (bool) $db->execute(
-            'UPDATE agentcredentials SET "lastUsedAt" = ? WHERE "clientId" = ? AND deleted = false',
-            [gmdate('Y-m-d H:i:s'), (string) $clientId]
-        );
+    /**
+     * The live (not revoked) credential with this id.
+     *
+     * @param  string $credentialId
+     * @return Agentcredential|null
+     */
+    public function findLive($credentialId)
+    {
+        $credential = Agentcredential::findFirst([
+            'conditions' => 'id = :id: AND deleted = false',
+            'bind' => ['id' => (string) $credentialId],
+        ]);
+
+        return $credential ?: null;
+    }
+
+    /**
+     * The database connection the usage stamp writes through.
+     *
+     * @return \Phalcon\Db\Adapter\AdapterInterface
+     */
+    protected function db()
+    {
+        return \Phalcon\Di::getDefault()->getShared('db');
     }
 
     /**

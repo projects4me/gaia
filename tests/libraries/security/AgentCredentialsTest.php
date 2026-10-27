@@ -89,15 +89,32 @@ class AgentCredentialsTest extends TestCase
         $credentials = new AgentCredentials();
 
         $first = $credentials->issue($agent->id);
+        $storage = $this->storage();
+        $token = 'unit-cred-rotate-token-' . bin2hex(random_bytes(8));
+        $storage->setAccessToken($token, $first['credential']->clientId, $agent->userId, time() + 3600);
+        $this->assertNotEmpty($storage->getAccessToken($token));
+
         $second = $credentials->issue($agent->id);
 
         $this->assertSame($first['credential']->clientId, $second['credential']->clientId);
         $this->assertTrue((bool) Agentcredential::findFirstById($first['credential']->id)->deleted);
         $this->assertFalse((bool) Agentcredential::findFirstById($second['credential']->id)->deleted);
 
-        $storage = $this->storage();
         $this->assertFalse($storage->checkClientCredentials($second['credential']->clientId, $first['secret']));
         $this->assertTrue($storage->checkClientCredentials($second['credential']->clientId, $second['secret']));
+        $this->assertFalse($storage->getAccessToken($token));
+    }
+
+    public function testFindLiveSkipsARevokedCredential(): void
+    {
+        $agent = $this->createAgent('Unit Cred Find', 'unit-agent-cred-find@gaia.test');
+        $credentials = new AgentCredentials();
+        $first = $credentials->issue($agent->id)['credential'];
+        $second = $credentials->issue($agent->id)['credential'];
+
+        $this->assertNull($credentials->findLive($first->id));
+        $this->assertSame($second->id, $credentials->findLive($second->id)->id);
+        $this->assertNull($credentials->findLive('no-such-credential'));
     }
 
     public function testIssueRejectsAnUnknownAgent(): void
@@ -164,6 +181,23 @@ class AgentCredentialsTest extends TestCase
         $this->assertTrue((new AgentCredentials())->recordUse($credential->clientId));
 
         $this->assertNotNull(Agentcredential::findFirstById($credential->id)->lastUsedAt);
+    }
+
+    public function testAFailedUsageStampDoesNotThrow(): void
+    {
+        $credentials = new class extends AgentCredentials {
+            protected function db()
+            {
+                return new class {
+                    public function execute()
+                    {
+                        throw new \PDOException('database unavailable');
+                    }
+                };
+            }
+        };
+
+        $this->assertFalse($credentials->recordUse('agent-unit-cred-any'));
     }
 
     public function testPlainClientSecretsStillCheck(): void

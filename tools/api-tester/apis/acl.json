@@ -1801,6 +1801,32 @@
       "auth": "aclAgent",
       "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change or delete its own agent record." },
       "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentcredential-issue-needs-agent-update",
+      "method": "POST",
+      "path": "/api/v1/agentcredential",
+      "resource": "agentcredential",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "agentcredential",
+          "attributes": {
+            "agentId": "{otherAgentId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error" },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentcredential-revoke-needs-agent-update",
+      "method": "DELETE",
+      "path": "/api/v1/agentcredential/{agentcredentialId}",
+      "resource": "agentcredential",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error" },
+      "source": "acl-agent"
     }
   ]
 }

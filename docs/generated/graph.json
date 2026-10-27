@@ -3253,6 +3253,24 @@
       }
     },
     {
+      "id": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "case",
+      "key": "acl/acl-agentcredential-issue-needs-agent-update",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "otherAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-agentcredential-issue-needs-own-grant",
       "type": "case",
       "key": "acl/acl-agentcredential-issue-needs-own-grant",
@@ -3301,6 +3319,24 @@
         "enabled": true,
         "source": "acl-agent",
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "case",
+      "key": "acl/acl-agentcredential-revoke-needs-agent-update",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "DELETE",
+        "path": "/api/v1/agentcredential/{agentcredentialId}",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentcredentialId"
+        ],
         "stores": []
       }
     },
@@ -32203,6 +32239,36 @@
       "to": "fixture:agentcredentialId"
     },
     {
+      "from": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
       "from": "case:acl/acl-agentcredential-issue-needs-own-grant",
       "type": "asserts",
       "to": "assertion:shape"
@@ -32291,6 +32357,36 @@
       "from": "case:acl/acl-agentcredential-list-denied-without-grant",
       "type": "runs_as",
       "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/agentcredential/{id}"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "uses_fixture",
+      "to": "fixture:agentcredentialId"
     },
     {
       "from": "case:acl/acl-agentcredential-revoke-own-denied",
@@ -57515,6 +57611,11 @@
     {
       "from": "profile:aclNoSetting",
       "type": "denies",
+      "to": "permission:agent.update"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
       "to": "permission:agentcredential.get"
     },
     {
@@ -57526,6 +57627,16 @@
       "from": "profile:aclNoSetting",
       "type": "denies",
       "to": "permission:setting.update"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:agentcredential.create"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:agentcredential.delete"
     },
     {
       "from": "profile:aclNoSetting",

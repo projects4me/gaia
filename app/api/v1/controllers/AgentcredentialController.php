@@ -10,7 +10,6 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
 use Gaia\Libraries\Agents\AgentCredentials;
 use Gaia\Libraries\Agents\AgentLifecycle;
 use Gaia\Libraries\Security\AgentEscalationGuard;
-use Gaia\MVC\Models\Agentcredential;
 
 /**
  * Agentcredential Controller
@@ -19,7 +18,10 @@ use Gaia\MVC\Models\Agentcredential;
  * issues a secret, revoking the agent's previous one; the response carries
  * the secret as `clientSecret`, the only time it is shown. DELETE revokes it.
  * A credential cannot be changed, and an agent cannot manage its own
- * (see `AgentEscalationGuard`).
+ * (see `AgentEscalationGuard`). Both actions also need update access to the
+ * target agent: holding a credential is acting as that agent, so the
+ * credential grant comes on top of the right to edit the agent, never
+ * instead of it.
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Foundation
@@ -50,6 +52,7 @@ class AgentcredentialController extends RestController
         $attributes = $this->extractRequestAttributes();
         $agentId = isset($attributes['agentId']) ? $attributes['agentId'] : null;
         AgentEscalationGuard::assertNotOwnAgent($currentUser, $agentId);
+        $this->authorizeAgentUpdate($agentId);
 
         $issued = (new AgentCredentials())->issue($agentId);
         $credential = $issued['credential'];
@@ -92,15 +95,13 @@ class AgentcredentialController extends RestController
     {
         global $currentUser;
 
-        $credential = Agentcredential::findFirst([
-            'conditions' => 'id = :id: AND deleted = false',
-            'bind' => ['id' => (string) $this->id],
-        ]);
+        $credential = (new AgentCredentials())->findLive($this->id);
         if (!$credential) {
             return parent::deleteAction();
         }
 
         AgentEscalationGuard::assertNotOwnAgent($currentUser, $credential->agentId);
+        $this->authorizeAgentUpdate($credential->agentId);
         $clientId = (string) $credential->clientId;
 
         return (new AgentLifecycle())->transactional(function () use ($clientId) {
@@ -110,5 +111,27 @@ class AgentcredentialController extends RestController
             }
             return $response;
         });
+    }
+
+    /**
+     * Deny unless the current user may update the agent.
+     *
+     * @param  string|null $agentId
+     * @return void
+     * @throws \Gaia\Exception\Access
+     */
+    private function authorizeAgentUpdate($agentId)
+    {
+        global $currentUser;
+
+        if (!$this->getDI()->has('acl')) {
+            return;
+        }
+
+        $acl = $this->getDI()->get('acl');
+        $acl->authorizeAction('agent.update', $currentUser->id, 'Agent');
+        if ($agentId !== null && (string) $agentId !== '') {
+            $acl->assertRecordIdInScope('Agent', (string) $agentId);
+        }
     }
 }
