@@ -8,14 +8,131 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 154,
-        "enabled": 143,
+        "total": 160,
+        "enabled": 149,
         "disabled": 11,
-        "routeResources": 42,
-        "withMetadata": 30,
+        "routeResources": 43,
+        "withMetadata": 31,
         "skippedResources": 10
     },
     "apis": [
+        {
+            "id": "get-agent-api-v1-agent",
+            "method": "GET",
+            "path": "/api/v1/agent",
+            "resource": "agent",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-agent-api-v1-agent-id",
+            "method": "GET",
+            "path": "/api/v1/agent/{agentId}",
+            "resource": "agent",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{agentId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-agent-api-v1-agent",
+            "method": "POST",
+            "path": "/api/v1/agent",
+            "resource": "agent",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "agent",
+                    "attributes": {
+                        "userId": "{userId}",
+                        "name": "API Tester Agent",
+                        "email": "api-tester-agent-{runId}@example.com",
+                        "purpose": "Created by the api-tester backend suite",
+                        "sponsorId": "{userId}",
+                        "rolePrompt": "You are a test agent.",
+                        "modelConfig": "{\"simple\":\"sonnet\",\"complex\":\"opus\",\"escalation\":\"opus\"}",
+                        "maxTurns": 40,
+                        "maxRunsPerIssue": 10,
+                        "permissionMode": "acceptEdits"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.agentId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-agent-api-v1-agent-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/agent/{runtime.agentId}",
+            "resource": "agent",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.agentId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "patch-agent-api-v1-agent-id",
+            "method": "PATCH",
+            "path": "/api/v1/agent/{runtime.agentId}",
+            "resource": "agent",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "agent",
+                    "id": "{runtime.agentId}",
+                    "attributes": {
+                        "name": "API Tester Agent Updated"
+                    }
+                }
+            },
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "attributesEqual": {
+                    "name": "API Tester Agent Updated"
+                }
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-agent-api-v1-agent-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/agent/{runtime.agentId}",
+            "resource": "agent",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
         {
             "id": "get-activity-api-v1-activity",
             "method": "GET",
@@ -1702,7 +1819,8 @@
                         "name": "API Tester Created",
                         "password": "unit-testing",
                         "email": "api-tester-created@example.com",
-                        "accountStatus": "active"
+                        "accountStatus": "active",
+                        "type": "Human"
                     }
                 }
             },

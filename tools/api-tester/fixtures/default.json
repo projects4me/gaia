@@ -31,6 +31,10 @@
     "aclNoSetting": {
       "email": "api-tester-acl-nosetting@example.com",
       "password": "unit-testing"
+    },
+    "aclAgent": {
+      "email": "api-tester-agent@example.com",
+      "password": "unit-testing"
     }
   },
   "values": {
@@ -52,6 +56,12 @@
     "systemnotificationrecipientId": "api-test-sysnotifrec01",
     "conversationroomId": "api-test-convroom-001",
     "commentId": "api-test-comment-000001",
+    "agentId": "api-test-agent-000001",
+    "agentUserId": "api-test-user-agent",
+    "otherAgentId": "api-test-agent-000002",
+    "otherAgentUserId": "api-test-user-agent2",
+    "agentRoleId": "api-test-role-acl-ag",
+    "agentUserroleId": "api-test-userrole-acl-ag",
     "ideaId": "api-test-idea-000001",
     "otherProjectIdeaId": "api-test-idea-000002",
     "ideamessageId": "api-test-ideamsg-00001",

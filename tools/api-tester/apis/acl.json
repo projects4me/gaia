@@ -1536,6 +1536,305 @@
       "query": { "limit": 50, "page": 1 },
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
+    },
+    {
+      "id": "acl-agent-list-denied-without-grant",
+      "method": "GET",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-create-denied-without-grant",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "ACL Denied Agent",
+            "email": "acl-denied-agent-{runId}@example.com"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-create-makes-agent-user",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "ACL Created Agent",
+            "email": "acl-created-agent-{runId}@example.com",
+            "purpose": "Created by the acl suite",
+            "modelConfig": {
+              "simple": "sonnet",
+              "complex": "opus"
+            },
+            "maxTurns": 30
+          }
+        }
+      },
+      "expects": { "status": 201, "shape": "jsonapi.resource", "attributesEqual": {"name": "ACL Created Agent", "purpose": "Created by the acl suite"} },
+      "store": { "runtime.createdAgentId": "data.id", "runtime.createdAgentUserId": "data.attributes.userId" },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-created-user-is-agent",
+      "method": "GET",
+      "path": "/api/v1/user/{runtime.createdAgentUserId}",
+      "resource": "user",
+      "auth": true,
+      "expects": { "status": 200, "shape": "jsonapi.resource", "attributesEqual": {"type": "Agent", "name": "ACL Created Agent", "accountStatus": "Active"} },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-create-needs-email",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "ACL Agent Without Email"
+          }
+        }
+      },
+      "expects": { "status": 422, "shape": "error", "errorEqual": "An agent needs a valid email." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-create-rejects-taken-email",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "ACL Duplicate Agent",
+            "email": "api-tester-member@example.com"
+          }
+        }
+      },
+      "expects": { "status": 422, "shape": "error", "errorEqual": "A user with this email already exists." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-create-rejects-bad-model-config",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "ACL Bad Config Agent",
+            "email": "acl-bad-config-{runId}@example.com",
+            "modelConfig": "not json"
+          }
+        }
+      },
+      "expects": { "status": 422, "shape": "error", "errorEqual": "modelConfig must be a JSON object" },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-delete-deletes-user",
+      "method": "DELETE",
+      "path": "/api/v1/agent/{runtime.createdAgentId}",
+      "resource": "agent",
+      "auth": true,
+      "expects": { "status": 200, "shape": "json" },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-deleted-agent-user-gone",
+      "method": "GET",
+      "path": "/api/v1/user",
+      "resource": "user",
+      "auth": true,
+      "query": { "query": "(User.id : {runtime.createdAgentUserId})", "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsExcludes": ["{runtime.createdAgentUserId}"] },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-patch-own-agent-denied",
+      "method": "PATCH",
+      "path": "/api/v1/agent/{agentId}",
+      "resource": "agent",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "agent",
+          "id": "{agentId}",
+          "attributes": {
+            "maxTurns": 999
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change or delete its own agent record." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-delete-own-agent-denied",
+      "method": "DELETE",
+      "path": "/api/v1/agent/{agentId}",
+      "resource": "agent",
+      "auth": "aclAgent",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change or delete its own agent record." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-patch-other-agent-allowed",
+      "method": "PATCH",
+      "path": "/api/v1/agent/{otherAgentId}",
+      "resource": "agent",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "agent",
+          "id": "{otherAgentId}",
+          "attributes": {
+            "purpose": "Changed by another agent"
+          }
+        }
+      },
+      "expects": { "status": 200, "shape": "jsonapi.resource", "attributesEqual": {"purpose": "Changed by another agent"} },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-patch-own-user-denied",
+      "method": "PATCH",
+      "path": "/api/v1/user/{agentUserId}",
+      "resource": "user",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "user",
+          "id": "{agentUserId}",
+          "attributes": {
+            "title": "Self-promoted"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change or delete its own user record." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-assign-own-role-denied",
+      "method": "POST",
+      "path": "/api/v1/userrole",
+      "resource": "userrole",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "userrole",
+          "attributes": {
+            "userId": "{agentUserId}",
+            "roleId": "{roleId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change its own roles." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-remove-own-role-denied",
+      "method": "DELETE",
+      "path": "/api/v1/userrole/{agentUserroleId}",
+      "resource": "userrole",
+      "auth": "aclAgent",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change its own roles." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-own-role-permission-denied",
+      "method": "POST",
+      "path": "/api/v1/permission",
+      "resource": "permission",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "permission",
+          "attributes": {
+            "resourceName": "tag.get",
+            "allowed": "1",
+            "roleId": "{agentRoleId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change the permissions of its own roles." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-user-password-on-agent-refused",
+      "method": "PATCH",
+      "path": "/api/v1/user/{otherAgentUserId}",
+      "resource": "user",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "user",
+          "id": "{otherAgentUserId}",
+          "attributes": {
+            "password": "new-secret"
+          }
+        }
+      },
+      "expects": { "status": 422, "shape": "error", "errorEqual": "An agent user cannot have a password." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-user-type-change-refused",
+      "method": "PATCH",
+      "path": "/api/v1/user/{memberUserId}",
+      "resource": "user",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "user",
+          "id": "{memberUserId}",
+          "attributes": {
+            "type": "Agent"
+          }
+        }
+      },
+      "expects": { "status": 422, "shape": "error", "errorEqual": "The type of a user cannot be changed." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-user-create-agent-type-refused",
+      "method": "POST",
+      "path": "/api/v1/user",
+      "resource": "user",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "user",
+          "attributes": {
+            "name": "ACL Fake Agent",
+            "email": "acl-fake-agent-{runId}@example.com",
+            "type": "Agent"
+          }
+        }
+      },
+      "expects": { "status": 422, "shape": "error", "errorEqual": "Agents are created through the agent endpoint." },
+      "source": "acl-agent"
     }
   ]
 }

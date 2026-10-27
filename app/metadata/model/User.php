@@ -272,6 +272,14 @@ $models['User'] = array(
             'type' => 'datetime',
             'null' => true
         ),
+        'type' => array(
+            'name' => 'type',
+            'label' => 'LBL_USERS_TYPE',
+            'type' => 'varchar',
+            'length' => '10',
+            'null' => false,
+            'default' => 'Human'
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
@@ -322,6 +330,11 @@ $models['User'] = array(
             'collaboration' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Usercollaboration',
+                'relatedKey' => 'userId'
+            ),
+            'agent' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Agent',
                 'relatedKey' => 'userId'
             )
         ),

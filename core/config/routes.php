@@ -30,6 +30,17 @@
 $config['routes'] = array(
     'rest' => array(
         'v1' => array(
+            'agent' => array(
+                'path' => '/api/:version/agent',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'activity' => array(
                 'path' => '/api/:version/activity',
                 'allowedMethods' => array(

@@ -11,6 +11,7 @@ use Gaia\Libraries\Utils\Util;
 use Gaia\Libraries\Security\Acl;
 use Gaia\Libraries\Security\AclMapCatalog;
 use Gaia\Libraries\Security\AclLockoutGuard;
+use Gaia\Libraries\Security\AgentEscalationGuard;
 use Gaia\MVC\Models\Permission;
 
 use function Gaia\Libraries\Utils\create_guid;
@@ -295,6 +296,7 @@ class PermissionController extends RestController
 
         $resourceName = (string) $model->resourceName;
         $roleId = (string) $model->roleId;
+        $this->assertNotOwnRolePermission($roleId);
 
         if (AclMapCatalog::isFieldActionResource($resourceName)) {
             $parts = explode('.', $resourceName);
@@ -322,6 +324,8 @@ class PermissionController extends RestController
      */
     private function passPreReqs(&$values)
     {
+        $this->assertNotOwnRolePermission(isset($values['roleId']) ? $values['roleId'] : null);
+
         // Resource name required.
         $resourceName = $values['resourceName'];
         if (!$resourceName) {
@@ -349,6 +353,22 @@ class PermissionController extends RestController
 
             return true;
         }
+    }
+
+    /**
+     * Reject an agent writing the permissions of a role it holds: the role in
+     * the payload, or the role of the permission row being changed (see
+     * `AgentEscalationGuard`).
+     *
+     * @param  string|null $roleId
+     * @throws \Gaia\Exception\Access
+     * @return void
+     */
+    private function assertNotOwnRolePermission($roleId)
+    {
+        global $currentUser;
+
+        AgentEscalationGuard::assertNotOwnPermission($currentUser, $this->id ?? null, $roleId);
     }
 
     /**

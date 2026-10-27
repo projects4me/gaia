@@ -3,6 +3,17 @@
     "source": "core/config/routes.php",
     "version": "v1",
     "resources": {
+        "agent": {
+            "path": "/api/:version/agent",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "activity": {
             "path": "/api/:version/activity",
             "allowedMethods": [

@@ -396,12 +396,60 @@ INSERT INTO users (
   'API Tester',
   'active',
   0
+),
+(
+  -- Agent user (users.type = Agent) that signs in: agent/userrole/permission writes
+  -- allowed by ACL, so only the self-escalation guard stops writes on itself
+  'api-test-user-agent',
+  '$2y$10$OH8mqmGV2uLOLyoSdLGm/ejzhLXVOsOz/Ld2fi610E/qWWTqQ6e1G',
+  'api-tester-agent@example.com',
+  'API Tester Agent',
+  0,
+  'api-test-user-0001',
+  'api-test-user-0001',
+  'API Tester',
+  'API Tester',
+  'active',
+  0
+),
+(
+  -- Second agent user, a target the agent profile may change
+  'api-test-user-agent2',
+  '$2y$10$OH8mqmGV2uLOLyoSdLGm/ejzhLXVOsOz/Ld2fi610E/qWWTqQ6e1G',
+  'api-tester-agent2@example.com',
+  'API Tester Other Agent',
+  0,
+  'api-test-user-0001',
+  'api-test-user-0001',
+  'API Tester',
+  'API Tester',
+  'active',
+  0
 )
 ON CONFLICT (id) DO UPDATE SET
   password = EXCLUDED.password,
   email = EXCLUDED.email,
   "accountStatus" = 'active',
   "failedLoginAttempts" = 0;
+
+UPDATE users SET type = 'Agent' WHERE id IN ('api-test-user-agent', 'api-test-user-agent2');
+
+-- Agents: one per agent user (Class Table Inheritance with users)
+INSERT INTO agents (
+  id, "userId", name, purpose, "sponsorId", "modelConfig", "maxTurns", "maxRunsPerIssue", "permissionMode",
+  deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-agent-000001', 'api-test-user-agent', 'API Tester Agent', 'Seed agent that signs in', 'api-test-user-0001',
+   '{"simple":"sonnet","complex":"opus","escalation":"opus"}', 40, 10, 'acceptEdits',
+   FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-agent-000002', 'api-test-user-agent2', 'API Tester Other Agent', 'Seed agent without a sponsor', NULL,
+   NULL, NULL, NULL, NULL,
+   FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET
+  "userId" = EXCLUDED."userId",
+  name = EXCLUDED.name,
+  "sponsorId" = EXCLUDED."sponsorId",
+  deleted = FALSE;
 
 INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id)
 VALUES (
@@ -487,7 +535,8 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'),
+    ('agent')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -519,6 +568,10 @@ INSERT INTO roles (
 ),
 (
   'api-test-role-acl-ns', 'ACL No Setting', 'issuestatus/issuetype allowed, setting.* denied', 0,
+  'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
+),
+(
+  'api-test-role-acl-ag', 'ACL Agent', 'agent, userrole and permission writes allowed (self-escalation guard)', 0,
   'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
 )
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, deleted = 0;
@@ -553,6 +606,10 @@ INSERT INTO user_roles (
 (
   'api-test-userrole-acl-ns', 'api-test-user-0001', 'api-test-user-0001',
   'api-test-user-acl-ns', 'api-test-role-acl-ns', 'API Tester', 'API Tester'
+),
+(
+  'api-test-userrole-acl-ag', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-agent', 'api-test-role-acl-ag', 'API Tester', 'API Tester'
 )
 ON CONFLICT (id) DO UPDATE SET
   "userId" = EXCLUDED."userId",
@@ -617,7 +674,26 @@ VALUES
   ('atp-acl-ns-type-update', 'api-test-role-acl-ns', 'issuetype.update', 1, NOW(), NOW()),
   ('atp-acl-ns-type-delete', 'api-test-role-acl-ns', 'issuetype.delete', 1, NOW(), NOW()),
   ('atp-acl-ns-setting-get', 'api-test-role-acl-ns', 'setting.get', 0, NOW(), NOW()),
-  ('atp-acl-ns-setting-update', 'api-test-role-acl-ns', 'setting.update', 0, NOW(), NOW());
+  ('atp-acl-ns-setting-update', 'api-test-role-acl-ns', 'setting.update', 0, NOW(), NOW()),
+  -- agent.* denied: the Agent module is reachable only with an explicit grant
+  ('atp-acl-ns-agent-get', 'api-test-role-acl-ns', 'agent.get', 0, NOW(), NOW()),
+  ('atp-acl-ns-agent-create', 'api-test-role-acl-ns', 'agent.create', 0, NOW(), NOW());
+
+-- Agent role: everything the self-escalation guard covers is allowed by ACL
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+SELECT
+  'atp-acl-ag-' || left(md5(m.module || '.' || a.action), 25),
+  'api-test-role-acl-ag',
+  m.module || '.' || a.action,
+  1,
+  NOW(),
+  NOW()
+FROM (
+  VALUES ('agent'), ('userrole'), ('permission'), ('user'), ('role')
+) AS m(module)
+CROSS JOIN (
+  VALUES ('get'), ('create'), ('update'), ('delete')
+) AS a(action);
 
 -- Field ACL role: module access + field matrix
 -- subject = None (0/0/0)
@@ -926,6 +1002,10 @@ data = {
     "aclNoSetting": {
       "email": "api-tester-acl-nosetting@example.com",
       "password": "unit-testing"
+    },
+    "aclAgent": {
+      "email": "api-tester-agent@example.com",
+      "password": "unit-testing"
     }
   },
   "values": {
@@ -947,6 +1027,12 @@ data = {
     "systemnotificationrecipientId": "api-test-sysnotifrec01",
     "conversationroomId": "api-test-convroom-001",
     "commentId": "api-test-comment-000001",
+    "agentId": "api-test-agent-000001",
+    "agentUserId": "api-test-user-agent",
+    "otherAgentId": "api-test-agent-000002",
+    "otherAgentUserId": "api-test-user-agent2",
+    "agentRoleId": "api-test-role-acl-ag",
+    "agentUserroleId": "api-test-userrole-acl-ag",
     "ideaId": "api-test-idea-000001",
     "otherProjectIdeaId": "api-test-idea-000002",
     "ideamessageId": "api-test-ideamsg-00001",

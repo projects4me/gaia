@@ -66,6 +66,7 @@ $skipMutations = [
 /** Seeded fixture placeholders for get-by-id when available. */
 $fixtureIds = [
     'activity' => '{activityId}',
+    'agent' => '{agentId}',
     'conversationroom' => '{conversationroomId}',
     'idea' => '{ideaId}',
     'ideamessage' => '{ideamessageId}',
@@ -114,6 +115,18 @@ $extraAttributes = [
         'email' => 'api-tester-created@example.com',
         'password' => 'unit-testing',
         'accountStatus' => 'active',
+        'type' => 'Human',
+    ],
+    'agent' => [
+        'name' => 'API Tester Agent',
+        'email' => 'api-tester-agent-{runId}@example.com',
+        'purpose' => 'Created by the api-tester backend suite',
+        'sponsorId' => '{userId}',
+        'rolePrompt' => 'You are a test agent.',
+        'modelConfig' => '{"simple":"sonnet","complex":"opus","escalation":"opus"}',
+        'maxTurns' => 40,
+        'maxRunsPerIssue' => 10,
+        'permissionMode' => 'acceptEdits',
     ],
     'role' => [
         'name' => 'API Tester Role',
