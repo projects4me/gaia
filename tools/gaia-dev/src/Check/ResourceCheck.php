@@ -95,16 +95,17 @@ class ResourceCheck
 
     /**
      * Whether app/api/v1/controllers/{$class}.php declares $class extending
-     * RestController, directly or through other controllers in that folder
-     * (e.g. ValueLabelController). A text match, like the other checks here:
-     * a parent outside that folder counts as not a RestController.
+     * RestController, directly or through shared controllers in its common/ folder
+     * (e.g. common/ValueLabelController). A text match, like the other checks
+     * here: a parent outside those folders counts as not a RestController.
      */
     private function extendsRestController(string $class): bool
     {
         $seen = [];
+        $path = "app/api/v1/controllers/{$class}.php";
         while (!isset($seen[$class])) {
             $seen[$class] = true;
-            $controller = $this->read("app/api/v1/controllers/{$class}.php");
+            $controller = $this->read($path);
             if ($controller === null || !preg_match('/class ' . $class . ' extends (\w+)/', $controller, $match)) {
                 return false;
             }
@@ -112,6 +113,7 @@ class ResourceCheck
                 return true;
             }
             $class = $match[1];
+            $path = "app/api/v1/controllers/common/{$class}.php";
         }
 
         return false;

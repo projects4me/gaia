@@ -6,6 +6,8 @@
 
 namespace Gaia\MVC\REST\Controllers\Components;
 
+use Gaia\MVC\REST\Controllers\Components\Common\ValueLabelsComponent;
+
 /**
  * Saves and deletes the translated labels of an issue type with the type
  * (see ValueLabelsComponent). It exists for its name: RestController loads

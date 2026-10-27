@@ -28,25 +28,26 @@ $timer = new executiontime();
 $di = new CliDI();
 
 $di->set('db', function () {
-    $config = $GLOBALS['settings']['database']->toArray();
+    $config = (array) $GLOBALS['settings']['database'];
     $connection = \Gaia\Db\Factory\ConnectionFactory::create($config);
     $eventsManager = new Phalcon\Events\Manager();
-    $dblogger = (new Logger('dblog', ['local' => new StreamAdapter(APP_PATH . '/logs/db.log')]))->setLogLevel(Logger::DEBUG);
-
+    $dblogger = new \Phalcon\Logger\Adapter\File(APP_PATH . "/db.log");
+//         print_r($logger);
     //Listen all the database events
-    $eventsManager->attach('db', function ($event, $connection) use ($dblogger) {
+    $eventsManager->attach('db', function($event, $connection) use ($dblogger) {
+//            global $logger;
         if ($event->getType() == 'beforeQuery') {
             $GLOBALS['timer']->diff();
             $sqlVariables = $connection->getSQLVariables();
-            if (!empty($sqlVariables)) {
-                $dblogger->debug(print_r($connection->getSQLBindTypes(), 1) . ' ' . join(', ', $sqlVariables));
+            if (count($sqlVariables)) {
+                $dblogger->log(print_r($connection->getSQLBindTypes(),1) . ' ' . join(', ', $sqlVariables), \Phalcon\Logger::INFO);
             } else {
-                $dblogger->debug(print_r($connection->getSQLBindTypes(), 1));
+                $dblogger->log(print_r($connection->getSQLBindTypes(),1), \Phalcon\Logger::INFO);
             }
         }
         if ($event->getType() == 'afterQuery') {
-            $dblogger->debug('Query execution time:' . ($GLOBALS['timer']->diff()) . ' seconds');
-            $dblogger->debug($connection->getSQLStatement());
+            $dblogger->log('Query execution time:'.($GLOBALS['timer']->diff()).' seconds', \Phalcon\Logger::INFO);
+            $dblogger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
         }
     });
 

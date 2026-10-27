@@ -2349,30 +2349,6 @@
       "attributes": {}
     },
     {
-      "id": "action:valuelabel.delete",
-      "type": "action",
-      "key": "valuelabel.delete",
-      "attributes": {}
-    },
-    {
-      "id": "action:valuelabel.patch",
-      "type": "action",
-      "key": "valuelabel.patch",
-      "attributes": {}
-    },
-    {
-      "id": "action:valuelabel.patchCollection",
-      "type": "action",
-      "key": "valuelabel.patchCollection",
-      "attributes": {}
-    },
-    {
-      "id": "action:valuelabel.post",
-      "type": "action",
-      "key": "valuelabel.post",
-      "attributes": {}
-    },
-    {
       "id": "action:vote.delete",
       "type": "action",
       "key": "vote.delete",
@@ -13319,6 +13295,23 @@
       }
     },
     {
+      "id": "component:Common\\ValueLabels",
+      "type": "component",
+      "key": "Common\\ValueLabels",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Common\\ValueLabelsComponent",
+        "file": "app/api/v1/controllers/components/common/ValueLabelsComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate",
+          "afterDelete"
+        ]
+      }
+    },
+    {
       "id": "component:Dashboard",
       "type": "component",
       "key": "Dashboard",
@@ -13907,23 +13900,6 @@
       }
     },
     {
-      "id": "component:ValueLabels",
-      "type": "component",
-      "key": "ValueLabels",
-      "attributes": {
-        "kind": "component",
-        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\ValueLabelsComponent",
-        "file": "app/api/v1/controllers/components/ValueLabelsComponent.php",
-        "extends": null,
-        "implements": [],
-        "hooks": [
-          "afterCreate",
-          "afterUpdate",
-          "afterDelete"
-        ]
-      }
-    },
-    {
       "id": "controller:activity",
       "type": "controller",
       "key": "activity",
@@ -14438,16 +14414,6 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\UserskillController",
         "file": "app/api/v1/controllers/UserskillController.php",
-        "extends": "RestController"
-      }
-    },
-    {
-      "id": "controller:valuelabel",
-      "type": "controller",
-      "key": "valuelabel",
-      "attributes": {
-        "class": "Gaia\\MVC\\REST\\Controllers\\ValueLabelController",
-        "file": "app/api/v1/controllers/ValueLabelController.php",
         "extends": "RestController"
       }
     },
@@ -53053,26 +53019,6 @@
       "from": "controller:userskill",
       "type": "serves",
       "to": "model:Userskill"
-    },
-    {
-      "from": "controller:valuelabel",
-      "type": "has_action",
-      "to": "action:valuelabel.delete"
-    },
-    {
-      "from": "controller:valuelabel",
-      "type": "has_action",
-      "to": "action:valuelabel.patch"
-    },
-    {
-      "from": "controller:valuelabel",
-      "type": "has_action",
-      "to": "action:valuelabel.patchCollection"
-    },
-    {
-      "from": "controller:valuelabel",
-      "type": "has_action",
-      "to": "action:valuelabel.post"
     },
     {
       "from": "controller:vote",

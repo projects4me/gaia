@@ -7,6 +7,7 @@
 namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Libraries\Utils\ValueLabels;
+use Gaia\MVC\REST\Controllers\Common\ValueLabelController;
 
 /**
  * Issue types controller

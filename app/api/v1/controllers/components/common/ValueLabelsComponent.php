@@ -4,7 +4,7 @@
  * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Gaia\MVC\REST\Controllers\Components;
+namespace Gaia\MVC\REST\Controllers\Components\Common;
 
 use Phalcon\Events\Event as Event;
 
@@ -16,7 +16,7 @@ use Phalcon\Events\Event as Event;
  * cannot be written (the exception thrown here) rolls the record back too.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
- * @package Gaia\MVC\REST\Controllers\Components
+ * @package Gaia\MVC\REST\Controllers\Components\Common
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class ValueLabelsComponent
@@ -25,7 +25,7 @@ class ValueLabelsComponent
      * Save the labels the new record was created with.
      *
      * @param  Event                                           $event
-     * @param  \Gaia\MVC\REST\Controllers\ValueLabelController $controller
+     * @param  \Gaia\MVC\REST\Controllers\Common\ValueLabelController $controller
      * @param  \Gaia\Core\MVC\Models\Model                     $model
      * @return void
      */
@@ -38,7 +38,7 @@ class ValueLabelsComponent
      * Save the labels the update sent, if any.
      *
      * @param  Event                                           $event
-     * @param  \Gaia\MVC\REST\Controllers\ValueLabelController $controller
+     * @param  \Gaia\MVC\REST\Controllers\Common\ValueLabelController $controller
      * @param  \Gaia\Core\MVC\Models\Model                     $model
      * @return void
      */
@@ -51,7 +51,7 @@ class ValueLabelsComponent
      * Delete the labels of the deleted record's value unless another record uses it.
      *
      * @param  Event                                           $event
-     * @param  \Gaia\MVC\REST\Controllers\ValueLabelController $controller
+     * @param  \Gaia\MVC\REST\Controllers\Common\ValueLabelController $controller
      * @param  \Gaia\Core\MVC\Models\Model                     $model
      * @return void
      */
@@ -61,7 +61,7 @@ class ValueLabelsComponent
     }
 
     /**
-     * @param  \Gaia\MVC\REST\Controllers\ValueLabelController $controller
+     * @param  \Gaia\MVC\REST\Controllers\Common\ValueLabelController $controller
      * @param  \Gaia\Core\MVC\Models\Model                     $model
      * @return void
      */
