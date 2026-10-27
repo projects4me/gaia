@@ -4127,6 +4127,213 @@
           "isRead": "0"
         }
       }
+    },
+    {
+      "id": "agent-create-makes-agent-user",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "Created Agent",
+            "email": "created-agent-{runId}@example.com",
+            "purpose": "Created by the client suite",
+            "modelConfig": {
+              "simple": "sonnet",
+              "complex": "opus"
+            },
+            "maxTurns": 30
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "Created Agent",
+          "purpose": "Created by the client suite"
+        }
+      },
+      "store": {
+        "runtime.createdAgentId": "data.id",
+        "runtime.createdAgentUserId": "data.attributes.userId"
+      }
+    },
+    {
+      "id": "agent-created-user-is-agent",
+      "method": "GET",
+      "path": "/api/v1/user/{runtime.createdAgentUserId}",
+      "resource": "user",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "type": "Agent",
+          "name": "Created Agent",
+          "accountStatus": "Active"
+        }
+      }
+    },
+    {
+      "id": "agent-create-needs-email",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "Agent Without Email"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "An agent needs a valid email."
+      }
+    },
+    {
+      "id": "agent-create-rejects-taken-email",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "Duplicate Agent",
+            "email": "api-tester-member@example.com"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "A user with this email already exists."
+      }
+    },
+    {
+      "id": "agent-create-rejects-bad-model-config",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "Bad Config Agent",
+            "email": "bad-config-{runId}@example.com",
+            "modelConfig": "not json"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "modelConfig must be a JSON object"
+      }
+    },
+    {
+      "id": "agent-delete-deletes-user",
+      "method": "DELETE",
+      "path": "/api/v1/agent/{runtime.createdAgentId}",
+      "resource": "agent",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "agent-deleted-agent-user-gone",
+      "method": "GET",
+      "path": "/api/v1/user",
+      "resource": "user",
+      "auth": true,
+      "query": {
+        "query": "(User.id : {runtime.createdAgentUserId})",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsExcludes": [
+          "{runtime.createdAgentUserId}"
+        ]
+      }
+    },
+    {
+      "id": "user-password-on-agent-refused",
+      "method": "PATCH",
+      "path": "/api/v1/user/{otherAgentUserId}",
+      "resource": "user",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "user",
+          "id": "{otherAgentUserId}",
+          "attributes": {
+            "password": "new-secret"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "An agent user cannot have a password."
+      }
+    },
+    {
+      "id": "user-type-change-refused",
+      "method": "PATCH",
+      "path": "/api/v1/user/{memberUserId}",
+      "resource": "user",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "user",
+          "id": "{memberUserId}",
+          "attributes": {
+            "type": "Agent"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "The type of a user cannot be changed."
+      }
+    },
+    {
+      "id": "user-create-agent-type-refused",
+      "method": "POST",
+      "path": "/api/v1/user",
+      "resource": "user",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "user",
+          "attributes": {
+            "name": "Fake Agent",
+            "email": "fake-agent-{runId}@example.com",
+            "type": "Agent"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "Agents are created through the agent endpoint."
+      }
     }
   ]
 }

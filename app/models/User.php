@@ -20,6 +20,20 @@ use Gaia\Libraries\Utils\Util;
 class User extends Model
 {
     /**
+     * `users.type` of a person.
+     *
+     * @var string
+     */
+    public const TYPE_HUMAN = 'Human';
+
+    /**
+     * `users.type` of an AI agent; such a user always has an agents row.
+     *
+     * @var string
+     */
+    public const TYPE_AGENT = 'Agent';
+
+    /**
      * Flag decides whether to execute hasManyToMany relationship queries
      * separately or not.
      *
@@ -58,5 +72,27 @@ class User extends Model
     {
         global $currentUser;
         $currentUser = $user;
+    }
+
+    /**
+     * A new user without a type is a Human.
+     *
+     * @return void
+     */
+    public function beforeValidationOnCreate()
+    {
+        if (!isset($this->type) || (string) $this->type === '') {
+            $this->type = self::TYPE_HUMAN;
+        }
+    }
+
+    /**
+     * Whether this user is an AI agent.
+     *
+     * @return bool
+     */
+    public function isAgent()
+    {
+        return isset($this->type) && strcasecmp((string) $this->type, self::TYPE_AGENT) === 0;
     }
 }

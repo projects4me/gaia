@@ -3,6 +3,7 @@
 namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
+use Gaia\Libraries\Agents\AgentUserPolicy;
 use Gaia\Libraries\Utils\Util;
 use Gaia\MVC\Models\Behaviors\encryptPasswordBehavior;
 
@@ -108,6 +109,7 @@ class ResetpasswordController extends \Phalcon\Mvc\Controller
     private function updateUserPassword($resetToken, $passwordHash)
     {
         $user = \Gaia\MVC\Models\User::findFirstByResetToken($resetToken);
+        (new AgentUserPolicy())->assertPasswordSettable($user);
         $user->password = $passwordHash;
         $user->resetToken = null;
         $user->resetTokenExpiry = null;
