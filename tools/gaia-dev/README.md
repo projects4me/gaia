@@ -25,6 +25,8 @@ php tools/gaia-dev/bin/gaia-dev scaffold behavior reportTotals --model=Report --
 php tools/gaia-dev/bin/gaia-dev check behavior [--skip-tests]   # exit 1 on a missing class or test, or a test failing alone
 php tools/gaia-dev/bin/gaia-dev scaffold live-events Report --events=created,updated --fields=title,status [--parent=reportId:Report]   # component, EventNames, controller $uses, test cases; prints the Hermes names to add
 php tools/gaia-dev/bin/gaia-dev check live-events   # exit 1 on an event name with no component or test, or a component in no $uses
+php tools/gaia-dev/bin/gaia-dev scaffold action Tag patch [--domain=TagRules]   # thin override of a standard action (no new route) + its acl and client cases; names the domain class to write
+php tools/gaia-dev/bin/gaia-dev check action   # exit 1 when a scaffolded action lacks its route, permission rule or acl/client cases
 ```
 
 `scaffold api-cases` reads `docs/generated/graph.json` (run `graph export` first when you changed sources) and appends to the catalog in that file's own style (`acl.json` keeps `query`, `expects` and `store` on one line; the rest is two-space JSON), so the diff holds only the new cases. It refuses a case id that already exists and `backend.json` (generated). `--dry-run` prints what it would write. Edit the asserted values afterwards, then run `graph export`, `docs generate` and `check api-cases`.

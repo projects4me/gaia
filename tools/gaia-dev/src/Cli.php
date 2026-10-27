@@ -10,6 +10,7 @@ use GaiaDev\Command\CheckCommand;
 use GaiaDev\Command\DocsCommand;
 use GaiaDev\Command\GraphExportCommand;
 use GaiaDev\Command\QueryCommand;
+use GaiaDev\Command\ScaffoldActionCommand;
 use GaiaDev\Command\ScaffoldBehaviorCommand;
 use GaiaDev\Command\ScaffoldCommand;
 use GaiaDev\Command\ScaffoldLiveEventsCommand;
@@ -121,6 +122,28 @@ class Cli
             $root = isset($options['root']) ? $options['root'] : $defaultRoot;
 
             return (new ScaffoldLiveEventsCommand($stdout, $stderr))->run(array_slice($words, 2), $options, $root);
+        }
+
+        if ($words[0] === 'scaffold' && ($words[1] ?? null) === 'action') {
+            $error = self::validateOptions($options, ['root' => true, 'domain' => true, 'dry-run' => false]);
+            if ($error !== null) {
+                fwrite($stderr, $error . "\n");
+                return 1;
+            }
+            $root = isset($options['root']) ? $options['root'] : $defaultRoot;
+
+            return (new ScaffoldActionCommand($stdout, $stderr))->run(array_slice($words, 2), $options, $root);
+        }
+
+        if ($words === ['check', 'action']) {
+            $error = self::validateOptions($options, ['root' => true]);
+            if ($error !== null) {
+                fwrite($stderr, $error . "\n");
+                return 1;
+            }
+            $root = isset($options['root']) ? $options['root'] : $defaultRoot;
+
+            return (new CheckCommand($stdout, $stderr))->runAction($root);
         }
 
         if ($words === ['check', 'live-events']) {
@@ -258,6 +281,10 @@ Commands:
                           [--parent=ideaId:Idea] [--dry-run]
                           Write the component, EventNames constants, controller wiring and test cases;
                           print the names to add to hermes/src/contract/names.js
+  scaffold action <Controller> <list|get|post|patch|delete> [--domain=Class] [--dry-run]
+                          Override a standard action with a thin skeleton (no new route) and add its
+                          acl and client cases; names the domain class to write next
+  check action            Exit 1 when a scaffolded action override lacks its route, permission rule or cases
   check live-events       Exit 1 when an event name has no component or test, or a component is in no \$uses
   check behavior [--skip-tests]
                           Exit 1 when a registered behaviour has no class or test, or a test fails alone
