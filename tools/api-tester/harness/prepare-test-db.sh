@@ -950,7 +950,7 @@ INSERT INTO users (
 ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email, deleted = 0;
 
 -- Agent: the aclAgent profile's user and the second user are agents (users.type plus an agents row)
-UPDATE users SET type = 'Agent' WHERE id IN ('api-test-user-acl-agent', 'api-test-user-agent2');
+UPDATE users SET type = 'agent' WHERE id IN ('api-test-user-acl-agent', 'api-test-user-agent2');
 
 INSERT INTO agents (
   id, "userId", "name", "purpose", "sponsorId", "rolePrompt", "modelConfig", "maxTurns", "maxRunsPerIssue", "permissionMode", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"

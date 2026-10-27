@@ -23,4 +23,4 @@
 - controller: Gaia\MVC\REST\Controllers\UserroleController
 - routes: DELETE /api/v1/userrole, DELETE /api/v1/userrole/{id}, GET /api/v1/userrole, GET /api/v1/userrole/{id}, GET /api/v1/userrole/{id}/{relation}, OPTIONS /api/v1/userrole, PATCH /api/v1/userrole, PATCH /api/v1/userrole/{id}, POST /api/v1/userrole, PUT /api/v1/userrole, PUT /api/v1/userrole/{id}
 - components: -
-- cases: 6 (acl 2, backend 4); gaia-dev cases userrole
+- cases: 7 (acl 3, backend 4); gaia-dev cases userrole

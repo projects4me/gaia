@@ -24,14 +24,14 @@ class User extends Model
      *
      * @var string
      */
-    public const TYPE_HUMAN = 'Human';
+    public const TYPE_HUMAN = 'human';
 
     /**
      * `users.type` of an AI agent; such a user always has an agents row.
      *
      * @var string
      */
-    public const TYPE_AGENT = 'Agent';
+    public const TYPE_AGENT = 'agent';
 
     /**
      * Flag decides whether to execute hasManyToMany relationship queries

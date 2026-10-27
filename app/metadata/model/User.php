@@ -278,7 +278,7 @@ $models['User'] = array(
             'type' => 'varchar',
             'length' => '10',
             'null' => false,
-            'default' => 'Human'
+            'default' => 'human'
         ),
     ),
     'indexes' => array(

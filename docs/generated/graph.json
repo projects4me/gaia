@@ -3008,6 +3008,43 @@
       }
     },
     {
+      "id": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "case",
+      "key": "acl/acl-agent-multi-record-body-refused",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/userrole/{agentUserroleId}",
+        "resource": "userrole",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentUserroleId",
+          "roleId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "case",
+      "key": "acl/acl-agent-own-role-permission-collection-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/permission",
+        "resource": "permission",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentPermissionId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-agent-own-role-permission-denied",
       "type": "case",
       "key": "acl/acl-agent-own-role-permission-denied",
@@ -18879,7 +18916,7 @@
         "type": "varchar",
         "length": "10",
         "null": false,
-        "default": "Human"
+        "default": "human"
       }
     },
     {
@@ -20133,6 +20170,14 @@
       "id": "fixture:agentId",
       "type": "fixture",
       "key": "agentId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:agentPermissionId",
+      "type": "fixture",
+      "key": "agentPermissionId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -30941,6 +30986,81 @@
       "from": "case:acl/acl-agent-detail-denied-acl-no-setting",
       "type": "uses_fixture",
       "to": "fixture:agentId"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "covers",
+      "to": "controller:userrole"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/userrole/{id}"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "uses_fixture",
+      "to": "fixture:agentUserroleId"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "uses_fixture",
+      "to": "fixture:roleId"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "covers",
+      "to": "controller:permission"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/permission"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentPermissionId"
     },
     {
       "from": "case:acl/acl-agent-own-role-permission-denied",

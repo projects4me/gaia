@@ -162,7 +162,7 @@ class AgentLifecycleTest extends TestCase
     public function testUserEndpointsCreateOnlyHumans(): void
     {
         $policy = new AgentUserPolicy();
-        $policy->assertCreatable(['name' => 'Person', 'type' => 'Human']);
+        $policy->assertCreatable(['name' => 'Person', 'type' => 'human']);
         $policy->assertCreatable(['name' => 'Person']);
 
         $this->expectException(\Gaia\Exception\Permission::class);

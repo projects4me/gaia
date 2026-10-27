@@ -356,19 +356,43 @@ class PermissionController extends RestController
     }
 
     /**
+     * Apply the agent guard to every record of a collection patch: the
+     * collection path saves each row directly, without `passPreReqs()`.
+     *
+     * @throws \Gaia\Exception\Access
+     * @return \Phalcon\Http\Response
+     */
+    public function patchCollectionAction()
+    {
+        foreach ($this->extractCollectionAttributes() as $attributes) {
+            $this->assertNotOwnRolePermission(
+                isset($attributes['roleId']) ? $attributes['roleId'] : null,
+                isset($attributes['id']) ? $attributes['id'] : null
+            );
+        }
+
+        return parent::patchCollectionAction();
+    }
+
+    /**
      * Reject an agent writing the permissions of a role it holds: the role in
      * the payload, or the role of the permission row being changed (see
      * `AgentEscalationGuard`).
      *
      * @param  string|null $roleId
+     * @param  string|null $permissionId The row being changed; defaults to the URL id
      * @throws \Gaia\Exception\Access
      * @return void
      */
-    private function assertNotOwnRolePermission($roleId)
+    private function assertNotOwnRolePermission($roleId, $permissionId = null)
     {
         global $currentUser;
 
-        AgentEscalationGuard::assertNotOwnPermission($currentUser, $this->id ?? null, $roleId);
+        AgentEscalationGuard::assertNotOwnPermission(
+            $currentUser,
+            $permissionId !== null ? $permissionId : ($this->id ?? null),
+            $roleId
+        );
     }
 
     /**

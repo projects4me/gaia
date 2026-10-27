@@ -33,7 +33,7 @@ class AgentTestFixtures
                 id, password, email, name, deleted,
                 \"createdUser\", \"modifiedUser\", \"createdUserName\", \"modifiedUserName\",
                 \"accountStatus\", \"failedLoginAttempts\", type
-             ) VALUES (?, ?, ?, 'Agent Test Human', 0, ?, ?, 'testUser', 'testUser', 'Active', 0, 'Human')",
+             ) VALUES (?, ?, ?, 'Agent Test Human', 0, ?, ?, 'testUser', 'testUser', 'Active', 0, 'human')",
             [$id, password_hash('unit-testing', PASSWORD_DEFAULT), $email, $id, $id]
         );
     }

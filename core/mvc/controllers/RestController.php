@@ -366,12 +366,15 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     }
 
     /**
-     * Pull the first record attributes from a JSON:API or flat write body.
+     * Pull the record attributes from a JSON:API or flat write body.
      *
      * Mirrors the shape handling in `postAction()` and `patchAction()`; a
-     * JSON:API `data.id` is copied into the attributes.
+     * JSON:API `data.id` is copied into the attributes. A list body may hold
+     * one record only: the callers check that record before the write, so a
+     * second record must not reach `patchAction()`'s loop unchecked.
      *
      * @return array
+     * @throws \Gaia\Exception\Permission When the body lists several records
      */
     protected function extractRequestAttributes()
     {
@@ -391,6 +394,9 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             }
 
             if (isset($temp[0]) && is_array($temp[0])) {
+                if (count($temp) > 1) {
+                    throw new \Gaia\Exception\Permission('Send one record per request.');
+                }
                 return $temp[0];
             }
 

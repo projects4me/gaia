@@ -4172,7 +4172,7 @@
         "status": 200,
         "shape": "jsonapi.resource",
         "attributesEqual": {
-          "type": "Agent",
+          "type": "agent",
           "name": "Created Agent",
           "accountStatus": "Active"
         }
@@ -4303,7 +4303,7 @@
           "type": "user",
           "id": "{memberUserId}",
           "attributes": {
-            "type": "Agent"
+            "type": "agent"
           }
         }
       },
@@ -4325,7 +4325,7 @@
           "attributes": {
             "name": "Fake Agent",
             "email": "fake-agent-{runId}@example.com",
-            "type": "Agent"
+            "type": "agent"
           }
         }
       },

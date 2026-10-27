@@ -115,7 +115,7 @@ $extraAttributes = [
         'email' => 'api-tester-created@example.com',
         'password' => 'unit-testing',
         'accountStatus' => 'active',
-        'type' => 'Human',
+        'type' => 'human',
     ],
     'agent' => [
         'name' => 'API Tester Agent',

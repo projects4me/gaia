@@ -1682,6 +1682,41 @@
       },
       "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change the permissions of its own roles." },
       "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-own-role-permission-collection-denied",
+      "method": "PATCH",
+      "path": "/api/v1/permission",
+      "resource": "permission",
+      "auth": "aclAgent",
+      "body": {
+        "collection": [
+          {
+            "id": "{agentPermissionId}",
+            "allowed": "1"
+          }
+        ]
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change the permissions of its own roles." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-multi-record-body-refused",
+      "method": "PATCH",
+      "path": "/api/v1/userrole/{agentUserroleId}",
+      "resource": "userrole",
+      "auth": "aclAgent",
+      "body": [
+        {
+          "name": "no id, skipped by the write loop"
+        },
+        {
+          "id": "{agentUserroleId}",
+          "roleId": "{roleId}"
+        }
+      ],
+      "expects": { "status": 422, "shape": "error", "errorEqual": "Send one record per request." },
+      "source": "acl-agent"
     }
   ]
 }

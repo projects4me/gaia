@@ -1820,7 +1820,7 @@
                         "password": "unit-testing",
                         "email": "api-tester-created@example.com",
                         "accountStatus": "active",
-                        "type": "Human"
+                        "type": "human"
                     }
                 }
             },
