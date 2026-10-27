@@ -1064,6 +1064,7 @@ data = {
     "otherAgentUserId": "api-test-user-agent2",
     "agentRoleId": "api-test-role-acl-agent",
     "agentUserroleId": "api-test-userrole-acl-agent",
+    "agentPermissionId": "atp-acl-acl-agent-agent-get",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",
