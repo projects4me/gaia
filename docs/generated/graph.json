@@ -13295,23 +13295,6 @@
       }
     },
     {
-      "id": "component:Common\\ValueLabels",
-      "type": "component",
-      "key": "Common\\ValueLabels",
-      "attributes": {
-        "kind": "component",
-        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Common\\ValueLabelsComponent",
-        "file": "app/api/v1/controllers/components/common/ValueLabelsComponent.php",
-        "extends": null,
-        "implements": [],
-        "hooks": [
-          "afterCreate",
-          "afterUpdate",
-          "afterDelete"
-        ]
-      }
-    },
-    {
       "id": "component:Dashboard",
       "type": "component",
       "key": "Dashboard",
@@ -13896,6 +13879,23 @@
         "hooks": [
           "afterCreate",
           "afterUpdate"
+        ]
+      }
+    },
+    {
+      "id": "component:ValueLabels",
+      "type": "component",
+      "key": "ValueLabels",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\ValueLabelsComponent",
+        "file": "app/api/v1/controllers/components/ValueLabelsComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate",
+          "afterDelete"
         ]
       }
     },

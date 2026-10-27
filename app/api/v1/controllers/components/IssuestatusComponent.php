@@ -6,8 +6,6 @@
 
 namespace Gaia\MVC\REST\Controllers\Components;
 
-use Gaia\MVC\REST\Controllers\Components\Common\ValueLabelsComponent;
-
 /**
  * Saves and deletes the translated labels of an issue status with the status
  * (see ValueLabelsComponent). It exists for its name: RestController loads

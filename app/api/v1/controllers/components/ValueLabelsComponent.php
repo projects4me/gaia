@@ -4,7 +4,7 @@
  * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Gaia\MVC\REST\Controllers\Components\Common;
+namespace Gaia\MVC\REST\Controllers\Components;
 
 use Phalcon\Events\Event as Event;
 
@@ -16,7 +16,7 @@ use Phalcon\Events\Event as Event;
  * cannot be written (the exception thrown here) rolls the record back too.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
- * @package Gaia\MVC\REST\Controllers\Components\Common
+ * @package Gaia\MVC\REST\Controllers\Components
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
 class ValueLabelsComponent
