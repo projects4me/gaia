@@ -11,6 +11,7 @@ use Gaia\Libraries\Utils\Util;
 use Gaia\Libraries\Security\Acl;
 use Gaia\Libraries\Security\AclMapCatalog;
 use Gaia\Libraries\Security\AclLockoutGuard;
+use Gaia\Libraries\Security\AgentEscalationGuard;
 use Gaia\MVC\Models\Permission;
 
 use function Gaia\Libraries\Utils\create_guid;
@@ -262,8 +263,12 @@ class PermissionController extends RestController
         $util = new Util();
         $requestData = $util->objectToArray($this->request->getJsonRawBody());
         $attributes = $requestData['data']['attributes'];
+        // The row the write loads: RestController::patchAction() prefers data.id over the URL id.
+        $permissionId = isset($requestData['data']['id']) && (string) $requestData['data']['id'] !== ''
+            ? (string) $requestData['data']['id']
+            : ($this->id ?? null);
 
-        if ($this->passPreReqs($attributes) === true) {
+        if ($this->passPreReqs($attributes, $permissionId) === true) {
             if ($this->isFieldModeResourceName($attributes['resourceName'])) {
                 return $this->saveFieldModePermission($attributes);
             }
@@ -295,6 +300,7 @@ class PermissionController extends RestController
 
         $resourceName = (string) $model->resourceName;
         $roleId = (string) $model->roleId;
+        $this->assertNotOwnRolePermission($roleId);
 
         if (AclMapCatalog::isFieldActionResource($resourceName)) {
             $parts = explode('.', $resourceName);
@@ -317,11 +323,14 @@ class PermissionController extends RestController
      * This function verify all of the checks that are required to create a permission.
      *
      * @method passPreReqs
-     * @param  array $values Request values
+     * @param  array       $values       Request values
+     * @param  string|null $permissionId The row being changed; defaults to the URL id
      * @return bool
      */
-    private function passPreReqs(&$values)
+    private function passPreReqs(&$values, $permissionId = null)
     {
+        $this->assertNotOwnRolePermission(isset($values['roleId']) ? $values['roleId'] : null, $permissionId);
+
         // Resource name required.
         $resourceName = $values['resourceName'];
         if (!$resourceName) {
@@ -349,6 +358,46 @@ class PermissionController extends RestController
 
             return true;
         }
+    }
+
+    /**
+     * Apply the agent guard to every record of a collection patch: the
+     * collection path saves each row directly, without `passPreReqs()`.
+     *
+     * @throws \Gaia\Exception\Access
+     * @return \Phalcon\Http\Response
+     */
+    public function patchCollectionAction()
+    {
+        foreach ($this->extractCollectionAttributes() as $attributes) {
+            $this->assertNotOwnRolePermission(
+                isset($attributes['roleId']) ? $attributes['roleId'] : null,
+                isset($attributes['id']) ? $attributes['id'] : null
+            );
+        }
+
+        return parent::patchCollectionAction();
+    }
+
+    /**
+     * Reject an agent writing the permissions of a role it holds: the role in
+     * the payload, or the role of the permission row being changed (see
+     * `AgentEscalationGuard`).
+     *
+     * @param  string|null $roleId
+     * @param  string|null $permissionId The row being changed; defaults to the URL id
+     * @throws \Gaia\Exception\Access
+     * @return void
+     */
+    private function assertNotOwnRolePermission($roleId, $permissionId = null)
+    {
+        global $currentUser;
+
+        AgentEscalationGuard::assertNotOwnPermission(
+            $currentUser,
+            $permissionId !== null ? $permissionId : ($this->id ?? null),
+            $roleId
+        );
     }
 
     /**

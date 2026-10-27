@@ -31,6 +31,10 @@
     "aclNoSetting": {
       "email": "api-tester-acl-nosetting@example.com",
       "password": "unit-testing"
+    },
+    "aclAgent": {
+      "email": "api-tester-acl-agent@example.com",
+      "password": "unit-testing"
     }
   },
   "values": {
@@ -68,6 +72,13 @@
     "timelogId": "api-test-timelog-00001",
     "dashboardId": "api-test-dashboard-001",
     "savedsearchId": "api-test-savedsearch1",
+    "agentId": "api-test-agent-000001",
+    "agentUserId": "api-test-user-acl-agent",
+    "otherAgentId": "api-test-agent-000002",
+    "otherAgentUserId": "api-test-user-agent2",
+    "agentRoleId": "api-test-role-acl-agent",
+    "agentUserroleId": "api-test-userrole-acl-agent",
+    "agentPermissionId": "atp-acl-acl-agent-agent-get",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

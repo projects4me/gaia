@@ -8,6 +8,7 @@ namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
 use Gaia\Libraries\Security\AclLockoutGuard;
+use Gaia\Libraries\Security\AgentEscalationGuard;
 use Gaia\MVC\Models\Userrole;
 
 /**
@@ -37,6 +38,63 @@ class UserroleController extends RestController
     protected $systemLevel = true;
 
     /**
+     * Reject an agent assigning a role to itself (see `AgentEscalationGuard`).
+     *
+     * @return \Phalcon\Http\Response
+     */
+    public function postAction()
+    {
+        global $currentUser;
+
+        AgentEscalationGuard::assertNotOwnRoleAssignment(
+            $currentUser,
+            isset($this->id) ? $this->id : null,
+            $this->extractRequestAttributes()
+        );
+
+        return parent::postAction();
+    }
+
+    /**
+     * Reject an agent changing a role assignment of its own.
+     *
+     * @return \Phalcon\Http\Response
+     */
+    public function patchAction()
+    {
+        global $currentUser;
+
+        $attributes = $this->extractRequestAttributes();
+        AgentEscalationGuard::assertNotOwnRoleAssignment(
+            $currentUser,
+            isset($attributes['id']) && $attributes['id'] !== '' ? $attributes['id'] : $this->id,
+            $attributes
+        );
+
+        return parent::patchAction();
+    }
+
+    /**
+     * Reject an agent changing a role assignment of its own in a collection.
+     *
+     * @return \Phalcon\Http\Response
+     */
+    public function patchCollectionAction()
+    {
+        global $currentUser;
+
+        foreach ($this->extractCollectionAttributes() as $attributes) {
+            AgentEscalationGuard::assertNotOwnRoleAssignment(
+                $currentUser,
+                isset($attributes['id']) ? $attributes['id'] : null,
+                $attributes
+            );
+        }
+
+        return parent::patchCollectionAction();
+    }
+
+    /**
      * Reject removing the last membership of the last role that can
      * administer permissions, roles, role assignments, and users (see
      * `AclLockoutGuard`).
@@ -47,6 +105,10 @@ class UserroleController extends RestController
      */
     public function deleteAction()
     {
+        global $currentUser;
+
+        AgentEscalationGuard::assertNotOwnRoleAssignment($currentUser, $this->id);
+
         $userrole = Userrole::findFirst([
             'conditions' => 'id = :id:',
             'bind' => ['id' => $this->id],

@@ -1536,6 +1536,206 @@
       "query": { "limit": 50, "page": 1 },
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
+    },
+    {
+      "id": "acl-agent-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-agent-detail-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/agent/{agentId}",
+      "resource": "agent",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-agent-create-denied-without-grant",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "ACL Denied Agent",
+            "email": "acl-denied-agent-{runId}@example.com"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-patch-own-agent-denied",
+      "method": "PATCH",
+      "path": "/api/v1/agent/{agentId}",
+      "resource": "agent",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "agent",
+          "id": "{agentId}",
+          "attributes": {
+            "maxTurns": 999
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change or delete its own agent record." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-delete-own-agent-denied",
+      "method": "DELETE",
+      "path": "/api/v1/agent/{agentId}",
+      "resource": "agent",
+      "auth": "aclAgent",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change or delete its own agent record." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-patch-other-agent-allowed",
+      "method": "PATCH",
+      "path": "/api/v1/agent/{otherAgentId}",
+      "resource": "agent",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "agent",
+          "id": "{otherAgentId}",
+          "attributes": {
+            "purpose": "Changed by another agent"
+          }
+        }
+      },
+      "expects": { "status": 200, "shape": "jsonapi.resource", "attributesEqual": {"purpose": "Changed by another agent"} },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-patch-own-user-denied",
+      "method": "PATCH",
+      "path": "/api/v1/user/{agentUserId}",
+      "resource": "user",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "user",
+          "id": "{agentUserId}",
+          "attributes": {
+            "title": "Self-promoted"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change or delete its own user record." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-assign-own-role-denied",
+      "method": "POST",
+      "path": "/api/v1/userrole",
+      "resource": "userrole",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "userrole",
+          "attributes": {
+            "userId": "{agentUserId}",
+            "roleId": "{roleId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change its own roles." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-remove-own-role-denied",
+      "method": "DELETE",
+      "path": "/api/v1/userrole/{agentUserroleId}",
+      "resource": "userrole",
+      "auth": "aclAgent",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change its own roles." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-own-role-permission-denied",
+      "method": "POST",
+      "path": "/api/v1/permission",
+      "resource": "permission",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "permission",
+          "attributes": {
+            "resourceName": "tag.get",
+            "allowed": "1",
+            "roleId": "{agentRoleId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change the permissions of its own roles." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-own-role-permission-collection-denied",
+      "method": "PATCH",
+      "path": "/api/v1/permission",
+      "resource": "permission",
+      "auth": "aclAgent",
+      "body": {
+        "collection": [
+          {
+            "id": "{agentPermissionId}",
+            "allowed": "1"
+          }
+        ]
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change the permissions of its own roles." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-multi-record-body-refused",
+      "method": "PATCH",
+      "path": "/api/v1/userrole/{agentUserroleId}",
+      "resource": "userrole",
+      "auth": "aclAgent",
+      "body": [
+        {
+          "name": "no id, skipped by the write loop"
+        },
+        {
+          "id": "{agentUserroleId}",
+          "roleId": "{roleId}"
+        }
+      ],
+      "expects": { "status": 422, "shape": "error", "errorEqual": "Send one record per request." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agent-own-role-permission-body-id-denied",
+      "method": "PATCH",
+      "path": "/api/v1/permission/atp-acl-np-issue-get",
+      "resource": "permission",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "permission",
+          "id": "{agentPermissionId}",
+          "attributes": {
+            "resourceName": "agent.get",
+            "allowed": "1"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change the permissions of its own roles." },
+      "source": "acl-agent"
     }
   ]
 }

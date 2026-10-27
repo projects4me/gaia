@@ -19,6 +19,23 @@
 | PUT | /api/v1/activity | rest | activity.putCollection |
 | PUT | /api/v1/activity/{id} | rest | activity.put |
 
+<a id="agent"></a>
+## agent
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/agent | rest | agent.deleteCollection |
+| DELETE | /api/v1/agent/{id} | rest | agent.delete |
+| GET | /api/v1/agent | rest | agent.list |
+| GET | /api/v1/agent/{id} | rest | agent.get |
+| GET | /api/v1/agent/{id}/{relation} | rest | agent.related |
+| OPTIONS | /api/v1/agent | rest | agent.options |
+| PATCH | /api/v1/agent | rest | agent.patchCollection |
+| PATCH | /api/v1/agent/{id} | rest | agent.patch |
+| POST | /api/v1/agent | rest | agent.post |
+| PUT | /api/v1/agent | rest | agent.putCollection |
+| PUT | /api/v1/agent/{id} | rest | agent.put |
+
 <a id="badge"></a>
 ## badge
 

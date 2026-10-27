@@ -110,6 +110,17 @@
             ],
             "identifier": "id"
         },
+        "agent": {
+            "path": "/api/:version/agent",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "issue": {
             "path": "/api/:version/issue",
             "allowedMethods": [

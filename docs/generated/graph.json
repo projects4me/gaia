@@ -69,6 +69,72 @@
       "attributes": {}
     },
     {
+      "id": "action:agent.delete",
+      "type": "action",
+      "key": "agent.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:agent.deleteCollection",
+      "type": "action",
+      "key": "agent.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:agent.get",
+      "type": "action",
+      "key": "agent.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:agent.list",
+      "type": "action",
+      "key": "agent.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:agent.options",
+      "type": "action",
+      "key": "agent.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:agent.patch",
+      "type": "action",
+      "key": "agent.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:agent.patchCollection",
+      "type": "action",
+      "key": "agent.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:agent.post",
+      "type": "action",
+      "key": "agent.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:agent.put",
+      "type": "action",
+      "key": "agent.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:agent.putCollection",
+      "type": "action",
+      "key": "agent.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:agent.related",
+      "type": "action",
+      "key": "agent.related",
+      "attributes": {}
+    },
+    {
       "id": "action:badge.delete",
       "type": "action",
       "key": "badge.delete",
@@ -2622,6 +2688,18 @@
       }
     },
     {
+      "id": "behaviour:agentConfigBehavior",
+      "type": "behaviour",
+      "key": "agentConfigBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\agentConfigBehavior",
+        "file": "core/mvc/models/behaviors/agentConfigBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:auditBehavior",
       "type": "behaviour",
       "key": "auditBehavior",
@@ -2837,6 +2915,240 @@
         "enabled": true,
         "source": "acl-group",
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-assign-own-role-denied",
+      "type": "case",
+      "key": "acl/acl-agent-assign-own-role-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/userrole",
+        "resource": "userrole",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentUserId",
+          "roleId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-create-denied-without-grant",
+      "type": "case",
+      "key": "acl/acl-agent-create-denied-without-grant",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "runId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-delete-own-agent-denied",
+      "type": "case",
+      "key": "acl/acl-agent-delete-own-agent-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "DELETE",
+        "path": "/api/v1/agent/{agentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-agent-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-detail-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-agent-detail-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agent/{agentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "agentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "case",
+      "key": "acl/acl-agent-multi-record-body-refused",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/userrole/{agentUserroleId}",
+        "resource": "userrole",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentUserroleId",
+          "roleId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "case",
+      "key": "acl/acl-agent-own-role-permission-body-id-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/permission/atp-acl-np-issue-get",
+        "resource": "permission",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentPermissionId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "case",
+      "key": "acl/acl-agent-own-role-permission-collection-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/permission",
+        "resource": "permission",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentPermissionId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-own-role-permission-denied",
+      "type": "case",
+      "key": "acl/acl-agent-own-role-permission-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/permission",
+        "resource": "permission",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentRoleId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-patch-other-agent-allowed",
+      "type": "case",
+      "key": "acl/acl-agent-patch-other-agent-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/agent/{otherAgentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "otherAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-patch-own-agent-denied",
+      "type": "case",
+      "key": "acl/acl-agent-patch-own-agent-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/agent/{agentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-patch-own-user-denied",
+      "type": "case",
+      "key": "acl/acl-agent-patch-own-user-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/user/{agentUserId}",
+        "resource": "user",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentUserId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agent-remove-own-role-denied",
+      "type": "case",
+      "key": "acl/acl-agent-remove-own-role-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "DELETE",
+        "path": "/api/v1/userrole/{agentUserroleId}",
+        "resource": "userrole",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentUserroleId"
+        ],
         "stores": []
       }
     },
@@ -4787,6 +5099,24 @@
       }
     },
     {
+      "id": "case:backend/delete-agent-api-v1-agent-runtime-id",
+      "type": "case",
+      "key": "backend/delete-agent-api-v1-agent-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "DELETE",
+        "path": "/api/v1/agent/{runtime.agentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.agentId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-comment-api-v1-comment-runtime-id",
       "type": "case",
       "key": "backend/delete-comment-api-v1-comment-runtime-id",
@@ -5249,6 +5579,58 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.activityId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-agent-api-v1-agent",
+      "type": "case",
+      "key": "backend/get-agent-api-v1-agent",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-agent-api-v1-agent-id",
+      "type": "case",
+      "key": "backend/get-agent-api-v1-agent-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/agent/{agentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "agentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-agent-api-v1-agent-runtime-id",
+      "type": "case",
+      "key": "backend/get-agent-api-v1-agent-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/agent/{runtime.agentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.agentId"
         ],
         "stores": []
       }
@@ -6598,6 +6980,24 @@
       }
     },
     {
+      "id": "case:backend/patch-agent-api-v1-agent-id",
+      "type": "case",
+      "key": "backend/patch-agent-api-v1-agent-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "PATCH",
+        "path": "/api/v1/agent/{runtime.agentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.agentId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/patch-comment-api-v1-comment-id",
       "type": "case",
       "key": "backend/patch-comment-api-v1-comment-id",
@@ -6939,6 +7339,27 @@
         ],
         "stores": [
           "runtime.activityId"
+        ]
+      }
+    },
+    {
+      "id": "case:backend/post-agent-api-v1-agent",
+      "type": "case",
+      "key": "backend/post-agent-api-v1-agent",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.agentId"
         ]
       }
     },
@@ -7514,6 +7935,131 @@
         "stores": [
           "runtime.wikiId"
         ]
+      }
+    },
+    {
+      "id": "case:client/agent-create-makes-agent-user",
+      "type": "case",
+      "key": "client/agent-create-makes-agent-user",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId"
+        ],
+        "stores": [
+          "runtime.createdAgentId",
+          "runtime.createdAgentUserId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/agent-create-needs-email",
+      "type": "case",
+      "key": "client/agent-create-needs-email",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agent-create-rejects-bad-model-config",
+      "type": "case",
+      "key": "client/agent-create-rejects-bad-model-config",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agent-create-rejects-taken-email",
+      "type": "case",
+      "key": "client/agent-create-rejects-taken-email",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agent-created-user-is-agent",
+      "type": "case",
+      "key": "client/agent-created-user-is-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/user/{runtime.createdAgentUserId}",
+        "resource": "user",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.createdAgentUserId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agent-delete-deletes-user",
+      "type": "case",
+      "key": "client/agent-delete-deletes-user",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/agent/{runtime.createdAgentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.createdAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agent-deleted-agent-user-gone",
+      "type": "case",
+      "key": "client/agent-deleted-agent-user-gone",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/user",
+        "resource": "user",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.createdAgentUserId"
+        ],
+        "stores": []
       }
     },
     {
@@ -11226,6 +11772,60 @@
       }
     },
     {
+      "id": "case:client/user-create-agent-type-refused",
+      "type": "case",
+      "key": "client/user-create-agent-type-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/user",
+        "resource": "user",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/user-password-on-agent-refused",
+      "type": "case",
+      "key": "client/user-password-on-agent-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/user/{otherAgentUserId}",
+        "resource": "user",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentUserId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/user-type-change-refused",
+      "type": "case",
+      "key": "client/user-type-change-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/user/{memberUserId}",
+        "resource": "user",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:live/live-conversation-comment-create-publishes-comment-created",
       "type": "case",
       "key": "live/live-conversation-comment-create-publishes-comment-created",
@@ -12366,6 +12966,17 @@
       }
     },
     {
+      "id": "controller:agent",
+      "type": "controller",
+      "key": "agent",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\AgentController",
+        "file": "app/api/v1/controllers/AgentController.php",
+        "extends": "RestController"
+      }
+    },
+    {
       "id": "controller:badge",
       "type": "controller",
       "key": "badge",
@@ -13164,6 +13775,194 @@
         "length": "15",
         "null": false,
         "fts": true
+      }
+    },
+    {
+      "id": "field:Agent.createdUser",
+      "type": "field",
+      "key": "Agent.createdUser",
+      "attributes": {
+        "label": "LBL_AGENTS_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Agent.createdUserName",
+      "type": "field",
+      "key": "Agent.createdUserName",
+      "attributes": {
+        "label": "LBL_AGENTS_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Agent.dateCreated",
+      "type": "field",
+      "key": "Agent.dateCreated",
+      "attributes": {
+        "label": "LBL_AGENTS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agent.dateModified",
+      "type": "field",
+      "key": "Agent.dateModified",
+      "attributes": {
+        "label": "LBL_AGENTS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agent.deleted",
+      "type": "field",
+      "key": "Agent.deleted",
+      "attributes": {
+        "label": "LBL_AGENTS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Agent.id",
+      "type": "field",
+      "key": "Agent.id",
+      "attributes": {
+        "label": "LBL_AGENTS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Agent.maxRunsPerIssue",
+      "type": "field",
+      "key": "Agent.maxRunsPerIssue",
+      "attributes": {
+        "label": "LBL_AGENTS_MAX_RUNS_PER_ISSUE",
+        "type": "int",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agent.maxTurns",
+      "type": "field",
+      "key": "Agent.maxTurns",
+      "attributes": {
+        "label": "LBL_AGENTS_MAX_TURNS",
+        "type": "int",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agent.modelConfig",
+      "type": "field",
+      "key": "Agent.modelConfig",
+      "attributes": {
+        "label": "LBL_AGENTS_MODEL_CONFIG",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agent.modifiedUser",
+      "type": "field",
+      "key": "Agent.modifiedUser",
+      "attributes": {
+        "label": "LBL_AGENTS_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Agent.modifiedUserName",
+      "type": "field",
+      "key": "Agent.modifiedUserName",
+      "attributes": {
+        "label": "LBL_AGENTS_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Agent.name",
+      "type": "field",
+      "key": "Agent.name",
+      "attributes": {
+        "label": "LBL_AGENTS_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Agent.permissionMode",
+      "type": "field",
+      "key": "Agent.permissionMode",
+      "attributes": {
+        "label": "LBL_AGENTS_PERMISSION_MODE",
+        "type": "varchar",
+        "length": "25",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agent.purpose",
+      "type": "field",
+      "key": "Agent.purpose",
+      "attributes": {
+        "label": "LBL_AGENTS_PURPOSE",
+        "type": "varchar",
+        "length": "255",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agent.rolePrompt",
+      "type": "field",
+      "key": "Agent.rolePrompt",
+      "attributes": {
+        "label": "LBL_AGENTS_ROLE_PROMPT",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agent.sponsorId",
+      "type": "field",
+      "key": "Agent.sponsorId",
+      "attributes": {
+        "label": "LBL_AGENTS_SPONSOR",
+        "type": "varchar",
+        "length": "36",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agent.userId",
+      "type": "field",
+      "key": "Agent.userId",
+      "attributes": {
+        "label": "LBL_AGENTS_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false
       }
     },
     {
@@ -18127,6 +18926,18 @@
       }
     },
     {
+      "id": "field:User.type",
+      "type": "field",
+      "key": "User.type",
+      "attributes": {
+        "label": "LBL_USERS_TYPE",
+        "type": "varchar",
+        "length": "10",
+        "null": false,
+        "default": "human"
+      }
+    },
+    {
       "id": "field:Usercollaboration.collaboration",
       "type": "field",
       "key": "Usercollaboration.collaboration",
@@ -19374,6 +20185,46 @@
       }
     },
     {
+      "id": "fixture:agentId",
+      "type": "fixture",
+      "key": "agentId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:agentPermissionId",
+      "type": "fixture",
+      "key": "agentPermissionId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:agentRoleId",
+      "type": "fixture",
+      "key": "agentRoleId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:agentUserId",
+      "type": "fixture",
+      "key": "agentUserId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:agentUserroleId",
+      "type": "fixture",
+      "key": "agentUserroleId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:commentId",
       "type": "fixture",
       "key": "commentId",
@@ -19513,6 +20364,22 @@
       "id": "fixture:milestoneId",
       "type": "fixture",
       "key": "milestoneId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:otherAgentId",
+      "type": "fixture",
+      "key": "otherAgentId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:otherAgentUserId",
+      "type": "fixture",
+      "key": "otherAgentUserId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -19719,6 +20586,24 @@
                 }
               ]
             }
+          }
+        }
+      }
+    },
+    {
+      "id": "model:Agent",
+      "type": "model",
+      "key": "Agent",
+      "attributes": {
+        "file": "app/metadata/model/Agent.php",
+        "tableName": "agents",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": {
+          "assignment": {
+            "field": "sponsorId",
+            "condition": "Agent.sponsorId=:userId:"
           }
         }
       }
@@ -20658,6 +21543,42 @@
       "id": "permission:activity.update",
       "type": "permission",
       "key": "activity.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agent.create",
+      "type": "permission",
+      "key": "agent.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agent.delete",
+      "type": "permission",
+      "key": "agent.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agent.get",
+      "type": "permission",
+      "key": "agent.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agent.update",
+      "type": "permission",
+      "key": "agent.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -22028,6 +22949,19 @@
       }
     },
     {
+      "id": "profile:aclAgent",
+      "type": "profile",
+      "key": "aclAgent",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json",
+        "userId": "api-test-user-acl-agent",
+        "email": "api-tester-acl-agent@example.com",
+        "roleId": "api-test-role-acl-agent",
+        "role": "ACL Agent",
+        "roleDescription": "ACL Agent"
+      }
+    },
+    {
       "id": "profile:aclFields",
       "type": "profile",
       "key": "aclFields",
@@ -22154,6 +23088,46 @@
         "primaryKey": "relatedId",
         "relatedKey": "id",
         "condition": "Activity.relatedTo = \"project\""
+      }
+    },
+    {
+      "id": "relationship:Agent.createdBy",
+      "type": "relationship",
+      "key": "Agent.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agent.modifiedBy",
+      "type": "relationship",
+      "key": "Agent.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agent.sponsor",
+      "type": "relationship",
+      "key": "Agent.sponsor",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "sponsorId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agent.user",
+      "type": "relationship",
+      "key": "Agent.user",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "userId",
+        "relatedKey": "id"
       }
     },
     {
@@ -23149,6 +24123,16 @@
       }
     },
     {
+      "id": "relationship:User.agent",
+      "type": "relationship",
+      "key": "User.agent",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "id",
+        "relatedKey": "userId"
+      }
+    },
+    {
       "id": "relationship:User.badgeLevels",
       "type": "relationship",
       "key": "User.badgeLevels",
@@ -23614,6 +24598,30 @@
         "version": "v1",
         "method": "DELETE",
         "path": "/api/v1/activity/{id}"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/agent",
+      "type": "route",
+      "key": "DELETE /api/v1/agent",
+      "attributes": {
+        "type": "rest",
+        "name": "agent",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/agent"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/agent/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/agent/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agent",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/agent/{id}"
       }
     },
     {
@@ -24370,6 +25378,42 @@
         "version": "v1",
         "method": "GET",
         "path": "/api/v1/activity/{id}/{relation}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agent",
+      "type": "route",
+      "key": "GET /api/v1/agent",
+      "attributes": {
+        "type": "rest",
+        "name": "agent",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agent"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agent/{id}",
+      "type": "route",
+      "key": "GET /api/v1/agent/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agent",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agent/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agent/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/agent/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "agent",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agent/{id}/{relation}"
       }
     },
     {
@@ -25717,6 +26761,18 @@
       }
     },
     {
+      "id": "route:OPTIONS /api/v1/agent",
+      "type": "route",
+      "key": "OPTIONS /api/v1/agent",
+      "attributes": {
+        "type": "rest",
+        "name": "agent",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/agent"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/badge",
       "type": "route",
       "key": "OPTIONS /api/v1/badge",
@@ -26230,6 +27286,30 @@
         "version": "v1",
         "method": "PATCH",
         "path": "/api/v1/activity/{id}"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/agent",
+      "type": "route",
+      "key": "PATCH /api/v1/agent",
+      "attributes": {
+        "type": "rest",
+        "name": "agent",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/agent"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/agent/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/agent/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agent",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/agent/{id}"
       }
     },
     {
@@ -27037,6 +28117,18 @@
       }
     },
     {
+      "id": "route:POST /api/v1/agent",
+      "type": "route",
+      "key": "POST /api/v1/agent",
+      "attributes": {
+        "type": "rest",
+        "name": "agent",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/agent"
+      }
+    },
+    {
       "id": "route:POST /api/v1/badge",
       "type": "route",
       "key": "POST /api/v1/badge",
@@ -27490,6 +28582,30 @@
         "version": "v1",
         "method": "PUT",
         "path": "/api/v1/activity/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/agent",
+      "type": "route",
+      "key": "PUT /api/v1/agent",
+      "attributes": {
+        "type": "rest",
+        "name": "agent",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/agent"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/agent/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/agent/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agent",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/agent/{id}"
       }
     },
     {
@@ -28253,6 +29369,46 @@
       "from": "action:activity.related",
       "type": "requires",
       "to": "permission:activity.get"
+    },
+    {
+      "from": "action:agent.delete",
+      "type": "requires",
+      "to": "permission:agent.delete"
+    },
+    {
+      "from": "action:agent.get",
+      "type": "requires",
+      "to": "permission:agent.get"
+    },
+    {
+      "from": "action:agent.list",
+      "type": "requires",
+      "to": "permission:agent.get"
+    },
+    {
+      "from": "action:agent.patch",
+      "type": "requires",
+      "to": "permission:agent.update"
+    },
+    {
+      "from": "action:agent.patchCollection",
+      "type": "requires",
+      "to": "permission:agent.update"
+    },
+    {
+      "from": "action:agent.post",
+      "type": "requires",
+      "to": "permission:agent.create"
+    },
+    {
+      "from": "action:agent.put",
+      "type": "requires",
+      "to": "permission:agent.update"
+    },
+    {
+      "from": "action:agent.related",
+      "type": "requires",
+      "to": "permission:agent.get"
     },
     {
       "from": "action:badge.delete",
@@ -29678,6 +30834,461 @@
       "from": "case:acl/acl-admin-issue-allowed",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-agent-assign-own-role-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-assign-own-role-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-assign-own-role-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-assign-own-role-denied",
+      "type": "covers",
+      "to": "controller:userrole"
+    },
+    {
+      "from": "case:acl/acl-agent-assign-own-role-denied",
+      "type": "exercises",
+      "to": "route:POST /api/v1/userrole"
+    },
+    {
+      "from": "case:acl/acl-agent-assign-own-role-denied",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-assign-own-role-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentUserId"
+    },
+    {
+      "from": "case:acl/acl-agent-assign-own-role-denied",
+      "type": "uses_fixture",
+      "to": "fixture:roleId"
+    },
+    {
+      "from": "case:acl/acl-agent-create-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-create-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-create-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-create-denied-without-grant",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-agent-create-denied-without-grant",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:acl/acl-agent-create-denied-without-grant",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-agent-delete-own-agent-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-delete-own-agent-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-delete-own-agent-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-delete-own-agent-denied",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-agent-delete-own-agent-denied",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:acl/acl-agent-delete-own-agent-denied",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-delete-own-agent-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:acl/acl-agent-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-agent-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agent"
+    },
+    {
+      "from": "case:acl/acl-agent-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-agent-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-detail-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-agent-detail-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:acl/acl-agent-detail-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-agent-detail-denied-acl-no-setting",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "covers",
+      "to": "controller:userrole"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/userrole/{id}"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "uses_fixture",
+      "to": "fixture:agentUserroleId"
+    },
+    {
+      "from": "case:acl/acl-agent-multi-record-body-refused",
+      "type": "uses_fixture",
+      "to": "fixture:roleId"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "covers",
+      "to": "controller:permission"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/permission/{id}"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-body-id-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentPermissionId"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "covers",
+      "to": "controller:permission"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/permission"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-collection-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentPermissionId"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-denied",
+      "type": "covers",
+      "to": "controller:permission"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-denied",
+      "type": "exercises",
+      "to": "route:POST /api/v1/permission"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-denied",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-own-role-permission-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentRoleId"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-other-agent-allowed",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-other-agent-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-other-agent-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-other-agent-allowed",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-other-agent-allowed",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-other-agent-allowed",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-other-agent-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-agent-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-agent-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-agent-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-agent-denied",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-agent-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-agent-denied",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-agent-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-user-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-user-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-user-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-user-denied",
+      "type": "covers",
+      "to": "controller:user"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-user-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/user/{id}"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-user-denied",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-user-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentUserId"
+    },
+    {
+      "from": "case:acl/acl-agent-remove-own-role-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-remove-own-role-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-remove-own-role-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-remove-own-role-denied",
+      "type": "covers",
+      "to": "controller:userrole"
+    },
+    {
+      "from": "case:acl/acl-agent-remove-own-role-denied",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/userrole/{id}"
+    },
+    {
+      "from": "case:acl/acl-agent-remove-own-role-denied",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-remove-own-role-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentUserroleId"
     },
     {
       "from": "case:acl/acl-comment-denied-without-conversation-group",
@@ -33400,6 +35011,36 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/delete-agent-api-v1-agent-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/delete-agent-api-v1-agent-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/delete-agent-api-v1-agent-runtime-id",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:backend/delete-agent-api-v1-agent-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-agent-api-v1-agent"
+    },
+    {
+      "from": "case:backend/delete-agent-api-v1-agent-runtime-id",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:backend/delete-agent-api-v1-agent-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/delete-comment-api-v1-comment-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -34186,6 +35827,101 @@
     },
     {
       "from": "case:backend/get-activity-api-v1-activity-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agent"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-id",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-id",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-runtime-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-runtime-id",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-agent-api-v1-agent"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-runtime-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:backend/get-agent-api-v1-agent-runtime-id",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -36565,6 +38301,41 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/patch-agent-api-v1-agent-id",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:backend/patch-agent-api-v1-agent-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/patch-agent-api-v1-agent-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/patch-agent-api-v1-agent-id",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:backend/patch-agent-api-v1-agent-id",
+      "type": "depends_on",
+      "to": "case:backend/post-agent-api-v1-agent"
+    },
+    {
+      "from": "case:backend/patch-agent-api-v1-agent-id",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:backend/patch-agent-api-v1-agent-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/patch-comment-api-v1-comment-id",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -37213,6 +38984,36 @@
       "from": "case:backend/post-activity-api-v1-activity",
       "type": "uses_fixture",
       "to": "fixture:issueId"
+    },
+    {
+      "from": "case:backend/post-agent-api-v1-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-agent-api-v1-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-agent-api-v1-agent",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:backend/post-agent-api-v1-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:backend/post-agent-api-v1-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-agent-api-v1-agent",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
     },
     {
       "from": "case:backend/post-chatroom-api-v1-chatroom",
@@ -38118,6 +39919,226 @@
       "from": "case:backend/post-wiki-api-v1-wiki",
       "type": "uses_fixture",
       "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/agent-create-makes-agent-user",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/agent-create-makes-agent-user",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-create-makes-agent-user",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-create-makes-agent-user",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/agent-create-makes-agent-user",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:client/agent-create-makes-agent-user",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-create-needs-email",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/agent-create-needs-email",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-create-needs-email",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-create-needs-email",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/agent-create-needs-email",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:client/agent-create-needs-email",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-create-rejects-bad-model-config",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/agent-create-rejects-bad-model-config",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-create-rejects-bad-model-config",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-create-rejects-bad-model-config",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/agent-create-rejects-bad-model-config",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:client/agent-create-rejects-bad-model-config",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-create-rejects-taken-email",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/agent-create-rejects-taken-email",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-create-rejects-taken-email",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-create-rejects-taken-email",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/agent-create-rejects-taken-email",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:client/agent-create-rejects-taken-email",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-created-user-is-agent",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/agent-created-user-is-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-created-user-is-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-created-user-is-agent",
+      "type": "covers",
+      "to": "controller:user"
+    },
+    {
+      "from": "case:client/agent-created-user-is-agent",
+      "type": "depends_on",
+      "to": "case:client/agent-create-makes-agent-user"
+    },
+    {
+      "from": "case:client/agent-created-user-is-agent",
+      "type": "exercises",
+      "to": "route:GET /api/v1/user/{id}"
+    },
+    {
+      "from": "case:client/agent-created-user-is-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-delete-deletes-user",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-delete-deletes-user",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-delete-deletes-user",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/agent-delete-deletes-user",
+      "type": "depends_on",
+      "to": "case:client/agent-create-makes-agent-user"
+    },
+    {
+      "from": "case:client/agent-delete-deletes-user",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:client/agent-delete-deletes-user",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-deleted-agent-user-gone",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/agent-deleted-agent-user-gone",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-deleted-agent-user-gone",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-deleted-agent-user-gone",
+      "type": "covers",
+      "to": "controller:user"
+    },
+    {
+      "from": "case:client/agent-deleted-agent-user-gone",
+      "type": "depends_on",
+      "to": "case:client/agent-create-makes-agent-user"
+    },
+    {
+      "from": "case:client/agent-deleted-agent-user-gone",
+      "type": "exercises",
+      "to": "route:GET /api/v1/user"
+    },
+    {
+      "from": "case:client/agent-deleted-agent-user-gone",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/client-idea-create",
@@ -44775,6 +46796,106 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/user-create-agent-type-refused",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/user-create-agent-type-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/user-create-agent-type-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/user-create-agent-type-refused",
+      "type": "covers",
+      "to": "controller:user"
+    },
+    {
+      "from": "case:client/user-create-agent-type-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/user"
+    },
+    {
+      "from": "case:client/user-create-agent-type-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/user-password-on-agent-refused",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/user-password-on-agent-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/user-password-on-agent-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/user-password-on-agent-refused",
+      "type": "covers",
+      "to": "controller:user"
+    },
+    {
+      "from": "case:client/user-password-on-agent-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/user/{id}"
+    },
+    {
+      "from": "case:client/user-password-on-agent-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/user-password-on-agent-refused",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentUserId"
+    },
+    {
+      "from": "case:client/user-type-change-refused",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/user-type-change-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/user-type-change-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/user-type-change-refused",
+      "type": "covers",
+      "to": "controller:user"
+    },
+    {
+      "from": "case:client/user-type-change-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/user/{id}"
+    },
+    {
+      "from": "case:client/user-type-change-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/user-type-change-refused",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
       "from": "case:live/live-conversation-comment-create-publishes-comment-created",
       "type": "asserts",
       "to": "assertion:hermes.expect"
@@ -45813,6 +47934,66 @@
       "from": "controller:activity",
       "type": "serves",
       "to": "model:Activity"
+    },
+    {
+      "from": "controller:agent",
+      "type": "has_action",
+      "to": "action:agent.delete"
+    },
+    {
+      "from": "controller:agent",
+      "type": "has_action",
+      "to": "action:agent.deleteCollection"
+    },
+    {
+      "from": "controller:agent",
+      "type": "has_action",
+      "to": "action:agent.get"
+    },
+    {
+      "from": "controller:agent",
+      "type": "has_action",
+      "to": "action:agent.list"
+    },
+    {
+      "from": "controller:agent",
+      "type": "has_action",
+      "to": "action:agent.options"
+    },
+    {
+      "from": "controller:agent",
+      "type": "has_action",
+      "to": "action:agent.patch"
+    },
+    {
+      "from": "controller:agent",
+      "type": "has_action",
+      "to": "action:agent.patchCollection"
+    },
+    {
+      "from": "controller:agent",
+      "type": "has_action",
+      "to": "action:agent.post"
+    },
+    {
+      "from": "controller:agent",
+      "type": "has_action",
+      "to": "action:agent.put"
+    },
+    {
+      "from": "controller:agent",
+      "type": "has_action",
+      "to": "action:agent.putCollection"
+    },
+    {
+      "from": "controller:agent",
+      "type": "has_action",
+      "to": "action:agent.related"
+    },
+    {
+      "from": "controller:agent",
+      "type": "serves",
+      "to": "model:Agent"
     },
     {
       "from": "controller:badge",
@@ -48045,6 +50226,16 @@
       "to": "field:Activity.relatedId"
     },
     {
+      "from": "field:Agent.createdUserName",
+      "type": "linked_to",
+      "to": "field:Agent.createdUser"
+    },
+    {
+      "from": "field:Agent.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Agent.modifiedUser"
+    },
+    {
       "from": "field:Badge.createdUserName",
       "type": "linked_to",
       "to": "field:Badge.createdUser"
@@ -48611,6 +50802,146 @@
     },
     {
       "from": "model:Activity",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.createdUser"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.createdUserName"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.dateCreated"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.dateModified"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.deleted"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.id"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.maxRunsPerIssue"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.maxTurns"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.modelConfig"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.modifiedUser"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.modifiedUserName"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.name"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.permissionMode"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.purpose"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.rolePrompt"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.sponsorId"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.userId"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_relationship",
+      "to": "relationship:Agent.createdBy"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_relationship",
+      "to": "relationship:Agent.modifiedBy"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_relationship",
+      "to": "relationship:Agent.sponsor"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_relationship",
+      "to": "relationship:Agent.user"
+    },
+    {
+      "from": "model:Agent",
+      "type": "uses_behaviour",
+      "to": "behaviour:agentConfigBehavior"
+    },
+    {
+      "from": "model:Agent",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Agent",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Agent",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Agent",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Agent",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Agent",
       "type": "uses_behaviour",
       "to": "behaviour:softDeleteBehavior"
     },
@@ -52111,8 +54442,18 @@
     },
     {
       "from": "model:User",
+      "type": "has_field",
+      "to": "field:User.type"
+    },
+    {
+      "from": "model:User",
       "type": "has_relationship",
       "to": "relationship:User.aclPermissions"
+    },
+    {
+      "from": "model:User",
+      "type": "has_relationship",
+      "to": "relationship:User.agent"
     },
     {
       "from": "model:User",
@@ -53120,6 +55461,106 @@
       "to": "field:Project.name"
     },
     {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:agent.create"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:agent.delete"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:agent.get"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:agent.update"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:permission.create"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:permission.delete"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:permission.get"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:permission.update"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:role.create"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:role.delete"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:role.get"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:role.update"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:user.create"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:user.delete"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:user.get"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:user.update"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:userrole.create"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:userrole.delete"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:userrole.get"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:userrole.update"
+    },
+    {
       "from": "profile:aclFields",
       "type": "denies",
       "to": "permission:issue.description.get"
@@ -53307,6 +55748,16 @@
     {
       "from": "profile:aclNoSetting",
       "type": "denies",
+      "to": "permission:agent.create"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:agent.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
       "to": "permission:setting.get"
     },
     {
@@ -53403,6 +55854,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:activity.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agent.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agent.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agent.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agent.update"
     },
     {
       "from": "profile:default",
@@ -53940,6 +56411,26 @@
       "to": "model:Project"
     },
     {
+      "from": "relationship:Agent.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Agent.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Agent.sponsor",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Agent.user",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
       "from": "relationship:Badge.levels",
       "type": "targets",
       "to": "model:Badgelevel"
@@ -54445,6 +56936,11 @@
       "to": "model:Userpermission"
     },
     {
+      "from": "relationship:User.agent",
+      "type": "targets",
+      "to": "model:Agent"
+    },
+    {
       "from": "relationship:User.badgeLevels",
       "type": "targets",
       "to": "model:Badgelevel"
@@ -54683,6 +57179,16 @@
       "from": "route:DELETE /api/v1/activity/{id}",
       "type": "handled_by",
       "to": "action:activity.delete"
+    },
+    {
+      "from": "route:DELETE /api/v1/agent",
+      "type": "handled_by",
+      "to": "action:agent.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/agent/{id}",
+      "type": "handled_by",
+      "to": "action:agent.delete"
     },
     {
       "from": "route:DELETE /api/v1/badge",
@@ -54998,6 +57504,21 @@
       "from": "route:GET /api/v1/activity/{id}/{relation}",
       "type": "handled_by",
       "to": "action:activity.related"
+    },
+    {
+      "from": "route:GET /api/v1/agent",
+      "type": "handled_by",
+      "to": "action:agent.list"
+    },
+    {
+      "from": "route:GET /api/v1/agent/{id}",
+      "type": "handled_by",
+      "to": "action:agent.get"
+    },
+    {
+      "from": "route:GET /api/v1/agent/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:agent.related"
     },
     {
       "from": "route:GET /api/v1/badge",
@@ -55560,6 +58081,11 @@
       "to": "action:activity.options"
     },
     {
+      "from": "route:OPTIONS /api/v1/agent",
+      "type": "handled_by",
+      "to": "action:agent.options"
+    },
+    {
       "from": "route:OPTIONS /api/v1/badge",
       "type": "handled_by",
       "to": "action:badge.options"
@@ -55773,6 +58299,16 @@
       "from": "route:PATCH /api/v1/activity/{id}",
       "type": "handled_by",
       "to": "action:activity.patch"
+    },
+    {
+      "from": "route:PATCH /api/v1/agent",
+      "type": "handled_by",
+      "to": "action:agent.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/agent/{id}",
+      "type": "handled_by",
+      "to": "action:agent.patch"
     },
     {
       "from": "route:PATCH /api/v1/badge",
@@ -56110,6 +58646,11 @@
       "to": "action:activity.post"
     },
     {
+      "from": "route:POST /api/v1/agent",
+      "type": "handled_by",
+      "to": "action:agent.post"
+    },
+    {
       "from": "route:POST /api/v1/badge",
       "type": "handled_by",
       "to": "action:badge.post"
@@ -56298,6 +58839,16 @@
       "from": "route:PUT /api/v1/activity/{id}",
       "type": "handled_by",
       "to": "action:activity.put"
+    },
+    {
+      "from": "route:PUT /api/v1/agent",
+      "type": "handled_by",
+      "to": "action:agent.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/agent/{id}",
+      "type": "handled_by",
+      "to": "action:agent.put"
     },
     {
       "from": "route:PUT /api/v1/badge",

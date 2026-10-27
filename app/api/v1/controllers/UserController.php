@@ -7,8 +7,10 @@
 namespace Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
+use Gaia\Libraries\Agents\AgentLifecycle;
+use Gaia\Libraries\Agents\AgentUserPolicy;
 use Gaia\Libraries\Security\AclLockoutGuard;
-use Gaia\Libraries\Utils\Util;
+use Gaia\Libraries\Security\AgentEscalationGuard;
 use Gaia\MVC\Models\Oauthaccesstoken;
 use Gaia\MVC\Models\Oauthrefreshtoken;
 use Gaia\MVC\Models\User;
@@ -26,12 +28,31 @@ class UserController extends RestController
     public $uses = ['Dashboard', 'GeneratePassword'];
 
     /**
+     * Users created here are Humans; agents are created through the agent
+     * endpoint (see `AgentUserPolicy`).
+     *
+     * @return \Phalcon\Http\Response
+     */
+    public function postAction()
+    {
+        if (!isset($this->id)) {
+            (new AgentUserPolicy())->assertCreatable($this->extractRequestAttributes());
+        } else {
+            $this->assertUserWritable($this->id, $this->extractRequestAttributes());
+        }
+
+        return parent::postAction();
+    }
+
+    /**
      * This function updates user record and move user's profile from temp directory to its original
      * directory from where we deliver images to client side.
      *
      * Rejects deactivating the last usable member of the last admin-capable
      * role (see `AclLockoutGuard`). Soft-disables by revoking OAuth sessions
-     * when `accountStatus` becomes non-authenticatable.
+     * when `accountStatus` becomes non-authenticatable. Rejects changing a
+     * user's type, a password on an agent user, and an agent writing its own
+     * user record.
      *
      * @return \Phalcon\Http\Response
      */
@@ -39,7 +60,11 @@ class UserController extends RestController
     {
         global $logger;
 
-        $attributes = $this->extractPatchAttributes();
+        $attributes = $this->extractRequestAttributes();
+        $this->assertUserWritable(
+            isset($attributes['id']) && $attributes['id'] !== '' ? $attributes['id'] : $this->id,
+            $attributes
+        );
         $this->assertAclLockoutSafeForAttributes($attributes);
 
         $response = parent::patchAction();
@@ -63,8 +88,24 @@ class UserController extends RestController
     }
 
     /**
+     * Apply the user write rules to every record of a collection patch.
+     *
+     * @return \Phalcon\Http\Response
+     */
+    public function patchCollectionAction()
+    {
+        foreach ($this->extractCollectionAttributes() as $attributes) {
+            $this->assertUserWritable(isset($attributes['id']) ? $attributes['id'] : null, $attributes);
+            $this->assertAclLockoutSafeForAttributes($attributes);
+        }
+
+        return parent::patchCollectionAction();
+    }
+
+    /**
      * Reject deleting the last usable member of the last admin-capable role
-     * (see `AclLockoutGuard`).
+     * (see `AclLockoutGuard`). Deleting an agent user deletes its agents row
+     * in the same transaction.
      *
      * @method deleteAction
      * @throws \Gaia\Exception\Permission
@@ -72,9 +113,41 @@ class UserController extends RestController
      */
     public function deleteAction()
     {
+        global $currentUser;
+
+        AgentEscalationGuard::assertNotOwnUser($currentUser, $this->id);
         $this->assertUserRemainsAdministrable($this->id);
 
-        return parent::deleteAction();
+        $lifecycle = new AgentLifecycle();
+        return $lifecycle->transactional(function () use ($lifecycle) {
+            $response = parent::deleteAction();
+            if ((int) $response->getStatusCode() === 200) {
+                $lifecycle->deleteAgentOfUser($this->id);
+            }
+            return $response;
+        });
+    }
+
+    /**
+     * The checks every user write passes: an agent cannot write its own user
+     * record, and the type and agent password rules of `AgentUserPolicy`.
+     *
+     * @param  string|null $userId
+     * @param  array       $attributes
+     * @throws \Gaia\Exception\Access
+     * @throws \Gaia\Exception\Permission
+     * @return void
+     */
+    private function assertUserWritable($userId, array $attributes)
+    {
+        global $currentUser;
+
+        AgentEscalationGuard::assertNotOwnUser($currentUser, $userId);
+
+        $user = $userId ? User::findFirstById((string) $userId) : null;
+        if ($user) {
+            (new AgentUserPolicy())->assertUpdatable($user, $attributes);
+        }
     }
 
     /**
@@ -183,39 +256,5 @@ class UserController extends RestController
                 ]
             );
         }
-    }
-
-    /**
-     * Pull the first record attributes from a JSON:API or flat PATCH body.
-     *
-     * Mirrors the shape handling in `RestController::patchAction()`.
-     *
-     * @return array
-     */
-    private function extractPatchAttributes()
-    {
-        $util = new Util();
-        $temp = $util->objectToArray($this->request->getJsonRawBody());
-        if (!is_array($temp)) {
-            return [];
-        }
-
-        if ($util->existSubArray($temp)) {
-            if (isset($temp['data']['attributes']) && is_array($temp['data']['attributes'])) {
-                $attributes = $temp['data']['attributes'];
-                if (isset($temp['data']['id']) && $temp['data']['id'] !== '') {
-                    $attributes['id'] = $temp['data']['id'];
-                }
-                return $attributes;
-            }
-
-            if (isset($temp[0]) && is_array($temp[0])) {
-                return $temp[0];
-            }
-
-            return $temp;
-        }
-
-        return $temp;
     }
 }

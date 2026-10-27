@@ -31,12 +31,14 @@
 - status varchar(25)
 - timezone varchar(25)
 - title varchar(100)
+- type varchar(10) required
 - also: createdUser, createdUserName, dateCreated, dateModified, deleted, id, modifiedUser, modifiedUserName
 
 <a id="relationships"></a>
 ## Relationships
 
 - aclPermissions hasMany -> Userpermission
+- agent hasOne -> Agent
 - badgeLevels hasManyToMany -> Badgelevel via Scoreboard
 - badges hasMany -> Badge
 - collaboration hasOne -> Usercollaboration
@@ -64,4 +66,4 @@
 - controller: Gaia\MVC\REST\Controllers\UserController
 - routes: DELETE /api/v1/user, DELETE /api/v1/user/{id}, GET /api/v1/user, GET /api/v1/user/{id}, GET /api/v1/user/{id}/{relation}, OPTIONS /api/v1/user, PATCH /api/v1/user, PATCH /api/v1/user/{id}, POST /api/v1/user, PUT /api/v1/user, PUT /api/v1/user/{id}
 - components: Dashboard, GeneratePassword
-- cases: 19 (backend 8, client 9, mail 2); gaia-dev cases user
+- cases: 25 (acl 1, backend 8, client 14, mail 2); gaia-dev cases user

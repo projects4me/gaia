@@ -366,6 +366,63 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     }
 
     /**
+     * Pull the record attributes from a JSON:API or flat write body.
+     *
+     * Mirrors the shape handling in `postAction()` and `patchAction()`; a
+     * JSON:API `data.id` is copied into the attributes. A list body may hold
+     * one record only: the callers check that record before the write, so a
+     * second record must not reach `patchAction()`'s loop unchecked.
+     *
+     * @return array
+     * @throws \Gaia\Exception\Permission When the body lists several records
+     */
+    protected function extractRequestAttributes()
+    {
+        $util = new Util();
+        $temp = $util->objectToArray($this->request->getJsonRawBody());
+        if (!is_array($temp)) {
+            return [];
+        }
+
+        if ($util->existSubArray($temp)) {
+            if (isset($temp['data']['attributes']) && is_array($temp['data']['attributes'])) {
+                $attributes = $temp['data']['attributes'];
+                if (isset($temp['data']['id']) && $temp['data']['id'] !== '') {
+                    $attributes['id'] = $temp['data']['id'];
+                }
+                return $attributes;
+            }
+
+            if (isset($temp[0]) && is_array($temp[0])) {
+                if (count($temp) > 1) {
+                    throw new \Gaia\Exception\Permission('Send one record per request.');
+                }
+                return $temp[0];
+            }
+
+            return $temp;
+        }
+
+        return $temp;
+    }
+
+    /**
+     * The records of a `patchCollectionAction()` body.
+     *
+     * @return array List of record attribute arrays
+     */
+    protected function extractCollectionAttributes()
+    {
+        $util = new Util();
+        $temp = $util->objectToArray($this->request->getJsonRawBody());
+        if (!is_array($temp) || !isset($temp['collection']) || !is_array($temp['collection'])) {
+            return [];
+        }
+
+        return array_values(array_filter($temp['collection'], 'is_array'));
+    }
+
+    /**
      * Get the requested relationships.
      * 
      * @return array

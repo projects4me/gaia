@@ -487,7 +487,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -868,6 +868,97 @@ INSERT INTO dashboards (
 )
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, deleted = 0;
 
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-no-setting-agent-get', 'api-test-role-acl-ns', 'agent.get', 0, NOW(), NOW()),
+  ('atp-acl-no-setting-agent-create', 'api-test-role-acl-ns', 'agent.create', 0, NOW(), NOW());
+
+-- Profile aclAgent (gaia-dev scaffold api-cases --new-profile)
+INSERT INTO users (
+  id, password, email, name, deleted, "createdUser", "modifiedUser",
+  "createdUserName", "modifiedUserName", "accountStatus", "failedLoginAttempts"
+) VALUES (
+  'api-test-user-acl-agent',
+  '$2y$10$OH8mqmGV2uLOLyoSdLGm/ejzhLXVOsOz/Ld2fi610E/qWWTqQ6e1G',
+  'api-tester-acl-agent@example.com',
+  'API Tester ACL Agent',
+  0,
+  'api-test-user-0001', 'api-test-user-0001',
+  'API Tester',
+  'API Tester',
+  'active',
+  0
+)
+ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email, deleted = 0;
+
+INSERT INTO roles (
+  id, name, description, deleted, "createdUser", "modifiedUser", "createdUserName", "modifiedUserName"
+) VALUES (
+  'api-test-role-acl-agent', 'ACL Agent', 'ACL Agent', 0,
+  'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester'
+)
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, deleted = 0;
+
+INSERT INTO user_roles (
+  id, "createdUser", "modifiedUser", "userId", "roleId",
+  "createdUserName", "modifiedUserName"
+) VALUES (
+  'api-test-userrole-acl-agent', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-acl-agent', 'api-test-role-acl-agent', 'API Tester', 'API Tester'
+)
+ON CONFLICT (id) DO UPDATE SET "userId" = EXCLUDED."userId", "roleId" = EXCLUDED."roleId";
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-acl-agent-agent-get', 'api-test-role-acl-agent', 'agent.get', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-agent-create', 'api-test-role-acl-agent', 'agent.create', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-agent-update', 'api-test-role-acl-agent', 'agent.update', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-agent-delete', 'api-test-role-acl-agent', 'agent.delete', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-userrole-get', 'api-test-role-acl-agent', 'userrole.get', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-userrole-create', 'api-test-role-acl-agent', 'userrole.create', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-userrole-update', 'api-test-role-acl-agent', 'userrole.update', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-userrole-delete', 'api-test-role-acl-agent', 'userrole.delete', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-permission-get', 'api-test-role-acl-agent', 'permission.get', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-permission-create', 'api-test-role-acl-agent', 'permission.create', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-permission-update', 'api-test-role-acl-agent', 'permission.update', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-permission-delete', 'api-test-role-acl-agent', 'permission.delete', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-user-get', 'api-test-role-acl-agent', 'user.get', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-user-create', 'api-test-role-acl-agent', 'user.create', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-user-update', 'api-test-role-acl-agent', 'user.update', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-user-delete', 'api-test-role-acl-agent', 'user.delete', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-role-get', 'api-test-role-acl-agent', 'role.get', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-role-create', 'api-test-role-acl-agent', 'role.create', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-role-update', 'api-test-role-acl-agent', 'role.update', 1, NOW(), NOW()),
+  ('atp-acl-acl-agent-role-delete', 'api-test-role-acl-agent', 'role.delete', 1, NOW(), NOW());
+
+-- Agent: a second agent user (no sponsor, no role), a target the aclAgent profile may change
+INSERT INTO users (
+  id, password, email, name, deleted, "createdUser", "modifiedUser",
+  "createdUserName", "modifiedUserName", "accountStatus", "failedLoginAttempts"
+) VALUES (
+  'api-test-user-agent2',
+  '$2y$10$OH8mqmGV2uLOLyoSdLGm/ejzhLXVOsOz/Ld2fi610E/qWWTqQ6e1G',
+  'api-tester-agent2@example.com',
+  'API Tester Other Agent',
+  0,
+  'api-test-user-0001', 'api-test-user-0001',
+  'API Tester',
+  'API Tester',
+  'active',
+  0
+)
+ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email, deleted = 0;
+
+-- Agent: the aclAgent profile's user and the second user are agents (users.type plus an agents row)
+UPDATE users SET type = 'agent' WHERE id IN ('api-test-user-acl-agent', 'api-test-user-agent2');
+
+INSERT INTO agents (
+  id, "userId", "name", "purpose", "sponsorId", "rolePrompt", "modelConfig", "maxTurns", "maxRunsPerIssue", "permissionMode", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-agent-000001', 'api-test-user-acl-agent', 'API Tester ACL Agent', 'Seed agent that signs in', 'api-test-user-0001', 'You are a test agent.', '{"simple":"sonnet","complex":"opus","escalation":"opus"}', 40, 10, 'acceptEdits', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-agent-000002', 'api-test-user-agent2', 'API Tester Other Agent', 'Seed agent without a sponsor', NULL, NULL, NULL, NULL, NULL, NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET "userId" = EXCLUDED."userId", name = EXCLUDED.name, "sponsorId" = EXCLUDED."sponsorId", deleted = FALSE;
+
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
   '"issues_issueNumber_seq"',
@@ -926,6 +1017,10 @@ data = {
     "aclNoSetting": {
       "email": "api-tester-acl-nosetting@example.com",
       "password": "unit-testing"
+    },
+    "aclAgent": {
+      "email": "api-tester-acl-agent@example.com",
+      "password": "unit-testing"
     }
   },
   "values": {
@@ -963,6 +1058,13 @@ data = {
     "timelogId": "api-test-timelog-00001",
     "dashboardId": "api-test-dashboard-001",
     "savedsearchId": "api-test-savedsearch1",
+    "agentId": "api-test-agent-000001",
+    "agentUserId": "api-test-user-acl-agent",
+    "otherAgentId": "api-test-agent-000002",
+    "otherAgentUserId": "api-test-user-agent2",
+    "agentRoleId": "api-test-role-acl-agent",
+    "agentUserroleId": "api-test-userrole-acl-agent",
+    "agentPermissionId": "atp-acl-acl-agent-agent-get",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

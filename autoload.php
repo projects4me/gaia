@@ -73,6 +73,7 @@ $loader->registerNamespaces(
         "Gaia\\Core\\MVC\\Models\\Query" => APP_PATH . '/core/mvc/models/query/',
         "Gaia\\Libraries\\Authorization" => APP_PATH . '/core/libs/authorization/',
         "Gaia\\Libraries\\Security" => APP_PATH . '/core/libs/security/',
+        "Gaia\\Libraries\\Agents" => APP_PATH . '/core/libs/agents/',
         "Gaia\\Exception" => APP_PATH . '/core/exceptions/',
         "Gaia\\Events\\Notification" => APP_PATH . '/core/events/notifications/',
         "Gaia\\Events" => APP_PATH . '/core/events/',

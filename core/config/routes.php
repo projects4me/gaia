@@ -137,6 +137,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'agent' => array(
+                'path' => '/api/:version/agent',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'issue' => array(
                 'path' => '/api/:version/issue',
                 'allowedMethods' => array(

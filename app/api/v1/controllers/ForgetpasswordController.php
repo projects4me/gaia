@@ -49,7 +49,8 @@ class ForgetpasswordController extends RestController
     }
 
     /**
-     * This function is used to verify the given email address.
+     * This function is used to verify the given email address. Agent users
+     * have no password, so they get no reset link (the response is the same).
      *
      * @param string $email
      * @return bool
@@ -57,6 +58,9 @@ class ForgetpasswordController extends RestController
     private function verifyEmail($email)
     {
         $user = \Gaia\MVC\Models\User::findFirstByEmail($email);
+        if ($user && $user->isAgent()) {
+            return false;
+        }
         return $user;
     }
 }
