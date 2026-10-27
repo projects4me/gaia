@@ -261,7 +261,7 @@ DECLARE
   v_bug_type text;
   v_new_status text;
 BEGIN
-  SELECT id INTO v_bug_type FROM issue_types WHERE system = 1 AND name = 'Bug' AND deleted = 0 LIMIT 1;
+  SELECT id INTO v_bug_type FROM issue_types WHERE system = 1 AND name IN ('bug', 'Bug') AND deleted = 0 LIMIT 1;
   IF v_bug_type IS NULL THEN
     SELECT id INTO v_bug_type FROM issue_types WHERE system = 1 AND deleted = 0 ORDER BY id LIMIT 1;
   END IF;
@@ -1007,7 +1007,7 @@ COMMIT;
 SQL
 
 echo "==> Writing fixtures JSON for portable api-tester (IDs read from seeded DB)"
-BUG_TYPE_ID="$(psql_db "$TEST_DB" -Atc "SELECT id FROM issue_types WHERE system=1 AND name='Bug' AND deleted=0 LIMIT 1")"
+BUG_TYPE_ID="$(psql_db "$TEST_DB" -Atc "SELECT id FROM issue_types WHERE system=1 AND name IN ('bug','Bug') AND deleted=0 LIMIT 1")"
 NEW_STATUS_ID="$(psql_db "$TEST_DB" -Atc "SELECT id FROM issue_statuses WHERE system=1 AND name='new' AND deleted=0 LIMIT 1")"
 python3 - <<PY
 import json, os

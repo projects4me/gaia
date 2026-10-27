@@ -67,8 +67,7 @@ class ResourceCheck
             return $problems;
         }
         if (strpos($route, "'controller'") === false) {
-            $controller = $this->read("app/api/v1/controllers/{$name}Controller.php");
-            if ($controller === null || !preg_match('/class ' . $name . 'Controller extends RestController/', $controller)) {
+            if (!$this->extendsRestController("{$name}Controller")) {
                 $problems[] = "controller: app/api/v1/controllers/{$name}Controller.php is missing or is not a RestController named {$name}Controller";
             }
         }
@@ -92,6 +91,30 @@ class ResourceCheck
         }
 
         return null;
+    }
+
+    /**
+     * Whether app/api/v1/controllers/{$class}.php declares $class extending
+     * RestController, directly or through other controllers in that folder
+     * (e.g. ValueLabelController). A text match, like the other checks here:
+     * a parent outside that folder counts as not a RestController.
+     */
+    private function extendsRestController(string $class): bool
+    {
+        $seen = [];
+        while (!isset($seen[$class])) {
+            $seen[$class] = true;
+            $controller = $this->read("app/api/v1/controllers/{$class}.php");
+            if ($controller === null || !preg_match('/class ' . $class . ' extends (\w+)/', $controller, $match)) {
+                return false;
+            }
+            if ($match[1] === 'RestController') {
+                return true;
+            }
+            $class = $match[1];
+        }
+
+        return false;
     }
 
     /**

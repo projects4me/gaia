@@ -7,21 +7,22 @@
 namespace Gaia\Libraries\Utils;
 
 /**
- * The rules an issue status value and its translated labels must follow.
+ * The rules a list value (an issue status or issue type name) and its
+ * translated labels must follow.
  *
- * The value (issue_statuses.name) is the key of the status labels
- * (IssueStatusLabels), so it is limited to what fits a translation path and the
- * issue_statuses.name / issues.status columns. Labels may be any non-empty text.
+ * The value is the key of its labels (ValueLabels), so it is limited to what
+ * fits a translation path and the columns that hold it (issue_statuses.name
+ * and issues.status are 30 characters). Labels may be any non-empty text.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Utils
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class IssueStatusRules
+class ValueLabelRules
 {
     /**
-     * Longest value a status may have: the length of issue_statuses.name and
-     * of issues.status, which copies it.
+     * Longest value a list value may have: the length of issue_statuses.name
+     * and of issues.status, which copies it.
      *
      * @var int
      */
@@ -33,7 +34,7 @@ class IssueStatusRules
     public const VALUE_PATTERN = '/^[a-z0-9_]+\z/';
 
     /**
-     * The locale whose label every status must have.
+     * The locale whose label every value must have.
      *
      * @var string
      */
@@ -45,19 +46,29 @@ class IssueStatusRules
     private $locales;
 
     /**
-     * @param TranslationLocales $locales
+     * What the value names in messages, e.g. "status" or "type".
+     *
+     * @var string
      */
-    public function __construct(TranslationLocales $locales)
+    private $noun;
+
+    /**
+     * @param TranslationLocales $locales
+     * @param string             $noun    What the value names in messages.
+     */
+    public function __construct(TranslationLocales $locales, $noun)
     {
         $this->locales = $locales;
+        $this->noun = (string) $noun;
     }
 
     /**
+     * @param  string $noun What the value names in messages.
      * @return self
      */
-    public static function fromConfig()
+    public static function fromConfig($noun)
     {
-        return new self(TranslationLocales::fromConfig());
+        return new self(TranslationLocales::fromConfig(), $noun);
     }
 
     /**
@@ -78,7 +89,7 @@ class IssueStatusRules
     }
 
     /**
-     * The value keys the status labels, so it cannot change once the status exists.
+     * The value keys the labels, so it cannot change once the record exists.
      *
      * @param  string $currentValue
      * @param  mixed  $newValue
@@ -86,11 +97,11 @@ class IssueStatusRules
      */
     public function valueChangeError($currentValue, $newValue)
     {
-        return $newValue === $currentValue ? null : 'The value of a status cannot be changed.';
+        return $newValue === $currentValue ? null : 'The value of a ' . $this->noun . ' cannot be changed.';
     }
 
     /**
-     * Labels are an object of locale => label. A new status needs the
+     * Labels are an object of locale => label. A new record needs the
      * REQUIRED_LOCALE label; an update may send only the labels it changes.
      *
      * @param  mixed $translations

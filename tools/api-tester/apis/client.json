@@ -454,10 +454,13 @@
         "data": {
           "type": "issuetype",
           "attributes": {
-            "name": "API Tester Type",
+            "name": "api_tester_type",
             "system": 0,
             "projectId": "{projectId}",
-            "description": "Created by api-tester"
+            "description": "Created by api-tester",
+            "translations": {
+              "en-us": "API Tester Type"
+            }
           }
         }
       },
@@ -474,7 +477,7 @@
           "description"
         ],
         "attributesEqual": {
-          "name": "API Tester Type",
+          "name": "api_tester_type",
           "system": "0",
           "projectId": "{projectId}",
           "description": "Created by api-tester"
@@ -506,8 +509,10 @@
           "type": "issuetype",
           "id": "{runtime.issuetypeId}",
           "attributes": {
-            "name": "API Tester Type Updated",
-            "description": "Updated by api-tester"
+            "description": "Updated by api-tester",
+            "translations": {
+              "en-us": "API Tester Type Updated"
+            }
           }
         }
       },
@@ -515,8 +520,10 @@
         "status": 200,
         "shape": "jsonapi.resource",
         "attributesEqual": {
-          "name": "API Tester Type Updated",
           "description": "Updated by api-tester"
+        },
+        "jsonEqual": {
+          "data.attributes.translations.en-us": "API Tester Type Updated"
         }
       }
     },
@@ -2171,9 +2178,12 @@
         "data": {
           "type": "issuetype",
           "attributes": {
-            "name": "API Test Default Type",
+            "name": "api_test_default_type",
             "description": "Default type",
-            "system": 1
+            "system": 1,
+            "translations": {
+              "en-us": "API Test Default Type"
+            }
           }
         }
       },
@@ -2195,10 +2205,13 @@
         "data": {
           "type": "issuetype",
           "attributes": {
-            "name": "API Test Default Type",
+            "name": "api_test_default_type",
             "description": "Default type",
             "system": 0,
-            "projectId": "{projectId}"
+            "projectId": "{projectId}",
+            "translations": {
+              "en-us": "API Test Default Type"
+            }
           }
         }
       },
@@ -2265,7 +2278,7 @@
       }
     },
     {
-      "id": "issuetype-default-rename",
+      "id": "issuetype-default-rename-rejected",
       "method": "PATCH",
       "path": "/api/v1/issuetype/{runtime.defaultTypeId}",
       "resource": "issuetype",
@@ -2275,21 +2288,18 @@
           "type": "issuetype",
           "id": "{runtime.defaultTypeId}",
           "attributes": {
-            "name": "API Test Default Type Renamed",
+            "name": "api_test_default_renamed",
             "description": "Renamed default"
           }
         }
       },
       "expects": {
-        "status": 200,
-        "shape": "jsonapi.resource",
-        "attributesEqual": {
-          "name": "API Test Default Type Renamed"
-        }
+        "status": 422,
+        "shape": "error"
       }
     },
     {
-      "id": "issuetype-project-copy-unchanged-after-default-rename",
+      "id": "issuetype-project-copy-unchanged-after-default-rename-rejected",
       "method": "GET",
       "path": "/api/v1/issuetype/{runtime.projectCopyTypeId}",
       "resource": "issuetype",
@@ -2298,7 +2308,7 @@
         "status": 200,
         "shape": "jsonapi.resource",
         "attributesEqual": {
-          "name": "API Test Default Type",
+          "name": "api_test_default_type",
           "description": "Default type"
         }
       }
@@ -2327,7 +2337,7 @@
         "status": 200,
         "shape": "jsonapi.resource",
         "attributesEqual": {
-          "name": "API Test Default Type"
+          "name": "api_test_default_type"
         }
       }
     },
@@ -4582,6 +4592,388 @@
         "status": 401,
         "shape": "error",
         "errorEqual": "Client credentials are only for active agents."
+      }
+    },
+    {
+      "id": "post-issuetype-with-labels",
+      "method": "POST",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "attributes": {
+            "name": "api_label_type",
+            "system": 0,
+            "projectId": "{projectId}",
+            "translations": {
+              "en-us": "API Label Type"
+            }
+          }
+        }
+      },
+      "store": {
+        "runtime.labelTypeId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "jsonEqual": {
+          "data.attributes.translations.en-us": "API Label Type"
+        }
+      }
+    },
+    {
+      "id": "get-translations-en-us-has-created-type-label",
+      "method": "GET",
+      "path": "/translations/en-us",
+      "resource": "translation",
+      "auth": false,
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "views.app.issue.lists.type.api_label_type": "API Label Type"
+        }
+      }
+    },
+    {
+      "id": "get-issuetype-returns-labels",
+      "method": "GET",
+      "path": "/api/v1/issuetype/{runtime.labelTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "jsonEqual": {
+          "data.attributes.translations.en-us": "API Label Type"
+        }
+      }
+    },
+    {
+      "id": "list-issuetype-with-project-count-returns-labels",
+      "method": "GET",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "query": {
+        "projectCount": "true",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "attributesPresent": [
+          "projectCount",
+          "translations"
+        ]
+      }
+    },
+    {
+      "id": "patch-issuetype-updates-labels",
+      "method": "PATCH",
+      "path": "/api/v1/issuetype/{runtime.labelTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "id": "{runtime.labelTypeId}",
+          "attributes": {
+            "translations": {
+              "en-us": "API Label Type Updated"
+            }
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "jsonEqual": {
+          "data.attributes.translations.en-us": "API Label Type Updated"
+        }
+      }
+    },
+    {
+      "id": "get-translations-en-us-has-updated-type-label",
+      "method": "GET",
+      "path": "/translations/en-us",
+      "resource": "translation",
+      "auth": false,
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "views.app.issue.lists.type.api_label_type": "API Label Type Updated"
+        }
+      }
+    },
+    {
+      "id": "patch-issuetype-rename-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuetype/{runtime.labelTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "id": "{runtime.labelTypeId}",
+          "attributes": {
+            "name": "api_label_renamed"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "patch-issuetype-collection-rename-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "{runtime.labelTypeId}",
+            "name": "api_label_renamed"
+          }
+        ]
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "patch-issuetype-conflicting-ids-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuetype/{runtime.labelTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "id": "{runtime.labelTypeId}",
+          "attributes": {
+            "id": "{issuetypeId}",
+            "translations": {
+              "en-us": "Conflicting Ids"
+            }
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "get-issuetype-value-unchanged-after-rename",
+      "method": "GET",
+      "path": "/api/v1/issuetype/{runtime.labelTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "api_label_type"
+        },
+        "jsonEqual": {
+          "data.attributes.translations.en-us": "API Label Type Updated"
+        }
+      }
+    },
+    {
+      "id": "post-issuetype-without-en-us-label-rejected",
+      "method": "POST",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "attributes": {
+            "name": "api_label_type_missing",
+            "system": 0,
+            "projectId": "{projectId}",
+            "translations": {}
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "post-issuetype-unsupported-locale-rejected",
+      "method": "POST",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "attributes": {
+            "name": "api_label_type_missing",
+            "system": 0,
+            "projectId": "{projectId}",
+            "translations": {
+              "en-us": "API Label Type Missing",
+              "xx-yy": "Unsupported"
+            }
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "post-issuetype-invalid-value-rejected",
+      "method": "POST",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "attributes": {
+            "name": "API Label Type Missing",
+            "system": 0,
+            "projectId": "{projectId}",
+            "translations": {
+              "en-us": "API Label Type Missing"
+            }
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "post-issuetype-value-31-chars-rejected",
+      "method": "POST",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "attributes": {
+            "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "system": 0,
+            "projectId": "{projectId}",
+            "translations": {
+              "en-us": "Too Long"
+            }
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "list-issuetype-rejected-creates-saved-nothing",
+      "method": "GET",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "query": {
+        "query": "((Issuetype.name : api_label_type_missing))"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonPathAbsent": [
+          "data.0"
+        ]
+      }
+    },
+    {
+      "id": "get-translations-en-us-rejected-type-creates-saved-no-label",
+      "method": "GET",
+      "path": "/translations/en-us",
+      "resource": "translation",
+      "auth": false,
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonPathAbsent": [
+          "views.app.issue.lists.type.api_label_type_missing"
+        ]
+      }
+    },
+    {
+      "id": "patch-issuetype-collection-labels-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "{runtime.labelTypeId}",
+            "translations": {
+              "en-us": "Collection Label"
+            }
+          }
+        ]
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "delete-issuetype-with-labels",
+      "method": "DELETE",
+      "path": "/api/v1/issuetype/{runtime.labelTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "get-translations-en-us-deleted-type-label-gone",
+      "method": "GET",
+      "path": "/translations/en-us",
+      "resource": "translation",
+      "auth": false,
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonPathAbsent": [
+          "views.app.issue.lists.type.api_label_type"
+        ]
+      }
+    },
+    {
+      "id": "get-translations-en-us-default-type-label-gone-with-last-copy",
+      "method": "GET",
+      "path": "/translations/en-us",
+      "resource": "translation",
+      "auth": false,
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonPathAbsent": [
+          "views.app.issue.lists.type.api_test_default_type"
+        ]
       }
     }
   ]

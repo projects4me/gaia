@@ -6,23 +6,23 @@
 
 namespace Gaia\Tests\Libraries\Utils;
 
-use Gaia\Libraries\Utils\IssueStatusRules;
 use Gaia\Libraries\Utils\TranslationLocales;
+use Gaia\Libraries\Utils\ValueLabelRules;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for the rules of issue status values and labels.
+ * Unit tests for the rules of list values (issue statuses, issue types) and their labels.
  */
-class IssueStatusRulesTest extends TestCase
+class ValueLabelRulesTest extends TestCase
 {
     /**
-     * @var IssueStatusRules
+     * @var ValueLabelRules
      */
     private $rules;
 
     protected function setUp(): void
     {
-        $this->rules = new IssueStatusRules(new TranslationLocales(['en-us', 'ur-pk']));
+        $this->rules = new ValueLabelRules(new TranslationLocales(['en-us', 'ur-pk']), 'status');
     }
 
     public function testAcceptsLowercaseDigitsAndUnderscoresUpToThirtyCharacters()
@@ -83,5 +83,12 @@ class IssueStatusRulesTest extends TestCase
     public function testLabelsHaveNoThirtyCharacterLimit()
     {
         $this->assertNull($this->rules->translationsError(['en-us' => str_repeat('Long label ', 10)], true));
+    }
+
+    public function testMessagesNameTheList()
+    {
+        $rules = new ValueLabelRules(new TranslationLocales(['en-us']), 'type');
+
+        $this->assertSame('The value of a type cannot be changed.', $rules->valueChangeError('bug', 'defect'));
     }
 }

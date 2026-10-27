@@ -6,7 +6,7 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Gaia\Core\MVC\REST\Controllers\RestController;
+use Gaia\Libraries\Utils\ValueLabels;
 
 /**
  * Issue types controller
@@ -18,13 +18,19 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  * `?projectCount=true` adds, per type, how many projects have a type with the
  * same name (the Settings "Projects using" column).
  *
+ * A type's `name` is its value; the type is saved with its translated labels
+ * (views.app.issue.lists.type.{value}) in one transaction, and the value
+ * cannot change once created (see ValueLabelController).
+ *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
  * @category Controller
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class IssuetypeController extends RestController
+class IssuetypeController extends ValueLabelController
 {
+    public $uses = ['Issuetype'];
+
     /**
      * Project counts by type name, loaded when the request asks for them.
      *
@@ -55,23 +61,26 @@ class IssuetypeController extends RestController
     }
 
     /**
-     * Add `projectCount` to every type in the response when it was requested.
+     * @return ValueLabels
+     */
+    protected function createValueLabels()
+    {
+        return ValueLabels::forIssueTypes();
+    }
+
+    /**
+     * Add `projectCount` to every type in the response when it was requested
+     * (the base adds `translations`).
      *
      * @param  array $data
      * @return \Phalcon\Http\Response
      */
     protected function returnResponse(array $data)
     {
-        if ($this->projectCounts !== null && !empty($data['data']) && is_array($data['data'])) {
-            if (isset($data['data']['attributes'])) {
-                $data['data'] = $this->addProjectCount($data['data']);
-            } else {
-                foreach ($data['data'] as $index => $resource) {
-                    if (is_array($resource)) {
-                        $data['data'][$index] = $this->addProjectCount($resource);
-                    }
-                }
-            }
+        if ($this->projectCounts !== null) {
+            $data = $this->mapResources($data, function (array $resources) {
+                return array_map([$this, 'addProjectCount'], $resources);
+            });
         }
 
         return parent::returnResponse($data);

@@ -149,6 +149,10 @@ $extraAttributes = [
         'name' => 'api_tester_status',
         'translations' => ['en-us' => 'API Tester Status'],
     ],
+    'issuetype' => [
+        'name' => 'api_tester_type',
+        'translations' => ['en-us' => 'API Tester Type'],
+    ],
     'wiki' => ['name' => 'API Tester Wiki', 'projectId' => '{projectId}'],
     'savedsearch' => [
         'name' => 'API Tester Saved Search',
@@ -167,6 +171,7 @@ $extraAttributes = [
 /** Fields an update may not change, so PATCH cases pick another field. */
 $immutableFields = [
     'issuestatus' => ['name'],
+    'issuetype' => ['name'],
 ];
 
 /** Custom non-JSON:API request bodies. */

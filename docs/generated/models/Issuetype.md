@@ -23,5 +23,5 @@
 - acl: group Project via projectId; systemRecords={"field":"system","resource":"setting.update"}
 - controller: Gaia\MVC\REST\Controllers\IssuetypeController
 - routes: DELETE /api/v1/issuetype, DELETE /api/v1/issuetype/{id}, GET /api/v1/issuetype, GET /api/v1/issuetype/{id}, GET /api/v1/issuetype/{id}/{relation}, OPTIONS /api/v1/issuetype, PATCH /api/v1/issuetype, PATCH /api/v1/issuetype/{id}, POST /api/v1/issuetype, PUT /api/v1/issuetype, PUT /api/v1/issuetype/{id}
-- components: -
-- cases: 34 (acl 12, backend 6, client 16); gaia-dev cases issuetype
+- components: Issuetype
+- cases: 53 (acl 16, backend 6, client 31); gaia-dev cases issuetype
