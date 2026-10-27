@@ -48,6 +48,37 @@ class Pdo extends \OAuth2\Storage\Pdo
     }
 
     /**
+     * Checks a client secret against the stored one.
+     *
+     * Agent clients store a password_hash() of their secret (see
+     * `AgentCredentials`); other clients keep the plain secret, compared in
+     * constant time.
+     *
+     * @param string      $client_id
+     * @param string|null $client_secret
+     * @return bool
+     */
+    public function checkClientCredentials($client_id, $client_secret = null)
+    {
+        $stmt = $this->db->prepare(
+            sprintf('SELECT client_secret FROM %s WHERE client_id = :client_id', $this->config['client_table'])
+        );
+        $stmt->execute(['client_id' => $client_id]);
+        $stored = $stmt->fetchColumn();
+
+        if ($stored === false || $stored === null || $client_secret === null) {
+            return false;
+        }
+
+        $hashInfo = password_get_info($stored);
+        if (!empty($hashInfo['algo'])) {
+            return password_verify((string) $client_secret, $stored);
+        }
+
+        return hash_equals((string) $stored, (string) $client_secret);
+    }
+
+    /**
      * This function checks user password.
      *
      * @param array $user

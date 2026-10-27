@@ -7,6 +7,7 @@
 namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
+use Gaia\Libraries\Agents\AgentCredentials;
 use Gaia\Libraries\Agents\AgentLifecycle;
 use Gaia\Libraries\Security\AgentEscalationGuard;
 use Gaia\MVC\Models\Agent;
@@ -15,7 +16,8 @@ use Gaia\MVC\Models\Agent;
  * Agent Controller
  *
  * Creating an agent creates its users row too, and deleting it deletes that
- * user (see `AgentLifecycle`). An agent cannot change or delete its own agent
+ * user (see `AgentLifecycle`) and revokes its credentials (see
+ * `AgentCredentials`). An agent cannot change or delete its own agent
  * (see `AgentEscalationGuard`).
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
@@ -124,10 +126,11 @@ class AgentController extends RestController
         $lifecycle->assertDeletable($agent);
         $userId = (string) $agent->userId;
 
-        return $lifecycle->transactional(function () use ($lifecycle, $userId) {
+        return $lifecycle->transactional(function () use ($lifecycle, $agent, $userId) {
             $response = parent::deleteAction();
             if ((int) $response->getStatusCode() === 200) {
                 $lifecycle->deleteUser($userId);
+                (new AgentCredentials())->revokeAgent($agent);
             }
             return $response;
         });

@@ -487,7 +487,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -871,7 +871,8 @@ ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, deleted = 0;
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
 VALUES
   ('atp-acl-no-setting-agent-get', 'api-test-role-acl-ns', 'agent.get', 0, NOW(), NOW()),
-  ('atp-acl-no-setting-agent-create', 'api-test-role-acl-ns', 'agent.create', 0, NOW(), NOW());
+  ('atp-acl-no-setting-agent-create', 'api-test-role-acl-ns', 'agent.create', 0, NOW(), NOW()),
+  ('atp-acl-ns-agentcred-get', 'api-test-role-acl-ns', 'agentcredential.get', 0, NOW(), NOW());
 
 -- Profile aclAgent (gaia-dev scaffold api-cases --new-profile)
 INSERT INTO users (
@@ -929,7 +930,11 @@ VALUES
   ('atp-acl-acl-agent-role-get', 'api-test-role-acl-agent', 'role.get', 1, NOW(), NOW()),
   ('atp-acl-acl-agent-role-create', 'api-test-role-acl-agent', 'role.create', 1, NOW(), NOW()),
   ('atp-acl-acl-agent-role-update', 'api-test-role-acl-agent', 'role.update', 1, NOW(), NOW()),
-  ('atp-acl-acl-agent-role-delete', 'api-test-role-acl-agent', 'role.delete', 1, NOW(), NOW());
+  ('atp-acl-acl-agent-role-delete', 'api-test-role-acl-agent', 'role.delete', 1, NOW(), NOW()),
+  -- agentcredential.create is denied: issuing credentials is granted apart from editing agents
+  ('atp-acl-agent-agentcred-create', 'api-test-role-acl-agent', 'agentcredential.create', 0, NOW(), NOW()),
+  ('atp-acl-agent-agentcred-get', 'api-test-role-acl-agent', 'agentcredential.get', 1, NOW(), NOW()),
+  ('atp-acl-agent-agentcred-delete', 'api-test-role-acl-agent', 'agentcredential.delete', 1, NOW(), NOW());
 
 -- Agent: a second agent user (no sponsor, no role), a target the aclAgent profile may change
 INSERT INTO users (
@@ -958,6 +963,25 @@ INSERT INTO agents (
   ('api-test-agent-000001', 'api-test-user-acl-agent', 'API Tester ACL Agent', 'Seed agent that signs in', 'api-test-user-0001', 'You are a test agent.', '{"simple":"sonnet","complex":"opus","escalation":"opus"}', 40, 10, 'acceptEdits', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
   ('api-test-agent-000002', 'api-test-user-agent2', 'API Tester Other Agent', 'Seed agent without a sponsor', NULL, NULL, NULL, NULL, NULL, NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET "userId" = EXCLUDED."userId", name = EXCLUDED.name, "sponsorId" = EXCLUDED."sponsorId", deleted = FALSE;
+
+-- Agentcredential: the aclAgent profile signs in with client_credentials (agents cannot use the
+-- password grant). Its client holds the bcrypt hash of the profile's clientSecret.
+INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id)
+VALUES (
+  'api-test-oauth-client-acl-agent', 'agent-api-tester-acl-agent',
+  '$2y$10$S55LDcjkRWihbnLkitDlFudFbf7VglJUgkdwvXuOpOQsqi7OL.Y.2',
+  '', 'client_credentials', NULL, 'api-test-user-acl-agent'
+)
+ON CONFLICT (client_id) DO UPDATE SET
+  client_secret = EXCLUDED.client_secret,
+  grant_types = EXCLUDED.grant_types,
+  user_id = EXCLUDED.user_id;
+
+INSERT INTO agentcredentials (
+  id, "agentId", "clientId", "lastUsedAt", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-agentcredential-000001', 'api-test-agent-000001', 'agent-api-tester-acl-agent', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET "agentId" = EXCLUDED."agentId", "clientId" = EXCLUDED."clientId", deleted = FALSE;
 
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
@@ -1020,7 +1044,9 @@ data = {
     },
     "aclAgent": {
       "email": "api-tester-acl-agent@example.com",
-      "password": "unit-testing"
+      "grantType": "client_credentials",
+      "clientId": "agent-api-tester-acl-agent",
+      "clientSecret": "p4m_cs_api-tester-acl-agent-not-a-real-secret"
     }
   },
   "values": {
@@ -1065,6 +1091,7 @@ data = {
     "agentRoleId": "api-test-role-acl-agent",
     "agentUserroleId": "api-test-userrole-acl-agent",
     "agentPermissionId": "atp-acl-acl-agent-agent-get",
+    "agentcredentialId": "api-test-agentcredential-000001",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

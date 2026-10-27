@@ -34,7 +34,9 @@
     },
     "aclAgent": {
       "email": "api-tester-acl-agent@example.com",
-      "password": "unit-testing"
+      "grantType": "client_credentials",
+      "clientId": "agent-api-tester-acl-agent",
+      "clientSecret": "p4m_cs_api-tester-acl-agent-not-a-real-secret"
     }
   },
   "values": {
@@ -79,6 +81,7 @@
     "agentRoleId": "api-test-role-acl-agent",
     "agentUserroleId": "api-test-userrole-acl-agent",
     "agentPermissionId": "atp-acl-acl-agent-agent-get",
+    "agentcredentialId": "api-test-agentcredential-000001",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

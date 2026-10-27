@@ -176,7 +176,7 @@ class Runner
         }
 
         // Token endpoint special form body for oauth
-        if (isset($api['resource']) && $api['resource'] === 'token' && $method === 'POST') {
+        if (isset($api['resource']) && $api['resource'] === 'token' && $method === 'POST' && !isset($api['form'])) {
             $auth = $this->fixtures->authConfig();
             if ($auth['clientSecret'] === '' || $auth['email'] === '' || $auth['password'] === '') {
                 return [
@@ -441,26 +441,32 @@ class Runner
         }
 
         $auth = $this->fixtures->authConfig($profile);
-        if ($auth['clientSecret'] === '' || $auth['email'] === '' || $auth['password'] === '') {
-            throw new \RuntimeException(
-                'Auth required but missing API_TEST_CLIENT_SECRET / API_TEST_EMAIL / API_TEST_PASSWORD'
-                . ($profile ? " (profile: {$profile})" : '')
-            );
+        if ($auth['grantType'] === 'client_credentials') {
+            if ($auth['clientId'] === '' || $auth['clientSecret'] === '') {
+                throw new \RuntimeException("Auth profile {$profile} needs a clientId and clientSecret");
+            }
+            $form = [
+                'grant_type' => 'client_credentials',
+                'client_id' => $auth['clientId'],
+                'client_secret' => $auth['clientSecret'],
+            ];
+        } else {
+            if ($auth['clientSecret'] === '' || $auth['email'] === '' || $auth['password'] === '') {
+                throw new \RuntimeException(
+                    'Auth required but missing API_TEST_CLIENT_SECRET / API_TEST_EMAIL / API_TEST_PASSWORD'
+                    . ($profile ? " (profile: {$profile})" : '')
+                );
+            }
+            $form = [
+                'grant_type' => 'password',
+                'client_id' => $auth['clientId'],
+                'client_secret' => $auth['clientSecret'],
+                'email' => $auth['email'],
+                'password' => $auth['password'],
+            ];
         }
 
-        $response = $this->client->request(
-            'POST',
-            $auth['tokenPath'],
-            [
-                'form' => [
-                    'grant_type' => 'password',
-                    'client_id' => $auth['clientId'],
-                    'client_secret' => $auth['clientSecret'],
-                    'email' => $auth['email'],
-                    'password' => $auth['password'],
-                ],
-            ]
-        );
+        $response = $this->client->request('POST', $auth['tokenPath'], ['form' => $form]);
 
         if ($response['status'] !== 200 || empty($response['json']['access_token'])) {
             throw new \RuntimeException(

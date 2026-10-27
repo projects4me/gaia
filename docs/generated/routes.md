@@ -36,6 +36,23 @@
 | PUT | /api/v1/agent | rest | agent.putCollection |
 | PUT | /api/v1/agent/{id} | rest | agent.put |
 
+<a id="agentcredential"></a>
+## agentcredential
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/agentcredential | rest | agentcredential.deleteCollection |
+| DELETE | /api/v1/agentcredential/{id} | rest | agentcredential.delete |
+| GET | /api/v1/agentcredential | rest | agentcredential.list |
+| GET | /api/v1/agentcredential/{id} | rest | agentcredential.get |
+| GET | /api/v1/agentcredential/{id}/{relation} | rest | agentcredential.related |
+| OPTIONS | /api/v1/agentcredential | rest | agentcredential.options |
+| PATCH | /api/v1/agentcredential | rest | agentcredential.patchCollection |
+| PATCH | /api/v1/agentcredential/{id} | rest | agentcredential.patch |
+| POST | /api/v1/agentcredential | rest | agentcredential.post |
+| PUT | /api/v1/agentcredential | rest | agentcredential.putCollection |
+| PUT | /api/v1/agentcredential/{id} | rest | agentcredential.put |
+
 <a id="badge"></a>
 ## badge
 

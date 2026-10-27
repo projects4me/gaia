@@ -4334,6 +4334,255 @@
         "shape": "error",
         "errorEqual": "Agents are created through the agent endpoint."
       }
+    },
+    {
+      "id": "agentcredential-issue-returns-secret-once",
+      "method": "POST",
+      "path": "/api/v1/agentcredential",
+      "resource": "agentcredential",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agentcredential",
+          "attributes": {
+            "agentId": "{otherAgentId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.agentCredentialId": "data.id",
+        "runtime.agentClientId": "data.attributes.clientId",
+        "runtime.agentClientSecret": "data.attributes.clientSecret"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "agentId": "{otherAgentId}",
+          "clientId": "agent-api-tester-other-agent"
+        },
+        "attributesPresent": [
+          "clientSecret"
+        ]
+      }
+    },
+    {
+      "id": "agentcredential-detail-hides-secret",
+      "method": "GET",
+      "path": "/api/v1/agentcredential/{runtime.agentCredentialId}",
+      "resource": "agentcredential",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesAbsent": [
+          "clientSecret"
+        ]
+      }
+    },
+    {
+      "id": "token-client-credentials-signs-agent-in",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "form": {
+        "grant_type": "client_credentials",
+        "client_id": "{runtime.agentClientId}",
+        "client_secret": "{runtime.agentClientSecret}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "oauth.token"
+      }
+    },
+    {
+      "id": "agentcredential-rotate-issues-new-secret",
+      "method": "POST",
+      "path": "/api/v1/agentcredential",
+      "resource": "agentcredential",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agentcredential",
+          "attributes": {
+            "agentId": "{otherAgentId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.rotatedCredentialId": "data.id",
+        "runtime.rotatedClientSecret": "data.attributes.clientSecret"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "clientId": "agent-api-tester-other-agent"
+        }
+      }
+    },
+    {
+      "id": "agentcredential-rotate-revokes-previous-record",
+      "method": "GET",
+      "path": "/api/v1/agentcredential",
+      "resource": "agentcredential",
+      "auth": true,
+      "query": {
+        "limit": 50,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{runtime.rotatedCredentialId}"
+        ],
+        "idsExcludes": [
+          "{runtime.agentCredentialId}"
+        ]
+      }
+    },
+    {
+      "id": "token-client-credentials-rotated-secret-refused",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "form": {
+        "grant_type": "client_credentials",
+        "client_id": "{runtime.agentClientId}",
+        "client_secret": "{runtime.agentClientSecret}"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "json",
+        "jsonEqual": {
+          "error": "invalid_client"
+        }
+      }
+    },
+    {
+      "id": "token-client-credentials-new-secret-signs-in",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "form": {
+        "grant_type": "client_credentials",
+        "client_id": "{runtime.agentClientId}",
+        "client_secret": "{runtime.rotatedClientSecret}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "oauth.token"
+      }
+    },
+    {
+      "id": "agentcredential-patch-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/agentcredential/{runtime.rotatedCredentialId}",
+      "resource": "agentcredential",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agentcredential",
+          "id": "{runtime.rotatedCredentialId}",
+          "attributes": {
+            "clientId": "agent-renamed"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "An agent credential cannot be changed. Issue a new one to rotate it."
+      }
+    },
+    {
+      "id": "agentcredential-issue-needs-existing-agent",
+      "method": "POST",
+      "path": "/api/v1/agentcredential",
+      "resource": "agentcredential",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agentcredential",
+          "attributes": {
+            "agentId": "no-such-agent"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "Credentials can only be issued for an existing agent."
+      }
+    },
+    {
+      "id": "agentcredential-revoke",
+      "method": "DELETE",
+      "path": "/api/v1/agentcredential/{runtime.rotatedCredentialId}",
+      "resource": "agentcredential",
+      "auth": true,
+      "expects": {
+        "status": 200
+      }
+    },
+    {
+      "id": "token-client-credentials-revoked-secret-refused",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "form": {
+        "grant_type": "client_credentials",
+        "client_id": "{runtime.agentClientId}",
+        "client_secret": "{runtime.rotatedClientSecret}"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "json",
+        "jsonEqual": {
+          "error": "invalid_client"
+        }
+      }
+    },
+    {
+      "id": "token-password-grant-refused-for-agent",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "form": {
+        "grant_type": "password",
+        "client_id": "projects4me",
+        "client_secret": "06110fb83488715ca69057f4a7cedf93",
+        "email": "api-tester-acl-agent@example.com",
+        "password": "unit-testing"
+      },
+      "expects": {
+        "status": 401,
+        "shape": "error",
+        "errorEqual": "Agents sign in with their client credentials."
+      }
+    },
+    {
+      "id": "token-client-credentials-refused-for-non-agent-client",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "form": {
+        "grant_type": "client_credentials",
+        "client_id": "projects4me",
+        "client_secret": "06110fb83488715ca69057f4a7cedf93"
+      },
+      "expects": {
+        "status": 401,
+        "shape": "error",
+        "errorEqual": "Client credentials are only for active agents."
+      }
     }
   ]
 }

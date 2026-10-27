@@ -8,6 +8,7 @@ use Gaia\MVC\Models\Oauthrefreshtoken;
 use Gaia\MVC\Models\User;
 use Gaia\Exception\UnAuthorized;
 use Gaia\Libraries\Security\AclLockoutGuard;
+use Gaia\Libraries\Security\AgentLoginGuard;
 
 /**
  * OAuthServer class to handle OAuth2 server setup and token management.
@@ -41,6 +42,7 @@ class OAuthServer
     private $grantTypeMap = [
         'password'        => 'addPasswordGrant',
         'refresh_token'   => 'addRefreshTokenGrant',
+        'client_credentials' => 'addClientCredentialsGrant',
     ];
 
     /**
@@ -98,17 +100,23 @@ class OAuthServer
      */
     protected function addRefreshTokenGrant()
     {
-        $refreshToken = $this->request->request('refresh_token');
-        $refreshTokenModel = Oauthrefreshtoken::findFirst("refresh_token = '$refreshToken'");
+        $refreshToken = (string) $this->request->request('refresh_token');
+        $refreshTokenModel = Oauthrefreshtoken::findFirst([
+            'conditions' => 'refresh_token = :refreshToken:',
+            'bind' => ['refreshToken' => $refreshToken],
+        ]);
 
         if ($refreshTokenModel) {
-            $email = $refreshTokenModel->user_id;
-            $user = User::findFirst("email = '$email'");
+            $user = User::findFirst([
+                'conditions' => 'email = :email:',
+                'bind' => ['email' => (string) $refreshTokenModel->user_id],
+            ]);
             $currentDate = gmdate('Y-m-d H:i:s');
 
             if (!$user || !AclLockoutGuard::isAuthenticatableAccountStatus($user->accountStatus)) {
                 throw new UnAuthorized(AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
             }
+            AgentLoginGuard::assertPasswordGrantAllowed($user);
 
             // If session is expired, then refresh token will not be issued
             if ($user->sessionExpires > $currentDate) {
@@ -125,6 +133,17 @@ class OAuthServer
         } else {
             throw new UnAuthorized("Invalid Token");
         }
+    }
+
+    /**
+     * Adds the Client Credentials grant type, for agents only (see
+     * `AgentClientCredentials`).
+     *
+     * @method addClientCredentialsGrant
+     */
+    protected function addClientCredentialsGrant()
+    {
+        $this->server->addGrantType(new AgentClientCredentials($this->storage));
     }
 
     /**

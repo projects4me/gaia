@@ -32,12 +32,22 @@ class Fixtures
             $auth = array_merge($auth, $profiles[$profile]);
         }
 
+        // A client_credentials profile (an agent) is its own client: its
+        // client id and secret win over the API_TEST_CLIENT_* overrides.
+        $grantType = isset($auth['grantType']) ? $auth['grantType'] : 'password';
+        $ownClient = $grantType === 'client_credentials';
+
         return [
+            'grantType' => $grantType,
             'clientId' => $this->resolveEnvValue(
-                getenv('API_TEST_CLIENT_ID') ?: (isset($auth['clientId']) ? $auth['clientId'] : 'projects4me')
+                $ownClient && isset($auth['clientId'])
+                    ? $auth['clientId']
+                    : (getenv('API_TEST_CLIENT_ID') ?: (isset($auth['clientId']) ? $auth['clientId'] : 'projects4me'))
             ),
             'clientSecret' => $this->resolveEnvValue(
-                getenv('API_TEST_CLIENT_SECRET') ?: (isset($auth['clientSecret']) ? $auth['clientSecret'] : '')
+                $ownClient && isset($auth['clientSecret'])
+                    ? $auth['clientSecret']
+                    : (getenv('API_TEST_CLIENT_SECRET') ?: (isset($auth['clientSecret']) ? $auth['clientSecret'] : ''))
             ),
             'email' => $this->resolveEnvValue(
                 getenv('API_TEST_EMAIL') ?: (isset($auth['email']) ? $auth['email'] : '')

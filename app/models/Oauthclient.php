@@ -18,4 +18,18 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Oauthclient extends Model
 {
+    /**
+     * An agent client has no redirect URI: its client_credentials grant never
+     * redirects, so the column holds an empty string.
+     *
+     * Set here rather than in initialize(), which runs before the parent sets
+     * the table the metadata is read from.
+     *
+     * @return void
+     */
+    public function onConstruct()
+    {
+        parent::onConstruct();
+        $this->allowEmptyStringValues(['redirect_uri']);
+    }
 }

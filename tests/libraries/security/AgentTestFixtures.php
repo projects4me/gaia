@@ -61,6 +61,10 @@ class AgentTestFixtures
         $db = \Phalcon\Di::getDefault()->get('db');
         $agentUsers = "SELECT id FROM users WHERE email LIKE 'unit-agent-%@gaia.test'";
         $db->execute("DELETE FROM user_roles WHERE \"userId\" IN ({$agentUsers})");
+        $db->execute(
+            "DELETE FROM agentcredentials WHERE \"agentId\" IN (SELECT id FROM agents WHERE \"userId\" IN ({$agentUsers}))"
+        );
+        $db->execute("DELETE FROM oauth_clients WHERE user_id IN ({$agentUsers})");
         $db->execute("DELETE FROM agents WHERE \"userId\" IN ({$agentUsers})");
         $db->execute("DELETE FROM users WHERE email LIKE 'unit-agent-%@gaia.test'");
     }

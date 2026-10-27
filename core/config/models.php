@@ -4,6 +4,7 @@ $config['models'] = [
     'Aclcontroller',
     'Activity',
     'Agent',
+    'Agentcredential',
     'Badge',
     'Badgelevel',
     'Chatroom',

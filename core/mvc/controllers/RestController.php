@@ -301,9 +301,15 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     {
         global $currentUser;
         $token = str_replace('Bearer ', '', $request->headers['AUTHORIZATION']);
-        $oAuthAccessToken = \Gaia\MVC\Models\Oauthaccesstoken::findFirst(array("access_token='" . $token . "'"));
+        $oAuthAccessToken = \Gaia\MVC\Models\Oauthaccesstoken::findFirst([
+            'conditions' => 'access_token = :token:',
+            'bind' => ['token' => (string) $token],
+        ]);
         if (isset($oAuthAccessToken->user_id)) {
-            $currentUser = \Gaia\MVC\Models\User::findFirst("email ='" . $oAuthAccessToken->user_id . "'");
+            $currentUser = \Gaia\MVC\Models\User::findFirst([
+                'conditions' => 'email = :email:',
+                'bind' => ['email' => (string) $oAuthAccessToken->user_id],
+            ]);
             if (!$currentUser || !AclLockoutGuard::isAuthenticatableAccountStatus($currentUser->accountStatus)) {
                 throw new \Gaia\Exception\UnAuthorized(AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
             }
