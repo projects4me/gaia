@@ -1736,6 +1736,97 @@
       },
       "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change the permissions of its own roles." },
       "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentcredential-allowed-default",
+      "method": "GET",
+      "path": "/api/v1/agentcredential",
+      "resource": "agentcredential",
+      "auth": true,
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-agentcredential-detail-allowed-default",
+      "method": "GET",
+      "path": "/api/v1/agentcredential/{agentcredentialId}",
+      "resource": "agentcredential",
+      "auth": true,
+      "expects": { "status": 200, "shape": "jsonapi.resource" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-agentcredential-list-denied-without-grant",
+      "method": "GET",
+      "path": "/api/v1/agentcredential",
+      "resource": "agentcredential",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error" },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentcredential-issue-needs-own-grant",
+      "method": "POST",
+      "path": "/api/v1/agentcredential",
+      "resource": "agentcredential",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "agentcredential",
+          "attributes": {
+            "agentId": "{otherAgentId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error" },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentcredential-list-allowed-with-grant",
+      "method": "GET",
+      "path": "/api/v1/agentcredential",
+      "resource": "agentcredential",
+      "auth": "aclAgent",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{agentcredentialId}"] },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentcredential-revoke-own-denied",
+      "method": "DELETE",
+      "path": "/api/v1/agentcredential/{agentcredentialId}",
+      "resource": "agentcredential",
+      "auth": "aclAgent",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change or delete its own agent record." },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentcredential-issue-needs-agent-update",
+      "method": "POST",
+      "path": "/api/v1/agentcredential",
+      "resource": "agentcredential",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "agentcredential",
+          "attributes": {
+            "agentId": "{otherAgentId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error" },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentcredential-revoke-needs-agent-update",
+      "method": "DELETE",
+      "path": "/api/v1/agentcredential/{agentcredentialId}",
+      "resource": "agentcredential",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error" },
+      "source": "acl-agent"
     }
   ]
 }

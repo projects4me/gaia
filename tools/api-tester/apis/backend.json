@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 160,
-        "enabled": 149,
-        "disabled": 11,
-        "routeResources": 43,
-        "withMetadata": 31,
+        "total": 163,
+        "enabled": 151,
+        "disabled": 12,
+        "routeResources": 44,
+        "withMetadata": 32,
         "skippedResources": 10
     },
     "apis": [
@@ -812,6 +812,60 @@
                 ],
                 "shape": "json"
             },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-agentcredential-api-v1-agentcredential",
+            "method": "GET",
+            "path": "/api/v1/agentcredential",
+            "resource": "agentcredential",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-agentcredential-api-v1-agentcredential-id",
+            "method": "GET",
+            "path": "/api/v1/agentcredential/{agentcredentialId}",
+            "resource": "agentcredential",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{agentcredentialId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-agentcredential-api-v1-agentcredential",
+            "method": "POST",
+            "path": "/api/v1/agentcredential",
+            "resource": "agentcredential",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "agentcredential",
+                    "attributes": {
+                        "agentId": "{agentId}",
+                        "clientId": "api-agentcredential-clientId"
+                    }
+                }
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            },
+            "enabled": false,
+            "skipReason": "POST rotates the seeded agent profile's secret and PATCH is refused; client cases cover it",
             "source": "backend-metadata"
         },
         {

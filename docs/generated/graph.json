@@ -135,6 +135,72 @@
       "attributes": {}
     },
     {
+      "id": "action:agentcredential.delete",
+      "type": "action",
+      "key": "agentcredential.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentcredential.deleteCollection",
+      "type": "action",
+      "key": "agentcredential.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentcredential.get",
+      "type": "action",
+      "key": "agentcredential.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentcredential.list",
+      "type": "action",
+      "key": "agentcredential.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentcredential.options",
+      "type": "action",
+      "key": "agentcredential.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentcredential.patch",
+      "type": "action",
+      "key": "agentcredential.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentcredential.patchCollection",
+      "type": "action",
+      "key": "agentcredential.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentcredential.post",
+      "type": "action",
+      "key": "agentcredential.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentcredential.put",
+      "type": "action",
+      "key": "agentcredential.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentcredential.putCollection",
+      "type": "action",
+      "key": "agentcredential.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentcredential.related",
+      "type": "action",
+      "key": "agentcredential.related",
+      "attributes": {}
+    },
+    {
       "id": "action:badge.delete",
       "type": "action",
       "key": "badge.delete",
@@ -3153,6 +3219,146 @@
       }
     },
     {
+      "id": "case:acl/acl-agentcredential-allowed-default",
+      "type": "case",
+      "key": "acl/acl-agentcredential-allowed-default",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentcredential-detail-allowed-default",
+      "type": "case",
+      "key": "acl/acl-agentcredential-detail-allowed-default",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentcredential/{agentcredentialId}",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "agentcredentialId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "case",
+      "key": "acl/acl-agentcredential-issue-needs-agent-update",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "otherAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentcredential-issue-needs-own-grant",
+      "type": "case",
+      "key": "acl/acl-agentcredential-issue-needs-own-grant",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "otherAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentcredential-list-allowed-with-grant",
+      "type": "case",
+      "key": "acl/acl-agentcredential-list-allowed-with-grant",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentcredentialId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentcredential-list-denied-without-grant",
+      "type": "case",
+      "key": "acl/acl-agentcredential-list-denied-without-grant",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "case",
+      "key": "acl/acl-agentcredential-revoke-needs-agent-update",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "DELETE",
+        "path": "/api/v1/agentcredential/{agentcredentialId}",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentcredentialId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentcredential-revoke-own-denied",
+      "type": "case",
+      "key": "acl/acl-agentcredential-revoke-own-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "DELETE",
+        "path": "/api/v1/agentcredential/{agentcredentialId}",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentcredentialId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-comment-denied-without-conversation-group",
       "type": "case",
       "key": "acl/acl-comment-denied-without-conversation-group",
@@ -5636,6 +5842,40 @@
       }
     },
     {
+      "id": "case:backend/get-agentcredential-api-v1-agentcredential",
+      "type": "case",
+      "key": "backend/get-agentcredential-api-v1-agentcredential",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-agentcredential-api-v1-agentcredential-id",
+      "type": "case",
+      "key": "backend/get-agentcredential-api-v1-agentcredential-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/agentcredential/{agentcredentialId}",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "agentcredentialId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/get-badge-api-v1-badge",
       "type": "case",
       "key": "backend/get-badge-api-v1-badge",
@@ -7364,6 +7604,24 @@
       }
     },
     {
+      "id": "case:backend/post-agentcredential-api-v1-agentcredential",
+      "type": "case",
+      "key": "backend/post-agentcredential-api-v1-agentcredential",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [
+          "agentId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/post-chatroom-api-v1-chatroom",
       "type": "case",
       "key": "backend/post-chatroom-api-v1-chatroom",
@@ -8058,6 +8316,138 @@
         "source": null,
         "placeholders": [
           "runtime.createdAgentUserId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agentcredential-detail-hides-secret",
+      "type": "case",
+      "key": "client/agentcredential-detail-hides-secret",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/agentcredential/{runtime.agentCredentialId}",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.agentCredentialId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agentcredential-issue-needs-existing-agent",
+      "type": "case",
+      "key": "client/agentcredential-issue-needs-existing-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agentcredential-issue-returns-secret-once",
+      "type": "case",
+      "key": "client/agentcredential-issue-returns-secret-once",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentId"
+        ],
+        "stores": [
+          "runtime.agentCredentialId",
+          "runtime.agentClientId",
+          "runtime.agentClientSecret"
+        ]
+      }
+    },
+    {
+      "id": "case:client/agentcredential-patch-rejected",
+      "type": "case",
+      "key": "client/agentcredential-patch-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/agentcredential/{runtime.rotatedCredentialId}",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.rotatedCredentialId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agentcredential-revoke",
+      "type": "case",
+      "key": "client/agentcredential-revoke",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/agentcredential/{runtime.rotatedCredentialId}",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.rotatedCredentialId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agentcredential-rotate-issues-new-secret",
+      "type": "case",
+      "key": "client/agentcredential-rotate-issues-new-secret",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentId"
+        ],
+        "stores": [
+          "runtime.rotatedCredentialId",
+          "runtime.rotatedClientSecret"
+        ]
+      }
+    },
+    {
+      "id": "case:client/agentcredential-rotate-revokes-previous-record",
+      "type": "case",
+      "key": "client/agentcredential-rotate-revokes-previous-record",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.agentCredentialId",
+          "runtime.rotatedCredentialId"
         ],
         "stores": []
       }
@@ -11772,6 +12162,114 @@
       }
     },
     {
+      "id": "case:client/token-client-credentials-new-secret-signs-in",
+      "type": "case",
+      "key": "client/token-client-credentials-new-secret-signs-in",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/token",
+        "resource": "token",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.agentClientId",
+          "runtime.rotatedClientSecret"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/token-client-credentials-refused-for-non-agent-client",
+      "type": "case",
+      "key": "client/token-client-credentials-refused-for-non-agent-client",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/token",
+        "resource": "token",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/token-client-credentials-revoked-secret-refused",
+      "type": "case",
+      "key": "client/token-client-credentials-revoked-secret-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/token",
+        "resource": "token",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.agentClientId",
+          "runtime.rotatedClientSecret"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/token-client-credentials-rotated-secret-refused",
+      "type": "case",
+      "key": "client/token-client-credentials-rotated-secret-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/token",
+        "resource": "token",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.agentClientId",
+          "runtime.agentClientSecret"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/token-client-credentials-signs-agent-in",
+      "type": "case",
+      "key": "client/token-client-credentials-signs-agent-in",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/token",
+        "resource": "token",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.agentClientId",
+          "runtime.agentClientSecret"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/token-password-grant-refused-for-agent",
+      "type": "case",
+      "key": "client/token-password-grant-refused-for-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/token",
+        "resource": "token",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/user-create-agent-type-refused",
       "type": "case",
       "key": "client/user-create-agent-type-refused",
@@ -12977,6 +13475,17 @@
       }
     },
     {
+      "id": "controller:agentcredential",
+      "type": "controller",
+      "key": "agentcredential",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\AgentcredentialController",
+        "file": "app/api/v1/controllers/AgentcredentialController.php",
+        "extends": "RestController"
+      }
+    },
+    {
       "id": "controller:badge",
       "type": "controller",
       "key": "badge",
@@ -13963,6 +14472,131 @@
         "type": "varchar",
         "length": "36",
         "null": false
+      }
+    },
+    {
+      "id": "field:Agentcredential.agentId",
+      "type": "field",
+      "key": "Agentcredential.agentId",
+      "attributes": {
+        "label": "LBL_AGENTCREDENTIALS_AGENT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Agentcredential.clientId",
+      "type": "field",
+      "key": "Agentcredential.clientId",
+      "attributes": {
+        "label": "LBL_AGENTCREDENTIALS_CLIENT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Agentcredential.createdUser",
+      "type": "field",
+      "key": "Agentcredential.createdUser",
+      "attributes": {
+        "label": "LBL_AGENTCREDENTIALS_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Agentcredential.createdUserName",
+      "type": "field",
+      "key": "Agentcredential.createdUserName",
+      "attributes": {
+        "label": "LBL_AGENTCREDENTIALS_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Agentcredential.dateCreated",
+      "type": "field",
+      "key": "Agentcredential.dateCreated",
+      "attributes": {
+        "label": "LBL_AGENTCREDENTIALS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agentcredential.dateModified",
+      "type": "field",
+      "key": "Agentcredential.dateModified",
+      "attributes": {
+        "label": "LBL_AGENTCREDENTIALS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agentcredential.deleted",
+      "type": "field",
+      "key": "Agentcredential.deleted",
+      "attributes": {
+        "label": "LBL_AGENTCREDENTIALS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Agentcredential.id",
+      "type": "field",
+      "key": "Agentcredential.id",
+      "attributes": {
+        "label": "LBL_AGENTCREDENTIALS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Agentcredential.lastUsedAt",
+      "type": "field",
+      "key": "Agentcredential.lastUsedAt",
+      "attributes": {
+        "label": "LBL_AGENTCREDENTIALS_LAST_USED_AT",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agentcredential.modifiedUser",
+      "type": "field",
+      "key": "Agentcredential.modifiedUser",
+      "attributes": {
+        "label": "LBL_AGENTCREDENTIALS_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Agentcredential.modifiedUserName",
+      "type": "field",
+      "key": "Agentcredential.modifiedUserName",
+      "attributes": {
+        "label": "LBL_AGENTCREDENTIALS_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
       }
     },
     {
@@ -20225,6 +20859,14 @@
       }
     },
     {
+      "id": "fixture:agentcredentialId",
+      "type": "fixture",
+      "key": "agentcredentialId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:commentId",
       "type": "fixture",
       "key": "commentId",
@@ -20606,6 +21248,19 @@
             "condition": "Agent.sponsorId=:userId:"
           }
         }
+      }
+    },
+    {
+      "id": "model:Agentcredential",
+      "type": "model",
+      "key": "Agentcredential",
+      "attributes": {
+        "file": "app/metadata/model/Agentcredential.php",
+        "tableName": "agentcredentials",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
       }
     },
     {
@@ -21579,6 +22234,42 @@
       "id": "permission:agent.update",
       "type": "permission",
       "key": "agent.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agentcredential.create",
+      "type": "permission",
+      "key": "agentcredential.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agentcredential.delete",
+      "type": "permission",
+      "key": "agentcredential.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agentcredential.get",
+      "type": "permission",
+      "key": "agentcredential.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agentcredential.update",
+      "type": "permission",
+      "key": "agentcredential.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -23131,6 +23822,36 @@
       }
     },
     {
+      "id": "relationship:Agentcredential.agent",
+      "type": "relationship",
+      "key": "Agentcredential.agent",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "agentId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agentcredential.createdBy",
+      "type": "relationship",
+      "key": "Agentcredential.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agentcredential.modifiedBy",
+      "type": "relationship",
+      "key": "Agentcredential.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
       "id": "relationship:Badge.levels",
       "type": "relationship",
       "key": "Badge.levels",
@@ -24625,6 +25346,30 @@
       }
     },
     {
+      "id": "route:DELETE /api/v1/agentcredential",
+      "type": "route",
+      "key": "DELETE /api/v1/agentcredential",
+      "attributes": {
+        "type": "rest",
+        "name": "agentcredential",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/agentcredential"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/agentcredential/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/agentcredential/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agentcredential",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/agentcredential/{id}"
+      }
+    },
+    {
       "id": "route:DELETE /api/v1/badge",
       "type": "route",
       "key": "DELETE /api/v1/badge",
@@ -25414,6 +26159,42 @@
         "version": "v1",
         "method": "GET",
         "path": "/api/v1/agent/{id}/{relation}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agentcredential",
+      "type": "route",
+      "key": "GET /api/v1/agentcredential",
+      "attributes": {
+        "type": "rest",
+        "name": "agentcredential",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agentcredential"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agentcredential/{id}",
+      "type": "route",
+      "key": "GET /api/v1/agentcredential/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agentcredential",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agentcredential/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agentcredential/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/agentcredential/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "agentcredential",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agentcredential/{id}/{relation}"
       }
     },
     {
@@ -26773,6 +27554,18 @@
       }
     },
     {
+      "id": "route:OPTIONS /api/v1/agentcredential",
+      "type": "route",
+      "key": "OPTIONS /api/v1/agentcredential",
+      "attributes": {
+        "type": "rest",
+        "name": "agentcredential",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/agentcredential"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/badge",
       "type": "route",
       "key": "OPTIONS /api/v1/badge",
@@ -27310,6 +28103,30 @@
         "version": "v1",
         "method": "PATCH",
         "path": "/api/v1/agent/{id}"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/agentcredential",
+      "type": "route",
+      "key": "PATCH /api/v1/agentcredential",
+      "attributes": {
+        "type": "rest",
+        "name": "agentcredential",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/agentcredential"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/agentcredential/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/agentcredential/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agentcredential",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/agentcredential/{id}"
       }
     },
     {
@@ -28129,6 +28946,18 @@
       }
     },
     {
+      "id": "route:POST /api/v1/agentcredential",
+      "type": "route",
+      "key": "POST /api/v1/agentcredential",
+      "attributes": {
+        "type": "rest",
+        "name": "agentcredential",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/agentcredential"
+      }
+    },
+    {
       "id": "route:POST /api/v1/badge",
       "type": "route",
       "key": "POST /api/v1/badge",
@@ -28606,6 +29435,30 @@
         "version": "v1",
         "method": "PUT",
         "path": "/api/v1/agent/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/agentcredential",
+      "type": "route",
+      "key": "PUT /api/v1/agentcredential",
+      "attributes": {
+        "type": "rest",
+        "name": "agentcredential",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/agentcredential"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/agentcredential/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/agentcredential/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agentcredential",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/agentcredential/{id}"
       }
     },
     {
@@ -29409,6 +30262,46 @@
       "from": "action:agent.related",
       "type": "requires",
       "to": "permission:agent.get"
+    },
+    {
+      "from": "action:agentcredential.delete",
+      "type": "requires",
+      "to": "permission:agentcredential.delete"
+    },
+    {
+      "from": "action:agentcredential.get",
+      "type": "requires",
+      "to": "permission:agentcredential.get"
+    },
+    {
+      "from": "action:agentcredential.list",
+      "type": "requires",
+      "to": "permission:agentcredential.get"
+    },
+    {
+      "from": "action:agentcredential.patch",
+      "type": "requires",
+      "to": "permission:agentcredential.update"
+    },
+    {
+      "from": "action:agentcredential.patchCollection",
+      "type": "requires",
+      "to": "permission:agentcredential.update"
+    },
+    {
+      "from": "action:agentcredential.post",
+      "type": "requires",
+      "to": "permission:agentcredential.create"
+    },
+    {
+      "from": "action:agentcredential.put",
+      "type": "requires",
+      "to": "permission:agentcredential.update"
+    },
+    {
+      "from": "action:agentcredential.related",
+      "type": "requires",
+      "to": "permission:agentcredential.get"
     },
     {
       "from": "action:badge.delete",
@@ -31289,6 +32182,246 @@
       "from": "case:acl/acl-agent-remove-own-role-denied",
       "type": "uses_fixture",
       "to": "fixture:agentUserroleId"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-allowed-default",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-allowed-default",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-allowed-default",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-allowed-default",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-allowed-default",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-detail-allowed-default",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-detail-allowed-default",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-detail-allowed-default",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-detail-allowed-default",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentcredential/{id}"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-detail-allowed-default",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-detail-allowed-default",
+      "type": "uses_fixture",
+      "to": "fixture:agentcredentialId"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-agent-update",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-own-grant",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-own-grant",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-own-grant",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-own-grant",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-own-grant",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-issue-needs-own-grant",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-list-allowed-with-grant",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-list-allowed-with-grant",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-list-allowed-with-grant",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-list-allowed-with-grant",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-list-allowed-with-grant",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-list-allowed-with-grant",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-list-allowed-with-grant",
+      "type": "uses_fixture",
+      "to": "fixture:agentcredentialId"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-list-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-list-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-list-denied-without-grant",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-list-denied-without-grant",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-list-denied-without-grant",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/agentcredential/{id}"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-needs-agent-update",
+      "type": "uses_fixture",
+      "to": "fixture:agentcredentialId"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-own-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-own-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-own-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-own-denied",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-own-denied",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/agentcredential/{id}"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-own-denied",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agentcredential-revoke-own-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentcredentialId"
     },
     {
       "from": "case:acl/acl-comment-denied-without-conversation-group",
@@ -35926,6 +37059,66 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/get-agentcredential-api-v1-agentcredential",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-agentcredential-api-v1-agentcredential",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-agentcredential-api-v1-agentcredential",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:backend/get-agentcredential-api-v1-agentcredential",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentcredential"
+    },
+    {
+      "from": "case:backend/get-agentcredential-api-v1-agentcredential",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-agentcredential-api-v1-agentcredential-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-agentcredential-api-v1-agentcredential-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-agentcredential-api-v1-agentcredential-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-agentcredential-api-v1-agentcredential-id",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:backend/get-agentcredential-api-v1-agentcredential-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentcredential/{id}"
+    },
+    {
+      "from": "case:backend/get-agentcredential-api-v1-agentcredential-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-agentcredential-api-v1-agentcredential-id",
+      "type": "uses_fixture",
+      "to": "fixture:agentcredentialId"
+    },
+    {
       "from": "case:backend/get-badge-api-v1-badge",
       "type": "asserts",
       "to": "assertion:shape"
@@ -39016,6 +40209,36 @@
       "to": "fixture:userId"
     },
     {
+      "from": "case:backend/post-agentcredential-api-v1-agentcredential",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-agentcredential-api-v1-agentcredential",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-agentcredential-api-v1-agentcredential",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:backend/post-agentcredential-api-v1-agentcredential",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agentcredential"
+    },
+    {
+      "from": "case:backend/post-agentcredential-api-v1-agentcredential",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-agentcredential-api-v1-agentcredential",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
       "from": "case:backend/post-chatroom-api-v1-chatroom",
       "type": "asserts",
       "to": "assertion:shape"
@@ -40137,6 +41360,251 @@
     },
     {
       "from": "case:client/agent-deleted-agent-user-gone",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agentcredential-detail-hides-secret",
+      "type": "asserts",
+      "to": "assertion:attributesAbsent"
+    },
+    {
+      "from": "case:client/agentcredential-detail-hides-secret",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agentcredential-detail-hides-secret",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agentcredential-detail-hides-secret",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:client/agentcredential-detail-hides-secret",
+      "type": "depends_on",
+      "to": "case:client/agentcredential-issue-returns-secret-once"
+    },
+    {
+      "from": "case:client/agentcredential-detail-hides-secret",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentcredential/{id}"
+    },
+    {
+      "from": "case:client/agentcredential-detail-hides-secret",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agentcredential-issue-needs-existing-agent",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/agentcredential-issue-needs-existing-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agentcredential-issue-needs-existing-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agentcredential-issue-needs-existing-agent",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:client/agentcredential-issue-needs-existing-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agentcredential"
+    },
+    {
+      "from": "case:client/agentcredential-issue-needs-existing-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agentcredential-issue-returns-secret-once",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/agentcredential-issue-returns-secret-once",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/agentcredential-issue-returns-secret-once",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agentcredential-issue-returns-secret-once",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agentcredential-issue-returns-secret-once",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:client/agentcredential-issue-returns-secret-once",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agentcredential"
+    },
+    {
+      "from": "case:client/agentcredential-issue-returns-secret-once",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agentcredential-issue-returns-secret-once",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:client/agentcredential-patch-rejected",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/agentcredential-patch-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agentcredential-patch-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agentcredential-patch-rejected",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:client/agentcredential-patch-rejected",
+      "type": "depends_on",
+      "to": "case:client/agentcredential-rotate-issues-new-secret"
+    },
+    {
+      "from": "case:client/agentcredential-patch-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/agentcredential/{id}"
+    },
+    {
+      "from": "case:client/agentcredential-patch-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agentcredential-revoke",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agentcredential-revoke",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:client/agentcredential-revoke",
+      "type": "depends_on",
+      "to": "case:client/agentcredential-rotate-issues-new-secret"
+    },
+    {
+      "from": "case:client/agentcredential-revoke",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/agentcredential/{id}"
+    },
+    {
+      "from": "case:client/agentcredential-revoke",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-issues-new-secret",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-issues-new-secret",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-issues-new-secret",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-issues-new-secret",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-issues-new-secret",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agentcredential"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-issues-new-secret",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-issues-new-secret",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-revokes-previous-record",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-revokes-previous-record",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-revokes-previous-record",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-revokes-previous-record",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-revokes-previous-record",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-revokes-previous-record",
+      "type": "depends_on",
+      "to": "case:client/agentcredential-issue-returns-secret-once"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-revokes-previous-record",
+      "type": "depends_on",
+      "to": "case:client/agentcredential-rotate-issues-new-secret"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-revokes-previous-record",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentcredential"
+    },
+    {
+      "from": "case:client/agentcredential-rotate-revokes-previous-record",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -46796,6 +48264,206 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/token-client-credentials-new-secret-signs-in",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/token-client-credentials-new-secret-signs-in",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/token-client-credentials-new-secret-signs-in",
+      "type": "covers",
+      "to": "controller:token"
+    },
+    {
+      "from": "case:client/token-client-credentials-new-secret-signs-in",
+      "type": "depends_on",
+      "to": "case:client/agentcredential-issue-returns-secret-once"
+    },
+    {
+      "from": "case:client/token-client-credentials-new-secret-signs-in",
+      "type": "depends_on",
+      "to": "case:client/agentcredential-rotate-issues-new-secret"
+    },
+    {
+      "from": "case:client/token-client-credentials-new-secret-signs-in",
+      "type": "exercises",
+      "to": "route:POST /api/v1/token"
+    },
+    {
+      "from": "case:client/token-client-credentials-new-secret-signs-in",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/token-client-credentials-refused-for-non-agent-client",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/token-client-credentials-refused-for-non-agent-client",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/token-client-credentials-refused-for-non-agent-client",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/token-client-credentials-refused-for-non-agent-client",
+      "type": "covers",
+      "to": "controller:token"
+    },
+    {
+      "from": "case:client/token-client-credentials-refused-for-non-agent-client",
+      "type": "exercises",
+      "to": "route:POST /api/v1/token"
+    },
+    {
+      "from": "case:client/token-client-credentials-refused-for-non-agent-client",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/token-client-credentials-revoked-secret-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/token-client-credentials-revoked-secret-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/token-client-credentials-revoked-secret-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/token-client-credentials-revoked-secret-refused",
+      "type": "covers",
+      "to": "controller:token"
+    },
+    {
+      "from": "case:client/token-client-credentials-revoked-secret-refused",
+      "type": "depends_on",
+      "to": "case:client/agentcredential-issue-returns-secret-once"
+    },
+    {
+      "from": "case:client/token-client-credentials-revoked-secret-refused",
+      "type": "depends_on",
+      "to": "case:client/agentcredential-rotate-issues-new-secret"
+    },
+    {
+      "from": "case:client/token-client-credentials-revoked-secret-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/token"
+    },
+    {
+      "from": "case:client/token-client-credentials-revoked-secret-refused",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/token-client-credentials-rotated-secret-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/token-client-credentials-rotated-secret-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/token-client-credentials-rotated-secret-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/token-client-credentials-rotated-secret-refused",
+      "type": "covers",
+      "to": "controller:token"
+    },
+    {
+      "from": "case:client/token-client-credentials-rotated-secret-refused",
+      "type": "depends_on",
+      "to": "case:client/agentcredential-issue-returns-secret-once"
+    },
+    {
+      "from": "case:client/token-client-credentials-rotated-secret-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/token"
+    },
+    {
+      "from": "case:client/token-client-credentials-rotated-secret-refused",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/token-client-credentials-signs-agent-in",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/token-client-credentials-signs-agent-in",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/token-client-credentials-signs-agent-in",
+      "type": "covers",
+      "to": "controller:token"
+    },
+    {
+      "from": "case:client/token-client-credentials-signs-agent-in",
+      "type": "depends_on",
+      "to": "case:client/agentcredential-issue-returns-secret-once"
+    },
+    {
+      "from": "case:client/token-client-credentials-signs-agent-in",
+      "type": "exercises",
+      "to": "route:POST /api/v1/token"
+    },
+    {
+      "from": "case:client/token-client-credentials-signs-agent-in",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/token-password-grant-refused-for-agent",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/token-password-grant-refused-for-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/token-password-grant-refused-for-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/token-password-grant-refused-for-agent",
+      "type": "covers",
+      "to": "controller:token"
+    },
+    {
+      "from": "case:client/token-password-grant-refused-for-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/token"
+    },
+    {
+      "from": "case:client/token-password-grant-refused-for-agent",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
       "from": "case:client/user-create-agent-type-refused",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -47994,6 +49662,66 @@
       "from": "controller:agent",
       "type": "serves",
       "to": "model:Agent"
+    },
+    {
+      "from": "controller:agentcredential",
+      "type": "has_action",
+      "to": "action:agentcredential.delete"
+    },
+    {
+      "from": "controller:agentcredential",
+      "type": "has_action",
+      "to": "action:agentcredential.deleteCollection"
+    },
+    {
+      "from": "controller:agentcredential",
+      "type": "has_action",
+      "to": "action:agentcredential.get"
+    },
+    {
+      "from": "controller:agentcredential",
+      "type": "has_action",
+      "to": "action:agentcredential.list"
+    },
+    {
+      "from": "controller:agentcredential",
+      "type": "has_action",
+      "to": "action:agentcredential.options"
+    },
+    {
+      "from": "controller:agentcredential",
+      "type": "has_action",
+      "to": "action:agentcredential.patch"
+    },
+    {
+      "from": "controller:agentcredential",
+      "type": "has_action",
+      "to": "action:agentcredential.patchCollection"
+    },
+    {
+      "from": "controller:agentcredential",
+      "type": "has_action",
+      "to": "action:agentcredential.post"
+    },
+    {
+      "from": "controller:agentcredential",
+      "type": "has_action",
+      "to": "action:agentcredential.put"
+    },
+    {
+      "from": "controller:agentcredential",
+      "type": "has_action",
+      "to": "action:agentcredential.putCollection"
+    },
+    {
+      "from": "controller:agentcredential",
+      "type": "has_action",
+      "to": "action:agentcredential.related"
+    },
+    {
+      "from": "controller:agentcredential",
+      "type": "serves",
+      "to": "model:Agentcredential"
     },
     {
       "from": "controller:badge",
@@ -50236,6 +51964,16 @@
       "to": "field:Agent.modifiedUser"
     },
     {
+      "from": "field:Agentcredential.createdUserName",
+      "type": "linked_to",
+      "to": "field:Agentcredential.createdUser"
+    },
+    {
+      "from": "field:Agentcredential.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Agentcredential.modifiedUser"
+    },
+    {
       "from": "field:Badge.createdUserName",
       "type": "linked_to",
       "to": "field:Badge.createdUser"
@@ -50942,6 +52680,106 @@
     },
     {
       "from": "model:Agent",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_field",
+      "to": "field:Agentcredential.agentId"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_field",
+      "to": "field:Agentcredential.clientId"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_field",
+      "to": "field:Agentcredential.createdUser"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_field",
+      "to": "field:Agentcredential.createdUserName"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_field",
+      "to": "field:Agentcredential.dateCreated"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_field",
+      "to": "field:Agentcredential.dateModified"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_field",
+      "to": "field:Agentcredential.deleted"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_field",
+      "to": "field:Agentcredential.id"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_field",
+      "to": "field:Agentcredential.lastUsedAt"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_field",
+      "to": "field:Agentcredential.modifiedUser"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_field",
+      "to": "field:Agentcredential.modifiedUserName"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_relationship",
+      "to": "relationship:Agentcredential.agent"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_relationship",
+      "to": "relationship:Agentcredential.createdBy"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "has_relationship",
+      "to": "relationship:Agentcredential.modifiedBy"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Agentcredential",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Agentcredential",
       "type": "uses_behaviour",
       "to": "behaviour:softDeleteBehavior"
     },
@@ -55462,6 +57300,11 @@
     },
     {
       "from": "profile:aclAgent",
+      "type": "denies",
+      "to": "permission:agentcredential.create"
+    },
+    {
+      "from": "profile:aclAgent",
       "type": "grants",
       "to": "permission:agent.create"
     },
@@ -55479,6 +57322,16 @@
       "from": "profile:aclAgent",
       "type": "grants",
       "to": "permission:agent.update"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:agentcredential.delete"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:agentcredential.get"
     },
     {
       "from": "profile:aclAgent",
@@ -55758,12 +57611,32 @@
     {
       "from": "profile:aclNoSetting",
       "type": "denies",
+      "to": "permission:agent.update"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:agentcredential.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
       "to": "permission:setting.get"
     },
     {
       "from": "profile:aclNoSetting",
       "type": "denies",
       "to": "permission:setting.update"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:agentcredential.create"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:agentcredential.delete"
     },
     {
       "from": "profile:aclNoSetting",
@@ -55874,6 +57747,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:agent.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agentcredential.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agentcredential.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agentcredential.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agentcredential.update"
     },
     {
       "from": "profile:default",
@@ -56427,6 +58320,21 @@
     },
     {
       "from": "relationship:Agent.user",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Agentcredential.agent",
+      "type": "targets",
+      "to": "model:Agent"
+    },
+    {
+      "from": "relationship:Agentcredential.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Agentcredential.modifiedBy",
       "type": "targets",
       "to": "model:User"
     },
@@ -57191,6 +59099,16 @@
       "to": "action:agent.delete"
     },
     {
+      "from": "route:DELETE /api/v1/agentcredential",
+      "type": "handled_by",
+      "to": "action:agentcredential.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/agentcredential/{id}",
+      "type": "handled_by",
+      "to": "action:agentcredential.delete"
+    },
+    {
       "from": "route:DELETE /api/v1/badge",
       "type": "handled_by",
       "to": "action:badge.deleteCollection"
@@ -57519,6 +59437,21 @@
       "from": "route:GET /api/v1/agent/{id}/{relation}",
       "type": "handled_by",
       "to": "action:agent.related"
+    },
+    {
+      "from": "route:GET /api/v1/agentcredential",
+      "type": "handled_by",
+      "to": "action:agentcredential.list"
+    },
+    {
+      "from": "route:GET /api/v1/agentcredential/{id}",
+      "type": "handled_by",
+      "to": "action:agentcredential.get"
+    },
+    {
+      "from": "route:GET /api/v1/agentcredential/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:agentcredential.related"
     },
     {
       "from": "route:GET /api/v1/badge",
@@ -58086,6 +60019,11 @@
       "to": "action:agent.options"
     },
     {
+      "from": "route:OPTIONS /api/v1/agentcredential",
+      "type": "handled_by",
+      "to": "action:agentcredential.options"
+    },
+    {
       "from": "route:OPTIONS /api/v1/badge",
       "type": "handled_by",
       "to": "action:badge.options"
@@ -58309,6 +60247,16 @@
       "from": "route:PATCH /api/v1/agent/{id}",
       "type": "handled_by",
       "to": "action:agent.patch"
+    },
+    {
+      "from": "route:PATCH /api/v1/agentcredential",
+      "type": "handled_by",
+      "to": "action:agentcredential.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/agentcredential/{id}",
+      "type": "handled_by",
+      "to": "action:agentcredential.patch"
     },
     {
       "from": "route:PATCH /api/v1/badge",
@@ -58651,6 +60599,11 @@
       "to": "action:agent.post"
     },
     {
+      "from": "route:POST /api/v1/agentcredential",
+      "type": "handled_by",
+      "to": "action:agentcredential.post"
+    },
+    {
       "from": "route:POST /api/v1/badge",
       "type": "handled_by",
       "to": "action:badge.post"
@@ -58849,6 +60802,16 @@
       "from": "route:PUT /api/v1/agent/{id}",
       "type": "handled_by",
       "to": "action:agent.put"
+    },
+    {
+      "from": "route:PUT /api/v1/agentcredential",
+      "type": "handled_by",
+      "to": "action:agentcredential.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/agentcredential/{id}",
+      "type": "handled_by",
+      "to": "action:agentcredential.put"
     },
     {
       "from": "route:PUT /api/v1/badge",

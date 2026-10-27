@@ -8,6 +8,7 @@ namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
 use Gaia\Libraries\Security\AclLockoutGuard;
+use Gaia\Libraries\Security\AgentLoginGuard;
 
 /**
  * This controller is used to provide API interface for OAuth 2.- based
@@ -157,7 +158,8 @@ class TokenController extends RestController
     }
 
     /**
-     * Reject password grant when the account is soft-disabled.
+     * Reject password grant when the account is soft-disabled or is an agent's
+     * (agents use the client_credentials grant).
      *
      * @param  \Gaia\MVC\Models\User $user
      * @throws \Gaia\Exception\UnAuthorized
@@ -168,6 +170,7 @@ class TokenController extends RestController
         if (!AclLockoutGuard::isAuthenticatableAccountStatus($user->accountStatus)) {
             throw new \Gaia\Exception\UnAuthorized(AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
         }
+        AgentLoginGuard::assertPasswordGrantAllowed($user);
     }
 
     /**

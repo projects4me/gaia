@@ -61,12 +61,14 @@ $skipResources = [
 $skipMutations = [
     'converser' => 'POST triggers Socket.IO; requires realtime server',
     'chatroom' => 'POST triggers Socket.IO; requires realtime server',
+    'agentcredential' => 'POST rotates the seeded agent profile\'s secret and PATCH is refused; client cases cover it',
 ];
 
 /** Seeded fixture placeholders for get-by-id when available. */
 $fixtureIds = [
     'activity' => '{activityId}',
     'agent' => '{agentId}',
+    'agentcredential' => '{agentcredentialId}',
     'conversationroom' => '{conversationroomId}',
     'idea' => '{ideaId}',
     'ideamessage' => '{ideamessageId}',
@@ -324,6 +326,7 @@ function sampleValue($resource, $name, array $fieldMeta, array $relatedDefaults)
         'projectManager' => '{userId}',
         'systemNotificationId' => '{systemnotificationId}',
         'agentId' => '{agentId}',
+        'agentcredentialId' => '{agentcredentialId}',
     ];
     if (isset($fk[$name])) {
         return $fk[$name];
@@ -453,6 +456,7 @@ function patchChange(array $attrs, array $meta = [])
         'done' => true,
         'public' => true,
         'agentId' => true,
+        'agentcredentialId' => true,
     ];
     $fields = isset($meta['fields']) && is_array($meta['fields']) ? $meta['fields'] : [];
     $prefer = ['name', 'subject', 'description', 'title', 'tag', 'comment', 'institution'];

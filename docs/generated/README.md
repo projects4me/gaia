@@ -10,7 +10,7 @@
 - [Assertion vocabulary](assertions.md): the `expects` keys with one real case each
 - [Auth profiles](profiles.md): role, grants and case counts
 - [Change bundles](bundles/README.md): the touchpoints, exemplar PRs and golden files per kind of change
-- Models: `models/<Model>.md`, 57 pages (`gaia-dev model <Name>` prints the same)
+- Models: `models/<Model>.md`, 58 pages (`gaia-dev model <Name>` prints the same)
 
 <a id="rules"></a>
 ## Rules

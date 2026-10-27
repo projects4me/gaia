@@ -7,12 +7,12 @@
 <a id="profiles"></a>
 ## Profiles
 
-- aclAgent role ACL Agent | allow 20, members 0, deny 0 | cases 10 | ACL Agent
+- aclAgent role ACL Agent | allow 22, members 0, deny 1 | cases 13 | ACL Agent
 - aclFields role ACL Field Restricted | allow 7, members 0, deny 7 | cases 24 | issue field ACL matrix for api-tester
 - aclMembers role ACL Project Members | allow 12, members 1, deny 0 | cases 36 | project.get=2 members scope
 - aclNoConversation role ACL No Conversation | allow 3, members 0, deny 1 | cases 3 | project+comment allowed, conversationroom.get denied
 - aclNoProject role ACL No Project | allow 3, members 0, deny 3 | cases 19 | issue/comment allowed, project.get denied
-- aclNoSetting role ACL No Setting | allow 9, members 0, deny 4 | cases 19 | issuestatus/issuetype allowed, setting.* denied
+- aclNoSetting role ACL No Setting | allow 11, members 0, deny 6 | cases 22 | issuestatus/issuetype allowed, setting.* denied
 - aclProjectOnly role ACL Project Only | allow 4, members 0, deny 1 | cases 5 | project allowed, issue.get denied
-- anonymous no login | allow 0, members 0, deny 0 | cases 15
-- default role Admin | allow 112, members 0, deny 0 | cases 401 | Admin role of the seeded main user
+- anonymous no login | allow 0, members 0, deny 0 | cases 21
+- default role Admin | allow 116, members 0, deny 0 | cases 413 | Admin role of the seeded main user
