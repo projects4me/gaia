@@ -104,6 +104,10 @@ abstract class ValueLabelController extends RestController
             ? $body['collection']
             : [];
 
+        if (is_array($body) && array_key_exists('translations', $body)) {
+            return $this->unprocessable('Labels are saved one ' . $this->valueLabels()->noun() . ' at a time.');
+        }
+
         foreach ($collection as $record) {
             if (is_array($record) && array_key_exists('translations', $record)) {
                 return $this->unprocessable('Labels are saved one ' . $this->valueLabels()->noun() . ' at a time.');

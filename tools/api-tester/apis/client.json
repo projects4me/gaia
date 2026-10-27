@@ -4938,6 +4938,27 @@
       }
     },
     {
+      "id": "patch-issuetype-collection-top-level-labels-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "{runtime.labelTypeId}"
+          }
+        ],
+        "translations": {
+          "en-us": "Collection Label"
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
       "id": "delete-issuetype-with-labels",
       "method": "DELETE",
       "path": "/api/v1/issuetype/{runtime.labelTypeId}",

@@ -11416,6 +11416,24 @@
       }
     },
     {
+      "id": "case:client/patch-issuetype-collection-top-level-labels-rejected",
+      "type": "case",
+      "key": "client/patch-issuetype-collection-top-level-labels-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuetype",
+        "resource": "issuetype",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.labelTypeId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/patch-issuetype-conflicting-ids-rejected",
       "type": "case",
       "key": "client/patch-issuetype-conflicting-ids-rejected",
@@ -47287,6 +47305,36 @@
     },
     {
       "from": "case:client/patch-issuetype-collection-rename-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/patch-issuetype-collection-top-level-labels-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/patch-issuetype-collection-top-level-labels-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/patch-issuetype-collection-top-level-labels-rejected",
+      "type": "covers",
+      "to": "controller:issuetype"
+    },
+    {
+      "from": "case:client/patch-issuetype-collection-top-level-labels-rejected",
+      "type": "depends_on",
+      "to": "case:client/post-issuetype-with-labels"
+    },
+    {
+      "from": "case:client/patch-issuetype-collection-top-level-labels-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuetype"
+    },
+    {
+      "from": "case:client/patch-issuetype-collection-top-level-labels-rejected",
       "type": "runs_as",
       "to": "profile:default"
     },
