@@ -1067,8 +1067,9 @@
         "data": {
           "type": "issuetype",
           "attributes": {
-            "name": "API Test Denied Type",
-            "system": 1
+            "name": "api_test_denied_type",
+            "system": 1,
+            "translations": { "en-us": "API Test Denied Type" }
           }
         }
       },
@@ -1085,9 +1086,10 @@
         "data": {
           "type": "issuetype",
           "attributes": {
-            "name": "API Test Project Type",
+            "name": "api_test_project_type",
             "system": 0,
-            "projectId": "{projectId}"
+            "projectId": "{projectId}",
+            "translations": { "en-us": "API Test Project Type" }
           }
         }
       },
@@ -1827,6 +1829,68 @@
       "auth": "aclNoSetting",
       "expects": { "status": 403, "shape": "error" },
       "source": "acl-agent"
+    },
+    {
+      "id": "acl-system-type-for-shared-labels-create",
+      "method": "POST",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "attributes": {
+            "name": "api_acl_system_type",
+            "system": 1,
+            "translations": {
+              "en-us": "API ACL System Type"
+            }
+          }
+        }
+      },
+      "store": { "runtime.aclSystemTypeId": "data.id" },
+      "expects": { "status": 201, "shape": "jsonapi.resource" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-system-type-labels-via-project-copy-denied-without-setting",
+      "method": "POST",
+      "path": "/api/v1/issuetype",
+      "resource": "issuetype",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "issuetype",
+          "attributes": {
+            "name": "api_acl_system_type",
+            "system": 0,
+            "projectId": "{projectId}",
+            "translations": {
+              "en-us": "Relabelled without setting.update"
+            }
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-system-type-labels-unchanged-after-denied-copy",
+      "method": "GET",
+      "path": "/api/v1/issuetype/{runtime.aclSystemTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": { "status": 200, "shape": "jsonapi.resource", "jsonEqual": {"data.attributes.translations.en-us": "API ACL System Type"} },
+      "source": "acl-setting"
+    },
+    {
+      "id": "acl-system-type-for-shared-labels-cleanup",
+      "method": "DELETE",
+      "path": "/api/v1/issuetype/{runtime.aclSystemTypeId}",
+      "resource": "issuetype",
+      "auth": true,
+      "expects": { "status": [200, 204], "shape": "json" },
+      "source": "acl-setting"
     }
   ]
 }

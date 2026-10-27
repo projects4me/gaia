@@ -11,7 +11,7 @@ use Phalcon\Db\Adapter\AdapterInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for running work in one transaction (a status and its labels).
+ * Unit tests for running work in one transaction (a record and its labels).
  */
 class TransactionScopeTest extends TestCase
 {
@@ -50,7 +50,7 @@ class TransactionScopeTest extends TestCase
 
         try {
             $this->scope()->run(function () use ($failure) {
-                // The status is saved, then its label write throws (IssuestatusComponent).
+                // The status is saved, then its label write throws (ValueLabelsComponent).
                 throw $failure;
             }, function () {
                 return true;

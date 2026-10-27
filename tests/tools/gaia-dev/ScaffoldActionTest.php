@@ -87,9 +87,9 @@ class ScaffoldActionTest extends TestCase
     public function testAnExistingOverrideIsRefused()
     {
         $this->expectException(ScaffoldException::class);
-        $this->expectExceptionMessage('already overrides postAction');
+        $this->expectExceptionMessage('already overrides deleteAction');
 
-        (new ActionScaffold(self::ROOT, $this->graph()))->plan(new ActionSpec('Issuestatus', 'post', []));
+        (new ActionScaffold(self::ROOT, $this->graph()))->plan(new ActionSpec('Issuestatus', 'delete', []));
     }
 
     public function testThePlanOverridesTheActionAndAddsNoRoute()

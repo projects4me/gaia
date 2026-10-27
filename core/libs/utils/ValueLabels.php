@@ -7,16 +7,17 @@
 namespace Gaia\Libraries\Utils;
 
 use Gaia\MVC\Models\Issuestatus;
+use Gaia\MVC\Models\Issuetype;
 use Gaia\MVC\Models\Translation;
 
 /**
- * The translated labels of issue statuses, stored as Translation rows at
- * views.app.issue.lists.status.{value}.
+ * The translated labels of a list's values (issue statuses, issue types),
+ * stored as Translation rows at {pathPrefix}{value}.
  *
- * Labels are keyed by the status value, not by the status: statuses with the
- * same value (a system status and its project copies, or the same custom value
- * in two projects) share one label per locale. Saving a label for one of them
- * changes it for all, and the label is only deleted with the last status that
+ * Labels are keyed by the value, not by the record: records with the same
+ * value (a system record and its project copies, or the same custom value in
+ * two projects) share one label per locale. Saving a label for one of them
+ * changes it for all, and the label is only deleted with the last record that
  * uses the value.
  *
  * Every row written drops its locale's cache (translationCacheBehavior), but
@@ -28,12 +29,36 @@ use Gaia\MVC\Models\Translation;
  * @package Gaia\Libraries\Utils
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class IssueStatusLabels
+class ValueLabels
 {
     /**
      * @var string
      */
-    public const PATH_PREFIX = 'views.app.issue.lists.status.';
+    public const STATUS_PATH_PREFIX = 'views.app.issue.lists.status.';
+
+    /**
+     * @var string
+     */
+    public const TYPE_PATH_PREFIX = 'views.app.issue.lists.type.';
+
+    /**
+     * @var string
+     */
+    private $pathPrefix;
+
+    /**
+     * Model whose `name` holds the values (it has `system` and `deleted` fields).
+     *
+     * @var string
+     */
+    private $modelClass;
+
+    /**
+     * What the value names in messages, e.g. "status".
+     *
+     * @var string
+     */
+    private $noun;
 
     /**
      * Locales with a row written since the last forgetWrittenLocales(), as keys.
@@ -48,31 +73,94 @@ class IssueStatusLabels
     private $cache;
 
     /**
-     * @param TranslationCache|null $cache Defaults to the configured directory.
+     * @param string                $pathPrefix Translation path the value is appended to.
+     * @param string                $modelClass Model whose `name` holds the values.
+     * @param string                $noun       What the value names in messages.
+     * @param TranslationCache|null $cache      Defaults to the configured directory.
      */
-    public function __construct(TranslationCache $cache = null)
+    public function __construct($pathPrefix, $modelClass, $noun, TranslationCache $cache = null)
     {
+        $this->pathPrefix = (string) $pathPrefix;
+        $this->modelClass = (string) $modelClass;
+        $this->noun = (string) $noun;
         $this->cache = $cache;
+    }
+
+    /**
+     * @param  TranslationCache|null $cache
+     * @return self The labels of issue status values.
+     */
+    public static function forIssueStatuses(TranslationCache $cache = null)
+    {
+        return new self(self::STATUS_PATH_PREFIX, Issuestatus::class, 'status', $cache);
+    }
+
+    /**
+     * @param  TranslationCache|null $cache
+     * @return self The labels of issue type values.
+     */
+    public static function forIssueTypes(TranslationCache $cache = null)
+    {
+        return new self(self::TYPE_PATH_PREFIX, Issuetype::class, 'type', $cache);
+    }
+
+    /**
+     * @return string What the value names in messages, e.g. "status".
+     */
+    public function noun()
+    {
+        return $this->noun;
+    }
+
+    /**
+     * @return string The short name of the model whose `name` holds the values, e.g. "Issuestatus".
+     */
+    public function modelName()
+    {
+        $parts = explode('\\', $this->modelClass);
+
+        return end($parts);
+    }
+
+    /**
+     * The value of a stored record, or null when there is none.
+     *
+     * @param  mixed $id
+     * @return string|null
+     */
+    public function valueOf($id)
+    {
+        if (!is_scalar($id)) {
+            return null;
+        }
+
+        $modelClass = $this->modelClass;
+        $record = $modelClass::findFirst([
+            'conditions' => 'id = :id:',
+            'bind' => ['id' => (string) $id],
+        ]);
+
+        return $record ? (string) $record->name : null;
     }
 
     /**
      * @param  string $value
      * @return string
      */
-    public static function pathFor($value)
+    public function pathFor($value)
     {
-        return self::PATH_PREFIX . $value;
+        return $this->pathPrefix . $value;
     }
 
     /**
-     * @param  string[] $values Status values
+     * @param  string[] $values
      * @return array value => [locale => label], for the values that have labels.
      */
     public function labelsFor(array $values)
     {
         $paths = [];
         foreach (array_unique(array_map('strval', $values)) as $value) {
-            $paths[self::pathFor($value)] = $value;
+            $paths[$this->pathFor($value)] = $value;
         }
         if (empty($paths)) {
             return [];
@@ -93,17 +181,17 @@ class IssueStatusLabels
     }
 
     /**
-     * Create or update the labels of a status value. A row deleted earlier for
-     * the same locale and path is restored, since (locale, path) is unique.
+     * Create or update the labels of a value. A row deleted earlier for the
+     * same locale and path is restored, since (locale, path) is unique.
      *
-     * @param  string $value  Status value
-     * @param  array  $labels locale => label, validated by IssueStatusRules
+     * @param  string $value
+     * @param  array  $labels locale => label, validated by ValueLabelRules
      * @return void
      * @throws \Gaia\Exception\Exception When a row cannot be saved.
      */
     public function save($value, array $labels)
     {
-        $path = self::pathFor($value);
+        $path = $this->pathFor($value);
 
         foreach ($labels as $locale => $label) {
             $row = Translation::findFirst([
@@ -125,7 +213,7 @@ class IssueStatusLabels
 
             if (!$row->save()) {
                 throw new \Gaia\Exception\Exception(
-                    "Could not save the {$locale} label of status {$value}: " . implode(' ', $this->messagesOf($row))
+                    "Could not save the {$locale} label of {$this->noun} {$value}: " . implode(' ', $this->messagesOf($row))
                 );
             }
             $this->writtenLocales[(string) $locale] = true;
@@ -133,30 +221,33 @@ class IssueStatusLabels
     }
 
     /**
-     * Whether an active system status uses the value, so its labels are
+     * Whether an active system record uses the value, so its labels are
      * system labels too.
      *
-     * @param  string $value Status value
+     * @param  string $value
      * @return bool
      */
     public function isSystemValue($value)
     {
-        return Issuestatus::count([
+        $modelClass = $this->modelClass;
+
+        return $modelClass::count([
             'conditions' => 'name = :name: AND system = :system: AND deleted = :deleted:',
             'bind' => ['name' => (string) $value, 'system' => 1, 'deleted' => 0],
         ]) > 0;
     }
 
     /**
-     * Delete the labels of a status value unless another status still uses it.
+     * Delete the labels of a value unless another record still uses it.
      *
-     * @param  string $value Status value
+     * @param  string $value
      * @return void
      * @throws \Gaia\Exception\Exception When a row cannot be deleted.
      */
     public function deleteUnused($value)
     {
-        $inUse = Issuestatus::count([
+        $modelClass = $this->modelClass;
+        $inUse = $modelClass::count([
             'conditions' => 'name = :name: AND deleted = :deleted:',
             'bind' => ['name' => (string) $value, 'deleted' => 0],
         ]);
@@ -166,12 +257,12 @@ class IssueStatusLabels
 
         $rows = Translation::find([
             'conditions' => 'path = :path: AND deleted = :deleted:',
-            'bind' => ['path' => self::pathFor($value), 'deleted' => 0],
+            'bind' => ['path' => $this->pathFor($value), 'deleted' => 0],
         ]);
         foreach ($rows as $row) {
             if (!$row->delete()) {
                 throw new \Gaia\Exception\Exception(
-                    "Could not delete the {$row->locale} label of status {$value}: " . implode(' ', $this->messagesOf($row))
+                    "Could not delete the {$row->locale} label of {$this->noun} {$value}: " . implode(' ', $this->messagesOf($row))
                 );
             }
             $this->writtenLocales[(string) $row->locale] = true;

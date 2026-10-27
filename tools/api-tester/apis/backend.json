@@ -1144,8 +1144,11 @@
                 "data": {
                     "type": "issuetype",
                     "attributes": {
-                        "name": "api-issuetype-name",
+                        "name": "api_tester_type",
                         "system": 0,
+                        "translations": {
+                            "en-us": "API Tester Type"
+                        },
                         "projectId": "{projectId}"
                     }
                 }
@@ -1185,7 +1188,7 @@
                     "type": "issuetype",
                     "id": "{runtime.issuetypeId}",
                     "attributes": {
-                        "name": "api-issuetype-name Updated"
+                        "description": "API Tester Updated"
                     }
                 }
             },
@@ -1193,7 +1196,7 @@
                 "status": 200,
                 "shape": "jsonapi.resource",
                 "attributesEqual": {
-                    "name": "api-issuetype-name Updated"
+                    "description": "API Tester Updated"
                 }
             },
             "source": "backend-metadata"
