@@ -6,6 +6,7 @@
 
 namespace GaiaDev\Command;
 
+use GaiaDev\Check\ActionCheck;
 use GaiaDev\Check\ApiCasesCheck;
 use GaiaDev\Check\BackendCatalogDrift;
 use GaiaDev\Check\BehaviorCheck;
@@ -96,6 +97,33 @@ class CheckCommand
             return 1;
         }
         fwrite($this->stdout, "behavior: ok\n");
+
+        return 0;
+    }
+
+    /**
+     * @param string $root repository root
+     * @return int exit code
+     */
+    public function runAction(string $root): int
+    {
+        $root = rtrim($root, '/\\');
+        try {
+            $graph = GraphReader::fromFile($root . '/' . GraphExportCommand::DEFAULT_OUTPUT);
+        } catch (QueryException $e) {
+            fwrite($this->stderr, $e->getMessage() . "\n");
+            return 1;
+        }
+
+        $problems = (new ActionCheck($root, $graph))->problems();
+        foreach ($problems as $problem) {
+            fwrite($this->stderr, $problem . "\n");
+        }
+        if ($problems) {
+            fwrite($this->stderr, count($problems) . " action problem(s)\n");
+            return 1;
+        }
+        fwrite($this->stdout, "action: ok\n");
 
         return 0;
     }
