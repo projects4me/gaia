@@ -67,6 +67,12 @@ class ActionScaffold
             $bundle = new CaseBundle($this->graph);
             $cases = $bundle->build(new CaseRequest($spec->method(), $spec->path(), null, $catalog));
             $this->notes = array_merge($this->notes, $bundle->notes());
+            foreach ($cases as $case) {
+                $existing = $this->graph->node('case', $catalog . '/' . $case['id']);
+                if ($existing !== null && !$existing['attributes']['enabled']) {
+                    throw new ScaffoldException("{$catalog} case {$case['id']} is disabled; enable or repair it first");
+                }
+            }
             $fresh = array_values(array_filter($cases, function ($case) use ($text) {
                 return strpos($text, '"id": ' . json_encode($case['id'])) === false;
             }));

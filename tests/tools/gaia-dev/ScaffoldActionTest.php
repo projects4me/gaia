@@ -148,6 +148,49 @@ class IssuetypeController
         $this->assertSame([], (new ActionCheck(self::ROOT, $this->graph()))->problems());
     }
 
+    public function testTheCheckNeedsCasesThatExerciseTheActionsRoute()
+    {
+        $spec = new ActionSpec('Issuetype', 'delete', []);
+        $root = $this->scratchRoot();
+        file_put_contents(
+            $root . '/' . $spec->controllerPath(),
+            "<?php
+class IssuetypeController
+{
+" . (new ActionRenderer())->method($spec) . "}
+"
+        );
+        $document = $this->document();
+        $document['edges'] = array_values(array_filter($document['edges'], function ($edge) {
+            return !($edge['type'] === 'exercises' && $edge['to'] === 'route:DELETE /api/v1/issuetype/{id}');
+        }));
+        $problems = implode("
+", (new ActionCheck($root, new GraphReader($document)))->problems());
+
+        $this->assertStringContainsString('no enabled acl case for DELETE on issuetype', $problems);
+        $this->assertStringContainsString('no enabled client case for DELETE on issuetype', $problems);
+    }
+
+    public function testADisabledCaseIsReportedAsAConflict()
+    {
+        $document = $this->document();
+        $document['nodes'][] = [
+            'id' => 'case:client/delete-issuetype-api-v1-issuetype-id',
+            'type' => 'case',
+            'key' => 'client/delete-issuetype-api-v1-issuetype-id',
+            'attributes' => ['catalog' => 'client', 'resource' => 'issuetype', 'method' => 'DELETE', 'enabled' => false],
+        ];
+        $this->expectException(ScaffoldException::class);
+        $this->expectExceptionMessage('is disabled');
+
+        (new ActionScaffold(self::ROOT, new GraphReader($document)))->plan(new ActionSpec('Issuetype', 'delete', []));
+    }
+
+    private function document(): array
+    {
+        return json_decode(file_get_contents(self::ROOT . '/docs/generated/graph.json'), true);
+    }
+
     private function graph(): GraphReader
     {
         return GraphReader::fromFile(self::ROOT . '/docs/generated/graph.json');

@@ -85,7 +85,7 @@ class ActionCheck
             $problems[] = "{$label}: no profile has a rule on {$spec->permission()}";
         }
         foreach (['acl', 'client'] as $catalog) {
-            if (!$this->hasCase($spec, $catalog)) {
+            if (!$this->hasCase($spec, $catalog, $route)) {
                 $problems[] = "{$label}: no enabled {$catalog} case for {$spec->method()} on {$spec->resource()}";
             }
         }
@@ -118,14 +118,31 @@ class ActionCheck
     /**
      * @param ActionSpec $spec
      * @param string $catalog
-     * @return bool whether an enabled case of the catalog calls the verb's method on the resource
+     * @param string $route route key the case has to exercise
+     * @return bool whether an enabled case of the catalog calls the verb's method on the route
      */
-    private function hasCase(ActionSpec $spec, string $catalog): bool
+    private function hasCase(ActionSpec $spec, string $catalog, string $route): bool
     {
         foreach ($this->graph->nodes('case') as $case) {
             $attributes = $case['attributes'];
             if ($attributes['catalog'] === $catalog && $attributes['enabled'] && $attributes['resource'] === $spec->resource()
-                && $attributes['method'] === $spec->method()) {
+                && $attributes['method'] === $spec->method() && $this->exercises($case, $route)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $case
+     * @param string $route
+     * @return bool whether the case's exercises edge reaches the route
+     */
+    private function exercises(array $case, string $route): bool
+    {
+        foreach ($this->graph->out($case, 'exercises') as $target) {
+            if ($target['key'] === $route) {
                 return true;
             }
         }
