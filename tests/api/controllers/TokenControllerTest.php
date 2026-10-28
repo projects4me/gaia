@@ -418,7 +418,9 @@ class TokenControllerTest extends TestCase
     {
         $this->mockOAuthRequest(false);
         $this->mockOAuthServer();
-        $this->getAccessToken();
+        $response = $this->getAccessToken();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->getRefreshTokenRow((json_decode($response->getContent()))->refresh_token);
 
         $this->expectException(\Gaia\Exception\UnAuthorized::class);
         $this->expectExceptionMessage('Invalid Token');
