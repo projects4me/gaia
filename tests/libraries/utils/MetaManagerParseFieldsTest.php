@@ -10,7 +10,7 @@ use Gaia\Libraries\Meta\Manager;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for Manager::parseFields on a REST module that has a controller
+ * Unit tests for Manager::parseFields and getModelMeta on a REST module that has a controller
  * but no model metadata (Issueplanning, Milestoneoverview). The ACL catalog
  * reads every module while the config loads, so it must not warn (agaia-4074).
  *
@@ -34,7 +34,28 @@ class MetaManagerParseFieldsTest extends TestCase
 
         $data = $manager->parseFields(null);
 
-        $this->assertArrayNotHasKey('attributes', $data);
+        $this->assertSame(array(), $data['attributes']);
+        $this->assertSame(array(), $data['notNull']);
         $this->assertSame(array(), $data['default']);
+        $this->assertFalse($data['id']);
+        $this->assertNull($data['tableName']);
+    }
+
+    public function testModelMetaForMissingMetadataFileHasNoFields()
+    {
+        $di = new \Phalcon\Di\FactoryDefault();
+        $di->set('fileHandler', new class {
+            public function readFile($path)
+            {
+                return null;
+            }
+        });
+        $manager = new Manager($di);
+
+        $meta = $manager->getModelMeta('Agaia4074MissingModel');
+
+        $this->assertSame(array(), $meta['fields']);
+        $this->assertNull($meta['tableName']);
+        $this->assertSame(array(), $meta['relationships']);
     }
 }

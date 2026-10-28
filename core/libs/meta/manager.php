@@ -79,7 +79,8 @@ class Manager
         }
 
         $metadata = $this->di->get('fileHandler')->readFile(APP_PATH . self::basePath . '/model/' . $model . '.php');
-        $metadata = $metadata[$model];
+        // Routes without a model metadata file (e.g. Issueplanning) read as null
+        $metadata = isset($metadata[$model]) ? $metadata[$model] : array();
         $fields = $this->parseFields($metadata);
 
         $modelMeta = array(
@@ -125,7 +126,7 @@ class Manager
             MetaData::MODELS_EMPTY_STRING_VALUES => array(
             ),
 
-            'fields' => $metadata['fields'],
+            'fields' => (isset($metadata['fields']) ? $metadata['fields'] : array()),
 
             // All the relationships for the model
             // For now we will just copy things over and see if for future
@@ -189,7 +190,16 @@ class Manager
     public function parseFields($metadata)
     {
         // The application default values
-        $data = array('default' => array());
+        $data = array(
+            'default' => array(),
+            'attributes' => array(),
+            'primary' => array(),
+            'nonPrimary' => array(),
+            'notNull' => array(),
+            'type' => array(),
+            'bind' => array(),
+            'id' => false,
+        );
         // Routes without model metadata (e.g. Issueplanning) have no table and no fields
         $data['tableName'] = isset($metadata['tableName']) ? $metadata['tableName'] : null;
         $metaFields = isset($metadata['fields']) ? $metadata['fields'] : array();
