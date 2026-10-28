@@ -22,6 +22,11 @@ use function Gaia\Libraries\Utils\create_guid as create_guid;
 class DashboardComponent
 {
     /**
+     * The widgets a newly created user's default dashboard starts with.
+     */
+    public const DEFAULT_WIDGETS = 'recentIssues, activeMilestones, weeklyActivities, weeklyIssueTimelogs, weeklyConversations';
+
+    /**
      * This function is used create dashboard model object and link it with the newly created user.
      *
      * @param  Event $event
@@ -35,7 +40,7 @@ class DashboardComponent
 
         $dashboard = new Dashboard();
         $dashboard->id = create_guid();
-        $dashboard->widgets = 'issuesToday, weeklyMilestones';
+        $dashboard->widgets = self::DEFAULT_WIDGETS;
         $dashboard->name = 'Default Dashboard';
         $dashboard->userId = $model->id;
         $dashboard->save();
