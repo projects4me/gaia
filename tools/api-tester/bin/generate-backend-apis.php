@@ -62,6 +62,7 @@ $skipMutations = [
     'converser' => 'POST triggers Socket.IO; requires realtime server',
     'chatroom' => 'POST triggers Socket.IO; requires realtime server',
     'agentcredential' => 'POST rotates the seeded agent profile\'s secret and PATCH is refused; client cases cover it',
+    'agenttool' => 'A grant names a tool server or a tool, not both; client and acl cases cover it',
 ];
 
 /** Seeded fixture placeholders for get-by-id when available. */
@@ -69,6 +70,7 @@ $fixtureIds = [
     'activity' => '{activityId}',
     'agent' => '{agentId}',
     'agentcredential' => '{agentcredentialId}',
+    'agenttool' => '{agenttoolId}',
     'conversationroom' => '{conversationroomId}',
     'idea' => '{ideaId}',
     'ideamessage' => '{ideamessageId}',
@@ -84,6 +86,8 @@ $fixtureIds = [
     'savedsearch' => '{savedSearchId}',
     'systemnotificationrecipient' => '{systemnotificationrecipientId}',
     'timelog' => '{timelogId}',
+    'tool' => '{toolId}',
+    'toolserver' => '{toolserverId}',
     'user' => '{userId}',
 ];
 
@@ -332,6 +336,10 @@ function sampleValue($resource, $name, array $fieldMeta, array $relatedDefaults)
         'systemNotificationId' => '{systemnotificationId}',
         'agentId' => '{agentId}',
         'agentcredentialId' => '{agentcredentialId}',
+        'toolserverId' => '{toolserverId}',
+        'toolServerId' => '{toolserverId}',
+        'toolId' => '{toolId}',
+        'agenttoolId' => '{agenttoolId}',
     ];
     if (isset($fk[$name])) {
         return $fk[$name];
@@ -462,6 +470,10 @@ function patchChange(array $attrs, array $meta = [])
         'public' => true,
         'agentId' => true,
         'agentcredentialId' => true,
+        'toolserverId' => true,
+        'toolServerId' => true,
+        'toolId' => true,
+        'agenttoolId' => true,
     ];
     $fields = isset($meta['fields']) && is_array($meta['fields']) ? $meta['fields'] : [];
     $prefer = ['name', 'subject', 'description', 'title', 'tag', 'comment', 'institution'];

@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 163,
-        "enabled": 151,
-        "disabled": 12,
-        "routeResources": 44,
-        "withMetadata": 32,
+        "total": 178,
+        "enabled": 165,
+        "disabled": 13,
+        "routeResources": 47,
+        "withMetadata": 35,
         "skippedResources": 10
     },
     "apis": [
@@ -804,6 +804,275 @@
             "method": "DELETE",
             "path": "/api/v1/ideaplanissue/{runtime.ideaplanissueId}",
             "resource": "ideaplanissue",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-agenttool-api-v1-agenttool",
+            "method": "GET",
+            "path": "/api/v1/agenttool",
+            "resource": "agenttool",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-agenttool-api-v1-agenttool-id",
+            "method": "GET",
+            "path": "/api/v1/agenttool/{agenttoolId}",
+            "resource": "agenttool",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{agenttoolId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-agenttool-api-v1-agenttool",
+            "method": "POST",
+            "path": "/api/v1/agenttool",
+            "resource": "agenttool",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "agenttool",
+                    "attributes": {
+                        "agentId": "{agentId}"
+                    }
+                }
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            },
+            "enabled": false,
+            "skipReason": "A grant names a tool server or a tool, not both; client and acl cases cover it",
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-tool-api-v1-tool",
+            "method": "GET",
+            "path": "/api/v1/tool",
+            "resource": "tool",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-tool-api-v1-tool-id",
+            "method": "GET",
+            "path": "/api/v1/tool/{toolId}",
+            "resource": "tool",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{toolId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-tool-api-v1-tool",
+            "method": "POST",
+            "path": "/api/v1/tool",
+            "resource": "tool",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "tool",
+                    "attributes": {
+                        "name": "api-tool-name"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.toolId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-tool-api-v1-tool-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/tool/{runtime.toolId}",
+            "resource": "tool",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.toolId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "patch-tool-api-v1-tool-id",
+            "method": "PATCH",
+            "path": "/api/v1/tool/{runtime.toolId}",
+            "resource": "tool",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "tool",
+                    "id": "{runtime.toolId}",
+                    "attributes": {
+                        "name": "api-tool-name Updated"
+                    }
+                }
+            },
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "attributesEqual": {
+                    "name": "api-tool-name Updated"
+                }
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-tool-api-v1-tool-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/tool/{runtime.toolId}",
+            "resource": "tool",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-toolserver-api-v1-toolserver",
+            "method": "GET",
+            "path": "/api/v1/toolserver",
+            "resource": "toolserver",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-toolserver-api-v1-toolserver-id",
+            "method": "GET",
+            "path": "/api/v1/toolserver/{toolserverId}",
+            "resource": "toolserver",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{toolserverId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-toolserver-api-v1-toolserver",
+            "method": "POST",
+            "path": "/api/v1/toolserver",
+            "resource": "toolserver",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "toolserver",
+                    "attributes": {
+                        "name": "api-toolserver-name"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.toolserverId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-toolserver-api-v1-toolserver-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/toolserver/{runtime.toolserverId}",
+            "resource": "toolserver",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.toolserverId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "patch-toolserver-api-v1-toolserver-id",
+            "method": "PATCH",
+            "path": "/api/v1/toolserver/{runtime.toolserverId}",
+            "resource": "toolserver",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "toolserver",
+                    "id": "{runtime.toolserverId}",
+                    "attributes": {
+                        "name": "api-toolserver-name Updated"
+                    }
+                }
+            },
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "attributesEqual": {
+                    "name": "api-toolserver-name Updated"
+                }
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-toolserver-api-v1-toolserver-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/toolserver/{runtime.toolserverId}",
+            "resource": "toolserver",
             "auth": true,
             "expects": {
                 "status": [

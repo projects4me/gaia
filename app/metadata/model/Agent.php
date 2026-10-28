@@ -169,6 +169,13 @@ $models['Agent'] = array(
                 'relatedKey' => 'id'
             ),
         ),
+        'hasMany' => array(
+            'toolGrants' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Agenttool',
+                'relatedKey' => 'agentId',
+            ),
+        ),
     ),
     'behaviors' => array(
         'auditBehavior',

@@ -201,6 +201,72 @@
       "attributes": {}
     },
     {
+      "id": "action:agenttool.delete",
+      "type": "action",
+      "key": "agenttool.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:agenttool.deleteCollection",
+      "type": "action",
+      "key": "agenttool.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:agenttool.get",
+      "type": "action",
+      "key": "agenttool.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:agenttool.list",
+      "type": "action",
+      "key": "agenttool.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:agenttool.options",
+      "type": "action",
+      "key": "agenttool.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:agenttool.patch",
+      "type": "action",
+      "key": "agenttool.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:agenttool.patchCollection",
+      "type": "action",
+      "key": "agenttool.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:agenttool.post",
+      "type": "action",
+      "key": "agenttool.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:agenttool.put",
+      "type": "action",
+      "key": "agenttool.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:agenttool.putCollection",
+      "type": "action",
+      "key": "agenttool.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:agenttool.related",
+      "type": "action",
+      "key": "agenttool.related",
+      "attributes": {}
+    },
+    {
       "id": "action:badge.delete",
       "type": "action",
       "key": "badge.delete",
@@ -1989,6 +2055,138 @@
       "attributes": {}
     },
     {
+      "id": "action:tool.delete",
+      "type": "action",
+      "key": "tool.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:tool.deleteCollection",
+      "type": "action",
+      "key": "tool.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:tool.get",
+      "type": "action",
+      "key": "tool.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:tool.list",
+      "type": "action",
+      "key": "tool.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:tool.options",
+      "type": "action",
+      "key": "tool.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:tool.patch",
+      "type": "action",
+      "key": "tool.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:tool.patchCollection",
+      "type": "action",
+      "key": "tool.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:tool.post",
+      "type": "action",
+      "key": "tool.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:tool.put",
+      "type": "action",
+      "key": "tool.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:tool.putCollection",
+      "type": "action",
+      "key": "tool.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:tool.related",
+      "type": "action",
+      "key": "tool.related",
+      "attributes": {}
+    },
+    {
+      "id": "action:toolserver.delete",
+      "type": "action",
+      "key": "toolserver.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:toolserver.deleteCollection",
+      "type": "action",
+      "key": "toolserver.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:toolserver.get",
+      "type": "action",
+      "key": "toolserver.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:toolserver.list",
+      "type": "action",
+      "key": "toolserver.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:toolserver.options",
+      "type": "action",
+      "key": "toolserver.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:toolserver.patch",
+      "type": "action",
+      "key": "toolserver.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:toolserver.patchCollection",
+      "type": "action",
+      "key": "toolserver.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:toolserver.post",
+      "type": "action",
+      "key": "toolserver.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:toolserver.put",
+      "type": "action",
+      "key": "toolserver.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:toolserver.putCollection",
+      "type": "action",
+      "key": "toolserver.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:toolserver.related",
+      "type": "action",
+      "key": "toolserver.related",
+      "attributes": {}
+    },
+    {
       "id": "action:translation.get",
       "type": "action",
       "key": "translation.get",
@@ -3354,6 +3552,114 @@
         "source": "acl-agent",
         "placeholders": [
           "agentcredentialId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agenttool-agent-cannot-change-own-grant",
+      "type": "case",
+      "key": "acl/acl-agenttool-agent-cannot-change-own-grant",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/agenttool/{agenttoolId}",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "agenttoolId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agenttool-agent-cannot-delete-own-grant",
+      "type": "case",
+      "key": "acl/acl-agenttool-agent-cannot-delete-own-grant",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "DELETE",
+        "path": "/api/v1/agenttool/{agenttoolId}",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "agenttoolId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agenttool-agent-cannot-grant-itself",
+      "type": "case",
+      "key": "acl/acl-agenttool-agent-cannot-grant-itself",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/agenttool",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "agentId",
+          "toolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agenttool-agent-may-grant-another-agent",
+      "type": "case",
+      "key": "acl/acl-agenttool-agent-may-grant-another-agent",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/agenttool",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentId",
+          "toolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agenttool-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-agenttool-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agenttool",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agenttool-detail-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-agenttool-detail-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agenttool/{agenttoolId}",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "agenttoolId"
         ],
         "stores": []
       }
@@ -5359,6 +5665,92 @@
       }
     },
     {
+      "id": "case:acl/acl-tool-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-tool-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/tool",
+        "resource": "tool",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-tool-detail-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-tool-detail-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/tool/{toolId}",
+        "resource": "tool",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "toolId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-toolserver-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-toolserver-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/toolserver",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-toolserver-detail-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-toolserver-detail-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/toolserver/{toolserverId}",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "toolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-toolserver-refresh-needs-update",
+      "type": "case",
+      "key": "acl/acl-toolserver-refresh-needs-update",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/toolserver/{toolserverId}",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "toolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "case",
       "key": "backend/delete-activity-api-v1-activity-runtime-id",
@@ -5702,6 +6094,42 @@
       }
     },
     {
+      "id": "case:backend/delete-tool-api-v1-tool-runtime-id",
+      "type": "case",
+      "key": "backend/delete-tool-api-v1-tool-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "DELETE",
+        "path": "/api/v1/tool/{runtime.toolId}",
+        "resource": "tool",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.toolId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/delete-toolserver-api-v1-toolserver-runtime-id",
+      "type": "case",
+      "key": "backend/delete-toolserver-api-v1-toolserver-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "DELETE",
+        "path": "/api/v1/toolserver/{runtime.toolserverId}",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.toolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-user-api-v1-user-runtime-id",
       "type": "case",
       "key": "backend/delete-user-api-v1-user-runtime-id",
@@ -5943,6 +6371,40 @@
         "source": "backend-metadata",
         "placeholders": [
           "agentcredentialId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-agenttool-api-v1-agenttool",
+      "type": "case",
+      "key": "backend/get-agenttool-api-v1-agenttool",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/agenttool",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-agenttool-api-v1-agenttool-id",
+      "type": "case",
+      "key": "backend/get-agenttool-api-v1-agenttool-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/agenttool/{agenttoolId}",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "agenttoolId"
         ],
         "stores": []
       }
@@ -7004,6 +7466,110 @@
       }
     },
     {
+      "id": "case:backend/get-tool-api-v1-tool",
+      "type": "case",
+      "key": "backend/get-tool-api-v1-tool",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/tool",
+        "resource": "tool",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-tool-api-v1-tool-id",
+      "type": "case",
+      "key": "backend/get-tool-api-v1-tool-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/tool/{toolId}",
+        "resource": "tool",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "toolId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-tool-api-v1-tool-runtime-id",
+      "type": "case",
+      "key": "backend/get-tool-api-v1-tool-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/tool/{runtime.toolId}",
+        "resource": "tool",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.toolId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-toolserver-api-v1-toolserver",
+      "type": "case",
+      "key": "backend/get-toolserver-api-v1-toolserver",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/toolserver",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-toolserver-api-v1-toolserver-id",
+      "type": "case",
+      "key": "backend/get-toolserver-api-v1-toolserver-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/toolserver/{toolserverId}",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "toolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-toolserver-api-v1-toolserver-runtime-id",
+      "type": "case",
+      "key": "backend/get-toolserver-api-v1-toolserver-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/toolserver/{runtime.toolserverId}",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.toolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/get-upload-api-v1-upload",
       "type": "case",
       "key": "backend/get-upload-api-v1-upload",
@@ -7563,6 +8129,42 @@
       }
     },
     {
+      "id": "case:backend/patch-tool-api-v1-tool-id",
+      "type": "case",
+      "key": "backend/patch-tool-api-v1-tool-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "PATCH",
+        "path": "/api/v1/tool/{runtime.toolId}",
+        "resource": "tool",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.toolId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/patch-toolserver-api-v1-toolserver-id",
+      "type": "case",
+      "key": "backend/patch-toolserver-api-v1-toolserver-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "PATCH",
+        "path": "/api/v1/toolserver/{runtime.toolserverId}",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.toolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/patch-user-api-v1-user-id",
       "type": "case",
       "key": "backend/patch-user-api-v1-user-id",
@@ -7685,6 +8287,24 @@
         "method": "POST",
         "path": "/api/v1/agentcredential",
         "resource": "agentcredential",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [
+          "agentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/post-agenttool-api-v1-agenttool",
+      "type": "case",
+      "key": "backend/post-agenttool-api-v1-agenttool",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/agenttool",
+        "resource": "agenttool",
         "enabled": false,
         "source": "backend-metadata",
         "placeholders": [
@@ -8149,6 +8769,42 @@
       }
     },
     {
+      "id": "case:backend/post-tool-api-v1-tool",
+      "type": "case",
+      "key": "backend/post-tool-api-v1-tool",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/tool",
+        "resource": "tool",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": [
+          "runtime.toolId"
+        ]
+      }
+    },
+    {
+      "id": "case:backend/post-toolserver-api-v1-toolserver",
+      "type": "case",
+      "key": "backend/post-toolserver-api-v1-toolserver",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/toolserver",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": [
+          "runtime.toolserverId"
+        ]
+      }
+    },
+    {
       "id": "case:backend/post-user-api-v1-user",
       "type": "case",
       "key": "backend/post-user-api-v1-user",
@@ -8520,6 +9176,82 @@
         "placeholders": [
           "runtime.agentCredentialId",
           "runtime.rotatedCredentialId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agenttool-grant-needs-existing-agent",
+      "type": "case",
+      "key": "client/agenttool-grant-needs-existing-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agenttool",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "toolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agenttool-grant-rejects-server-and-tool",
+      "type": "case",
+      "key": "client/agenttool-grant-rejects-server-and-tool",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agenttool",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentId",
+          "toolId",
+          "toolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agenttool-grant-runtime-tool-with-rule",
+      "type": "case",
+      "key": "client/agenttool-grant-runtime-tool-with-rule",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agenttool",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentId",
+          "runtime.createdToolId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agenttool-grant-whole-server",
+      "type": "case",
+      "key": "client/agenttool-grant-whole-server",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agenttool",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentId",
+          "runtime.createdToolserverId"
         ],
         "stores": []
       }
@@ -12709,6 +13441,128 @@
       }
     },
     {
+      "id": "case:client/tool-create-rejects-schema-that-is-not-an-object",
+      "type": "case",
+      "key": "client/tool-create-rejects-schema-that-is-not-an-object",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tool",
+        "resource": "tool",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tool-create-runtime-builtin",
+      "type": "case",
+      "key": "client/tool-create-runtime-builtin",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tool",
+        "resource": "tool",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.createdToolId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/toolserver-create-mcp-server",
+      "type": "case",
+      "key": "client/toolserver-create-mcp-server",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/toolserver",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.createdToolserverId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/toolserver-create-rejects-unknown-kind",
+      "type": "case",
+      "key": "client/toolserver-create-rejects-unknown-kind",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/toolserver",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/toolserver-refresh-failure-is-recorded",
+      "type": "case",
+      "key": "client/toolserver-refresh-failure-is-recorded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/toolserver/{runtime.createdToolserverId}",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.createdToolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/toolserver-refresh-rejects-stdio-server",
+      "type": "case",
+      "key": "client/toolserver-refresh-rejects-stdio-server",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/toolserver/{runtime.createdToolserverId}",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.createdToolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/toolserver-refresh-unreachable-server-is-502",
+      "type": "case",
+      "key": "client/toolserver-refresh-unreachable-server-is-502",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/toolserver/{runtime.createdToolserverId}",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.createdToolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/user-create-agent-type-refused",
       "type": "case",
       "key": "client/user-create-agent-type-refused",
@@ -13951,6 +14805,17 @@
       }
     },
     {
+      "id": "controller:agenttool",
+      "type": "controller",
+      "key": "agenttool",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\AgenttoolController",
+        "file": "app/api/v1/controllers/AgenttoolController.php",
+        "extends": "RestController"
+      }
+    },
+    {
       "id": "controller:badge",
       "type": "controller",
       "key": "badge",
@@ -14356,6 +15221,28 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\TokenController",
         "file": "app/api/v1/controllers/TokenController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:tool",
+      "type": "controller",
+      "key": "tool",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ToolController",
+        "file": "app/api/v1/controllers/ToolController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:toolserver",
+      "type": "controller",
+      "key": "toolserver",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ToolserverController",
+        "file": "app/api/v1/controllers/ToolserverController.php",
         "extends": "RestController"
       }
     },
@@ -15062,6 +15949,143 @@
         "length": "50",
         "null": false,
         "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Agenttool.agentId",
+      "type": "field",
+      "key": "Agenttool.agentId",
+      "attributes": {
+        "label": "LBL_AGENT_TOOLS_AGENT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Agenttool.createdUser",
+      "type": "field",
+      "key": "Agenttool.createdUser",
+      "attributes": {
+        "label": "LBL_AGENT_TOOLS_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Agenttool.createdUserName",
+      "type": "field",
+      "key": "Agenttool.createdUserName",
+      "attributes": {
+        "label": "LBL_AGENT_TOOLS_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Agenttool.dateCreated",
+      "type": "field",
+      "key": "Agenttool.dateCreated",
+      "attributes": {
+        "label": "LBL_AGENT_TOOLS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agenttool.dateModified",
+      "type": "field",
+      "key": "Agenttool.dateModified",
+      "attributes": {
+        "label": "LBL_AGENT_TOOLS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agenttool.deleted",
+      "type": "field",
+      "key": "Agenttool.deleted",
+      "attributes": {
+        "label": "LBL_AGENT_TOOLS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Agenttool.id",
+      "type": "field",
+      "key": "Agenttool.id",
+      "attributes": {
+        "label": "LBL_AGENT_TOOLS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Agenttool.modifiedUser",
+      "type": "field",
+      "key": "Agenttool.modifiedUser",
+      "attributes": {
+        "label": "LBL_AGENT_TOOLS_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Agenttool.modifiedUserName",
+      "type": "field",
+      "key": "Agenttool.modifiedUserName",
+      "attributes": {
+        "label": "LBL_AGENT_TOOLS_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Agenttool.permissionRule",
+      "type": "field",
+      "key": "Agenttool.permissionRule",
+      "attributes": {
+        "label": "LBL_AGENT_TOOLS_PERMISSION_RULE",
+        "type": "varchar",
+        "length": "255",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agenttool.toolId",
+      "type": "field",
+      "key": "Agenttool.toolId",
+      "attributes": {
+        "label": "LBL_AGENT_TOOLS_TOOL_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agenttool.toolServerId",
+      "type": "field",
+      "key": "Agenttool.toolServerId",
+      "attributes": {
+        "label": "LBL_AGENT_TOOLS_TOOL_SERVER_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true
       }
     },
     {
@@ -19325,6 +20349,341 @@
       }
     },
     {
+      "id": "field:Tool.createdUser",
+      "type": "field",
+      "key": "Tool.createdUser",
+      "attributes": {
+        "label": "LBL_TOOLS_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Tool.createdUserName",
+      "type": "field",
+      "key": "Tool.createdUserName",
+      "attributes": {
+        "label": "LBL_TOOLS_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Tool.dateCreated",
+      "type": "field",
+      "key": "Tool.dateCreated",
+      "attributes": {
+        "label": "LBL_TOOLS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Tool.dateModified",
+      "type": "field",
+      "key": "Tool.dateModified",
+      "attributes": {
+        "label": "LBL_TOOLS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Tool.deleted",
+      "type": "field",
+      "key": "Tool.deleted",
+      "attributes": {
+        "label": "LBL_TOOLS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Tool.description",
+      "type": "field",
+      "key": "Tool.description",
+      "attributes": {
+        "label": "LBL_TOOLS_DESCRIPTION",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Tool.id",
+      "type": "field",
+      "key": "Tool.id",
+      "attributes": {
+        "label": "LBL_TOOLS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Tool.inputSchema",
+      "type": "field",
+      "key": "Tool.inputSchema",
+      "attributes": {
+        "label": "LBL_TOOLS_INPUT_SCHEMA",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Tool.modifiedUser",
+      "type": "field",
+      "key": "Tool.modifiedUser",
+      "attributes": {
+        "label": "LBL_TOOLS_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Tool.modifiedUserName",
+      "type": "field",
+      "key": "Tool.modifiedUserName",
+      "attributes": {
+        "label": "LBL_TOOLS_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Tool.name",
+      "type": "field",
+      "key": "Tool.name",
+      "attributes": {
+        "label": "LBL_TOOLS_NAME",
+        "type": "varchar",
+        "length": "150",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Tool.toolServerId",
+      "type": "field",
+      "key": "Tool.toolServerId",
+      "attributes": {
+        "label": "LBL_TOOLS_TOOL_SERVER_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Toolserver.command",
+      "type": "field",
+      "key": "Toolserver.command",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_COMMAND",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Toolserver.createdUser",
+      "type": "field",
+      "key": "Toolserver.createdUser",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Toolserver.createdUserName",
+      "type": "field",
+      "key": "Toolserver.createdUserName",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Toolserver.dateCreated",
+      "type": "field",
+      "key": "Toolserver.dateCreated",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Toolserver.dateModified",
+      "type": "field",
+      "key": "Toolserver.dateModified",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Toolserver.deleted",
+      "type": "field",
+      "key": "Toolserver.deleted",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Toolserver.description",
+      "type": "field",
+      "key": "Toolserver.description",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_DESCRIPTION",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Toolserver.endpoint",
+      "type": "field",
+      "key": "Toolserver.endpoint",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_ENDPOINT",
+        "type": "varchar",
+        "length": "255",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Toolserver.id",
+      "type": "field",
+      "key": "Toolserver.id",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Toolserver.kind",
+      "type": "field",
+      "key": "Toolserver.kind",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_KIND",
+        "type": "varchar",
+        "length": "20",
+        "null": false,
+        "default": "mcp"
+      }
+    },
+    {
+      "id": "field:Toolserver.location",
+      "type": "field",
+      "key": "Toolserver.location",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_LOCATION",
+        "type": "varchar",
+        "length": "20",
+        "null": false,
+        "default": "external"
+      }
+    },
+    {
+      "id": "field:Toolserver.modifiedUser",
+      "type": "field",
+      "key": "Toolserver.modifiedUser",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Toolserver.modifiedUserName",
+      "type": "field",
+      "key": "Toolserver.modifiedUserName",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Toolserver.name",
+      "type": "field",
+      "key": "Toolserver.name",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_NAME",
+        "type": "varchar",
+        "length": "100",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Toolserver.refreshError",
+      "type": "field",
+      "key": "Toolserver.refreshError",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_REFRESH_ERROR",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Toolserver.schemaRefreshedAt",
+      "type": "field",
+      "key": "Toolserver.schemaRefreshedAt",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_SCHEMA_REFRESHED_AT",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Toolserver.spec",
+      "type": "field",
+      "key": "Toolserver.spec",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_SPEC",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Toolserver.transport",
+      "type": "field",
+      "key": "Toolserver.transport",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_TRANSPORT",
+        "type": "varchar",
+        "length": "20",
+        "null": true
+      }
+    },
+    {
       "id": "field:Translation.createdUser",
       "type": "field",
       "key": "Translation.createdUser",
@@ -21353,6 +22712,14 @@
       }
     },
     {
+      "id": "fixture:agenttoolId",
+      "type": "fixture",
+      "key": "agenttoolId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:commentId",
       "type": "fixture",
       "key": "commentId",
@@ -21657,6 +23024,22 @@
       }
     },
     {
+      "id": "fixture:toolId",
+      "type": "fixture",
+      "key": "toolId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:toolserverId",
+      "type": "fixture",
+      "key": "toolserverId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:userId",
       "type": "fixture",
       "key": "userId",
@@ -21743,6 +23126,19 @@
       "attributes": {
         "file": "app/metadata/model/Agentcredential.php",
         "tableName": "agentcredentials",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
+      "id": "model:Agenttool",
+      "type": "model",
+      "key": "Agenttool",
+      "attributes": {
+        "file": "app/metadata/model/Agenttool.php",
+        "tableName": "agent_tools",
         "isView": false,
         "registered": true,
         "hasMetadata": true,
@@ -22371,6 +23767,32 @@
       }
     },
     {
+      "id": "model:Tool",
+      "type": "model",
+      "key": "Tool",
+      "attributes": {
+        "file": "app/metadata/model/Tool.php",
+        "tableName": "tools",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
+      "id": "model:Toolserver",
+      "type": "model",
+      "key": "Toolserver",
+      "attributes": {
+        "file": "app/metadata/model/Toolserver.php",
+        "tableName": "tool_servers",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
       "id": "model:Translation",
       "type": "model",
       "key": "Translation",
@@ -22756,6 +24178,42 @@
       "id": "permission:agentcredential.update",
       "type": "permission",
       "key": "agentcredential.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agenttool.create",
+      "type": "permission",
+      "key": "agenttool.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agenttool.delete",
+      "type": "permission",
+      "key": "agenttool.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agenttool.get",
+      "type": "permission",
+      "key": "agenttool.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agenttool.update",
+      "type": "permission",
+      "key": "agenttool.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -23856,6 +25314,78 @@
       }
     },
     {
+      "id": "permission:tool.create",
+      "type": "permission",
+      "key": "tool.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:tool.delete",
+      "type": "permission",
+      "key": "tool.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:tool.get",
+      "type": "permission",
+      "key": "tool.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:tool.update",
+      "type": "permission",
+      "key": "tool.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:toolserver.create",
+      "type": "permission",
+      "key": "toolserver.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:toolserver.delete",
+      "type": "permission",
+      "key": "toolserver.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:toolserver.get",
+      "type": "permission",
+      "key": "toolserver.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:toolserver.update",
+      "type": "permission",
+      "key": "toolserver.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
       "id": "permission:upload.create",
       "type": "permission",
       "key": "upload.create",
@@ -24298,6 +25828,16 @@
       }
     },
     {
+      "id": "relationship:Agent.toolGrants",
+      "type": "relationship",
+      "key": "Agent.toolGrants",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "agentId"
+      }
+    },
+    {
       "id": "relationship:Agent.user",
       "type": "relationship",
       "key": "Agent.user",
@@ -24334,6 +25874,56 @@
       "attributes": {
         "kind": "hasOne",
         "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agenttool.agent",
+      "type": "relationship",
+      "key": "Agenttool.agent",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "agentId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agenttool.createdBy",
+      "type": "relationship",
+      "key": "Agenttool.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agenttool.modifiedBy",
+      "type": "relationship",
+      "key": "Agenttool.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agenttool.tool",
+      "type": "relationship",
+      "key": "Agenttool.tool",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "toolId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agenttool.toolServer",
+      "type": "relationship",
+      "key": "Agenttool.toolServer",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "toolServerId",
         "relatedKey": "id"
       }
     },
@@ -25280,6 +26870,86 @@
       }
     },
     {
+      "id": "relationship:Tool.createdBy",
+      "type": "relationship",
+      "key": "Tool.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Tool.grants",
+      "type": "relationship",
+      "key": "Tool.grants",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "toolId"
+      }
+    },
+    {
+      "id": "relationship:Tool.modifiedBy",
+      "type": "relationship",
+      "key": "Tool.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Tool.toolServer",
+      "type": "relationship",
+      "key": "Tool.toolServer",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "toolServerId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Toolserver.createdBy",
+      "type": "relationship",
+      "key": "Toolserver.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Toolserver.grants",
+      "type": "relationship",
+      "key": "Toolserver.grants",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "toolServerId"
+      }
+    },
+    {
+      "id": "relationship:Toolserver.modifiedBy",
+      "type": "relationship",
+      "key": "Toolserver.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Toolserver.tools",
+      "type": "relationship",
+      "key": "Toolserver.tools",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "toolServerId"
+      }
+    },
+    {
       "id": "relationship:Translation.createdBy",
       "type": "relationship",
       "key": "Translation.createdBy",
@@ -25856,6 +27526,30 @@
       }
     },
     {
+      "id": "route:DELETE /api/v1/agenttool",
+      "type": "route",
+      "key": "DELETE /api/v1/agenttool",
+      "attributes": {
+        "type": "rest",
+        "name": "agenttool",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/agenttool"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/agenttool/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/agenttool/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agenttool",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/agenttool/{id}"
+      }
+    },
+    {
       "id": "route:DELETE /api/v1/badge",
       "type": "route",
       "key": "DELETE /api/v1/badge",
@@ -26408,6 +28102,54 @@
       }
     },
     {
+      "id": "route:DELETE /api/v1/tool",
+      "type": "route",
+      "key": "DELETE /api/v1/tool",
+      "attributes": {
+        "type": "rest",
+        "name": "tool",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/tool"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/tool/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/tool/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "tool",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/tool/{id}"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/toolserver",
+      "type": "route",
+      "key": "DELETE /api/v1/toolserver",
+      "attributes": {
+        "type": "rest",
+        "name": "toolserver",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/toolserver"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/toolserver/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/toolserver/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "toolserver",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/toolserver/{id}"
+      }
+    },
+    {
       "id": "route:DELETE /api/v1/upload",
       "type": "route",
       "key": "DELETE /api/v1/upload",
@@ -26681,6 +28423,42 @@
         "version": "v1",
         "method": "GET",
         "path": "/api/v1/agentcredential/{id}/{relation}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agenttool",
+      "type": "route",
+      "key": "GET /api/v1/agenttool",
+      "attributes": {
+        "type": "rest",
+        "name": "agenttool",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agenttool"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agenttool/{id}",
+      "type": "route",
+      "key": "GET /api/v1/agenttool/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agenttool",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agenttool/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agenttool/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/agenttool/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "agenttool",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agenttool/{id}/{relation}"
       }
     },
     {
@@ -27764,6 +29542,78 @@
       }
     },
     {
+      "id": "route:GET /api/v1/tool",
+      "type": "route",
+      "key": "GET /api/v1/tool",
+      "attributes": {
+        "type": "rest",
+        "name": "tool",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/tool"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/tool/{id}",
+      "type": "route",
+      "key": "GET /api/v1/tool/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "tool",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/tool/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/tool/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/tool/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "tool",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/tool/{id}/{relation}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/toolserver",
+      "type": "route",
+      "key": "GET /api/v1/toolserver",
+      "attributes": {
+        "type": "rest",
+        "name": "toolserver",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/toolserver"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/toolserver/{id}",
+      "type": "route",
+      "key": "GET /api/v1/toolserver/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "toolserver",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/toolserver/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/toolserver/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/toolserver/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "toolserver",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/toolserver/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:GET /api/v1/upload",
       "type": "route",
       "key": "GET /api/v1/upload",
@@ -28049,6 +29899,18 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/agentcredential"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/agenttool",
+      "type": "route",
+      "key": "OPTIONS /api/v1/agenttool",
+      "attributes": {
+        "type": "rest",
+        "name": "agenttool",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/agenttool"
       }
     },
     {
@@ -28448,6 +30310,30 @@
       }
     },
     {
+      "id": "route:OPTIONS /api/v1/tool",
+      "type": "route",
+      "key": "OPTIONS /api/v1/tool",
+      "attributes": {
+        "type": "rest",
+        "name": "tool",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/tool"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/toolserver",
+      "type": "route",
+      "key": "OPTIONS /api/v1/toolserver",
+      "attributes": {
+        "type": "rest",
+        "name": "toolserver",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/toolserver"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/upload",
       "type": "route",
       "key": "OPTIONS /api/v1/upload",
@@ -28613,6 +30499,30 @@
         "version": "v1",
         "method": "PATCH",
         "path": "/api/v1/agentcredential/{id}"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/agenttool",
+      "type": "route",
+      "key": "PATCH /api/v1/agenttool",
+      "attributes": {
+        "type": "rest",
+        "name": "agenttool",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/agenttool"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/agenttool/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/agenttool/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agenttool",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/agenttool/{id}"
       }
     },
     {
@@ -29240,6 +31150,54 @@
       }
     },
     {
+      "id": "route:PATCH /api/v1/tool",
+      "type": "route",
+      "key": "PATCH /api/v1/tool",
+      "attributes": {
+        "type": "rest",
+        "name": "tool",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/tool"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/tool/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/tool/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "tool",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/tool/{id}"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/toolserver",
+      "type": "route",
+      "key": "PATCH /api/v1/toolserver",
+      "attributes": {
+        "type": "rest",
+        "name": "toolserver",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/toolserver"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/toolserver/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/toolserver/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "toolserver",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/toolserver/{id}"
+      }
+    },
+    {
       "id": "route:PATCH /api/v1/upload",
       "type": "route",
       "key": "PATCH /api/v1/upload",
@@ -29441,6 +31399,18 @@
         "version": "v1",
         "method": "POST",
         "path": "/api/v1/agentcredential"
+      }
+    },
+    {
+      "id": "route:POST /api/v1/agenttool",
+      "type": "route",
+      "key": "POST /api/v1/agenttool",
+      "attributes": {
+        "type": "rest",
+        "name": "agenttool",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/agenttool"
       }
     },
     {
@@ -29780,6 +31750,30 @@
       }
     },
     {
+      "id": "route:POST /api/v1/tool",
+      "type": "route",
+      "key": "POST /api/v1/tool",
+      "attributes": {
+        "type": "rest",
+        "name": "tool",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/tool"
+      }
+    },
+    {
+      "id": "route:POST /api/v1/toolserver",
+      "type": "route",
+      "key": "POST /api/v1/toolserver",
+      "attributes": {
+        "type": "rest",
+        "name": "toolserver",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/toolserver"
+      }
+    },
+    {
       "id": "route:POST /api/v1/upload",
       "type": "route",
       "key": "POST /api/v1/upload",
@@ -29945,6 +31939,30 @@
         "version": "v1",
         "method": "PUT",
         "path": "/api/v1/agentcredential/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/agenttool",
+      "type": "route",
+      "key": "PUT /api/v1/agenttool",
+      "attributes": {
+        "type": "rest",
+        "name": "agenttool",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/agenttool"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/agenttool/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/agenttool/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agenttool",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/agenttool/{id}"
       }
     },
     {
@@ -30476,6 +32494,54 @@
       }
     },
     {
+      "id": "route:PUT /api/v1/tool",
+      "type": "route",
+      "key": "PUT /api/v1/tool",
+      "attributes": {
+        "type": "rest",
+        "name": "tool",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/tool"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/tool/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/tool/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "tool",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/tool/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/toolserver",
+      "type": "route",
+      "key": "PUT /api/v1/toolserver",
+      "attributes": {
+        "type": "rest",
+        "name": "toolserver",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/toolserver"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/toolserver/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/toolserver/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "toolserver",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/toolserver/{id}"
+      }
+    },
+    {
       "id": "route:PUT /api/v1/upload",
       "type": "route",
       "key": "PUT /api/v1/upload",
@@ -30788,6 +32854,46 @@
       "from": "action:agentcredential.related",
       "type": "requires",
       "to": "permission:agentcredential.get"
+    },
+    {
+      "from": "action:agenttool.delete",
+      "type": "requires",
+      "to": "permission:agenttool.delete"
+    },
+    {
+      "from": "action:agenttool.get",
+      "type": "requires",
+      "to": "permission:agenttool.get"
+    },
+    {
+      "from": "action:agenttool.list",
+      "type": "requires",
+      "to": "permission:agenttool.get"
+    },
+    {
+      "from": "action:agenttool.patch",
+      "type": "requires",
+      "to": "permission:agenttool.update"
+    },
+    {
+      "from": "action:agenttool.patchCollection",
+      "type": "requires",
+      "to": "permission:agenttool.update"
+    },
+    {
+      "from": "action:agenttool.post",
+      "type": "requires",
+      "to": "permission:agenttool.create"
+    },
+    {
+      "from": "action:agenttool.put",
+      "type": "requires",
+      "to": "permission:agenttool.update"
+    },
+    {
+      "from": "action:agenttool.related",
+      "type": "requires",
+      "to": "permission:agenttool.get"
     },
     {
       "from": "action:badge.delete",
@@ -31865,6 +33971,86 @@
       "to": "permission:token.create"
     },
     {
+      "from": "action:tool.delete",
+      "type": "requires",
+      "to": "permission:tool.delete"
+    },
+    {
+      "from": "action:tool.get",
+      "type": "requires",
+      "to": "permission:tool.get"
+    },
+    {
+      "from": "action:tool.list",
+      "type": "requires",
+      "to": "permission:tool.get"
+    },
+    {
+      "from": "action:tool.patch",
+      "type": "requires",
+      "to": "permission:tool.update"
+    },
+    {
+      "from": "action:tool.patchCollection",
+      "type": "requires",
+      "to": "permission:tool.update"
+    },
+    {
+      "from": "action:tool.post",
+      "type": "requires",
+      "to": "permission:tool.create"
+    },
+    {
+      "from": "action:tool.put",
+      "type": "requires",
+      "to": "permission:tool.update"
+    },
+    {
+      "from": "action:tool.related",
+      "type": "requires",
+      "to": "permission:tool.get"
+    },
+    {
+      "from": "action:toolserver.delete",
+      "type": "requires",
+      "to": "permission:toolserver.delete"
+    },
+    {
+      "from": "action:toolserver.get",
+      "type": "requires",
+      "to": "permission:toolserver.get"
+    },
+    {
+      "from": "action:toolserver.list",
+      "type": "requires",
+      "to": "permission:toolserver.get"
+    },
+    {
+      "from": "action:toolserver.patch",
+      "type": "requires",
+      "to": "permission:toolserver.update"
+    },
+    {
+      "from": "action:toolserver.patchCollection",
+      "type": "requires",
+      "to": "permission:toolserver.update"
+    },
+    {
+      "from": "action:toolserver.post",
+      "type": "requires",
+      "to": "permission:toolserver.create"
+    },
+    {
+      "from": "action:toolserver.put",
+      "type": "requires",
+      "to": "permission:toolserver.update"
+    },
+    {
+      "from": "action:toolserver.related",
+      "type": "requires",
+      "to": "permission:toolserver.get"
+    },
+    {
       "from": "action:upload.delete",
       "type": "requires",
       "to": "permission:upload.delete"
@@ -32908,6 +35094,221 @@
       "from": "case:acl/acl-agentcredential-revoke-own-denied",
       "type": "uses_fixture",
       "to": "fixture:agentcredentialId"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-change-own-grant",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-change-own-grant",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-change-own-grant",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-change-own-grant",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-change-own-grant",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/agenttool/{id}"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-change-own-grant",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-change-own-grant",
+      "type": "uses_fixture",
+      "to": "fixture:agenttoolId"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-delete-own-grant",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-delete-own-grant",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-delete-own-grant",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-delete-own-grant",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-delete-own-grant",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/agenttool/{id}"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-delete-own-grant",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-delete-own-grant",
+      "type": "uses_fixture",
+      "to": "fixture:agenttoolId"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-grant-itself",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-grant-itself",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-grant-itself",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-grant-itself",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-grant-itself",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agenttool"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-grant-itself",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-grant-itself",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-cannot-grant-itself",
+      "type": "uses_fixture",
+      "to": "fixture:toolserverId"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-may-grant-another-agent",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-may-grant-another-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-may-grant-another-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-may-grant-another-agent",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-may-grant-another-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agenttool"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-may-grant-another-agent",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-may-grant-another-agent",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:acl/acl-agenttool-agent-may-grant-another-agent",
+      "type": "uses_fixture",
+      "to": "fixture:toolserverId"
+    },
+    {
+      "from": "case:acl/acl-agenttool-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agenttool-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agenttool-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agenttool-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:acl/acl-agenttool-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agenttool"
+    },
+    {
+      "from": "case:acl/acl-agenttool-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-agenttool-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agenttool-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agenttool-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agenttool-detail-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:acl/acl-agenttool-detail-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agenttool/{id}"
+    },
+    {
+      "from": "case:acl/acl-agenttool-detail-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-agenttool-detail-denied-acl-no-setting",
+      "type": "uses_fixture",
+      "to": "fixture:agenttoolId"
     },
     {
       "from": "case:acl/acl-comment-denied-without-conversation-group",
@@ -36725,6 +39126,171 @@
       "to": "fixture:issuetypeId"
     },
     {
+      "from": "case:acl/acl-tool-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-tool-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-tool-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-tool-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:tool"
+    },
+    {
+      "from": "case:acl/acl-tool-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tool"
+    },
+    {
+      "from": "case:acl/acl-tool-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-tool-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-tool-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-tool-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-tool-detail-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:tool"
+    },
+    {
+      "from": "case:acl/acl-tool-detail-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tool/{id}"
+    },
+    {
+      "from": "case:acl/acl-tool-detail-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-tool-detail-denied-acl-no-setting",
+      "type": "uses_fixture",
+      "to": "fixture:toolId"
+    },
+    {
+      "from": "case:acl/acl-toolserver-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-toolserver-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-toolserver-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-toolserver-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:acl/acl-toolserver-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/toolserver"
+    },
+    {
+      "from": "case:acl/acl-toolserver-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-toolserver-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-toolserver-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-toolserver-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-toolserver-detail-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:acl/acl-toolserver-detail-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/toolserver/{id}"
+    },
+    {
+      "from": "case:acl/acl-toolserver-detail-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-toolserver-detail-denied-acl-no-setting",
+      "type": "uses_fixture",
+      "to": "fixture:toolserverId"
+    },
+    {
+      "from": "case:acl/acl-toolserver-refresh-needs-update",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-toolserver-refresh-needs-update",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-toolserver-refresh-needs-update",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-toolserver-refresh-needs-update",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:acl/acl-toolserver-refresh-needs-update",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/toolserver/{id}"
+    },
+    {
+      "from": "case:acl/acl-toolserver-refresh-needs-update",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-toolserver-refresh-needs-update",
+      "type": "uses_fixture",
+      "to": "fixture:toolserverId"
+    },
+    {
       "from": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -37300,6 +39866,66 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/delete-tool-api-v1-tool-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/delete-tool-api-v1-tool-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/delete-tool-api-v1-tool-runtime-id",
+      "type": "covers",
+      "to": "controller:tool"
+    },
+    {
+      "from": "case:backend/delete-tool-api-v1-tool-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-tool-api-v1-tool"
+    },
+    {
+      "from": "case:backend/delete-tool-api-v1-tool-runtime-id",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/tool/{id}"
+    },
+    {
+      "from": "case:backend/delete-tool-api-v1-tool-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/delete-toolserver-api-v1-toolserver-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/delete-toolserver-api-v1-toolserver-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/delete-toolserver-api-v1-toolserver-runtime-id",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:backend/delete-toolserver-api-v1-toolserver-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-toolserver-api-v1-toolserver"
+    },
+    {
+      "from": "case:backend/delete-toolserver-api-v1-toolserver-runtime-id",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/toolserver/{id}"
+    },
+    {
+      "from": "case:backend/delete-toolserver-api-v1-toolserver-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/delete-user-api-v1-user-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -37728,6 +40354,66 @@
       "from": "case:backend/get-agentcredential-api-v1-agentcredential-id",
       "type": "uses_fixture",
       "to": "fixture:agentcredentialId"
+    },
+    {
+      "from": "case:backend/get-agenttool-api-v1-agenttool",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-agenttool-api-v1-agenttool",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-agenttool-api-v1-agenttool",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:backend/get-agenttool-api-v1-agenttool",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agenttool"
+    },
+    {
+      "from": "case:backend/get-agenttool-api-v1-agenttool",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-agenttool-api-v1-agenttool-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-agenttool-api-v1-agenttool-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-agenttool-api-v1-agenttool-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-agenttool-api-v1-agenttool-id",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:backend/get-agenttool-api-v1-agenttool-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agenttool/{id}"
+    },
+    {
+      "from": "case:backend/get-agenttool-api-v1-agenttool-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-agenttool-api-v1-agenttool-id",
+      "type": "uses_fixture",
+      "to": "fixture:agenttoolId"
     },
     {
       "from": "case:backend/get-badge-api-v1-badge",
@@ -39595,6 +42281,196 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/get-tool-api-v1-tool",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool",
+      "type": "covers",
+      "to": "controller:tool"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tool"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-id",
+      "type": "covers",
+      "to": "controller:tool"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tool/{id}"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-id",
+      "type": "uses_fixture",
+      "to": "fixture:toolId"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-runtime-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-runtime-id",
+      "type": "covers",
+      "to": "controller:tool"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-tool-api-v1-tool"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-runtime-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tool/{id}"
+    },
+    {
+      "from": "case:backend/get-tool-api-v1-tool-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver",
+      "type": "exercises",
+      "to": "route:GET /api/v1/toolserver"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-id",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/toolserver/{id}"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-id",
+      "type": "uses_fixture",
+      "to": "fixture:toolserverId"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-runtime-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-runtime-id",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-toolserver-api-v1-toolserver"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-runtime-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/toolserver/{id}"
+    },
+    {
+      "from": "case:backend/get-toolserver-api-v1-toolserver-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/get-upload-api-v1-upload",
       "type": "asserts",
       "to": "assertion:shape"
@@ -40620,6 +43496,76 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/patch-tool-api-v1-tool-id",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:backend/patch-tool-api-v1-tool-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/patch-tool-api-v1-tool-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/patch-tool-api-v1-tool-id",
+      "type": "covers",
+      "to": "controller:tool"
+    },
+    {
+      "from": "case:backend/patch-tool-api-v1-tool-id",
+      "type": "depends_on",
+      "to": "case:backend/post-tool-api-v1-tool"
+    },
+    {
+      "from": "case:backend/patch-tool-api-v1-tool-id",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/tool/{id}"
+    },
+    {
+      "from": "case:backend/patch-tool-api-v1-tool-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/patch-toolserver-api-v1-toolserver-id",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:backend/patch-toolserver-api-v1-toolserver-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/patch-toolserver-api-v1-toolserver-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/patch-toolserver-api-v1-toolserver-id",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:backend/patch-toolserver-api-v1-toolserver-id",
+      "type": "depends_on",
+      "to": "case:backend/post-toolserver-api-v1-toolserver"
+    },
+    {
+      "from": "case:backend/patch-toolserver-api-v1-toolserver-id",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/toolserver/{id}"
+    },
+    {
+      "from": "case:backend/patch-toolserver-api-v1-toolserver-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/patch-user-api-v1-user-id",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -40846,6 +43792,36 @@
     },
     {
       "from": "case:backend/post-agentcredential-api-v1-agentcredential",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:backend/post-agenttool-api-v1-agenttool",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-agenttool-api-v1-agenttool",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-agenttool-api-v1-agenttool",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:backend/post-agenttool-api-v1-agenttool",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agenttool"
+    },
+    {
+      "from": "case:backend/post-agenttool-api-v1-agenttool",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-agenttool-api-v1-agenttool",
       "type": "uses_fixture",
       "to": "fixture:agentId"
     },
@@ -41575,6 +44551,56 @@
       "to": "profile:anonymous"
     },
     {
+      "from": "case:backend/post-tool-api-v1-tool",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-tool-api-v1-tool",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-tool-api-v1-tool",
+      "type": "covers",
+      "to": "controller:tool"
+    },
+    {
+      "from": "case:backend/post-tool-api-v1-tool",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tool"
+    },
+    {
+      "from": "case:backend/post-tool-api-v1-tool",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-toolserver-api-v1-toolserver",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-toolserver-api-v1-toolserver",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-toolserver-api-v1-toolserver",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:backend/post-toolserver-api-v1-toolserver",
+      "type": "exercises",
+      "to": "route:POST /api/v1/toolserver"
+    },
+    {
+      "from": "case:backend/post-toolserver-api-v1-toolserver",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/post-user-api-v1-user",
       "type": "asserts",
       "to": "assertion:shape"
@@ -42218,6 +45244,166 @@
       "from": "case:client/agentcredential-rotate-revokes-previous-record",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/agenttool-grant-needs-existing-agent",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/agenttool-grant-needs-existing-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agenttool-grant-needs-existing-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agenttool-grant-needs-existing-agent",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:client/agenttool-grant-needs-existing-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agenttool"
+    },
+    {
+      "from": "case:client/agenttool-grant-needs-existing-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agenttool-grant-needs-existing-agent",
+      "type": "uses_fixture",
+      "to": "fixture:toolserverId"
+    },
+    {
+      "from": "case:client/agenttool-grant-rejects-server-and-tool",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/agenttool-grant-rejects-server-and-tool",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agenttool-grant-rejects-server-and-tool",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agenttool-grant-rejects-server-and-tool",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:client/agenttool-grant-rejects-server-and-tool",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agenttool"
+    },
+    {
+      "from": "case:client/agenttool-grant-rejects-server-and-tool",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agenttool-grant-rejects-server-and-tool",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:client/agenttool-grant-rejects-server-and-tool",
+      "type": "uses_fixture",
+      "to": "fixture:toolId"
+    },
+    {
+      "from": "case:client/agenttool-grant-rejects-server-and-tool",
+      "type": "uses_fixture",
+      "to": "fixture:toolserverId"
+    },
+    {
+      "from": "case:client/agenttool-grant-runtime-tool-with-rule",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/agenttool-grant-runtime-tool-with-rule",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agenttool-grant-runtime-tool-with-rule",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agenttool-grant-runtime-tool-with-rule",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:client/agenttool-grant-runtime-tool-with-rule",
+      "type": "depends_on",
+      "to": "case:client/tool-create-runtime-builtin"
+    },
+    {
+      "from": "case:client/agenttool-grant-runtime-tool-with-rule",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agenttool"
+    },
+    {
+      "from": "case:client/agenttool-grant-runtime-tool-with-rule",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agenttool-grant-runtime-tool-with-rule",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:client/agenttool-grant-whole-server",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/agenttool-grant-whole-server",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agenttool-grant-whole-server",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agenttool-grant-whole-server",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:client/agenttool-grant-whole-server",
+      "type": "depends_on",
+      "to": "case:client/toolserver-create-mcp-server"
+    },
+    {
+      "from": "case:client/agenttool-grant-whole-server",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agenttool"
+    },
+    {
+      "from": "case:client/agenttool-grant-whole-server",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agenttool-grant-whole-server",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
     },
     {
       "from": "case:client/client-idea-create",
@@ -49735,6 +52921,236 @@
       "to": "profile:anonymous"
     },
     {
+      "from": "case:client/tool-create-rejects-schema-that-is-not-an-object",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/tool-create-rejects-schema-that-is-not-an-object",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tool-create-rejects-schema-that-is-not-an-object",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tool-create-rejects-schema-that-is-not-an-object",
+      "type": "covers",
+      "to": "controller:tool"
+    },
+    {
+      "from": "case:client/tool-create-rejects-schema-that-is-not-an-object",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tool"
+    },
+    {
+      "from": "case:client/tool-create-rejects-schema-that-is-not-an-object",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tool-create-runtime-builtin",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/tool-create-runtime-builtin",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tool-create-runtime-builtin",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tool-create-runtime-builtin",
+      "type": "covers",
+      "to": "controller:tool"
+    },
+    {
+      "from": "case:client/tool-create-runtime-builtin",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tool"
+    },
+    {
+      "from": "case:client/tool-create-runtime-builtin",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/toolserver-create-mcp-server",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/toolserver-create-mcp-server",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/toolserver-create-mcp-server",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/toolserver-create-mcp-server",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:client/toolserver-create-mcp-server",
+      "type": "exercises",
+      "to": "route:POST /api/v1/toolserver"
+    },
+    {
+      "from": "case:client/toolserver-create-mcp-server",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-kind",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-kind",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-kind",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-kind",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-kind",
+      "type": "exercises",
+      "to": "route:POST /api/v1/toolserver"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-kind",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/toolserver-refresh-failure-is-recorded",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/toolserver-refresh-failure-is-recorded",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/toolserver-refresh-failure-is-recorded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/toolserver-refresh-failure-is-recorded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/toolserver-refresh-failure-is-recorded",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:client/toolserver-refresh-failure-is-recorded",
+      "type": "depends_on",
+      "to": "case:client/toolserver-create-mcp-server"
+    },
+    {
+      "from": "case:client/toolserver-refresh-failure-is-recorded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/toolserver/{id}"
+    },
+    {
+      "from": "case:client/toolserver-refresh-failure-is-recorded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/toolserver-refresh-rejects-stdio-server",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/toolserver-refresh-rejects-stdio-server",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/toolserver-refresh-rejects-stdio-server",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/toolserver-refresh-rejects-stdio-server",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:client/toolserver-refresh-rejects-stdio-server",
+      "type": "depends_on",
+      "to": "case:client/toolserver-create-mcp-server"
+    },
+    {
+      "from": "case:client/toolserver-refresh-rejects-stdio-server",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/toolserver/{id}"
+    },
+    {
+      "from": "case:client/toolserver-refresh-rejects-stdio-server",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/toolserver-refresh-unreachable-server-is-502",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/toolserver-refresh-unreachable-server-is-502",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/toolserver-refresh-unreachable-server-is-502",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/toolserver-refresh-unreachable-server-is-502",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:client/toolserver-refresh-unreachable-server-is-502",
+      "type": "depends_on",
+      "to": "case:client/toolserver-create-mcp-server"
+    },
+    {
+      "from": "case:client/toolserver-refresh-unreachable-server-is-502",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/toolserver/{id}"
+    },
+    {
+      "from": "case:client/toolserver-refresh-unreachable-server-is-502",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/user-create-agent-type-refused",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -50993,6 +54409,66 @@
       "from": "controller:agentcredential",
       "type": "serves",
       "to": "model:Agentcredential"
+    },
+    {
+      "from": "controller:agenttool",
+      "type": "has_action",
+      "to": "action:agenttool.delete"
+    },
+    {
+      "from": "controller:agenttool",
+      "type": "has_action",
+      "to": "action:agenttool.deleteCollection"
+    },
+    {
+      "from": "controller:agenttool",
+      "type": "has_action",
+      "to": "action:agenttool.get"
+    },
+    {
+      "from": "controller:agenttool",
+      "type": "has_action",
+      "to": "action:agenttool.list"
+    },
+    {
+      "from": "controller:agenttool",
+      "type": "has_action",
+      "to": "action:agenttool.options"
+    },
+    {
+      "from": "controller:agenttool",
+      "type": "has_action",
+      "to": "action:agenttool.patch"
+    },
+    {
+      "from": "controller:agenttool",
+      "type": "has_action",
+      "to": "action:agenttool.patchCollection"
+    },
+    {
+      "from": "controller:agenttool",
+      "type": "has_action",
+      "to": "action:agenttool.post"
+    },
+    {
+      "from": "controller:agenttool",
+      "type": "has_action",
+      "to": "action:agenttool.put"
+    },
+    {
+      "from": "controller:agenttool",
+      "type": "has_action",
+      "to": "action:agenttool.putCollection"
+    },
+    {
+      "from": "controller:agenttool",
+      "type": "has_action",
+      "to": "action:agenttool.related"
+    },
+    {
+      "from": "controller:agenttool",
+      "type": "serves",
+      "to": "model:Agenttool"
     },
     {
       "from": "controller:badge",
@@ -52750,6 +56226,126 @@
       "to": "action:token.post"
     },
     {
+      "from": "controller:tool",
+      "type": "has_action",
+      "to": "action:tool.delete"
+    },
+    {
+      "from": "controller:tool",
+      "type": "has_action",
+      "to": "action:tool.deleteCollection"
+    },
+    {
+      "from": "controller:tool",
+      "type": "has_action",
+      "to": "action:tool.get"
+    },
+    {
+      "from": "controller:tool",
+      "type": "has_action",
+      "to": "action:tool.list"
+    },
+    {
+      "from": "controller:tool",
+      "type": "has_action",
+      "to": "action:tool.options"
+    },
+    {
+      "from": "controller:tool",
+      "type": "has_action",
+      "to": "action:tool.patch"
+    },
+    {
+      "from": "controller:tool",
+      "type": "has_action",
+      "to": "action:tool.patchCollection"
+    },
+    {
+      "from": "controller:tool",
+      "type": "has_action",
+      "to": "action:tool.post"
+    },
+    {
+      "from": "controller:tool",
+      "type": "has_action",
+      "to": "action:tool.put"
+    },
+    {
+      "from": "controller:tool",
+      "type": "has_action",
+      "to": "action:tool.putCollection"
+    },
+    {
+      "from": "controller:tool",
+      "type": "has_action",
+      "to": "action:tool.related"
+    },
+    {
+      "from": "controller:tool",
+      "type": "serves",
+      "to": "model:Tool"
+    },
+    {
+      "from": "controller:toolserver",
+      "type": "has_action",
+      "to": "action:toolserver.delete"
+    },
+    {
+      "from": "controller:toolserver",
+      "type": "has_action",
+      "to": "action:toolserver.deleteCollection"
+    },
+    {
+      "from": "controller:toolserver",
+      "type": "has_action",
+      "to": "action:toolserver.get"
+    },
+    {
+      "from": "controller:toolserver",
+      "type": "has_action",
+      "to": "action:toolserver.list"
+    },
+    {
+      "from": "controller:toolserver",
+      "type": "has_action",
+      "to": "action:toolserver.options"
+    },
+    {
+      "from": "controller:toolserver",
+      "type": "has_action",
+      "to": "action:toolserver.patch"
+    },
+    {
+      "from": "controller:toolserver",
+      "type": "has_action",
+      "to": "action:toolserver.patchCollection"
+    },
+    {
+      "from": "controller:toolserver",
+      "type": "has_action",
+      "to": "action:toolserver.post"
+    },
+    {
+      "from": "controller:toolserver",
+      "type": "has_action",
+      "to": "action:toolserver.put"
+    },
+    {
+      "from": "controller:toolserver",
+      "type": "has_action",
+      "to": "action:toolserver.putCollection"
+    },
+    {
+      "from": "controller:toolserver",
+      "type": "has_action",
+      "to": "action:toolserver.related"
+    },
+    {
+      "from": "controller:toolserver",
+      "type": "serves",
+      "to": "model:Toolserver"
+    },
+    {
       "from": "controller:translation",
       "type": "has_action",
       "to": "action:translation.get"
@@ -53250,6 +56846,16 @@
       "to": "field:Agentcredential.modifiedUser"
     },
     {
+      "from": "field:Agenttool.createdUserName",
+      "type": "linked_to",
+      "to": "field:Agenttool.createdUser"
+    },
+    {
+      "from": "field:Agenttool.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Agenttool.modifiedUser"
+    },
+    {
       "from": "field:Badge.createdUserName",
       "type": "linked_to",
       "to": "field:Badge.createdUser"
@@ -53488,6 +57094,26 @@
       "from": "field:Timelog.modifiedUserName",
       "type": "linked_to",
       "to": "field:Timelog.modifiedUser"
+    },
+    {
+      "from": "field:Tool.createdUserName",
+      "type": "linked_to",
+      "to": "field:Tool.createdUser"
+    },
+    {
+      "from": "field:Tool.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Tool.modifiedUser"
+    },
+    {
+      "from": "field:Toolserver.createdUserName",
+      "type": "linked_to",
+      "to": "field:Toolserver.createdUser"
+    },
+    {
+      "from": "field:Toolserver.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Toolserver.modifiedUser"
     },
     {
       "from": "field:Translation.createdUserName",
@@ -53922,6 +57548,11 @@
     {
       "from": "model:Agent",
       "type": "has_relationship",
+      "to": "relationship:Agent.toolGrants"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_relationship",
       "to": "relationship:Agent.user"
     },
     {
@@ -54056,6 +57687,121 @@
     },
     {
       "from": "model:Agentcredential",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_field",
+      "to": "field:Agenttool.agentId"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_field",
+      "to": "field:Agenttool.createdUser"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_field",
+      "to": "field:Agenttool.createdUserName"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_field",
+      "to": "field:Agenttool.dateCreated"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_field",
+      "to": "field:Agenttool.dateModified"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_field",
+      "to": "field:Agenttool.deleted"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_field",
+      "to": "field:Agenttool.id"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_field",
+      "to": "field:Agenttool.modifiedUser"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_field",
+      "to": "field:Agenttool.modifiedUserName"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_field",
+      "to": "field:Agenttool.permissionRule"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_field",
+      "to": "field:Agenttool.toolId"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_field",
+      "to": "field:Agenttool.toolServerId"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_relationship",
+      "to": "relationship:Agenttool.agent"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_relationship",
+      "to": "relationship:Agenttool.createdBy"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_relationship",
+      "to": "relationship:Agenttool.modifiedBy"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_relationship",
+      "to": "relationship:Agenttool.tool"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "has_relationship",
+      "to": "relationship:Agenttool.toolServer"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Agenttool",
       "type": "uses_behaviour",
       "to": "behaviour:softDeleteBehavior"
     },
@@ -57175,6 +60921,256 @@
       "to": "behaviour:softDeleteBehavior"
     },
     {
+      "from": "model:Tool",
+      "type": "has_field",
+      "to": "field:Tool.createdUser"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_field",
+      "to": "field:Tool.createdUserName"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_field",
+      "to": "field:Tool.dateCreated"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_field",
+      "to": "field:Tool.dateModified"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_field",
+      "to": "field:Tool.deleted"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_field",
+      "to": "field:Tool.description"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_field",
+      "to": "field:Tool.id"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_field",
+      "to": "field:Tool.inputSchema"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_field",
+      "to": "field:Tool.modifiedUser"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_field",
+      "to": "field:Tool.modifiedUserName"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_field",
+      "to": "field:Tool.name"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_field",
+      "to": "field:Tool.toolServerId"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_relationship",
+      "to": "relationship:Tool.createdBy"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_relationship",
+      "to": "relationship:Tool.grants"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_relationship",
+      "to": "relationship:Tool.modifiedBy"
+    },
+    {
+      "from": "model:Tool",
+      "type": "has_relationship",
+      "to": "relationship:Tool.toolServer"
+    },
+    {
+      "from": "model:Tool",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Tool",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Tool",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Tool",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Tool",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Tool",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.command"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.createdUser"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.createdUserName"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.dateCreated"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.dateModified"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.deleted"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.description"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.endpoint"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.id"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.kind"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.location"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.modifiedUser"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.modifiedUserName"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.name"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.refreshError"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.schemaRefreshedAt"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.spec"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.transport"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_relationship",
+      "to": "relationship:Toolserver.createdBy"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_relationship",
+      "to": "relationship:Toolserver.grants"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_relationship",
+      "to": "relationship:Toolserver.modifiedBy"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "has_relationship",
+      "to": "relationship:Toolserver.tools"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
       "from": "model:Translation",
       "type": "has_field",
       "to": "field:Translation.createdUser"
@@ -58622,6 +62618,26 @@
     {
       "from": "profile:aclAgent",
       "type": "grants",
+      "to": "permission:agenttool.create"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:agenttool.delete"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:agenttool.get"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
+      "to": "permission:agenttool.update"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
       "to": "permission:permission.create"
     },
     {
@@ -58907,12 +62923,32 @@
     {
       "from": "profile:aclNoSetting",
       "type": "denies",
+      "to": "permission:agenttool.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
       "to": "permission:setting.get"
     },
     {
       "from": "profile:aclNoSetting",
       "type": "denies",
       "to": "permission:setting.update"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:tool.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:toolserver.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:toolserver.update"
     },
     {
       "from": "profile:aclNoSetting",
@@ -59053,6 +63089,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:agentcredential.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agenttool.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agenttool.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agenttool.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agenttool.update"
     },
     {
       "from": "profile:default",
@@ -59437,6 +63493,46 @@
     {
       "from": "profile:default",
       "type": "grants",
+      "to": "permission:tool.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:tool.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:tool.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:tool.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:toolserver.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:toolserver.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:toolserver.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:toolserver.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
       "to": "permission:upload.create"
     },
     {
@@ -59605,6 +63701,11 @@
       "to": "model:User"
     },
     {
+      "from": "relationship:Agent.toolGrants",
+      "type": "targets",
+      "to": "model:Agenttool"
+    },
+    {
       "from": "relationship:Agent.user",
       "type": "targets",
       "to": "model:User"
@@ -59623,6 +63724,31 @@
       "from": "relationship:Agentcredential.modifiedBy",
       "type": "targets",
       "to": "model:User"
+    },
+    {
+      "from": "relationship:Agenttool.agent",
+      "type": "targets",
+      "to": "model:Agent"
+    },
+    {
+      "from": "relationship:Agenttool.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Agenttool.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Agenttool.tool",
+      "type": "targets",
+      "to": "model:Tool"
+    },
+    {
+      "from": "relationship:Agenttool.toolServer",
+      "type": "targets",
+      "to": "model:Toolserver"
     },
     {
       "from": "relationship:Badge.levels",
@@ -60105,6 +64231,46 @@
       "to": "model:Project"
     },
     {
+      "from": "relationship:Tool.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Tool.grants",
+      "type": "targets",
+      "to": "model:Agenttool"
+    },
+    {
+      "from": "relationship:Tool.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Tool.toolServer",
+      "type": "targets",
+      "to": "model:Toolserver"
+    },
+    {
+      "from": "relationship:Toolserver.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Toolserver.grants",
+      "type": "targets",
+      "to": "model:Agenttool"
+    },
+    {
+      "from": "relationship:Toolserver.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Toolserver.tools",
+      "type": "targets",
+      "to": "model:Tool"
+    },
+    {
       "from": "relationship:Translation.createdBy",
       "type": "targets",
       "to": "model:User"
@@ -60395,6 +64561,16 @@
       "to": "action:agentcredential.delete"
     },
     {
+      "from": "route:DELETE /api/v1/agenttool",
+      "type": "handled_by",
+      "to": "action:agenttool.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/agenttool/{id}",
+      "type": "handled_by",
+      "to": "action:agenttool.delete"
+    },
+    {
       "from": "route:DELETE /api/v1/badge",
       "type": "handled_by",
       "to": "action:badge.deleteCollection"
@@ -60625,6 +64801,26 @@
       "to": "action:timelog.delete"
     },
     {
+      "from": "route:DELETE /api/v1/tool",
+      "type": "handled_by",
+      "to": "action:tool.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/tool/{id}",
+      "type": "handled_by",
+      "to": "action:tool.delete"
+    },
+    {
+      "from": "route:DELETE /api/v1/toolserver",
+      "type": "handled_by",
+      "to": "action:toolserver.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/toolserver/{id}",
+      "type": "handled_by",
+      "to": "action:toolserver.delete"
+    },
+    {
       "from": "route:DELETE /api/v1/upload",
       "type": "handled_by",
       "to": "action:upload.deleteCollection"
@@ -60738,6 +64934,21 @@
       "from": "route:GET /api/v1/agentcredential/{id}/{relation}",
       "type": "handled_by",
       "to": "action:agentcredential.related"
+    },
+    {
+      "from": "route:GET /api/v1/agenttool",
+      "type": "handled_by",
+      "to": "action:agenttool.list"
+    },
+    {
+      "from": "route:GET /api/v1/agenttool/{id}",
+      "type": "handled_by",
+      "to": "action:agenttool.get"
+    },
+    {
+      "from": "route:GET /api/v1/agenttool/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:agenttool.related"
     },
     {
       "from": "route:GET /api/v1/badge",
@@ -61190,6 +65401,36 @@
       "to": "action:timelog.related"
     },
     {
+      "from": "route:GET /api/v1/tool",
+      "type": "handled_by",
+      "to": "action:tool.list"
+    },
+    {
+      "from": "route:GET /api/v1/tool/{id}",
+      "type": "handled_by",
+      "to": "action:tool.get"
+    },
+    {
+      "from": "route:GET /api/v1/tool/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:tool.related"
+    },
+    {
+      "from": "route:GET /api/v1/toolserver",
+      "type": "handled_by",
+      "to": "action:toolserver.list"
+    },
+    {
+      "from": "route:GET /api/v1/toolserver/{id}",
+      "type": "handled_by",
+      "to": "action:toolserver.get"
+    },
+    {
+      "from": "route:GET /api/v1/toolserver/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:toolserver.related"
+    },
+    {
       "from": "route:GET /api/v1/upload",
       "type": "handled_by",
       "to": "action:upload.list"
@@ -61308,6 +65549,11 @@
       "from": "route:OPTIONS /api/v1/agentcredential",
       "type": "handled_by",
       "to": "action:agentcredential.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/agenttool",
+      "type": "handled_by",
+      "to": "action:agenttool.options"
     },
     {
       "from": "route:OPTIONS /api/v1/badge",
@@ -61475,6 +65721,16 @@
       "to": "action:token.options"
     },
     {
+      "from": "route:OPTIONS /api/v1/tool",
+      "type": "handled_by",
+      "to": "action:tool.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/toolserver",
+      "type": "handled_by",
+      "to": "action:toolserver.options"
+    },
+    {
       "from": "route:OPTIONS /api/v1/upload",
       "type": "handled_by",
       "to": "action:upload.options"
@@ -61543,6 +65799,16 @@
       "from": "route:PATCH /api/v1/agentcredential/{id}",
       "type": "handled_by",
       "to": "action:agentcredential.patch"
+    },
+    {
+      "from": "route:PATCH /api/v1/agenttool",
+      "type": "handled_by",
+      "to": "action:agenttool.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/agenttool/{id}",
+      "type": "handled_by",
+      "to": "action:agenttool.patch"
     },
     {
       "from": "route:PATCH /api/v1/badge",
@@ -61805,6 +66071,26 @@
       "to": "action:timelog.patch"
     },
     {
+      "from": "route:PATCH /api/v1/tool",
+      "type": "handled_by",
+      "to": "action:tool.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/tool/{id}",
+      "type": "handled_by",
+      "to": "action:tool.patch"
+    },
+    {
+      "from": "route:PATCH /api/v1/toolserver",
+      "type": "handled_by",
+      "to": "action:toolserver.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/toolserver/{id}",
+      "type": "handled_by",
+      "to": "action:toolserver.patch"
+    },
+    {
       "from": "route:PATCH /api/v1/upload",
       "type": "handled_by",
       "to": "action:upload.patchCollection"
@@ -61888,6 +66174,11 @@
       "from": "route:POST /api/v1/agentcredential",
       "type": "handled_by",
       "to": "action:agentcredential.post"
+    },
+    {
+      "from": "route:POST /api/v1/agenttool",
+      "type": "handled_by",
+      "to": "action:agenttool.post"
     },
     {
       "from": "route:POST /api/v1/badge",
@@ -62030,6 +66321,16 @@
       "to": "action:token.post"
     },
     {
+      "from": "route:POST /api/v1/tool",
+      "type": "handled_by",
+      "to": "action:tool.post"
+    },
+    {
+      "from": "route:POST /api/v1/toolserver",
+      "type": "handled_by",
+      "to": "action:toolserver.post"
+    },
+    {
       "from": "route:POST /api/v1/upload",
       "type": "handled_by",
       "to": "action:upload.post"
@@ -62098,6 +66399,16 @@
       "from": "route:PUT /api/v1/agentcredential/{id}",
       "type": "handled_by",
       "to": "action:agentcredential.put"
+    },
+    {
+      "from": "route:PUT /api/v1/agenttool",
+      "type": "handled_by",
+      "to": "action:agenttool.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/agenttool/{id}",
+      "type": "handled_by",
+      "to": "action:agenttool.put"
     },
     {
       "from": "route:PUT /api/v1/badge",
@@ -62318,6 +66629,26 @@
       "from": "route:PUT /api/v1/timelog/{id}",
       "type": "handled_by",
       "to": "action:timelog.put"
+    },
+    {
+      "from": "route:PUT /api/v1/tool",
+      "type": "handled_by",
+      "to": "action:tool.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/tool/{id}",
+      "type": "handled_by",
+      "to": "action:tool.put"
+    },
+    {
+      "from": "route:PUT /api/v1/toolserver",
+      "type": "handled_by",
+      "to": "action:toolserver.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/toolserver/{id}",
+      "type": "handled_by",
+      "to": "action:toolserver.put"
     },
     {
       "from": "route:PUT /api/v1/upload",

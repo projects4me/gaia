@@ -7,6 +7,7 @@
 namespace Gaia\Libraries\Security;
 
 use Gaia\MVC\Models\Agent;
+use Gaia\MVC\Models\Agenttool;
 use Gaia\MVC\Models\Permission;
 use Gaia\MVC\Models\User;
 use Gaia\MVC\Models\Userrole;
@@ -15,7 +16,7 @@ use Gaia\MVC\Models\Userrole;
  * Stops an agent from raising its own privileges, whatever its ACL allows:
  * an agent user cannot change or delete its own agent (the agents row and its
  * users row), assign or remove its own roles, or change the permissions of a
- * role it holds. Human users are not affected.
+ * role it holds, or change its own tool grants. Human users are not affected.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Security
@@ -152,6 +153,47 @@ class AgentEscalationGuard
         ]);
         if ($stored) {
             self::assertNotOwnRole($actor, $stored->roleId);
+        }
+    }
+
+    /**
+     * Deny an agent writing a tool grant of its own agent: the agent in the
+     * payload, or the agent of the stored grant being changed or deleted.
+     *
+     * @param  \Gaia\MVC\Models\User|null $actor
+     * @param  string|null $grantId Existing grant (update/delete)
+     * @param  string|null $agentId Agent in the write payload
+     * @return void
+     * @throws \Gaia\Exception\Access
+     */
+    public static function assertNotOwnToolGrant($actor, $grantId, $agentId)
+    {
+        if (!self::isAgent($actor)) {
+            return;
+        }
+
+        $agentIds = [$agentId];
+        if ($grantId !== null && (string) $grantId !== '') {
+            $stored = Agenttool::findFirst([
+                'conditions' => 'id = :id: AND deleted = false',
+                'bind' => ['id' => (string) $grantId],
+            ]);
+            if ($stored) {
+                $agentIds[] = $stored->agentId;
+            }
+        }
+
+        foreach ($agentIds as $id) {
+            if ($id === null || (string) $id === '') {
+                continue;
+            }
+            $agent = Agent::findFirst([
+                'conditions' => 'id = :id: AND deleted = false',
+                'bind' => ['id' => (string) $id],
+            ]);
+            if ($agent && (string) $agent->userId === (string) $actor->id) {
+                self::deny('An agent cannot change its own tool grants.');
+            }
         }
     }
 

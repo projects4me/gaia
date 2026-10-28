@@ -1891,6 +1891,139 @@
       "auth": true,
       "expects": { "status": [200, 204], "shape": "json" },
       "source": "acl-setting"
+    },
+    {
+      "id": "acl-toolserver-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/toolserver",
+      "resource": "toolserver",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-toolserver-detail-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/toolserver/{toolserverId}",
+      "resource": "toolserver",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-tool-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/tool",
+      "resource": "tool",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-tool-detail-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/tool/{toolId}",
+      "resource": "tool",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-agenttool-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/agenttool",
+      "resource": "agenttool",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-agenttool-detail-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/agenttool/{agenttoolId}",
+      "resource": "agenttool",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-agenttool-agent-cannot-grant-itself",
+      "method": "POST",
+      "path": "/api/v1/agenttool",
+      "resource": "agenttool",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "agenttool",
+          "attributes": {
+            "agentId": "{agentId}",
+            "toolServerId": "{toolserverId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change its own tool grants." }
+    },
+    {
+      "id": "acl-agenttool-agent-cannot-change-own-grant",
+      "method": "PATCH",
+      "path": "/api/v1/agenttool/{agenttoolId}",
+      "resource": "agenttool",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "agenttool",
+          "id": "{agenttoolId}",
+          "attributes": {
+            "permissionRule": "Bash(*)"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change its own tool grants." }
+    },
+    {
+      "id": "acl-agenttool-agent-cannot-delete-own-grant",
+      "method": "DELETE",
+      "path": "/api/v1/agenttool/{agenttoolId}",
+      "resource": "agenttool",
+      "auth": "aclAgent",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change its own tool grants." }
+    },
+    {
+      "id": "acl-agenttool-agent-may-grant-another-agent",
+      "method": "POST",
+      "path": "/api/v1/agenttool",
+      "resource": "agenttool",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "agenttool",
+          "attributes": {
+            "agentId": "{otherAgentId}",
+            "toolServerId": "{toolserverId}"
+          }
+        }
+      },
+      "expects": { "status": 201, "shape": "jsonapi.resource", "attributesEqual": {"agentId": "{otherAgentId}"} }
+    },
+    {
+      "id": "acl-toolserver-refresh-needs-update",
+      "method": "PATCH",
+      "path": "/api/v1/toolserver/{toolserverId}",
+      "resource": "toolserver",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "toolserver",
+          "id": "{toolserverId}",
+          "attributes": {
+            "refresh": true
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
     }
   ]
 }

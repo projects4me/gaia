@@ -487,7 +487,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -938,7 +938,12 @@ VALUES
   -- agentcredential.create is denied: issuing credentials is granted apart from editing agents
   ('atp-acl-agent-agentcred-create', 'api-test-role-acl-agent', 'agentcredential.create', 0, NOW(), NOW()),
   ('atp-acl-agent-agentcred-get', 'api-test-role-acl-agent', 'agentcredential.get', 1, NOW(), NOW()),
-  ('atp-acl-agent-agentcred-delete', 'api-test-role-acl-agent', 'agentcredential.delete', 1, NOW(), NOW());
+  ('atp-acl-agent-agentcred-delete', 'api-test-role-acl-agent', 'agentcredential.delete', 1, NOW(), NOW()),
+  -- agenttool.*: the ACL allows tool grants, so only AgentEscalationGuard stops an agent granting itself tools
+  ('atp-acl-agent-agenttool-get', 'api-test-role-acl-agent', 'agenttool.get', 1, NOW(), NOW()),
+  ('atp-acl-agent-agenttool-create', 'api-test-role-acl-agent', 'agenttool.create', 1, NOW(), NOW()),
+  ('atp-acl-agent-agenttool-update', 'api-test-role-acl-agent', 'agenttool.update', 1, NOW(), NOW()),
+  ('atp-acl-agent-agenttool-delete', 'api-test-role-acl-agent', 'agenttool.delete', 1, NOW(), NOW());
 
 -- Agent: a second agent user (no sponsor, no role), a target the aclAgent profile may change
 INSERT INTO users (
@@ -986,6 +991,41 @@ INSERT INTO agentcredentials (
 ) VALUES
   ('api-test-agentcredential-000001', 'api-test-agent-000001', 'agent-api-tester-acl-agent', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET "agentId" = EXCLUDED."agentId", "clientId" = EXCLUDED."clientId", deleted = FALSE;
+
+-- Toolserver: seed records (gaia-dev scaffold resource)
+INSERT INTO tool_servers (
+  id, "name", "kind", "location", "transport", "endpoint", "command", "spec", "description", "schemaRefreshedAt", "refreshError", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-toolserver-000001', 'API Test MCP', 'mcp', 'external', 'http', 'http://127.0.0.1:9/mcp', NULL, NULL, 'Seeded MCP server for the api-tester', NULL, NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-no-setting-toolserver-get', 'api-test-role-acl-ns', 'toolserver.get', 0, NOW(), NOW()),
+  -- a refresh is a PATCH, so it needs toolserver.update
+  ('atp-acl-no-setting-toolserver-update', 'api-test-role-acl-ns', 'toolserver.update', 0, NOW(), NOW());
+
+-- Tool: seed records (gaia-dev scaffold resource)
+INSERT INTO tools (
+  id, "toolServerId", "name", "description", "inputSchema", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-tool-000001', 'api-test-toolserver-000001', 'seed_tool', 'Seeded tool', '{"type":"object","properties":{}}', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-no-setting-tool-get', 'api-test-role-acl-ns', 'tool.get', 0, NOW(), NOW());
+
+-- Agenttool: seed records (gaia-dev scaffold resource)
+INSERT INTO agent_tools (
+  id, "agentId", "toolServerId", "toolId", "permissionRule", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-agenttool-000001', 'api-test-agent-000001', 'api-test-toolserver-000001', NULL, NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-no-setting-agenttool-get', 'api-test-role-acl-ns', 'agenttool.get', 0, NOW(), NOW());
 
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
@@ -1096,6 +1136,9 @@ data = {
     "agentUserroleId": "api-test-userrole-acl-agent",
     "agentPermissionId": "atp-acl-acl-agent-agent-get",
     "agentcredentialId": "api-test-agentcredential-000001",
+    "toolserverId": "api-test-toolserver-000001",
+    "toolId": "api-test-tool-000001",
+    "agenttoolId": "api-test-agenttool-000001",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

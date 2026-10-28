@@ -137,6 +137,39 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'agenttool' => array(
+                'path' => '/api/:version/agenttool',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'tool' => array(
+                'path' => '/api/:version/tool',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'toolserver' => array(
+                'path' => '/api/:version/toolserver',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'agentcredential' => array(
                 'path' => '/api/:version/agentcredential',
                 'allowedMethods' => array(
