@@ -318,6 +318,12 @@ class Postgres
             $fieldOptions['primary'] = true;
         }
 
+        // An auto-increment column becomes SERIAL, which PostgreSQL always makes NOT NULL;
+        // the dialect writes "SERIAL NULL" for a nullable one, which PostgreSQL rejects.
+        if (!empty($fieldOptions['autoIncrement'])) {
+            $fieldOptions['notNull'] = true;
+        }
+
         if (isset($schema['default']) && $fieldOptions['type'] === Column::TYPE_BOOLEAN) {
             $fieldOptions['default'] = self::booleanDefaultLiteral($schema['default']);
         }
