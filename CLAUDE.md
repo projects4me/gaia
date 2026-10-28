@@ -18,7 +18,7 @@
 
 ## Rules
 - Never build SQL/PHQL by string concatenation; use bound parameters.
-- When adding a resource, check its permissions on existing roles and add `tools/api-tester` acl cases.
+- When adding a resource, new modules ship no permission seed SQL: the reviewer grants the permissions by hand. Still add `tools/api-tester` acl cases.
 - Columns are camelCase; quote them in raw Postgres SQL (`"userId"`). IDs are GUIDs; deletes are soft.
 - Keep the license header and docblocks (`@author`, `@package`, `@license AGPLv3`) on new files.
 - Don't commit secrets; read config via `getenv()` in `config/*.php`.
