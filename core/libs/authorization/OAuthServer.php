@@ -82,8 +82,9 @@ class OAuthServer
      * storage, which then performs the lookup by email column.
      *
      * @method addPasswordGrant
+     * @param  bool $rememberMe Whether the sign-in asked to be remembered.
      */
-    protected function addPasswordGrant()
+    protected function addPasswordGrant($rememberMe)
     {
         if (!empty($this->request->request['email'])) {
             $this->request->request['username'] = $this->request->request['email'];
@@ -91,7 +92,6 @@ class OAuthServer
 
         $this->server->addGrantType(new OAuth2\GrantType\UserCredentials($this->storage));
 
-        $rememberMe = filter_var($this->request->request('remember_me'), FILTER_VALIDATE_BOOLEAN);
         $this->openSessionWindow($rememberMe);
     }
 
@@ -186,15 +186,17 @@ class OAuthServer
      * Handles the specific grant type based on the request.
      *
      * @method handleGrantType
+     * @param  bool $rememberMe Whether a password sign-in asked to be
+     *                          remembered; the controller reads it from the request.
      */
-    public function addGrantType()
+    public function addGrantType($rememberMe = false)
     {
         $grantType = $this->request->request('grant_type');
 
         if (isset($this->grantTypeMap[$grantType])) {
             $handlerMethod = $this->grantTypeMap[$grantType];
             if (method_exists($this, $handlerMethod)) {
-                return $this->$handlerMethod();
+                return $this->$handlerMethod((bool) $rememberMe);
             }
         }
 

@@ -170,6 +170,28 @@ class TokenControllerTest extends TestCase
     }
 
     /**
+     * An expired session can't borrow another session's open window, nor the
+     * user's: refreshing it fails while the Remember Me session still refreshes.
+     *
+     * @return void
+     */
+    public function testExpiredTokenCannotUseAnotherValidSession(): void
+    {
+        $rememberMeToken = $this->signIn(true);
+        $laterToken = $this->signIn(false);
+
+        $this->setUserSessionExpires(gmdate('Y-m-d H:i:s', time() + 86400));
+        $this->setSessionExpires($laterToken, gmdate('Y-m-d H:i:s', time() - 60));
+
+        $response = $this->getRefreshToken($rememberMeToken);
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $this->expectException(\Gaia\Exception\UnAuthorized::class);
+        $this->expectExceptionMessage('Your session is expired');
+        $this->getRefreshToken($laterToken);
+    }
+
+    /**
      * The session window slides: each refresh keeps the session's Remember Me
      * flag and opens a new full window from the time of the refresh.
      *

@@ -50,7 +50,8 @@ class TokenController extends RestController
         }
 
         $oauthServer = $this->getOAuthServer($request);
-        $oauthServer->addGrantType();
+        $rememberMe = filter_var($request->request('remember_me'), FILTER_VALIDATE_BOOLEAN);
+        $oauthServer->addGrantType($rememberMe);
 
         // Check failed login attempts before handling the OAuth2.0 Access Token request
         if ($grantType === 'password') {
