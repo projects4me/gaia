@@ -409,6 +409,23 @@ class TokenControllerTest extends TestCase
     }
 
     /**
+     * A refresh token carrying SQL is treated as data: it matches no row and
+     * no token is issued.
+     *
+     * @return void
+     */
+    public function testInjectionPayloadCannotRefreshToken(): void
+    {
+        $this->mockOAuthRequest(false);
+        $this->mockOAuthServer();
+        $this->getAccessToken();
+
+        $this->expectException(\Gaia\Exception\UnAuthorized::class);
+        $this->expectExceptionMessage('Invalid Token');
+        $this->getRefreshToken("' OR '1'='1");
+    }
+
+    /**
      * Bearer API auth rejects inactive users even if a token row still exists.
      *
      * @return void
