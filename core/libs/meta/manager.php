@@ -190,8 +190,10 @@ class Manager
     {
         // The application default values
         $data = array('default' => array());
-        $data['tableName'] = $metadata['tableName'];
-        foreach ($metadata['fields'] as $field => $properties) {
+        // Routes without model metadata (e.g. Issueplanning) have no table and no fields
+        $data['tableName'] = isset($metadata['tableName']) ? $metadata['tableName'] : null;
+        $metaFields = isset($metadata['fields']) ? $metadata['fields'] : array();
+        foreach ($metaFields as $field => $properties) {
             // Add all the fields in the attributes array
             $data['attributes'][] = $field;
 
