@@ -50,7 +50,8 @@ class TokenController extends RestController
         }
 
         $oauthServer = $this->getOAuthServer($request);
-        $oauthServer->addGrantType();
+        $rememberMe = filter_var($request->request('remember_me'), FILTER_VALIDATE_BOOLEAN);
+        $oauthServer->addGrantType($rememberMe);
 
         // Check failed login attempts before handling the OAuth2.0 Access Token request
         if ($grantType === 'password') {
@@ -86,47 +87,12 @@ class TokenController extends RestController
     private function handlePasswordGrant($request, $response)
     {
         $accessToken = $response->getParameter('access_token');
-        $rememberMe = filter_var($request->request('remember_me'), FILTER_VALIDATE_BOOLEAN);
 
         if ($accessToken) {
-            $oauthConfig = $this->config->get('oauth');
-            $this->validateOAuthConfig($oauthConfig);
-
             // Get the user by email
             $user = $this->getUserByEmail($request->request['email']);
             $this->setCurrentUser($user);
-
-            // Set session expiration times
-            $this->setSessionExpiration($user, $oauthConfig, $rememberMe);
-            $user->save();
         }
-    }
-
-    /**
-     * Validate the OAuth configuration values.
-     *
-     * @param  array $oauthConfig
-     * @throws Exception
-     */
-    private function validateOAuthConfig(\Phalcon\Config $oauthConfig)
-    {
-        if (!is_numeric($oauthConfig['sessionTimeout'])) {
-            throw new Exception("Session Timeout should be a number");
-        }
-    }
-
-    /**
-     * Set session expiration for the user.
-     *
-     * @param \Gaia\MVC\Models\User $user
-     * @param array                 $oauthConfig
-     * @param bool                  $rememberMe
-     */
-    private function setSessionExpiration(\Gaia\MVC\Models\User $user, \Phalcon\Config $oauthConfig, $rememberMe)
-    {
-        $sessionTimeout = $rememberMe ? $oauthConfig['sessionTimeoutForRememberMe'] : $oauthConfig['sessionTimeout'];
-        $sessionExpires = gmdate('Y-m-d H:i:s', strtotime("+$sessionTimeout days"));
-        $user->sessionExpires = $sessionExpires;
     }
 
     /**

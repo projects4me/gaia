@@ -413,6 +413,19 @@ These scenarios are settled and should become tests later:
 
 ---
 
+## Session decisions
+
+### D-061 — Session expiry is per session and sliding
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | A session is the chain of refresh tokens that starts at one password sign-in. Each refresh token stores its own window in `oauth_refresh_tokens` (`rememberMe`, `sessionExpires`); a refresh is refused once the presented token's `sessionExpires` has passed. The window **slides**: a password sign-in opens it, and every refresh opens a new one of `sessionTimeoutForRememberMe` (Remember Me) or `sessionTimeout` days from the time of the refresh, carrying the session's Remember Me flag. A session ends only after that many days without a refresh. |
+| Rationale | One expiry per user let any later sign-in without Remember Me (another browser, a tool signing in as the same user) cut every Remember Me session to one day. A sliding window keeps an active sign-in alive for as long as it is used. |
+| Implications | `SessionExpiry` owns the window rule; `OAuthServer` checks and slides it, and the OAuth storage (`core/libs/oauth2.0/storage/pdo.php`) writes it with each refresh token. Revoking a user (soft-disable, D-052) still ends every session, because it deletes the user's tokens and the refresh grant rejects inactive accounts. Refresh tokens issued before this change have no `sessionExpires` and fall back to `users.sessionExpires` until they rotate, and keep Remember Me when that expiry lies beyond a normal `sessionTimeout` window. That user column is no longer written at sign-in, but soft-disable still sets it to the past and the legacy fallback still reads it; it is left for removal in a later change. |
+
+---
+
 ## Open questions
 
 Track unsettled policy here. Do not generate tests from these until accepted.
@@ -433,6 +446,7 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 
 | Date | Change |
 |------|--------|
+| 2026-10-28 | D-061: session expiry stored per refresh token (`rememberMe`, `sessionExpires`) and sliding on refresh; a later sign-in no longer shortens other sessions |
 | 2026-09-15 | D-060: `project.get` scopes 0/1/2 (none/all/members); membership cascade via `groupKeys`; seed default members |
 | 2026-08-11 | D-011 revised: full-catalog materialization at role create via `RolePermissionSeeder`, seeded from resolution mode only (no role-name force-allow; privilege stays capability-based, D-052); missing rows still follow live resolution mode (catalog growth). D-014: `system.acl.resolutionMode` is create-time seed + aggregation + missing-row policy; flips do not rewrite rows. D-037: unset/DELETE → explicit `none`/deny (no row delete) |
 | 2026-08-10 | D-052: usable membership = Active `accountStatus` (case-insensitive); enforced on user deactivate/delete via `UserController`; `roleMemberCount` joins users and ignores non-Active/deleted members |

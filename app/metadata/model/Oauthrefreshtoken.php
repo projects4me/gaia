@@ -43,6 +43,19 @@ $models['Oauthrefreshtoken'] = array(
            'length' => '2000',
            'null' => true,
        ),
+       'rememberMe' => array(
+           'name' => 'rememberMe',
+           'label' => 'LBL_OAUTH_REFRESH_TOKENS_REMEMBER_ME',
+           'type' => 'int',
+           'null' => false,
+           'default' => 0
+       ),
+       'sessionExpires' => array(
+           'name' => 'sessionExpires',
+           'label' => 'LBL_OAUTH_REFRESH_TOKENS_SESSION_EXPIRES',
+           'type' => 'datetime',
+           'null' => true,
+       ),
     ),
     'indexes' => array(
         'refresh_token' => 'primary',

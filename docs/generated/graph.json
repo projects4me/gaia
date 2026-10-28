@@ -17862,6 +17862,17 @@
       }
     },
     {
+      "id": "field:Oauthrefreshtoken.rememberMe",
+      "type": "field",
+      "key": "Oauthrefreshtoken.rememberMe",
+      "attributes": {
+        "label": "LBL_OAUTH_REFRESH_TOKENS_REMEMBER_ME",
+        "type": "int",
+        "null": false,
+        "default": 0
+      }
+    },
+    {
       "id": "field:Oauthrefreshtoken.scope",
       "type": "field",
       "key": "Oauthrefreshtoken.scope",
@@ -17869,6 +17880,16 @@
         "label": "LBL_OAUTH_REFRESH_TOKENS_SCOPE",
         "type": "varchar",
         "length": "2000",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Oauthrefreshtoken.sessionExpires",
+      "type": "field",
+      "key": "Oauthrefreshtoken.sessionExpires",
+      "attributes": {
+        "label": "LBL_OAUTH_REFRESH_TOKENS_SESSION_EXPIRES",
+        "type": "datetime",
         "null": true
       }
     },
@@ -56046,7 +56067,17 @@
     {
       "from": "model:Oauthrefreshtoken",
       "type": "has_field",
+      "to": "field:Oauthrefreshtoken.rememberMe"
+    },
+    {
+      "from": "model:Oauthrefreshtoken",
+      "type": "has_field",
       "to": "field:Oauthrefreshtoken.scope"
+    },
+    {
+      "from": "model:Oauthrefreshtoken",
+      "type": "has_field",
+      "to": "field:Oauthrefreshtoken.sessionExpires"
     },
     {
       "from": "model:Oauthrefreshtoken",

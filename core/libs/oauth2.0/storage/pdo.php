@@ -17,6 +17,19 @@ namespace Gaia\Libraries\Oauth\Storage;
  */
 class Pdo extends \OAuth2\Storage\Pdo
 {
+    /**
+     * Whether the session the next refresh token belongs to is a Remember Me session.
+     *
+     * @var bool
+     */
+    private $sessionRememberMe = false;
+
+    /**
+     * When the session the next refresh token belongs to ends (UTC).
+     *
+     * @var string|null
+     */
+    private $sessionExpires = null;
 
     /**
      * Fetches a user record by email address instead of username.
@@ -102,5 +115,47 @@ class Pdo extends \OAuth2\Storage\Pdo
         if (password_verify($password, $passwordHash)) {
             return $passwordHash;
         }
+    }
+
+    /**
+     * Sets the session window that the next refresh token stored by this
+     * request carries (see `Gaia\Libraries\Authorization\SessionExpiry`).
+     *
+     * @param  bool        $rememberMe
+     * @param  string|null $sessionExpires UTC, `Y-m-d H:i:s`.
+     * @return void
+     */
+    public function setSessionWindow($rememberMe, $sessionExpires)
+    {
+        $this->sessionRememberMe = (bool) $rememberMe;
+        $this->sessionExpires = $sessionExpires;
+    }
+
+    /**
+     * Stores a refresh token with the session window set by `setSessionWindow`,
+     * so each session keeps its own expiry instead of the user's.
+     *
+     * @param  string $refresh_token
+     * @param  mixed  $client_id
+     * @param  mixed  $user_id
+     * @param  int    $expires
+     * @param  string $scope
+     * @return bool
+     */
+    public function setRefreshToken($refresh_token, $client_id, $user_id, $expires, $scope = null)
+    {
+        $expires = date('Y-m-d H:i:s', $expires);
+        $rememberMe = $this->sessionRememberMe ? 1 : 0;
+        $sessionExpires = $this->sessionExpires;
+
+        $stmt = $this->db->prepare(sprintf(
+            'INSERT INTO %s (refresh_token, client_id, user_id, expires, scope, "rememberMe", "sessionExpires") '
+            . 'VALUES (:refresh_token, :client_id, :user_id, :expires, :scope, :rememberMe, :sessionExpires)',
+            $this->config['refresh_token_table']
+        ));
+
+        return $stmt->execute(
+            compact('refresh_token', 'client_id', 'user_id', 'expires', 'scope', 'rememberMe', 'sessionExpires')
+        );
     }
 }

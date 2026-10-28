@@ -96,70 +96,156 @@ class TokenControllerTest extends TestCase
     }
 
     /**
-     * This test verifies that the session validity is set correctly.
+     * A sign-in without Remember Me opens a session window of `sessionTimeout`
+     * days on its refresh token.
      *
      * @return void
      */
     public function testSessionValidity(): void
     {
-        $this->mockOAuthRequest(false);
-        $this->mockOAuthServer();
-        $response = $this->getAccessToken();
+        $refreshToken = $this->signIn(false);
+        $row = $this->getRefreshTokenRow($refreshToken);
 
-        $user = \Gaia\MVC\Models\User::findFirstByEmail('test@gmail.com');
-
-        $config = new \Phalcon\Config(['sessionTimeout' => '1']);
-
-        $tokenControllerReflection = new \ReflectionClass($this->controller);
-        $sessionExpirationReflection = $tokenControllerReflection->getMethod('setSessionExpiration');
-        $sessionExpirationReflection->setAccessible(true);
-        $sessionExpirationReflection->invokeArgs($this->controller, [$user, $config]);
-
-        $this->assertGreaterThan(gmdate('Y-m-d H:i:s'), $user->sessionExpires);
+        $this->assertSame(0, (int) $row['rememberMe']);
+        $this->assertSessionExpiresInDays(1, $row['sessionExpires']);
     }
 
     /**
-     * Test the session expiry functionality.
+     * A sign-in with Remember Me opens a session window of
+     * `sessionTimeoutForRememberMe` days on its refresh token.
      *
-     * This method tests the session expiry functionality by mocking the OAuth request,
-     * setting a custom session timeout, and attempting to refresh the access token.
-     * If the session is expired, an exception is expected to be thrown.
+     * @return void
+     */
+    public function testRememberMeSessionValidity(): void
+    {
+        $refreshToken = $this->signIn(true);
+        $row = $this->getRefreshTokenRow($refreshToken);
+
+        $this->assertSame(1, (int) $row['rememberMe']);
+        $this->assertSessionExpiresInDays(14, $row['sessionExpires']);
+    }
+
+    /**
+     * Refreshing is rejected once the session window of the token has ended.
      *
      * @return void
      * @throws \Gaia\Exception\UnAuthorized If the session is expired
      */
     public function testSessionExpiry()
     {
-        $this->mockOAuthRequest(false);
-        $this->mockOAuthServer();
-        $response = $this->getAccessToken();
-        $refreshToken = (json_decode($response->getContent()))->refresh_token;
+        $refreshToken = $this->signIn(false);
+        $this->setSessionExpires($refreshToken, gmdate('Y-m-d H:i:s', time() - 60));
 
-        // Get user
-        $user = \Gaia\MVC\Models\User::findFirstByEmail('test@gmail.com');
-
-        // Custom config for setting session timeout
-        $config = new \Phalcon\Config(['sessionTimeout' => '-1']);
-
-        // Create token reflection class and set session timeout expiry to future
-        $tokenControllerReflection = new \ReflectionClass($this->controller);
-        $sessionExpirationReflection = $tokenControllerReflection->getMethod('setSessionExpiration');
-        $sessionExpirationReflection->setAccessible(true);
-        $sessionExpirationReflection->invokeArgs(
-            $this->controller,
-            [
-            $user,
-            $config
-            ]
-        );
-
-        // save user
-        $user->save();
-
-        // Request a refresh token, if session is expired then user will be prompted with exception
         $this->expectException(\Gaia\Exception\UnAuthorized::class);
         $this->expectExceptionMessage('Your session is expired');
         $this->getRefreshToken($refreshToken);
+    }
+
+    /**
+     * A later sign-in without Remember Me doesn't shorten an existing Remember
+     * Me session: once the later session has ended (a day on), the Remember Me
+     * session still refreshes, and it stops once its own window has ended.
+     *
+     * @return void
+     */
+    public function testLaterSignInDoesNotShortenRememberMeSession(): void
+    {
+        $rememberMeToken = $this->signIn(true);
+        $laterToken = $this->signIn(false);
+
+        // A day on: the later session (and the user-level expiry an older
+        // build would have written) has ended.
+        $this->setSessionExpires($laterToken, gmdate('Y-m-d H:i:s', time() - 60));
+        $this->setUserSessionExpires(gmdate('Y-m-d H:i:s', time() - 60));
+
+        $response = $this->getRefreshToken($rememberMeToken);
+        $this->assertEquals(200, $response->getStatusCode());
+        $rotatedToken = (json_decode($response->getContent()))->refresh_token;
+
+        // Fourteen days without a refresh: the Remember Me session ends too.
+        $this->setSessionExpires($rotatedToken, gmdate('Y-m-d H:i:s', time() - 60));
+        $this->expectException(\Gaia\Exception\UnAuthorized::class);
+        $this->expectExceptionMessage('Your session is expired');
+        $this->getRefreshToken($rotatedToken);
+    }
+
+    /**
+     * An expired session can't borrow another session's open window, nor the
+     * user's: refreshing it fails while the Remember Me session still refreshes.
+     *
+     * @return void
+     */
+    public function testExpiredTokenCannotUseAnotherValidSession(): void
+    {
+        $rememberMeToken = $this->signIn(true);
+        $laterToken = $this->signIn(false);
+
+        $this->setUserSessionExpires(gmdate('Y-m-d H:i:s', time() + 86400));
+        $this->setSessionExpires($laterToken, gmdate('Y-m-d H:i:s', time() - 60));
+
+        $response = $this->getRefreshToken($rememberMeToken);
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $this->expectException(\Gaia\Exception\UnAuthorized::class);
+        $this->expectExceptionMessage('Your session is expired');
+        $this->getRefreshToken($laterToken);
+    }
+
+    /**
+     * The session window slides: each refresh keeps the session's Remember Me
+     * flag and opens a new full window from the time of the refresh.
+     *
+     * @return void
+     */
+    public function testRefreshSlidesSessionWindow(): void
+    {
+        $refreshToken = $this->signIn(true);
+
+        // Most of the window has passed.
+        $this->setSessionExpires($refreshToken, gmdate('Y-m-d H:i:s', time() + 3600));
+
+        $response = $this->getRefreshToken($refreshToken);
+        $this->assertEquals(200, $response->getStatusCode());
+        $row = $this->getRefreshTokenRow((json_decode($response->getContent()))->refresh_token);
+
+        $this->assertSame(1, (int) $row['rememberMe']);
+        $this->assertSessionExpiresInDays(14, $row['sessionExpires']);
+    }
+
+    /**
+     * A refresh token issued before sessions were stored per token falls back
+     * to the user's session expiry.
+     *
+     * @return void
+     */
+    public function testLegacyRefreshTokenUsesUserSessionExpiry(): void
+    {
+        $refreshToken = $this->signIn(false);
+        $this->setSessionExpires($refreshToken, null);
+        $this->setUserSessionExpires(gmdate('Y-m-d H:i:s', time() - 60));
+
+        $this->expectException(\Gaia\Exception\UnAuthorized::class);
+        $this->expectExceptionMessage('Your session is expired');
+        $this->getRefreshToken($refreshToken);
+    }
+
+    /**
+     * A legacy Remember Me session keeps Remember Me after its first refresh.
+     *
+     * @return void
+     */
+    public function testLegacyRememberMeRefreshKeepsRememberMe(): void
+    {
+        $refreshToken = $this->signIn(false);
+        $this->setSessionExpires($refreshToken, null);
+        $this->setUserSessionExpires(gmdate('Y-m-d H:i:s', time() + 10 * 86400));
+
+        $response = $this->getRefreshToken($refreshToken);
+        $this->assertEquals(200, $response->getStatusCode());
+        $row = $this->getRefreshTokenRow((json_decode($response->getContent()))->refresh_token);
+
+        $this->assertSame(1, (int) $row['rememberMe']);
+        $this->assertSessionExpiresInDays(14, $row['sessionExpires']);
     }
 
     /**
@@ -355,6 +441,85 @@ class TokenControllerTest extends TestCase
             $user->accountStatus = $previousStatus ?: 'Active';
             $user->save();
         }
+    }
+
+    /**
+     * Signs the test user in with a password grant on a fresh controller.
+     *
+     * @param  bool $rememberMe
+     * @return string The refresh token issued.
+     */
+    protected function signIn($rememberMe)
+    {
+        $this->controller = $this->getTokenControllerMock();
+        $this->mockOAuthRequest($rememberMe);
+        $this->mockOAuthServer();
+        $response = $this->getAccessToken();
+        $this->assertEquals(200, $response->getStatusCode());
+
+        return (json_decode($response->getContent()))->refresh_token;
+    }
+
+    /**
+     * Reads the stored row of a refresh token.
+     *
+     * @param  string $refreshToken
+     * @return array
+     */
+    protected function getRefreshTokenRow($refreshToken)
+    {
+        $row = \Phalcon\Di::getDefault()->get('db')->fetchOne(
+            'SELECT "rememberMe", "sessionExpires" FROM oauth_refresh_tokens WHERE refresh_token = ?',
+            \Phalcon\Db\Enum::FETCH_ASSOC,
+            [$refreshToken]
+        );
+        $this->assertNotEmpty($row, 'refresh token row not found');
+
+        return $row;
+    }
+
+    /**
+     * Sets the session expiry of a refresh token, to stand in for time passing.
+     *
+     * @param  string      $refreshToken
+     * @param  string|null $sessionExpires
+     * @return void
+     */
+    protected function setSessionExpires($refreshToken, $sessionExpires)
+    {
+        \Phalcon\Di::getDefault()->get('db')->execute(
+            'UPDATE oauth_refresh_tokens SET "sessionExpires" = ? WHERE refresh_token = ?',
+            [$sessionExpires, $refreshToken]
+        );
+    }
+
+    /**
+     * Sets the user-level session expiry of the test user.
+     *
+     * @param  string|null $sessionExpires
+     * @return void
+     */
+    protected function setUserSessionExpires($sessionExpires)
+    {
+        \Phalcon\Di::getDefault()->get('db')->execute(
+            'UPDATE users SET "sessionExpires" = ? WHERE email = ?',
+            [$sessionExpires, 'test@gmail.com']
+        );
+    }
+
+    /**
+     * Asserts that a session expiry is about `$days` days from now.
+     *
+     * @param  int    $days
+     * @param  string $sessionExpires UTC, `Y-m-d H:i:s`.
+     * @return void
+     */
+    protected function assertSessionExpiresInDays($days, $sessionExpires)
+    {
+        $expected = time() + $days * 86400;
+        $actual = strtotime(substr((string) $sessionExpires, 0, 19) . ' UTC');
+
+        $this->assertLessThan(120, abs($actual - $expected), "sessionExpires $sessionExpires is not $days days from now");
     }
 
     /**

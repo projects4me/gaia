@@ -82,14 +82,39 @@ class OAuthServer
      * storage, which then performs the lookup by email column.
      *
      * @method addPasswordGrant
+     * @param  bool $rememberMe Whether the sign-in asked to be remembered.
      */
-    protected function addPasswordGrant()
+    protected function addPasswordGrant($rememberMe)
     {
         if (!empty($this->request->request['email'])) {
             $this->request->request['username'] = $this->request->request['email'];
         }
 
         $this->server->addGrantType(new OAuth2\GrantType\UserCredentials($this->storage));
+
+        $this->openSessionWindow($rememberMe);
+    }
+
+    /**
+     * Opens a new session window for the refresh token this request issues:
+     * a password sign-in starts a session, a refresh slides it forward.
+     *
+     * @param  bool $rememberMe
+     * @return void
+     */
+    private function openSessionWindow($rememberMe)
+    {
+        $this->storage->setSessionWindow($rememberMe, $this->getSessionExpiry()->expiresAt($rememberMe));
+    }
+
+    /**
+     * Returns the session expiry policy built from the `oauth` configuration.
+     *
+     * @return SessionExpiry
+     */
+    protected function getSessionExpiry()
+    {
+        return new SessionExpiry(Di::getDefault()->get('config')->get('oauth'));
     }
 
     /**
@@ -111,15 +136,26 @@ class OAuthServer
                 'conditions' => 'email = :email:',
                 'bind' => ['email' => (string) $refreshTokenModel->user_id],
             ]);
-            $currentDate = gmdate('Y-m-d H:i:s');
-
             if (!$user || !AclLockoutGuard::isAuthenticatableAccountStatus($user->accountStatus)) {
                 throw new UnAuthorized(AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
             }
             AgentLoginGuard::assertPasswordGrantAllowed($user);
 
+            // Each session carries its own expiry, so another sign-in as the
+            // same user doesn't change it. Tokens issued before sessions were
+            // stored per token fall back to the user's expiry.
+            $sessionExpires = $refreshTokenModel->sessionExpires ?: $user->sessionExpires;
+            $rememberMe = (bool) (int) $refreshTokenModel->rememberMe;
+
+            // A legacy token didn't store Remember Me: a user expiry beyond a
+            // normal session window means the session was opened with it.
+            if (empty($refreshTokenModel->sessionExpires)) {
+                $rememberMe = SessionExpiry::isOpen($sessionExpires, strtotime($this->getSessionExpiry()->expiresAt(false) . ' UTC'));
+            }
+
             // If session is expired, then refresh token will not be issued
-            if ($user->sessionExpires > $currentDate) {
+            if (SessionExpiry::isOpen($sessionExpires)) {
+                $this->openSessionWindow($rememberMe);
                 $this->server->addGrantType(
                     new OAuth2\GrantType\RefreshToken(
                         $this->storage,
@@ -150,15 +186,17 @@ class OAuthServer
      * Handles the specific grant type based on the request.
      *
      * @method handleGrantType
+     * @param  bool $rememberMe Whether a password sign-in asked to be
+     *                          remembered; the controller reads it from the request.
      */
-    public function addGrantType()
+    public function addGrantType($rememberMe = false)
     {
         $grantType = $this->request->request('grant_type');
 
         if (isset($this->grantTypeMap[$grantType])) {
             $handlerMethod = $this->grantTypeMap[$grantType];
             if (method_exists($this, $handlerMethod)) {
-                return $this->$handlerMethod();
+                return $this->$handlerMethod((bool) $rememberMe);
             }
         }
 
