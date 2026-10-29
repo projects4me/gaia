@@ -225,6 +225,13 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'agentspec' => array(
+                'path' => '/api/:version/agentspec',
+                'allowedMethods' => array(
+                    'GET',
+                ),
+                'identifier' => 'id',
+            ),
             'issue' => array(
                 'path' => '/api/:version/issue',
                 'allowedMethods' => array(

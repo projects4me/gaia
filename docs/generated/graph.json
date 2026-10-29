@@ -267,6 +267,30 @@
       "attributes": {}
     },
     {
+      "id": "action:agentspec.get",
+      "type": "action",
+      "key": "agentspec.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentspec.list",
+      "type": "action",
+      "key": "agentspec.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentspec.options",
+      "type": "action",
+      "key": "agentspec.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentspec.related",
+      "type": "action",
+      "key": "agentspec.related",
+      "attributes": {}
+    },
+    {
       "id": "action:agenttool.delete",
       "type": "action",
       "key": "agenttool.delete",
@@ -3038,7 +3062,7 @@
           "jsonPathAbsent: unexpectedly found …"
         ],
         "values": [],
-        "example": "client/list-issuestatus-rejected-creates-saved-nothing"
+        "example": "acl/acl-agentspec-allowed-default"
       }
     },
     {
@@ -3763,6 +3787,110 @@
         "placeholders": [
           "agentcredentialId"
         ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentspec-allowed-default",
+      "type": "case",
+      "key": "acl/acl-agentspec-allowed-default",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentspec/{agentId}",
+        "resource": "agentspec",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentId",
+          "skillId",
+          "toolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentspec-allowed-with-grant",
+      "type": "case",
+      "key": "acl/acl-agentspec-allowed-with-grant",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentspec/{otherAgentId}",
+        "resource": "agentspec",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "otherAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentspec-denied-without-grant",
+      "type": "case",
+      "key": "acl/acl-agentspec-denied-without-grant",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentspec/{agentId}",
+        "resource": "agentspec",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentspec-has-no-list",
+      "type": "case",
+      "key": "acl/acl-agentspec-has-no-list",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentspec",
+        "resource": "agentspec",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "case",
+      "key": "acl/acl-agentspec-list-checks-get-permission",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentspec",
+        "resource": "agentspec",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-agentspec-unknown-agent-not-found",
+      "type": "case",
+      "key": "acl/acl-agentspec-unknown-agent-not-found",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentspec/api-test-no-such-agent",
+        "resource": "agentspec",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [],
         "stores": []
       }
     },
@@ -6722,6 +6850,22 @@
         "placeholders": [
           "runtime.agentskillId"
         ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-agentspec-api-v1-agentspec",
+      "type": "case",
+      "key": "backend/get-agentspec-api-v1-agentspec",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/agentspec",
+        "resource": "agentspec",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [],
         "stores": []
       }
     },
@@ -15452,6 +15596,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\AgentskillController",
         "file": "app/api/v1/controllers/AgentskillController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:agentspec",
+      "type": "controller",
+      "key": "agentspec",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\AgentspecController",
+        "file": "app/api/v1/controllers/AgentspecController.php",
         "extends": "RestController"
       }
     },
@@ -25385,6 +25540,42 @@
       }
     },
     {
+      "id": "permission:agentspec.create",
+      "type": "permission",
+      "key": "agentspec.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agentspec.delete",
+      "type": "permission",
+      "key": "agentspec.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agentspec.get",
+      "type": "permission",
+      "key": "agentspec.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agentspec.update",
+      "type": "permission",
+      "key": "agentspec.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
       "id": "permission:agenttool.create",
       "type": "permission",
       "key": "agenttool.create",
@@ -29937,6 +30128,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/agentspec",
+      "type": "route",
+      "key": "GET /api/v1/agentspec",
+      "attributes": {
+        "type": "rest",
+        "name": "agentspec",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agentspec"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agentspec/{id}",
+      "type": "route",
+      "key": "GET /api/v1/agentspec/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agentspec",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agentspec/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agentspec/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/agentspec/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "agentspec",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agentspec/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:GET /api/v1/agenttool",
       "type": "route",
       "key": "GET /api/v1/agenttool",
@@ -31494,6 +31721,18 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/agentskill"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/agentspec",
+      "type": "route",
+      "key": "OPTIONS /api/v1/agentspec",
+      "attributes": {
+        "type": "rest",
+        "name": "agentspec",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/agentspec"
       }
     },
     {
@@ -34719,6 +34958,21 @@
       "to": "permission:agentskill.get"
     },
     {
+      "from": "action:agentspec.get",
+      "type": "requires",
+      "to": "permission:agentspec.get"
+    },
+    {
+      "from": "action:agentspec.list",
+      "type": "requires",
+      "to": "permission:agentspec.get"
+    },
+    {
+      "from": "action:agentspec.related",
+      "type": "requires",
+      "to": "permission:agentspec.get"
+    },
+    {
       "from": "action:agenttool.delete",
       "type": "requires",
       "to": "permission:agenttool.delete"
@@ -37042,6 +37296,216 @@
       "from": "case:acl/acl-agentcredential-revoke-own-denied",
       "type": "uses_fixture",
       "to": "fixture:agentcredentialId"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-default",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-default",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-default",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-default",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-default",
+      "type": "covers",
+      "to": "controller:agentspec"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-default",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentspec/{id}"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-default",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-default",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-default",
+      "type": "uses_fixture",
+      "to": "fixture:skillId"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-default",
+      "type": "uses_fixture",
+      "to": "fixture:toolserverId"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-with-grant",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-with-grant",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-with-grant",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-with-grant",
+      "type": "covers",
+      "to": "controller:agentspec"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-with-grant",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentspec/{id}"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-with-grant",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agentspec-allowed-with-grant",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:acl/acl-agentspec-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agentspec-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentspec-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentspec-denied-without-grant",
+      "type": "covers",
+      "to": "controller:agentspec"
+    },
+    {
+      "from": "case:acl/acl-agentspec-denied-without-grant",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentspec/{id}"
+    },
+    {
+      "from": "case:acl/acl-agentspec-denied-without-grant",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-agentspec-denied-without-grant",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:acl/acl-agentspec-has-no-list",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agentspec-has-no-list",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentspec-has-no-list",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentspec-has-no-list",
+      "type": "covers",
+      "to": "controller:agentspec"
+    },
+    {
+      "from": "case:acl/acl-agentspec-has-no-list",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentspec"
+    },
+    {
+      "from": "case:acl/acl-agentspec-has-no-list",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "covers",
+      "to": "controller:agentspec"
+    },
+    {
+      "from": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentspec"
+    },
+    {
+      "from": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agentspec-unknown-agent-not-found",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agentspec-unknown-agent-not-found",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentspec-unknown-agent-not-found",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentspec-unknown-agent-not-found",
+      "type": "covers",
+      "to": "controller:agentspec"
+    },
+    {
+      "from": "case:acl/acl-agentspec-unknown-agent-not-found",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentspec/{id}"
+    },
+    {
+      "from": "case:acl/acl-agentspec-unknown-agent-not-found",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:acl/acl-agenttool-agent-cannot-change-own-grant",
@@ -42550,6 +43014,31 @@
     },
     {
       "from": "case:backend/get-agentskill-api-v1-agentskill-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-agentspec-api-v1-agentspec",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-agentspec-api-v1-agentspec",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-agentspec-api-v1-agentspec",
+      "type": "covers",
+      "to": "controller:agentspec"
+    },
+    {
+      "from": "case:backend/get-agentspec-api-v1-agentspec",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentspec"
+    },
+    {
+      "from": "case:backend/get-agentspec-api-v1-agentspec",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -57179,6 +57668,26 @@
       "to": "model:Agentskill"
     },
     {
+      "from": "controller:agentspec",
+      "type": "has_action",
+      "to": "action:agentspec.get"
+    },
+    {
+      "from": "controller:agentspec",
+      "type": "has_action",
+      "to": "action:agentspec.list"
+    },
+    {
+      "from": "controller:agentspec",
+      "type": "has_action",
+      "to": "action:agentspec.options"
+    },
+    {
+      "from": "controller:agentspec",
+      "type": "has_action",
+      "to": "action:agentspec.related"
+    },
+    {
       "from": "controller:agenttool",
       "type": "has_action",
       "to": "action:agenttool.delete"
@@ -65876,6 +66385,11 @@
     {
       "from": "profile:aclAgent",
       "type": "grants",
+      "to": "permission:agentspec.get"
+    },
+    {
+      "from": "profile:aclAgent",
+      "type": "grants",
       "to": "permission:agenttool.create"
     },
     {
@@ -66181,6 +66695,11 @@
     {
       "from": "profile:aclNoSetting",
       "type": "denies",
+      "to": "permission:agentspec.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
       "to": "permission:agenttool.get"
     },
     {
@@ -66372,6 +66891,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:agentskill.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agentspec.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agentspec.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agentspec.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agentspec.update"
     },
     {
       "from": "profile:default",
@@ -68364,6 +68903,21 @@
       "to": "action:agentskill.related"
     },
     {
+      "from": "route:GET /api/v1/agentspec",
+      "type": "handled_by",
+      "to": "action:agentspec.list"
+    },
+    {
+      "from": "route:GET /api/v1/agentspec/{id}",
+      "type": "handled_by",
+      "to": "action:agentspec.get"
+    },
+    {
+      "from": "route:GET /api/v1/agentspec/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:agentspec.related"
+    },
+    {
       "from": "route:GET /api/v1/agenttool",
       "type": "handled_by",
       "to": "action:agenttool.list"
@@ -69012,6 +69566,11 @@
       "from": "route:OPTIONS /api/v1/agentskill",
       "type": "handled_by",
       "to": "action:agentskill.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/agentspec",
+      "type": "handled_by",
+      "to": "action:agentspec.options"
     },
     {
       "from": "route:OPTIONS /api/v1/agenttool",

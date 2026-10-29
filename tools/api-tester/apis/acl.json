@@ -2028,6 +2028,73 @@
       "expects": { "status": 201, "shape": "jsonapi.resource", "attributesEqual": {"agentId": "{otherAgentId}"} }
     },
     {
+      "id": "acl-agentspec-allowed-default",
+      "method": "GET",
+      "path": "/api/v1/agentspec/{agentId}",
+      "resource": "agentspec",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "specVersion": 1,
+          "agent.id": "{agentId}",
+          "toolGrants.0.server.id": "{toolserverId}",
+          "skills.0.id": "{skillId}",
+          "skills.0.content": "# Seed skill"
+        },
+        "jsonPathAbsent": ["toolGrants.0.server.endpoint", "toolGrants.0.server.command", "toolGrants.0.server.spec"]
+      },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentspec-allowed-with-grant",
+      "method": "GET",
+      "path": "/api/v1/agentspec/{otherAgentId}",
+      "resource": "agentspec",
+      "auth": "aclAgent",
+      "expects": { "status": 200, "shape": "json", "jsonEqual": {"specVersion": 1, "agent.id": "{otherAgentId}"} },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentspec-denied-without-grant",
+      "method": "GET",
+      "path": "/api/v1/agentspec/{agentId}",
+      "resource": "agentspec",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentspec-has-no-list",
+      "method": "GET",
+      "path": "/api/v1/agentspec",
+      "resource": "agentspec",
+      "auth": true,
+      "expects": { "status": 404, "shape": "error", "errorEqual": "Agent specs are read one at a time, by agent id." },
+      "note": "read by id only: the GET route also maps the collection",
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentspec-list-checks-get-permission",
+      "method": "GET",
+      "path": "/api/v1/agentspec",
+      "resource": "agentspec",
+      "auth": "aclAgent",
+      "expects": { "status": 404, "shape": "error", "errorEqual": "Agent specs are read one at a time, by agent id." },
+      "note": "the list route is authorized as agentspec.get, so a caller with only that grant gets the 404",
+      "source": "acl-agent"
+    },
+    {
+      "id": "acl-agentspec-unknown-agent-not-found",
+      "method": "GET",
+      "path": "/api/v1/agentspec/api-test-no-such-agent",
+      "resource": "agentspec",
+      "auth": true,
+      "expects": { "status": 404, "shape": "error", "errorEqual": "Agent not found" },
+      "source": "acl-agent"
+    },
+    {
       "id": "acl-toolserver-refresh-needs-update",
       "method": "PATCH",
       "path": "/api/v1/toolserver/{toolserverId}",
