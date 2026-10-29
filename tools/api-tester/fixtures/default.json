@@ -85,6 +85,8 @@
     "toolserverId": "api-test-toolserver-000001",
     "toolId": "api-test-tool-000001",
     "agenttoolId": "api-test-agenttool-000001",
+    "useridentityId": "api-test-useridentity-000001",
+    "otherUseridentityId": "api-test-useridentity-000002",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

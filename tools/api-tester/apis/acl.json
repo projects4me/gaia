@@ -1893,6 +1893,25 @@
       "source": "acl-setting"
     },
     {
+      "id": "acl-useridentity-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/useridentity",
+      "resource": "useridentity",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-useridentity-detail-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/useridentity/{useridentityId}",
+      "resource": "useridentity",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
       "id": "acl-toolserver-denied-acl-no-setting",
       "method": "GET",
       "path": "/api/v1/toolserver",

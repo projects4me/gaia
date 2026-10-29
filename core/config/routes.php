@@ -170,6 +170,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'useridentity' => array(
+                'path' => '/api/:version/useridentity',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'agentcredential' => array(
                 'path' => '/api/:version/agentcredential',
                 'allowedMethods' => array(

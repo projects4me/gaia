@@ -666,6 +666,23 @@
 | PUT | /api/v1/user | rest | user.putCollection |
 | PUT | /api/v1/user/{id} | rest | user.put |
 
+<a id="useridentity"></a>
+## useridentity
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/useridentity | rest | useridentity.deleteCollection |
+| DELETE | /api/v1/useridentity/{id} | rest | useridentity.delete |
+| GET | /api/v1/useridentity | rest | useridentity.list |
+| GET | /api/v1/useridentity/{id} | rest | useridentity.get |
+| GET | /api/v1/useridentity/{id}/{relation} | rest | useridentity.related |
+| OPTIONS | /api/v1/useridentity | rest | useridentity.options |
+| PATCH | /api/v1/useridentity | rest | useridentity.patchCollection |
+| PATCH | /api/v1/useridentity/{id} | rest | useridentity.patch |
+| POST | /api/v1/useridentity | rest | useridentity.post |
+| PUT | /api/v1/useridentity | rest | useridentity.putCollection |
+| PUT | /api/v1/useridentity/{id} | rest | useridentity.put |
+
 <a id="userimage"></a>
 ## userimage
 

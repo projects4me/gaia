@@ -2331,6 +2331,72 @@
       "attributes": {}
     },
     {
+      "id": "action:useridentity.delete",
+      "type": "action",
+      "key": "useridentity.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:useridentity.deleteCollection",
+      "type": "action",
+      "key": "useridentity.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:useridentity.get",
+      "type": "action",
+      "key": "useridentity.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:useridentity.list",
+      "type": "action",
+      "key": "useridentity.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:useridentity.options",
+      "type": "action",
+      "key": "useridentity.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:useridentity.patch",
+      "type": "action",
+      "key": "useridentity.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:useridentity.patchCollection",
+      "type": "action",
+      "key": "useridentity.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:useridentity.post",
+      "type": "action",
+      "key": "useridentity.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:useridentity.put",
+      "type": "action",
+      "key": "useridentity.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:useridentity.putCollection",
+      "type": "action",
+      "key": "useridentity.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:useridentity.related",
+      "type": "action",
+      "key": "useridentity.related",
+      "attributes": {}
+    },
+    {
       "id": "action:userimage.get",
       "type": "action",
       "key": "userimage.get",
@@ -5751,6 +5817,40 @@
       }
     },
     {
+      "id": "case:acl/acl-useridentity-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-useridentity-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/useridentity",
+        "resource": "useridentity",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-useridentity-detail-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-useridentity-detail-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/useridentity/{useridentityId}",
+        "resource": "useridentity",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "useridentityId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "case",
       "key": "backend/delete-activity-api-v1-activity-runtime-id",
@@ -6143,6 +6243,24 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/delete-useridentity-api-v1-useridentity-runtime-id",
+      "type": "case",
+      "key": "backend/delete-useridentity-api-v1-useridentity-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "DELETE",
+        "path": "/api/v1/useridentity/{runtime.useridentityId}",
+        "resource": "useridentity",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.useridentityId"
         ],
         "stores": []
       }
@@ -7670,6 +7788,58 @@
       }
     },
     {
+      "id": "case:backend/get-useridentity-api-v1-useridentity",
+      "type": "case",
+      "key": "backend/get-useridentity-api-v1-useridentity",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/useridentity",
+        "resource": "useridentity",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-useridentity-api-v1-useridentity-id",
+      "type": "case",
+      "key": "backend/get-useridentity-api-v1-useridentity-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/useridentity/{useridentityId}",
+        "resource": "useridentity",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "useridentityId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-useridentity-api-v1-useridentity-runtime-id",
+      "type": "case",
+      "key": "backend/get-useridentity-api-v1-useridentity-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/useridentity/{runtime.useridentityId}",
+        "resource": "useridentity",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.useridentityId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/get-userqualification-api-v1-userqualification",
       "type": "case",
       "key": "backend/get-userqualification-api-v1-userqualification",
@@ -8178,6 +8348,24 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/patch-useridentity-api-v1-useridentity-id",
+      "type": "case",
+      "key": "backend/patch-useridentity-api-v1-useridentity-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "PATCH",
+        "path": "/api/v1/useridentity/{runtime.useridentityId}",
+        "resource": "useridentity",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.useridentityId"
         ],
         "stores": []
       }
@@ -8819,6 +9007,26 @@
         "placeholders": [],
         "stores": [
           "runtime.userId"
+        ]
+      }
+    },
+    {
+      "id": "case:backend/post-useridentity-api-v1-useridentity",
+      "type": "case",
+      "key": "backend/post-useridentity-api-v1-useridentity",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/useridentity",
+        "resource": "useridentity",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "userId"
+        ],
+        "stores": [
+          "runtime.useridentityId"
         ]
       }
     },
@@ -13617,6 +13825,65 @@
       }
     },
     {
+      "id": "case:client/useridentity-create-shares-handle-across-users",
+      "type": "case",
+      "key": "client/useridentity-create-shares-handle-across-users",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/useridentity",
+        "resource": "useridentity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "agentUserId",
+          "runId"
+        ],
+        "stores": [
+          "runtime.createdUseridentityId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/useridentity-delete-created",
+      "type": "case",
+      "key": "client/useridentity-delete-created",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/useridentity/{runtime.createdUseridentityId}",
+        "resource": "useridentity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.createdUseridentityId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/useridentity-list-includes-both-users-with-same-handle",
+      "type": "case",
+      "key": "client/useridentity-list-includes-both-users-with-same-handle",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/useridentity",
+        "resource": "useridentity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherUseridentityId",
+          "runtime.createdUseridentityId",
+          "useridentityId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:live/live-conversation-comment-create-publishes-comment-created",
       "type": "case",
       "key": "live/live-conversation-comment-create-publishes-comment-created",
@@ -15275,6 +15542,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\UserController",
         "file": "app/api/v1/controllers/UserController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:useridentity",
+      "type": "controller",
+      "key": "useridentity",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\UseridentityController",
+        "file": "app/api/v1/controllers/UseridentityController.php",
         "extends": "RestController"
       }
     },
@@ -21610,6 +21888,166 @@
       }
     },
     {
+      "id": "field:Useridentity.createdUser",
+      "type": "field",
+      "key": "Useridentity.createdUser",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Useridentity.createdUserName",
+      "type": "field",
+      "key": "Useridentity.createdUserName",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Useridentity.dateCreated",
+      "type": "field",
+      "key": "Useridentity.dateCreated",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Useridentity.dateModified",
+      "type": "field",
+      "key": "Useridentity.dateModified",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Useridentity.deleted",
+      "type": "field",
+      "key": "Useridentity.deleted",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Useridentity.email",
+      "type": "field",
+      "key": "Useridentity.email",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_EMAIL",
+        "type": "varchar",
+        "length": "255",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Useridentity.handle",
+      "type": "field",
+      "key": "Useridentity.handle",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_HANDLE",
+        "type": "varchar",
+        "length": "100",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Useridentity.id",
+      "type": "field",
+      "key": "Useridentity.id",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Useridentity.modifiedUser",
+      "type": "field",
+      "key": "Useridentity.modifiedUser",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Useridentity.modifiedUserName",
+      "type": "field",
+      "key": "Useridentity.modifiedUserName",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Useridentity.provider",
+      "type": "field",
+      "key": "Useridentity.provider",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_PROVIDER",
+        "type": "varchar",
+        "length": "25",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Useridentity.publicKeyFingerprint",
+      "type": "field",
+      "key": "Useridentity.publicKeyFingerprint",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_PUBLIC_KEY_FINGERPRINT",
+        "type": "varchar",
+        "length": "255",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Useridentity.userId",
+      "type": "field",
+      "key": "Useridentity.userId",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_USER_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Useridentity.verified",
+      "type": "field",
+      "key": "Useridentity.verified",
+      "attributes": {
+        "label": "LBL_USER_IDENTITIES_VERIFIED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0
+      }
+    },
+    {
       "id": "field:Userlatestissue.id",
       "type": "field",
       "key": "Userlatestissue.id",
@@ -22944,6 +23382,14 @@
       }
     },
     {
+      "id": "fixture:otherUseridentityId",
+      "type": "fixture",
+      "key": "otherUseridentityId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:params.c_id",
       "type": "fixture",
       "key": "params.c_id",
@@ -23043,6 +23489,14 @@
       "id": "fixture:userId",
       "type": "fixture",
       "key": "userId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:useridentityId",
+      "type": "fixture",
+      "key": "useridentityId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -23902,6 +24356,19 @@
         "file": "app/metadata/model/Usergrouppermission.php",
         "tableName": "user_group_permissions",
         "isView": true,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
+      "id": "model:Useridentity",
+      "type": "model",
+      "key": "Useridentity",
+      "attributes": {
+        "file": "app/metadata/model/Useridentity.php",
+        "tableName": "user_identities",
+        "isView": false,
         "registered": true,
         "hasMetadata": true,
         "acl": null
@@ -25452,6 +25919,42 @@
       "id": "permission:user.update",
       "type": "permission",
       "key": "user.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:useridentity.create",
+      "type": "permission",
+      "key": "useridentity.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:useridentity.delete",
+      "type": "permission",
+      "key": "useridentity.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:useridentity.get",
+      "type": "permission",
+      "key": "useridentity.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:useridentity.update",
+      "type": "permission",
+      "key": "useridentity.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -27203,6 +27706,36 @@
       }
     },
     {
+      "id": "relationship:Useridentity.createdBy",
+      "type": "relationship",
+      "key": "Useridentity.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Useridentity.modifiedBy",
+      "type": "relationship",
+      "key": "Useridentity.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Useridentity.user",
+      "type": "relationship",
+      "key": "Useridentity.user",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "userId",
+        "relatedKey": "id"
+      }
+    },
+    {
       "id": "relationship:Userqualification.user",
       "type": "relationship",
       "key": "Userqualification.user",
@@ -28195,6 +28728,30 @@
         "version": "v1",
         "method": "DELETE",
         "path": "/api/v1/user/{id}"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/useridentity",
+      "type": "route",
+      "key": "DELETE /api/v1/useridentity",
+      "attributes": {
+        "type": "rest",
+        "name": "useridentity",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/useridentity"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/useridentity/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/useridentity/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "useridentity",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/useridentity/{id}"
       }
     },
     {
@@ -29686,6 +30243,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/useridentity",
+      "type": "route",
+      "key": "GET /api/v1/useridentity",
+      "attributes": {
+        "type": "rest",
+        "name": "useridentity",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/useridentity"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/useridentity/{id}",
+      "type": "route",
+      "key": "GET /api/v1/useridentity/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "useridentity",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/useridentity/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/useridentity/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/useridentity/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "useridentity",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/useridentity/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:GET /api/v1/userqualification",
       "type": "route",
       "key": "GET /api/v1/userqualification",
@@ -30355,6 +30948,18 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/user"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/useridentity",
+      "type": "route",
+      "key": "OPTIONS /api/v1/useridentity",
+      "attributes": {
+        "type": "rest",
+        "name": "useridentity",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/useridentity"
       }
     },
     {
@@ -31246,6 +31851,30 @@
       }
     },
     {
+      "id": "route:PATCH /api/v1/useridentity",
+      "type": "route",
+      "key": "PATCH /api/v1/useridentity",
+      "attributes": {
+        "type": "rest",
+        "name": "useridentity",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/useridentity"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/useridentity/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/useridentity/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "useridentity",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/useridentity/{id}"
+      }
+    },
+    {
       "id": "route:PATCH /api/v1/userqualification",
       "type": "route",
       "key": "PATCH /api/v1/userqualification",
@@ -31795,6 +32424,18 @@
         "version": "v1",
         "method": "POST",
         "path": "/api/v1/user"
+      }
+    },
+    {
+      "id": "route:POST /api/v1/useridentity",
+      "type": "route",
+      "key": "POST /api/v1/useridentity",
+      "attributes": {
+        "type": "rest",
+        "name": "useridentity",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/useridentity"
       }
     },
     {
@@ -32587,6 +33228,30 @@
         "version": "v1",
         "method": "PUT",
         "path": "/api/v1/user/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/useridentity",
+      "type": "route",
+      "key": "PUT /api/v1/useridentity",
+      "attributes": {
+        "type": "rest",
+        "name": "useridentity",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/useridentity"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/useridentity/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/useridentity/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "useridentity",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/useridentity/{id}"
       }
     },
     {
@@ -34129,6 +34794,46 @@
       "from": "action:user.related",
       "type": "requires",
       "to": "permission:user.get"
+    },
+    {
+      "from": "action:useridentity.delete",
+      "type": "requires",
+      "to": "permission:useridentity.delete"
+    },
+    {
+      "from": "action:useridentity.get",
+      "type": "requires",
+      "to": "permission:useridentity.get"
+    },
+    {
+      "from": "action:useridentity.list",
+      "type": "requires",
+      "to": "permission:useridentity.get"
+    },
+    {
+      "from": "action:useridentity.patch",
+      "type": "requires",
+      "to": "permission:useridentity.update"
+    },
+    {
+      "from": "action:useridentity.patchCollection",
+      "type": "requires",
+      "to": "permission:useridentity.update"
+    },
+    {
+      "from": "action:useridentity.post",
+      "type": "requires",
+      "to": "permission:useridentity.create"
+    },
+    {
+      "from": "action:useridentity.put",
+      "type": "requires",
+      "to": "permission:useridentity.update"
+    },
+    {
+      "from": "action:useridentity.related",
+      "type": "requires",
+      "to": "permission:useridentity.get"
     },
     {
       "from": "action:userimage.get",
@@ -39291,6 +39996,71 @@
       "to": "fixture:toolserverId"
     },
     {
+      "from": "case:acl/acl-useridentity-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-useridentity-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-useridentity-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-useridentity-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:useridentity"
+    },
+    {
+      "from": "case:acl/acl-useridentity-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/useridentity"
+    },
+    {
+      "from": "case:acl/acl-useridentity-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-useridentity-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-useridentity-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-useridentity-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-useridentity-detail-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:useridentity"
+    },
+    {
+      "from": "case:acl/acl-useridentity-detail-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/useridentity/{id}"
+    },
+    {
+      "from": "case:acl/acl-useridentity-detail-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-useridentity-detail-denied-acl-no-setting",
+      "type": "uses_fixture",
+      "to": "fixture:useridentityId"
+    },
+    {
       "from": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -39952,6 +40722,36 @@
     },
     {
       "from": "case:backend/delete-user-api-v1-user-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/delete-useridentity-api-v1-useridentity-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/delete-useridentity-api-v1-useridentity-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/delete-useridentity-api-v1-useridentity-runtime-id",
+      "type": "covers",
+      "to": "controller:useridentity"
+    },
+    {
+      "from": "case:backend/delete-useridentity-api-v1-useridentity-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-useridentity-api-v1-useridentity"
+    },
+    {
+      "from": "case:backend/delete-useridentity-api-v1-useridentity-runtime-id",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/useridentity/{id}"
+    },
+    {
+      "from": "case:backend/delete-useridentity-api-v1-useridentity-runtime-id",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -42646,6 +43446,101 @@
       "to": "profile:anonymous"
     },
     {
+      "from": "case:backend/get-useridentity-api-v1-useridentity",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity",
+      "type": "covers",
+      "to": "controller:useridentity"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity",
+      "type": "exercises",
+      "to": "route:GET /api/v1/useridentity"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-id",
+      "type": "covers",
+      "to": "controller:useridentity"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/useridentity/{id}"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-id",
+      "type": "uses_fixture",
+      "to": "fixture:useridentityId"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-runtime-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-runtime-id",
+      "type": "covers",
+      "to": "controller:useridentity"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-useridentity-api-v1-useridentity"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-runtime-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/useridentity/{id}"
+    },
+    {
+      "from": "case:backend/get-useridentity-api-v1-useridentity-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/get-userqualification-api-v1-userqualification",
       "type": "asserts",
       "to": "assertion:shape"
@@ -43597,6 +44492,41 @@
     },
     {
       "from": "case:backend/patch-user-api-v1-user-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/patch-useridentity-api-v1-useridentity-id",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:backend/patch-useridentity-api-v1-useridentity-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/patch-useridentity-api-v1-useridentity-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/patch-useridentity-api-v1-useridentity-id",
+      "type": "covers",
+      "to": "controller:useridentity"
+    },
+    {
+      "from": "case:backend/patch-useridentity-api-v1-useridentity-id",
+      "type": "depends_on",
+      "to": "case:backend/post-useridentity-api-v1-useridentity"
+    },
+    {
+      "from": "case:backend/patch-useridentity-api-v1-useridentity-id",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/useridentity/{id}"
+    },
+    {
+      "from": "case:backend/patch-useridentity-api-v1-useridentity-id",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -44624,6 +45554,36 @@
       "from": "case:backend/post-user-api-v1-user",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-useridentity-api-v1-useridentity",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-useridentity-api-v1-useridentity",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-useridentity-api-v1-useridentity",
+      "type": "covers",
+      "to": "controller:useridentity"
+    },
+    {
+      "from": "case:backend/post-useridentity-api-v1-useridentity",
+      "type": "exercises",
+      "to": "route:POST /api/v1/useridentity"
+    },
+    {
+      "from": "case:backend/post-useridentity-api-v1-useridentity",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-useridentity-api-v1-useridentity",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
     },
     {
       "from": "case:backend/post-userqualification-api-v1-userqualification",
@@ -53251,6 +54211,116 @@
       "to": "fixture:memberUserId"
     },
     {
+      "from": "case:client/useridentity-create-shares-handle-across-users",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/useridentity-create-shares-handle-across-users",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/useridentity-create-shares-handle-across-users",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/useridentity-create-shares-handle-across-users",
+      "type": "covers",
+      "to": "controller:useridentity"
+    },
+    {
+      "from": "case:client/useridentity-create-shares-handle-across-users",
+      "type": "exercises",
+      "to": "route:POST /api/v1/useridentity"
+    },
+    {
+      "from": "case:client/useridentity-create-shares-handle-across-users",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/useridentity-create-shares-handle-across-users",
+      "type": "uses_fixture",
+      "to": "fixture:agentUserId"
+    },
+    {
+      "from": "case:client/useridentity-delete-created",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/useridentity-delete-created",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/useridentity-delete-created",
+      "type": "covers",
+      "to": "controller:useridentity"
+    },
+    {
+      "from": "case:client/useridentity-delete-created",
+      "type": "depends_on",
+      "to": "case:client/useridentity-create-shares-handle-across-users"
+    },
+    {
+      "from": "case:client/useridentity-delete-created",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/useridentity/{id}"
+    },
+    {
+      "from": "case:client/useridentity-delete-created",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/useridentity-list-includes-both-users-with-same-handle",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/useridentity-list-includes-both-users-with-same-handle",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/useridentity-list-includes-both-users-with-same-handle",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/useridentity-list-includes-both-users-with-same-handle",
+      "type": "covers",
+      "to": "controller:useridentity"
+    },
+    {
+      "from": "case:client/useridentity-list-includes-both-users-with-same-handle",
+      "type": "depends_on",
+      "to": "case:client/useridentity-create-shares-handle-across-users"
+    },
+    {
+      "from": "case:client/useridentity-list-includes-both-users-with-same-handle",
+      "type": "exercises",
+      "to": "route:GET /api/v1/useridentity"
+    },
+    {
+      "from": "case:client/useridentity-list-includes-both-users-with-same-handle",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/useridentity-list-includes-both-users-with-same-handle",
+      "type": "uses_fixture",
+      "to": "fixture:otherUseridentityId"
+    },
+    {
+      "from": "case:client/useridentity-list-includes-both-users-with-same-handle",
+      "type": "uses_fixture",
+      "to": "fixture:useridentityId"
+    },
+    {
       "from": "case:live/live-conversation-comment-create-publishes-comment-created",
       "type": "asserts",
       "to": "assertion:hermes.expect"
@@ -56491,6 +57561,66 @@
       "to": "component:GeneratePassword"
     },
     {
+      "from": "controller:useridentity",
+      "type": "has_action",
+      "to": "action:useridentity.delete"
+    },
+    {
+      "from": "controller:useridentity",
+      "type": "has_action",
+      "to": "action:useridentity.deleteCollection"
+    },
+    {
+      "from": "controller:useridentity",
+      "type": "has_action",
+      "to": "action:useridentity.get"
+    },
+    {
+      "from": "controller:useridentity",
+      "type": "has_action",
+      "to": "action:useridentity.list"
+    },
+    {
+      "from": "controller:useridentity",
+      "type": "has_action",
+      "to": "action:useridentity.options"
+    },
+    {
+      "from": "controller:useridentity",
+      "type": "has_action",
+      "to": "action:useridentity.patch"
+    },
+    {
+      "from": "controller:useridentity",
+      "type": "has_action",
+      "to": "action:useridentity.patchCollection"
+    },
+    {
+      "from": "controller:useridentity",
+      "type": "has_action",
+      "to": "action:useridentity.post"
+    },
+    {
+      "from": "controller:useridentity",
+      "type": "has_action",
+      "to": "action:useridentity.put"
+    },
+    {
+      "from": "controller:useridentity",
+      "type": "has_action",
+      "to": "action:useridentity.putCollection"
+    },
+    {
+      "from": "controller:useridentity",
+      "type": "has_action",
+      "to": "action:useridentity.related"
+    },
+    {
+      "from": "controller:useridentity",
+      "type": "serves",
+      "to": "model:Useridentity"
+    },
+    {
       "from": "controller:userimage",
       "type": "has_action",
       "to": "action:userimage.get"
@@ -57169,6 +58299,16 @@
       "from": "field:Userecentactivity.relatedTo",
       "type": "linked_to",
       "to": "field:Userecentactivity.relatedId"
+    },
+    {
+      "from": "field:Useridentity.createdUserName",
+      "type": "linked_to",
+      "to": "field:Useridentity.createdUser"
+    },
+    {
+      "from": "field:Useridentity.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Useridentity.modifiedUser"
     },
     {
       "from": "field:Userlatestissue.issueNumber",
@@ -61811,6 +62951,121 @@
       "to": "field:Usergrouppermission.relatedId"
     },
     {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.createdUser"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.createdUserName"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.dateCreated"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.dateModified"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.deleted"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.email"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.handle"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.id"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.modifiedUser"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.modifiedUserName"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.provider"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.publicKeyFingerprint"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.userId"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_field",
+      "to": "field:Useridentity.verified"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_relationship",
+      "to": "relationship:Useridentity.createdBy"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_relationship",
+      "to": "relationship:Useridentity.modifiedBy"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "has_relationship",
+      "to": "relationship:Useridentity.user"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Useridentity",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
       "from": "model:Userlatestissue",
       "type": "has_field",
       "to": "field:Userlatestissue.id"
@@ -62952,6 +64207,11 @@
     },
     {
       "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:useridentity.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
       "type": "grants",
       "to": "permission:agentcredential.create"
     },
@@ -63569,6 +64829,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:user.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:useridentity.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:useridentity.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:useridentity.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:useridentity.update"
     },
     {
       "from": "profile:default",
@@ -64411,6 +65691,21 @@
       "to": "model:Usertimespent"
     },
     {
+      "from": "relationship:Useridentity.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Useridentity.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Useridentity.user",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
       "from": "relationship:Userqualification.user",
       "type": "targets",
       "to": "model:User"
@@ -64839,6 +66134,16 @@
       "from": "route:DELETE /api/v1/user/{id}",
       "type": "handled_by",
       "to": "action:user.delete"
+    },
+    {
+      "from": "route:DELETE /api/v1/useridentity",
+      "type": "handled_by",
+      "to": "action:useridentity.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/useridentity/{id}",
+      "type": "handled_by",
+      "to": "action:useridentity.delete"
     },
     {
       "from": "route:DELETE /api/v1/userqualification",
@@ -65461,6 +66766,21 @@
       "to": "action:user.related"
     },
     {
+      "from": "route:GET /api/v1/useridentity",
+      "type": "handled_by",
+      "to": "action:useridentity.list"
+    },
+    {
+      "from": "route:GET /api/v1/useridentity/{id}",
+      "type": "handled_by",
+      "to": "action:useridentity.get"
+    },
+    {
+      "from": "route:GET /api/v1/useridentity/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:useridentity.related"
+    },
+    {
       "from": "route:GET /api/v1/userqualification",
       "type": "handled_by",
       "to": "action:userqualification.list"
@@ -65739,6 +67059,11 @@
       "from": "route:OPTIONS /api/v1/user",
       "type": "handled_by",
       "to": "action:user.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/useridentity",
+      "type": "handled_by",
+      "to": "action:useridentity.options"
     },
     {
       "from": "route:OPTIONS /api/v1/userimage",
@@ -66111,6 +67436,16 @@
       "to": "action:user.patch"
     },
     {
+      "from": "route:PATCH /api/v1/useridentity",
+      "type": "handled_by",
+      "to": "action:useridentity.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/useridentity/{id}",
+      "type": "handled_by",
+      "to": "action:useridentity.patch"
+    },
+    {
       "from": "route:PATCH /api/v1/userqualification",
       "type": "handled_by",
       "to": "action:userqualification.patchCollection"
@@ -66339,6 +67674,11 @@
       "from": "route:POST /api/v1/user",
       "type": "handled_by",
       "to": "action:user.post"
+    },
+    {
+      "from": "route:POST /api/v1/useridentity",
+      "type": "handled_by",
+      "to": "action:useridentity.post"
     },
     {
       "from": "route:POST /api/v1/userimage",
@@ -66669,6 +68009,16 @@
       "from": "route:PUT /api/v1/user/{id}",
       "type": "handled_by",
       "to": "action:user.put"
+    },
+    {
+      "from": "route:PUT /api/v1/useridentity",
+      "type": "handled_by",
+      "to": "action:useridentity.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/useridentity/{id}",
+      "type": "handled_by",
+      "to": "action:useridentity.put"
     },
     {
       "from": "route:PUT /api/v1/userqualification",
