@@ -201,6 +201,72 @@
       "attributes": {}
     },
     {
+      "id": "action:agentskill.delete",
+      "type": "action",
+      "key": "agentskill.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentskill.deleteCollection",
+      "type": "action",
+      "key": "agentskill.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentskill.get",
+      "type": "action",
+      "key": "agentskill.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentskill.list",
+      "type": "action",
+      "key": "agentskill.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentskill.options",
+      "type": "action",
+      "key": "agentskill.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentskill.patch",
+      "type": "action",
+      "key": "agentskill.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentskill.patchCollection",
+      "type": "action",
+      "key": "agentskill.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentskill.post",
+      "type": "action",
+      "key": "agentskill.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentskill.put",
+      "type": "action",
+      "key": "agentskill.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentskill.putCollection",
+      "type": "action",
+      "key": "agentskill.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:agentskill.related",
+      "type": "action",
+      "key": "agentskill.related",
+      "attributes": {}
+    },
+    {
       "id": "action:agenttool.delete",
       "type": "action",
       "key": "agenttool.delete",
@@ -1776,6 +1842,72 @@
       "id": "action:setting.related",
       "type": "action",
       "key": "setting.related",
+      "attributes": {}
+    },
+    {
+      "id": "action:skill.delete",
+      "type": "action",
+      "key": "skill.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:skill.deleteCollection",
+      "type": "action",
+      "key": "skill.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:skill.get",
+      "type": "action",
+      "key": "skill.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:skill.list",
+      "type": "action",
+      "key": "skill.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:skill.options",
+      "type": "action",
+      "key": "skill.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:skill.patch",
+      "type": "action",
+      "key": "skill.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:skill.patchCollection",
+      "type": "action",
+      "key": "skill.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:skill.post",
+      "type": "action",
+      "key": "skill.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:skill.put",
+      "type": "action",
+      "key": "skill.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:skill.putCollection",
+      "type": "action",
+      "key": "skill.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:skill.related",
+      "type": "action",
+      "key": "skill.related",
       "attributes": {}
     },
     {
@@ -5887,6 +6019,24 @@
       }
     },
     {
+      "id": "case:backend/delete-agentskill-api-v1-agentskill-runtime-id",
+      "type": "case",
+      "key": "backend/delete-agentskill-api-v1-agentskill-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "DELETE",
+        "path": "/api/v1/agentskill/{runtime.agentskillId}",
+        "resource": "agentskill",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.agentskillId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-comment-api-v1-comment-runtime-id",
       "type": "case",
       "key": "backend/delete-comment-api-v1-comment-runtime-id",
@@ -6135,6 +6285,24 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.savedsearchId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/delete-skill-api-v1-skill-runtime-id",
+      "type": "case",
+      "key": "backend/delete-skill-api-v1-skill-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "DELETE",
+        "path": "/api/v1/skill/{runtime.skillId}",
+        "resource": "skill",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.skillId"
         ],
         "stores": []
       }
@@ -6489,6 +6657,58 @@
         "source": "backend-metadata",
         "placeholders": [
           "agentcredentialId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-agentskill-api-v1-agentskill",
+      "type": "case",
+      "key": "backend/get-agentskill-api-v1-agentskill",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/agentskill",
+        "resource": "agentskill",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-agentskill-api-v1-agentskill-id",
+      "type": "case",
+      "key": "backend/get-agentskill-api-v1-agentskill-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/agentskill/{agentskillId}",
+        "resource": "agentskill",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "agentskillId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-agentskill-api-v1-agentskill-runtime-id",
+      "type": "case",
+      "key": "backend/get-agentskill-api-v1-agentskill-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/agentskill/{runtime.agentskillId}",
+        "resource": "agentskill",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.agentskillId"
         ],
         "stores": []
       }
@@ -7398,6 +7618,58 @@
       }
     },
     {
+      "id": "case:backend/get-skill-api-v1-skill",
+      "type": "case",
+      "key": "backend/get-skill-api-v1-skill",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/skill",
+        "resource": "skill",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-skill-api-v1-skill-id",
+      "type": "case",
+      "key": "backend/get-skill-api-v1-skill-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/skill/{skillId}",
+        "resource": "skill",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "skillId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-skill-api-v1-skill-runtime-id",
+      "type": "case",
+      "key": "backend/get-skill-api-v1-skill-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/skill/{runtime.skillId}",
+        "resource": "skill",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.skillId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/get-systemnotification-api-v1-systemnotification",
       "type": "case",
       "key": "backend/get-systemnotification-api-v1-systemnotification",
@@ -8262,6 +8534,24 @@
       }
     },
     {
+      "id": "case:backend/patch-skill-api-v1-skill-id",
+      "type": "case",
+      "key": "backend/patch-skill-api-v1-skill-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "PATCH",
+        "path": "/api/v1/skill/{runtime.skillId}",
+        "resource": "skill",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.skillId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/patch-tag-api-v1-tag-id",
       "type": "case",
       "key": "backend/patch-tag-api-v1-tag-id",
@@ -8481,6 +8771,27 @@
           "agentId"
         ],
         "stores": []
+      }
+    },
+    {
+      "id": "case:backend/post-agentskill-api-v1-agentskill",
+      "type": "case",
+      "key": "backend/post-agentskill-api-v1-agentskill",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/agentskill",
+        "resource": "agentskill",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "agentId",
+          "skillId"
+        ],
+        "stores": [
+          "runtime.agentskillId"
+        ]
       }
     },
     {
@@ -8857,6 +9168,24 @@
         ],
         "stores": [
           "runtime.savedsearchId"
+        ]
+      }
+    },
+    {
+      "id": "case:backend/post-skill-api-v1-skill",
+      "type": "case",
+      "key": "backend/post-skill-api-v1-skill",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/skill",
+        "resource": "skill",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": [
+          "runtime.skillId"
         ]
       }
     },
@@ -15072,6 +15401,17 @@
       }
     },
     {
+      "id": "controller:agentskill",
+      "type": "controller",
+      "key": "agentskill",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\AgentskillController",
+        "file": "app/api/v1/controllers/AgentskillController.php",
+        "extends": "RestController"
+      }
+    },
+    {
       "id": "controller:agenttool",
       "type": "controller",
       "key": "agenttool",
@@ -15411,6 +15751,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\SettingController",
         "file": "app/api/v1/controllers/SettingController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:skill",
+      "type": "controller",
+      "key": "skill",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\SkillController",
+        "file": "app/api/v1/controllers/SkillController.php",
         "extends": "RestController"
       }
     },
@@ -16227,6 +16578,121 @@
         "length": "50",
         "null": false,
         "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Agentskill.agentId",
+      "type": "field",
+      "key": "Agentskill.agentId",
+      "attributes": {
+        "label": "LBL_AGENT_SKILLS_AGENT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Agentskill.createdUser",
+      "type": "field",
+      "key": "Agentskill.createdUser",
+      "attributes": {
+        "label": "LBL_AGENT_SKILLS_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Agentskill.createdUserName",
+      "type": "field",
+      "key": "Agentskill.createdUserName",
+      "attributes": {
+        "label": "LBL_AGENT_SKILLS_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Agentskill.dateCreated",
+      "type": "field",
+      "key": "Agentskill.dateCreated",
+      "attributes": {
+        "label": "LBL_AGENT_SKILLS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agentskill.dateModified",
+      "type": "field",
+      "key": "Agentskill.dateModified",
+      "attributes": {
+        "label": "LBL_AGENT_SKILLS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agentskill.deleted",
+      "type": "field",
+      "key": "Agentskill.deleted",
+      "attributes": {
+        "label": "LBL_AGENT_SKILLS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Agentskill.id",
+      "type": "field",
+      "key": "Agentskill.id",
+      "attributes": {
+        "label": "LBL_AGENT_SKILLS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Agentskill.modifiedUser",
+      "type": "field",
+      "key": "Agentskill.modifiedUser",
+      "attributes": {
+        "label": "LBL_AGENT_SKILLS_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Agentskill.modifiedUserName",
+      "type": "field",
+      "key": "Agentskill.modifiedUserName",
+      "attributes": {
+        "label": "LBL_AGENT_SKILLS_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Agentskill.skillId",
+      "type": "field",
+      "key": "Agentskill.skillId",
+      "attributes": {
+        "label": "LBL_AGENT_SKILLS_SKILL_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
       }
     },
     {
@@ -20055,6 +20521,141 @@
       }
     },
     {
+      "id": "field:Skill.content",
+      "type": "field",
+      "key": "Skill.content",
+      "attributes": {
+        "label": "LBL_SKILLS_CONTENT",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Skill.createdUser",
+      "type": "field",
+      "key": "Skill.createdUser",
+      "attributes": {
+        "label": "LBL_SKILLS_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Skill.createdUserName",
+      "type": "field",
+      "key": "Skill.createdUserName",
+      "attributes": {
+        "label": "LBL_SKILLS_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Skill.dateCreated",
+      "type": "field",
+      "key": "Skill.dateCreated",
+      "attributes": {
+        "label": "LBL_SKILLS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Skill.dateModified",
+      "type": "field",
+      "key": "Skill.dateModified",
+      "attributes": {
+        "label": "LBL_SKILLS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Skill.deleted",
+      "type": "field",
+      "key": "Skill.deleted",
+      "attributes": {
+        "label": "LBL_SKILLS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Skill.description",
+      "type": "field",
+      "key": "Skill.description",
+      "attributes": {
+        "label": "LBL_SKILLS_DESCRIPTION",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Skill.id",
+      "type": "field",
+      "key": "Skill.id",
+      "attributes": {
+        "label": "LBL_SKILLS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Skill.modifiedUser",
+      "type": "field",
+      "key": "Skill.modifiedUser",
+      "attributes": {
+        "label": "LBL_SKILLS_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Skill.modifiedUserName",
+      "type": "field",
+      "key": "Skill.modifiedUserName",
+      "attributes": {
+        "label": "LBL_SKILLS_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Skill.name",
+      "type": "field",
+      "key": "Skill.name",
+      "attributes": {
+        "label": "LBL_SKILLS_NAME",
+        "type": "varchar",
+        "length": "100",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Skill.version",
+      "type": "field",
+      "key": "Skill.version",
+      "attributes": {
+        "label": "LBL_SKILLS_VERSION",
+        "type": "varchar",
+        "length": "25",
+        "null": true
+      }
+    },
+    {
       "id": "field:Systemnotification.context",
       "type": "field",
       "key": "Systemnotification.context",
@@ -23150,6 +23751,14 @@
       }
     },
     {
+      "id": "fixture:agentskillId",
+      "type": "fixture",
+      "key": "agentskillId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:agenttoolId",
       "type": "fixture",
       "key": "agenttoolId",
@@ -23438,6 +24047,14 @@
       }
     },
     {
+      "id": "fixture:skillId",
+      "type": "fixture",
+      "key": "skillId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:systemnotificationId",
       "type": "fixture",
       "key": "systemnotificationId",
@@ -23580,6 +24197,19 @@
       "attributes": {
         "file": "app/metadata/model/Agentcredential.php",
         "tableName": "agentcredentials",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
+      "id": "model:Agentskill",
+      "type": "model",
+      "key": "Agentskill",
+      "attributes": {
+        "file": "app/metadata/model/Agentskill.php",
+        "tableName": "agent_skills",
         "isView": false,
         "registered": true,
         "hasMetadata": true,
@@ -24149,6 +24779,19 @@
       }
     },
     {
+      "id": "model:Skill",
+      "type": "model",
+      "key": "Skill",
+      "attributes": {
+        "file": "app/metadata/model/Skill.php",
+        "tableName": "skills",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
       "id": "model:Systemnotification",
       "type": "model",
       "key": "Systemnotification",
@@ -24645,6 +25288,42 @@
       "id": "permission:agentcredential.update",
       "type": "permission",
       "key": "agentcredential.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agentskill.create",
+      "type": "permission",
+      "key": "agentskill.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agentskill.delete",
+      "type": "permission",
+      "key": "agentskill.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agentskill.get",
+      "type": "permission",
+      "key": "agentskill.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:agentskill.update",
+      "type": "permission",
+      "key": "agentskill.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -25592,6 +26271,42 @@
       }
     },
     {
+      "id": "permission:skill.create",
+      "type": "permission",
+      "key": "skill.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:skill.delete",
+      "type": "permission",
+      "key": "skill.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:skill.get",
+      "type": "permission",
+      "key": "skill.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:skill.update",
+      "type": "permission",
+      "key": "skill.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
       "id": "permission:systemnotification.get",
       "type": "permission",
       "key": "systemnotification.get",
@@ -26301,6 +27016,16 @@
       }
     },
     {
+      "id": "relationship:Agent.agentSkills",
+      "type": "relationship",
+      "key": "Agent.agentSkills",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "agentId"
+      }
+    },
+    {
       "id": "relationship:Agent.createdBy",
       "type": "relationship",
       "key": "Agent.createdBy",
@@ -26377,6 +27102,46 @@
       "attributes": {
         "kind": "hasOne",
         "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agentskill.agent",
+      "type": "relationship",
+      "key": "Agentskill.agent",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "agentId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agentskill.createdBy",
+      "type": "relationship",
+      "key": "Agentskill.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agentskill.modifiedBy",
+      "type": "relationship",
+      "key": "Agentskill.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agentskill.skill",
+      "type": "relationship",
+      "key": "Agentskill.skill",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "skillId",
         "relatedKey": "id"
       }
     },
@@ -27214,6 +27979,47 @@
       "id": "relationship:Setting.modifiedBy",
       "type": "relationship",
       "key": "Setting.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Skill.agentSkills",
+      "type": "relationship",
+      "key": "Skill.agentSkills",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "skillId"
+      }
+    },
+    {
+      "id": "relationship:Skill.createdBy",
+      "type": "relationship",
+      "key": "Skill.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Skill.files",
+      "type": "relationship",
+      "key": "Skill.files",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "relatedId",
+        "condition": "files.relatedTo = \"skill\""
+      }
+    },
+    {
+      "id": "relationship:Skill.modifiedBy",
+      "type": "relationship",
+      "key": "Skill.modifiedBy",
       "attributes": {
         "kind": "hasOne",
         "primaryKey": "modifiedUser",
@@ -28059,6 +28865,30 @@
       }
     },
     {
+      "id": "route:DELETE /api/v1/agentskill",
+      "type": "route",
+      "key": "DELETE /api/v1/agentskill",
+      "attributes": {
+        "type": "rest",
+        "name": "agentskill",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/agentskill"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/agentskill/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/agentskill/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agentskill",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/agentskill/{id}"
+      }
+    },
+    {
       "id": "route:DELETE /api/v1/agenttool",
       "type": "route",
       "key": "DELETE /api/v1/agenttool",
@@ -28563,6 +29393,30 @@
       }
     },
     {
+      "id": "route:DELETE /api/v1/skill",
+      "type": "route",
+      "key": "DELETE /api/v1/skill",
+      "attributes": {
+        "type": "rest",
+        "name": "skill",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/skill"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/skill/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/skill/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "skill",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/skill/{id}"
+      }
+    },
+    {
       "id": "route:DELETE /api/v1/tag",
       "type": "route",
       "key": "DELETE /api/v1/tag",
@@ -28980,6 +29834,42 @@
         "version": "v1",
         "method": "GET",
         "path": "/api/v1/agentcredential/{id}/{relation}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agentskill",
+      "type": "route",
+      "key": "GET /api/v1/agentskill",
+      "attributes": {
+        "type": "rest",
+        "name": "agentskill",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agentskill"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agentskill/{id}",
+      "type": "route",
+      "key": "GET /api/v1/agentskill/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agentskill",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agentskill/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/agentskill/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/agentskill/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "agentskill",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/agentskill/{id}/{relation}"
       }
     },
     {
@@ -29883,6 +30773,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/skill",
+      "type": "route",
+      "key": "GET /api/v1/skill",
+      "attributes": {
+        "type": "rest",
+        "name": "skill",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/skill"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/skill/{id}",
+      "type": "route",
+      "key": "GET /api/v1/skill/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "skill",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/skill/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/skill/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/skill/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "skill",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/skill/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:GET /api/v1/systemnotification",
       "type": "route",
       "key": "GET /api/v1/systemnotification",
@@ -30495,6 +31421,18 @@
       }
     },
     {
+      "id": "route:OPTIONS /api/v1/agentskill",
+      "type": "route",
+      "key": "OPTIONS /api/v1/agentskill",
+      "attributes": {
+        "type": "rest",
+        "name": "agentskill",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/agentskill"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/agenttool",
       "type": "route",
       "key": "OPTIONS /api/v1/agenttool",
@@ -30819,6 +31757,18 @@
       }
     },
     {
+      "id": "route:OPTIONS /api/v1/skill",
+      "type": "route",
+      "key": "OPTIONS /api/v1/skill",
+      "attributes": {
+        "type": "rest",
+        "name": "skill",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/skill"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/systemnotification",
       "type": "route",
       "key": "OPTIONS /api/v1/systemnotification",
@@ -31104,6 +32054,30 @@
         "version": "v1",
         "method": "PATCH",
         "path": "/api/v1/agentcredential/{id}"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/agentskill",
+      "type": "route",
+      "key": "PATCH /api/v1/agentskill",
+      "attributes": {
+        "type": "rest",
+        "name": "agentskill",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/agentskill"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/agentskill/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/agentskill/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agentskill",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/agentskill/{id}"
       }
     },
     {
@@ -31683,6 +32657,30 @@
       }
     },
     {
+      "id": "route:PATCH /api/v1/skill",
+      "type": "route",
+      "key": "PATCH /api/v1/skill",
+      "attributes": {
+        "type": "rest",
+        "name": "skill",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/skill"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/skill/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/skill/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "skill",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/skill/{id}"
+      }
+    },
+    {
       "id": "route:PATCH /api/v1/systemnotificationrecipient",
       "type": "route",
       "key": "PATCH /api/v1/systemnotificationrecipient",
@@ -32031,6 +33029,18 @@
       }
     },
     {
+      "id": "route:POST /api/v1/agentskill",
+      "type": "route",
+      "key": "POST /api/v1/agentskill",
+      "attributes": {
+        "type": "rest",
+        "name": "agentskill",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/agentskill"
+      }
+    },
+    {
       "id": "route:POST /api/v1/agenttool",
       "type": "route",
       "key": "POST /api/v1/agenttool",
@@ -32319,6 +33329,18 @@
       }
     },
     {
+      "id": "route:POST /api/v1/skill",
+      "type": "route",
+      "key": "POST /api/v1/skill",
+      "attributes": {
+        "type": "rest",
+        "name": "skill",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/skill"
+      }
+    },
+    {
       "id": "route:POST /api/v1/systemnotificationrecipient",
       "type": "route",
       "key": "POST /api/v1/systemnotificationrecipient",
@@ -32580,6 +33602,30 @@
         "version": "v1",
         "method": "PUT",
         "path": "/api/v1/agentcredential/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/agentskill",
+      "type": "route",
+      "key": "PUT /api/v1/agentskill",
+      "attributes": {
+        "type": "rest",
+        "name": "agentskill",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/agentskill"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/agentskill/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/agentskill/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "agentskill",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/agentskill/{id}"
       }
     },
     {
@@ -33087,6 +34133,30 @@
       }
     },
     {
+      "id": "route:PUT /api/v1/skill",
+      "type": "route",
+      "key": "PUT /api/v1/skill",
+      "attributes": {
+        "type": "rest",
+        "name": "skill",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/skill"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/skill/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/skill/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "skill",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/skill/{id}"
+      }
+    },
+    {
       "id": "route:PUT /api/v1/tag",
       "type": "route",
       "key": "PUT /api/v1/tag",
@@ -33519,6 +34589,46 @@
       "from": "action:agentcredential.related",
       "type": "requires",
       "to": "permission:agentcredential.get"
+    },
+    {
+      "from": "action:agentskill.delete",
+      "type": "requires",
+      "to": "permission:agentskill.delete"
+    },
+    {
+      "from": "action:agentskill.get",
+      "type": "requires",
+      "to": "permission:agentskill.get"
+    },
+    {
+      "from": "action:agentskill.list",
+      "type": "requires",
+      "to": "permission:agentskill.get"
+    },
+    {
+      "from": "action:agentskill.patch",
+      "type": "requires",
+      "to": "permission:agentskill.update"
+    },
+    {
+      "from": "action:agentskill.patchCollection",
+      "type": "requires",
+      "to": "permission:agentskill.update"
+    },
+    {
+      "from": "action:agentskill.post",
+      "type": "requires",
+      "to": "permission:agentskill.create"
+    },
+    {
+      "from": "action:agentskill.put",
+      "type": "requires",
+      "to": "permission:agentskill.update"
+    },
+    {
+      "from": "action:agentskill.related",
+      "type": "requires",
+      "to": "permission:agentskill.get"
     },
     {
       "from": "action:agenttool.delete",
@@ -34464,6 +35574,46 @@
       "from": "action:setting.related",
       "type": "requires",
       "to": "permission:setting.get"
+    },
+    {
+      "from": "action:skill.delete",
+      "type": "requires",
+      "to": "permission:skill.delete"
+    },
+    {
+      "from": "action:skill.get",
+      "type": "requires",
+      "to": "permission:skill.get"
+    },
+    {
+      "from": "action:skill.list",
+      "type": "requires",
+      "to": "permission:skill.get"
+    },
+    {
+      "from": "action:skill.patch",
+      "type": "requires",
+      "to": "permission:skill.update"
+    },
+    {
+      "from": "action:skill.patchCollection",
+      "type": "requires",
+      "to": "permission:skill.update"
+    },
+    {
+      "from": "action:skill.post",
+      "type": "requires",
+      "to": "permission:skill.create"
+    },
+    {
+      "from": "action:skill.put",
+      "type": "requires",
+      "to": "permission:skill.update"
+    },
+    {
+      "from": "action:skill.related",
+      "type": "requires",
+      "to": "permission:skill.get"
     },
     {
       "from": "action:systemnotification.get",
@@ -40121,6 +41271,36 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/delete-agentskill-api-v1-agentskill-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/delete-agentskill-api-v1-agentskill-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/delete-agentskill-api-v1-agentskill-runtime-id",
+      "type": "covers",
+      "to": "controller:agentskill"
+    },
+    {
+      "from": "case:backend/delete-agentskill-api-v1-agentskill-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-agentskill-api-v1-agentskill"
+    },
+    {
+      "from": "case:backend/delete-agentskill-api-v1-agentskill-runtime-id",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/agentskill/{id}"
+    },
+    {
+      "from": "case:backend/delete-agentskill-api-v1-agentskill-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/delete-comment-api-v1-comment-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -40542,6 +41722,36 @@
     },
     {
       "from": "case:backend/delete-savedsearch-api-v1-savedsearch-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/delete-skill-api-v1-skill-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/delete-skill-api-v1-skill-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/delete-skill-api-v1-skill-runtime-id",
+      "type": "covers",
+      "to": "controller:skill"
+    },
+    {
+      "from": "case:backend/delete-skill-api-v1-skill-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-skill-api-v1-skill"
+    },
+    {
+      "from": "case:backend/delete-skill-api-v1-skill-runtime-id",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/skill/{id}"
+    },
+    {
+      "from": "case:backend/delete-skill-api-v1-skill-runtime-id",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -41154,6 +42364,101 @@
       "from": "case:backend/get-agentcredential-api-v1-agentcredential-id",
       "type": "uses_fixture",
       "to": "fixture:agentcredentialId"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill",
+      "type": "covers",
+      "to": "controller:agentskill"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentskill"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-id",
+      "type": "covers",
+      "to": "controller:agentskill"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentskill/{id}"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-id",
+      "type": "uses_fixture",
+      "to": "fixture:agentskillId"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-runtime-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-runtime-id",
+      "type": "covers",
+      "to": "controller:agentskill"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-agentskill-api-v1-agentskill"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-runtime-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentskill/{id}"
+    },
+    {
+      "from": "case:backend/get-agentskill-api-v1-agentskill-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:backend/get-agenttool-api-v1-agenttool",
@@ -42756,6 +44061,101 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/get-skill-api-v1-skill",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill",
+      "type": "covers",
+      "to": "controller:skill"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill",
+      "type": "exercises",
+      "to": "route:GET /api/v1/skill"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-id",
+      "type": "covers",
+      "to": "controller:skill"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/skill/{id}"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-id",
+      "type": "uses_fixture",
+      "to": "fixture:skillId"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-runtime-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-runtime-id",
+      "type": "covers",
+      "to": "controller:skill"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-skill-api-v1-skill"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-runtime-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/skill/{id}"
+    },
+    {
+      "from": "case:backend/get-skill-api-v1-skill-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/get-systemnotification-api-v1-systemnotification",
       "type": "asserts",
       "to": "assertion:shape"
@@ -44321,6 +45721,41 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/patch-skill-api-v1-skill-id",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:backend/patch-skill-api-v1-skill-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/patch-skill-api-v1-skill-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/patch-skill-api-v1-skill-id",
+      "type": "covers",
+      "to": "controller:skill"
+    },
+    {
+      "from": "case:backend/patch-skill-api-v1-skill-id",
+      "type": "depends_on",
+      "to": "case:backend/post-skill-api-v1-skill"
+    },
+    {
+      "from": "case:backend/patch-skill-api-v1-skill-id",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/skill/{id}"
+    },
+    {
+      "from": "case:backend/patch-skill-api-v1-skill-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/patch-tag-api-v1-tag-id",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -44724,6 +46159,41 @@
       "from": "case:backend/post-agentcredential-api-v1-agentcredential",
       "type": "uses_fixture",
       "to": "fixture:agentId"
+    },
+    {
+      "from": "case:backend/post-agentskill-api-v1-agentskill",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-agentskill-api-v1-agentskill",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-agentskill-api-v1-agentskill",
+      "type": "covers",
+      "to": "controller:agentskill"
+    },
+    {
+      "from": "case:backend/post-agentskill-api-v1-agentskill",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agentskill"
+    },
+    {
+      "from": "case:backend/post-agentskill-api-v1-agentskill",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-agentskill-api-v1-agentskill",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:backend/post-agentskill-api-v1-agentskill",
+      "type": "uses_fixture",
+      "to": "fixture:skillId"
     },
     {
       "from": "case:backend/post-agenttool-api-v1-agenttool",
@@ -45329,6 +46799,31 @@
       "from": "case:backend/post-savedsearch-api-v1-savedsearch",
       "type": "uses_fixture",
       "to": "fixture:projectId"
+    },
+    {
+      "from": "case:backend/post-skill-api-v1-skill",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-skill-api-v1-skill",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-skill-api-v1-skill",
+      "type": "covers",
+      "to": "controller:skill"
+    },
+    {
+      "from": "case:backend/post-skill-api-v1-skill",
+      "type": "exercises",
+      "to": "route:POST /api/v1/skill"
+    },
+    {
+      "from": "case:backend/post-skill-api-v1-skill",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:backend/post-systemnotificationrecipient-api-v1-systemnotificationrecipient",
@@ -55481,6 +56976,66 @@
       "to": "model:Agentcredential"
     },
     {
+      "from": "controller:agentskill",
+      "type": "has_action",
+      "to": "action:agentskill.delete"
+    },
+    {
+      "from": "controller:agentskill",
+      "type": "has_action",
+      "to": "action:agentskill.deleteCollection"
+    },
+    {
+      "from": "controller:agentskill",
+      "type": "has_action",
+      "to": "action:agentskill.get"
+    },
+    {
+      "from": "controller:agentskill",
+      "type": "has_action",
+      "to": "action:agentskill.list"
+    },
+    {
+      "from": "controller:agentskill",
+      "type": "has_action",
+      "to": "action:agentskill.options"
+    },
+    {
+      "from": "controller:agentskill",
+      "type": "has_action",
+      "to": "action:agentskill.patch"
+    },
+    {
+      "from": "controller:agentskill",
+      "type": "has_action",
+      "to": "action:agentskill.patchCollection"
+    },
+    {
+      "from": "controller:agentskill",
+      "type": "has_action",
+      "to": "action:agentskill.post"
+    },
+    {
+      "from": "controller:agentskill",
+      "type": "has_action",
+      "to": "action:agentskill.put"
+    },
+    {
+      "from": "controller:agentskill",
+      "type": "has_action",
+      "to": "action:agentskill.putCollection"
+    },
+    {
+      "from": "controller:agentskill",
+      "type": "has_action",
+      "to": "action:agentskill.related"
+    },
+    {
+      "from": "controller:agentskill",
+      "type": "serves",
+      "to": "model:Agentskill"
+    },
+    {
       "from": "controller:agenttool",
       "type": "has_action",
       "to": "action:agenttool.delete"
@@ -57031,6 +58586,66 @@
       "to": "model:Setting"
     },
     {
+      "from": "controller:skill",
+      "type": "has_action",
+      "to": "action:skill.delete"
+    },
+    {
+      "from": "controller:skill",
+      "type": "has_action",
+      "to": "action:skill.deleteCollection"
+    },
+    {
+      "from": "controller:skill",
+      "type": "has_action",
+      "to": "action:skill.get"
+    },
+    {
+      "from": "controller:skill",
+      "type": "has_action",
+      "to": "action:skill.list"
+    },
+    {
+      "from": "controller:skill",
+      "type": "has_action",
+      "to": "action:skill.options"
+    },
+    {
+      "from": "controller:skill",
+      "type": "has_action",
+      "to": "action:skill.patch"
+    },
+    {
+      "from": "controller:skill",
+      "type": "has_action",
+      "to": "action:skill.patchCollection"
+    },
+    {
+      "from": "controller:skill",
+      "type": "has_action",
+      "to": "action:skill.post"
+    },
+    {
+      "from": "controller:skill",
+      "type": "has_action",
+      "to": "action:skill.put"
+    },
+    {
+      "from": "controller:skill",
+      "type": "has_action",
+      "to": "action:skill.putCollection"
+    },
+    {
+      "from": "controller:skill",
+      "type": "has_action",
+      "to": "action:skill.related"
+    },
+    {
+      "from": "controller:skill",
+      "type": "serves",
+      "to": "model:Skill"
+    },
+    {
       "from": "controller:systemnotification",
       "type": "has_action",
       "to": "action:systemnotification.get"
@@ -57976,6 +59591,16 @@
       "to": "field:Agentcredential.modifiedUser"
     },
     {
+      "from": "field:Agentskill.createdUserName",
+      "type": "linked_to",
+      "to": "field:Agentskill.createdUser"
+    },
+    {
+      "from": "field:Agentskill.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Agentskill.modifiedUser"
+    },
+    {
       "from": "field:Agenttool.createdUserName",
       "type": "linked_to",
       "to": "field:Agenttool.createdUser"
@@ -58199,6 +59824,16 @@
       "from": "field:Setting.modifiedUserName",
       "type": "linked_to",
       "to": "field:Setting.modifiedUser"
+    },
+    {
+      "from": "field:Skill.createdUserName",
+      "type": "linked_to",
+      "to": "field:Skill.createdUser"
+    },
+    {
+      "from": "field:Skill.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Skill.modifiedUser"
     },
     {
       "from": "field:Tag.createdUserName",
@@ -58673,6 +60308,11 @@
     {
       "from": "model:Agent",
       "type": "has_relationship",
+      "to": "relationship:Agent.agentSkills"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_relationship",
       "to": "relationship:Agent.createdBy"
     },
     {
@@ -58827,6 +60467,106 @@
     },
     {
       "from": "model:Agentcredential",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_field",
+      "to": "field:Agentskill.agentId"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_field",
+      "to": "field:Agentskill.createdUser"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_field",
+      "to": "field:Agentskill.createdUserName"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_field",
+      "to": "field:Agentskill.dateCreated"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_field",
+      "to": "field:Agentskill.dateModified"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_field",
+      "to": "field:Agentskill.deleted"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_field",
+      "to": "field:Agentskill.id"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_field",
+      "to": "field:Agentskill.modifiedUser"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_field",
+      "to": "field:Agentskill.modifiedUserName"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_field",
+      "to": "field:Agentskill.skillId"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_relationship",
+      "to": "relationship:Agentskill.agent"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_relationship",
+      "to": "relationship:Agentskill.createdBy"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_relationship",
+      "to": "relationship:Agentskill.modifiedBy"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "has_relationship",
+      "to": "relationship:Agentskill.skill"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Agentskill",
       "type": "uses_behaviour",
       "to": "behaviour:softDeleteBehavior"
     },
@@ -61626,6 +63366,116 @@
       "to": "behaviour:softDeleteBehavior"
     },
     {
+      "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.content"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.createdUser"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.createdUserName"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.dateCreated"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.dateModified"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.deleted"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.description"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.id"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.modifiedUser"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.modifiedUserName"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.name"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.version"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_relationship",
+      "to": "relationship:Skill.agentSkills"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_relationship",
+      "to": "relationship:Skill.createdBy"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_relationship",
+      "to": "relationship:Skill.files"
+    },
+    {
+      "from": "model:Skill",
+      "type": "has_relationship",
+      "to": "relationship:Skill.modifiedBy"
+    },
+    {
+      "from": "model:Skill",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Skill",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Skill",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Skill",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Skill",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Skill",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
       "from": "model:Systemnotification",
       "type": "has_field",
       "to": "field:Systemnotification.context"
@@ -64353,6 +66203,26 @@
     {
       "from": "profile:default",
       "type": "grants",
+      "to": "permission:agentskill.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agentskill.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agentskill.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:agentskill.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
       "to": "permission:agenttool.create"
     },
     {
@@ -64673,6 +66543,26 @@
     {
       "from": "profile:default",
       "type": "grants",
+      "to": "permission:skill.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:skill.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:skill.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:skill.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
       "to": "permission:systemsetting.create"
     },
     {
@@ -64966,6 +66856,11 @@
       "to": "model:Project"
     },
     {
+      "from": "relationship:Agent.agentSkills",
+      "type": "targets",
+      "to": "model:Agentskill"
+    },
+    {
       "from": "relationship:Agent.createdBy",
       "type": "targets",
       "to": "model:User"
@@ -65004,6 +66899,26 @@
       "from": "relationship:Agentcredential.modifiedBy",
       "type": "targets",
       "to": "model:User"
+    },
+    {
+      "from": "relationship:Agentskill.agent",
+      "type": "targets",
+      "to": "model:Agent"
+    },
+    {
+      "from": "relationship:Agentskill.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Agentskill.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Agentskill.skill",
+      "type": "targets",
+      "to": "model:Skill"
     },
     {
       "from": "relationship:Agenttool.agent",
@@ -65422,6 +67337,26 @@
     },
     {
       "from": "relationship:Setting.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Skill.agentSkills",
+      "type": "targets",
+      "to": "model:Agentskill"
+    },
+    {
+      "from": "relationship:Skill.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Skill.files",
+      "type": "targets",
+      "to": "model:Upload"
+    },
+    {
+      "from": "relationship:Skill.modifiedBy",
       "type": "targets",
       "to": "model:User"
     },
@@ -65856,6 +67791,16 @@
       "to": "action:agentcredential.delete"
     },
     {
+      "from": "route:DELETE /api/v1/agentskill",
+      "type": "handled_by",
+      "to": "action:agentskill.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/agentskill/{id}",
+      "type": "handled_by",
+      "to": "action:agentskill.delete"
+    },
+    {
       "from": "route:DELETE /api/v1/agenttool",
       "type": "handled_by",
       "to": "action:agenttool.deleteCollection"
@@ -66066,6 +68011,16 @@
       "to": "action:scoreboard.delete"
     },
     {
+      "from": "route:DELETE /api/v1/skill",
+      "type": "handled_by",
+      "to": "action:skill.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/skill/{id}",
+      "type": "handled_by",
+      "to": "action:skill.delete"
+    },
+    {
       "from": "route:DELETE /api/v1/tag",
       "type": "handled_by",
       "to": "action:tag.deleteCollection"
@@ -66239,6 +68194,21 @@
       "from": "route:GET /api/v1/agentcredential/{id}/{relation}",
       "type": "handled_by",
       "to": "action:agentcredential.related"
+    },
+    {
+      "from": "route:GET /api/v1/agentskill",
+      "type": "handled_by",
+      "to": "action:agentskill.list"
+    },
+    {
+      "from": "route:GET /api/v1/agentskill/{id}",
+      "type": "handled_by",
+      "to": "action:agentskill.get"
+    },
+    {
+      "from": "route:GET /api/v1/agentskill/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:agentskill.related"
     },
     {
       "from": "route:GET /api/v1/agenttool",
@@ -66616,6 +68586,21 @@
       "to": "action:setting.related"
     },
     {
+      "from": "route:GET /api/v1/skill",
+      "type": "handled_by",
+      "to": "action:skill.list"
+    },
+    {
+      "from": "route:GET /api/v1/skill/{id}",
+      "type": "handled_by",
+      "to": "action:skill.get"
+    },
+    {
+      "from": "route:GET /api/v1/skill/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:skill.related"
+    },
+    {
       "from": "route:GET /api/v1/systemnotification",
       "type": "handled_by",
       "to": "action:systemnotification.list"
@@ -66871,6 +68856,11 @@
       "to": "action:agentcredential.options"
     },
     {
+      "from": "route:OPTIONS /api/v1/agentskill",
+      "type": "handled_by",
+      "to": "action:agentskill.options"
+    },
+    {
       "from": "route:OPTIONS /api/v1/agenttool",
       "type": "handled_by",
       "to": "action:agenttool.options"
@@ -67006,6 +68996,11 @@
       "to": "action:setting.options"
     },
     {
+      "from": "route:OPTIONS /api/v1/skill",
+      "type": "handled_by",
+      "to": "action:skill.options"
+    },
+    {
       "from": "route:OPTIONS /api/v1/systemnotification",
       "type": "handled_by",
       "to": "action:systemnotification.options"
@@ -67124,6 +69119,16 @@
       "from": "route:PATCH /api/v1/agentcredential/{id}",
       "type": "handled_by",
       "to": "action:agentcredential.patch"
+    },
+    {
+      "from": "route:PATCH /api/v1/agentskill",
+      "type": "handled_by",
+      "to": "action:agentskill.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/agentskill/{id}",
+      "type": "handled_by",
+      "to": "action:agentskill.patch"
     },
     {
       "from": "route:PATCH /api/v1/agenttool",
@@ -67366,6 +69371,16 @@
       "to": "action:setting.patch"
     },
     {
+      "from": "route:PATCH /api/v1/skill",
+      "type": "handled_by",
+      "to": "action:skill.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/skill/{id}",
+      "type": "handled_by",
+      "to": "action:skill.patch"
+    },
+    {
       "from": "route:PATCH /api/v1/systemnotificationrecipient",
       "type": "handled_by",
       "to": "action:systemnotificationrecipient.patchCollection"
@@ -67511,6 +69526,11 @@
       "to": "action:agentcredential.post"
     },
     {
+      "from": "route:POST /api/v1/agentskill",
+      "type": "handled_by",
+      "to": "action:agentskill.post"
+    },
+    {
       "from": "route:POST /api/v1/agenttool",
       "type": "handled_by",
       "to": "action:agenttool.post"
@@ -67631,6 +69651,11 @@
       "to": "action:scoreboard.post"
     },
     {
+      "from": "route:POST /api/v1/skill",
+      "type": "handled_by",
+      "to": "action:skill.post"
+    },
+    {
       "from": "route:POST /api/v1/systemnotificationrecipient",
       "type": "handled_by",
       "to": "action:systemnotificationrecipient.post"
@@ -67739,6 +69764,16 @@
       "from": "route:PUT /api/v1/agentcredential/{id}",
       "type": "handled_by",
       "to": "action:agentcredential.put"
+    },
+    {
+      "from": "route:PUT /api/v1/agentskill",
+      "type": "handled_by",
+      "to": "action:agentskill.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/agentskill/{id}",
+      "type": "handled_by",
+      "to": "action:agentskill.put"
     },
     {
       "from": "route:PUT /api/v1/agenttool",
@@ -67949,6 +69984,16 @@
       "from": "route:PUT /api/v1/scoreboard/{id}",
       "type": "handled_by",
       "to": "action:scoreboard.put"
+    },
+    {
+      "from": "route:PUT /api/v1/skill",
+      "type": "handled_by",
+      "to": "action:skill.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/skill/{id}",
+      "type": "handled_by",
+      "to": "action:skill.put"
     },
     {
       "from": "route:PUT /api/v1/tag",

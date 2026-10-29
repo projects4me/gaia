@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 184,
-        "enabled": 171,
+        "total": 195,
+        "enabled": 182,
         "disabled": 13,
-        "routeResources": 48,
-        "withMetadata": 36,
+        "routeResources": 50,
+        "withMetadata": 38,
         "skippedResources": 10
     },
     "apis": [
@@ -868,6 +868,91 @@
             "source": "backend-metadata"
         },
         {
+            "id": "get-agentskill-api-v1-agentskill",
+            "method": "GET",
+            "path": "/api/v1/agentskill",
+            "resource": "agentskill",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-agentskill-api-v1-agentskill-id",
+            "method": "GET",
+            "path": "/api/v1/agentskill/{agentskillId}",
+            "resource": "agentskill",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{agentskillId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-agentskill-api-v1-agentskill",
+            "method": "POST",
+            "path": "/api/v1/agentskill",
+            "resource": "agentskill",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "agentskill",
+                    "attributes": {
+                        "agentId": "{agentId}",
+                        "skillId": "{skillId}"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.agentskillId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-agentskill-api-v1-agentskill-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/agentskill/{runtime.agentskillId}",
+            "resource": "agentskill",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.agentskillId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-agentskill-api-v1-agentskill-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/agentskill/{runtime.agentskillId}",
+            "resource": "agentskill",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
+        {
             "id": "get-tool-api-v1-tool",
             "method": "GET",
             "path": "/api/v1/tool",
@@ -1183,6 +1268,114 @@
             "method": "DELETE",
             "path": "/api/v1/useridentity/{runtime.useridentityId}",
             "resource": "useridentity",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-skill-api-v1-skill",
+            "method": "GET",
+            "path": "/api/v1/skill",
+            "resource": "skill",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-skill-api-v1-skill-id",
+            "method": "GET",
+            "path": "/api/v1/skill/{skillId}",
+            "resource": "skill",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{skillId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-skill-api-v1-skill",
+            "method": "POST",
+            "path": "/api/v1/skill",
+            "resource": "skill",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "skill",
+                    "attributes": {
+                        "name": "api-skill-name"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.skillId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-skill-api-v1-skill-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/skill/{runtime.skillId}",
+            "resource": "skill",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.skillId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "patch-skill-api-v1-skill-id",
+            "method": "PATCH",
+            "path": "/api/v1/skill/{runtime.skillId}",
+            "resource": "skill",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "skill",
+                    "id": "{runtime.skillId}",
+                    "attributes": {
+                        "name": "api-skill-name Updated"
+                    }
+                }
+            },
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "attributesEqual": {
+                    "name": "api-skill-name Updated"
+                }
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-skill-api-v1-skill-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/skill/{runtime.skillId}",
+            "resource": "skill",
             "auth": true,
             "expects": {
                 "status": [

@@ -148,6 +148,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'agentskill' => array(
+                'path' => '/api/:version/agentskill',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'tool' => array(
                 'path' => '/api/:version/tool',
                 'allowedMethods' => array(
@@ -172,6 +183,17 @@ $config['routes'] = array(
             ),
             'useridentity' => array(
                 'path' => '/api/:version/useridentity',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'skill' => array(
+                'path' => '/api/:version/skill',
                 'allowedMethods' => array(
                     'GET',
                     'POST',

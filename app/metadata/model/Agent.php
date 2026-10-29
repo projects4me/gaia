@@ -175,6 +175,11 @@ $models['Agent'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Agenttool',
                 'relatedKey' => 'agentId',
             ),
+            'agentSkills' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\Gaia\MVC\Models\Agentskill',
+                'relatedKey' => 'agentId',
+            ),
         ),
     ),
     'behaviors' => array(

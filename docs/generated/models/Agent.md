@@ -19,6 +19,7 @@
 <a id="relationships"></a>
 ## Relationships
 
+- agentSkills hasMany -> Agentskill
 - createdBy hasOne -> User
 - modifiedBy hasOne -> User
 - sponsor hasOne -> User

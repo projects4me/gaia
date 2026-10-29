@@ -121,6 +121,17 @@
             ],
             "identifier": "id"
         },
+        "agentskill": {
+            "path": "/api/:version/agentskill",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "tool": {
             "path": "/api/:version/tool",
             "allowedMethods": [
@@ -145,6 +156,17 @@
         },
         "useridentity": {
             "path": "/api/:version/useridentity",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "skill": {
+            "path": "/api/:version/skill",
             "allowedMethods": [
                 "GET",
                 "POST",
