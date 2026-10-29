@@ -3863,6 +3863,22 @@
       }
     },
     {
+      "id": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "case",
+      "key": "acl/acl-agentspec-list-checks-get-permission",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentspec",
+        "resource": "agentspec",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-agentspec-unknown-agent-not-found",
       "type": "case",
       "key": "acl/acl-agentspec-unknown-agent-not-found",
@@ -37430,6 +37446,36 @@
       "from": "case:acl/acl-agentspec-has-no-list",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "covers",
+      "to": "controller:agentspec"
+    },
+    {
+      "from": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentspec"
+    },
+    {
+      "from": "case:acl/acl-agentspec-list-checks-get-permission",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
     },
     {
       "from": "case:acl/acl-agentspec-unknown-agent-not-found",

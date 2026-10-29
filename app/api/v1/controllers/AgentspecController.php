@@ -26,7 +26,8 @@ class AgentspecController extends RestController
     private const BY_ID_ONLY = 'Agent specs are read one at a time, by agent id.';
 
     /**
-     * Only get is exposed.
+     * Only get is exposed. The list route is checked against agentspec.get too,
+     * so a caller with that permission gets the 404 from listAction.
      *
      * @var array $aclMap
      */
@@ -34,6 +35,10 @@ class AgentspecController extends RestController
         'get' => array(
             'action' => 'get',
             'controllerAction' => 'getAction',
+        ),
+        'list' => array(
+            'action' => 'get',
+            'controllerAction' => 'listAction',
         ),
     );
 

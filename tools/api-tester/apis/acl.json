@@ -2076,6 +2076,16 @@
       "source": "acl-agent"
     },
     {
+      "id": "acl-agentspec-list-checks-get-permission",
+      "method": "GET",
+      "path": "/api/v1/agentspec",
+      "resource": "agentspec",
+      "auth": "aclAgent",
+      "expects": { "status": 404, "shape": "error", "errorEqual": "Agent specs are read one at a time, by agent id." },
+      "note": "the list route is authorized as agentspec.get, so a caller with only that grant gets the 404",
+      "source": "acl-agent"
+    },
+    {
       "id": "acl-agentspec-unknown-agent-not-found",
       "method": "GET",
       "path": "/api/v1/agentspec/api-test-no-such-agent",
