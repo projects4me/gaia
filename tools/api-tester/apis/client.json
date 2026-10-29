@@ -4391,6 +4391,34 @@
       }
     },
     {
+      "id": "introspect-without-ares-secret-refused",
+      "method": "POST",
+      "path": "/api/v1/introspect",
+      "resource": "introspect",
+      "auth": false,
+      "form": {
+        "token": "not-a-real-token"
+      },
+      "expects": {
+        "status": 401,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "introspect-with-user-token-refused",
+      "method": "POST",
+      "path": "/api/v1/introspect",
+      "resource": "introspect",
+      "auth": true,
+      "body": {
+        "token": "not-a-real-token"
+      },
+      "expects": {
+        "status": 401,
+        "shape": "error"
+      }
+    },
+    {
       "id": "token-client-credentials-signs-agent-in",
       "method": "POST",
       "path": "/api/v1/token",

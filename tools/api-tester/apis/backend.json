@@ -11,9 +11,9 @@
         "total": 195,
         "enabled": 182,
         "disabled": 13,
-        "routeResources": 50,
+        "routeResources": 51,
         "withMetadata": 38,
-        "skippedResources": 10
+        "skippedResources": 11
     },
     "apis": [
         {

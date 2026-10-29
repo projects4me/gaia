@@ -273,6 +273,14 @@
 |  |  | system | index.index |
 | ANY | / | app | index.index |
 
+<a id="introspect"></a>
+## introspect
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| OPTIONS | /api/v1/introspect | rest | introspect.options |
+| POST | /api/v1/introspect | rest | introspect.post |
+
 <a id="issue"></a>
 ## issue
 
