@@ -17,7 +17,7 @@
 - includedTypesAbsent -- includedTypesAbsent: unexpectedly found type … | e.g. acl/acl-project-rels-issues-omitted
 - includedTypesPresent -- includedTypesPresent: missing type … | e.g. acl/acl-project-rels-mixed-issues-omitted-members-kept
 - jsonEqual -- jsonEqual: … expected '…', got ' | e.g. acl/acl-system-type-labels-unchanged-after-denied-copy
-- jsonPathAbsent -- jsonPathAbsent: unexpectedly found … | e.g. client/list-issuestatus-rejected-creates-saved-nothing
+- jsonPathAbsent -- jsonPathAbsent: unexpectedly found … | e.g. acl/acl-agentspec-allowed-default
 - mail.bodyContains | e.g. mail/mail-welcome-password-email-is-delivered
 - mail.fromEmail | e.g. mail/mail-welcome-password-email-is-delivered
 - mail.fromName | e.g. mail/mail-welcome-password-email-is-delivered

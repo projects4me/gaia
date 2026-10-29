@@ -70,6 +70,16 @@
 | PUT | /api/v1/agentskill | rest | agentskill.putCollection |
 | PUT | /api/v1/agentskill/{id} | rest | agentskill.put |
 
+<a id="agentspec"></a>
+## agentspec
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/agentspec | rest | agentspec.list |
+| GET | /api/v1/agentspec/{id} | rest | agentspec.get |
+| GET | /api/v1/agentspec/{id}/{relation} | rest | agentspec.related |
+| OPTIONS | /api/v1/agentspec | rest | agentspec.options |
+
 <a id="agenttool"></a>
 ## agenttool
 

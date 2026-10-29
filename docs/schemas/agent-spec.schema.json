@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://projects4.me/schemas/agent-spec.schema.json",
+  "title": "Projects4Me agent spec",
+  "description": "What a runtime needs to run a Projects4Me agent, as returned by GET /api/v1/agentspec/{agentId}. Engine-neutral: a runtime maps it onto its own engine (Talos runs it on Claude Code today). Built by Gaia\\Libraries\\Agents\\AgentSpec; raise specVersion on a breaking change.",
+  "type": "object",
+  "required": ["specVersion", "agent", "config", "toolGrants", "skills"],
+  "additionalProperties": false,
+  "properties": {
+    "specVersion": {
+      "description": "Version of this document's shape.",
+      "const": 1
+    },
+    "agent": {
+      "type": "object",
+      "required": ["id", "userId", "name", "purpose", "sponsorId"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "userId": {"type": "string", "minLength": 1, "description": "The agent's users row: the identity it acts as."},
+        "name": {"type": "string"},
+        "purpose": {"type": ["string", "null"]},
+        "sponsorId": {"type": ["string", "null"], "description": "The user the agent acts on behalf of, if any."}
+      }
+    },
+    "config": {
+      "type": "object",
+      "required": ["rolePrompt", "modelConfig", "maxTurns", "maxRunsPerIssue", "permissionMode"],
+      "additionalProperties": false,
+      "properties": {
+        "rolePrompt": {"type": ["string", "null"], "description": "The agent's system or role prompt."},
+        "modelConfig": {"type": "object", "description": "Model choice and settings, free-form; empty when unset."},
+        "maxTurns": {"type": ["integer", "null"], "minimum": 1, "description": "Turn cap per run."},
+        "maxRunsPerIssue": {"type": ["integer", "null"], "minimum": 1, "description": "Run cap per issue."},
+        "permissionMode": {"type": ["string", "null"], "description": "How the runtime treats actions the grants don't settle."}
+      }
+    },
+    "toolGrants": {
+      "type": "array",
+      "description": "Live tool grants. A grant names a whole tool server (tool is null) or one tool on it. Server endpoints, commands and specs are never included.",
+      "items": {
+        "type": "object",
+        "required": ["id", "permissionRule", "server", "tool"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "permissionRule": {"type": ["string", "null"], "description": "The rule the runtime applies to the granted tool or server."},
+          "server": {
+            "type": ["object", "null"],
+            "required": ["id", "name", "kind", "location", "transport"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {"type": "string", "minLength": 1},
+              "name": {"type": "string"},
+              "kind": {"type": "string"},
+              "location": {"type": "string"},
+              "transport": {"type": ["string", "null"]}
+            }
+          },
+          "tool": {
+            "type": ["object", "null"],
+            "required": ["id", "name"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {"type": "string", "minLength": 1},
+              "name": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "description": "Live skills granted to the agent, with their content.",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "description", "version", "content"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "name": {"type": "string"},
+          "description": {"type": ["string", "null"]},
+          "version": {"type": ["string", "null"]},
+          "content": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}
