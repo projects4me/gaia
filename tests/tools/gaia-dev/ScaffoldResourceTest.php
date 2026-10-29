@@ -105,7 +105,7 @@ class ScaffoldResourceTest extends TestCase
         $this->assertStringContainsString("        'reportId' => '{reportId}',", $generator);
         $this->assertStringContainsString("        'reportId' => true,", $generator);
         $harness = $changes['tools/api-tester/harness/prepare-test-db.sh'];
-        $this->assertStringContainsString("('agentcredential'), ('report')\n) AS m(module)", $harness);
+        $this->assertStringContainsString("('agenttool'), ('report')\n) AS m(module)", $harness);
         $this->assertStringContainsString('INSERT INTO reports (', $harness);
         $this->assertStringContainsString('"reportId": "api-test-report-000001"', $harness);
         $this->assertStringContainsString('"otherProjectReportId": "api-test-report-000002"', $changes['tools/api-tester/fixtures/default.json']);

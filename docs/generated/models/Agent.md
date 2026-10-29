@@ -22,6 +22,7 @@
 - createdBy hasOne -> User
 - modifiedBy hasOne -> User
 - sponsor hasOne -> User
+- toolGrants hasMany -> Agenttool
 - user hasOne -> User
 
 <a id="summary"></a>

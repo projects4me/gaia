@@ -4996,6 +4996,262 @@
           "views.app.issue.lists.type.api_test_default_type"
         ]
       }
+    },
+    {
+      "id": "toolserver-create-mcp-server",
+      "method": "POST",
+      "path": "/api/v1/toolserver",
+      "resource": "toolserver",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "toolserver",
+          "attributes": {
+            "name": "API Test Unreachable MCP",
+            "kind": "mcp",
+            "location": "external",
+            "transport": "http",
+            "endpoint": "http://127.0.0.1:9/mcp"
+          }
+        }
+      },
+      "store": {
+        "runtime.createdToolserverId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "kind": "mcp",
+          "location": "external",
+          "transport": "http"
+        }
+      }
+    },
+    {
+      "id": "toolserver-create-rejects-unknown-kind",
+      "method": "POST",
+      "path": "/api/v1/toolserver",
+      "resource": "toolserver",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "toolserver",
+          "attributes": {
+            "name": "Bad kind",
+            "kind": "grpc",
+            "location": "external"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "Kind must be one of: mcp, openapi, builtin."
+      }
+    },
+    {
+      "id": "toolserver-refresh-rejects-stdio-server",
+      "method": "PATCH",
+      "path": "/api/v1/toolserver/{runtime.createdToolserverId}",
+      "resource": "toolserver",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "toolserver",
+          "id": "{runtime.createdToolserverId}",
+          "attributes": {
+            "transport": "stdio",
+            "refresh": true
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "Only MCP servers with the http transport and an endpoint can be refreshed."
+      }
+    },
+    {
+      "id": "toolserver-refresh-unreachable-server-is-502",
+      "method": "PATCH",
+      "path": "/api/v1/toolserver/{runtime.createdToolserverId}",
+      "resource": "toolserver",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "toolserver",
+          "id": "{runtime.createdToolserverId}",
+          "attributes": {
+            "refresh": true
+          }
+        }
+      },
+      "expects": {
+        "status": 502,
+        "shape": "error",
+        "jsonEqual": {
+          "status": "ERROR"
+        }
+      }
+    },
+    {
+      "id": "toolserver-refresh-failure-is-recorded",
+      "method": "GET",
+      "path": "/api/v1/toolserver/{runtime.createdToolserverId}",
+      "resource": "toolserver",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "transport": "http",
+          "schemaRefreshedAt": null
+        },
+        "attributesPresent": [
+          "refreshError"
+        ]
+      }
+    },
+    {
+      "id": "tool-create-runtime-builtin",
+      "method": "POST",
+      "path": "/api/v1/tool",
+      "resource": "tool",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tool",
+          "attributes": {
+            "name": "Bash",
+            "description": "Run a shell command",
+            "inputSchema": "{\"type\":\"object\",\"properties\":{\"command\":{\"type\":\"string\"}}}"
+          }
+        }
+      },
+      "store": {
+        "runtime.createdToolId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "Bash"
+        }
+      }
+    },
+    {
+      "id": "tool-create-rejects-schema-that-is-not-an-object",
+      "method": "POST",
+      "path": "/api/v1/tool",
+      "resource": "tool",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tool",
+          "attributes": {
+            "name": "Broken",
+            "inputSchema": "not json"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "InputSchema must be a JSON object."
+      }
+    },
+    {
+      "id": "agenttool-grant-whole-server",
+      "method": "POST",
+      "path": "/api/v1/agenttool",
+      "resource": "agenttool",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agenttool",
+          "attributes": {
+            "agentId": "{otherAgentId}",
+            "toolServerId": "{runtime.createdToolserverId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "agentId": "{otherAgentId}",
+          "toolServerId": "{runtime.createdToolserverId}"
+        }
+      }
+    },
+    {
+      "id": "agenttool-grant-runtime-tool-with-rule",
+      "method": "POST",
+      "path": "/api/v1/agenttool",
+      "resource": "agenttool",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agenttool",
+          "attributes": {
+            "agentId": "{otherAgentId}",
+            "toolId": "{runtime.createdToolId}",
+            "permissionRule": "Bash(git status:*)"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "toolId": "{runtime.createdToolId}",
+          "permissionRule": "Bash(git status:*)"
+        }
+      }
+    },
+    {
+      "id": "agenttool-grant-rejects-server-and-tool",
+      "method": "POST",
+      "path": "/api/v1/agenttool",
+      "resource": "agenttool",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agenttool",
+          "attributes": {
+            "agentId": "{otherAgentId}",
+            "toolServerId": "{toolserverId}",
+            "toolId": "{toolId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "A tool grant names either a tool server or a tool, not both."
+      }
+    },
+    {
+      "id": "agenttool-grant-needs-existing-agent",
+      "method": "POST",
+      "path": "/api/v1/agenttool",
+      "resource": "agenttool",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agenttool",
+          "attributes": {
+            "agentId": "no-such-agent",
+            "toolServerId": "{toolserverId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "A tool grant needs an existing agent."
+      }
     }
   ]
 }

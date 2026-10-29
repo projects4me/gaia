@@ -123,6 +123,7 @@ jobs:
         mkdir -p logs/tests
         ./vendor/bin/phpunit -c tests/phpunit.xml tests/libraries/security
         ./vendor/bin/phpunit -c tests/phpunit.xml tests/libraries/utils
+        ./vendor/bin/phpunit -c tests/phpunit.xml tests/libraries/tools
         ./vendor/bin/phpunit -c tests/phpunit.xml tests/tools
 
     - name: Start Apache

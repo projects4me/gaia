@@ -53,6 +53,23 @@
 | PUT | /api/v1/agentcredential | rest | agentcredential.putCollection |
 | PUT | /api/v1/agentcredential/{id} | rest | agentcredential.put |
 
+<a id="agenttool"></a>
+## agenttool
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/agenttool | rest | agenttool.deleteCollection |
+| DELETE | /api/v1/agenttool/{id} | rest | agenttool.delete |
+| GET | /api/v1/agenttool | rest | agenttool.list |
+| GET | /api/v1/agenttool/{id} | rest | agenttool.get |
+| GET | /api/v1/agenttool/{id}/{relation} | rest | agenttool.related |
+| OPTIONS | /api/v1/agenttool | rest | agenttool.options |
+| PATCH | /api/v1/agenttool | rest | agenttool.patchCollection |
+| PATCH | /api/v1/agenttool/{id} | rest | agenttool.patch |
+| POST | /api/v1/agenttool | rest | agenttool.post |
+| PUT | /api/v1/agenttool | rest | agenttool.putCollection |
+| PUT | /api/v1/agenttool/{id} | rest | agenttool.put |
+
 <a id="badge"></a>
 ## badge
 
@@ -572,6 +589,40 @@
 |---|---|---|---|
 | OPTIONS | /api/v1/token | rest | token.options |
 | POST | /api/v1/token | rest | token.post |
+
+<a id="tool"></a>
+## tool
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/tool | rest | tool.deleteCollection |
+| DELETE | /api/v1/tool/{id} | rest | tool.delete |
+| GET | /api/v1/tool | rest | tool.list |
+| GET | /api/v1/tool/{id} | rest | tool.get |
+| GET | /api/v1/tool/{id}/{relation} | rest | tool.related |
+| OPTIONS | /api/v1/tool | rest | tool.options |
+| PATCH | /api/v1/tool | rest | tool.patchCollection |
+| PATCH | /api/v1/tool/{id} | rest | tool.patch |
+| POST | /api/v1/tool | rest | tool.post |
+| PUT | /api/v1/tool | rest | tool.putCollection |
+| PUT | /api/v1/tool/{id} | rest | tool.put |
+
+<a id="toolserver"></a>
+## toolserver
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/toolserver | rest | toolserver.deleteCollection |
+| DELETE | /api/v1/toolserver/{id} | rest | toolserver.delete |
+| GET | /api/v1/toolserver | rest | toolserver.list |
+| GET | /api/v1/toolserver/{id} | rest | toolserver.get |
+| GET | /api/v1/toolserver/{id}/{relation} | rest | toolserver.related |
+| OPTIONS | /api/v1/toolserver | rest | toolserver.options |
+| PATCH | /api/v1/toolserver | rest | toolserver.patchCollection |
+| PATCH | /api/v1/toolserver/{id} | rest | toolserver.patch |
+| POST | /api/v1/toolserver | rest | toolserver.post |
+| PUT | /api/v1/toolserver | rest | toolserver.putCollection |
+| PUT | /api/v1/toolserver/{id} | rest | toolserver.put |
 
 <a id="translation"></a>
 ## translation

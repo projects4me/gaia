@@ -110,6 +110,39 @@
             ],
             "identifier": "id"
         },
+        "agenttool": {
+            "path": "/api/:version/agenttool",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "tool": {
+            "path": "/api/:version/tool",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "toolserver": {
+            "path": "/api/:version/toolserver",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "agentcredential": {
             "path": "/api/:version/agentcredential",
             "allowedMethods": [
