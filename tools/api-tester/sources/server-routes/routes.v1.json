@@ -143,6 +143,17 @@
             ],
             "identifier": "id"
         },
+        "useridentity": {
+            "path": "/api/:version/useridentity",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "agentcredential": {
             "path": "/api/:version/agentcredential",
             "allowedMethods": [

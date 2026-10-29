@@ -4998,6 +4998,69 @@
       }
     },
     {
+      "id": "useridentity-create-shares-handle-across-users",
+      "method": "POST",
+      "path": "/api/v1/useridentity",
+      "resource": "useridentity",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "useridentity",
+          "attributes": {
+            "userId": "{agentUserId}",
+            "provider": "github",
+            "handle": "api-tester-agent",
+            "email": "shared-{runId}@example.com"
+          }
+        }
+      },
+      "store": {
+        "runtime.createdUseridentityId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "provider": "github",
+          "handle": "api-tester-agent"
+        }
+      }
+    },
+    {
+      "id": "useridentity-list-includes-both-users-with-same-handle",
+      "method": "GET",
+      "path": "/api/v1/useridentity",
+      "resource": "useridentity",
+      "auth": true,
+      "query": {
+        "limit": 50,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{useridentityId}",
+          "{otherUseridentityId}",
+          "{runtime.createdUseridentityId}"
+        ]
+      }
+    },
+    {
+      "id": "useridentity-delete-created",
+      "method": "DELETE",
+      "path": "/api/v1/useridentity/{runtime.createdUseridentityId}",
+      "resource": "useridentity",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ],
+        "shape": "json"
+      }
+    },
+    {
       "id": "toolserver-create-mcp-server",
       "method": "POST",
       "path": "/api/v1/toolserver",

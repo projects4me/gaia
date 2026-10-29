@@ -45,6 +45,7 @@ $config['models'] = [
     'Upload',
     'User',
     'Usercollaboration',
+    'Useridentity',
     'Userqualification',
     'Userecentactivity',
     'Userrole',

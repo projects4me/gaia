@@ -89,6 +89,7 @@ $fixtureIds = [
     'tool' => '{toolId}',
     'toolserver' => '{toolserverId}',
     'user' => '{userId}',
+    'useridentity' => '{useridentityId}',
 ];
 
 /** relatedTo/relatedId defaults inferred from metadata relationships / known modules. */
@@ -340,6 +341,7 @@ function sampleValue($resource, $name, array $fieldMeta, array $relatedDefaults)
         'toolServerId' => '{toolserverId}',
         'toolId' => '{toolId}',
         'agenttoolId' => '{agenttoolId}',
+        'useridentityId' => '{useridentityId}',
     ];
     if (isset($fk[$name])) {
         return $fk[$name];
@@ -474,6 +476,7 @@ function patchChange(array $attrs, array $meta = [])
         'toolServerId' => true,
         'toolId' => true,
         'agenttoolId' => true,
+        'useridentityId' => true,
     ];
     $fields = isset($meta['fields']) && is_array($meta['fields']) ? $meta['fields'] : [];
     $prefer = ['name', 'subject', 'description', 'title', 'tag', 'comment', 'institution'];

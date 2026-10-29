@@ -487,7 +487,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -1026,6 +1026,18 @@ ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
 VALUES
   ('atp-acl-no-setting-agenttool-get', 'api-test-role-acl-ns', 'agenttool.get', 0, NOW(), NOW());
+-- Useridentity: seed records (gaia-dev scaffold resource)
+INSERT INTO user_identities (
+  id, "userId", "provider", "handle", "email", "publicKeyFingerprint", "verified", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-useridentity-000001', 'api-test-user-acl-agent', 'github', 'api-tester-agent', 'agent@example.com', NULL, TRUE, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  -- a second user shares the same provider and handle: provider + handle is not unique across users
+  ('api-test-useridentity-000002', 'api-test-user-agent2', 'github', 'api-tester-agent', NULL, 'SHA256:apitesterfingerprint', FALSE, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET "userId" = EXCLUDED."userId", provider = EXCLUDED.provider, handle = EXCLUDED.handle, deleted = FALSE;
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-no-setting-useridentity-get', 'api-test-role-acl-ns', 'useridentity.get', 0, NOW(), NOW());
 
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
@@ -1139,6 +1151,8 @@ data = {
     "toolserverId": "api-test-toolserver-000001",
     "toolId": "api-test-tool-000001",
     "agenttoolId": "api-test-agenttool-000001",
+    "useridentityId": "api-test-useridentity-000001",
+    "otherUseridentityId": "api-test-useridentity-000002",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",
