@@ -53,6 +53,23 @@
 | PUT | /api/v1/agentcredential | rest | agentcredential.putCollection |
 | PUT | /api/v1/agentcredential/{id} | rest | agentcredential.put |
 
+<a id="agentskill"></a>
+## agentskill
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/agentskill | rest | agentskill.deleteCollection |
+| DELETE | /api/v1/agentskill/{id} | rest | agentskill.delete |
+| GET | /api/v1/agentskill | rest | agentskill.list |
+| GET | /api/v1/agentskill/{id} | rest | agentskill.get |
+| GET | /api/v1/agentskill/{id}/{relation} | rest | agentskill.related |
+| OPTIONS | /api/v1/agentskill | rest | agentskill.options |
+| PATCH | /api/v1/agentskill | rest | agentskill.patchCollection |
+| PATCH | /api/v1/agentskill/{id} | rest | agentskill.patch |
+| POST | /api/v1/agentskill | rest | agentskill.post |
+| PUT | /api/v1/agentskill | rest | agentskill.putCollection |
+| PUT | /api/v1/agentskill/{id} | rest | agentskill.put |
+
 <a id="agenttool"></a>
 ## agenttool
 
@@ -501,6 +518,23 @@
 | OPTIONS | /api/v1/setting | rest | setting.options |
 | PATCH | /api/v1/setting | rest | setting.patchCollection |
 | PATCH | /api/v1/setting/{id} | rest | setting.patch |
+
+<a id="skill"></a>
+## skill
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/skill | rest | skill.deleteCollection |
+| DELETE | /api/v1/skill/{id} | rest | skill.delete |
+| GET | /api/v1/skill | rest | skill.list |
+| GET | /api/v1/skill/{id} | rest | skill.get |
+| GET | /api/v1/skill/{id}/{relation} | rest | skill.related |
+| OPTIONS | /api/v1/skill | rest | skill.options |
+| PATCH | /api/v1/skill | rest | skill.patchCollection |
+| PATCH | /api/v1/skill/{id} | rest | skill.patch |
+| POST | /api/v1/skill | rest | skill.post |
+| PUT | /api/v1/skill | rest | skill.putCollection |
+| PUT | /api/v1/skill/{id} | rest | skill.put |
 
 <a id="systemnotification"></a>
 ## systemnotification

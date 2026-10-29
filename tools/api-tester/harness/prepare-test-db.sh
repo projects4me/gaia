@@ -487,7 +487,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -1039,6 +1039,20 @@ INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "
 VALUES
   ('atp-acl-no-setting-useridentity-get', 'api-test-role-acl-ns', 'useridentity.get', 0, NOW(), NOW());
 
+-- Skill: seed records (gaia-dev scaffold resource)
+INSERT INTO skills (
+  id, "name", "description", "content", "version", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-skill-000001', 'api-test-skill', 'Seed skill trigger text', '# Seed skill', '1.0', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+-- Agentskill: seed records (gaia-dev scaffold resource)
+INSERT INTO agent_skills (
+  id, "agentId", "skillId", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-agentskill-000001', 'api-test-agent-000001', 'api-test-skill-000001', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
   '"issues_issueNumber_seq"',
@@ -1153,6 +1167,8 @@ data = {
     "agenttoolId": "api-test-agenttool-000001",
     "useridentityId": "api-test-useridentity-000001",
     "otherUseridentityId": "api-test-useridentity-000002",
+    "skillId": "api-test-skill-000001",
+    "agentskillId": "api-test-agentskill-000001",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

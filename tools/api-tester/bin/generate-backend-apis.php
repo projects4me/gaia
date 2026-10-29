@@ -71,6 +71,7 @@ $fixtureIds = [
     'agent' => '{agentId}',
     'agentcredential' => '{agentcredentialId}',
     'agenttool' => '{agenttoolId}',
+    'agentskill' => '{agentskillId}',
     'conversationroom' => '{conversationroomId}',
     'idea' => '{ideaId}',
     'ideamessage' => '{ideamessageId}',
@@ -84,6 +85,7 @@ $fixtureIds = [
     'project' => '{projectId}',
     'role' => '{roleId}',
     'savedsearch' => '{savedSearchId}',
+    'skill' => '{skillId}',
     'systemnotificationrecipient' => '{systemnotificationrecipientId}',
     'timelog' => '{timelogId}',
     'tool' => '{toolId}',
@@ -342,6 +344,8 @@ function sampleValue($resource, $name, array $fieldMeta, array $relatedDefaults)
         'toolId' => '{toolId}',
         'agenttoolId' => '{agenttoolId}',
         'useridentityId' => '{useridentityId}',
+        'skillId' => '{skillId}',
+        'agentskillId' => '{agentskillId}',
     ];
     if (isset($fk[$name])) {
         return $fk[$name];
@@ -477,6 +481,8 @@ function patchChange(array $attrs, array $meta = [])
         'toolId' => true,
         'agenttoolId' => true,
         'useridentityId' => true,
+        'skillId' => true,
+        'agentskillId' => true,
     ];
     $fields = isset($meta['fields']) && is_array($meta['fields']) ? $meta['fields'] : [];
     $prefer = ['name', 'subject', 'description', 'title', 'tag', 'comment', 'institution'];
