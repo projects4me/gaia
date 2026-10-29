@@ -19,9 +19,15 @@ namespace Gaia\Libraries\Tools;
 class McpToolLister
 {
     /**
-     * MCP protocol version Gaia asks for.
+     * MCP protocol revision Gaia asks for. The MCP spec names its revisions
+     * by release date (YYYY-MM-DD) and servers negotiate on that exact
+     * string in initialize and the MCP-Protocol-Version header, so this is
+     * the spec's identifier, not a Gaia version. 2025-11-25 is the newest
+     * revision with the initialize handshake (2026-07-28 drops it).
+     *
+     * @see https://modelcontextprotocol.io/specification/versioning
      */
-    public const PROTOCOL_VERSION = '2025-06-18';
+    public const PROTOCOL_VERSION = '2025-11-25';
 
     /**
      * Stop following nextCursor after this many pages.
@@ -39,6 +45,14 @@ class McpToolLister
      * @var string|null
      */
     private $sessionId;
+
+    /**
+     * Protocol version the server agreed to on initialize, sent on later
+     * requests in the MCP-Protocol-Version header.
+     *
+     * @var string
+     */
+    private $protocolVersion = self::PROTOCOL_VERSION;
 
     /**
      * Next JSON-RPC request id.
@@ -65,15 +79,20 @@ class McpToolLister
     public function listTools($endpoint)
     {
         $this->sessionId = null;
-        $this->call($endpoint, 'initialize', [
+        $this->protocolVersion = self::PROTOCOL_VERSION;
+        $initialized = $this->call($endpoint, 'initialize', [
             'protocolVersion' => self::PROTOCOL_VERSION,
             'capabilities' => new \stdClass(),
             'clientInfo' => ['name' => 'gaia', 'version' => '1.0'],
         ]);
+        if (isset($initialized->protocolVersion) && is_string($initialized->protocolVersion) && $initialized->protocolVersion !== '') {
+            $this->protocolVersion = $initialized->protocolVersion;
+        }
         $this->notify($endpoint, 'notifications/initialized');
 
         $tools = [];
         $cursor = null;
+        $seenCursors = [];
         for ($page = 0; $page < self::MAX_PAGES; $page++) {
             $result = $this->call($endpoint, 'tools/list', $cursor === null ? new \stdClass() : ['cursor' => $cursor]);
             if (!isset($result->tools) || !is_array($result->tools)) {
@@ -87,6 +106,10 @@ class McpToolLister
             if ($cursor === null) {
                 return $tools;
             }
+            if (isset($seenCursors[$cursor])) {
+                throw new ToolRefreshException('The tool server repeated a pagination cursor.');
+            }
+            $seenCursors[$cursor] = true;
         }
 
         throw new ToolRefreshException('The tool server returned more than ' . self::MAX_PAGES . ' pages of tools.');
@@ -119,7 +142,8 @@ class McpToolLister
         $message = $this->findResponse((string) $response->getBody(), $response->getHeaderLine('Content-Type'), $id);
         if (isset($message->error)) {
             $error = is_object($message->error) && isset($message->error->message) ? (string) $message->error->message : 'unknown error';
-            throw new ToolRefreshException('The tool server refused ' . $method . ': ' . $error);
+            $this->log('The tool server refused ' . $method . ': ' . $error);
+            throw new ToolRefreshException('The tool server refused ' . $method . '.');
         }
         if (!isset($message->result) || !is_object($message->result)) {
             throw new ToolRefreshException('The tool server sent no result for ' . $method . '.');
@@ -158,7 +182,7 @@ class McpToolLister
         $headers = [
             'Accept' => 'application/json, text/event-stream',
             'Content-Type' => 'application/json',
-            'MCP-Protocol-Version' => self::PROTOCOL_VERSION,
+            'MCP-Protocol-Version' => $this->protocolVersion,
         ];
         if ($this->sessionId !== null) {
             $headers['Mcp-Session-Id'] = $this->sessionId;
@@ -171,7 +195,8 @@ class McpToolLister
                 'http_errors' => false,
             ]);
         } catch (\Throwable $e) {
-            throw new ToolRefreshException('The tool server could not be reached: ' . $e->getMessage());
+            $this->log('The tool server at ' . $endpoint . ' could not be reached: ' . $e->getMessage());
+            throw new ToolRefreshException('The tool server could not be reached.');
         }
     }
 
@@ -245,6 +270,21 @@ class McpToolLister
                 ? json_encode($tool->inputSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
                 : null,
         ];
+    }
+
+    /**
+     * Log what the server or transport said. The details stay in the server
+     * log: the exception message reaches the API response and refreshError.
+     *
+     * @param  string $message
+     * @return void
+     */
+    private function log($message)
+    {
+        global $logger;
+        if (isset($logger)) {
+            $logger->error($message);
+        }
     }
 
     /**

@@ -72,6 +72,23 @@ class McpToolListerTest extends TestCase
         $this->assertSame('session-1', $this->history[2]['request']->getHeaderLine('Mcp-Session-Id'));
     }
 
+    public function testSendsTheNegotiatedProtocolVersion()
+    {
+        $lister = $this->lister([
+            $this->json(1, ['protocolVersion' => '2025-06-18', 'capabilities' => new \stdClass()]),
+            new Response(202),
+            $this->json(2, ['tools' => []]),
+        ]);
+
+        $lister->listTools(self::ENDPOINT);
+
+        $initialize = json_decode((string) $this->history[0]['request']->getBody(), true);
+        $this->assertSame(McpToolLister::PROTOCOL_VERSION, $initialize['params']['protocolVersion']);
+        $this->assertSame(McpToolLister::PROTOCOL_VERSION, $this->history[0]['request']->getHeaderLine('MCP-Protocol-Version'));
+        $this->assertSame('2025-06-18', $this->history[1]['request']->getHeaderLine('MCP-Protocol-Version'));
+        $this->assertSame('2025-06-18', $this->history[2]['request']->getHeaderLine('MCP-Protocol-Version'));
+    }
+
     public function testFollowsNextCursor()
     {
         $lister = $this->lister([
@@ -88,6 +105,20 @@ class McpToolListerTest extends TestCase
         $this->assertSame(['cursor' => 'page-2'], $lastBody['params']);
     }
 
+    public function testARepeatedCursorStopsTheRefresh()
+    {
+        $lister = $this->lister([
+            $this->json(1, new \stdClass()),
+            new Response(202),
+            $this->json(2, ['tools' => [['name' => 'one']], 'nextCursor' => 'page-2']),
+            $this->json(3, ['tools' => [['name' => 'two']], 'nextCursor' => 'page-2']),
+        ]);
+
+        $this->expectException(ToolRefreshException::class);
+        $this->expectExceptionMessage('The tool server repeated a pagination cursor.');
+        $lister->listTools(self::ENDPOINT);
+    }
+
     public function testAJsonRpcErrorStopsTheRefresh()
     {
         $lister = $this->lister([
@@ -95,7 +126,7 @@ class McpToolListerTest extends TestCase
         ]);
 
         $this->expectException(ToolRefreshException::class);
-        $this->expectExceptionMessage('The tool server refused initialize: Unsupported protocol version');
+        $this->expectExceptionMessage('The tool server refused initialize.');
         $lister->listTools(self::ENDPOINT);
     }
 
@@ -115,7 +146,7 @@ class McpToolListerTest extends TestCase
         ]);
 
         $this->expectException(ToolRefreshException::class);
-        $this->expectExceptionMessage('The tool server could not be reached: Connection refused');
+        $this->expectExceptionMessage('The tool server could not be reached.');
         $lister->listTools(self::ENDPOINT);
     }
 
