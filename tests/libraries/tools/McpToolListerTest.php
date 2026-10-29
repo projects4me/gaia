@@ -84,9 +84,68 @@ class McpToolListerTest extends TestCase
 
         $initialize = json_decode((string) $this->history[0]['request']->getBody(), true);
         $this->assertSame(McpToolLister::PROTOCOL_VERSION, $initialize['params']['protocolVersion']);
-        $this->assertSame(McpToolLister::PROTOCOL_VERSION, $this->history[0]['request']->getHeaderLine('MCP-Protocol-Version'));
+        $this->assertFalse($this->history[0]['request']->hasHeader('MCP-Protocol-Version'));
         $this->assertSame('2025-06-18', $this->history[1]['request']->getHeaderLine('MCP-Protocol-Version'));
         $this->assertSame('2025-06-18', $this->history[2]['request']->getHeaderLine('MCP-Protocol-Version'));
+    }
+
+    public function testResumesAClosedEventStreamWithLastEventId()
+    {
+        $lister = $this->lister([
+            $this->json(1, new \stdClass()),
+            new Response(202),
+            new Response(200, ['Content-Type' => 'text/event-stream'], "id: evt-1\nretry: 0\ndata:\n\n"),
+            new Response(200, ['Content-Type' => 'text/event-stream'], "id: evt-2\ndata: " . json_encode(['jsonrpc' => '2.0', 'id' => 2, 'result' => ['tools' => [['name' => 'echo']]]]) . "\n\n"),
+        ]);
+
+        $tools = $lister->listTools(self::ENDPOINT);
+
+        $this->assertSame('echo', $tools[0]['name']);
+        $resume = $this->history[3]['request'];
+        $this->assertSame('GET', $resume->getMethod());
+        $this->assertSame('evt-1', $resume->getHeaderLine('Last-Event-ID'));
+        $this->assertSame('text/event-stream', $resume->getHeaderLine('Accept'));
+    }
+
+    public function testAStreamClosedWithoutAnEventIdStopsTheRefresh()
+    {
+        $lister = $this->lister([
+            new Response(200, ['Content-Type' => 'text/event-stream'], "data:\n\n"),
+        ]);
+
+        $this->expectException(ToolRefreshException::class);
+        $this->expectExceptionMessage('The tool server sent no JSON-RPC response.');
+        $lister->listTools(self::ENDPOINT);
+    }
+
+    public function testTheLogNeverHoldsUrlCredentials()
+    {
+        global $logger;
+        $previous = $logger;
+        $logger = new class {
+            public $lines = [];
+
+            public function error($message)
+            {
+                $this->lines[] = $message;
+            }
+        };
+        $endpoint = 'https://user:secret@mcp.test:8443/mcp?token=abc';
+        $lister = $this->lister([
+            new \GuzzleHttp\Exception\ConnectException('Failed to connect for ' . $endpoint, new \GuzzleHttp\Psr7\Request('POST', $endpoint)),
+        ]);
+
+        try {
+            $lister->listTools($endpoint);
+            $this->fail('The refresh should have stopped.');
+        } catch (ToolRefreshException $e) {
+            $this->assertSame(
+                ['The tool server at https://mcp.test:8443/mcp could not be reached: Failed to connect for https://mcp.test:8443/mcp'],
+                $logger->lines
+            );
+        } finally {
+            $logger = $previous;
+        }
     }
 
     public function testFollowsNextCursor()

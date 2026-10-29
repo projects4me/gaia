@@ -10,7 +10,8 @@ namespace Gaia\Libraries\Tools;
  * Lists the tools of an MCP server over the Streamable HTTP transport:
  * initialize, notifications/initialized, then tools/list page by page. It
  * owns the MCP transport (JSON-RPC over HTTP POST, JSON or event-stream
- * answers, the Mcp-Session-Id header); callers get plain tool arrays.
+ * answers resumed with Last-Event-ID, the Mcp-Session-Id header); callers
+ * get plain tool arrays.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Tools
@@ -35,6 +36,16 @@ class McpToolLister
     private const MAX_PAGES = 50;
 
     /**
+     * Reconnect to a closed event stream at most this many times per request.
+     */
+    private const MAX_RESUMES = 5;
+
+    /**
+     * Longest wait (ms) before reconnecting, whatever the server's retry asks.
+     */
+    private const MAX_RETRY_MS = 2000;
+
+    /**
      * @var \GuzzleHttp\ClientInterface|null
      */
     private $httpClient;
@@ -48,11 +59,13 @@ class McpToolLister
 
     /**
      * Protocol version the server agreed to on initialize, sent on later
-     * requests in the MCP-Protocol-Version header.
+     * requests in the MCP-Protocol-Version header. Null until initialize
+     * has answered: the header is not sent on initialize itself, so a server
+     * on an older revision can still negotiate down.
      *
-     * @var string
+     * @var string|null
      */
-    private $protocolVersion = self::PROTOCOL_VERSION;
+    private $protocolVersion;
 
     /**
      * Next JSON-RPC request id.
@@ -79,15 +92,15 @@ class McpToolLister
     public function listTools($endpoint)
     {
         $this->sessionId = null;
-        $this->protocolVersion = self::PROTOCOL_VERSION;
+        $this->protocolVersion = null;
         $initialized = $this->call($endpoint, 'initialize', [
             'protocolVersion' => self::PROTOCOL_VERSION,
             'capabilities' => new \stdClass(),
             'clientInfo' => ['name' => 'gaia', 'version' => '1.0'],
         ]);
-        if (isset($initialized->protocolVersion) && is_string($initialized->protocolVersion) && $initialized->protocolVersion !== '') {
-            $this->protocolVersion = $initialized->protocolVersion;
-        }
+        $this->protocolVersion = isset($initialized->protocolVersion) && is_string($initialized->protocolVersion) && $initialized->protocolVersion !== ''
+            ? $initialized->protocolVersion
+            : self::PROTOCOL_VERSION;
         $this->notify($endpoint, 'notifications/initialized');
 
         $tools = [];
@@ -128,18 +141,14 @@ class McpToolLister
     {
         $id = $this->nextId++;
         $response = $this->post($endpoint, ['jsonrpc' => '2.0', 'id' => $id, 'method' => $method, 'params' => $params]);
-
-        $status = (int) $response->getStatusCode();
-        if ($status < 200 || $status >= 300) {
-            throw new ToolRefreshException('The tool server answered ' . $method . ' with HTTP ' . $status . '.');
-        }
+        $this->assertSuccess($response, $method);
 
         $sessionId = $response->getHeaderLine('Mcp-Session-Id');
         if ($sessionId !== '') {
             $this->sessionId = $sessionId;
         }
 
-        $message = $this->findResponse((string) $response->getBody(), $response->getHeaderLine('Content-Type'), $id);
+        $message = $this->findResponse($endpoint, $response, $method, $id);
         if (isset($message->error)) {
             $error = is_object($message->error) && isset($message->error->message) ? (string) $message->error->message : 'unknown error';
             $this->log('The tool server refused ' . $method . ': ' . $error);
@@ -163,6 +172,19 @@ class McpToolLister
     private function notify($endpoint, $method)
     {
         $response = $this->post($endpoint, ['jsonrpc' => '2.0', 'method' => $method]);
+        $this->assertSuccess($response, $method);
+    }
+
+    /**
+     * Stop the refresh on a non-2xx answer.
+     *
+     * @param  \Psr\Http\Message\ResponseInterface $response
+     * @param  string                              $method
+     * @return void
+     * @throws ToolRefreshException
+     */
+    private function assertSuccess($response, $method)
+    {
         $status = (int) $response->getStatusCode();
         if ($status < 200 || $status >= 300) {
             throw new ToolRefreshException('The tool server answered ' . $method . ' with HTTP ' . $status . '.');
@@ -179,45 +201,79 @@ class McpToolLister
      */
     private function post($endpoint, array $message)
     {
-        $headers = [
-            'Accept' => 'application/json, text/event-stream',
-            'Content-Type' => 'application/json',
-            'MCP-Protocol-Version' => $this->protocolVersion,
-        ];
+        return $this->send('POST', $endpoint, ['Accept' => 'application/json, text/event-stream', 'Content-Type' => 'application/json'], json_encode($message));
+    }
+
+    /**
+     * Send one HTTP request with the session and protocol headers.
+     *
+     * @param  string      $httpMethod
+     * @param  string      $endpoint
+     * @param  array       $headers
+     * @param  string|null $body
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws ToolRefreshException
+     */
+    private function send($httpMethod, $endpoint, array $headers, $body = null)
+    {
+        if ($this->protocolVersion !== null) {
+            $headers['MCP-Protocol-Version'] = $this->protocolVersion;
+        }
         if ($this->sessionId !== null) {
             $headers['Mcp-Session-Id'] = $this->sessionId;
         }
 
+        $options = ['headers' => $headers, 'http_errors' => false];
+        if ($body !== null) {
+            $options['body'] = $body;
+        }
+
         try {
-            return $this->client()->request('POST', $endpoint, [
-                'headers' => $headers,
-                'body' => json_encode($message),
-                'http_errors' => false,
-            ]);
+            return $this->client()->request($httpMethod, $endpoint, $options);
         } catch (\Throwable $e) {
-            $this->log('The tool server at ' . $endpoint . ' could not be reached: ' . $e->getMessage());
+            $this->log('The tool server at ' . $this->redactUrls($endpoint) . ' could not be reached: ' . $this->redactUrls($e->getMessage()));
             throw new ToolRefreshException('The tool server could not be reached.');
         }
     }
 
     /**
-     * The JSON-RPC response with this id, from a JSON body or an event stream.
+     * The JSON-RPC response with this id, from a JSON body or an event
+     * stream. A stream the server closes before answering (2025-11-25
+     * polling) is resumed with GET and Last-Event-ID.
      *
-     * @param  string $body
-     * @param  string $contentType
-     * @param  int    $id
+     * @param  string                              $endpoint
+     * @param  \Psr\Http\Message\ResponseInterface $response
+     * @param  string                              $method
+     * @param  int                                 $id
      * @return object
      * @throws ToolRefreshException
      */
-    private function findResponse($body, $contentType, $id)
+    private function findResponse($endpoint, $response, $method, $id)
     {
-        $messages = stripos($contentType, 'text/event-stream') !== false
-            ? $this->eventStreamMessages($body)
-            : [json_decode($body)];
+        if (stripos($response->getHeaderLine('Content-Type'), 'text/event-stream') === false) {
+            return $this->matching([json_decode((string) $response->getBody())], $id);
+        }
 
-        foreach ($messages as $message) {
-            if (is_object($message) && isset($message->id) && (int) $message->id === $id) {
+        $lastEventId = null;
+        for ($resumes = 0; ; $resumes++) {
+            $stream = $this->eventStream((string) $response->getBody());
+            $message = $this->matching($stream['messages'], $id);
+            if ($message !== null) {
                 return $message;
+            }
+
+            $lastEventId = $stream['lastEventId'] !== null ? $stream['lastEventId'] : $lastEventId;
+            if ($lastEventId === null || $resumes >= self::MAX_RESUMES) {
+                break;
+            }
+
+            if ($stream['retry'] !== null) {
+                usleep(min($stream['retry'], self::MAX_RETRY_MS) * 1000);
+            }
+            $response = $this->send('GET', $endpoint, ['Accept' => 'text/event-stream', 'Last-Event-ID' => $lastEventId]);
+            $this->assertSuccess($response, $method);
+            if (stripos($response->getHeaderLine('Content-Type'), 'text/event-stream') === false) {
+                break;
             }
         }
 
@@ -225,14 +281,35 @@ class McpToolLister
     }
 
     /**
-     * The JSON messages in the data lines of an event stream.
+     * The message answering this id, if any.
+     *
+     * @param  array $messages
+     * @param  int   $id
+     * @return object|null
+     */
+    private function matching(array $messages, $id)
+    {
+        foreach ($messages as $message) {
+            if (is_object($message) && isset($message->id) && (int) $message->id === $id) {
+                return $message;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * The JSON messages in the data lines of an event stream, the last event
+     * id and the last retry (ms) the server asked for.
      *
      * @param  string $body
-     * @return array
+     * @return array ['messages' => array, 'lastEventId' => string|null, 'retry' => int|null]
      */
-    private function eventStreamMessages($body)
+    private function eventStream($body)
     {
         $messages = [];
+        $lastEventId = null;
+        $retry = null;
         $data = [];
         foreach (preg_split('/\r\n|\n|\r/', $body . "\n\n") as $line) {
             if ($line === '') {
@@ -244,10 +321,36 @@ class McpToolLister
             }
             if (strpos($line, 'data:') === 0) {
                 $data[] = ltrim(substr($line, 5), ' ');
+            } elseif (strpos($line, 'id:') === 0) {
+                $value = ltrim(substr($line, 3), ' ');
+                $lastEventId = $value !== '' ? $value : null;
+            } elseif (strpos($line, 'retry:') === 0 && ctype_digit(ltrim(substr($line, 6), ' '))) {
+                $retry = (int) ltrim(substr($line, 6), ' ');
             }
         }
 
-        return $messages;
+        return ['messages' => $messages, 'lastEventId' => $lastEventId, 'retry' => $retry];
+    }
+
+    /**
+     * The text with every URL cut down to scheme, host, port and path, so
+     * credentials in userinfo or the query never reach the log.
+     *
+     * @param  string $text
+     * @return string
+     */
+    private function redactUrls($text)
+    {
+        return preg_replace_callback('#[a-z][a-z0-9+.-]*://[^\s"\'<>]+#i', function ($match) {
+            $parts = parse_url($match[0]);
+            if ($parts === false || !isset($parts['scheme'], $parts['host'])) {
+                return '[url]';
+            }
+
+            return $parts['scheme'] . '://' . $parts['host']
+                . (isset($parts['port']) ? ':' . $parts['port'] : '')
+                . (isset($parts['path']) ? $parts['path'] : '');
+        }, (string) $text);
     }
 
     /**
