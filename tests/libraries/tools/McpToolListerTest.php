@@ -130,7 +130,7 @@ class McpToolListerTest extends TestCase
                 $this->lines[] = $message;
             }
         };
-        $endpoint = 'https://user:secret@mcp.test:8443/mcp?token=abc';
+        $endpoint = 'https://user:secret@mcp.test:8443/mcp/path-token?token=abc';
         $lister = $this->lister([
             new \GuzzleHttp\Exception\ConnectException('Failed to connect for ' . $endpoint, new \GuzzleHttp\Psr7\Request('POST', $endpoint)),
         ]);
@@ -140,7 +140,7 @@ class McpToolListerTest extends TestCase
             $this->fail('The refresh should have stopped.');
         } catch (ToolRefreshException $e) {
             $this->assertSame(
-                ['The tool server at https://mcp.test:8443/mcp could not be reached: Failed to connect for https://mcp.test:8443/mcp'],
+                ['The tool server at https://mcp.test:8443 could not be reached: Failed to connect for https://mcp.test:8443'],
                 $logger->lines
             );
         } finally {
@@ -175,6 +175,22 @@ class McpToolListerTest extends TestCase
 
         $this->expectException(ToolRefreshException::class);
         $this->expectExceptionMessage('The tool server repeated a pagination cursor.');
+        $lister->listTools(self::ENDPOINT);
+    }
+
+    public function testARefreshPastItsTimeBudgetStops()
+    {
+        $this->history = [];
+        $stack = HandlerStack::create(new MockHandler([
+            $this->json(1, new \stdClass()),
+            new Response(202),
+            $this->json(2, ['tools' => [['name' => 'one']]]),
+        ]));
+        $stack->push(Middleware::history($this->history));
+        $lister = new McpToolLister(new Client(['handler' => $stack]), -1);
+
+        $this->expectException(ToolRefreshException::class);
+        $this->expectExceptionMessage('The tool server took too long to answer.');
         $lister->listTools(self::ENDPOINT);
     }
 

@@ -46,9 +46,28 @@ class McpToolLister
     private const MAX_RETRY_MS = 2000;
 
     /**
+     * Longest a whole refresh may take (seconds), over all pages and resumes.
+     */
+    private const MAX_REFRESH_SECONDS = 60;
+
+    /**
      * @var \GuzzleHttp\ClientInterface|null
      */
     private $httpClient;
+
+    /**
+     * Seconds one refresh may take.
+     *
+     * @var float
+     */
+    private $timeBudget;
+
+    /**
+     * microtime() after which the running refresh stops.
+     *
+     * @var float|null
+     */
+    private $deadline;
 
     /**
      * Session id the server gave on initialize, sent on later requests.
@@ -76,10 +95,12 @@ class McpToolLister
 
     /**
      * @param \GuzzleHttp\ClientInterface|null $httpClient A test client, else a Guzzle client with timeouts
+     * @param float                            $timeBudget Seconds one refresh may take
      */
-    public function __construct($httpClient = null)
+    public function __construct($httpClient = null, $timeBudget = self::MAX_REFRESH_SECONDS)
     {
         $this->httpClient = $httpClient;
+        $this->timeBudget = (float) $timeBudget;
     }
 
     /**
@@ -93,6 +114,7 @@ class McpToolLister
     {
         $this->sessionId = null;
         $this->protocolVersion = null;
+        $this->deadline = microtime(true) + $this->timeBudget;
         $initialized = $this->call($endpoint, 'initialize', [
             'protocolVersion' => self::PROTOCOL_VERSION,
             'capabilities' => new \stdClass(),
@@ -107,6 +129,7 @@ class McpToolLister
         $cursor = null;
         $seenCursors = [];
         for ($page = 0; $page < self::MAX_PAGES; $page++) {
+            $this->assertWithinDeadline();
             $result = $this->call($endpoint, 'tools/list', $cursor === null ? new \stdClass() : ['cursor' => $cursor]);
             if (!isset($result->tools) || !is_array($result->tools)) {
                 throw new ToolRefreshException('The tool server did not return a tool list.');
@@ -267,6 +290,7 @@ class McpToolLister
                 break;
             }
 
+            $this->assertWithinDeadline();
             if ($stream['retry'] !== null) {
                 usleep(min($stream['retry'], self::MAX_RETRY_MS) * 1000);
             }
@@ -278,6 +302,19 @@ class McpToolLister
         }
 
         throw new ToolRefreshException('The tool server sent no JSON-RPC response.');
+    }
+
+    /**
+     * Stop the refresh once it has run past its time budget.
+     *
+     * @return void
+     * @throws ToolRefreshException
+     */
+    private function assertWithinDeadline()
+    {
+        if ($this->deadline !== null && microtime(true) > $this->deadline) {
+            throw new ToolRefreshException('The tool server took too long to answer.');
+        }
     }
 
     /**
@@ -333,8 +370,8 @@ class McpToolLister
     }
 
     /**
-     * The text with every URL cut down to scheme, host, port and path, so
-     * credentials in userinfo or the query never reach the log.
+     * The text with every URL cut down to scheme, host and port, so
+     * credentials in userinfo, the path or the query never reach the log.
      *
      * @param  string $text
      * @return string
@@ -348,8 +385,7 @@ class McpToolLister
             }
 
             return $parts['scheme'] . '://' . $parts['host']
-                . (isset($parts['port']) ? ':' . $parts['port'] : '')
-                . (isset($parts['path']) ? $parts['path'] : '');
+                . (isset($parts['port']) ? ':' . $parts['port'] : '');
         }, (string) $text);
     }
 
