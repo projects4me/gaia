@@ -487,7 +487,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -1053,6 +1053,48 @@ INSERT INTO agent_skills (
   ('api-test-agentskill-000001', 'api-test-agent-000001', 'api-test-skill-000001', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
+-- Workflow: seed records (gaia-dev scaffold resource)
+INSERT INTO workflows (
+  id, "name", "description", "status", "scope", "version", "ownerId", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workflow-000001', 'API Test Workflow', 'Seeded draft workflow', 'Draft', '[]', 0, 'api-test-user-0001', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-members-workflow-get', 'api-test-role-acl-mem', 'workflow.get', 0, NOW(), NOW());
+
+-- Workflownode: seed records (gaia-dev scaffold resource)
+INSERT INTO workflow_nodes (
+  id, "workflowId", "category", "kind", "config", "name", "positionX", "positionY", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workflownode-000001', 'api-test-workflow-000001', 'trigger', 'issue.created', '{}', 'Seed trigger', 0, 0, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-workflownode-000002', 'api-test-workflow-000001', 'actor', 'run_agent', '{"agentId":"api-test-agent-000001"}', 'Seed run agent', 200, 0, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-members-workflownode-get', 'api-test-role-acl-mem', 'workflownode.get', 0, NOW(), NOW());
+
+-- Workflowedge: seed records (gaia-dev scaffold resource)
+INSERT INTO workflow_edges (
+  id, "workflowId", "fromNodeId", "fromPort", "toNodeId", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workflowedge-000001', 'api-test-workflow-000001', 'api-test-workflownode-000001', 'next', 'api-test-workflownode-000002', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-members-workflowedge-get', 'api-test-role-acl-mem', 'workflowedge.get', 0, NOW(), NOW()),
+  ('atp-acl-mem-workflowreference-get', 'api-test-role-acl-mem', 'workflowreference.get', 0, NOW(), NOW());
+
+-- Workflowreference: seed records (gaia-dev scaffold resource)
+INSERT INTO workflow_references (
+  id, "workflowId", "nodeId", "entityType", "entityId", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workflowreference-000001', 'api-test-workflow-000001', 'api-test-workflownode-000002', 'Agent', 'api-test-agent-000001', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
   '"issues_issueNumber_seq"',
@@ -1169,6 +1211,10 @@ data = {
     "otherUseridentityId": "api-test-useridentity-000002",
     "skillId": "api-test-skill-000001",
     "agentskillId": "api-test-agentskill-000001",
+    "workflowId": "api-test-workflow-000001",
+    "workflownodeId": "api-test-workflownode-000001",
+    "workflowedgeId": "api-test-workflowedge-000001",
+    "workflowreferenceId": "api-test-workflowreference-000001",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

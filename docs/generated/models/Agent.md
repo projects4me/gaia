@@ -25,6 +25,7 @@
 - sponsor hasOne -> User
 - toolGrants hasMany -> Agenttool
 - user hasOne -> User
+- workflowReferences hasMany -> Workflowreference
 
 <a id="summary"></a>
 ## Summary

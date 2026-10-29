@@ -137,6 +137,46 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'workflowreference' => array(
+                'path' => '/api/:version/workflowreference',
+                'allowedMethods' => array(
+                    'GET',
+                ),
+                'identifier' => 'id',
+            ),
+            'workflowedge' => array(
+                'path' => '/api/:version/workflowedge',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'workflownode' => array(
+                'path' => '/api/:version/workflownode',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
+            'workflow' => array(
+                'path' => '/api/:version/workflow',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'agenttool' => array(
                 'path' => '/api/:version/agenttool',
                 'allowedMethods' => array(

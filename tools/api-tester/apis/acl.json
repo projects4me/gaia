@@ -2043,6 +2043,80 @@
         }
       },
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
+    },
+    {
+      "id": "acl-workflow-denied-acl-members",
+      "method": "GET",
+      "path": "/api/v1/workflow",
+      "resource": "workflow",
+      "auth": "aclMembers",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-workflow-detail-denied-acl-members",
+      "method": "GET",
+      "path": "/api/v1/workflow/{workflowId}",
+      "resource": "workflow",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-workflownode-denied-acl-members",
+      "method": "GET",
+      "path": "/api/v1/workflownode",
+      "resource": "workflownode",
+      "auth": "aclMembers",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-workflownode-detail-denied-acl-members",
+      "method": "GET",
+      "path": "/api/v1/workflownode/{workflownodeId}",
+      "resource": "workflownode",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-workflowedge-denied-acl-members",
+      "method": "GET",
+      "path": "/api/v1/workflowedge",
+      "resource": "workflowedge",
+      "auth": "aclMembers",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-workflowedge-detail-denied-acl-members",
+      "method": "GET",
+      "path": "/api/v1/workflowedge/{workflowedgeId}",
+      "resource": "workflowedge",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-workflowreference-denied-acl-members",
+      "method": "GET",
+      "path": "/api/v1/workflowreference",
+      "resource": "workflowreference",
+      "auth": "aclMembers",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
+    },
+    {
+      "id": "acl-workflowreference-detail-denied-acl-members",
+      "method": "GET",
+      "path": "/api/v1/workflowreference/{workflowreferenceId}",
+      "resource": "workflowreference",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
     }
   ]
 }

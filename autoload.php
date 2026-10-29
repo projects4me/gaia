@@ -76,6 +76,7 @@ $loader->registerNamespaces(
         "Gaia\\Libraries\\Security" => APP_PATH . '/core/libs/security/',
         "Gaia\\Libraries\\Agents" => APP_PATH . '/core/libs/agents/',
         "Gaia\\Libraries\\Tools" => APP_PATH . '/core/libs/tools/',
+        "Gaia\\Libraries\\Workflows" => APP_PATH . '/core/libs/workflows/',
         "Gaia\\Exception" => APP_PATH . '/core/exceptions/',
         "Gaia\\Events\\Notification" => APP_PATH . '/core/events/notifications/',
         "Gaia\\Events" => APP_PATH . '/core/events/',

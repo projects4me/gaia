@@ -5343,6 +5343,560 @@
         "shape": "error",
         "errorEqual": "A tool grant needs an existing agent."
       }
+    },
+    {
+      "id": "workflow-create-starts-as-draft",
+      "method": "POST",
+      "path": "/api/v1/workflow",
+      "resource": "workflow",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflow",
+          "attributes": {
+            "name": "Client Flow",
+            "scope": [
+              "{projectId}"
+            ],
+            "version": 5
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "Client Flow",
+          "status": "Draft",
+          "version": 0,
+          "scope": "[\"api-test-project-001\"]"
+        }
+      },
+      "store": {
+        "runtime.flowId": "data.id"
+      }
+    },
+    {
+      "id": "workflow-create-rejects-unknown-status",
+      "method": "POST",
+      "path": "/api/v1/workflow",
+      "resource": "workflow",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflow",
+          "attributes": {
+            "name": "Bad Flow",
+            "status": "Paused"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "status must be one of Draft, Active, Disabled."
+        }
+      }
+    },
+    {
+      "id": "workflownode-create-rejects-kind-of-other-category",
+      "method": "POST",
+      "path": "/api/v1/workflownode",
+      "resource": "workflownode",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflownode",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "category": "trigger",
+            "kind": "run_agent"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "run_agent is not a kind of trigger node."
+        }
+      }
+    },
+    {
+      "id": "workflownode-create-rejects-invalid-config",
+      "method": "POST",
+      "path": "/api/v1/workflownode",
+      "resource": "workflownode",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflownode",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "category": "actor",
+            "kind": "run_agent",
+            "config": {}
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "config.agentId is required for run_agent."
+        }
+      }
+    },
+    {
+      "id": "workflownode-create-trigger",
+      "method": "POST",
+      "path": "/api/v1/workflownode",
+      "resource": "workflownode",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflownode",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "category": "trigger",
+            "kind": "issue.assignee.changed",
+            "name": "Assigned"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "kind": "issue.assignee.changed"
+        }
+      },
+      "store": {
+        "runtime.flowTriggerId": "data.id"
+      }
+    },
+    {
+      "id": "workflownode-create-rejects-second-trigger",
+      "method": "POST",
+      "path": "/api/v1/workflownode",
+      "resource": "workflownode",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflownode",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "category": "trigger",
+            "kind": "issue.created"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "A workflow can have only one trigger."
+        }
+      }
+    },
+    {
+      "id": "workflownode-create-run-agent",
+      "method": "POST",
+      "path": "/api/v1/workflownode",
+      "resource": "workflownode",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflownode",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "category": "actor",
+            "kind": "run_agent",
+            "name": "Run",
+            "config": {
+              "agentId": "{agentId}"
+            }
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "config": "{\"agentId\":\"api-test-agent-000001\"}"
+        }
+      },
+      "store": {
+        "runtime.flowRunId": "data.id"
+      }
+    },
+    {
+      "id": "workflowreference-lists-the-run-agent",
+      "method": "GET",
+      "path": "/api/v1/workflowreference",
+      "resource": "workflowreference",
+      "auth": true,
+      "query": {
+        "query": "((Workflowreference.nodeId : {runtime.flowRunId}))"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "data.0.attributes.entityType": "Agent",
+          "data.0.attributes.entityId": "api-test-agent-000001"
+        }
+      }
+    },
+    {
+      "id": "workflownode-create-end",
+      "method": "POST",
+      "path": "/api/v1/workflownode",
+      "resource": "workflownode",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflownode",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "category": "action",
+            "kind": "end",
+            "name": "End"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "store": {
+        "runtime.flowEndId": "data.id"
+      }
+    },
+    {
+      "id": "workflowedge-create-rejects-unknown-port",
+      "method": "POST",
+      "path": "/api/v1/workflowedge",
+      "resource": "workflowedge",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowedge",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "fromNodeId": "{runtime.flowTriggerId}",
+            "fromPort": "done",
+            "toNodeId": "{runtime.flowRunId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "'done' is not a port of node 'Assigned' (next)."
+        }
+      }
+    },
+    {
+      "id": "workflowedge-create-trigger-to-run",
+      "method": "POST",
+      "path": "/api/v1/workflowedge",
+      "resource": "workflowedge",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowedge",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "fromNodeId": "{runtime.flowTriggerId}",
+            "fromPort": "next",
+            "toNodeId": "{runtime.flowRunId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "fromPort": "next"
+        }
+      }
+    },
+    {
+      "id": "workflowedge-create-rejects-taken-port",
+      "method": "POST",
+      "path": "/api/v1/workflowedge",
+      "resource": "workflowedge",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowedge",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "fromNodeId": "{runtime.flowTriggerId}",
+            "fromPort": "next",
+            "toNodeId": "{runtime.flowEndId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "Port 'next' of node 'Assigned' is already connected."
+        }
+      }
+    },
+    {
+      "id": "workflowedge-create-run-done-to-end",
+      "method": "POST",
+      "path": "/api/v1/workflowedge",
+      "resource": "workflowedge",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowedge",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "fromNodeId": "{runtime.flowRunId}",
+            "fromPort": "done",
+            "toNodeId": "{runtime.flowEndId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "fromPort": "done"
+        }
+      }
+    },
+    {
+      "id": "workflowedge-create-run-needs-input-to-end",
+      "method": "POST",
+      "path": "/api/v1/workflowedge",
+      "resource": "workflowedge",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowedge",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "fromNodeId": "{runtime.flowRunId}",
+            "fromPort": "needs_input",
+            "toNodeId": "{runtime.flowEndId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "fromPort": "needs_input"
+        }
+      }
+    },
+    {
+      "id": "workflowedge-create-run-blocked-to-end",
+      "method": "POST",
+      "path": "/api/v1/workflowedge",
+      "resource": "workflowedge",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowedge",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "fromNodeId": "{runtime.flowRunId}",
+            "fromPort": "blocked",
+            "toNodeId": "{runtime.flowEndId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "fromPort": "blocked"
+        }
+      }
+    },
+    {
+      "id": "workflowedge-create-run-failed-to-end",
+      "method": "POST",
+      "path": "/api/v1/workflowedge",
+      "resource": "workflowedge",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowedge",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "fromNodeId": "{runtime.flowRunId}",
+            "fromPort": "failed",
+            "toNodeId": "{runtime.flowEndId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "fromPort": "failed"
+        }
+      }
+    },
+    {
+      "id": "workflow-activate-rejects-unconnected-port",
+      "method": "PATCH",
+      "path": "/api/v1/workflow/{runtime.flowId}",
+      "resource": "workflow",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflow",
+          "id": "{runtime.flowId}",
+          "attributes": {
+            "status": "Active"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "Port 'limit' of node 'Run' is not connected; connect it or end it with an end node."
+        }
+      }
+    },
+    {
+      "id": "workflowedge-create-run-limit-to-end",
+      "method": "POST",
+      "path": "/api/v1/workflowedge",
+      "resource": "workflowedge",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowedge",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "fromNodeId": "{runtime.flowRunId}",
+            "fromPort": "limit",
+            "toNodeId": "{runtime.flowEndId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "fromPort": "limit"
+        }
+      }
+    },
+    {
+      "id": "workflow-activate-counts-version",
+      "method": "PATCH",
+      "path": "/api/v1/workflow/{runtime.flowId}",
+      "resource": "workflow",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflow",
+          "id": "{runtime.flowId}",
+          "attributes": {
+            "status": "Active"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "Active",
+          "version": 1
+        }
+      }
+    },
+    {
+      "id": "workflownode-patch-rejected-while-active",
+      "method": "PATCH",
+      "path": "/api/v1/workflownode/{runtime.flowRunId}",
+      "resource": "workflownode",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflownode",
+          "id": "{runtime.flowRunId}",
+          "attributes": {
+            "config": {
+              "agentId": "{agentId}",
+              "prompt": "Changed"
+            }
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "An active workflow cannot be changed; disable it or set it back to Draft first."
+        }
+      }
+    },
+    {
+      "id": "workflownode-move-allowed-while-active",
+      "method": "PATCH",
+      "path": "/api/v1/workflownode/{runtime.flowRunId}",
+      "resource": "workflownode",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflownode",
+          "id": "{runtime.flowRunId}",
+          "attributes": {
+            "positionX": 320
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "positionX": 320
+        }
+      }
+    },
+    {
+      "id": "workflow-delete",
+      "method": "DELETE",
+      "path": "/api/v1/workflow/{runtime.flowId}",
+      "resource": "workflow",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "workflowreference-gone-after-workflow-delete",
+      "method": "GET",
+      "path": "/api/v1/workflowreference",
+      "resource": "workflowreference",
+      "auth": true,
+      "query": {
+        "query": "((Workflowreference.nodeId : {runtime.flowRunId}))"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonPathAbsent": [
+          "data.0"
+        ]
+      }
     }
   ]
 }

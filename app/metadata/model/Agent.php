@@ -180,6 +180,12 @@ $models['Agent'] = array(
                 'relatedModel' => '\Gaia\MVC\Models\Agentskill',
                 'relatedKey' => 'agentId',
             ),
+            'workflowReferences' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Workflowreference',
+                'relatedKey' => 'entityId',
+                'condition' => 'workflowReferences.entityType = "Agent"'
+            ),
         ),
     ),
     'behaviors' => array(

@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 195,
-        "enabled": 182,
-        "disabled": 13,
-        "routeResources": 51,
-        "withMetadata": 38,
+        "total": 212,
+        "enabled": 198,
+        "disabled": 14,
+        "routeResources": 55,
+        "withMetadata": 42,
         "skippedResources": 11
     },
     "apis": [
@@ -804,6 +804,311 @@
             "method": "DELETE",
             "path": "/api/v1/ideaplanissue/{runtime.ideaplanissueId}",
             "resource": "ideaplanissue",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflowreference-api-v1-workflowreference",
+            "method": "GET",
+            "path": "/api/v1/workflowreference",
+            "resource": "workflowreference",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflowreference-api-v1-workflowreference-id",
+            "method": "GET",
+            "path": "/api/v1/workflowreference/{workflowreferenceId}",
+            "resource": "workflowreference",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{workflowreferenceId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflowedge-api-v1-workflowedge",
+            "method": "GET",
+            "path": "/api/v1/workflowedge",
+            "resource": "workflowedge",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflowedge-api-v1-workflowedge-id",
+            "method": "GET",
+            "path": "/api/v1/workflowedge/{workflowedgeId}",
+            "resource": "workflowedge",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{workflowedgeId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-workflowedge-api-v1-workflowedge",
+            "method": "POST",
+            "path": "/api/v1/workflowedge",
+            "resource": "workflowedge",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "workflowedge",
+                    "attributes": {
+                        "workflowId": "{workflowId}",
+                        "fromNodeId": "api-workflowedge-fromNodeId",
+                        "fromPort": "api-workflowedge-fromPort",
+                        "toNodeId": "api-workflowedge-toNodeId"
+                    }
+                }
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            },
+            "enabled": false,
+            "skipReason": "An edge joins two nodes of its workflow on a free port; client cases cover it",
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflownode-api-v1-workflownode",
+            "method": "GET",
+            "path": "/api/v1/workflownode",
+            "resource": "workflownode",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflownode-api-v1-workflownode-id",
+            "method": "GET",
+            "path": "/api/v1/workflownode/{workflownodeId}",
+            "resource": "workflownode",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{workflownodeId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-workflownode-api-v1-workflownode",
+            "method": "POST",
+            "path": "/api/v1/workflownode",
+            "resource": "workflownode",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "workflownode",
+                    "attributes": {
+                        "workflowId": "{workflowId}",
+                        "category": "action",
+                        "kind": "end"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.workflownodeId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-workflownode-api-v1-workflownode-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/workflownode/{runtime.workflownodeId}",
+            "resource": "workflownode",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.workflownodeId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "patch-workflownode-api-v1-workflownode-id",
+            "method": "PATCH",
+            "path": "/api/v1/workflownode/{runtime.workflownodeId}",
+            "resource": "workflownode",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "workflownode",
+                    "id": "{runtime.workflownodeId}",
+                    "attributes": {
+                        "name": "API Tester Updated"
+                    }
+                }
+            },
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "attributesEqual": {
+                    "name": "API Tester Updated"
+                }
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-workflownode-api-v1-workflownode-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/workflownode/{runtime.workflownodeId}",
+            "resource": "workflownode",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflow-api-v1-workflow",
+            "method": "GET",
+            "path": "/api/v1/workflow",
+            "resource": "workflow",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflow-api-v1-workflow-id",
+            "method": "GET",
+            "path": "/api/v1/workflow/{workflowId}",
+            "resource": "workflow",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{workflowId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-workflow-api-v1-workflow",
+            "method": "POST",
+            "path": "/api/v1/workflow",
+            "resource": "workflow",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "workflow",
+                    "attributes": {
+                        "name": "api-workflow-name"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.workflowId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-workflow-api-v1-workflow-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/workflow/{runtime.workflowId}",
+            "resource": "workflow",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.workflowId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "patch-workflow-api-v1-workflow-id",
+            "method": "PATCH",
+            "path": "/api/v1/workflow/{runtime.workflowId}",
+            "resource": "workflow",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "workflow",
+                    "id": "{runtime.workflowId}",
+                    "attributes": {
+                        "name": "api-workflow-name Updated"
+                    }
+                }
+            },
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "attributesEqual": {
+                    "name": "api-workflow-name Updated"
+                }
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-workflow-api-v1-workflow-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/workflow/{runtime.workflowId}",
+            "resource": "workflow",
             "auth": true,
             "expects": {
                 "status": [
