@@ -58,7 +58,7 @@ class AgentToolGrants
 
     /**
      * @param  Agenttool $grant
-     * @return array|null Null when the granted tool or server is gone
+     * @return array|null Null when the granted tool or server is gone, or the grant names neither
      */
     private function shape(Agenttool $grant)
     {
@@ -75,6 +75,9 @@ class AgentToolGrants
 
         $server = $this->isBlank($serverId) ? null : $this->liveServer($serverId);
         if (!$this->isBlank($serverId) && $server === null) {
+            return null;
+        }
+        if ($tool === null && $server === null) {
             return null;
         }
 
