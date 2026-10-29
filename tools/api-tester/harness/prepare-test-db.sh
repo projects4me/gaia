@@ -487,7 +487,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -943,7 +943,9 @@ VALUES
   ('atp-acl-agent-agenttool-get', 'api-test-role-acl-agent', 'agenttool.get', 1, NOW(), NOW()),
   ('atp-acl-agent-agenttool-create', 'api-test-role-acl-agent', 'agenttool.create', 1, NOW(), NOW()),
   ('atp-acl-agent-agenttool-update', 'api-test-role-acl-agent', 'agenttool.update', 1, NOW(), NOW()),
-  ('atp-acl-agent-agenttool-delete', 'api-test-role-acl-agent', 'agenttool.delete', 1, NOW(), NOW());
+  ('atp-acl-agent-agenttool-delete', 'api-test-role-acl-agent', 'agenttool.delete', 1, NOW(), NOW()),
+  -- agentspec.get without agent.* rights beyond get: a runtime reads specs through its own grant
+  ('atp-acl-agent-agentspec-get', 'api-test-role-acl-agent', 'agentspec.get', 1, NOW(), NOW());
 
 -- Agent: a second agent user (no sponsor, no role), a target the aclAgent profile may change
 INSERT INTO users (
@@ -1025,7 +1027,8 @@ ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
 VALUES
-  ('atp-acl-no-setting-agenttool-get', 'api-test-role-acl-ns', 'agenttool.get', 0, NOW(), NOW());
+  ('atp-acl-no-setting-agenttool-get', 'api-test-role-acl-ns', 'agenttool.get', 0, NOW(), NOW()),
+  ('atp-acl-no-setting-agentspec-get', 'api-test-role-acl-ns', 'agentspec.get', 0, NOW(), NOW());
 -- Useridentity: seed records (gaia-dev scaffold resource)
 INSERT INTO user_identities (
   id, "userId", "provider", "handle", "email", "publicKeyFingerprint", "verified", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"

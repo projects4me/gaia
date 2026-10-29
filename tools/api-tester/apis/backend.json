@@ -8,12 +8,12 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 212,
+        "total": 213,
         "enabled": 198,
-        "disabled": 14,
-        "routeResources": 55,
+        "disabled": 15,
+        "routeResources": 56,
         "withMetadata": 42,
-        "skippedResources": 11
+        "skippedResources": 12
     },
     "apis": [
         {
@@ -1860,6 +1860,24 @@
                 ],
                 "shape": "json"
             },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-agentspec-api-v1-agentspec",
+            "method": "GET",
+            "path": "/api/v1/agentspec",
+            "resource": "agentspec",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "json"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "enabled": false,
+            "skipReason": "No app/metadata/model for resource",
             "source": "backend-metadata"
         },
         {

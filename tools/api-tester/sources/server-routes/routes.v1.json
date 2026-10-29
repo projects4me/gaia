@@ -238,6 +238,13 @@
             ],
             "identifier": "id"
         },
+        "agentspec": {
+            "path": "/api/:version/agentspec",
+            "allowedMethods": [
+                "GET"
+            ],
+            "identifier": "id"
+        },
         "issue": {
             "path": "/api/:version/issue",
             "allowedMethods": [
