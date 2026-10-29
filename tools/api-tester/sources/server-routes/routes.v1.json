@@ -348,6 +348,13 @@
             ],
             "identifier": "id"
         },
+        "introspect": {
+            "path": "/api/:version/introspect",
+            "allowedMethods": [
+                "POST"
+            ],
+            "identifier": "id"
+        },
         "tag": {
             "path": "/api/:version/tag",
             "allowedMethods": [

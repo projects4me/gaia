@@ -14,6 +14,7 @@ services:
       DB_NAME: ${DB_NAME:-pr4m}
       HERMES_URL: http://host.docker.internal:9000
       HERMES_SECRET: hermes-dev-secret
+      ARES_INTROSPECTION_SECRET: ${ARES_INTROSPECTION_SECRET:-}
       SETTINGS_ENCRYPTION_KEY: ${SETTINGS_ENCRYPTION_KEY:-}
     build: .
     volumes:
@@ -54,6 +55,7 @@ services:
       DB_NAME: pr4m_test
       HERMES_URL: http://host.docker.internal:9001
       HERMES_SECRET: hermes-dev-secret
+      ARES_INTROSPECTION_SECRET: ${ARES_INTROSPECTION_SECRET:-}
       SETTINGS_ENCRYPTION_KEY: ${SETTINGS_ENCRYPTION_KEY:-}
     build: .
     volumes:
@@ -93,6 +95,7 @@ services:
       DB_NAME: pr4m_test
       HERMES_URL: http://127.0.0.1:9
       HERMES_SECRET: hermes-dev-secret
+      ARES_INTROSPECTION_SECRET: ${ARES_INTROSPECTION_SECRET:-}
       SETTINGS_ENCRYPTION_KEY: ${SETTINGS_ENCRYPTION_KEY:-}
     build: .
     volumes:

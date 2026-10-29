@@ -375,6 +375,13 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'introspect' => array(
+                'path' => '/api/:version/introspect',
+                'allowedMethods' => array(
+                    'POST',
+                ),
+                'identifier' => 'id',
+            ),
             'tag' => array(
                 'path' => '/api/:version/tag',
                 'allowedMethods' => array(

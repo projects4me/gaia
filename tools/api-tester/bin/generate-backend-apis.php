@@ -47,6 +47,7 @@ file_put_contents(
 $skipResources = [
     'forgetpassword' => 'Custom auth endpoint; no model metadata',
     'resetpassword' => 'Custom auth endpoint; requires reset token params',
+    'introspect' => 'Ares-only token introspection (X-Ares-Secret); client cases cover it',
     'upload' => 'File upload endpoint; not JSON:API collection CRUD',
     'userimage' => 'Multipart image upload endpoint',
     'milestoneoverview' => 'Custom endpoint; no model metadata',

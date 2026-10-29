@@ -981,6 +981,18 @@
       "attributes": {}
     },
     {
+      "id": "action:introspect.options",
+      "type": "action",
+      "key": "introspect.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:introspect.post",
+      "type": "action",
+      "key": "introspect.post",
+      "attributes": {}
+    },
+    {
       "id": "action:issue.delete",
       "type": "action",
       "key": "issue.delete",
@@ -11373,6 +11385,38 @@
       }
     },
     {
+      "id": "case:client/introspect-with-user-token-refused",
+      "type": "case",
+      "key": "client/introspect-with-user-token-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/introspect",
+        "resource": "introspect",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/introspect-without-ares-secret-refused",
+      "type": "case",
+      "key": "client/introspect-without-ares-secret-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/introspect",
+        "resource": "introspect",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/issue-create-on-30-char-status-name",
       "type": "case",
       "key": "client/issue-create-on-30-char-status-name",
@@ -15566,6 +15610,17 @@
         "class": "Gaia\\MVC\\REST\\Controllers\\IndexController",
         "file": "app/api/v1/controllers/IndexController.php",
         "extends": "Phalcon\\Mvc\\Controller"
+      }
+    },
+    {
+      "id": "controller:introspect",
+      "type": "controller",
+      "key": "introspect",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\IntrospectController",
+        "file": "app/api/v1/controllers/IntrospectController.php",
+        "extends": "RestController"
       }
     },
     {
@@ -25708,6 +25763,15 @@
       }
     },
     {
+      "id": "permission:introspect.create",
+      "type": "permission",
+      "key": "introspect.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
       "id": "permission:issue.create",
       "type": "permission",
       "key": "issue.create",
@@ -31565,6 +31629,18 @@
       }
     },
     {
+      "id": "route:OPTIONS /api/v1/introspect",
+      "type": "route",
+      "key": "OPTIONS /api/v1/introspect",
+      "attributes": {
+        "type": "rest",
+        "name": "introspect",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/introspect"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/issue",
       "type": "route",
       "key": "OPTIONS /api/v1/issue",
@@ -33170,6 +33246,18 @@
         "version": "v1",
         "method": "POST",
         "path": "/api/v1/ideaplanissue"
+      }
+    },
+    {
+      "id": "route:POST /api/v1/introspect",
+      "type": "route",
+      "key": "POST /api/v1/introspect",
+      "attributes": {
+        "type": "rest",
+        "name": "introspect",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/introspect"
       }
     },
     {
@@ -35049,6 +35137,11 @@
       "from": "action:ideaplanissue.related",
       "type": "requires",
       "to": "permission:ideaplanissue.get"
+    },
+    {
+      "from": "action:introspect.post",
+      "type": "requires",
+      "to": "permission:introspect.create"
     },
     {
       "from": "action:issue.delete",
@@ -50596,6 +50689,56 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/introspect-with-user-token-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/introspect-with-user-token-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/introspect-with-user-token-refused",
+      "type": "covers",
+      "to": "controller:introspect"
+    },
+    {
+      "from": "case:client/introspect-with-user-token-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/introspect"
+    },
+    {
+      "from": "case:client/introspect-with-user-token-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/introspect-without-ares-secret-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/introspect-without-ares-secret-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/introspect-without-ares-secret-refused",
+      "type": "covers",
+      "to": "controller:introspect"
+    },
+    {
+      "from": "case:client/introspect-without-ares-secret-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/introspect"
+    },
+    {
+      "from": "case:client/introspect-without-ares-secret-refused",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
       "from": "case:client/issue-create-on-30-char-status-name",
       "type": "asserts",
       "to": "assertion:shape"
@@ -57719,6 +57862,16 @@
       "from": "controller:index",
       "type": "has_action",
       "to": "action:index.index"
+    },
+    {
+      "from": "controller:introspect",
+      "type": "has_action",
+      "to": "action:introspect.options"
+    },
+    {
+      "from": "controller:introspect",
+      "type": "has_action",
+      "to": "action:introspect.post"
     },
     {
       "from": "controller:issue",
@@ -68916,6 +69069,11 @@
       "to": "action:ideaplanissue.options"
     },
     {
+      "from": "route:OPTIONS /api/v1/introspect",
+      "type": "handled_by",
+      "to": "action:introspect.options"
+    },
+    {
       "from": "route:OPTIONS /api/v1/issue",
       "type": "handled_by",
       "to": "action:issue.options"
@@ -69584,6 +69742,11 @@
       "from": "route:POST /api/v1/ideaplanissue",
       "type": "handled_by",
       "to": "action:ideaplanissue.post"
+    },
+    {
+      "from": "route:POST /api/v1/introspect",
+      "type": "handled_by",
+      "to": "action:introspect.post"
     },
     {
       "from": "route:POST /api/v1/issue",
