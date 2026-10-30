@@ -863,6 +863,16 @@
 | PUT | /api/v1/workflowedge | rest | workflowedge.putCollection |
 | PUT | /api/v1/workflowedge/{id} | rest | workflowedge.put |
 
+<a id="workflowevent"></a>
+## workflowevent
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/workflowevent | rest | workflowevent.list |
+| GET | /api/v1/workflowevent/{id} | rest | workflowevent.get |
+| GET | /api/v1/workflowevent/{id}/{relation} | rest | workflowevent.related |
+| OPTIONS | /api/v1/workflowevent | rest | workflowevent.options |
+
 <a id="workflownode"></a>
 ## workflownode
 

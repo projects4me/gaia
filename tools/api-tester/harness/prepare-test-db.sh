@@ -487,7 +487,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -1028,7 +1028,8 @@ ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
 VALUES
   ('atp-acl-no-setting-agenttool-get', 'api-test-role-acl-ns', 'agenttool.get', 0, NOW(), NOW()),
-  ('atp-acl-no-setting-agentspec-get', 'api-test-role-acl-ns', 'agentspec.get', 0, NOW(), NOW());
+  ('atp-acl-no-setting-agentspec-get', 'api-test-role-acl-ns', 'agentspec.get', 0, NOW(), NOW()),
+  ('atp-acl-no-setting-workflowevent-get', 'api-test-role-acl-ns', 'workflowevent.get', 0, NOW(), NOW());
 -- Useridentity: seed records (gaia-dev scaffold resource)
 INSERT INTO user_identities (
   id, "userId", "provider", "handle", "email", "publicKeyFingerprint", "verified", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"

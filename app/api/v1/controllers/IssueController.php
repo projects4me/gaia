@@ -24,7 +24,7 @@ class IssueController extends RestController
      * @var  $uses
      * @type array
      */
-    public $uses = array('Filethumb','Issueactivities','Notification','Events\\IssueLiveEvents');
+    public $uses = array('Filethumb','Issueactivities','Notification','Events\\IssueLiveEvents','Events\\WorkflowTriggers');
 
     /**
      * This method retrieves the project ID from the request and constructs a query string

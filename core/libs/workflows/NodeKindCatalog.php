@@ -14,6 +14,7 @@ namespace Gaia\Libraries\Workflows;
  *
  * Config field types:
  * - `string`: a non-empty string;
+ * - `cron`: a five-field cron expression (see CronExpression);
  * - `ref:<Model>`: the id of a live row of that model (`User`, `Agent`), or
  *   an expression over the event such as `{issue.assigneeId}`;
  * - `conditions`: a non-empty list of `{field, operator, value}` objects;
@@ -41,23 +42,13 @@ class NodeKindCatalog
     public const END = 'end';
 
     /**
-     * Kinds by category: each kind lists its config fields (name => [type,
-     * required]) and its fixed output ports. `cases` ports come from config.
+     * Kinds by category but triggers: each kind lists its config fields
+     * (name => [type, required]) and its fixed output ports. `cases` ports
+     * come from config. Trigger kinds come from TriggerEventCatalog.
      *
      * @var array
      */
     private const KINDS = [
-        self::TRIGGER => [
-            'issue.created' => ['config' => [], 'ports' => ['next']],
-            'issue.modified' => ['config' => [], 'ports' => ['next']],
-            'issue.assignee.changed' => ['config' => [], 'ports' => ['next']],
-            'issue.status.changed' => ['config' => [], 'ports' => ['next']],
-            'comment.added' => ['config' => [], 'ports' => ['next']],
-            'wiki.created' => ['config' => [], 'ports' => ['next']],
-            'wiki.modified' => ['config' => [], 'ports' => ['next']],
-            'time.logged' => ['config' => [], 'ports' => ['next']],
-            'schedule' => ['config' => ['cron' => ['string', true]], 'ports' => ['next']],
-        ],
         self::CONDITION => [
             'filter' => ['config' => ['conditions' => ['conditions', true]], 'ports' => ['pass', 'fail']],
             'switch' => ['config' => ['cases' => ['cases', true]], 'ports' => [self::DEFAULT_PORT]],
@@ -93,7 +84,7 @@ class NodeKindCatalog
      */
     public function categories()
     {
-        return array_keys(self::KINDS);
+        return array_keys(self::kinds());
     }
 
     /**
@@ -105,7 +96,7 @@ class NodeKindCatalog
      */
     public function has($category, $kind)
     {
-        return isset(self::KINDS[$category][$kind]);
+        return isset(self::kinds()[$category][$kind]);
     }
 
     /**
@@ -209,6 +200,26 @@ class NodeKindCatalog
             throw new \InvalidArgumentException("Unknown workflow node kind {$category}/{$kind}.");
         }
 
-        return self::KINDS[$category][$kind];
+        return self::kinds()[$category][$kind];
+    }
+
+    /**
+     * Every kind by category: the trigger events and the schedule first.
+     *
+     * @return array
+     */
+    private static function kinds()
+    {
+        static $kinds = null;
+        if ($kinds === null) {
+            $triggers = [];
+            foreach ((new TriggerEventCatalog())->names() as $name) {
+                $triggers[$name] = ['config' => [], 'ports' => ['next']];
+            }
+            $triggers[TriggerEventCatalog::SCHEDULE] = ['config' => ['cron' => ['cron', true]], 'ports' => ['next']];
+            $kinds = [self::TRIGGER => $triggers] + self::KINDS;
+        }
+
+        return $kinds;
     }
 }

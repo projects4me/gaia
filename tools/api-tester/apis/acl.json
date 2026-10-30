@@ -2184,6 +2184,40 @@
       "resource": "workflowreference",
       "auth": "aclMembers",
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
+    },
+    {
+      "id": "acl-workflowevent-list-allowed-default",
+      "method": "GET",
+      "path": "/api/v1/workflowevent",
+      "resource": "workflowevent",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": ["issue.created", "issue.assignee.changed", "comment.added", "time.logged", "schedule"],
+        "jsonEqual": {
+          "data.0.attributes.module": "Issue",
+          "data.0.attributes.on": "create",
+          "data.0.attributes.fields.0.path": "projectId"
+        }
+      }
+    },
+    {
+      "id": "acl-workflowevent-list-denied-without-grant",
+      "method": "GET",
+      "path": "/api/v1/workflowevent",
+      "resource": "workflowevent",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
+    },
+    {
+      "id": "acl-workflowevent-has-no-detail",
+      "method": "GET",
+      "path": "/api/v1/workflowevent/schedule",
+      "resource": "workflowevent",
+      "auth": true,
+      "expects": { "status": 404, "shape": "error", "errorEqual": "Workflow events are read as a list." },
+      "note": "trigger kinds hold dots, which the id route doesn't take"
     }
   ]
 }
