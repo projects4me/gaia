@@ -107,6 +107,8 @@ class WorkflowExpressionsTest extends TestCase
         $this->assertSame('user-agent', $selector->select('ownerId', '{issue.assignee}', self::VALUES, $expressions));
         $this->assertSame('user-dev', $selector->select('ownerId', '{role:Developer}', self::VALUES, $expressions));
         $this->assertSame('user-ada', $selector->select('ownerId', '{sponsor:issue.assignee}', self::VALUES, $expressions));
+        $this->assertSame('agent-1', $expressions->resolve('{agent:issue.assignee}', self::VALUES));
+        $this->assertNull($expressions->resolve('{agent:actor.id}', self::VALUES));
     }
 
     /**
@@ -153,6 +155,11 @@ class WorkflowExpressionsTest extends TestCase
             public function sponsorOf($userId)
             {
                 return $userId === 'user-agent' ? 'user-ada' : null;
+            }
+
+            public function agentIdOf($userId)
+            {
+                return $userId === 'user-agent' ? 'agent-1' : null;
             }
         };
     }

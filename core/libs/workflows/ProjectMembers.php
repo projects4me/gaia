@@ -76,4 +76,20 @@ class ProjectMembers
 
         return $agent && $agent->sponsorId ? (string) $agent->sponsorId : null;
     }
+
+    /**
+     * The id of the agent that acts as the user.
+     *
+     * @param  string $userId The agent's user id.
+     * @return string|null The agent's id.
+     */
+    public function agentIdOf($userId)
+    {
+        $agent = Agent::findFirst([
+            'conditions' => 'userId = :userId: AND deleted = false',
+            'bind' => ['userId' => (string) $userId],
+        ]);
+
+        return $agent ? (string) $agent->id : null;
+    }
 }
