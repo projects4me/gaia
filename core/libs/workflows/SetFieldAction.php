@@ -9,7 +9,7 @@ namespace Gaia\Libraries\Workflows;
 /**
  * The `set_field` action: sets one field of the record the event is about.
  * Identity, project, placement and bookkeeping fields cannot be set, nor
- * the fields the assign and set_status actions own.
+ * the fields the assign action and, on issues, set_status own.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Workflows
@@ -23,11 +23,17 @@ class SetFieldAction extends WorkflowAction
     public const PROTECTED_FIELDS = [
         'id', 'deleted', 'projectId', 'createdUser', 'createdUserName', 'dateCreated',
         'modifiedUser', 'modifiedUserName', 'dateModified', 'lastActivityDate',
-        // Owned by assign and set_status, which validate the value.
-        'assignee', 'status', 'statusId',
+        // Owned by assign, which validates the value.
+        'assignee',
         // Move the record to another parent or project.
         'relatedTo', 'relatedId', 'issueId', 'projectShortcode',
     ];
+
+    /**
+     * Fields a workflow may not set on an issue, because set_status owns
+     * them and checks the status belongs to the issue's project.
+     */
+    public const ISSUE_STATUS_FIELDS = ['status', 'statusId'];
 
     /**
      * {@inheritdoc}
@@ -40,7 +46,10 @@ class SetFieldAction extends WorkflowAction
         if (!in_array($model, (new TriggerEventCatalog())->models(), true)) {
             throw new WorkflowStepException("A workflow cannot change a {$model}.");
         }
-        if (in_array($field, self::PROTECTED_FIELDS, true)) {
+        $protected = $model === 'Issue'
+            ? array_merge(self::PROTECTED_FIELDS, self::ISSUE_STATUS_FIELDS)
+            : self::PROTECTED_FIELDS;
+        if (in_array($field, $protected, true)) {
             throw new WorkflowStepException("A workflow cannot set {$model}.{$field}.");
         }
         if (!array_key_exists($field, $this->fields($record))) {

@@ -81,7 +81,7 @@ class WorkflowActionsTest extends TestCase
         $this->actions->action('set_field')->run(['field' => 'priority', 'value' => 'high'], $this->context('issue', 'issue-1'));
         $this->assertSame(['update', 'Issue', ['priority' => 'high'], 'user-owner'], $this->records->writes[0]);
 
-        foreach (['projectId' => 'cannot set Issue.projectId', 'assignee' => 'cannot set Issue.assignee', 'nope' => 'has no field nope'] as $field => $message) {
+        foreach (['projectId' => 'cannot set Issue.projectId', 'assignee' => 'cannot set Issue.assignee', 'statusId' => 'cannot set Issue.statusId', 'nope' => 'has no field nope'] as $field => $message) {
             try {
                 $this->actions->action('set_field')->run(['field' => $field, 'value' => 'x'], $this->context('issue', 'issue-1'));
                 $this->fail("{$field} was set");
