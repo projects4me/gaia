@@ -163,6 +163,14 @@ class EventNames
     const IDEA_PLANISSUE_CREATED = 'idea.planissue.created';
 
     /**
+     * A workflow's 'Run agent' step waits for the agent's runtime. Scoped to
+     * user:<agentUserId>; carries ids only (hermes D-017).
+     *
+     * @var string
+     */
+    const WORKFLOW_AGENT_RUN_REQUESTED = 'workflow.agent.run.requested';
+
+    /**
      * Every name HermesPublisher is allowed to post.
      *
      * @var   array
@@ -190,6 +198,7 @@ class EventNames
         self::IDEA_PLAN_CREATED,
         self::IDEA_PLAN_STATUS_CHANGED,
         self::IDEA_PLANISSUE_CREATED,
+        self::WORKFLOW_AGENT_RUN_REQUESTED,
     );
 
     /**

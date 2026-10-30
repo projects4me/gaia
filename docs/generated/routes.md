@@ -846,6 +846,18 @@
 | PUT | /api/v1/workflow | rest | workflow.putCollection |
 | PUT | /api/v1/workflow/{id} | rest | workflow.put |
 
+<a id="workflowactorstep"></a>
+## workflowactorstep
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/workflowactorstep | rest | workflowactorstep.list |
+| GET | /api/v1/workflowactorstep/{id} | rest | workflowactorstep.get |
+| GET | /api/v1/workflowactorstep/{id}/{relation} | rest | workflowactorstep.related |
+| OPTIONS | /api/v1/workflowactorstep | rest | workflowactorstep.options |
+| PATCH | /api/v1/workflowactorstep | rest | workflowactorstep.patchCollection |
+| PATCH | /api/v1/workflowactorstep/{id} | rest | workflowactorstep.patch |
+
 <a id="workflowedge"></a>
 ## workflowedge
 

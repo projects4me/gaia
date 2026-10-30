@@ -144,6 +144,14 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'workflowactorstep' => array(
+                'path' => '/api/:version/workflowactorstep',
+                'allowedMethods' => array(
+                    'GET',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'workflowevent' => array(
                 'path' => '/api/:version/workflowevent',
                 'allowedMethods' => array(

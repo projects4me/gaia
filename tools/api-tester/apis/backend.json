@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 214,
-        "enabled": 198,
-        "disabled": 16,
-        "routeResources": 57,
-        "withMetadata": 42,
+        "total": 217,
+        "enabled": 200,
+        "disabled": 17,
+        "routeResources": 58,
+        "withMetadata": 43,
         "skippedResources": 13
     },
     "apis": [
@@ -843,6 +843,51 @@
                     "{workflowreferenceId}"
                 ]
             },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflowactorstep-api-v1-workflowactorstep",
+            "method": "GET",
+            "path": "/api/v1/workflowactorstep",
+            "resource": "workflowactorstep",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflowactorstep-api-v1-workflowactorstep-id",
+            "method": "GET",
+            "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+            "resource": "workflowactorstep",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{workflowactorstepId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "patch-workflowactorstep-api-v1-workflowactorstep-id",
+            "method": "PATCH",
+            "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+            "resource": "workflowactorstep",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "json"
+            },
+            "enabled": false,
+            "skipReason": "No POST lifecycle to create disposable runtime id",
             "source": "backend-metadata"
         },
         {

@@ -23,15 +23,7 @@ class AddCommentAction extends WorkflowAction
      */
     public function run(array $config, RunContext $context)
     {
-        $record = $this->subject($context);
-        $subject = $this->describe($record);
-        if ($subject['entityType'] === 'Comment') {
-            $relatedTo = (string) $record->readAttribute('relatedTo');
-            $relatedId = (string) $record->readAttribute('relatedId');
-        } else {
-            $relatedTo = strtolower($subject['entityType']);
-            $relatedId = $subject['entityId'];
-        }
+        list($relatedTo, $relatedId) = $this->commentTarget($this->subject($context));
 
         return $this->createRecord('Comment', [
             'comment' => self::text($this->setting($config, 'body', $context), 'body'),

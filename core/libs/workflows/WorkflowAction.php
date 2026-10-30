@@ -176,6 +176,23 @@ abstract class WorkflowAction
     }
 
     /**
+     * What a comment on the record is related to: the record itself, or the
+     * commented record when the record is a comment.
+     *
+     * @param  \Phalcon\Mvc\ModelInterface $record
+     * @return string[] [relatedTo, relatedId]
+     */
+    protected function commentTarget($record)
+    {
+        $subject = $this->describe($record);
+        if ($subject['entityType'] === 'Comment') {
+            return [(string) $record->readAttribute('relatedTo'), (string) $record->readAttribute('relatedId')];
+        }
+
+        return [strtolower($subject['entityType']), $subject['entityId']];
+    }
+
+    /**
      * @param  mixed  $value
      * @param  string $name
      * @return string

@@ -80,6 +80,14 @@ Model hook (not REST):
 | `Systemnotificationrecipient` | `NotificationLiveEvents` | `notification.created` scoped to `user:<recipientUserId>` |
 
 
+Workflow engine (not REST):
+
+
+| Source                  | Class                | Event                                                                  |
+| ----------------------- | -------------------- | ---------------------------------------------------------------------- |
+| `RunAgentActor` (D-010) | `AgentRunLiveEvents` | `workflow.agent.run.requested` scoped to `user:<agentUserId>`, ids only |
+
+
 Comments and votes publish only when `relatedTo` is a conversation room.
 Issue comments, wiki comments, and activity rows are not live-synced.
 

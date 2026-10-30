@@ -2979,6 +2979,42 @@
       "attributes": {}
     },
     {
+      "id": "action:workflowactorstep.get",
+      "type": "action",
+      "key": "workflowactorstep.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowactorstep.list",
+      "type": "action",
+      "key": "workflowactorstep.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowactorstep.options",
+      "type": "action",
+      "key": "workflowactorstep.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowactorstep.patch",
+      "type": "action",
+      "key": "workflowactorstep.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowactorstep.patchCollection",
+      "type": "action",
+      "key": "workflowactorstep.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowactorstep.related",
+      "type": "action",
+      "key": "workflowactorstep.related",
+      "attributes": {}
+    },
+    {
       "id": "action:workflowedge.delete",
       "type": "action",
       "key": "workflowedge.delete",
@@ -6439,6 +6475,40 @@
       }
     },
     {
+      "id": "case:acl/acl-workflowactorstep-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-workflowactorstep-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowactorstep",
+        "resource": "workflowactorstep",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workflowactorstep-detail-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-workflowactorstep-detail-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+        "resource": "workflowactorstep",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workflowactorstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-workflowedge-denied-acl-members",
       "type": "case",
       "key": "acl/acl-workflowedge-denied-acl-members",
@@ -8992,6 +9062,40 @@
       }
     },
     {
+      "id": "case:backend/get-workflowactorstep-api-v1-workflowactorstep",
+      "type": "case",
+      "key": "backend/get-workflowactorstep-api-v1-workflowactorstep",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflowactorstep",
+        "resource": "workflowactorstep",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "case",
+      "key": "backend/get-workflowactorstep-api-v1-workflowactorstep-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+        "resource": "workflowactorstep",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workflowactorstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/get-workflowedge-api-v1-workflowedge",
       "type": "case",
       "key": "backend/get-workflowedge-api-v1-workflowedge",
@@ -9574,6 +9678,24 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.workflowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/patch-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "case",
+      "key": "backend/patch-workflowactorstep-api-v1-workflowactorstep-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+        "resource": "workflowactorstep",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workflowactorstepId"
         ],
         "stores": []
       }
@@ -15273,6 +15395,150 @@
       }
     },
     {
+      "id": "case:client/workflowactorstep-claim",
+      "type": "case",
+      "key": "client/workflowactorstep-claim",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+        "resource": "workflowactorstep",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workflowactorstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowactorstep-claim-another-users-step-forbidden",
+      "type": "case",
+      "key": "client/workflowactorstep-claim-another-users-step-forbidden",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflowactorstep/{otherWorkflowactorstepId}",
+        "resource": "workflowactorstep",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherWorkflowactorstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowactorstep-claim-twice-conflicts",
+      "type": "case",
+      "key": "client/workflowactorstep-claim-twice-conflicts",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+        "resource": "workflowactorstep",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workflowactorstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowactorstep-read-own-step",
+      "type": "case",
+      "key": "client/workflowactorstep-read-own-step",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+        "resource": "workflowactorstep",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workflowactorstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowactorstep-report",
+      "type": "case",
+      "key": "client/workflowactorstep-report",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+        "resource": "workflowactorstep",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workflowactorstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowactorstep-report-before-claim-conflicts",
+      "type": "case",
+      "key": "client/workflowactorstep-report-before-claim-conflicts",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+        "resource": "workflowactorstep",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workflowactorstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowactorstep-report-rejects-other-fields",
+      "type": "case",
+      "key": "client/workflowactorstep-report-rejects-other-fields",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+        "resource": "workflowactorstep",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workflowactorstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowactorstep-report-rejects-unknown-outcome",
+      "type": "case",
+      "key": "client/workflowactorstep-report-rejects-unknown-outcome",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+        "resource": "workflowactorstep",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workflowactorstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/workflowedge-create-rejects-taken-port",
       "type": "case",
       "key": "client/workflowedge-create-rejects-taken-port",
@@ -16186,6 +16452,23 @@
       }
     },
     {
+      "id": "component:Events\\AgentRunLiveEvents",
+      "type": "component",
+      "key": "Events\\AgentRunLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\AgentRunLiveEvents",
+        "file": "app/api/v1/controllers/components/events/AgentRunLiveEvents.php",
+        "extends": null,
+        "implements": [
+          "AgentRunRequests"
+        ],
+        "hooks": [
+          "requested"
+        ]
+      }
+    },
+    {
       "id": "component:Events\\ConversationCommentLiveEvents",
       "type": "component",
       "key": "Events\\ConversationCommentLiveEvents",
@@ -16416,6 +16699,22 @@
       }
     },
     {
+      "id": "component:Events\\WorkflowReplies",
+      "type": "component",
+      "key": "Events\\WorkflowReplies",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\WorkflowRepliesComponent",
+        "file": "app/api/v1/controllers/components/events/WorkflowRepliesComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate"
+        ]
+      }
+    },
+    {
       "id": "component:Events\\WorkflowTriggers",
       "type": "component",
       "key": "Events\\WorkflowTriggers",
@@ -16430,7 +16729,8 @@
         "hooks": [
           "afterCreate",
           "afterUpdate",
-          "changed"
+          "changed",
+          "runner"
         ]
       }
     },
@@ -17430,6 +17730,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\WorkflowController",
         "file": "app/api/v1/controllers/WorkflowController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:workflowactorstep",
+      "type": "controller",
+      "key": "workflowactorstep",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\WorkflowactorstepController",
+        "file": "app/api/v1/controllers/WorkflowactorstepController.php",
         "extends": "RestController"
       }
     },
@@ -25357,6 +25668,264 @@
       }
     },
     {
+      "id": "field:Workflowactorstep.actorUserId",
+      "type": "field",
+      "key": "Workflowactorstep.actorUserId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_ACTOR_USER_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.agentId",
+      "type": "field",
+      "key": "Workflowactorstep.agentId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_AGENT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.claimBy",
+      "type": "field",
+      "key": "Workflowactorstep.claimBy",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_CLAIM_BY",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.claimedAt",
+      "type": "field",
+      "key": "Workflowactorstep.claimedAt",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_CLAIMED_AT",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.comment",
+      "type": "field",
+      "key": "Workflowactorstep.comment",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_COMMENT",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.dateCreated",
+      "type": "field",
+      "key": "Workflowactorstep.dateCreated",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.dateModified",
+      "type": "field",
+      "key": "Workflowactorstep.dateModified",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.deleted",
+      "type": "field",
+      "key": "Workflowactorstep.deleted",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.entityId",
+      "type": "field",
+      "key": "Workflowactorstep.entityId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_ENTITY_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.entityType",
+      "type": "field",
+      "key": "Workflowactorstep.entityType",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_ENTITY_TYPE",
+        "type": "varchar",
+        "length": "50",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.finishBy",
+      "type": "field",
+      "key": "Workflowactorstep.finishBy",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_FINISH_BY",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.finishedAt",
+      "type": "field",
+      "key": "Workflowactorstep.finishedAt",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_FINISHED_AT",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.id",
+      "type": "field",
+      "key": "Workflowactorstep.id",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.kind",
+      "type": "field",
+      "key": "Workflowactorstep.kind",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_KIND",
+        "type": "varchar",
+        "length": "50",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.maxTurns",
+      "type": "field",
+      "key": "Workflowactorstep.maxTurns",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_MAX_TURNS",
+        "type": "int",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.model",
+      "type": "field",
+      "key": "Workflowactorstep.model",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_MODEL",
+        "type": "varchar",
+        "length": "100",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.nodeId",
+      "type": "field",
+      "key": "Workflowactorstep.nodeId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_NODE_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.outcome",
+      "type": "field",
+      "key": "Workflowactorstep.outcome",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_OUTCOME",
+        "type": "varchar",
+        "length": "50",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.projectId",
+      "type": "field",
+      "key": "Workflowactorstep.projectId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_PROJECT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.prompt",
+      "type": "field",
+      "key": "Workflowactorstep.prompt",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_PROMPT",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.runId",
+      "type": "field",
+      "key": "Workflowactorstep.runId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_RUN_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.session",
+      "type": "field",
+      "key": "Workflowactorstep.session",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_SESSION",
+        "type": "varchar",
+        "length": "20",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.status",
+      "type": "field",
+      "key": "Workflowactorstep.status",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_STATUS",
+        "type": "varchar",
+        "length": "20",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowactorstep.workflowId",
+      "type": "field",
+      "key": "Workflowactorstep.workflowId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_ACTOR_STEPS_WORKFLOW_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
       "id": "field:Workflowedge.createdUser",
       "type": "field",
       "key": "Workflowedge.createdUser",
@@ -26469,6 +27038,14 @@
       }
     },
     {
+      "id": "fixture:otherWorkflowactorstepId",
+      "type": "fixture",
+      "key": "otherWorkflowactorstepId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:params.c_id",
       "type": "fixture",
       "key": "params.c_id",
@@ -26592,6 +27169,14 @@
       "id": "fixture:workflowId",
       "type": "fixture",
       "key": "workflowId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:workflowactorstepId",
+      "type": "fixture",
+      "key": "workflowactorstepId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -27698,6 +28283,24 @@
         "registered": true,
         "hasMetadata": true,
         "acl": null
+      }
+    },
+    {
+      "id": "model:Workflowactorstep",
+      "type": "model",
+      "key": "Workflowactorstep",
+      "attributes": {
+        "file": "app/metadata/model/Workflowactorstep.php",
+        "tableName": "workflow_actor_steps",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": {
+          "assignment": {
+            "field": "actorUserId",
+            "condition": "Workflowactorstep.actorUserId=:userId:"
+          }
+        }
       }
     },
     {
@@ -29529,6 +30132,42 @@
       "id": "permission:workflow.update",
       "type": "permission",
       "key": "workflow.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowactorstep.create",
+      "type": "permission",
+      "key": "workflowactorstep.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowactorstep.delete",
+      "type": "permission",
+      "key": "workflowactorstep.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowactorstep.get",
+      "type": "permission",
+      "key": "workflowactorstep.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowactorstep.update",
+      "type": "permission",
+      "key": "workflowactorstep.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -31594,6 +32233,36 @@
         "kind": "hasMany",
         "primaryKey": "id",
         "relatedKey": "workflowId"
+      }
+    },
+    {
+      "id": "relationship:Workflowactorstep.actor",
+      "type": "relationship",
+      "key": "Workflowactorstep.actor",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "actorUserId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowactorstep.agent",
+      "type": "relationship",
+      "key": "Workflowactorstep.agent",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "agentId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowactorstep.run",
+      "type": "relationship",
+      "key": "Workflowactorstep.run",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "runId",
+        "relatedKey": "id"
       }
     },
     {
@@ -34595,6 +35264,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/workflowactorstep",
+      "type": "route",
+      "key": "GET /api/v1/workflowactorstep",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowactorstep",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowactorstep"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowactorstep/{id}",
+      "type": "route",
+      "key": "GET /api/v1/workflowactorstep/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowactorstep",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowactorstep/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowactorstep/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/workflowactorstep/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowactorstep",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowactorstep/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:GET /api/v1/workflowedge",
       "type": "route",
       "key": "GET /api/v1/workflowedge",
@@ -35372,6 +36077,18 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/workflow"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/workflowactorstep",
+      "type": "route",
+      "key": "OPTIONS /api/v1/workflowactorstep",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowactorstep",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/workflowactorstep"
       }
     },
     {
@@ -36452,6 +37169,30 @@
         "version": "v1",
         "method": "PATCH",
         "path": "/api/v1/workflow/{id}"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/workflowactorstep",
+      "type": "route",
+      "key": "PATCH /api/v1/workflowactorstep",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowactorstep",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/workflowactorstep"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/workflowactorstep/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/workflowactorstep/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowactorstep",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/workflowactorstep/{id}"
       }
     },
     {
@@ -39884,6 +40625,31 @@
       "from": "action:workflow.related",
       "type": "requires",
       "to": "permission:workflow.get"
+    },
+    {
+      "from": "action:workflowactorstep.get",
+      "type": "requires",
+      "to": "permission:workflowactorstep.get"
+    },
+    {
+      "from": "action:workflowactorstep.list",
+      "type": "requires",
+      "to": "permission:workflowactorstep.get"
+    },
+    {
+      "from": "action:workflowactorstep.patch",
+      "type": "requires",
+      "to": "permission:workflowactorstep.update"
+    },
+    {
+      "from": "action:workflowactorstep.patchCollection",
+      "type": "requires",
+      "to": "permission:workflowactorstep.update"
+    },
+    {
+      "from": "action:workflowactorstep.related",
+      "type": "requires",
+      "to": "permission:workflowactorstep.get"
     },
     {
       "from": "action:workflowedge.delete",
@@ -45286,6 +46052,71 @@
       "to": "fixture:workflowId"
     },
     {
+      "from": "case:acl/acl-workflowactorstep-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowactorstep-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowactorstep-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowactorstep-denied-acl-members",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:acl/acl-workflowactorstep-denied-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowactorstep"
+    },
+    {
+      "from": "case:acl/acl-workflowactorstep-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workflowactorstep-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowactorstep-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowactorstep-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowactorstep-detail-denied-acl-members",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:acl/acl-workflowactorstep-detail-denied-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowactorstep/{id}"
+    },
+    {
+      "from": "case:acl/acl-workflowactorstep-detail-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workflowactorstep-detail-denied-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:workflowactorstepId"
+    },
+    {
       "from": "case:acl/acl-workflowedge-denied-acl-members",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -49786,6 +50617,66 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/get-workflowactorstep-api-v1-workflowactorstep",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflowactorstep-api-v1-workflowactorstep",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflowactorstep-api-v1-workflowactorstep",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:backend/get-workflowactorstep-api-v1-workflowactorstep",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowactorstep"
+    },
+    {
+      "from": "case:backend/get-workflowactorstep-api-v1-workflowactorstep",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:backend/get-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowactorstep/{id}"
+    },
+    {
+      "from": "case:backend/get-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "uses_fixture",
+      "to": "fixture:workflowactorstepId"
+    },
+    {
       "from": "case:backend/get-workflowedge-api-v1-workflowedge",
       "type": "asserts",
       "to": "assertion:shape"
@@ -50889,6 +51780,36 @@
       "from": "case:backend/patch-workflow-api-v1-workflow-id",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:backend/patch-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/patch-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/patch-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:backend/patch-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflowactorstep/{id}"
+    },
+    {
+      "from": "case:backend/patch-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/patch-workflowactorstep-api-v1-workflowactorstep-id",
+      "type": "uses_fixture",
+      "to": "fixture:workflowactorstepId"
     },
     {
       "from": "case:backend/patch-workflownode-api-v1-workflownode-id",
@@ -60971,6 +61892,261 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/workflowactorstep-claim",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflowactorstep/{id}"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim",
+      "type": "uses_fixture",
+      "to": "fixture:workflowactorstepId"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim-another-users-step-forbidden",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim-another-users-step-forbidden",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim-another-users-step-forbidden",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim-another-users-step-forbidden",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflowactorstep/{id}"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim-another-users-step-forbidden",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim-another-users-step-forbidden",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkflowactorstepId"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim-twice-conflicts",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim-twice-conflicts",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim-twice-conflicts",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim-twice-conflicts",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflowactorstep/{id}"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim-twice-conflicts",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowactorstep-claim-twice-conflicts",
+      "type": "uses_fixture",
+      "to": "fixture:workflowactorstepId"
+    },
+    {
+      "from": "case:client/workflowactorstep-read-own-step",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflowactorstep-read-own-step",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowactorstep-read-own-step",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowactorstep-read-own-step",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:client/workflowactorstep-read-own-step",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowactorstep/{id}"
+    },
+    {
+      "from": "case:client/workflowactorstep-read-own-step",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowactorstep-read-own-step",
+      "type": "uses_fixture",
+      "to": "fixture:workflowactorstepId"
+    },
+    {
+      "from": "case:client/workflowactorstep-report",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflowactorstep-report",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowactorstep-report",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowactorstep-report",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:client/workflowactorstep-report",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflowactorstep/{id}"
+    },
+    {
+      "from": "case:client/workflowactorstep-report",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowactorstep-report",
+      "type": "uses_fixture",
+      "to": "fixture:workflowactorstepId"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-before-claim-conflicts",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-before-claim-conflicts",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-before-claim-conflicts",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-before-claim-conflicts",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflowactorstep/{id}"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-before-claim-conflicts",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-before-claim-conflicts",
+      "type": "uses_fixture",
+      "to": "fixture:workflowactorstepId"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-rejects-other-fields",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-rejects-other-fields",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-rejects-other-fields",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-rejects-other-fields",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflowactorstep/{id}"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-rejects-other-fields",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-rejects-other-fields",
+      "type": "uses_fixture",
+      "to": "fixture:workflowactorstepId"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-rejects-unknown-outcome",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-rejects-unknown-outcome",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-rejects-unknown-outcome",
+      "type": "covers",
+      "to": "controller:workflowactorstep"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-rejects-unknown-outcome",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflowactorstep/{id}"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-rejects-unknown-outcome",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowactorstep-report-rejects-unknown-outcome",
+      "type": "uses_fixture",
+      "to": "fixture:workflowactorstepId"
+    },
+    {
       "from": "case:client/workflowedge-create-rejects-taken-port",
       "type": "asserts",
       "to": "assertion:jsonEqual"
@@ -63173,6 +64349,11 @@
     {
       "from": "controller:comment",
       "type": "uses_component",
+      "to": "component:Events\\WorkflowReplies"
+    },
+    {
+      "from": "controller:comment",
+      "type": "uses_component",
       "to": "component:Events\\WorkflowTriggers"
     },
     {
@@ -63689,6 +64870,11 @@
       "from": "controller:issue",
       "type": "uses_component",
       "to": "component:Events\\IssueLiveEvents"
+    },
+    {
+      "from": "controller:issue",
+      "type": "uses_component",
+      "to": "component:Events\\WorkflowReplies"
     },
     {
       "from": "controller:issue",
@@ -65539,6 +66725,41 @@
       "from": "controller:workflow",
       "type": "serves",
       "to": "model:Workflow"
+    },
+    {
+      "from": "controller:workflowactorstep",
+      "type": "has_action",
+      "to": "action:workflowactorstep.get"
+    },
+    {
+      "from": "controller:workflowactorstep",
+      "type": "has_action",
+      "to": "action:workflowactorstep.list"
+    },
+    {
+      "from": "controller:workflowactorstep",
+      "type": "has_action",
+      "to": "action:workflowactorstep.options"
+    },
+    {
+      "from": "controller:workflowactorstep",
+      "type": "has_action",
+      "to": "action:workflowactorstep.patch"
+    },
+    {
+      "from": "controller:workflowactorstep",
+      "type": "has_action",
+      "to": "action:workflowactorstep.patchCollection"
+    },
+    {
+      "from": "controller:workflowactorstep",
+      "type": "has_action",
+      "to": "action:workflowactorstep.related"
+    },
+    {
+      "from": "controller:workflowactorstep",
+      "type": "serves",
+      "to": "model:Workflowactorstep"
     },
     {
       "from": "controller:workflowedge",
@@ -71961,6 +73182,156 @@
       "to": "behaviour:workflowBehavior"
     },
     {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.actorUserId"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.agentId"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.claimBy"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.claimedAt"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.comment"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.dateCreated"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.dateModified"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.deleted"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.entityId"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.entityType"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.finishBy"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.finishedAt"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.id"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.kind"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.maxTurns"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.model"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.nodeId"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.outcome"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.projectId"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.prompt"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.runId"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.session"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.status"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_field",
+      "to": "field:Workflowactorstep.workflowId"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_relationship",
+      "to": "relationship:Workflowactorstep.actor"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_relationship",
+      "to": "relationship:Workflowactorstep.agent"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "has_relationship",
+      "to": "relationship:Workflowactorstep.run"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Workflowactorstep",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
       "from": "model:Workflowedge",
       "type": "has_field",
       "to": "field:Workflowedge.createdUser"
@@ -72814,6 +74185,11 @@
       "from": "profile:aclMembers",
       "type": "denies",
       "to": "permission:workflow.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "denies",
+      "to": "permission:workflowactorstep.get"
     },
     {
       "from": "profile:aclMembers",
@@ -73833,6 +75209,26 @@
     {
       "from": "profile:default",
       "type": "grants",
+      "to": "permission:workflowactorstep.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowactorstep.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowactorstep.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowactorstep.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
       "to": "permission:workflowedge.create"
     },
     {
@@ -74834,6 +76230,21 @@
       "from": "relationship:Workflow.references",
       "type": "targets",
       "to": "model:Workflowreference"
+    },
+    {
+      "from": "relationship:Workflowactorstep.actor",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workflowactorstep.agent",
+      "type": "targets",
+      "to": "model:Agent"
+    },
+    {
+      "from": "relationship:Workflowactorstep.run",
+      "type": "targets",
+      "to": "model:Workflowrun"
     },
     {
       "from": "relationship:Workflowedge.createdBy",
@@ -76101,6 +77512,21 @@
       "to": "action:workflow.related"
     },
     {
+      "from": "route:GET /api/v1/workflowactorstep",
+      "type": "handled_by",
+      "to": "action:workflowactorstep.list"
+    },
+    {
+      "from": "route:GET /api/v1/workflowactorstep/{id}",
+      "type": "handled_by",
+      "to": "action:workflowactorstep.get"
+    },
+    {
+      "from": "route:GET /api/v1/workflowactorstep/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:workflowactorstep.related"
+    },
+    {
       "from": "route:GET /api/v1/workflowedge",
       "type": "handled_by",
       "to": "action:workflowedge.list"
@@ -76424,6 +77850,11 @@
       "from": "route:OPTIONS /api/v1/workflow",
       "type": "handled_by",
       "to": "action:workflow.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/workflowactorstep",
+      "type": "handled_by",
+      "to": "action:workflowactorstep.options"
     },
     {
       "from": "route:OPTIONS /api/v1/workflowedge",
@@ -76874,6 +78305,16 @@
       "from": "route:PATCH /api/v1/workflow/{id}",
       "type": "handled_by",
       "to": "action:workflow.patch"
+    },
+    {
+      "from": "route:PATCH /api/v1/workflowactorstep",
+      "type": "handled_by",
+      "to": "action:workflowactorstep.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/workflowactorstep/{id}",
+      "type": "handled_by",
+      "to": "action:workflowactorstep.patch"
     },
     {
       "from": "route:PATCH /api/v1/workflowedge",

@@ -93,6 +93,8 @@
     "workflownodeId": "api-test-workflownode-000001",
     "workflowedgeId": "api-test-workflowedge-000001",
     "workflowreferenceId": "api-test-workflowreference-000001",
+    "workflowactorstepId": "api-test-workflowactorstep-000001",
+    "otherWorkflowactorstepId": "api-test-workflowactorstep-000002",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

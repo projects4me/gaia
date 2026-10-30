@@ -54,13 +54,21 @@ class NodeKindCatalog
             'switch' => ['config' => ['cases' => ['cases', true]], 'ports' => [self::DEFAULT_PORT]],
         ],
         self::ACTOR => [
-            'run_agent' => [
-                'config' => ['agentId' => ['ref:Agent', true], 'prompt' => ['string', false]],
-                'ports' => ['done', 'needs_input', 'blocked', 'failed', 'limit'],
+            RunAgentActor::KIND => [
+                'config' => [
+                    'agentId' => ['ref:Agent', true],
+                    'prompt' => ['string', false],
+                    'session' => ['string', false],
+                    'model' => ['string', false],
+                    'maxTurns' => ['string', false],
+                    'claimTimeout' => ['string', false],
+                    'timeout' => ['string', false],
+                ],
+                'ports' => RunAgentActor::OUTCOMES,
             ],
-            'ask_user' => [
+            AskUserActor::KIND => [
                 'config' => ['userId' => ['ref:User', true], 'question' => ['string', true]],
-                'ports' => ['replied'],
+                'ports' => [AskUserActor::REPLIED, AskUserActor::REASSIGNED],
             ],
         ],
         self::ACTION => [

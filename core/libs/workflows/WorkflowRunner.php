@@ -6,11 +6,15 @@
 
 namespace Gaia\Libraries\Workflows;
 
+use function Gaia\Libraries\Utils\create_guid;
+
 /**
  * Runs a workflow for one event: walks its graph from the trigger node,
  * evaluates each condition, carries out each action and writes every step
  * to the run history. The run ends at an `end` node or at a port with no
- * edge (completed), or at the first step that fails (failed).
+ * edge (completed), or at the first step that fails (failed). At an actor
+ * step it waits: the actor's answer (an agent's report, a user's reply, a
+ * timeout) resumes it on the port the answer names.
  *
  * Actions are not checked against anyone's ACL: whoever may create a
  * workflow decides what it does. Changes to existing records are made as
@@ -21,7 +25,7 @@ namespace Gaia\Libraries\Workflows;
  * @package Gaia\Libraries\Workflows
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class WorkflowRunner implements WorkflowEngine
+class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
 {
     /**
      * The most steps one run takes, so a cycle in the graph ends.
@@ -42,6 +46,16 @@ class WorkflowRunner implements WorkflowEngine
      * @var ActionCatalog
      */
     private $actions;
+
+    /**
+     * @var ActorCatalog
+     */
+    private $actors;
+
+    /**
+     * @var AgentRunRequests|null
+     */
+    private $requests;
 
     /**
      * @var ConditionEvaluator
@@ -69,13 +83,17 @@ class WorkflowRunner implements WorkflowEngine
      * @param RunJournal|null           $journal
      * @param ActionCatalog|null        $actions
      * @param UserSelector|null         $users
+     * @param ActorCatalog|null         $actors
+     * @param AgentRunRequests|null     $requests Tells agents' runtimes about their steps; none when null.
      */
     public function __construct(
         WorkflowChangeEvents $events = null,
         WorkflowGraphReader $graph = null,
         RunJournal $journal = null,
         ActionCatalog $actions = null,
-        UserSelector $users = null
+        UserSelector $users = null,
+        ActorCatalog $actors = null,
+        AgentRunRequests $requests = null
     ) {
         $users = $users ?: new UserSelector();
         $this->expressions = new ExpressionResolver($users->functions());
@@ -84,6 +102,9 @@ class WorkflowRunner implements WorkflowEngine
         $this->graph = $graph ?: new WorkflowGraphReader();
         $this->journal = $journal ?: new RunJournal();
         $this->actions = $actions ?: new ActionCatalog(new WorkflowRecords(), $users, $this->expressions);
+        $this->actors = $actors
+            ?: new ActorCatalog(new WorkflowRecords(), $users, $this->expressions, new ActorSteps());
+        $this->requests = $requests;
         $this->guard = new LoopGuard();
     }
 
@@ -128,38 +149,154 @@ class WorkflowRunner implements WorkflowEngine
             $payload
         );
 
+        $this->carryOn($context, function () use ($triggerNodeId, $context) {
+            return $this->walk((string) $triggerNodeId, $context, 1);
+        });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function resume($stepId, $port, array $outputs)
+    {
         try {
-            list($status, $error) = $this->walk((string) $triggerNodeId, $context);
+            $waiting = $this->journal->waitingStep($stepId);
+        } catch (\Throwable $exception) {
+            // The answer is saved with the actor step already; the caller's write must not fail.
+            $this->log('error', "Workflow step {$stepId} could not be resumed: {$exception->getMessage()}");
+            return;
+        }
+        if ($waiting === null) {
+            $this->log('info', "Workflow step {$stepId} is not waiting; its answer is ignored.");
+            return;
+        }
+        $run = $waiting['run'];
+        $step = $waiting['step'];
+
+        $payload = json_decode((string) $run['inputs'], true);
+        $payload = is_array($payload) ? $payload : [];
+        $payload['step'] = $outputs;
+        $workflow = $this->graph->workflow($run['workflowId']);
+        $context = new RunContext(
+            $run['id'],
+            [
+                'id' => $run['workflowId'],
+                'name' => $workflow === null ? null : $workflow['name'],
+                'version' => (int) $run['workflowVersion'],
+            ],
+            $workflow === null ? '' : ($workflow['ownerId'] ?: $workflow['createdUser']),
+            $payload
+        );
+
+        try {
+            $answered = $this->journal->answer($step['id'], $port, $outputs);
+        } catch (\Throwable $exception) {
+            $this->log('error', "Workflow step {$stepId} could not be answered: {$exception->getMessage()}");
+            return;
+        }
+        if (!$answered) {
+            // Another answer took the step first.
+            return;
+        }
+        $this->carryOn($context, function () use ($workflow, $step, $port, $context) {
+            if ($workflow === null || $workflow['status'] !== WorkflowStatus::ACTIVE) {
+                return [RunStatus::FAILED, 'The workflow is no longer active.'];
+            }
+            list(, $next) = $this->graphOf($context->workflow['id']);
+            if (!isset($next[$step['nodeId']][$port])) {
+                return [RunStatus::COMPLETED, null];
+            }
+
+            return $this->walk(
+                $next[$step['nodeId']][$port],
+                $context,
+                $this->journal->lastSequence($context->runId) + 1
+            );
+        });
+    }
+
+    /**
+     * Takes the run's next steps and records where they leave it.
+     *
+     * @param  RunContext $context
+     * @param  callable   $steps Returns [run status, error].
+     * @return void
+     */
+    private function carryOn(RunContext $context, callable $steps)
+    {
+        try {
+            list($status, $error) = $steps();
         } catch (\Throwable $exception) {
             // A step the journal could not record must not leave the run running.
             list($status, $error) = [RunStatus::FAILED, $exception->getMessage()];
         }
         try {
-            $this->journal->finish($runId, $status, $error);
+            $this->journal->finish($context->runId, $status, $error);
         } catch (\Throwable $exception) {
-            $this->log('error', "Workflow {$workflowId} run {$runId} could not be finished in the journal: {$exception->getMessage()}");
+            $this->log(
+                'error',
+                "Workflow {$context->workflow['id']} run {$context->runId} could not be finished in the journal: "
+                . $exception->getMessage()
+            );
+        }
+        $this->requestAgents($context, $status);
+    }
+
+    /**
+     * Tells the agents' runtimes about the run's 'Run agent' step, now that
+     * the run is saved as waiting for it. A failed run tells nobody.
+     *
+     * @param  RunContext $context
+     * @param  string     $status
+     * @return void
+     */
+    private function requestAgents(RunContext $context, $status)
+    {
+        foreach ($context->takeAgentRequests() as $step) {
+            if ($this->requests === null || $status !== RunStatus::WAITING) {
+                continue;
+            }
+            try {
+                $this->requests->requested($step);
+            } catch (\Throwable $exception) {
+                $this->log('error', "Agent run request for step {$step['id']} failed: {$exception->getMessage()}");
+            }
         }
     }
 
     /**
-     * Takes the steps from the trigger node on.
+     * The workflow's nodes by id and the node each port leads to.
      *
-     * @param  string     $nodeId
-     * @param  RunContext $context
-     * @return array [run status, error]
+     * @param  string $workflowId
+     * @return array [nodes, next]
      */
-    private function walk($nodeId, RunContext $context)
+    private function graphOf($workflowId)
     {
         $nodes = [];
-        foreach ($this->graph->nodes($context->workflow['id']) as $node) {
+        foreach ($this->graph->nodes($workflowId) as $node) {
             $nodes[$node['id']] = $node;
         }
         $next = [];
-        foreach ($this->graph->edges($context->workflow['id']) as $edge) {
+        foreach ($this->graph->edges($workflowId) as $edge) {
             $next[$edge['fromNodeId']][$edge['fromPort']] = $edge['toNodeId'];
         }
 
-        for ($sequence = 1; $sequence <= self::MAX_STEPS; $sequence++) {
+        return [$nodes, $next];
+    }
+
+    /**
+     * Takes the steps from a node on.
+     *
+     * @param  string     $nodeId
+     * @param  RunContext $context
+     * @param  int        $first   The sequence number of the first step.
+     * @return array [run status, error]
+     */
+    private function walk($nodeId, RunContext $context, $first)
+    {
+        list($nodes, $next) = $this->graphOf($context->workflow['id']);
+
+        for ($sequence = $first; $sequence < $first + self::MAX_STEPS; $sequence++) {
             if (!isset($nodes[$nodeId])) {
                 return [RunStatus::FAILED, "Node {$nodeId} is not in the workflow."];
             }
@@ -175,6 +312,9 @@ class WorkflowRunner implements WorkflowEngine
 
             if ($step['status'] === RunStatus::FAILED) {
                 return [RunStatus::FAILED, $step['error']];
+            }
+            if ($step['status'] === RunStatus::WAITING) {
+                return [RunStatus::WAITING, null];
             }
             if ($step['port'] === null || !isset($next[$nodeId][$step['port']])) {
                 return [RunStatus::COMPLETED, null];
@@ -197,6 +337,7 @@ class WorkflowRunner implements WorkflowEngine
     {
         $started = microtime(true);
         $startedAt = RunJournal::now();
+        $context->step = ['id' => create_guid(), 'nodeId' => (string) $node['id']];
         $port = null;
         $outputs = [];
         $error = null;
@@ -210,12 +351,19 @@ class WorkflowRunner implements WorkflowEngine
             $this->log('error', "Workflow {$context->workflow['id']} step {$node['id']} failed: {$error}");
         }
 
+        if ($error !== null) {
+            $status = RunStatus::FAILED;
+        } else {
+            $status = $node['category'] === NodeKindCatalog::ACTOR ? RunStatus::WAITING : RunStatus::COMPLETED;
+        }
+
         return [
+            'id' => $context->step['id'],
             'sequence' => $sequence,
             'nodeId' => $node['id'],
             'category' => $node['category'],
             'kind' => $node['kind'],
-            'status' => $error === null ? RunStatus::COMPLETED : RunStatus::FAILED,
+            'status' => $status,
             'port' => $error === null ? $port : null,
             'inputs' => $this->inputs($node['config'], $context),
             'outputs' => $outputs,
@@ -229,7 +377,7 @@ class WorkflowRunner implements WorkflowEngine
     /**
      * @param  array      $node
      * @param  RunContext $context
-     * @return array [port taken (null ends the run), outputs]
+     * @return array [port taken (null ends the run, or for an actor waits), outputs]
      * @throws WorkflowStepException
      */
     private function carryOut(array $node, RunContext $context)
@@ -242,6 +390,8 @@ class WorkflowRunner implements WorkflowEngine
                     ? $this->conditions->switchPort($node['config'], $context->values())
                     : $this->conditions->filter($node['config'], $context->values());
                 return [$port, []];
+            case NodeKindCatalog::ACTOR:
+                return [null, $this->actors->actor($node['kind'])->run($node['config'], $context)];
             case NodeKindCatalog::ACTION:
                 if ($node['kind'] === NodeKindCatalog::END) {
                     return [null, []];
