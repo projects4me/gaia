@@ -104,7 +104,8 @@ class WorkflowRecords
     }
 
     /**
-     * The project's issue status with this id or name.
+     * The issue status with this id or name: the project's own status, else the system status
+     * (the system statuses belong to no project).
      *
      * @param  string $projectId
      * @param  string $status
@@ -112,10 +113,17 @@ class WorkflowRecords
      */
     public function issueStatus($projectId, $status)
     {
+        $conditions = '(id = :status: OR name = :status:) AND deleted = false AND ';
         $row = Issuestatus::findFirst([
-            'conditions' => 'projectId = :projectId: AND (id = :status: OR name = :status:) AND deleted = false',
+            'conditions' => $conditions . 'projectId = :projectId:',
             'bind' => ['projectId' => (string) $projectId, 'status' => (string) $status],
         ]);
+        if (!$row) {
+            $row = Issuestatus::findFirst([
+                'conditions' => $conditions . "(projectId IS NULL OR projectId = '')",
+                'bind' => ['status' => (string) $status],
+            ]);
+        }
 
         return $row ? ['id' => (string) $row->id, 'name' => (string) $row->name] : null;
     }

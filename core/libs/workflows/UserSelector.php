@@ -10,9 +10,10 @@ namespace Gaia\Libraries\Workflows;
  * Turns a user setting of a node into a member of the run's project. The
  * setting is a user id, an expression naming one (`{issue.assignee}`,
  * `{actor.id}`), a role in the project (`{role:Developer}`: its
- * longest-standing member with that role) or an agent's sponsor
+ * longest-standing member with that role), an agent's sponsor
  * (`{sponsor:issue.assignee}`). Whoever it names must be a member of the
- * project the run is for.
+ * project the run is for. `{agent:issue.assignee}` names the agent behind
+ * a user, for settings that take an agent.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Workflows
@@ -47,6 +48,10 @@ class UserSelector
             'sponsor' => function ($path, array $values) {
                 $userId = ExpressionResolver::path($values, $path);
                 return is_scalar($userId) && $userId !== '' ? $this->members->sponsorOf((string) $userId) : null;
+            },
+            'agent' => function ($path, array $values) {
+                $userId = ExpressionResolver::path($values, $path);
+                return is_scalar($userId) && $userId !== '' ? $this->members->agentIdOf((string) $userId) : null;
             },
         ];
     }
