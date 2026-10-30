@@ -2009,6 +2009,7 @@
             "name": "api_test_settings_status",
             "description": "Settings status",
             "color": "#3C8DBC",
+            "textColor": "Dark",
             "sortOrder": 9,
             "done": 0,
             "system": 1,
@@ -2023,6 +2024,7 @@
         "shape": "jsonapi.resource",
         "attributesEqual": {
           "color": "#3c8dbc",
+          "textColor": "dark",
           "sortOrder": 9
         }
       },
@@ -2155,6 +2157,171 @@
       "expects": {
         "status": 200,
         "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "issuestatus-create-text-color-name-rejected",
+      "method": "POST",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "attributes": {
+            "name": "api_test_bad_text_color",
+            "color": "#3c8dbc",
+            "textColor": "white",
+            "done": 0,
+            "system": 1,
+            "translations": {
+              "en-us": "API Test Bad Text Colour"
+            }
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "issuestatus-patch-text-color-hex-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.settingsStatusId}",
+          "attributes": {
+            "textColor": "#000000"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "issuestatus-patch-text-color-auto-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.settingsStatusId}",
+          "attributes": {
+            "textColor": "auto"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "issuestatus-patch-text-color-empty-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.settingsStatusId}",
+          "attributes": {
+            "textColor": ""
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "issuestatus-patch-collection-invalid-text-color-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "{runtime.settingsStatusId}",
+            "textColor": "black"
+          }
+        ]
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "issuestatus-patch-text-color-light-saved-lowercase",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.settingsStatusId}",
+          "attributes": {
+            "textColor": "LIGHT"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "textColor": "light"
+        }
+      }
+    },
+    {
+      "id": "issuestatus-get-text-color",
+      "method": "GET",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "textColor": "light"
+        }
+      }
+    },
+    {
+      "id": "issuestatus-patch-text-color-cleared",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.settingsStatusId}",
+          "attributes": {
+            "textColor": null
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "textColor": null
+        }
       }
     },
     {

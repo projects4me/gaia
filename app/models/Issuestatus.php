@@ -27,6 +27,27 @@ class Issuestatus extends Model
     public const COLOR_PATTERN = '/^#[0-9a-f]{6}\z/i';
 
     /**
+     * Why an invalid colour is refused.
+     *
+     * @var string
+     */
+    public const COLOR_MESSAGE = 'Colour must be a hex colour in the form #rrggbb, e.g. #1a2b3c.';
+
+    /**
+     * The label text colours a status may use; null means the UI picks one from the colour.
+     *
+     * @var array
+     */
+    public const TEXT_COLORS = ['dark', 'light'];
+
+    /**
+     * Why an invalid label text colour is refused.
+     *
+     * @var string
+     */
+    public const TEXT_COLOR_MESSAGE = 'Text colour must be dark, light or null.';
+
+    /**
      * Whether the value is a colour a status may use: null (no colour) or `#rrggbb`.
      *
      * @param  mixed $color
@@ -38,17 +59,35 @@ class Issuestatus extends Model
     }
 
     /**
-     * Refuse to save an invalid colour, and save a valid one lowercase so the
-     * same colour is always stored the same way.
+     * Whether the value is a label text colour a status may use: null (automatic),
+     * `dark` or `light`, in any case.
+     *
+     * @param  mixed $textColor
+     * @return bool
+     */
+    public static function isValidTextColor($textColor)
+    {
+        return $textColor === null || (is_string($textColor) && in_array(strtolower($textColor), self::TEXT_COLORS, true));
+    }
+
+    /**
+     * Refuse to save an invalid colour or label text colour, and save valid ones
+     * lowercase so the same value is always stored the same way.
      *
      * @return bool
      */
     public function beforeValidation()
     {
-        $color = isset($this->color) ? $this->color : null;
+        $color = $this->attributeValue('color');
+        $textColor = $this->attributeValue('textColor');
 
         if (!self::isValidColor($color)) {
-            $this->appendMessage(new Message('Colour must be a hex colour in the form #rrggbb, e.g. #1a2b3c.', 'color', 'InvalidValue'));
+            $this->appendMessage(new Message(self::COLOR_MESSAGE, 'color', 'InvalidValue'));
+            return false;
+        }
+
+        if (!self::isValidTextColor($textColor)) {
+            $this->appendMessage(new Message(self::TEXT_COLOR_MESSAGE, 'textColor', 'InvalidValue'));
             return false;
         }
 
@@ -56,6 +95,22 @@ class Issuestatus extends Model
             $this->color = strtolower($color);
         }
 
+        if ($textColor !== null) {
+            $this->textColor = strtolower($textColor);
+        }
+
         return true;
+    }
+
+    /**
+     * The value of an attribute, null when it was not set. Reads the property directly,
+     * so an unset attribute isn't looked up as a relation by the model's magic `__isset`.
+     *
+     * @param  string $name
+     * @return mixed
+     */
+    protected function attributeValue($name)
+    {
+        return property_exists($this, $name) ? $this->$name : null;
     }
 }

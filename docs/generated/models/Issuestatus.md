@@ -12,6 +12,7 @@
 - projectId varchar(36)
 - sortOrder int(11)
 - system bool(1) required
+- textColor varchar(5)
 - also: createdUser, createdUserName, dateCreated, dateModified, deleted, id, modifiedUser, modifiedUserName
 
 <a id="relationships"></a>
@@ -27,4 +28,4 @@
 - controller: Gaia\MVC\REST\Controllers\IssuestatusController
 - routes: DELETE /api/v1/issuestatus, DELETE /api/v1/issuestatus/{id}, GET /api/v1/issuestatus, GET /api/v1/issuestatus/{id}, GET /api/v1/issuestatus/{id}/{relation}, OPTIONS /api/v1/issuestatus, PATCH /api/v1/issuestatus, PATCH /api/v1/issuestatus/{id}, POST /api/v1/issuestatus, PUT /api/v1/issuestatus, PUT /api/v1/issuestatus/{id}
 - components: Issuestatus
-- cases: 56 (acl 9, backend 6, client 39, live 2); gaia-dev cases issuestatus
+- cases: 64 (acl 9, backend 6, client 47, live 2); gaia-dev cases issuestatus
