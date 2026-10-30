@@ -2297,6 +2297,19 @@
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
     },
     {
+      "id": "acl-workflowrun-test-run-denied-without-workflow-read-acl-no-setting",
+      "method": "POST",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": "aclNoSetting",
+      "body": {
+        "workflowId": "{workflowId}",
+        "test": true,
+        "entityId": "{issueId}"
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
+    },
+    {
       "id": "acl-workflowrun-test-run-omits-denied-record-fields",
       "method": "POST",
       "path": "/api/v1/workflowrun",

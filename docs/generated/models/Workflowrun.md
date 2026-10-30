@@ -38,4 +38,4 @@
 - controller: Gaia\MVC\REST\Controllers\WorkflowrunController
 - routes: GET /api/v1/workflowrun, GET /api/v1/workflowrun/{id}, GET /api/v1/workflowrun/{id}/{relation}, OPTIONS /api/v1/workflowrun, POST /api/v1/workflowrun
 - components: -
-- cases: 18 (acl 6, backend 3, client 9); gaia-dev cases workflowrun
+- cases: 19 (acl 7, backend 3, client 9); gaia-dev cases workflowrun

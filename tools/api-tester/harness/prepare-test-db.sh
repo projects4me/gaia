@@ -617,7 +617,10 @@ VALUES
   ('atp-acl-ns-type-update', 'api-test-role-acl-ns', 'issuetype.update', 1, NOW(), NOW()),
   ('atp-acl-ns-type-delete', 'api-test-role-acl-ns', 'issuetype.delete', 1, NOW(), NOW()),
   ('atp-acl-ns-setting-get', 'api-test-role-acl-ns', 'setting.get', 0, NOW(), NOW()),
-  ('atp-acl-ns-setting-update', 'api-test-role-acl-ns', 'setting.update', 0, NOW(), NOW());
+  ('atp-acl-ns-setting-update', 'api-test-role-acl-ns', 'setting.update', 0, NOW(), NOW()),
+  -- May start a test run but not read the workflow nodes it would show.
+  ('atp-acl-ns-workflowrun-create', 'api-test-role-acl-ns', 'workflowrun.create', 1, NOW(), NOW()),
+  ('atp-acl-ns-workflownode-get', 'api-test-role-acl-ns', 'workflownode.get', 0, NOW(), NOW());
 
 -- Field ACL role: module access + field matrix
 -- subject = None (0/0/0)

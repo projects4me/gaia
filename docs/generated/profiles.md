@@ -12,7 +12,7 @@
 - aclMembers role ACL Project Members | allow 14, members 1, deny 6 | cases 52 | project.get=2 members scope
 - aclNoConversation role ACL No Conversation | allow 3, members 0, deny 1 | cases 3 | project+comment allowed, conversationroom.get denied
 - aclNoProject role ACL No Project | allow 3, members 0, deny 3 | cases 20 | issue/comment allowed, project.get denied
-- aclNoSetting role ACL No Setting | allow 11, members 0, deny 13 | cases 34 | issuestatus/issuetype allowed, setting.* denied
+- aclNoSetting role ACL No Setting | allow 12, members 0, deny 14 | cases 35 | issuestatus/issuetype allowed, setting.* denied
 - aclProjectOnly role ACL Project Only | allow 4, members 0, deny 1 | cases 5 | project allowed, issue.get denied
 - anonymous no login | allow 0, members 0, deny 0 | cases 27
 - default role Admin | allow 176, members 0, deny 0 | cases 551 | Admin role of the seeded main user

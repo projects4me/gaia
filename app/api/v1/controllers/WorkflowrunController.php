@@ -23,8 +23,9 @@ use function Gaia\Libraries\Utils\create_guid;
  * the workflow runs against the chosen `entityId` with its actions simulated
  * (nothing is written, no agent runs) and the response is the run, with the
  * path taken and each step's resolved inputs, without saving it. A POST
- * without `test` is refused. The record's project must be one the user can
- * read and in the workflow's scope; the record's fields the user may not read
+ * without `test` is refused. The user must be able to read the workflow, its
+ * nodes and its edges; the record's project must be one the user can read and
+ * in the workflow's scope; the record's fields the user may not read
  * are left out of the run.
  *
  * Attributes of a test run: `workflowId`, `entityId` (the record the trigger
@@ -57,6 +58,8 @@ class WorkflowrunController extends RestController
             return $this->refuse(new TestRunRefusal('workflowId is required.', 422));
         }
 
+        $this->assertWorkflowReadable();
+
         $workflowId = (string) $attributes['workflowId'];
         $changes = $this->arrayAttribute($attributes, 'changes');
         $actorPorts = $this->arrayAttribute($attributes, 'actorPorts');
@@ -84,6 +87,23 @@ class WorkflowrunController extends RestController
                 'attributes' => array('test' => true) + $result,
             ),
         ));
+    }
+
+    /**
+     * A test run shows the workflow's path and each node's resolved settings,
+     * so the user must be able to read the workflow, its nodes and its edges.
+     *
+     * @return void
+     * @throws \Gaia\Exception\Access
+     */
+    private function assertWorkflowReadable()
+    {
+        if ($this->acl() === null) {
+            return;
+        }
+        foreach (['Workflow', 'Workflownode', 'Workflowedge'] as $model) {
+            $this->acl()->checkModelAccess($model, 'get');
+        }
     }
 
     /**
