@@ -73,4 +73,74 @@ class IssuestatusTest extends TestCase
         $this->assertFalse($status->beforeValidation());
         $this->assertSame('color', $status->getMessages()[0]->getField());
     }
+
+    /**
+     * Dark, light (in any case) and null (automatic) are valid label text colours.
+     *
+     * @return void
+     */
+    public function testDarkLightAndNullTextColorsAreValid()
+    {
+        foreach (['dark', 'light', 'Dark', 'LIGHT', null] as $textColor) {
+            $this->assertTrue(Issuestatus::isValidTextColor($textColor), var_export($textColor, true));
+        }
+    }
+
+    /**
+     * Colour names, hex colours, "auto" and other values are not label text colours.
+     *
+     * @return void
+     */
+    public function testOtherTextColorsAreInvalid()
+    {
+        $invalid = ['', 'black', 'white', '#000000', '#ffffff', 'auto', 'darker', ' dark', "dark\n", 1, true, []];
+
+        foreach ($invalid as $textColor) {
+            $this->assertFalse(Issuestatus::isValidTextColor($textColor), var_export($textColor, true));
+        }
+    }
+
+    /**
+     * A valid label text colour is lowercased before it is saved.
+     *
+     * @return void
+     */
+    public function testTextColorIsSavedLowercase()
+    {
+        $status = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $status->textColor = 'Dark';
+
+        $this->assertTrue($status->beforeValidation());
+        $this->assertSame('dark', $status->textColor);
+    }
+
+    /**
+     * A status saved without a label text colour keeps it automatic (null).
+     *
+     * @return void
+     */
+    public function testUnsetTextColorStaysAutomatic()
+    {
+        $status = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $status->color = '#80B5D3';
+
+        $this->assertTrue($status->beforeValidation());
+        $this->assertSame('#80b5d3', $status->color);
+        $this->assertFalse(property_exists($status, 'textColor'));
+    }
+
+    /**
+     * A save with an invalid label text colour is refused with a message on `textColor`.
+     *
+     * @return void
+     */
+    public function testInvalidTextColorIsNotSaved()
+    {
+        $status = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $status->color = '#1a2b3c';
+        $status->textColor = 'black';
+
+        $this->assertFalse($status->beforeValidation());
+        $this->assertSame('textColor', $status->getMessages()[0]->getField());
+    }
 }

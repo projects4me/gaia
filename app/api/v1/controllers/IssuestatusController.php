@@ -101,7 +101,7 @@ class IssuestatusController extends ValueLabelController
     }
 
     /**
-     * Update several statuses (e.g. a reorder); each colour sent must be valid.
+     * Update several statuses (e.g. a reorder); each colour and label text colour sent must be valid.
      *
      * @return \Phalcon\Http\Response
      */
@@ -113,7 +113,7 @@ class IssuestatusController extends ValueLabelController
             : [];
 
         foreach ($collection as $record) {
-            $rejected = is_array($record) ? $this->rejectInvalidColor($record) : null;
+            $rejected = is_array($record) ? $this->rejectInvalidColors($record) : null;
             if ($rejected) {
                 return $rejected;
             }
@@ -123,28 +123,33 @@ class IssuestatusController extends ValueLabelController
     }
 
     /**
-     * Return a 422 response when the payload sets an invalid colour.
+     * Return a 422 response when the payload sets an invalid colour or label text colour.
      *
      * @return \Phalcon\Http\Response|null
      */
     protected function rejectInvalidAttributes()
     {
-        return $this->rejectInvalidColor($this->requestAttributes());
+        return $this->rejectInvalidColors($this->requestAttributes());
     }
 
     /**
-     * Return a 422 response when the attributes set a colour that is not `#rrggbb`.
+     * Return a 422 response when the attributes set a colour that is not `#rrggbb`
+     * or a label text colour that is not dark, light or null.
      *
      * @param  array $attributes
      * @return \Phalcon\Http\Response|null
      */
-    protected function rejectInvalidColor(array $attributes)
+    protected function rejectInvalidColors(array $attributes)
     {
-        if (!array_key_exists('color', $attributes) || Issuestatus::isValidColor($attributes['color'])) {
-            return null;
+        if (array_key_exists('color', $attributes) && !Issuestatus::isValidColor($attributes['color'])) {
+            return $this->unprocessable(Issuestatus::COLOR_MESSAGE);
         }
 
-        return $this->unprocessable('Colour must be a hex colour in the form #rrggbb, e.g. #1a2b3c.');
+        if (array_key_exists('textColor', $attributes) && !Issuestatus::isValidTextColor($attributes['textColor'])) {
+            return $this->unprocessable(Issuestatus::TEXT_COLOR_MESSAGE);
+        }
+
+        return null;
     }
 
     /**
