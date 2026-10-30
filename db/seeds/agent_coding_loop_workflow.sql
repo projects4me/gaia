@@ -103,7 +103,11 @@ BEGIN
         ('feedback_comment', 'next', 'feedback_status'),
         ('feedback_status', 'next', 'feedback_assign'),
         ('pending_comment', 'next', 'pending_status'),
-        ('pending_status', 'next', 'pending_assign');
+        ('pending_status', 'next', 'pending_assign'),
+        ('filter', 'fail', 'end'),
+        ('status', 'default', 'end'),
+        ('feedback_assign', 'next', 'end'),
+        ('pending_assign', 'next', 'end');
 
     INSERT INTO seed_edges
     SELECT run.key, outcome.port, outcome.target

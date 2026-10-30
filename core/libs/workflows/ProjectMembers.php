@@ -69,10 +69,7 @@ class ProjectMembers
      */
     public function sponsorOf($userId)
     {
-        $agent = Agent::findFirst([
-            'conditions' => 'userId = :userId: AND deleted = false',
-            'bind' => ['userId' => (string) $userId],
-        ]);
+        $agent = Agent::findForUser($userId);
 
         return $agent && $agent->sponsorId ? (string) $agent->sponsorId : null;
     }
@@ -85,10 +82,7 @@ class ProjectMembers
      */
     public function agentIdOf($userId)
     {
-        $agent = Agent::findFirst([
-            'conditions' => 'userId = :userId: AND deleted = false',
-            'bind' => ['userId' => (string) $userId],
-        ]);
+        $agent = Agent::findForUser($userId);
 
         return $agent ? (string) $agent->id : null;
     }
