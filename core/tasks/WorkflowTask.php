@@ -5,6 +5,8 @@
  */
 
 use Gaia\Libraries\Workflows\ScheduleTriggerRunner;
+use Gaia\Libraries\Workflows\WorkflowRunner;
+use Gaia\MVC\REST\Controllers\Components\Events\WorkflowTriggersComponent;
 use Phalcon\Cli\Task;
 
 /**
@@ -30,11 +32,13 @@ class WorkflowTask extends Task
     }
 
     /**
-     * Starts the workflows whose schedule trigger is due this minute.
+     * Starts the workflows whose schedule trigger is due this minute. The
+     * records their runs change can start other workflows.
      */
     public function scheduleAction()
     {
-        $started = (new ScheduleTriggerRunner())->run(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
+        $runner = new ScheduleTriggerRunner(null, new WorkflowRunner(new WorkflowTriggersComponent()));
+        $started = $runner->run(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
         echo "Scheduled workflow runs started: {$started}" . PHP_EOL;
     }
 }

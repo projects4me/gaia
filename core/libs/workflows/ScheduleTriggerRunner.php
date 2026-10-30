@@ -45,12 +45,13 @@ class ScheduleTriggerRunner
         TriggerPayload $payloads = null
     ) {
         $this->nodes = $nodes ?: new ActiveTriggerNodes();
-        $this->engine = $engine ?: new LoggedWorkflowEngine();
+        $this->engine = $engine ?: new WorkflowRunner();
         $this->payloads = $payloads ?: new TriggerPayload();
     }
 
     /**
-     * Starts each workflow whose schedule is due in the minute of $at.
+     * Starts each workflow whose schedule is due in the minute of $at, once
+     * for each project of its scope.
      *
      * @param  \DateTimeInterface $at Any time in the minute; read in UTC.
      * @return int The number of runs started.
@@ -66,9 +67,11 @@ class ScheduleTriggerRunner
             if (!$this->isDue($cron, $minute)) {
                 continue;
             }
-            $payload = $this->payloads->forSchedule(create_guid(), $cron, $minute);
-            $this->engine->start($node['workflowId'], $node['nodeId'], $payload);
-            $started++;
+            foreach ($node['scope'] as $projectId) {
+                $payload = $this->payloads->forSchedule(create_guid(), $cron, $minute, $projectId);
+                $this->engine->start($node['workflowId'], $node['nodeId'], $payload);
+                $started++;
+            }
         }
 
         return $started;

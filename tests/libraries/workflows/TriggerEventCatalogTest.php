@@ -140,7 +140,7 @@ class TriggerEventCatalogTest extends TestCase
 
         $this->assertNull($triggers['schedule']['module']);
         $this->assertSame(
-            ['occurredAt', 'schedule.cron', 'schedule.firedAt'],
+            ['projectId', 'occurredAt', 'schedule.cron', 'schedule.firedAt'],
             array_column($triggers['schedule']['fields'], 'path')
         );
     }

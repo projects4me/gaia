@@ -65,7 +65,9 @@ $config['models'] = [
     'Workflow',
     'Workflowedge',
     'Workflownode',
-    'Workflowreference'
+    'Workflowreference',
+    'Workflowrun',
+    'Workflowrunstep'
 ];
 
 return $config;

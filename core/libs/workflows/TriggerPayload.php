@@ -45,6 +45,7 @@ class TriggerPayload
      * @var array
      */
     public const SCHEDULE_FIELDS = [
+        'projectId' => 'string',
         'occurredAt' => 'datetime',
         'schedule.cron' => 'string',
         'schedule.firedAt' => 'datetime',
@@ -97,20 +98,22 @@ class TriggerPayload
     }
 
     /**
-     * The payload of a schedule trigger firing.
+     * The payload of a schedule trigger firing for one project of the
+     * workflow's scope.
      *
      * @param  string             $eventId
      * @param  string             $cron
-     * @param  \DateTimeInterface $firedAt The minute the schedule fired for.
+     * @param  \DateTimeInterface $firedAt   The minute the schedule fired for.
+     * @param  string|null        $projectId
      * @return array
      */
-    public function forSchedule($eventId, $cron, \DateTimeInterface $firedAt)
+    public function forSchedule($eventId, $cron, \DateTimeInterface $firedAt, $projectId = null)
     {
         return [
             'eventId' => (string) $eventId,
             'eventName' => TriggerEventCatalog::SCHEDULE,
             'occurredAt' => gmdate('Y-m-d\TH:i:s\Z'),
-            'projectId' => null,
+            'projectId' => $projectId === null ? null : (string) $projectId,
             'schedule' => [
                 'cron' => (string) $cron,
                 'firedAt' => $firedAt->format('Y-m-d\TH:i:s\Z'),

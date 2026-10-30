@@ -6,9 +6,12 @@
 
 namespace Gaia\MVC\REST\Controllers\Components\Events;
 
+use Gaia\Libraries\Workflows\LoopGuard;
 use Gaia\Libraries\Workflows\TriggerDispatcher;
 use Gaia\Libraries\Workflows\TriggerEventCatalog;
 use Gaia\Libraries\Workflows\TriggerPayload;
+use Gaia\Libraries\Workflows\WorkflowChangeEvents;
+use Gaia\Libraries\Workflows\WorkflowRunner;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\LiveEventEnvelope;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\ProjectIdResolver;
 use Phalcon\Events\Event;
@@ -17,12 +20,14 @@ use Phalcon\Events\Event;
  * Raises the workflow trigger events of a successful create or update (see
  * TriggerEventCatalog) and hands each to the workflows it starts. Like live
  * events this fails open: a workflow problem never fails the user's write.
+ * It also raises the events of the writes a workflow run makes, which
+ * carry the run so the run cannot trigger itself.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\MVC\REST\Controllers\Components\Events
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class WorkflowTriggersComponent
+class WorkflowTriggersComponent implements WorkflowChangeEvents
 {
     /**
      * @var TriggerEventCatalog
@@ -89,14 +94,26 @@ class WorkflowTriggersComponent
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function changed($record, $on, array $run)
+    {
+        $audit = isset($record->audit) && is_array($record->audit) ? $record->audit : [];
+        if ($on === TriggerEventCatalog::ON_CREATE || $audit) {
+            $this->raise($record, $on, $on === TriggerEventCatalog::ON_CREATE ? [] : $audit, $run);
+        }
+    }
+
+    /**
      * Hands each event the write raised to the dispatcher.
      *
      * @param  mixed  $model
      * @param  string $on
      * @param  array  $audit field => ['old' => ..., 'new' => ...]
+     * @param  array  $run   The workflow run that made the write, if one did (see LoopGuard).
      * @return void
      */
-    protected function raise($model, $on, array $audit)
+    protected function raise($model, $on, array $audit, array $run = [])
     {
         global $logger;
 
@@ -115,7 +132,11 @@ class WorkflowTriggersComponent
             $record = $this->record($model);
             foreach ($names as $name) {
                 $envelope = LiveEventEnvelope::build($name, $projectId, TriggerPayload::recordKey($modelName), $id);
-                $this->dispatcher()->dispatch($this->payloads->forRecord($envelope, $modelName, $record, $audit));
+                $payload = $this->payloads->forRecord($envelope, $modelName, $record, $audit);
+                if ($run) {
+                    $payload[LoopGuard::KEY] = $run;
+                }
+                $this->dispatcher()->dispatch($payload);
             }
         } catch (\Throwable $e) {
             if ($logger) {
@@ -130,7 +151,7 @@ class WorkflowTriggersComponent
     protected function dispatcher()
     {
         if ($this->dispatcher === null) {
-            $this->dispatcher = new TriggerDispatcher();
+            $this->dispatcher = new TriggerDispatcher(null, new WorkflowRunner($this));
         }
 
         return $this->dispatcher;

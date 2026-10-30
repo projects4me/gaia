@@ -37,6 +37,32 @@ class WorkflowGraphReader
     }
 
     /**
+     * A live workflow's name, status, version and users, or null.
+     *
+     * @param  string $workflowId
+     * @return array|null
+     */
+    public function workflow($workflowId)
+    {
+        $workflow = Workflow::findFirst([
+            'conditions' => 'id = :id: AND deleted = false',
+            'bind' => ['id' => (string) $workflowId],
+        ]);
+        if (!$workflow) {
+            return null;
+        }
+
+        return [
+            'id' => (string) $workflow->id,
+            'name' => (string) $workflow->name,
+            'status' => (string) $workflow->status,
+            'version' => (int) $workflow->version,
+            'ownerId' => $workflow->ownerId ? (string) $workflow->ownerId : null,
+            'createdUser' => (string) $workflow->createdUser,
+        ];
+    }
+
+    /**
      * The workflow's live nodes.
      *
      * @param  string $workflowId

@@ -67,9 +67,25 @@ class NodeKindCatalog
             'assign' => ['config' => ['assigneeId' => ['ref:User', true]], 'ports' => ['next']],
             'set_field' => ['config' => ['field' => ['string', true], 'value' => ['string', true]], 'ports' => ['next']],
             'set_status' => ['config' => ['status' => ['string', true]], 'ports' => ['next']],
-            'add_comment' => ['config' => ['body' => ['string', true]], 'ports' => ['next']],
-            'create_issue' => ['config' => ['subject' => ['string', true]], 'ports' => ['next']],
-            'create_wiki' => ['config' => ['title' => ['string', true]], 'ports' => ['next']],
+            'add_comment' => [
+                'config' => ['body' => ['string', true], 'ownerId' => ['ref:User', false]],
+                'ports' => ['next'],
+            ],
+            'create_issue' => [
+                'config' => [
+                    'subject' => ['string', true],
+                    'description' => ['string', false],
+                    'typeId' => ['ref:Issuetype', false],
+                    'priority' => ['string', false],
+                    'ownerId' => ['ref:User', false],
+                    'assigneeId' => ['ref:User', false],
+                ],
+                'ports' => ['next'],
+            ],
+            'create_wiki' => [
+                'config' => ['title' => ['string', true], 'body' => ['string', false], 'ownerId' => ['ref:User', false]],
+                'ports' => ['next'],
+            ],
             'notify' => [
                 'config' => ['userId' => ['ref:User', true], 'message' => ['string', true]],
                 'ports' => ['next'],

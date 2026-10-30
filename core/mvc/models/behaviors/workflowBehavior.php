@@ -9,6 +9,7 @@ namespace Gaia\MVC\Models\Behaviors;
 use Gaia\Libraries\Workflows\LiveRecords;
 use Gaia\Libraries\Workflows\WorkflowGraph;
 use Gaia\Libraries\Workflows\WorkflowGraphReader;
+use Gaia\Libraries\Workflows\WorkflowScope;
 use Gaia\Libraries\Workflows\WorkflowStatus;
 use Phalcon\Messages\Message;
 use Phalcon\Mvc\ModelInterface;
@@ -17,9 +18,10 @@ use Phalcon\Mvc\Model\Behavior;
 
 /**
  * This behavior checks a workflow as it is saved: `status` is Draft, Active
- * or Disabled, `scope` is a JSON list of existing project ids (empty: every
- * project; a list sent as JSON is stored as its JSON text) and `ownerId`
- * names an existing user. Activating a workflow checks its whole graph (see
+ * or Disabled, `scope` is a JSON list of existing project ids (a list sent
+ * as JSON is stored as its JSON text; an Active workflow needs at least one
+ * project, as there are no workflows outside projects) and `ownerId` names
+ * an existing user. Activating a workflow checks its whole graph (see
  * `WorkflowGraph::errors`) and counts a new `version`, so each activated
  * graph has its own number; the version cannot be written directly.
  *
@@ -106,7 +108,13 @@ class workflowBehavior extends Behavior implements BehaviorInterface
             return $this->reject($model, 'status', 'status must be one of ' . implode(', ', WorkflowStatus::ALL) . '.');
         }
 
-        return $this->checkScope($model) && $this->checkOwner($model);
+        if (!$this->checkScope($model) || !$this->checkOwner($model)) {
+            return false;
+        }
+
+        return $model->readAttribute('status') !== WorkflowStatus::ACTIVE
+            || WorkflowScope::decode($model->readAttribute('scope')) !== []
+            || $this->reject($model, 'scope', 'An active workflow must belong to at least one project.');
     }
 
     /**
