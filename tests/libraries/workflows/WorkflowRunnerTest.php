@@ -28,9 +28,10 @@ use PHPUnit\Framework\TestCase;
 class WorkflowRunnerTest extends TestCase
 {
     /**
-     * @var array The run history written: runs, steps, finished.
+     * @var array The run history written: runs, steps, finished; and the
+     *            journal calls that fail (start, step:<nodeId>, finish).
      */
-    private $journal = ['runs' => [], 'steps' => [], 'finished' => []];
+    private $journal = ['runs' => [], 'steps' => [], 'finished' => [], 'fail' => []];
 
     /**
      * @var array[] The actions carried out: [kind, config, acting user].
@@ -162,6 +163,35 @@ class WorkflowRunnerTest extends TestCase
         $this->assertSame('user-creator', $this->carriedOut[0][2]);
     }
 
+    public function testAWorkflowTheJournalCannotStartIsSkipped()
+    {
+        $this->journal['fail'] = ['start'];
+
+        $this->runner($this->commentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
+
+        $this->assertSame([], $this->carriedOut);
+    }
+
+    public function testChangeEventsGoOutWhenTheJournalCannotRecordTheStep()
+    {
+        $this->journal['fail'] = ['step:comment'];
+
+        $this->runner($this->commentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
+
+        $this->assertCount(1, $this->raised);
+        $this->assertSame([['run-1', 'failed', 'journal down']], $this->journal['finished']);
+    }
+
+    public function testARunTheJournalCannotFinishDoesNotStopTheCaller()
+    {
+        $this->journal['fail'] = ['finish'];
+
+        $this->runner($this->commentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
+
+        $this->assertCount(2, $this->journal['steps']);
+        $this->assertSame([], $this->journal['finished']);
+    }
+
     public function testAWorkflowIsNotTriggeredByItsOwnRun()
     {
         $graph = $this->graph([$this->node('trigger', 'trigger', 'issue.status.changed')], []);
@@ -208,18 +238,28 @@ class WorkflowRunnerTest extends TestCase
 
             public function start(array $run)
             {
+                $this->failIf('start');
                 $this->written['runs'][] = $run;
                 return 'run-' . count($this->written['runs']);
             }
 
             public function step($runId, array $step)
             {
+                $this->failIf('step:' . $step['nodeId']);
                 $this->written['steps'][] = $step;
             }
 
             public function finish($runId, $status, $error = null)
             {
+                $this->failIf('finish');
                 $this->written['finished'][] = [$runId, $status, $error];
+            }
+
+            private function failIf($call)
+            {
+                if (in_array($call, $this->written['fail'], true)) {
+                    throw new \RuntimeException('journal down');
+                }
             }
         };
 
@@ -272,6 +312,19 @@ class WorkflowRunnerTest extends TestCase
         };
 
         return new WorkflowRunner($events, $graph, $journal, $actions);
+    }
+
+    /**
+     * A trigger followed by one comment.
+     *
+     * @return WorkflowGraphReader
+     */
+    private function commentGraph()
+    {
+        return $this->graph([
+            $this->node('trigger', 'trigger', 'issue.status.changed'),
+            $this->node('comment', 'action', 'add_comment', ['body' => 'x']),
+        ], [['trigger', 'next', 'comment']]);
     }
 
     /**

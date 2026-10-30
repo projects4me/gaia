@@ -81,7 +81,7 @@ class WorkflowActionsTest extends TestCase
         $this->actions->action('set_field')->run(['field' => 'priority', 'value' => 'high'], $this->context('issue', 'issue-1'));
         $this->assertSame(['update', 'Issue', ['priority' => 'high'], 'user-owner'], $this->records->writes[0]);
 
-        foreach (['projectId' => 'cannot set Issue.projectId', 'assignee' => 'cannot set Issue.assignee', 'statusId' => 'cannot set Issue.statusId', 'nope' => 'has no field nope'] as $field => $message) {
+        foreach (['projectId' => 'cannot set Issue.projectId', 'assignee' => 'cannot set Issue.assignee', 'status' => 'cannot set Issue.status', 'statusId' => 'cannot set Issue.statusId', 'nope' => 'has no field nope'] as $field => $message) {
             try {
                 $this->actions->action('set_field')->run(['field' => $field, 'value' => 'x'], $this->context('issue', 'issue-1'));
                 $this->fail("{$field} was set");
@@ -89,6 +89,9 @@ class WorkflowActionsTest extends TestCase
                 $this->assertStringContainsString($message, $e->getMessage());
             }
         }
+
+        $this->actions->action('set_field')->run(['field' => 'status', 'value' => 'draft'], $this->context('wiki', 'wiki-1'));
+        $this->assertSame(['update', 'Wiki', ['status' => 'draft'], 'user-owner'], $this->records->writes[1], 'only an issue protects status');
     }
 
     public function testSetFieldOnlyChangesModelsThatRaiseTriggerEvents()
@@ -153,6 +156,18 @@ class WorkflowActionsTest extends TestCase
             ['type-bug', 'user-owner', 'user-dev'],
             [$this->records->writes[1][2]['typeId'], $this->records->writes[1][2]['owner'], $this->records->writes[1][2]['assignee']]
         );
+    }
+
+    public function testTheActingUserMustBeAProjectMemberToOwnACreatedRecord()
+    {
+        $this->expectException(WorkflowStepException::class);
+        $this->expectExceptionMessage('config.ownerId names user user-stranger, who is not a member of the project.');
+
+        $context = new RunContext('run-1', ['id' => 'wf-1', 'name' => 'Triage', 'version' => 1], 'user-stranger', [
+            'projectId' => 'project-1',
+            'resource' => ['type' => 'issue', 'id' => 'issue-1'],
+        ]);
+        $this->actions->action('add_comment')->run(['body' => 'x'], $context);
     }
 
     public function testCreatingAnIssueOutsideAnIssueEventNeedsAType()
@@ -225,6 +240,7 @@ class WorkflowActionsTest extends TestCase
                 $rows = [
                     'Issue' => ['issue-1' => ['id' => 'issue-1', 'projectId' => 'project-1', 'typeId' => 'type-task']],
                     'Comment' => ['comment-1' => ['id' => 'comment-1', 'relatedTo' => 'issue', 'relatedId' => 'issue-9']],
+                    'Wiki' => ['wiki-1' => ['id' => 'wiki-1', 'projectId' => 'project-1']],
                     'User' => ['user-1' => ['id' => 'user-1']],
                 ];
 
@@ -250,7 +266,7 @@ class WorkflowActionsTest extends TestCase
 
             public function fields($model)
             {
-                return ['assignee' => 'string', 'priority' => 'string', 'projectId' => 'string', 'subject' => 'string'];
+                return ['assignee' => 'string', 'priority' => 'string', 'projectId' => 'string', 'status' => 'string', 'subject' => 'string'];
             }
 
             public function issueStatus($projectId, $status)

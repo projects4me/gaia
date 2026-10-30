@@ -73,7 +73,8 @@ abstract class WorkflowAction
 
     /**
      * The project member a user setting names; the workflow's acting user
-     * when the setting is unset and a default is allowed.
+     * when the setting is unset and a default is allowed. Either way the
+     * user must be a member of the run's project.
      *
      * @param  array      $config
      * @param  string     $name
@@ -84,11 +85,13 @@ abstract class WorkflowAction
      */
     protected function user(array $config, $name, RunContext $context, $defaultsToActingUser = false)
     {
-        if ((!isset($config[$name]) || $config[$name] === '') && $defaultsToActingUser) {
-            return $context->actingUserId;
+        $setting = isset($config[$name]) ? $config[$name] : null;
+        if (($setting === null || $setting === '') && $defaultsToActingUser) {
+            // The acting user must be a project member like a chosen one.
+            $setting = $context->actingUserId;
         }
 
-        return $this->users->select($name, isset($config[$name]) ? $config[$name] : null, $context->values(), $this->expressions);
+        return $this->users->select($name, $setting, $context->values(), $this->expressions);
     }
 
     /**

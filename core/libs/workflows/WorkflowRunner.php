@@ -103,17 +103,24 @@ class WorkflowRunner implements WorkflowEngine
             return;
         }
 
-        $runId = $this->journal->start([
-            'workflowId' => $workflow['id'],
-            'workflowVersion' => $workflow['version'],
-            'triggerNodeId' => $triggerNodeId,
-            'eventName' => isset($payload['eventName']) ? $payload['eventName'] : null,
-            'eventId' => isset($payload['eventId']) ? $payload['eventId'] : null,
-            'projectId' => isset($payload['projectId']) ? $payload['projectId'] : null,
-            'parentRunId' => LoopGuard::parentRunId($payload),
-            'depth' => LoopGuard::depth($payload),
-            'inputs' => $payload,
-        ]);
+        try {
+            $runId = $this->journal->start([
+                'workflowId' => $workflow['id'],
+                'workflowVersion' => $workflow['version'],
+                'triggerNodeId' => $triggerNodeId,
+                'eventName' => isset($payload['eventName']) ? $payload['eventName'] : null,
+                'eventId' => isset($payload['eventId']) ? $payload['eventId'] : null,
+                'projectId' => isset($payload['projectId']) ? $payload['projectId'] : null,
+                'parentRunId' => LoopGuard::parentRunId($payload),
+                'depth' => LoopGuard::depth($payload),
+                'inputs' => $payload,
+            ]);
+        } catch (\Throwable $exception) {
+            // A run that cannot be journaled is not started, and the caller
+            // (an event or the scheduler) goes on with the other workflows.
+            $this->log('error', "Workflow {$workflowId} not started: the journal failed: {$exception->getMessage()}");
+            return;
+        }
         $context = new RunContext(
             $runId,
             ['id' => $workflow['id'], 'name' => $workflow['name'], 'version' => $workflow['version']],
@@ -127,7 +134,11 @@ class WorkflowRunner implements WorkflowEngine
             // A step the journal could not record must not leave the run running.
             list($status, $error) = [RunStatus::FAILED, $exception->getMessage()];
         }
-        $this->journal->finish($runId, $status, $error);
+        try {
+            $this->journal->finish($runId, $status, $error);
+        } catch (\Throwable $exception) {
+            $this->log('error', "Workflow {$workflowId} run {$runId} could not be finished in the journal: {$exception->getMessage()}");
+        }
     }
 
     /**
@@ -154,8 +165,13 @@ class WorkflowRunner implements WorkflowEngine
             }
 
             $step = $this->step($nodes[$nodeId], $context, $sequence);
-            $this->journal->step($context->runId, $step);
-            $this->raiseChanges($context);
+            try {
+                $this->journal->step($context->runId, $step);
+            } finally {
+                // The step's changes are saved already, so their events go out
+                // even when the journal cannot record the step.
+                $this->raiseChanges($context);
+            }
 
             if ($step['status'] === RunStatus::FAILED) {
                 return [RunStatus::FAILED, $step['error']];
