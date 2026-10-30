@@ -103,6 +103,15 @@ class WorkflowTestRunTest extends TestCase
         $test->trigger('wf-1');
     }
 
+    public function testAProjectOutsideTheWorkflowScopeIsRefused()
+    {
+        $test = new WorkflowTestRun($this->graph([$this->node('trigger', 'trigger', 'issue.status.changed')], []));
+
+        $this->expectException(TestRunRefusal::class);
+        $this->expectExceptionCode(422);
+        $test->run('wf-1', 'trigger', ['projectId' => 'project-2'] + self::PAYLOAD);
+    }
+
     public function testAMissingWorkflowIsRefused()
     {
         $this->expectException(TestRunRefusal::class);
@@ -114,7 +123,7 @@ class WorkflowTestRunTest extends TestCase
     {
         $workflow = $status === null ? null : [
             'id' => 'wf-1', 'name' => 'Triage', 'status' => $status, 'version' => 4,
-            'ownerId' => 'user-owner', 'createdUser' => 'user-creator',
+            'ownerId' => 'user-owner', 'createdUser' => 'user-creator', 'scope' => ['project-1'],
         ];
         $edges = array_map(function ($edge) {
             return ['id' => implode('-', $edge), 'fromNodeId' => $edge[0], 'fromPort' => $edge[1], 'toNodeId' => $edge[2]];

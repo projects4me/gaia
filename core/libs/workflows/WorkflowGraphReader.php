@@ -37,7 +37,7 @@ class WorkflowGraphReader
     }
 
     /**
-     * A live workflow's name, status, version and users, or null.
+     * A live workflow's name, status, version, users and scope, or null.
      *
      * @param  string $workflowId
      * @return array|null
@@ -59,6 +59,7 @@ class WorkflowGraphReader
             'version' => (int) $workflow->version,
             'ownerId' => $workflow->ownerId ? (string) $workflow->ownerId : null,
             'createdUser' => (string) $workflow->createdUser,
+            'scope' => WorkflowScope::decode($workflow->scope),
         ];
     }
 

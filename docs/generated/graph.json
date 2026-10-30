@@ -6840,6 +6840,25 @@
       }
     },
     {
+      "id": "case:acl/acl-workflowrun-test-run-omits-denied-record-fields",
+      "type": "case",
+      "key": "acl/acl-workflowrun-test-run-omits-denied-record-fields",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "workflowId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "case",
       "key": "backend/delete-activity-api-v1-activity-runtime-id",
@@ -16281,6 +16300,25 @@
         "source": null,
         "placeholders": [
           "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowrun-test-run-outside-the-workflow-scope-is-refused",
+      "type": "case",
+      "key": "client/workflowrun-test-run-outside-the-workflow-scope-is-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectIssueId",
+          "workflowId"
         ],
         "stores": []
       }
@@ -47419,6 +47457,51 @@
       "to": "fixture:workflowId"
     },
     {
+      "from": "case:acl/acl-workflowrun-test-run-omits-denied-record-fields",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-omits-denied-record-fields",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-omits-denied-record-fields",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-omits-denied-record-fields",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-omits-denied-record-fields",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-omits-denied-record-fields",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowrun"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-omits-denied-record-fields",
+      "type": "runs_as",
+      "to": "profile:aclFields"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-omits-denied-record-fields",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-omits-denied-record-fields",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
+    },
+    {
       "from": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -64294,6 +64377,41 @@
       "to": "fixture:issueId"
     },
     {
+      "from": "case:client/workflowrun-test-run-outside-the-workflow-scope-is-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-outside-the-workflow-scope-is-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-outside-the-workflow-scope-is-refused",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-outside-the-workflow-scope-is-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-outside-the-workflow-scope-is-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-outside-the-workflow-scope-is-refused",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectIssueId"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-outside-the-workflow-scope-is-refused",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
+    },
+    {
       "from": "case:client/workflowrun-test-run-returns-the-path-without-saving",
       "type": "asserts",
       "to": "assertion:jsonEqual"
@@ -75722,6 +75840,11 @@
       "from": "profile:aclFields",
       "type": "grants",
       "to": "permission:project.get"
+    },
+    {
+      "from": "profile:aclFields",
+      "type": "grants",
+      "to": "permission:workflowrun.create"
     },
     {
       "from": "profile:aclMembers",

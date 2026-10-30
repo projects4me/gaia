@@ -23,7 +23,9 @@ use function Gaia\Libraries\Utils\create_guid;
  * the workflow runs against the chosen `entityId` with its actions simulated
  * (nothing is written, no agent runs) and the response is the run, with the
  * path taken and each step's resolved inputs, without saving it. A POST
- * without `test` is refused.
+ * without `test` is refused. The record's project must be one the user can
+ * read and in the workflow's scope; the record's fields the user may not read
+ * are left out of the run.
  *
  * Attributes of a test run: `workflowId`, `entityId` (the record the trigger
  * is about), optional `entityType`, `triggerNodeId` (when the workflow has
@@ -62,7 +64,7 @@ class WorkflowrunController extends RestController
         try {
             $run = new WorkflowTestRun();
             $trigger = $run->trigger($workflowId, $this->attribute($attributes, 'triggerNodeId'));
-            $payload = (new TestRunPayload(new LiveRecordEventEnvelopes()))->build(
+            $payload = (new TestRunPayload(new LiveRecordEventEnvelopes(), $this->acl()))->build(
                 $trigger,
                 $this->attribute($attributes, 'entityType'),
                 $this->attribute($attributes, 'entityId'),
@@ -95,9 +97,19 @@ class WorkflowrunController extends RestController
      */
     private function assertProjectReadable($projectId)
     {
-        if ($this->getDI()->has('acl')) {
-            $this->getDI()->get('acl')->assertProjectIdInScope((string) $projectId);
+        if ($this->acl() !== null) {
+            $this->acl()->assertProjectIdInScope((string) $projectId);
         }
+    }
+
+    /**
+     * The request's ACL, or null when authorization is off.
+     *
+     * @return \Gaia\Libraries\Security\Acl|null
+     */
+    private function acl()
+    {
+        return $this->getDI()->has('acl') ? $this->getDI()->get('acl') : null;
     }
 
     /**

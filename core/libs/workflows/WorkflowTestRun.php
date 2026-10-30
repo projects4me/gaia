@@ -119,10 +119,21 @@ class WorkflowTestRun
      * @param  array  $payload      The trigger payload (see TestRunPayload).
      * @param  array  $actorPorts   Actor node id => the port its simulated step goes on by.
      * @return array workflowId, workflowVersion, triggerNodeId, status, error, path, inputs, steps
+     * @throws TestRunRefusal When the workflow's scope does not cover the payload's project.
      */
     public function run($workflowId, $triggerNodeId, array $payload, array $actorPorts = [])
     {
         $workflow = $this->graph->workflow($workflowId);
+        $projectId = isset($payload['projectId']) ? $payload['projectId'] : null;
+        // As TriggerDispatcher: a workflow only runs for the projects of its scope.
+        if (!WorkflowScope::covers(isset($workflow['scope']) ? $workflow['scope'] : [], $projectId)) {
+            throw new TestRunRefusal(
+                $projectId === null || $projectId === ''
+                    ? 'The event has no project, so the workflow would not run for it.'
+                    : "The workflow's scope does not include project {$projectId}, so it would not run for it.",
+                422
+            );
+        }
         $context = new RunContext(
             create_guid(),
             ['id' => $workflow['id'], 'name' => $workflow['name'], 'version' => $workflow['version']],

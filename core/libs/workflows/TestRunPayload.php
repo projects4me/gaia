@@ -6,12 +6,15 @@
 
 namespace Gaia\Libraries\Workflows;
 
+use Gaia\Libraries\Security\Acl;
+
 use function Gaia\Libraries\Utils\create_guid;
 
 /**
  * Builds the trigger payload a test run starts from: the payload the trigger's
  * event would carry for a chosen record, so conditions and expressions see
- * what a real run sees. Nothing is raised or saved.
+ * what a real run sees. Nothing is raised or saved. The record's fields the
+ * user may not read are left out, so neither the run nor its response shows them.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Workflows
@@ -23,6 +26,11 @@ class TestRunPayload
      * @var RecordEventEnvelopes
      */
     private $envelopes;
+
+    /**
+     * @var Acl|null
+     */
+    private $acl;
 
     /**
      * @var TriggerEventCatalog
@@ -41,17 +49,20 @@ class TestRunPayload
 
     /**
      * @param RecordEventEnvelopes     $envelopes
+     * @param Acl|null                 $acl       The user's field grants; every field when null.
      * @param TriggerEventCatalog|null $events
      * @param TriggerPayload|null      $payloads
      * @param WorkflowRecords|null     $records
      */
     public function __construct(
         RecordEventEnvelopes $envelopes,
+        Acl $acl = null,
         TriggerEventCatalog $events = null,
         TriggerPayload $payloads = null,
         WorkflowRecords $records = null
     ) {
         $this->envelopes = $envelopes;
+        $this->acl = $acl;
         $this->events = $events ?: new TriggerEventCatalog();
         $this->payloads = $payloads ?: new TriggerPayload();
         $this->records = $records ?: new WorkflowRecords();
@@ -105,7 +116,7 @@ class TestRunPayload
                 'new' => array_key_exists('after', $change) ? $change['after'] : null,
             ];
         }
-        $values = $record->toArray();
+        $values = $this->readable($model, $record->toArray());
         unset($values['audit']);
 
         return $this->payloads->forRecord(
@@ -114,5 +125,23 @@ class TestRunPayload
             $values,
             $audit
         );
+    }
+
+    /**
+     * The record's values the user may read.
+     *
+     * @param  string $model
+     * @param  array  $values
+     * @return array
+     */
+    private function readable($model, array $values)
+    {
+        if ($this->acl === null) {
+            return $values;
+        }
+
+        return array_filter($values, function ($field) use ($model) {
+            return $this->acl->isFieldActionAllowed($model, $field, 'get');
+        }, ARRAY_FILTER_USE_KEY);
     }
 }

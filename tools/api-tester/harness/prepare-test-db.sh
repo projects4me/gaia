@@ -627,6 +627,7 @@ VALUES
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
 VALUES
   ('atp-ff-issue-get', 'api-test-role-acl-ff', 'issue.get', 1, NOW(), NOW()),
+  ('atp-ff-workflowrun-create', 'api-test-role-acl-ff', 'workflowrun.create', 1, NOW(), NOW()),
   ('atp-ff-issue-create', 'api-test-role-acl-ff', 'issue.create', 1, NOW(), NOW()),
   ('atp-ff-issue-update', 'api-test-role-acl-ff', 'issue.update', 1, NOW(), NOW()),
   ('atp-ff-project-get', 'api-test-role-acl-ff', 'project.get', 1, NOW(), NOW()),
@@ -1061,7 +1062,7 @@ ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 INSERT INTO workflows (
   id, "name", "description", "status", "scope", "version", "ownerId", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
 ) VALUES
-  ('api-test-workflow-000001', 'API Test Workflow', 'Seeded draft workflow', 'Draft', '[]', 0, 'api-test-user-0001', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+  ('api-test-workflow-000001', 'API Test Workflow', 'Seeded draft workflow', 'Draft', '["api-test-project-001"]', 0, 'api-test-user-0001', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")

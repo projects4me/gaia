@@ -2297,6 +2297,24 @@
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
     },
     {
+      "id": "acl-workflowrun-test-run-omits-denied-record-fields",
+      "method": "POST",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": "aclFields",
+      "body": {
+        "workflowId": "{workflowId}",
+        "test": true,
+        "entityId": "{issueId}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": { "data.attributes.inputs.issue.priority": "medium" },
+        "jsonPathAbsent": ["data.attributes.inputs.issue.subject"]
+      }
+    },
+    {
       "id": "acl-workflowrun-list-denied-acl-no-project",
       "method": "GET",
       "path": "/api/v1/workflowrun",

@@ -6202,6 +6202,22 @@
       }
     },
     {
+      "id": "workflowrun-test-run-outside-the-workflow-scope-is-refused",
+      "method": "POST",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": true,
+      "body": {
+        "workflowId": "{workflowId}",
+        "test": true,
+        "entityId": "{otherProjectIssueId}"
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
       "id": "workflowrun-test-run-of-an-unknown-workflow-is-404",
       "method": "POST",
       "path": "/api/v1/workflowrun",
