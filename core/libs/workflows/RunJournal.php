@@ -26,7 +26,7 @@ class RunJournal
     /**
      * Records a run as running.
      *
-     * @param  array $run workflowId, workflowVersion, triggerNodeId, eventName, eventId, projectId, parentRunId, depth, inputs
+     * @param  array $run workflowId, workflowVersion, triggerNodeId, eventName, eventId, entityType, entityId, projectId, parentRunId, depth, inputs
      * @return string The run id.
      */
     public function start(array $run)
@@ -38,6 +38,8 @@ class RunJournal
         $row->triggerNodeId = (string) $run['triggerNodeId'];
         $row->eventName = self::textOrNull($run['eventName']);
         $row->eventId = self::textOrNull($run['eventId']);
+        $row->entityType = self::textOrNull(isset($run['entityType']) ? $run['entityType'] : null);
+        $row->entityId = self::textOrNull(isset($run['entityId']) ? $run['entityId'] : null);
         $row->projectId = self::textOrNull($run['projectId']);
         $row->parentRunId = self::textOrNull($run['parentRunId']);
         $row->depth = (int) $run['depth'];

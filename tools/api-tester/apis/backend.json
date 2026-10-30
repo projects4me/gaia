@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 217,
-        "enabled": 200,
-        "disabled": 17,
-        "routeResources": 58,
-        "withMetadata": 43,
+        "total": 222,
+        "enabled": 204,
+        "disabled": 18,
+        "routeResources": 60,
+        "withMetadata": 45,
         "skippedResources": 13
     },
     "apis": [
@@ -906,6 +906,92 @@
             },
             "enabled": false,
             "skipReason": "No app/metadata/model for resource",
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflowrun-api-v1-workflowrun",
+            "method": "GET",
+            "path": "/api/v1/workflowrun",
+            "resource": "workflowrun",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflowrun-api-v1-workflowrun-id",
+            "method": "GET",
+            "path": "/api/v1/workflowrun/{workflowrunId}",
+            "resource": "workflowrun",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{workflowrunId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-workflowrun-api-v1-workflowrun",
+            "method": "POST",
+            "path": "/api/v1/workflowrun",
+            "resource": "workflowrun",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "workflowrun",
+                    "attributes": {
+                        "workflowId": "{workflowId}",
+                        "triggerNodeId": "api-workflowrun-triggerNodeId",
+                        "status": "new"
+                    }
+                }
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            },
+            "enabled": false,
+            "skipReason": "A POST is a test run (test: true), not a create; client cases cover it",
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflowrunstep-api-v1-workflowrunstep",
+            "method": "GET",
+            "path": "/api/v1/workflowrunstep",
+            "resource": "workflowrunstep",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflowrunstep-api-v1-workflowrunstep-id",
+            "method": "GET",
+            "path": "/api/v1/workflowrunstep/{workflowrunstepId}",
+            "resource": "workflowrunstep",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{workflowrunstepId}"
+                ]
+            },
             "source": "backend-metadata"
         },
         {

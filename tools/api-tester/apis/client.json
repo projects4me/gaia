@@ -6063,6 +6063,175 @@
         "status": 403,
         "shape": "error"
       }
+    },
+    {
+      "id": "workflowrun-lists-runs-per-workflow",
+      "method": "GET",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": true,
+      "query": {
+        "query": "((Workflowrun.workflowId : {workflowId}))",
+        "limit": 50,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{workflowrunId}",
+          "{otherProjectWorkflowrunId}"
+        ]
+      }
+    },
+    {
+      "id": "workflowrun-lists-runs-per-entity",
+      "method": "GET",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": true,
+      "query": {
+        "query": "((Workflowrun.entityType : issue) AND (Workflowrun.entityId : {issueId}))",
+        "limit": 50,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{workflowrunId}"
+        ],
+        "idsExcludes": [
+          "{otherProjectWorkflowrunId}"
+        ]
+      }
+    },
+    {
+      "id": "workflowrun-runs-come-with-their-steps",
+      "method": "GET",
+      "path": "/api/v1/workflowrun/{workflowrunId}",
+      "resource": "workflowrun",
+      "auth": true,
+      "query": {
+        "rels": "steps"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{workflowrunId}"
+        ]
+      }
+    },
+    {
+      "id": "workflowrun-post-without-test-is-refused",
+      "method": "POST",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": true,
+      "body": {
+        "workflowId": "{workflowId}",
+        "triggerNodeId": "{workflownodeId}",
+        "status": "completed"
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "workflowrun-test-run-returns-the-path-without-saving",
+      "method": "POST",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": true,
+      "body": {
+        "workflowId": "{workflowId}",
+        "test": true,
+        "entityId": "{issueId}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "data.type": "workflowrun",
+          "data.attributes.test": true,
+          "data.attributes.status": "completed",
+          "data.attributes.path.0": "{workflownodeId}",
+          "data.attributes.steps.0.status": "completed",
+          "data.attributes.steps.1.status": "simulated"
+        }
+      }
+    },
+    {
+      "id": "workflowrun-test-run-left-no-run-behind",
+      "method": "GET",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": true,
+      "query": {
+        "query": "((Workflowrun.entityId : {issueId}))",
+        "limit": 50,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{workflowrunId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 1
+        }
+      }
+    },
+    {
+      "id": "workflowrun-test-run-of-an-unknown-record-is-404",
+      "method": "POST",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": true,
+      "body": {
+        "workflowId": "{workflowId}",
+        "test": true,
+        "entityId": "no-such-issue"
+      },
+      "expects": {
+        "status": 404,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "workflowrun-test-run-outside-the-workflow-scope-is-refused",
+      "method": "POST",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": true,
+      "body": {
+        "workflowId": "{workflowId}",
+        "test": true,
+        "entityId": "{otherProjectIssueId}"
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "workflowrun-test-run-of-an-unknown-workflow-is-404",
+      "method": "POST",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": true,
+      "body": {
+        "workflowId": "no-such-workflow",
+        "test": true,
+        "entityId": "{issueId}"
+      },
+      "expects": {
+        "status": 404,
+        "shape": "error"
+      }
     }
   ]
 }

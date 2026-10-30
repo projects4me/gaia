@@ -6,6 +6,8 @@
 ## Fields
 
 - depth int required
+- entityId varchar(36)
+- entityType varchar(50)
 - error text
 - eventId varchar(36)
 - eventName varchar(50)
@@ -32,4 +34,8 @@
 ## Summary
 
 - behaviours: dateCreatedBehavior, dateModifiedBehavior, softDeleteBehavior
-- acl: -
+- acl: group Project via ?
+- controller: Gaia\MVC\REST\Controllers\WorkflowrunController
+- routes: GET /api/v1/workflowrun, GET /api/v1/workflowrun/{id}, GET /api/v1/workflowrun/{id}/{relation}, OPTIONS /api/v1/workflowrun, POST /api/v1/workflowrun
+- components: -
+- cases: 20 (acl 8, backend 3, client 9); gaia-dev cases workflowrun

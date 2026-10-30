@@ -2235,6 +2235,119 @@
       "resource": "workflowactorstep",
       "auth": "aclMembers",
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
+    },
+    {
+      "id": "acl-members-workflowrun-list-member-only",
+      "method": "GET",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{workflowrunId}"], "idsExcludes": ["{otherProjectWorkflowrunId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-workflowrun-detail-member-allowed",
+      "method": "GET",
+      "path": "/api/v1/workflowrun/{workflowrunId}",
+      "resource": "workflowrun",
+      "auth": "aclMembers",
+      "expects": { "status": 200, "shape": "jsonapi.resource", "idsIncludes": ["{workflowrunId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-workflowrun-detail-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/workflowrun/{otherProjectWorkflowrunId}",
+      "resource": "workflowrun",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-workflowrunstep-list-member-only",
+      "method": "GET",
+      "path": "/api/v1/workflowrunstep",
+      "resource": "workflowrunstep",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{workflowrunstepId}"], "idsExcludes": ["{otherProjectWorkflowrunstepId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-workflowrunstep-detail-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/workflowrunstep/{otherProjectWorkflowrunstepId}",
+      "resource": "workflowrunstep",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-workflowrun-test-run-denied-acl-members",
+      "method": "POST",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": "aclMembers",
+      "body": {
+        "workflowId": "{workflowId}",
+        "test": true,
+        "entityId": "{issueId}"
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
+    },
+    {
+      "id": "acl-workflowrun-test-run-denied-without-workflow-read-acl-no-setting",
+      "method": "POST",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": "aclNoSetting",
+      "body": {
+        "workflowId": "{workflowId}",
+        "test": true,
+        "entityId": "{issueId}"
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
+    },
+    {
+      "id": "acl-workflowrun-test-run-denied-without-node-config-read-acl-project-only",
+      "method": "POST",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": "aclProjectOnly",
+      "body": {
+        "workflowId": "{workflowId}",
+        "test": true,
+        "entityId": "{issueId}"
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
+    },
+    {
+      "id": "acl-workflowrun-test-run-omits-denied-record-fields",
+      "method": "POST",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": "aclFields",
+      "body": {
+        "workflowId": "{workflowId}",
+        "test": true,
+        "entityId": "{issueId}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": { "data.attributes.inputs.issue.priority": "medium" },
+        "jsonPathAbsent": ["data.attributes.inputs.issue.subject"]
+      }
+    },
+    {
+      "id": "acl-workflowrun-list-denied-acl-no-project",
+      "method": "GET",
+      "path": "/api/v1/workflowrun",
+      "resource": "workflowrun",
+      "auth": "aclNoProject",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
     }
   ]
 }

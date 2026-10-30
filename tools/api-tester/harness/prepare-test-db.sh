@@ -487,7 +487,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -576,7 +576,10 @@ VALUES
   ('atp-acl-pi-issue-get', 'api-test-role-acl-pi', 'issue.get', 0, NOW(), NOW()),
   ('atp-acl-pi-conv-get', 'api-test-role-acl-pi', 'conversationroom.get', 1, NOW(), NOW()),
   ('atp-acl-pi-comment-get', 'api-test-role-acl-pi', 'comment.get', 1, NOW(), NOW()),
-  ('atp-acl-pi-user-get', 'api-test-role-acl-pi', 'user.get', 1, NOW(), NOW());
+  ('atp-acl-pi-user-get', 'api-test-role-acl-pi', 'user.get', 1, NOW(), NOW()),
+  -- May start a test run and read workflow nodes, but not their settings.
+  ('atp-acl-pi-workflowrun-create', 'api-test-role-acl-pi', 'workflowrun.create', 1, NOW(), NOW()),
+  ('atp-acl-pi-workflownode-config-get', 'api-test-role-acl-pi', 'workflownode.config.get', 0, NOW(), NOW());
 
 -- No-conversation role: project+comment allowed, conversationroom.get denied (multi-group)
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
@@ -617,7 +620,10 @@ VALUES
   ('atp-acl-ns-type-update', 'api-test-role-acl-ns', 'issuetype.update', 1, NOW(), NOW()),
   ('atp-acl-ns-type-delete', 'api-test-role-acl-ns', 'issuetype.delete', 1, NOW(), NOW()),
   ('atp-acl-ns-setting-get', 'api-test-role-acl-ns', 'setting.get', 0, NOW(), NOW()),
-  ('atp-acl-ns-setting-update', 'api-test-role-acl-ns', 'setting.update', 0, NOW(), NOW());
+  ('atp-acl-ns-setting-update', 'api-test-role-acl-ns', 'setting.update', 0, NOW(), NOW()),
+  -- May start a test run but not read the workflow nodes it would show.
+  ('atp-acl-ns-workflowrun-create', 'api-test-role-acl-ns', 'workflowrun.create', 1, NOW(), NOW()),
+  ('atp-acl-ns-workflownode-get', 'api-test-role-acl-ns', 'workflownode.get', 0, NOW(), NOW());
 
 -- Field ACL role: module access + field matrix
 -- subject = None (0/0/0)
@@ -627,6 +633,7 @@ VALUES
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
 VALUES
   ('atp-ff-issue-get', 'api-test-role-acl-ff', 'issue.get', 1, NOW(), NOW()),
+  ('atp-ff-workflowrun-create', 'api-test-role-acl-ff', 'workflowrun.create', 1, NOW(), NOW()),
   ('atp-ff-issue-create', 'api-test-role-acl-ff', 'issue.create', 1, NOW(), NOW()),
   ('atp-ff-issue-update', 'api-test-role-acl-ff', 'issue.update', 1, NOW(), NOW()),
   ('atp-ff-project-get', 'api-test-role-acl-ff', 'project.get', 1, NOW(), NOW()),
@@ -1061,7 +1068,7 @@ ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 INSERT INTO workflows (
   id, "name", "description", "status", "scope", "version", "ownerId", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
 ) VALUES
-  ('api-test-workflow-000001', 'API Test Workflow', 'Seeded draft workflow', 'Draft', '[]', 0, 'api-test-user-0001', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+  ('api-test-workflow-000001', 'API Test Workflow', 'Seeded draft workflow', 'Draft', '["api-test-project-001"]', 0, 'api-test-user-0001', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
@@ -1118,6 +1125,37 @@ ON CONFLICT (id) DO UPDATE SET deleted = FALSE, status = 'pending', outcome = NU
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
 VALUES
   ('atp-acl-mem-workflowactorstep-get', 'api-test-role-acl-mem', 'workflowactorstep.get', 0, NOW(), NOW());
+
+-- Workflowrun and Workflowrunstep: one run with a step in the member's project, one in another project.
+-- The runs carry the entity they were for, so the list filters have something to find.
+INSERT INTO workflow_runs (
+  id, "workflowId", "workflowVersion", "triggerNodeId", "eventName", "eventId", "entityType", "entityId",
+  "projectId", depth, status, inputs, "startedAt", "finishedAt", deleted, "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workflowrun-000001', 'api-test-workflow-000001', 1, 'api-test-workflownode-000001', 'issue.created',
+   'api-test-event-000001', 'issue', 'api-test-issue-000001', 'api-test-project-001', 0, 'completed', '{}',
+   NOW(), NOW(), FALSE, NOW(), NOW()),
+  ('api-test-workflowrun-000002', 'api-test-workflow-000001', 1, 'api-test-workflownode-000001', 'issue.created',
+   'api-test-event-000002', 'issue', 'api-test-issue-000003', 'api-test-project-002', 0, 'completed', '{}',
+   NOW(), NOW(), FALSE, NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE, "entityType" = EXCLUDED."entityType",
+  "entityId" = EXCLUDED."entityId", "projectId" = EXCLUDED."projectId";
+
+INSERT INTO workflow_run_steps (
+  id, "runId", sequence, "nodeId", category, kind, status, port, inputs, outputs, "startedAt", "finishedAt",
+  "durationMs", deleted, "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workflowrunstep-000001', 'api-test-workflowrun-000001', 1, 'api-test-workflownode-000001', 'trigger',
+   'issue.created', 'completed', 'next', '{}', '{}', NOW(), NOW(), 0, FALSE, NOW(), NOW()),
+  ('api-test-workflowrunstep-000002', 'api-test-workflowrun-000002', 1, 'api-test-workflownode-000001', 'trigger',
+   'issue.created', 'completed', 'next', '{}', '{}', NOW(), NOW(), 0, FALSE, NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-mem-workflowrun-get', 'api-test-role-acl-mem', 'workflowrun.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-workflowrun-create', 'api-test-role-acl-mem', 'workflowrun.create', 0, NOW(), NOW()),
+  ('atp-acl-mem-workflowrunstep-get', 'api-test-role-acl-mem', 'workflowrunstep.get', 1, NOW(), NOW());
 
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
@@ -1239,6 +1277,10 @@ data = {
     "workflownodeId": "api-test-workflownode-000001",
     "workflowedgeId": "api-test-workflowedge-000001",
     "workflowreferenceId": "api-test-workflowreference-000001",
+    "workflowrunId": "api-test-workflowrun-000001",
+    "otherProjectWorkflowrunId": "api-test-workflowrun-000002",
+    "workflowrunstepId": "api-test-workflowrunstep-000001",
+    "otherProjectWorkflowrunstepId": "api-test-workflowrunstep-000002",
     "workflowactorstepId": "api-test-workflowactorstep-000001",
     "otherWorkflowactorstepId": "api-test-workflowactorstep-000002",
     "params.c_id": "api-test-convroom-001",

@@ -30,4 +30,8 @@
 ## Summary
 
 - behaviours: dateCreatedBehavior, dateModifiedBehavior, softDeleteBehavior
-- acl: -
+- acl: group Project via Array
+- controller: Gaia\MVC\REST\Controllers\WorkflowrunstepController
+- routes: GET /api/v1/workflowrunstep, GET /api/v1/workflowrunstep/{id}, GET /api/v1/workflowrunstep/{id}/{relation}, OPTIONS /api/v1/workflowrunstep
+- components: -
+- cases: 4 (acl 2, backend 2); gaia-dev cases workflowrunstep

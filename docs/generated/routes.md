@@ -911,3 +911,24 @@
 | GET | /api/v1/workflowreference/{id} | rest | workflowreference.get |
 | GET | /api/v1/workflowreference/{id}/{relation} | rest | workflowreference.related |
 | OPTIONS | /api/v1/workflowreference | rest | workflowreference.options |
+
+<a id="workflowrun"></a>
+## workflowrun
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/workflowrun | rest | workflowrun.list |
+| GET | /api/v1/workflowrun/{id} | rest | workflowrun.get |
+| GET | /api/v1/workflowrun/{id}/{relation} | rest | workflowrun.related |
+| OPTIONS | /api/v1/workflowrun | rest | workflowrun.options |
+| POST | /api/v1/workflowrun | rest | workflowrun.post |
+
+<a id="workflowrunstep"></a>
+## workflowrunstep
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/workflowrunstep | rest | workflowrunstep.list |
+| GET | /api/v1/workflowrunstep/{id} | rest | workflowrunstep.get |
+| GET | /api/v1/workflowrunstep/{id}/{relation} | rest | workflowrunstep.related |
+| OPTIONS | /api/v1/workflowrunstep | rest | workflowrunstep.options |
