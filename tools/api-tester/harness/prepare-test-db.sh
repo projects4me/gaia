@@ -487,7 +487,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -1099,6 +1099,26 @@ INSERT INTO workflow_references (
   ('api-test-workflowreference-000001', 'api-test-workflow-000001', 'api-test-workflownode-000002', 'Agent', 'api-test-agent-000001', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
+-- Workflowactorstep: a 'Run agent' step waiting for api-test-user-0001's runtime, and
+-- one waiting for another user. Each run resets them to pending, since the cases claim
+-- and report the first.
+INSERT INTO workflow_actor_steps (
+  id, "runId", "workflowId", "nodeId", kind, "actorUserId", "agentId", status, prompt, session,
+  "claimBy", "finishBy", deleted, "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workflowactorstep-000001', 'api-test-workflowrun-000001', 'api-test-workflow-000001',
+   'api-test-workflownode-000002', 'run_agent', 'api-test-user-0001', 'api-test-agent-000001', 'pending',
+   'Seed prompt', 'new', NOW() + INTERVAL '10 years', NOW() + INTERVAL '10 years', FALSE, NOW(), NOW()),
+  ('api-test-workflowactorstep-000002', 'api-test-workflowrun-000001', 'api-test-workflow-000001',
+   'api-test-workflownode-000002', 'run_agent', 'api-test-user-0002', 'api-test-agent-000001', 'pending',
+   'Seed prompt', 'new', NOW() + INTERVAL '10 years', NOW() + INTERVAL '10 years', FALSE, NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE, status = 'pending', outcome = NULL, comment = NULL,
+  "claimedAt" = NULL, "finishedAt" = NULL;
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-mem-workflowactorstep-get', 'api-test-role-acl-mem', 'workflowactorstep.get', 0, NOW(), NOW());
+
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
   '"issues_issueNumber_seq"',
@@ -1219,6 +1239,8 @@ data = {
     "workflownodeId": "api-test-workflownode-000001",
     "workflowedgeId": "api-test-workflowedge-000001",
     "workflowreferenceId": "api-test-workflowreference-000001",
+    "workflowactorstepId": "api-test-workflowactorstep-000001",
+    "otherWorkflowactorstepId": "api-test-workflowactorstep-000002",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

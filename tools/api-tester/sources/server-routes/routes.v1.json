@@ -117,6 +117,14 @@
             ],
             "identifier": "id"
         },
+        "workflowactorstep": {
+            "path": "/api/:version/workflowactorstep",
+            "allowedMethods": [
+                "GET",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "workflowevent": {
             "path": "/api/:version/workflowevent",
             "allowedMethods": [

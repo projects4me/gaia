@@ -151,10 +151,21 @@ class WorkflowTriggersComponent implements WorkflowChangeEvents
     protected function dispatcher()
     {
         if ($this->dispatcher === null) {
-            $this->dispatcher = new TriggerDispatcher(null, new WorkflowRunner($this));
+            $this->dispatcher = new TriggerDispatcher(null, $this->runner());
         }
 
         return $this->dispatcher;
+    }
+
+    /**
+     * A workflow runner whose changes raise trigger events through this
+     * component and whose 'Run agent' steps reach the agents' runtimes.
+     *
+     * @return WorkflowRunner
+     */
+    public function runner()
+    {
+        return new WorkflowRunner($this, null, null, null, null, null, new AgentRunLiveEvents());
     }
 
     /**

@@ -63,6 +63,7 @@ $config['models'] = [
     'Vote',
     'Wiki',
     'Workflow',
+    'Workflowactorstep',
     'Workflowedge',
     'Workflownode',
     'Workflowreference',

@@ -27,5 +27,5 @@
 - acl: group Project via Array; group Conversationroom via ?
 - controller: Gaia\MVC\REST\Controllers\CommentController
 - routes: DELETE /api/v1/comment, DELETE /api/v1/comment/{id}, GET /api/v1/comment, GET /api/v1/comment/{id}, GET /api/v1/comment/{id}/{relation}, OPTIONS /api/v1/comment, PATCH /api/v1/comment, PATCH /api/v1/comment/{id}, POST /api/v1/comment, PUT /api/v1/comment, PUT /api/v1/comment/{id}
-- components: Events\ConversationCommentLiveEvents, Events\WorkflowTriggers, Issuemention, Notification
+- components: Events\ConversationCommentLiveEvents, Events\WorkflowReplies, Events\WorkflowTriggers, Issuemention, Notification
 - cases: 18 (acl 5, backend 5, client 6, live 2); gaia-dev cases comment

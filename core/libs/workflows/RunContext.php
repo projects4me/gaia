@@ -41,6 +41,43 @@ class RunContext
     public $payload;
 
     /**
+     * The step being carried out: its run step id and node id. An actor
+     * step records its wait under this id.
+     *
+     * @var array {id, nodeId}
+     */
+    public $step = ['id' => null, 'nodeId' => null];
+
+    /**
+     * @var array[] The 'Run agent' steps to tell the agents' runtimes about
+     *              once the run is saved as waiting.
+     */
+    private $agentRequests = [];
+
+    /**
+     * Asks for the agent's runtime to be told about a step, once the run
+     * waits for it (so a fast report can't arrive before the wait is saved).
+     *
+     * @param  array $step
+     * @return void
+     */
+    public function requestAgent(array $step)
+    {
+        $this->agentRequests[] = $step;
+    }
+
+    /**
+     * @return array[] The requested steps, emptying the list.
+     */
+    public function takeAgentRequests()
+    {
+        $requests = $this->agentRequests;
+        $this->agentRequests = [];
+
+        return $requests;
+    }
+
+    /**
      * @var array [model, event] pairs, one per record a step created or changed.
      */
     private $changes = [];
@@ -61,6 +98,8 @@ class RunContext
 
     /**
      * The values expressions read: the payload plus `workflow` and `run`.
+     * After an actor step the payload also holds `step`: what its actor
+     * answered (see WaitingStepResumer).
      *
      * @return array
      */

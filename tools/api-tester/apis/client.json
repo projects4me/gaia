@@ -5897,6 +5897,172 @@
           "data.0"
         ]
       }
+    },
+    {
+      "id": "workflowactorstep-read-own-step",
+      "method": "GET",
+      "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+      "resource": "workflowactorstep",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "kind": "run_agent",
+          "status": "pending",
+          "prompt": "Seed prompt"
+        }
+      }
+    },
+    {
+      "id": "workflowactorstep-report-before-claim-conflicts",
+      "method": "PATCH",
+      "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+      "resource": "workflowactorstep",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowactorstep",
+          "id": "{workflowactorstepId}",
+          "attributes": {
+            "outcome": "done"
+          }
+        }
+      },
+      "expects": {
+        "status": 409,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "workflowactorstep-claim",
+      "method": "PATCH",
+      "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+      "resource": "workflowactorstep",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowactorstep",
+          "id": "{workflowactorstepId}",
+          "attributes": {
+            "status": "claimed"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "claimed"
+        }
+      }
+    },
+    {
+      "id": "workflowactorstep-claim-twice-conflicts",
+      "method": "PATCH",
+      "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+      "resource": "workflowactorstep",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowactorstep",
+          "id": "{workflowactorstepId}",
+          "attributes": {
+            "status": "claimed"
+          }
+        }
+      },
+      "expects": {
+        "status": 409,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "workflowactorstep-report-rejects-unknown-outcome",
+      "method": "PATCH",
+      "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+      "resource": "workflowactorstep",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowactorstep",
+          "id": "{workflowactorstepId}",
+          "attributes": {
+            "outcome": "shipped"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "workflowactorstep-report-rejects-other-fields",
+      "method": "PATCH",
+      "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+      "resource": "workflowactorstep",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowactorstep",
+          "id": "{workflowactorstepId}",
+          "attributes": {
+            "outcome": "done",
+            "prompt": "Do something else"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "workflowactorstep-report",
+      "method": "PATCH",
+      "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+      "resource": "workflowactorstep",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowactorstep",
+          "id": "{workflowactorstepId}",
+          "attributes": {
+            "outcome": "done",
+            "comment": "PR opened"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "finished",
+          "outcome": "done",
+          "comment": "PR opened"
+        }
+      }
+    },
+    {
+      "id": "workflowactorstep-claim-another-users-step-forbidden",
+      "method": "PATCH",
+      "path": "/api/v1/workflowactorstep/{otherWorkflowactorstepId}",
+      "resource": "workflowactorstep",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflowactorstep",
+          "id": "{otherWorkflowactorstepId}",
+          "attributes": {
+            "status": "claimed"
+          }
+        }
+      },
+      "expects": {
+        "status": 403,
+        "shape": "error"
+      }
     }
   ]
 }

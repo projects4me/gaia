@@ -9,6 +9,7 @@ use Gaia\MVC\REST\Controllers\Components\Events\MilestoneLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\ConversationCommentLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\ConversationVoteLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\ConversationLiveEventsComponent;
+use Gaia\MVC\REST\Controllers\Components\Events\AgentRunLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\NotificationLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeamessageLiveEventsComponent;
@@ -416,6 +417,39 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertEquals('Assigned', $posted[0]['changes']['description']);
         $this->assertArrayNotHasKey('audit', $posted[0]['changes']);
         $this->assertArrayNotHasKey('metadata', $posted[0]['changes']);
+    }
+
+    public function testAgentRunRequestGoesToTheAgentsUserScopeWithIdsOnly()
+    {
+        $posted = array();
+        $publisher = new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        });
+        $events = new AgentRunLiveEvents($publisher);
+
+        $events->requested(array(
+            'id' => 'step-1',
+            'runId' => 'run-1',
+            'workflowId' => 'workflow-1',
+            'actorUserId' => 'user-agent',
+            'entityType' => 'issue',
+            'entityId' => 'issue-1',
+            'prompt' => 'Secret plan',
+        ));
+        $events->requested(array('id' => 'step-2', 'runId' => 'run-1', 'workflowId' => 'workflow-1'));
+
+        $this->assertCount(1, $posted);
+        $this->assertEquals(EventNames::WORKFLOW_AGENT_RUN_REQUESTED, $posted[0]['eventName']);
+        $this->assertEquals('user:user-agent', $posted[0]['projectId']);
+        $this->assertEquals(array('type' => 'workflowRun', 'id' => 'run-1'), $posted[0]['resource']);
+        $this->assertEquals(array(), $posted[0]['changes']);
+        $this->assertEquals(array(
+            'workflowId' => 'workflow-1',
+            'stepId' => 'step-1',
+            'entityType' => 'issue',
+            'entityId' => 'issue-1',
+        ), $this->metaWithoutActor($posted[0]));
+        $this->assertStringNotContainsString('Secret plan', json_encode($posted[0]));
     }
 
     public function testNotificationLiveEventsIncludesRelatedToAndRelatedIdWhenSet()

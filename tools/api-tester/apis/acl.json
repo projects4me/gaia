@@ -2218,6 +2218,23 @@
       "auth": true,
       "expects": { "status": 404, "shape": "error", "errorEqual": "Workflow events are read as a list." },
       "note": "trigger kinds hold dots, which the id route doesn't take"
+    },
+    {
+      "id": "acl-workflowactorstep-denied-acl-members",
+      "method": "GET",
+      "path": "/api/v1/workflowactorstep",
+      "resource": "workflowactorstep",
+      "auth": "aclMembers",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
+    },
+    {
+      "id": "acl-workflowactorstep-detail-denied-acl-members",
+      "method": "GET",
+      "path": "/api/v1/workflowactorstep/{workflowactorstepId}",
+      "resource": "workflowactorstep",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
     }
   ]
 }

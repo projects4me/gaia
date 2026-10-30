@@ -7,6 +7,8 @@
 namespace Gaia\Tests\Libraries\Workflows;
 
 use Gaia\Libraries\Workflows\ActionCatalog;
+use Gaia\Libraries\Workflows\ActorCatalog;
+use Gaia\Libraries\Workflows\AgentRunRequests;
 use Gaia\Libraries\Workflows\LoopGuard;
 use Gaia\Libraries\Workflows\RunContext;
 use Gaia\Libraries\Workflows\RunJournal;
@@ -31,7 +33,7 @@ class WorkflowRunnerTest extends TestCase
      * @var array The run history written: runs, steps, finished; and the
      *            journal calls that fail (start, step:<nodeId>, finish).
      */
-    private $journal = ['runs' => [], 'steps' => [], 'finished' => [], 'fail' => []];
+    private $journal = ['runs' => [], 'steps' => [], 'finished' => [], 'answered' => [], 'fail' => []];
 
     /**
      * @var array[] The actions carried out: [kind, config, acting user].
@@ -42,6 +44,16 @@ class WorkflowRunnerTest extends TestCase
      * @var array[] The change events raised: [record, on, run].
      */
     private $raised = [];
+
+    /**
+     * @var array[] The actor steps started: [kind, config, step].
+     */
+    private $started = [];
+
+    /**
+     * @var array[] The steps the agents' runtimes were told about.
+     */
+    private $requested = [];
 
     private const PAYLOAD = [
         'eventId' => 'event-1',
@@ -120,14 +132,78 @@ class WorkflowRunnerTest extends TestCase
         $this->assertSame([['run-1', 'failed', 'user-stranger is not a member']], $this->journal['finished']);
     }
 
-    public function testAnActorStepCannotRunYet()
+    public function testAnActorStepLeavesTheRunWaiting()
     {
-        $this->runner($this->graph([
-            $this->node('trigger', 'trigger', 'issue.status.changed'),
-            $this->node('agent', 'actor', 'run_agent', ['agentId' => 'agent-1']),
-        ], [['trigger', 'next', 'agent']]))->start('wf-1', 'trigger', self::PAYLOAD);
+        $this->runner($this->agentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
 
-        $this->assertSame([['run-1', 'failed', 'actor step run_agent cannot run yet.']], $this->journal['finished']);
+        $this->assertSame([['run-1', 'waiting', null]], $this->journal['finished']);
+        $step = $this->journal['steps'][1];
+        $this->assertSame(['agent', 'waiting', null], [$step['nodeId'], $step['status'], $step['port']]);
+        $this->assertSame(['requested' => 'agent-1'], $step['outputs']);
+        $this->assertNotEmpty($step['id']);
+        $this->assertSame([['id' => $step['id']]], $this->requested);
+        $this->assertSame(
+            ['run_agent', ['agentId' => 'agent-1'], ['id' => $step['id'], 'nodeId' => 'agent']],
+            $this->started[0]
+        );
+    }
+
+    public function testNoAgentIsToldWhenTheRunCannotBeSavedAsWaiting()
+    {
+        $this->journal['fail'] = ['step:agent'];
+
+        $this->runner($this->agentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
+
+        $this->assertSame([['run-1', 'failed', 'journal down']], $this->journal['finished']);
+        $this->assertSame([], $this->requested);
+    }
+
+    public function testAnAnswerTakesTheRunOnByItsPort()
+    {
+        $this->runner($this->agentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
+        $stepId = $this->journal['steps'][1]['id'];
+
+        $this->runner($this->agentGraph())->resume($stepId, 'done', ['outcome' => 'done', 'comment' => 'Shipped']);
+
+        $this->assertSame([[$stepId, 'done', ['outcome' => 'done', 'comment' => 'Shipped']]], $this->journal['answered']);
+        $this->assertSame(['trigger', 'agent', 'comment', 'end'], array_column($this->journal['steps'], 'nodeId'));
+        $this->assertSame([1, 2, 3, 4], array_column($this->journal['steps'], 'sequence'));
+        $this->assertSame(['body' => 'Agent said: Shipped'], $this->journal['steps'][2]['inputs']);
+        $this->assertSame('user-owner', $this->carriedOut[0][2]);
+        $this->assertSame([['run-1', 'waiting', null], ['run-1', 'completed', null]], $this->journal['finished']);
+    }
+
+    public function testAnAnswerOnAPortWithNoEdgeCompletesTheRun()
+    {
+        $this->runner($this->agentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
+
+        $this->runner($this->agentGraph())->resume($this->journal['steps'][1]['id'], 'blocked', ['outcome' => 'blocked']);
+
+        $this->assertCount(2, $this->journal['steps']);
+        $this->assertSame(['run-1', 'completed', null], $this->journal['finished'][1]);
+    }
+
+    public function testAnAnswerToAStepThatIsNotWaitingIsIgnored()
+    {
+        $this->runner($this->agentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
+        $stepId = $this->journal['steps'][1]['id'];
+        $this->runner($this->agentGraph())->resume($stepId, 'blocked', []);
+
+        $this->runner($this->agentGraph())->resume($stepId, 'done', []);
+        $this->runner($this->agentGraph())->resume('step-unknown', 'done', []);
+
+        $this->assertCount(1, $this->journal['answered']);
+        $this->assertCount(2, $this->journal['finished']);
+    }
+
+    public function testAnAnswerFailsTheRunWhenTheWorkflowIsNoLongerActive()
+    {
+        $this->runner($this->agentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
+
+        $this->runner($this->agentGraph('Disabled'))->resume($this->journal['steps'][1]['id'], 'done', []);
+
+        $this->assertSame(['run-1', 'failed', 'The workflow is no longer active.'], $this->journal['finished'][1]);
+        $this->assertSame([], $this->carriedOut);
     }
 
     public function testACycleEndsAfterTheStepLimit()
@@ -255,6 +331,37 @@ class WorkflowRunnerTest extends TestCase
                 $this->written['finished'][] = [$runId, $status, $error];
             }
 
+            public function waitingStep($stepId)
+            {
+                foreach ($this->written['steps'] as $step) {
+                    $answered = in_array($stepId, array_column($this->written['answered'], 0), true);
+                    if ($step['id'] === $stepId && $step['status'] === 'waiting' && !$answered) {
+                        $run = $this->written['runs'][0];
+                        return [
+                            'step' => $step,
+                            'run' => [
+                                'id' => 'run-1',
+                                'workflowId' => $run['workflowId'],
+                                'workflowVersion' => $run['workflowVersion'],
+                                'inputs' => json_encode($run['inputs']),
+                            ],
+                        ];
+                    }
+                }
+                return null;
+            }
+
+            public function answer($stepId, $port, array $outputs)
+            {
+                $this->written['answered'][] = [$stepId, $port, $outputs];
+                return true;
+            }
+
+            public function lastSequence($runId)
+            {
+                return max(array_column($this->written['steps'], 'sequence'));
+            }
+
             private function failIf($call)
             {
                 if (in_array($call, $this->written['fail'], true)) {
@@ -311,7 +418,68 @@ class WorkflowRunnerTest extends TestCase
             }
         };
 
-        return new WorkflowRunner($events, $graph, $journal, $actions);
+        $actors = new class ($this->started) extends ActorCatalog {
+            private $started;
+
+            public function __construct(array &$started)
+            {
+                $this->started = &$started;
+            }
+
+            public function actor($kind)
+            {
+                $started = &$this->started;
+                return new class ($kind, $started) extends WorkflowAction {
+                    private $kind;
+                    private $started;
+
+                    public function __construct($kind, array &$started)
+                    {
+                        $this->kind = $kind;
+                        $this->started = &$started;
+                    }
+
+                    public function run(array $config, RunContext $context)
+                    {
+                        $this->started[] = [$this->kind, $config, $context->step];
+                        $context->requestAgent(['id' => $context->step['id']]);
+                        return ['requested' => $config['agentId']];
+                    }
+                };
+            }
+        };
+
+        $requests = new class ($this->requested) implements AgentRunRequests {
+            private $requested;
+
+            public function __construct(array &$requested)
+            {
+                $this->requested = &$requested;
+            }
+
+            public function requested(array $step)
+            {
+                $this->requested[] = $step;
+            }
+        };
+
+        return new WorkflowRunner($events, $graph, $journal, $actions, null, $actors, $requests);
+    }
+
+    /**
+     * A trigger, a 'Run agent' step, and on 'done' a comment and the end.
+     *
+     * @param  string $status
+     * @return WorkflowGraphReader
+     */
+    private function agentGraph($status = 'Active')
+    {
+        return $this->graph([
+            $this->node('trigger', 'trigger', 'issue.status.changed'),
+            $this->node('agent', 'actor', 'run_agent', ['agentId' => 'agent-1']),
+            $this->node('comment', 'action', 'add_comment', ['body' => 'Agent said: {step.comment}']),
+            $this->node('end', 'action', 'end'),
+        ], [['trigger', 'next', 'agent'], ['agent', 'done', 'comment'], ['comment', 'next', 'end']], $status);
     }
 
     /**

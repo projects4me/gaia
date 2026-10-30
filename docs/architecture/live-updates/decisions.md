@@ -103,6 +103,15 @@ are out of scope here.
 | Rationale | Ingest is a server-to-server call. Socket auth (user `GET /api/v1/user/me`) is a different door, owned by Hermes. |
 | Implications | Do not send the current user’s access token as the publish credential. Do not treat removing query-string socket tokens as a reason to drop this header. |
 
+### D-010 — Workflow agent runs are requested over the agent's user scope, with ids only
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | A workflow's 'Run agent' step publishes `workflow.agent.run.requested` with `projectId` `user:<agentUserId>` (D-006), `resource` `{ type: 'workflowRun', id: <runId> }` and `meta` `workflowId`, `stepId`, `entityType`, `entityId`. `AgentRunLiveEvents` publishes it from the workflow engine, not from a controller component. Hermes D-017 is the other half. |
+| Rationale | Only the agent's own runtime may receive the request. The prompt and the step's settings stay in Gaia: the runtime reads them from `GET /api/v1/workflowactorstep/{stepId}` with its own credentials, so nothing secret crosses the relay. |
+| Implications | Never put the prompt, step inputs or credentials in this event. A runtime that misses the event (Hermes down, fail-open per D-002) still finds its pending steps through the REST resource, and an unclaimed step times out to the 'failed' output. |
+
 ---
 
 ## Open questions
