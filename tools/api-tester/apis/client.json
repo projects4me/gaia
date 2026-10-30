@@ -2008,7 +2008,7 @@
           "attributes": {
             "name": "api_test_settings_status",
             "description": "Settings status",
-            "color": "#5ac594",
+            "color": "#3C8DBC",
             "sortOrder": 9,
             "done": 0,
             "system": 1,
@@ -2022,7 +2022,7 @@
         "status": 201,
         "shape": "jsonapi.resource",
         "attributesEqual": {
-          "color": "#5ac594",
+          "color": "#3c8dbc",
           "sortOrder": 9
         }
       },
@@ -2031,7 +2031,7 @@
       }
     },
     {
-      "id": "issuestatus-create-color-outside-palette-rejected",
+      "id": "issuestatus-create-short-hex-color-rejected",
       "method": "POST",
       "path": "/api/v1/issuestatus",
       "resource": "issuestatus",
@@ -2041,7 +2041,7 @@
           "type": "issuestatus",
           "attributes": {
             "name": "api_test_bad_color",
-            "color": "#123456",
+            "color": "#fff",
             "done": 0,
             "system": 1,
             "translations": {
@@ -2056,7 +2056,7 @@
       }
     },
     {
-      "id": "issuestatus-patch-color-outside-palette-rejected",
+      "id": "issuestatus-patch-color-name-rejected",
       "method": "PATCH",
       "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
       "resource": "issuestatus",
@@ -2073,6 +2073,88 @@
       "expects": {
         "status": 422,
         "shape": "error"
+      }
+    },
+    {
+      "id": "issuestatus-patch-invalid-hex-color-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.settingsStatusId}",
+          "attributes": {
+            "color": "#12345g"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "issuestatus-patch-collection-invalid-color-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "{runtime.settingsStatusId}",
+            "color": "url(x)"
+          }
+        ]
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "issuestatus-patch-custom-color-saved-lowercase",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.settingsStatusId}",
+          "attributes": {
+            "color": "#1A2B3C"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "color": "#1a2b3c"
+        }
+      }
+    },
+    {
+      "id": "issuestatus-patch-color-cleared",
+      "method": "PATCH",
+      "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuestatus",
+          "id": "{runtime.settingsStatusId}",
+          "attributes": {
+            "color": null
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
       }
     },
     {

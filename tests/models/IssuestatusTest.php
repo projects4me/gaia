@@ -1,0 +1,76 @@
+<?php
+
+/**
+ * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ */
+
+namespace Gaia\Tests\Models;
+
+use PHPUnit\Framework\TestCase;
+use Gaia\MVC\Models\Issuestatus;
+
+/**
+ * Unit tests for the Issuestatus colour rule: any `#rrggbb` hex colour or
+ * null is valid, and the colour is saved lowercase.
+ *
+ * @author   Rana Nouman <ranamnouman@gmail.com>
+ * @package  Gaia\Tests
+ * @category Tests
+ * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
+ */
+class IssuestatusTest extends TestCase
+{
+    /**
+     * Any 6-digit hex colour, in either case, and null are valid.
+     *
+     * @return void
+     */
+    public function testHexColorsAndNullAreValid()
+    {
+        foreach (['#80b5d3', '#1a2b3c', '#1A2B3C', '#000000', '#FFFFFF', null] as $color) {
+            $this->assertTrue(Issuestatus::isValidColor($color), var_export($color, true));
+        }
+    }
+
+    /**
+     * Colour names, short or malformed hex and CSS functions are rejected.
+     *
+     * @return void
+     */
+    public function testOtherValuesAreInvalid()
+    {
+        $invalid = ['', 'red', '#fff', '#12345g', '1a2b3c', '#1a2b3c4', '#1a2b3c ', "#1a2b3c\n", 'url(x)', 'rgb(1,2,3)', 123456, []];
+
+        foreach ($invalid as $color) {
+            $this->assertFalse(Issuestatus::isValidColor($color), var_export($color, true));
+        }
+    }
+
+    /**
+     * A valid colour is lowercased before it is saved.
+     *
+     * @return void
+     */
+    public function testColorIsSavedLowercase()
+    {
+        $status = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $status->color = '#1A2B3C';
+
+        $this->assertTrue($status->beforeValidation());
+        $this->assertSame('#1a2b3c', $status->color);
+    }
+
+    /**
+     * A save with an invalid colour is refused with a message on `color`.
+     *
+     * @return void
+     */
+    public function testInvalidColorIsNotSaved()
+    {
+        $status = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $status->color = 'red';
+
+        $this->assertFalse($status->beforeValidation());
+        $this->assertSame('color', $status->getMessages()[0]->getField());
+    }
+}

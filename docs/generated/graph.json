@@ -12934,9 +12934,9 @@
       }
     },
     {
-      "id": "case:client/issuestatus-create-color-outside-palette-rejected",
+      "id": "case:client/issuestatus-create-short-hex-color-rejected",
       "type": "case",
-      "key": "client/issuestatus-create-color-outside-palette-rejected",
+      "key": "client/issuestatus-create-short-hex-color-rejected",
       "attributes": {
         "catalog": "client",
         "file": "tools/api-tester/apis/client.json",
@@ -13104,9 +13104,45 @@
       }
     },
     {
-      "id": "case:client/issuestatus-patch-color-outside-palette-rejected",
+      "id": "case:client/issuestatus-patch-collection-invalid-color-rejected",
       "type": "case",
-      "key": "client/issuestatus-patch-color-outside-palette-rejected",
+      "key": "client/issuestatus-patch-collection-invalid-color-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuestatus",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.settingsStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuestatus-patch-color-cleared",
+      "type": "case",
+      "key": "client/issuestatus-patch-color-cleared",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.settingsStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuestatus-patch-color-name-rejected",
+      "type": "case",
+      "key": "client/issuestatus-patch-color-name-rejected",
       "attributes": {
         "catalog": "client",
         "file": "tools/api-tester/apis/client.json",
@@ -13135,6 +13171,42 @@
         "source": null,
         "placeholders": [
           "issuestatusId",
+          "runtime.settingsStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuestatus-patch-custom-color-saved-lowercase",
+      "type": "case",
+      "key": "client/issuestatus-patch-custom-color-saved-lowercase",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.settingsStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuestatus-patch-invalid-hex-color-rejected",
+      "type": "case",
+      "key": "client/issuestatus-patch-invalid-hex-color-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
           "runtime.settingsStatusId"
         ],
         "stores": []
@@ -58174,27 +58246,27 @@
       "to": "profile:default"
     },
     {
-      "from": "case:client/issuestatus-create-color-outside-palette-rejected",
+      "from": "case:client/issuestatus-create-short-hex-color-rejected",
       "type": "asserts",
       "to": "assertion:shape"
     },
     {
-      "from": "case:client/issuestatus-create-color-outside-palette-rejected",
+      "from": "case:client/issuestatus-create-short-hex-color-rejected",
       "type": "asserts",
       "to": "assertion:status"
     },
     {
-      "from": "case:client/issuestatus-create-color-outside-palette-rejected",
+      "from": "case:client/issuestatus-create-short-hex-color-rejected",
       "type": "covers",
       "to": "controller:issuestatus"
     },
     {
-      "from": "case:client/issuestatus-create-color-outside-palette-rejected",
+      "from": "case:client/issuestatus-create-short-hex-color-rejected",
       "type": "exercises",
       "to": "route:POST /api/v1/issuestatus"
     },
     {
-      "from": "case:client/issuestatus-create-color-outside-palette-rejected",
+      "from": "case:client/issuestatus-create-short-hex-color-rejected",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -58474,32 +58546,92 @@
       "to": "profile:default"
     },
     {
-      "from": "case:client/issuestatus-patch-color-outside-palette-rejected",
+      "from": "case:client/issuestatus-patch-collection-invalid-color-rejected",
       "type": "asserts",
       "to": "assertion:shape"
     },
     {
-      "from": "case:client/issuestatus-patch-color-outside-palette-rejected",
+      "from": "case:client/issuestatus-patch-collection-invalid-color-rejected",
       "type": "asserts",
       "to": "assertion:status"
     },
     {
-      "from": "case:client/issuestatus-patch-color-outside-palette-rejected",
+      "from": "case:client/issuestatus-patch-collection-invalid-color-rejected",
       "type": "covers",
       "to": "controller:issuestatus"
     },
     {
-      "from": "case:client/issuestatus-patch-color-outside-palette-rejected",
+      "from": "case:client/issuestatus-patch-collection-invalid-color-rejected",
       "type": "depends_on",
       "to": "case:client/issuestatus-create-with-color-and-order"
     },
     {
-      "from": "case:client/issuestatus-patch-color-outside-palette-rejected",
+      "from": "case:client/issuestatus-patch-collection-invalid-color-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuestatus"
+    },
+    {
+      "from": "case:client/issuestatus-patch-collection-invalid-color-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuestatus-patch-color-cleared",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuestatus-patch-color-cleared",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuestatus-patch-color-cleared",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/issuestatus-patch-color-cleared",
+      "type": "depends_on",
+      "to": "case:client/issuestatus-create-with-color-and-order"
+    },
+    {
+      "from": "case:client/issuestatus-patch-color-cleared",
       "type": "exercises",
       "to": "route:PATCH /api/v1/issuestatus/{id}"
     },
     {
-      "from": "case:client/issuestatus-patch-color-outside-palette-rejected",
+      "from": "case:client/issuestatus-patch-color-cleared",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuestatus-patch-color-name-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuestatus-patch-color-name-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuestatus-patch-color-name-rejected",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/issuestatus-patch-color-name-rejected",
+      "type": "depends_on",
+      "to": "case:client/issuestatus-create-with-color-and-order"
+    },
+    {
+      "from": "case:client/issuestatus-patch-color-name-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuestatus/{id}"
+    },
+    {
+      "from": "case:client/issuestatus-patch-color-name-rejected",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -58537,6 +58669,71 @@
       "from": "case:client/issuestatus-patch-conflicting-ids-rejected",
       "type": "uses_fixture",
       "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/issuestatus-patch-custom-color-saved-lowercase",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/issuestatus-patch-custom-color-saved-lowercase",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuestatus-patch-custom-color-saved-lowercase",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuestatus-patch-custom-color-saved-lowercase",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/issuestatus-patch-custom-color-saved-lowercase",
+      "type": "depends_on",
+      "to": "case:client/issuestatus-create-with-color-and-order"
+    },
+    {
+      "from": "case:client/issuestatus-patch-custom-color-saved-lowercase",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuestatus/{id}"
+    },
+    {
+      "from": "case:client/issuestatus-patch-custom-color-saved-lowercase",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuestatus-patch-invalid-hex-color-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuestatus-patch-invalid-hex-color-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuestatus-patch-invalid-hex-color-rejected",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/issuestatus-patch-invalid-hex-color-rejected",
+      "type": "depends_on",
+      "to": "case:client/issuestatus-create-with-color-and-order"
+    },
+    {
+      "from": "case:client/issuestatus-patch-invalid-hex-color-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuestatus/{id}"
+    },
+    {
+      "from": "case:client/issuestatus-patch-invalid-hex-color-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/issuestatus-rename-create-project-copy",

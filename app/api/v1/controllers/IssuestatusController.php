@@ -8,6 +8,7 @@ namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Libraries\Utils\ValueLabels;
 use Gaia\MVC\Models\Issue;
+use Gaia\MVC\Models\Issuestatus;
 use Gaia\MVC\REST\Controllers\Common\ValueLabelController;
 
 /**
@@ -16,7 +17,7 @@ use Gaia\MVC\REST\Controllers\Common\ValueLabelController;
  * Statuses are managed in Settings > Issue Statuses. Writes to system statuses
  * need setting.update (Issuestatus metadata, acl.systemRecords). This
  * controller adds what the Settings page needs on top of the REST defaults:
- * colours limited to the status palette, no deleting a status that issues
+ * colours limited to `#rrggbb` hex values, no deleting a status that issues
  * still use, and an opt-in issue count per status (`?issueCount=true`).
  *
  * A status is saved with its translated labels in one transaction, and the
@@ -29,13 +30,6 @@ use Gaia\MVC\REST\Controllers\Common\ValueLabelController;
  */
 class IssuestatusController extends ValueLabelController
 {
-    /**
-     * Colours a status may use (the palette Prometheus has used for statuses).
-     *
-     * @var array
-     */
-    public const COLORS = ['#80b5d3', '#b3244f', '#f7bf65', '#5ac594', '#e98a7e'];
-
     public $uses = ['Issuestatus'];
 
     /**
@@ -107,23 +101,50 @@ class IssuestatusController extends ValueLabelController
     }
 
     /**
-     * Return a 422 response when the payload sets a colour outside the palette.
+     * Update several statuses (e.g. a reorder); each colour sent must be valid.
+     *
+     * @return \Phalcon\Http\Response
+     */
+    public function patchCollectionAction()
+    {
+        $body = $this->request->getJsonRawBody(true);
+        $collection = is_array($body) && isset($body['collection']) && is_array($body['collection'])
+            ? $body['collection']
+            : [];
+
+        foreach ($collection as $record) {
+            $rejected = is_array($record) ? $this->rejectInvalidColor($record) : null;
+            if ($rejected) {
+                return $rejected;
+            }
+        }
+
+        return parent::patchCollectionAction();
+    }
+
+    /**
+     * Return a 422 response when the payload sets an invalid colour.
      *
      * @return \Phalcon\Http\Response|null
      */
     protected function rejectInvalidAttributes()
     {
-        $attributes = $this->requestAttributes();
+        return $this->rejectInvalidColor($this->requestAttributes());
+    }
 
-        if (!array_key_exists('color', $attributes) || $attributes['color'] === null) {
+    /**
+     * Return a 422 response when the attributes set a colour that is not `#rrggbb`.
+     *
+     * @param  array $attributes
+     * @return \Phalcon\Http\Response|null
+     */
+    protected function rejectInvalidColor(array $attributes)
+    {
+        if (!array_key_exists('color', $attributes) || Issuestatus::isValidColor($attributes['color'])) {
             return null;
         }
 
-        if (in_array($attributes['color'], self::COLORS, true)) {
-            return null;
-        }
-
-        return $this->unprocessable('Colour must be one of: ' . implode(', ', self::COLORS) . '.');
+        return $this->unprocessable('Colour must be a hex colour in the form #rrggbb, e.g. #1a2b3c.');
     }
 
     /**
