@@ -32,12 +32,14 @@ class WorkflowRecords
     public function find($model, $id)
     {
         $class = self::modelClass($model);
+        // `deleted` is a boolean on some tables and a smallint on others (issues), so it is
+        // checked here rather than compared in the query.
         $record = $class::findFirst([
-            'conditions' => 'id = :id: AND deleted = false',
+            'conditions' => 'id = :id:',
             'bind' => ['id' => (string) $id],
         ]);
 
-        return $record ?: null;
+        return $record && !$record->readAttribute('deleted') ? $record : null;
     }
 
     /**

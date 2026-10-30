@@ -64,6 +64,7 @@ $skipMutations = [
     'chatroom' => 'POST triggers Socket.IO; requires realtime server',
     'agentcredential' => 'POST rotates the seeded agent profile\'s secret and PATCH is refused; client cases cover it',
     'agenttool' => 'A grant names a tool server or a tool, not both; client and acl cases cover it',
+    'workflowrun' => 'A POST is a test run (test: true), not a create; client cases cover it',
     'workflowedge' => 'An edge joins two nodes of its workflow on a free port; client cases cover it',
 ];
 
@@ -99,6 +100,8 @@ $fixtureIds = [
     'workflowedge' => '{workflowedgeId}',
     'workflownode' => '{workflownodeId}',
     'workflowreference' => '{workflowreferenceId}',
+    'workflowrun' => '{workflowrunId}',
+    'workflowrunstep' => '{workflowrunstepId}',
 ];
 
 /** relatedTo/relatedId defaults inferred from metadata relationships / known modules. */

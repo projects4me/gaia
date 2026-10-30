@@ -132,6 +132,21 @@
             ],
             "identifier": "id"
         },
+        "workflowrun": {
+            "path": "/api/:version/workflowrun",
+            "allowedMethods": [
+                "GET",
+                "POST"
+            ],
+            "identifier": "id"
+        },
+        "workflowrunstep": {
+            "path": "/api/:version/workflowrunstep",
+            "allowedMethods": [
+                "GET"
+            ],
+            "identifier": "id"
+        },
         "workflowedge": {
             "path": "/api/:version/workflowedge",
             "allowedMethods": [

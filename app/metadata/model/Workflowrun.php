@@ -5,7 +5,7 @@
  */
 
 /**
- * One run of a workflow for an event: written by the workflow engine (RunJournal), never through the API.
+ * One run of a workflow for an event: written by the workflow engine (RunJournal), read through the API.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
@@ -56,6 +56,20 @@ $models['Workflowrun'] = array(
         'eventId' => array(
             'name' => 'eventId',
             'label' => 'LBL_WORKFLOW_RUNS_EVENT_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+        ),
+        'entityType' => array(
+            'name' => 'entityType',
+            'label' => 'LBL_WORKFLOW_RUNS_ENTITY_TYPE',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => true,
+        ),
+        'entityId' => array(
+            'name' => 'entityId',
+            'label' => 'LBL_WORKFLOW_RUNS_ENTITY_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => true,
@@ -138,6 +152,7 @@ $models['Workflowrun'] = array(
         'id' => 'primary',
         'workflowId' => 'index',
         'projectId' => 'index',
+        'entityId' => 'index',
         'parentRunId' => 'index',
         'status' => 'index',
     ),
@@ -179,6 +194,9 @@ $models['Workflowrun'] = array(
         'dateModifiedBehavior',
         'softDeleteBehavior'
     ),
+    'acl' => [
+        'groups' => ['Project'],
+    ],
 );
 
 return $models;

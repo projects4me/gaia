@@ -3195,6 +3195,60 @@
       "attributes": {}
     },
     {
+      "id": "action:workflowrun.get",
+      "type": "action",
+      "key": "workflowrun.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowrun.list",
+      "type": "action",
+      "key": "workflowrun.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowrun.options",
+      "type": "action",
+      "key": "workflowrun.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowrun.post",
+      "type": "action",
+      "key": "workflowrun.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowrun.related",
+      "type": "action",
+      "key": "workflowrun.related",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowrunstep.get",
+      "type": "action",
+      "key": "workflowrunstep.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowrunstep.list",
+      "type": "action",
+      "key": "workflowrunstep.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowrunstep.options",
+      "type": "action",
+      "key": "workflowrunstep.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowrunstep.related",
+      "type": "action",
+      "key": "workflowrunstep.related",
+      "attributes": {}
+    },
+    {
       "id": "assertion:attributesAbsent",
       "type": "assertion",
       "key": "attributesAbsent",
@@ -5610,6 +5664,98 @@
       }
     },
     {
+      "id": "case:acl/acl-members-workflowrun-detail-member-allowed",
+      "type": "case",
+      "key": "acl/acl-members-workflowrun-detail-member-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrun/{workflowrunId}",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "workflowrunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-workflowrun-detail-non-member-denied",
+      "type": "case",
+      "key": "acl/acl-members-workflowrun-detail-non-member-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrun/{otherProjectWorkflowrunId}",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectWorkflowrunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-workflowrun-list-member-only",
+      "type": "case",
+      "key": "acl/acl-members-workflowrun-list-member-only",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectWorkflowrunId",
+          "workflowrunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-workflowrunstep-detail-non-member-denied",
+      "type": "case",
+      "key": "acl/acl-members-workflowrunstep-detail-non-member-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrunstep/{otherProjectWorkflowrunstepId}",
+        "resource": "workflowrunstep",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectWorkflowrunstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-workflowrunstep-list-member-only",
+      "type": "case",
+      "key": "acl/acl-members-workflowrunstep-list-member-only",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrunstep",
+        "resource": "workflowrunstep",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectWorkflowrunstepId",
+          "workflowrunstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-perm-catalog-excludes-structural-fks",
       "type": "case",
       "key": "acl/acl-perm-catalog-excludes-structural-fks",
@@ -6654,6 +6800,41 @@
         "source": null,
         "placeholders": [
           "workflowreferenceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workflowrun-list-denied-acl-no-project",
+      "type": "case",
+      "key": "acl/acl-workflowrun-list-denied-acl-no-project",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workflowrun-test-run-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-workflowrun-test-run-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "workflowId"
         ],
         "stores": []
       }
@@ -9232,6 +9413,74 @@
       }
     },
     {
+      "id": "case:backend/get-workflowrun-api-v1-workflowrun",
+      "type": "case",
+      "key": "backend/get-workflowrun-api-v1-workflowrun",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflowrun-api-v1-workflowrun-id",
+      "type": "case",
+      "key": "backend/get-workflowrun-api-v1-workflowrun-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrun/{workflowrunId}",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workflowrunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflowrunstep-api-v1-workflowrunstep",
+      "type": "case",
+      "key": "backend/get-workflowrunstep-api-v1-workflowrunstep",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrunstep",
+        "resource": "workflowrunstep",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflowrunstep-api-v1-workflowrunstep-id",
+      "type": "case",
+      "key": "backend/get-workflowrunstep-api-v1-workflowrunstep-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrunstep/{workflowrunstepId}",
+        "resource": "workflowrunstep",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workflowrunstepId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/patch-activity-api-v1-activity-id",
       "type": "case",
       "key": "backend/patch-activity-api-v1-activity-id",
@@ -10518,6 +10767,24 @@
         "stores": [
           "runtime.workflownodeId"
         ]
+      }
+    },
+    {
+      "id": "case:backend/post-workflowrun-api-v1-workflowrun",
+      "type": "case",
+      "key": "backend/post-workflowrun-api-v1-workflowrun",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workflowId"
+        ],
+        "stores": []
       }
     },
     {
@@ -15887,6 +16154,158 @@
       }
     },
     {
+      "id": "case:client/workflowrun-lists-runs-per-entity",
+      "type": "case",
+      "key": "client/workflowrun-lists-runs-per-entity",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "otherProjectWorkflowrunId",
+          "workflowrunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowrun-lists-runs-per-workflow",
+      "type": "case",
+      "key": "client/workflowrun-lists-runs-per-workflow",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectWorkflowrunId",
+          "workflowId",
+          "workflowrunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowrun-post-without-test-is-refused",
+      "type": "case",
+      "key": "client/workflowrun-post-without-test-is-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workflowId",
+          "workflownodeId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowrun-runs-come-with-their-steps",
+      "type": "case",
+      "key": "client/workflowrun-runs-come-with-their-steps",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrun/{workflowrunId}",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workflowrunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowrun-test-run-left-no-run-behind",
+      "type": "case",
+      "key": "client/workflowrun-test-run-left-no-run-behind",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "workflowrunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowrun-test-run-of-an-unknown-record-is-404",
+      "type": "case",
+      "key": "client/workflowrun-test-run-of-an-unknown-record-is-404",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workflowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowrun-test-run-of-an-unknown-workflow-is-404",
+      "type": "case",
+      "key": "client/workflowrun-test-run-of-an-unknown-workflow-is-404",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowrun-test-run-returns-the-path-without-saving",
+      "type": "case",
+      "key": "client/workflowrun-test-run-returns-the-path-without-saving",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "workflowId",
+          "workflownodeId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:live/live-conversation-comment-create-publishes-comment-created",
       "type": "case",
       "key": "live/live-conversation-comment-create-publishes-comment-created",
@@ -16681,6 +17100,23 @@
         "extends": null,
         "implements": [],
         "hooks": []
+      }
+    },
+    {
+      "id": "component:Events\\Support\\LiveRecordEventEnvelopes",
+      "type": "component",
+      "key": "Events\\Support\\LiveRecordEventEnvelopes",
+      "attributes": {
+        "kind": "support",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\Support\\LiveRecordEventEnvelopes",
+        "file": "app/api/v1/controllers/components/events/support/LiveRecordEventEnvelopes.php",
+        "extends": null,
+        "implements": [
+          "RecordEventEnvelopes"
+        ],
+        "hooks": [
+          "envelope"
+        ]
       }
     },
     {
@@ -17785,6 +18221,28 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\WorkflowreferenceController",
         "file": "app/api/v1/controllers/WorkflowreferenceController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:workflowrun",
+      "type": "controller",
+      "key": "workflowrun",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\WorkflowrunController",
+        "file": "app/api/v1/controllers/WorkflowrunController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:workflowrunstep",
+      "type": "controller",
+      "key": "workflowrunstep",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\WorkflowrunstepController",
+        "file": "app/api/v1/controllers/WorkflowrunstepController.php",
         "extends": "RestController"
       }
     },
@@ -26411,6 +26869,28 @@
       }
     },
     {
+      "id": "field:Workflowrun.entityId",
+      "type": "field",
+      "key": "Workflowrun.entityId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_ENTITY_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrun.entityType",
+      "type": "field",
+      "key": "Workflowrun.entityType",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_ENTITY_TYPE",
+        "type": "varchar",
+        "length": "50",
+        "null": true
+      }
+    },
+    {
       "id": "field:Workflowrun.error",
       "type": "field",
       "key": "Workflowrun.error",
@@ -27030,6 +27510,22 @@
       }
     },
     {
+      "id": "fixture:otherProjectWorkflowrunId",
+      "type": "fixture",
+      "key": "otherProjectWorkflowrunId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:otherProjectWorkflowrunstepId",
+      "type": "fixture",
+      "key": "otherProjectWorkflowrunstepId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:otherUseridentityId",
       "type": "fixture",
       "key": "otherUseridentityId",
@@ -27201,6 +27697,22 @@
       "id": "fixture:workflowreferenceId",
       "type": "fixture",
       "key": "workflowreferenceId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:workflowrunId",
+      "type": "fixture",
+      "key": "workflowrunId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:workflowrunstepId",
+      "type": "fixture",
+      "key": "workflowrunstepId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -28352,7 +28864,11 @@
         "isView": false,
         "registered": true,
         "hasMetadata": true,
-        "acl": null
+        "acl": {
+          "groups": [
+            "Project"
+          ]
+        }
       }
     },
     {
@@ -28365,7 +28881,23 @@
         "isView": false,
         "registered": true,
         "hasMetadata": true,
-        "acl": null
+        "acl": {
+          "groups": [
+            "Project"
+          ],
+          "groupKeys": {
+            "Project": {
+              "paths": [
+                {
+                  "relatedModel": "Workflowrun",
+                  "localKey": "runId",
+                  "relatedKey": "id",
+                  "projectField": "projectId"
+                }
+              ]
+            }
+          }
+        }
       }
     },
     {
@@ -30312,6 +30844,78 @@
       "id": "permission:workflowreference.update",
       "type": "permission",
       "key": "workflowreference.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowrun.create",
+      "type": "permission",
+      "key": "workflowrun.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowrun.delete",
+      "type": "permission",
+      "key": "workflowrun.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowrun.get",
+      "type": "permission",
+      "key": "workflowrun.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowrun.update",
+      "type": "permission",
+      "key": "workflowrun.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowrunstep.create",
+      "type": "permission",
+      "key": "workflowrunstep.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowrunstep.delete",
+      "type": "permission",
+      "key": "workflowrunstep.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowrunstep.get",
+      "type": "permission",
+      "key": "workflowrunstep.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowrunstep.update",
+      "type": "permission",
+      "key": "workflowrunstep.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -35444,6 +36048,78 @@
       }
     },
     {
+      "id": "route:GET /api/v1/workflowrun",
+      "type": "route",
+      "key": "GET /api/v1/workflowrun",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowrun",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowrun"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowrun/{id}",
+      "type": "route",
+      "key": "GET /api/v1/workflowrun/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowrun",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowrun/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowrun/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/workflowrun/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowrun",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowrun/{id}/{relation}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowrunstep",
+      "type": "route",
+      "key": "GET /api/v1/workflowrunstep",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowrunstep",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowrunstep"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowrunstep/{id}",
+      "type": "route",
+      "key": "GET /api/v1/workflowrunstep/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowrunstep",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowrunstep/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowrunstep/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/workflowrunstep/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowrunstep",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowrunstep/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/activity",
       "type": "route",
       "key": "OPTIONS /api/v1/activity",
@@ -36137,6 +36813,30 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/workflowreference"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/workflowrun",
+      "type": "route",
+      "key": "OPTIONS /api/v1/workflowrun",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowrun",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/workflowrun"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/workflowrunstep",
+      "type": "route",
+      "key": "OPTIONS /api/v1/workflowrunstep",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowrunstep",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/workflowrunstep"
       }
     },
     {
@@ -37829,6 +38529,18 @@
         "version": "v1",
         "method": "POST",
         "path": "/api/v1/workflownode"
+      }
+    },
+    {
+      "id": "route:POST /api/v1/workflowrun",
+      "type": "route",
+      "key": "POST /api/v1/workflowrun",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowrun",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/workflowrun"
       }
     },
     {
@@ -40760,6 +41472,41 @@
       "from": "action:workflowreference.related",
       "type": "requires",
       "to": "permission:workflowreference.get"
+    },
+    {
+      "from": "action:workflowrun.get",
+      "type": "requires",
+      "to": "permission:workflowrun.get"
+    },
+    {
+      "from": "action:workflowrun.list",
+      "type": "requires",
+      "to": "permission:workflowrun.get"
+    },
+    {
+      "from": "action:workflowrun.post",
+      "type": "requires",
+      "to": "permission:workflowrun.create"
+    },
+    {
+      "from": "action:workflowrun.related",
+      "type": "requires",
+      "to": "permission:workflowrun.get"
+    },
+    {
+      "from": "action:workflowrunstep.get",
+      "type": "requires",
+      "to": "permission:workflowrunstep.get"
+    },
+    {
+      "from": "action:workflowrunstep.list",
+      "type": "requires",
+      "to": "permission:workflowrunstep.get"
+    },
+    {
+      "from": "action:workflowrunstep.related",
+      "type": "requires",
+      "to": "permission:workflowrunstep.get"
     },
     {
       "from": "case:acl/acl-admin-comment-allowed",
@@ -44437,6 +45184,201 @@
       "to": "fixture:projectId"
     },
     {
+      "from": "case:acl/acl-members-workflowrun-detail-member-allowed",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-member-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-member-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-member-allowed",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-member-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrun/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-member-allowed",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-member-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:workflowrunId"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-non-member-denied",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-non-member-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrun/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-non-member-denied",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-detail-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectWorkflowrunId"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-list-member-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-list-member-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-list-member-only",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-list-member-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrun"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-list-member-only",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectWorkflowrunId"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrun-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:workflowrunId"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-detail-non-member-denied",
+      "type": "covers",
+      "to": "controller:workflowrunstep"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-detail-non-member-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrunstep/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-detail-non-member-denied",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-detail-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectWorkflowrunstepId"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-list-member-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-list-member-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-list-member-only",
+      "type": "covers",
+      "to": "controller:workflowrunstep"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-list-member-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrunstep"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-list-member-only",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectWorkflowrunstepId"
+    },
+    {
+      "from": "case:acl/acl-members-workflowrunstep-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:workflowrunstepId"
+    },
+    {
       "from": "case:acl/acl-perm-catalog-excludes-structural-fks",
       "type": "asserts",
       "to": "assertion:resourceNamesAbsent"
@@ -46405,6 +47347,76 @@
       "from": "case:acl/acl-workflowreference-detail-denied-acl-members",
       "type": "uses_fixture",
       "to": "fixture:workflowreferenceId"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-list-denied-acl-no-project",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-list-denied-acl-no-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-list-denied-acl-no-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-list-denied-acl-no-project",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-list-denied-acl-no-project",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrun"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-list-denied-acl-no-project",
+      "type": "runs_as",
+      "to": "profile:aclNoProject"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-acl-members",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-acl-members",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowrun"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
     },
     {
       "from": "case:backend/delete-activity-api-v1-activity-runtime-id",
@@ -50917,6 +51929,126 @@
       "to": "fixture:workflowreferenceId"
     },
     {
+      "from": "case:backend/get-workflowrun-api-v1-workflowrun",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflowrun-api-v1-workflowrun",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflowrun-api-v1-workflowrun",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:backend/get-workflowrun-api-v1-workflowrun",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrun"
+    },
+    {
+      "from": "case:backend/get-workflowrun-api-v1-workflowrun",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflowrun-api-v1-workflowrun-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workflowrun-api-v1-workflowrun-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflowrun-api-v1-workflowrun-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflowrun-api-v1-workflowrun-id",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:backend/get-workflowrun-api-v1-workflowrun-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrun/{id}"
+    },
+    {
+      "from": "case:backend/get-workflowrun-api-v1-workflowrun-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflowrun-api-v1-workflowrun-id",
+      "type": "uses_fixture",
+      "to": "fixture:workflowrunId"
+    },
+    {
+      "from": "case:backend/get-workflowrunstep-api-v1-workflowrunstep",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflowrunstep-api-v1-workflowrunstep",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflowrunstep-api-v1-workflowrunstep",
+      "type": "covers",
+      "to": "controller:workflowrunstep"
+    },
+    {
+      "from": "case:backend/get-workflowrunstep-api-v1-workflowrunstep",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrunstep"
+    },
+    {
+      "from": "case:backend/get-workflowrunstep-api-v1-workflowrunstep",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflowrunstep-api-v1-workflowrunstep-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workflowrunstep-api-v1-workflowrunstep-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflowrunstep-api-v1-workflowrunstep-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflowrunstep-api-v1-workflowrunstep-id",
+      "type": "covers",
+      "to": "controller:workflowrunstep"
+    },
+    {
+      "from": "case:backend/get-workflowrunstep-api-v1-workflowrunstep-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrunstep/{id}"
+    },
+    {
+      "from": "case:backend/get-workflowrunstep-api-v1-workflowrunstep-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflowrunstep-api-v1-workflowrunstep-id",
+      "type": "uses_fixture",
+      "to": "fixture:workflowrunstepId"
+    },
+    {
       "from": "case:backend/patch-activity-api-v1-activity-id",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -53093,6 +54225,36 @@
     },
     {
       "from": "case:backend/post-workflownode-api-v1-workflownode",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
+    },
+    {
+      "from": "case:backend/post-workflowrun-api-v1-workflowrun",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-workflowrun-api-v1-workflowrun",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-workflowrun-api-v1-workflowrun",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:backend/post-workflowrun-api-v1-workflowrun",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowrun"
+    },
+    {
+      "from": "case:backend/post-workflowrun-api-v1-workflowrun",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-workflowrun-api-v1-workflowrun",
       "type": "uses_fixture",
       "to": "fixture:workflowId"
     },
@@ -62862,6 +64024,321 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/workflowrun-lists-runs-per-entity",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-entity",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-entity",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-entity",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-entity",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-entity",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-entity",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-entity",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-entity",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectWorkflowrunId"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-entity",
+      "type": "uses_fixture",
+      "to": "fixture:workflowrunId"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-workflow",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-workflow",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-workflow",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-workflow",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-workflow",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-workflow",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-workflow",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectWorkflowrunId"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-workflow",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
+    },
+    {
+      "from": "case:client/workflowrun-lists-runs-per-workflow",
+      "type": "uses_fixture",
+      "to": "fixture:workflowrunId"
+    },
+    {
+      "from": "case:client/workflowrun-post-without-test-is-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowrun-post-without-test-is-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowrun-post-without-test-is-refused",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-post-without-test-is-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-post-without-test-is-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowrun-post-without-test-is-refused",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
+    },
+    {
+      "from": "case:client/workflowrun-post-without-test-is-refused",
+      "type": "uses_fixture",
+      "to": "fixture:workflownodeId"
+    },
+    {
+      "from": "case:client/workflowrun-runs-come-with-their-steps",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/workflowrun-runs-come-with-their-steps",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowrun-runs-come-with-their-steps",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowrun-runs-come-with-their-steps",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-runs-come-with-their-steps",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrun/{id}"
+    },
+    {
+      "from": "case:client/workflowrun-runs-come-with-their-steps",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowrun-runs-come-with-their-steps",
+      "type": "uses_fixture",
+      "to": "fixture:workflowrunId"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-left-no-run-behind",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-left-no-run-behind",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-left-no-run-behind",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-left-no-run-behind",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-left-no-run-behind",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-left-no-run-behind",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-left-no-run-behind",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-left-no-run-behind",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-left-no-run-behind",
+      "type": "uses_fixture",
+      "to": "fixture:workflowrunId"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-of-an-unknown-record-is-404",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-of-an-unknown-record-is-404",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-of-an-unknown-record-is-404",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-of-an-unknown-record-is-404",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-of-an-unknown-record-is-404",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-of-an-unknown-record-is-404",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-of-an-unknown-workflow-is-404",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-of-an-unknown-workflow-is-404",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-of-an-unknown-workflow-is-404",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-of-an-unknown-workflow-is-404",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-of-an-unknown-workflow-is-404",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-of-an-unknown-workflow-is-404",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-returns-the-path-without-saving",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-returns-the-path-without-saving",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-returns-the-path-without-saving",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-returns-the-path-without-saving",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-returns-the-path-without-saving",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowrun"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-returns-the-path-without-saving",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-returns-the-path-without-saving",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-returns-the-path-without-saving",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
+    },
+    {
+      "from": "case:client/workflowrun-test-run-returns-the-path-without-saving",
+      "type": "uses_fixture",
+      "to": "fixture:workflownodeId"
+    },
+    {
       "from": "case:live/live-conversation-comment-create-publishes-comment-created",
       "type": "asserts",
       "to": "assertion:hermes.expect"
@@ -66925,6 +68402,61 @@
       "from": "controller:workflowreference",
       "type": "serves",
       "to": "model:Workflowreference"
+    },
+    {
+      "from": "controller:workflowrun",
+      "type": "has_action",
+      "to": "action:workflowrun.get"
+    },
+    {
+      "from": "controller:workflowrun",
+      "type": "has_action",
+      "to": "action:workflowrun.list"
+    },
+    {
+      "from": "controller:workflowrun",
+      "type": "has_action",
+      "to": "action:workflowrun.options"
+    },
+    {
+      "from": "controller:workflowrun",
+      "type": "has_action",
+      "to": "action:workflowrun.post"
+    },
+    {
+      "from": "controller:workflowrun",
+      "type": "has_action",
+      "to": "action:workflowrun.related"
+    },
+    {
+      "from": "controller:workflowrun",
+      "type": "serves",
+      "to": "model:Workflowrun"
+    },
+    {
+      "from": "controller:workflowrunstep",
+      "type": "has_action",
+      "to": "action:workflowrunstep.get"
+    },
+    {
+      "from": "controller:workflowrunstep",
+      "type": "has_action",
+      "to": "action:workflowrunstep.list"
+    },
+    {
+      "from": "controller:workflowrunstep",
+      "type": "has_action",
+      "to": "action:workflowrunstep.options"
+    },
+    {
+      "from": "controller:workflowrunstep",
+      "type": "has_action",
+      "to": "action:workflowrunstep.related"
+    },
+    {
+      "from": "controller:workflowrunstep",
+      "type": "serves",
+      "to": "model:Workflowrunstep"
     },
     {
       "from": "field:Activity.createdUserName",
@@ -73714,6 +75246,16 @@
     {
       "from": "model:Workflowrun",
       "type": "has_field",
+      "to": "field:Workflowrun.entityId"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.entityType"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
       "to": "field:Workflowrun.error"
     },
     {
@@ -74208,6 +75750,11 @@
     },
     {
       "from": "profile:aclMembers",
+      "type": "denies",
+      "to": "permission:workflowrun.create"
+    },
+    {
+      "from": "profile:aclMembers",
       "type": "grants",
       "to": "permission:comment.get"
     },
@@ -74265,6 +75812,16 @@
       "from": "profile:aclMembers",
       "type": "grants",
       "to": "permission:issue.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:workflowrun.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:workflowrunstep.get"
     },
     {
       "from": "profile:aclMembers",
@@ -75305,6 +76862,46 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:workflowreference.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowrun.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowrun.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowrun.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowrun.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowrunstep.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowrunstep.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowrunstep.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowrunstep.update"
     },
     {
       "from": "relationship:Activity.createdBy",
@@ -77587,6 +79184,36 @@
       "to": "action:workflowreference.related"
     },
     {
+      "from": "route:GET /api/v1/workflowrun",
+      "type": "handled_by",
+      "to": "action:workflowrun.list"
+    },
+    {
+      "from": "route:GET /api/v1/workflowrun/{id}",
+      "type": "handled_by",
+      "to": "action:workflowrun.get"
+    },
+    {
+      "from": "route:GET /api/v1/workflowrun/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:workflowrun.related"
+    },
+    {
+      "from": "route:GET /api/v1/workflowrunstep",
+      "type": "handled_by",
+      "to": "action:workflowrunstep.list"
+    },
+    {
+      "from": "route:GET /api/v1/workflowrunstep/{id}",
+      "type": "handled_by",
+      "to": "action:workflowrunstep.get"
+    },
+    {
+      "from": "route:GET /api/v1/workflowrunstep/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:workflowrunstep.related"
+    },
+    {
       "from": "route:OPTIONS /api/v1/activity",
       "type": "handled_by",
       "to": "action:activity.options"
@@ -77875,6 +79502,16 @@
       "from": "route:OPTIONS /api/v1/workflowreference",
       "type": "handled_by",
       "to": "action:workflowreference.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/workflowrun",
+      "type": "handled_by",
+      "to": "action:workflowrun.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/workflowrunstep",
+      "type": "handled_by",
+      "to": "action:workflowrunstep.options"
     },
     {
       "from": "route:PATCH /api/v1/activity",
@@ -78580,6 +80217,11 @@
       "from": "route:POST /api/v1/workflownode",
       "type": "handled_by",
       "to": "action:workflownode.post"
+    },
+    {
+      "from": "route:POST /api/v1/workflowrun",
+      "type": "handled_by",
+      "to": "action:workflowrun.post"
     },
     {
       "from": "route:PUT /api/v1/activity",

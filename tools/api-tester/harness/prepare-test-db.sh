@@ -487,7 +487,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -1119,6 +1119,37 @@ INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "
 VALUES
   ('atp-acl-mem-workflowactorstep-get', 'api-test-role-acl-mem', 'workflowactorstep.get', 0, NOW(), NOW());
 
+-- Workflowrun and Workflowrunstep: one run with a step in the member's project, one in another project.
+-- The runs carry the entity they were for, so the list filters have something to find.
+INSERT INTO workflow_runs (
+  id, "workflowId", "workflowVersion", "triggerNodeId", "eventName", "eventId", "entityType", "entityId",
+  "projectId", depth, status, inputs, "startedAt", "finishedAt", deleted, "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workflowrun-000001', 'api-test-workflow-000001', 1, 'api-test-workflownode-000001', 'issue.created',
+   'api-test-event-000001', 'issue', 'api-test-issue-000001', 'api-test-project-001', 0, 'completed', '{}',
+   NOW(), NOW(), FALSE, NOW(), NOW()),
+  ('api-test-workflowrun-000002', 'api-test-workflow-000001', 1, 'api-test-workflownode-000001', 'issue.created',
+   'api-test-event-000002', 'issue', 'api-test-issue-000003', 'api-test-project-002', 0, 'completed', '{}',
+   NOW(), NOW(), FALSE, NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE, "entityType" = EXCLUDED."entityType",
+  "entityId" = EXCLUDED."entityId", "projectId" = EXCLUDED."projectId";
+
+INSERT INTO workflow_run_steps (
+  id, "runId", sequence, "nodeId", category, kind, status, port, inputs, outputs, "startedAt", "finishedAt",
+  "durationMs", deleted, "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workflowrunstep-000001', 'api-test-workflowrun-000001', 1, 'api-test-workflownode-000001', 'trigger',
+   'issue.created', 'completed', 'next', '{}', '{}', NOW(), NOW(), 0, FALSE, NOW(), NOW()),
+  ('api-test-workflowrunstep-000002', 'api-test-workflowrun-000002', 1, 'api-test-workflownode-000001', 'trigger',
+   'issue.created', 'completed', 'next', '{}', '{}', NOW(), NOW(), 0, FALSE, NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-mem-workflowrun-get', 'api-test-role-acl-mem', 'workflowrun.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-workflowrun-create', 'api-test-role-acl-mem', 'workflowrun.create', 0, NOW(), NOW()),
+  ('atp-acl-mem-workflowrunstep-get', 'api-test-role-acl-mem', 'workflowrunstep.get', 1, NOW(), NOW());
+
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
   '"issues_issueNumber_seq"',
@@ -1239,6 +1270,10 @@ data = {
     "workflownodeId": "api-test-workflownode-000001",
     "workflowedgeId": "api-test-workflowedge-000001",
     "workflowreferenceId": "api-test-workflowreference-000001",
+    "workflowrunId": "api-test-workflowrun-000001",
+    "otherProjectWorkflowrunId": "api-test-workflowrun-000002",
+    "workflowrunstepId": "api-test-workflowrunstep-000001",
+    "otherProjectWorkflowrunstepId": "api-test-workflowrunstep-000002",
     "workflowactorstepId": "api-test-workflowactorstep-000001",
     "otherWorkflowactorstepId": "api-test-workflowactorstep-000002",
     "params.c_id": "api-test-convroom-001",

@@ -164,6 +164,21 @@ $models['Workflowrunstep'] = array(
         'dateModifiedBehavior',
         'softDeleteBehavior'
     ),
+    'acl' => [
+        'groups' => ['Project'],
+        'groupKeys' => [
+            'Project' => [
+                'paths' => [
+                    [
+                        'relatedModel' => 'Workflowrun',
+                        'localKey' => 'runId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'projectId',
+                    ],
+                ],
+            ],
+        ],
+    ],
 );
 
 return $models;

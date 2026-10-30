@@ -30,12 +30,17 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
     /**
      * The most steps one run takes, so a cycle in the graph ends.
      */
-    public const MAX_STEPS = 100;
+    public const MAX_STEPS = WorkflowWalk::MAX_STEPS;
 
     /**
      * @var WorkflowGraphReader
      */
     private $graph;
+
+    /**
+     * @var WorkflowWalk
+     */
+    private $walk;
 
     /**
      * @var RunJournal
@@ -100,6 +105,7 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
         $this->conditions = new ConditionEvaluator($this->expressions);
         $this->events = $events;
         $this->graph = $graph ?: new WorkflowGraphReader();
+        $this->walk = new WorkflowWalk($this->graph);
         $this->journal = $journal ?: new RunJournal();
         $this->actions = $actions ?: new ActionCatalog(new WorkflowRecords(), $users, $this->expressions);
         $this->actors = $actors
@@ -124,6 +130,7 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
             return;
         }
 
+        $resource = isset($payload['resource']) && is_array($payload['resource']) ? $payload['resource'] : [];
         try {
             $runId = $this->journal->start([
                 'workflowId' => $workflow['id'],
@@ -131,6 +138,8 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
                 'triggerNodeId' => $triggerNodeId,
                 'eventName' => isset($payload['eventName']) ? $payload['eventName'] : null,
                 'eventId' => isset($payload['eventId']) ? $payload['eventId'] : null,
+                'entityType' => isset($resource['type']) ? $resource['type'] : null,
+                'entityId' => isset($resource['id']) ? $resource['id'] : null,
                 'projectId' => isset($payload['projectId']) ? $payload['projectId'] : null,
                 'parentRunId' => LoopGuard::parentRunId($payload),
                 'depth' => LoopGuard::depth($payload),
@@ -202,13 +211,13 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
             if ($workflow === null || $workflow['status'] !== WorkflowStatus::ACTIVE) {
                 return [RunStatus::FAILED, 'The workflow is no longer active.'];
             }
-            list(, $next) = $this->graphOf($context->workflow['id']);
-            if (!isset($next[$step['nodeId']][$port])) {
+            $nodeId = $this->walk->next($context->workflow['id'], $step['nodeId'], $port);
+            if ($nodeId === null) {
                 return [RunStatus::COMPLETED, null];
             }
 
             return $this->walk(
-                $next[$step['nodeId']][$port],
+                $nodeId,
                 $context,
                 $this->journal->lastSequence($context->runId) + 1
             );
@@ -265,27 +274,7 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
     }
 
     /**
-     * The workflow's nodes by id and the node each port leads to.
-     *
-     * @param  string $workflowId
-     * @return array [nodes, next]
-     */
-    private function graphOf($workflowId)
-    {
-        $nodes = [];
-        foreach ($this->graph->nodes($workflowId) as $node) {
-            $nodes[$node['id']] = $node;
-        }
-        $next = [];
-        foreach ($this->graph->edges($workflowId) as $edge) {
-            $next[$edge['fromNodeId']][$edge['fromPort']] = $edge['toNodeId'];
-        }
-
-        return [$nodes, $next];
-    }
-
-    /**
-     * Takes the steps from a node on.
+     * Takes the steps from a node on, carrying each one out and journaling it.
      *
      * @param  string     $nodeId
      * @param  RunContext $context
@@ -294,14 +283,8 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
      */
     private function walk($nodeId, RunContext $context, $first)
     {
-        list($nodes, $next) = $this->graphOf($context->workflow['id']);
-
-        for ($sequence = $first; $sequence < $first + self::MAX_STEPS; $sequence++) {
-            if (!isset($nodes[$nodeId])) {
-                return [RunStatus::FAILED, "Node {$nodeId} is not in the workflow."];
-            }
-
-            $step = $this->step($nodes[$nodeId], $context, $sequence);
+        return $this->walk->from($context->workflow['id'], $nodeId, $first, function (array $node, $sequence) use ($context) {
+            $step = $this->step($node, $context, $sequence);
             try {
                 $this->journal->step($context->runId, $step);
             } finally {
@@ -310,19 +293,8 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
                 $this->raiseChanges($context);
             }
 
-            if ($step['status'] === RunStatus::FAILED) {
-                return [RunStatus::FAILED, $step['error']];
-            }
-            if ($step['status'] === RunStatus::WAITING) {
-                return [RunStatus::WAITING, null];
-            }
-            if ($step['port'] === null || !isset($next[$nodeId][$step['port']])) {
-                return [RunStatus::COMPLETED, null];
-            }
-            $nodeId = $next[$nodeId][$step['port']];
-        }
-
-        return [RunStatus::FAILED, 'The run took more than ' . self::MAX_STEPS . ' steps.'];
+            return $step;
+        });
     }
 
     /**
