@@ -31,5 +31,5 @@
 - acl: group Project via projectId
 - controller: Gaia\MVC\REST\Controllers\TimelogController
 - routes: DELETE /api/v1/timelog, DELETE /api/v1/timelog/{id}, GET /api/v1/timelog, GET /api/v1/timelog/{id}, GET /api/v1/timelog/{id}/{relation}, OPTIONS /api/v1/timelog, PATCH /api/v1/timelog, PATCH /api/v1/timelog/{id}, POST /api/v1/timelog, PUT /api/v1/timelog, PUT /api/v1/timelog/{id}
-- components: Notification, Timelogged
+- components: Events\WorkflowTriggers, Notification, Timelogged
 - cases: 11 (backend 6, client 5); gaia-dev cases timelog

@@ -117,6 +117,13 @@
             ],
             "identifier": "id"
         },
+        "workflowevent": {
+            "path": "/api/:version/workflowevent",
+            "allowedMethods": [
+                "GET"
+            ],
+            "identifier": "id"
+        },
         "workflowedge": {
             "path": "/api/:version/workflowedge",
             "allowedMethods": [

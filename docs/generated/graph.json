@@ -3045,6 +3045,30 @@
       "attributes": {}
     },
     {
+      "id": "action:workflowevent.get",
+      "type": "action",
+      "key": "workflowevent.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowevent.list",
+      "type": "action",
+      "key": "workflowevent.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowevent.options",
+      "type": "action",
+      "key": "workflowevent.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowevent.related",
+      "type": "action",
+      "key": "workflowevent.related",
+      "attributes": {}
+    },
+    {
       "id": "action:workflownode.delete",
       "type": "action",
       "key": "workflownode.delete",
@@ -6449,6 +6473,54 @@
       }
     },
     {
+      "id": "case:acl/acl-workflowevent-has-no-detail",
+      "type": "case",
+      "key": "acl/acl-workflowevent-has-no-detail",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowevent/schedule",
+        "resource": "workflowevent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workflowevent-list-allowed-default",
+      "type": "case",
+      "key": "acl/acl-workflowevent-list-allowed-default",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowevent",
+        "resource": "workflowevent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workflowevent-list-denied-without-grant",
+      "type": "case",
+      "key": "acl/acl-workflowevent-list-denied-without-grant",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowevent",
+        "resource": "workflowevent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-workflownode-denied-acl-members",
       "type": "case",
       "key": "acl/acl-workflownode-denied-acl-members",
@@ -8950,6 +9022,22 @@
         "placeholders": [
           "workflowedgeId"
         ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflowevent-api-v1-workflowevent",
+      "type": "case",
+      "key": "backend/get-workflowevent-api-v1-workflowevent",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflowevent",
+        "resource": "workflowevent",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [],
         "stores": []
       }
     },
@@ -16328,6 +16416,22 @@
       }
     },
     {
+      "id": "component:Events\\WorkflowTriggers",
+      "type": "component",
+      "key": "Events\\WorkflowTriggers",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\WorkflowTriggersComponent",
+        "file": "app/api/v1/controllers/components/events/WorkflowTriggersComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate"
+        ]
+      }
+    },
+    {
       "id": "component:Fileattachment",
       "type": "component",
       "key": "Fileattachment",
@@ -17334,6 +17438,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\WorkflowedgeController",
         "file": "app/api/v1/controllers/WorkflowedgeController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:workflowevent",
+      "type": "controller",
+      "key": "workflowevent",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\WorkfloweventController",
+        "file": "app/api/v1/controllers/WorkfloweventController.php",
         "extends": "RestController"
       }
     },
@@ -29060,6 +29175,42 @@
       }
     },
     {
+      "id": "permission:workflowevent.create",
+      "type": "permission",
+      "key": "workflowevent.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowevent.delete",
+      "type": "permission",
+      "key": "workflowevent.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowevent.get",
+      "type": "permission",
+      "key": "workflowevent.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowevent.update",
+      "type": "permission",
+      "key": "workflowevent.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
       "id": "permission:workflownode.create",
       "type": "permission",
       "key": "workflownode.create",
@@ -34024,6 +34175,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/workflowevent",
+      "type": "route",
+      "key": "GET /api/v1/workflowevent",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowevent",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowevent"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowevent/{id}",
+      "type": "route",
+      "key": "GET /api/v1/workflowevent/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowevent",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowevent/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowevent/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/workflowevent/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowevent",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowevent/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:GET /api/v1/workflownode",
       "type": "route",
       "key": "GET /api/v1/workflownode",
@@ -34741,6 +34928,18 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/workflowedge"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/workflowevent",
+      "type": "route",
+      "key": "OPTIONS /api/v1/workflowevent",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowevent",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/workflowevent"
       }
     },
     {
@@ -39269,6 +39468,21 @@
       "from": "action:workflowedge.related",
       "type": "requires",
       "to": "permission:workflowedge.get"
+    },
+    {
+      "from": "action:workflowevent.get",
+      "type": "requires",
+      "to": "permission:workflowevent.get"
+    },
+    {
+      "from": "action:workflowevent.list",
+      "type": "requires",
+      "to": "permission:workflowevent.get"
+    },
+    {
+      "from": "action:workflowevent.related",
+      "type": "requires",
+      "to": "permission:workflowevent.get"
     },
     {
       "from": "action:workflownode.delete",
@@ -44681,6 +44895,101 @@
       "to": "fixture:workflowedgeId"
     },
     {
+      "from": "case:acl/acl-workflowevent-has-no-detail",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-has-no-detail",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-has-no-detail",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-has-no-detail",
+      "type": "covers",
+      "to": "controller:workflowevent"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-has-no-detail",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowevent/{id}"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-has-no-detail",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-allowed-default",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-allowed-default",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-allowed-default",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-allowed-default",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-allowed-default",
+      "type": "covers",
+      "to": "controller:workflowevent"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-allowed-default",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowevent"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-allowed-default",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-denied-without-grant",
+      "type": "covers",
+      "to": "controller:workflowevent"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-denied-without-grant",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowevent"
+    },
+    {
+      "from": "case:acl/acl-workflowevent-list-denied-without-grant",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
       "from": "case:acl/acl-workflownode-denied-acl-members",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -49079,6 +49388,31 @@
       "from": "case:backend/get-workflowedge-api-v1-workflowedge-id",
       "type": "uses_fixture",
       "to": "fixture:workflowedgeId"
+    },
+    {
+      "from": "case:backend/get-workflowevent-api-v1-workflowevent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflowevent-api-v1-workflowevent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflowevent-api-v1-workflowevent",
+      "type": "covers",
+      "to": "controller:workflowevent"
+    },
+    {
+      "from": "case:backend/get-workflowevent-api-v1-workflowevent",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowevent"
+    },
+    {
+      "from": "case:backend/get-workflowevent-api-v1-workflowevent",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:backend/get-workflownode-api-v1-workflownode",
@@ -62383,6 +62717,11 @@
     {
       "from": "controller:comment",
       "type": "uses_component",
+      "to": "component:Events\\WorkflowTriggers"
+    },
+    {
+      "from": "controller:comment",
+      "type": "uses_component",
       "to": "component:Issuemention"
     },
     {
@@ -62894,6 +63233,11 @@
       "from": "controller:issue",
       "type": "uses_component",
       "to": "component:Events\\IssueLiveEvents"
+    },
+    {
+      "from": "controller:issue",
+      "type": "uses_component",
+      "to": "component:Events\\WorkflowTriggers"
     },
     {
       "from": "controller:issue",
@@ -64003,6 +64347,11 @@
     {
       "from": "controller:timelog",
       "type": "uses_component",
+      "to": "component:Events\\WorkflowTriggers"
+    },
+    {
+      "from": "controller:timelog",
+      "type": "uses_component",
       "to": "component:Notification"
     },
     {
@@ -64668,6 +65017,11 @@
     {
       "from": "controller:wiki",
       "type": "uses_component",
+      "to": "component:Events\\WorkflowTriggers"
+    },
+    {
+      "from": "controller:wiki",
+      "type": "uses_component",
       "to": "component:Filethumb"
     },
     {
@@ -64789,6 +65143,26 @@
       "from": "controller:workflowedge",
       "type": "serves",
       "to": "model:Workflowedge"
+    },
+    {
+      "from": "controller:workflowevent",
+      "type": "has_action",
+      "to": "action:workflowevent.get"
+    },
+    {
+      "from": "controller:workflowevent",
+      "type": "has_action",
+      "to": "action:workflowevent.list"
+    },
+    {
+      "from": "controller:workflowevent",
+      "type": "has_action",
+      "to": "action:workflowevent.options"
+    },
+    {
+      "from": "controller:workflowevent",
+      "type": "has_action",
+      "to": "action:workflowevent.related"
     },
     {
       "from": "controller:workflownode",
@@ -71947,6 +72321,11 @@
     },
     {
       "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:workflowevent.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
       "type": "grants",
       "to": "permission:agentcredential.create"
     },
@@ -72784,6 +73163,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:workflowedge.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowevent.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowevent.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowevent.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowevent.update"
     },
     {
       "from": "profile:default",
@@ -75001,6 +75400,21 @@
       "to": "action:workflowedge.related"
     },
     {
+      "from": "route:GET /api/v1/workflowevent",
+      "type": "handled_by",
+      "to": "action:workflowevent.list"
+    },
+    {
+      "from": "route:GET /api/v1/workflowevent/{id}",
+      "type": "handled_by",
+      "to": "action:workflowevent.get"
+    },
+    {
+      "from": "route:GET /api/v1/workflowevent/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:workflowevent.related"
+    },
+    {
       "from": "route:GET /api/v1/workflownode",
       "type": "handled_by",
       "to": "action:workflownode.list"
@@ -75299,6 +75713,11 @@
       "from": "route:OPTIONS /api/v1/workflowedge",
       "type": "handled_by",
       "to": "action:workflowedge.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/workflowevent",
+      "type": "handled_by",
+      "to": "action:workflowevent.options"
     },
     {
       "from": "route:OPTIONS /api/v1/workflownode",

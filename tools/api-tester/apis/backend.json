@@ -8,12 +8,12 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 213,
+        "total": 214,
         "enabled": 198,
-        "disabled": 15,
-        "routeResources": 56,
+        "disabled": 16,
+        "routeResources": 57,
         "withMetadata": 42,
-        "skippedResources": 12
+        "skippedResources": 13
     },
     "apis": [
         {
@@ -843,6 +843,24 @@
                     "{workflowreferenceId}"
                 ]
             },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workflowevent-api-v1-workflowevent",
+            "method": "GET",
+            "path": "/api/v1/workflowevent",
+            "resource": "workflowevent",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "json"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "enabled": false,
+            "skipReason": "No app/metadata/model for resource",
             "source": "backend-metadata"
         },
         {

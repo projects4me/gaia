@@ -24,5 +24,5 @@ class CommentController extends RestController
      * @var  $uses
      * @type array
      */
-    public $uses = ['Notification', 'Issuemention', 'Events\\ConversationCommentLiveEvents'];
+    public $uses = ['Notification', 'Issuemention', 'Events\\ConversationCommentLiveEvents', 'Events\\WorkflowTriggers'];
 }

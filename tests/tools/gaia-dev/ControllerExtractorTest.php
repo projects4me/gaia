@@ -43,7 +43,7 @@ class ControllerExtractorTest extends TestCase
     {
         $records = array_column((new ControllerExtractor(dirname(__DIR__, 3)))->extract(), null, 'name');
 
-        $this->assertSame(['Filethumb', 'Issueactivities', 'Notification', 'Events\IssueLiveEvents'], $records['issue']['uses']);
+        $this->assertSame(['Filethumb', 'Issueactivities', 'Notification', 'Events\IssueLiveEvents', 'Events\WorkflowTriggers'], $records['issue']['uses']);
         $this->assertContains('index', $records['index']['actions']);
     }
 }

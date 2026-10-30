@@ -23,6 +23,6 @@ class WikiController extends RestController
      *
      * @var array $uses
      */
-    public $uses = array('Filethumb');
+    public $uses = array('Filethumb', 'Events\\WorkflowTriggers');
 
 }

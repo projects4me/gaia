@@ -33,5 +33,5 @@
 - acl: group Project via projectId
 - controller: Gaia\MVC\REST\Controllers\WikiController
 - routes: DELETE /api/v1/wiki, DELETE /api/v1/wiki/{id}, GET /api/v1/wiki, GET /api/v1/wiki/{id}, GET /api/v1/wiki/{id}/{relation}, OPTIONS /api/v1/wiki, PATCH /api/v1/wiki, PATCH /api/v1/wiki/{id}, POST /api/v1/wiki, PUT /api/v1/wiki, PUT /api/v1/wiki/{id}
-- components: Filethumb
+- components: Events\WorkflowTriggers, Filethumb
 - cases: 6 (backend 5, client 1); gaia-dev cases wiki

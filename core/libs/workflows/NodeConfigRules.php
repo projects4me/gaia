@@ -89,6 +89,11 @@ class NodeConfigRules
         if ($type === 'cases') {
             return $this->casesError($name, $value);
         }
+        if ($type === 'cron') {
+            $error = CronExpression::error($value);
+
+            return $error === null ? null : "config.{$name} {$error}";
+        }
 
         return $this->isText($value) ? null : "config.{$name} must be a non-empty string.";
     }

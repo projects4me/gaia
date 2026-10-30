@@ -144,6 +144,13 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'workflowevent' => array(
+                'path' => '/api/:version/workflowevent',
+                'allowedMethods' => array(
+                    'GET',
+                ),
+                'identifier' => 'id',
+            ),
             'workflowedge' => array(
                 'path' => '/api/:version/workflowedge',
                 'allowedMethods' => array(
