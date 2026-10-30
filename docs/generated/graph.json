@@ -6840,6 +6840,25 @@
       }
     },
     {
+      "id": "case:acl/acl-workflowrun-test-run-denied-without-node-config-read-acl-project-only",
+      "type": "case",
+      "key": "acl/acl-workflowrun-test-run-denied-without-node-config-read-acl-project-only",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/workflowrun",
+        "resource": "workflowrun",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "workflowId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-workflowrun-test-run-denied-without-workflow-read-acl-no-setting",
       "type": "case",
       "key": "acl/acl-workflowrun-test-run-denied-without-workflow-read-acl-no-setting",
@@ -30835,6 +30854,15 @@
       }
     },
     {
+      "id": "permission:workflownode.config.get",
+      "type": "permission",
+      "key": "workflownode.config.get",
+      "attributes": {
+        "kind": "field",
+        "scoped": false
+      }
+    },
+    {
       "id": "permission:workflownode.create",
       "type": "permission",
       "key": "workflownode.create",
@@ -47472,6 +47500,46 @@
     },
     {
       "from": "case:acl/acl-workflowrun-test-run-denied-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-without-node-config-read-acl-project-only",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-without-node-config-read-acl-project-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-without-node-config-read-acl-project-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-without-node-config-read-acl-project-only",
+      "type": "covers",
+      "to": "controller:workflowrun"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-without-node-config-read-acl-project-only",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowrun"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-without-node-config-read-acl-project-only",
+      "type": "runs_as",
+      "to": "profile:aclProjectOnly"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-without-node-config-read-acl-project-only",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-workflowrun-test-run-denied-without-node-config-read-acl-project-only",
       "type": "uses_fixture",
       "to": "fixture:workflowId"
     },
@@ -75691,6 +75759,11 @@
       "to": "field:Project.name"
     },
     {
+      "from": "permission:workflownode.config.get",
+      "type": "guards",
+      "to": "field:Workflownode.config"
+    },
+    {
       "from": "profile:aclAgent",
       "type": "denies",
       "to": "permission:agentcredential.create"
@@ -76197,6 +76270,11 @@
     },
     {
       "from": "profile:aclProjectOnly",
+      "type": "denies",
+      "to": "permission:workflownode.config.get"
+    },
+    {
+      "from": "profile:aclProjectOnly",
       "type": "grants",
       "to": "permission:comment.get"
     },
@@ -76214,6 +76292,11 @@
       "from": "profile:aclProjectOnly",
       "type": "grants",
       "to": "permission:user.get"
+    },
+    {
+      "from": "profile:aclProjectOnly",
+      "type": "grants",
+      "to": "permission:workflowrun.create"
     },
     {
       "from": "profile:default",

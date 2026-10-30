@@ -91,7 +91,8 @@ class WorkflowrunController extends RestController
 
     /**
      * A test run shows the workflow's path and each node's resolved settings,
-     * so the user must be able to read the workflow, its nodes and its edges.
+     * so the user must be able to read the workflow, its nodes (with their
+     * settings) and its edges.
      *
      * @return void
      * @throws \Gaia\Exception\Access
@@ -103,6 +104,9 @@ class WorkflowrunController extends RestController
         }
         foreach (['Workflow', 'Workflownode', 'Workflowedge'] as $model) {
             $this->acl()->checkModelAccess($model, 'get');
+        }
+        if (!$this->acl()->isFieldActionAllowed('Workflownode', 'config', 'get')) {
+            throw new \Gaia\Exception\Access('Access Denied');
         }
     }
 

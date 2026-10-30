@@ -576,7 +576,10 @@ VALUES
   ('atp-acl-pi-issue-get', 'api-test-role-acl-pi', 'issue.get', 0, NOW(), NOW()),
   ('atp-acl-pi-conv-get', 'api-test-role-acl-pi', 'conversationroom.get', 1, NOW(), NOW()),
   ('atp-acl-pi-comment-get', 'api-test-role-acl-pi', 'comment.get', 1, NOW(), NOW()),
-  ('atp-acl-pi-user-get', 'api-test-role-acl-pi', 'user.get', 1, NOW(), NOW());
+  ('atp-acl-pi-user-get', 'api-test-role-acl-pi', 'user.get', 1, NOW(), NOW()),
+  -- May start a test run and read workflow nodes, but not their settings.
+  ('atp-acl-pi-workflowrun-create', 'api-test-role-acl-pi', 'workflowrun.create', 1, NOW(), NOW()),
+  ('atp-acl-pi-workflownode-config-get', 'api-test-role-acl-pi', 'workflownode.config.get', 0, NOW(), NOW());
 
 -- No-conversation role: project+comment allowed, conversationroom.get denied (multi-group)
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
