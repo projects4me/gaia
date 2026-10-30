@@ -40,6 +40,7 @@ class WorkflowExpressionsTest extends TestCase
         $this->assertSame('tags ["a","b"]', $expressions->resolve('tags {issue.tags}', self::VALUES));
         $this->assertNull($expressions->resolve('{issue.subject.deeper}', self::VALUES));
         $this->assertSame('plain', $expressions->resolve('plain', self::VALUES));
+        $this->assertSame('function () { return 1; } #42', $expressions->resolve('function () { return 1; } #{issue.number}', self::VALUES));
         $this->assertSame(['a'], $expressions->resolve(['a'], self::VALUES));
     }
 

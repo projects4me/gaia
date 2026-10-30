@@ -8,7 +8,8 @@ namespace Gaia\Libraries\Workflows;
 
 /**
  * The `set_field` action: sets one field of the record the event is about.
- * Identity, project and bookkeeping fields cannot be set.
+ * Identity, project, placement and bookkeeping fields cannot be set, nor
+ * the fields the assign and set_status actions own.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Workflows
@@ -22,6 +23,10 @@ class SetFieldAction extends WorkflowAction
     public const PROTECTED_FIELDS = [
         'id', 'deleted', 'projectId', 'createdUser', 'createdUserName', 'dateCreated',
         'modifiedUser', 'modifiedUserName', 'dateModified', 'lastActivityDate',
+        // Owned by assign and set_status, which validate the value.
+        'assignee', 'status', 'statusId',
+        // Move the record to another parent or project.
+        'relatedTo', 'relatedId', 'issueId', 'projectShortcode',
     ];
 
     /**

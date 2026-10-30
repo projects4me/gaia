@@ -54,7 +54,9 @@ class ExpressionResolver
             return $this->evaluate(trim(trim($setting), '{}'), $values);
         }
 
-        return preg_replace_callback('/\{([^{}]+)\}/', function ($match) use ($values) {
+        // Only brace text shaped like a path or a function call is an
+        // expression; other braces (such as code) stay as they are.
+        return preg_replace_callback('/\{\s*([A-Za-z_][\w.]*(?:\s*:[^{}]*)?)\s*\}/', function ($match) use ($values) {
             return self::text($this->evaluate($match[1], $values));
         }, $setting);
     }
