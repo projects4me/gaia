@@ -135,28 +135,39 @@ class RunJournal
         }
         $started = json_decode((string) $step->outputs, true);
         $db = \Phalcon\Di::getDefault()->get('db');
-        $db->execute(
-            'UPDATE workflow_run_steps SET "status" = ?, "port" = ?, "outputs" = ?, "finishedAt" = ?,'
-            . ' "durationMs" = ?, "dateModified" = ? WHERE id = ? AND "status" = ?',
-            [
-                RunStatus::COMPLETED,
-                (string) $port,
-                json_encode((is_array($started) ? $started : []) + $outputs),
-                self::now(),
-                max(0, (time() - strtotime($step->startedAt . ' UTC')) * 1000),
-                self::now(),
-                (string) $stepId,
-                RunStatus::WAITING,
-            ]
-        );
-        if ($db->affectedRows() !== 1) {
-            return false;
-        }
+        // The step and its run change together, or a failed run write would
+        // leave a completed step that no retry finds.
+        $db->begin();
+        try {
+            $db->execute(
+                'UPDATE workflow_run_steps SET "status" = ?, "port" = ?, "outputs" = ?, "finishedAt" = ?,'
+                . ' "durationMs" = ?, "dateModified" = ? WHERE id = ? AND "status" = ?',
+                [
+                    RunStatus::COMPLETED,
+                    (string) $port,
+                    json_encode((is_array($started) ? $started : []) + $outputs),
+                    self::now(),
+                    max(0, (time() - strtotime($step->startedAt . ' UTC')) * 1000),
+                    self::now(),
+                    (string) $stepId,
+                    RunStatus::WAITING,
+                ]
+            );
+            if ($db->affectedRows() !== 1) {
+                $db->rollback();
 
-        $run = $this->runRow($step->runId);
-        if ($run) {
-            $run->status = RunStatus::RUNNING;
-            $this->save($run);
+                return false;
+            }
+
+            $run = $this->runRow($step->runId);
+            if ($run) {
+                $run->status = RunStatus::RUNNING;
+                $this->save($run);
+            }
+            $db->commit();
+        } catch (\Throwable $e) {
+            $db->rollback();
+            throw $e;
         }
 
         return true;

@@ -60,7 +60,7 @@ class WorkflowActorsTest extends TestCase
         $users = new UserSelector(new class extends ProjectMembers {
             public function isMember($projectId, $userId)
             {
-                return $projectId === 'project-1' && in_array($userId, ['user-owner', 'user-ada'], true);
+                return $projectId === 'project-1' && in_array($userId, ['user-owner', 'user-ada', 'user-agent'], true);
             }
 
             public function firstWithRole($projectId, $role)
@@ -123,6 +123,17 @@ class WorkflowActorsTest extends TestCase
         ]);
         $this->assertEqualsWithDelta($before + 15 * 60, strtotime($step['claimBy'] . ' UTC'), 5);
         $this->assertEqualsWithDelta($before + 240 * 60, strtotime($step['finishBy'] . ' UTC'), 5);
+    }
+
+    public function testRunAgentRefusesAnAgentOutsideTheRunsProject()
+    {
+        try {
+            $this->actors->actor('run_agent')->run(['agentId' => 'agent-2'], $this->context());
+            $this->fail('An agent outside the project was asked to run.');
+        } catch (WorkflowStepException $e) {
+            $this->assertStringContainsString('not a member of the project', $e->getMessage());
+        }
+        $this->assertSame([], $this->steps->rows);
     }
 
     /**
@@ -463,7 +474,10 @@ class WorkflowActorsTest extends TestCase
             public function find($model, $id)
             {
                 $rows = [
-                    'Agent' => ['agent-1' => ['id' => 'agent-1', 'userId' => 'user-agent', 'maxTurns' => 30]],
+                    'Agent' => [
+                        'agent-1' => ['id' => 'agent-1', 'userId' => 'user-agent', 'maxTurns' => 30],
+                        'agent-2' => ['id' => 'agent-2', 'userId' => 'user-stranger', 'maxTurns' => 30],
+                    ],
                     'Issue' => ['issue-1' => ['id' => 'issue-1', 'projectId' => 'project-1']],
                     'Comment' => ['comment-1' => ['id' => 'comment-1', 'relatedTo' => 'issue', 'relatedId' => 'issue-9']],
                 ];

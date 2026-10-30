@@ -78,6 +78,8 @@ class RunAgentActor extends WorkflowAction
         if ($agent === null) {
             throw new WorkflowStepException("Agent {$agentId} no longer exists.");
         }
+        // The agent works through its user, who must be a member of the run's project.
+        $this->users->select('agentId', (string) $agent->readAttribute('userId'), $context->values(), $this->expressions);
 
         $session = (string) $this->setting($config, 'session', $context, 'new');
         if (!in_array($session, self::SESSIONS, true)) {
