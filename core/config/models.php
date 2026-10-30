@@ -61,7 +61,11 @@ $config['models'] = [
     'Usertimespent',
     'Userworkmostwith',
     'Vote',
-    'Wiki'
+    'Wiki',
+    'Workflow',
+    'Workflowedge',
+    'Workflownode',
+    'Workflowreference'
 ];
 
 return $config;

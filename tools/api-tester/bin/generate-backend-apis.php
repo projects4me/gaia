@@ -64,6 +64,7 @@ $skipMutations = [
     'chatroom' => 'POST triggers Socket.IO; requires realtime server',
     'agentcredential' => 'POST rotates the seeded agent profile\'s secret and PATCH is refused; client cases cover it',
     'agenttool' => 'A grant names a tool server or a tool, not both; client and acl cases cover it',
+    'workflowedge' => 'An edge joins two nodes of its workflow on a free port; client cases cover it',
 ];
 
 /** Seeded fixture placeholders for get-by-id when available. */
@@ -93,6 +94,10 @@ $fixtureIds = [
     'toolserver' => '{toolserverId}',
     'user' => '{userId}',
     'useridentity' => '{useridentityId}',
+    'workflow' => '{workflowId}',
+    'workflowedge' => '{workflowedgeId}',
+    'workflownode' => '{workflownodeId}',
+    'workflowreference' => '{workflowreferenceId}',
 ];
 
 /** relatedTo/relatedId defaults inferred from metadata relationships / known modules. */
@@ -347,6 +352,10 @@ function sampleValue($resource, $name, array $fieldMeta, array $relatedDefaults)
         'useridentityId' => '{useridentityId}',
         'skillId' => '{skillId}',
         'agentskillId' => '{agentskillId}',
+        'workflowId' => '{workflowId}',
+        'workflownodeId' => '{workflownodeId}',
+        'workflowedgeId' => '{workflowedgeId}',
+        'workflowreferenceId' => '{workflowreferenceId}',
     ];
     if (isset($fk[$name])) {
         return $fk[$name];
@@ -412,6 +421,12 @@ function sampleValue($resource, $name, array $fieldMeta, array $relatedDefaults)
             }
             if ($name === 'context' && $resource === 'timelog') {
                 return 'spent';
+            }
+            if ($name === 'category' && $resource === 'workflownode') {
+                return 'action';
+            }
+            if ($name === 'kind' && $resource === 'workflownode') {
+                return 'end';
             }
             return fitLength('api-' . $resource . '-' . $name, $length > 0 ? $length : 40);
     }
@@ -484,6 +499,10 @@ function patchChange(array $attrs, array $meta = [])
         'useridentityId' => true,
         'skillId' => true,
         'agentskillId' => true,
+        'workflowId' => true,
+        'workflownodeId' => true,
+        'workflowedgeId' => true,
+        'workflowreferenceId' => true,
     ];
     $fields = isset($meta['fields']) && is_array($meta['fields']) ? $meta['fields'] : [];
     $prefer = ['name', 'subject', 'description', 'title', 'tag', 'comment', 'institution'];

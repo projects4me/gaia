@@ -110,6 +110,46 @@
             ],
             "identifier": "id"
         },
+        "workflowreference": {
+            "path": "/api/:version/workflowreference",
+            "allowedMethods": [
+                "GET"
+            ],
+            "identifier": "id"
+        },
+        "workflowedge": {
+            "path": "/api/:version/workflowedge",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "workflownode": {
+            "path": "/api/:version/workflownode",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
+        "workflow": {
+            "path": "/api/:version/workflow",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "agenttool": {
             "path": "/api/:version/agenttool",
             "allowedMethods": [

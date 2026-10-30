@@ -2913,6 +2913,228 @@
       "attributes": {}
     },
     {
+      "id": "action:workflow.delete",
+      "type": "action",
+      "key": "workflow.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflow.deleteCollection",
+      "type": "action",
+      "key": "workflow.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflow.get",
+      "type": "action",
+      "key": "workflow.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflow.list",
+      "type": "action",
+      "key": "workflow.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflow.options",
+      "type": "action",
+      "key": "workflow.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflow.patch",
+      "type": "action",
+      "key": "workflow.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflow.patchCollection",
+      "type": "action",
+      "key": "workflow.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflow.post",
+      "type": "action",
+      "key": "workflow.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflow.put",
+      "type": "action",
+      "key": "workflow.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflow.putCollection",
+      "type": "action",
+      "key": "workflow.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflow.related",
+      "type": "action",
+      "key": "workflow.related",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowedge.delete",
+      "type": "action",
+      "key": "workflowedge.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowedge.deleteCollection",
+      "type": "action",
+      "key": "workflowedge.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowedge.get",
+      "type": "action",
+      "key": "workflowedge.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowedge.list",
+      "type": "action",
+      "key": "workflowedge.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowedge.options",
+      "type": "action",
+      "key": "workflowedge.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowedge.patch",
+      "type": "action",
+      "key": "workflowedge.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowedge.patchCollection",
+      "type": "action",
+      "key": "workflowedge.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowedge.post",
+      "type": "action",
+      "key": "workflowedge.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowedge.put",
+      "type": "action",
+      "key": "workflowedge.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowedge.putCollection",
+      "type": "action",
+      "key": "workflowedge.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowedge.related",
+      "type": "action",
+      "key": "workflowedge.related",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflownode.delete",
+      "type": "action",
+      "key": "workflownode.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflownode.deleteCollection",
+      "type": "action",
+      "key": "workflownode.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflownode.get",
+      "type": "action",
+      "key": "workflownode.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflownode.list",
+      "type": "action",
+      "key": "workflownode.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflownode.options",
+      "type": "action",
+      "key": "workflownode.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflownode.patch",
+      "type": "action",
+      "key": "workflownode.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflownode.patchCollection",
+      "type": "action",
+      "key": "workflownode.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflownode.post",
+      "type": "action",
+      "key": "workflownode.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflownode.put",
+      "type": "action",
+      "key": "workflownode.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflownode.putCollection",
+      "type": "action",
+      "key": "workflownode.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflownode.related",
+      "type": "action",
+      "key": "workflownode.related",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowreference.get",
+      "type": "action",
+      "key": "workflowreference.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowreference.list",
+      "type": "action",
+      "key": "workflowreference.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowreference.options",
+      "type": "action",
+      "key": "workflowreference.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:workflowreference.related",
+      "type": "action",
+      "key": "workflowreference.related",
+      "attributes": {}
+    },
+    {
       "id": "assertion:attributesAbsent",
       "type": "assertion",
       "key": "attributesAbsent",
@@ -3377,6 +3599,42 @@
       "attributes": {
         "class": "Gaia\\MVC\\Models\\Behaviors\\translationCacheBehavior",
         "file": "core/mvc/models/behaviors/translationCacheBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
+      "id": "behaviour:workflowBehavior",
+      "type": "behaviour",
+      "key": "workflowBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\workflowBehavior",
+        "file": "core/mvc/models/behaviors/workflowBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
+      "id": "behaviour:workflowEdgeBehavior",
+      "type": "behaviour",
+      "key": "workflowEdgeBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\workflowEdgeBehavior",
+        "file": "core/mvc/models/behaviors/workflowEdgeBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
+      "id": "behaviour:workflowNodeBehavior",
+      "type": "behaviour",
+      "key": "workflowNodeBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\workflowNodeBehavior",
+        "file": "core/mvc/models/behaviors/workflowNodeBehavior.php",
         "hooks": [
           "notify"
         ]
@@ -6123,6 +6381,142 @@
       }
     },
     {
+      "id": "case:acl/acl-workflow-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-workflow-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflow",
+        "resource": "workflow",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workflow-detail-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-workflow-detail-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflow/{workflowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "workflowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workflowedge-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-workflowedge-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workflowedge-detail-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-workflowedge-detail-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowedge/{workflowedgeId}",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "workflowedgeId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workflownode-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-workflownode-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workflownode-detail-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-workflownode-detail-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflownode/{workflownodeId}",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "workflownodeId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workflowreference-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-workflowreference-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowreference",
+        "resource": "workflowreference",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workflowreference-detail-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-workflowreference-detail-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workflowreference/{workflowreferenceId}",
+        "resource": "workflowreference",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workflowreferenceId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "case",
       "key": "backend/delete-activity-api-v1-activity-runtime-id",
@@ -6659,6 +7053,42 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.wikiId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/delete-workflow-api-v1-workflow-runtime-id",
+      "type": "case",
+      "key": "backend/delete-workflow-api-v1-workflow-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "DELETE",
+        "path": "/api/v1/workflow/{runtime.workflowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.workflowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/delete-workflownode-api-v1-workflownode-runtime-id",
+      "type": "case",
+      "key": "backend/delete-workflownode-api-v1-workflownode-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "DELETE",
+        "path": "/api/v1/workflownode/{runtime.workflownodeId}",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.workflownodeId"
         ],
         "stores": []
       }
@@ -8438,6 +8868,178 @@
       }
     },
     {
+      "id": "case:backend/get-workflow-api-v1-workflow",
+      "type": "case",
+      "key": "backend/get-workflow-api-v1-workflow",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflow",
+        "resource": "workflow",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflow-api-v1-workflow-id",
+      "type": "case",
+      "key": "backend/get-workflow-api-v1-workflow-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflow/{workflowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workflowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflow-api-v1-workflow-runtime-id",
+      "type": "case",
+      "key": "backend/get-workflow-api-v1-workflow-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflow/{runtime.workflowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.workflowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflowedge-api-v1-workflowedge",
+      "type": "case",
+      "key": "backend/get-workflowedge-api-v1-workflowedge",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflowedge-api-v1-workflowedge-id",
+      "type": "case",
+      "key": "backend/get-workflowedge-api-v1-workflowedge-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflowedge/{workflowedgeId}",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workflowedgeId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflownode-api-v1-workflownode",
+      "type": "case",
+      "key": "backend/get-workflownode-api-v1-workflownode",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflownode-api-v1-workflownode-id",
+      "type": "case",
+      "key": "backend/get-workflownode-api-v1-workflownode-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflownode/{workflownodeId}",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workflownodeId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflownode-api-v1-workflownode-runtime-id",
+      "type": "case",
+      "key": "backend/get-workflownode-api-v1-workflownode-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflownode/{runtime.workflownodeId}",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.workflownodeId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflowreference-api-v1-workflowreference",
+      "type": "case",
+      "key": "backend/get-workflowreference-api-v1-workflowreference",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflowreference",
+        "resource": "workflowreference",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workflowreference-api-v1-workflowreference-id",
+      "type": "case",
+      "key": "backend/get-workflowreference-api-v1-workflowreference-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workflowreference/{workflowreferenceId}",
+        "resource": "workflowreference",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workflowreferenceId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/patch-activity-api-v1-activity-id",
       "type": "case",
       "key": "backend/patch-activity-api-v1-activity-id",
@@ -8866,6 +9468,42 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.wikiId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/patch-workflow-api-v1-workflow-id",
+      "type": "case",
+      "key": "backend/patch-workflow-api-v1-workflow-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflow/{runtime.workflowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.workflowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/patch-workflownode-api-v1-workflownode-id",
+      "type": "case",
+      "key": "backend/patch-workflownode-api-v1-workflownode-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflownode/{runtime.workflownodeId}",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.workflownodeId"
         ],
         "stores": []
       }
@@ -9613,6 +10251,62 @@
         ],
         "stores": [
           "runtime.wikiId"
+        ]
+      }
+    },
+    {
+      "id": "case:backend/post-workflow-api-v1-workflow",
+      "type": "case",
+      "key": "backend/post-workflow-api-v1-workflow",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/workflow",
+        "resource": "workflow",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": [
+          "runtime.workflowId"
+        ]
+      }
+    },
+    {
+      "id": "case:backend/post-workflowedge-api-v1-workflowedge",
+      "type": "case",
+      "key": "backend/post-workflowedge-api-v1-workflowedge",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workflowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/post-workflownode-api-v1-workflownode",
+      "type": "case",
+      "key": "backend/post-workflownode-api-v1-workflownode",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workflowId"
+        ],
+        "stores": [
+          "runtime.workflownodeId"
         ]
       }
     },
@@ -14401,6 +15095,444 @@
       }
     },
     {
+      "id": "case:client/workflow-activate-counts-version",
+      "type": "case",
+      "key": "client/workflow-activate-counts-version",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflow/{runtime.flowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflow-activate-rejects-unconnected-port",
+      "type": "case",
+      "key": "client/workflow-activate-rejects-unconnected-port",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflow/{runtime.flowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflow-create-rejects-unknown-status",
+      "type": "case",
+      "key": "client/workflow-create-rejects-unknown-status",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflow",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflow-create-starts-as-draft",
+      "type": "case",
+      "key": "client/workflow-create-starts-as-draft",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflow",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": [
+          "runtime.flowId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workflow-delete",
+      "type": "case",
+      "key": "client/workflow-delete",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/workflow/{runtime.flowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowedge-create-rejects-taken-port",
+      "type": "case",
+      "key": "client/workflowedge-create-rejects-taken-port",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowEndId",
+          "runtime.flowId",
+          "runtime.flowTriggerId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowedge-create-rejects-unknown-port",
+      "type": "case",
+      "key": "client/workflowedge-create-rejects-unknown-port",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowId",
+          "runtime.flowRunId",
+          "runtime.flowTriggerId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowedge-create-run-blocked-to-end",
+      "type": "case",
+      "key": "client/workflowedge-create-run-blocked-to-end",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowEndId",
+          "runtime.flowId",
+          "runtime.flowRunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowedge-create-run-done-to-end",
+      "type": "case",
+      "key": "client/workflowedge-create-run-done-to-end",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowEndId",
+          "runtime.flowId",
+          "runtime.flowRunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowedge-create-run-failed-to-end",
+      "type": "case",
+      "key": "client/workflowedge-create-run-failed-to-end",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowEndId",
+          "runtime.flowId",
+          "runtime.flowRunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowedge-create-run-limit-to-end",
+      "type": "case",
+      "key": "client/workflowedge-create-run-limit-to-end",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowEndId",
+          "runtime.flowId",
+          "runtime.flowRunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowedge-create-run-needs-input-to-end",
+      "type": "case",
+      "key": "client/workflowedge-create-run-needs-input-to-end",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowEndId",
+          "runtime.flowId",
+          "runtime.flowRunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowedge-create-trigger-to-run",
+      "type": "case",
+      "key": "client/workflowedge-create-trigger-to-run",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowId",
+          "runtime.flowRunId",
+          "runtime.flowTriggerId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflownode-create-end",
+      "type": "case",
+      "key": "client/workflownode-create-end",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowId"
+        ],
+        "stores": [
+          "runtime.flowEndId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workflownode-create-rejects-invalid-config",
+      "type": "case",
+      "key": "client/workflownode-create-rejects-invalid-config",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflownode-create-rejects-kind-of-other-category",
+      "type": "case",
+      "key": "client/workflownode-create-rejects-kind-of-other-category",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflownode-create-rejects-second-trigger",
+      "type": "case",
+      "key": "client/workflownode-create-rejects-second-trigger",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflownode-create-run-agent",
+      "type": "case",
+      "key": "client/workflownode-create-run-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "agentId",
+          "runtime.flowId"
+        ],
+        "stores": [
+          "runtime.flowRunId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workflownode-create-trigger",
+      "type": "case",
+      "key": "client/workflownode-create-trigger",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowId"
+        ],
+        "stores": [
+          "runtime.flowTriggerId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workflownode-move-allowed-while-active",
+      "type": "case",
+      "key": "client/workflownode-move-allowed-while-active",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflownode/{runtime.flowRunId}",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowRunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflownode-patch-rejected-while-active",
+      "type": "case",
+      "key": "client/workflownode-patch-rejected-while-active",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflownode/{runtime.flowRunId}",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "agentId",
+          "runtime.flowRunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowreference-gone-after-workflow-delete",
+      "type": "case",
+      "key": "client/workflowreference-gone-after-workflow-delete",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workflowreference",
+        "resource": "workflowreference",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowRunId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflowreference-lists-the-run-agent",
+      "type": "case",
+      "key": "client/workflowreference-lists-the-run-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workflowreference",
+        "resource": "workflowreference",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.flowRunId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:live/live-conversation-comment-create-publishes-comment-created",
       "type": "case",
       "key": "live/live-conversation-comment-create-publishes-comment-created",
@@ -16180,6 +17312,50 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\WikiController",
         "file": "app/api/v1/controllers/WikiController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:workflow",
+      "type": "controller",
+      "key": "workflow",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\WorkflowController",
+        "file": "app/api/v1/controllers/WorkflowController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:workflowedge",
+      "type": "controller",
+      "key": "workflowedge",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\WorkflowedgeController",
+        "file": "app/api/v1/controllers/WorkflowedgeController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:workflownode",
+      "type": "controller",
+      "key": "workflownode",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\WorkflownodeController",
+        "file": "app/api/v1/controllers/WorkflownodeController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:workflowreference",
+      "type": "controller",
+      "key": "workflowreference",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\WorkflowreferenceController",
+        "file": "app/api/v1/controllers/WorkflowreferenceController.php",
         "extends": "RestController"
       }
     },
@@ -23905,6 +25081,605 @@
       }
     },
     {
+      "id": "field:Workflow.createdUser",
+      "type": "field",
+      "key": "Workflow.createdUser",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Workflow.createdUserName",
+      "type": "field",
+      "key": "Workflow.createdUserName",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Workflow.dateCreated",
+      "type": "field",
+      "key": "Workflow.dateCreated",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflow.dateModified",
+      "type": "field",
+      "key": "Workflow.dateModified",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflow.deleted",
+      "type": "field",
+      "key": "Workflow.deleted",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Workflow.description",
+      "type": "field",
+      "key": "Workflow.description",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_DESCRIPTION",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflow.id",
+      "type": "field",
+      "key": "Workflow.id",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Workflow.modifiedUser",
+      "type": "field",
+      "key": "Workflow.modifiedUser",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Workflow.modifiedUserName",
+      "type": "field",
+      "key": "Workflow.modifiedUserName",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Workflow.name",
+      "type": "field",
+      "key": "Workflow.name",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_NAME",
+        "type": "varchar",
+        "length": "100",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflow.ownerId",
+      "type": "field",
+      "key": "Workflow.ownerId",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_OWNER_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflow.scope",
+      "type": "field",
+      "key": "Workflow.scope",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_SCOPE",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflow.status",
+      "type": "field",
+      "key": "Workflow.status",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_STATUS",
+        "type": "varchar",
+        "length": "20",
+        "null": false,
+        "default": "Draft"
+      }
+    },
+    {
+      "id": "field:Workflow.version",
+      "type": "field",
+      "key": "Workflow.version",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_VERSION",
+        "type": "int",
+        "null": false,
+        "default": 0
+      }
+    },
+    {
+      "id": "field:Workflowedge.createdUser",
+      "type": "field",
+      "key": "Workflowedge.createdUser",
+      "attributes": {
+        "label": "LBL_WORKFLOW_EDGES_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Workflowedge.createdUserName",
+      "type": "field",
+      "key": "Workflowedge.createdUserName",
+      "attributes": {
+        "label": "LBL_WORKFLOW_EDGES_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Workflowedge.dateCreated",
+      "type": "field",
+      "key": "Workflowedge.dateCreated",
+      "attributes": {
+        "label": "LBL_WORKFLOW_EDGES_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowedge.dateModified",
+      "type": "field",
+      "key": "Workflowedge.dateModified",
+      "attributes": {
+        "label": "LBL_WORKFLOW_EDGES_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowedge.deleted",
+      "type": "field",
+      "key": "Workflowedge.deleted",
+      "attributes": {
+        "label": "LBL_WORKFLOW_EDGES_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Workflowedge.fromNodeId",
+      "type": "field",
+      "key": "Workflowedge.fromNodeId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_EDGES_FROM_NODE_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowedge.fromPort",
+      "type": "field",
+      "key": "Workflowedge.fromPort",
+      "attributes": {
+        "label": "LBL_WORKFLOW_EDGES_FROM_PORT",
+        "type": "varchar",
+        "length": "50",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowedge.id",
+      "type": "field",
+      "key": "Workflowedge.id",
+      "attributes": {
+        "label": "LBL_WORKFLOW_EDGES_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Workflowedge.modifiedUser",
+      "type": "field",
+      "key": "Workflowedge.modifiedUser",
+      "attributes": {
+        "label": "LBL_WORKFLOW_EDGES_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Workflowedge.modifiedUserName",
+      "type": "field",
+      "key": "Workflowedge.modifiedUserName",
+      "attributes": {
+        "label": "LBL_WORKFLOW_EDGES_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Workflowedge.toNodeId",
+      "type": "field",
+      "key": "Workflowedge.toNodeId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_EDGES_TO_NODE_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowedge.workflowId",
+      "type": "field",
+      "key": "Workflowedge.workflowId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_EDGES_WORKFLOW_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflownode.category",
+      "type": "field",
+      "key": "Workflownode.category",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_CATEGORY",
+        "type": "varchar",
+        "length": "20",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflownode.config",
+      "type": "field",
+      "key": "Workflownode.config",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_CONFIG",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflownode.createdUser",
+      "type": "field",
+      "key": "Workflownode.createdUser",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Workflownode.createdUserName",
+      "type": "field",
+      "key": "Workflownode.createdUserName",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Workflownode.dateCreated",
+      "type": "field",
+      "key": "Workflownode.dateCreated",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflownode.dateModified",
+      "type": "field",
+      "key": "Workflownode.dateModified",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflownode.deleted",
+      "type": "field",
+      "key": "Workflownode.deleted",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Workflownode.id",
+      "type": "field",
+      "key": "Workflownode.id",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Workflownode.kind",
+      "type": "field",
+      "key": "Workflownode.kind",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_KIND",
+        "type": "varchar",
+        "length": "100",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflownode.modifiedUser",
+      "type": "field",
+      "key": "Workflownode.modifiedUser",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Workflownode.modifiedUserName",
+      "type": "field",
+      "key": "Workflownode.modifiedUserName",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Workflownode.name",
+      "type": "field",
+      "key": "Workflownode.name",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_NAME",
+        "type": "varchar",
+        "length": "100",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflownode.positionX",
+      "type": "field",
+      "key": "Workflownode.positionX",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_POSITION_X",
+        "type": "int",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflownode.positionY",
+      "type": "field",
+      "key": "Workflownode.positionY",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_POSITION_Y",
+        "type": "int",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflownode.workflowId",
+      "type": "field",
+      "key": "Workflownode.workflowId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_NODES_WORKFLOW_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowreference.createdUser",
+      "type": "field",
+      "key": "Workflowreference.createdUser",
+      "attributes": {
+        "label": "LBL_WORKFLOW_REFERENCES_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Workflowreference.createdUserName",
+      "type": "field",
+      "key": "Workflowreference.createdUserName",
+      "attributes": {
+        "label": "LBL_WORKFLOW_REFERENCES_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Workflowreference.dateCreated",
+      "type": "field",
+      "key": "Workflowreference.dateCreated",
+      "attributes": {
+        "label": "LBL_WORKFLOW_REFERENCES_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowreference.dateModified",
+      "type": "field",
+      "key": "Workflowreference.dateModified",
+      "attributes": {
+        "label": "LBL_WORKFLOW_REFERENCES_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowreference.deleted",
+      "type": "field",
+      "key": "Workflowreference.deleted",
+      "attributes": {
+        "label": "LBL_WORKFLOW_REFERENCES_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Workflowreference.entityId",
+      "type": "field",
+      "key": "Workflowreference.entityId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_REFERENCES_ENTITY_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowreference.entityType",
+      "type": "field",
+      "key": "Workflowreference.entityType",
+      "attributes": {
+        "label": "LBL_WORKFLOW_REFERENCES_ENTITY_TYPE",
+        "type": "varchar",
+        "length": "20",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowreference.id",
+      "type": "field",
+      "key": "Workflowreference.id",
+      "attributes": {
+        "label": "LBL_WORKFLOW_REFERENCES_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Workflowreference.modifiedUser",
+      "type": "field",
+      "key": "Workflowreference.modifiedUser",
+      "attributes": {
+        "label": "LBL_WORKFLOW_REFERENCES_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Workflowreference.modifiedUserName",
+      "type": "field",
+      "key": "Workflowreference.modifiedUserName",
+      "attributes": {
+        "label": "LBL_WORKFLOW_REFERENCES_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Workflowreference.nodeId",
+      "type": "field",
+      "key": "Workflowreference.nodeId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_REFERENCES_NODE_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowreference.workflowId",
+      "type": "field",
+      "key": "Workflowreference.workflowId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_REFERENCES_WORKFLOW_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
       "id": "fixture:activityId",
       "type": "fixture",
       "key": "activityId",
@@ -24324,6 +26099,38 @@
       "id": "fixture:useridentityId",
       "type": "fixture",
       "key": "useridentityId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:workflowId",
+      "type": "fixture",
+      "key": "workflowId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:workflowedgeId",
+      "type": "fixture",
+      "key": "workflowedgeId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:workflownodeId",
+      "type": "fixture",
+      "key": "workflownodeId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:workflowreferenceId",
+      "type": "fixture",
+      "key": "workflowreferenceId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -25393,6 +27200,58 @@
             "Project": "projectId"
           }
         }
+      }
+    },
+    {
+      "id": "model:Workflow",
+      "type": "model",
+      "key": "Workflow",
+      "attributes": {
+        "file": "app/metadata/model/Workflow.php",
+        "tableName": "workflows",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
+      "id": "model:Workflowedge",
+      "type": "model",
+      "key": "Workflowedge",
+      "attributes": {
+        "file": "app/metadata/model/Workflowedge.php",
+        "tableName": "workflow_edges",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
+      "id": "model:Workflownode",
+      "type": "model",
+      "key": "Workflownode",
+      "attributes": {
+        "file": "app/metadata/model/Workflownode.php",
+        "tableName": "workflow_nodes",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
+      "id": "model:Workflowreference",
+      "type": "model",
+      "key": "Workflowreference",
+      "attributes": {
+        "file": "app/metadata/model/Workflowreference.php",
+        "tableName": "workflow_references",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
       }
     },
     {
@@ -27129,6 +28988,150 @@
       }
     },
     {
+      "id": "permission:workflow.create",
+      "type": "permission",
+      "key": "workflow.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflow.delete",
+      "type": "permission",
+      "key": "workflow.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflow.get",
+      "type": "permission",
+      "key": "workflow.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflow.update",
+      "type": "permission",
+      "key": "workflow.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowedge.create",
+      "type": "permission",
+      "key": "workflowedge.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowedge.delete",
+      "type": "permission",
+      "key": "workflowedge.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowedge.get",
+      "type": "permission",
+      "key": "workflowedge.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowedge.update",
+      "type": "permission",
+      "key": "workflowedge.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflownode.create",
+      "type": "permission",
+      "key": "workflownode.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflownode.delete",
+      "type": "permission",
+      "key": "workflownode.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflownode.get",
+      "type": "permission",
+      "key": "workflownode.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflownode.update",
+      "type": "permission",
+      "key": "workflownode.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowreference.create",
+      "type": "permission",
+      "key": "workflowreference.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowreference.delete",
+      "type": "permission",
+      "key": "workflowreference.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowreference.get",
+      "type": "permission",
+      "key": "workflowreference.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workflowreference.update",
+      "type": "permission",
+      "key": "workflowreference.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
       "id": "profile:aclAgent",
       "type": "profile",
       "key": "aclAgent",
@@ -27328,6 +29331,17 @@
         "kind": "hasOne",
         "primaryKey": "userId",
         "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Agent.workflowReferences",
+      "type": "relationship",
+      "key": "Agent.workflowReferences",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "entityId",
+        "condition": "workflowReferences.entityType = \"Agent\""
       }
     },
     {
@@ -28976,6 +30990,196 @@
       }
     },
     {
+      "id": "relationship:Workflow.createdBy",
+      "type": "relationship",
+      "key": "Workflow.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflow.edges",
+      "type": "relationship",
+      "key": "Workflow.edges",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "workflowId"
+      }
+    },
+    {
+      "id": "relationship:Workflow.modifiedBy",
+      "type": "relationship",
+      "key": "Workflow.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflow.nodes",
+      "type": "relationship",
+      "key": "Workflow.nodes",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "workflowId"
+      }
+    },
+    {
+      "id": "relationship:Workflow.owner",
+      "type": "relationship",
+      "key": "Workflow.owner",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "ownerId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflow.references",
+      "type": "relationship",
+      "key": "Workflow.references",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "workflowId"
+      }
+    },
+    {
+      "id": "relationship:Workflowedge.createdBy",
+      "type": "relationship",
+      "key": "Workflowedge.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowedge.fromNode",
+      "type": "relationship",
+      "key": "Workflowedge.fromNode",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "fromNodeId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowedge.modifiedBy",
+      "type": "relationship",
+      "key": "Workflowedge.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowedge.toNode",
+      "type": "relationship",
+      "key": "Workflowedge.toNode",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "toNodeId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowedge.workflow",
+      "type": "relationship",
+      "key": "Workflowedge.workflow",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "workflowId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflownode.createdBy",
+      "type": "relationship",
+      "key": "Workflownode.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflownode.modifiedBy",
+      "type": "relationship",
+      "key": "Workflownode.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflownode.references",
+      "type": "relationship",
+      "key": "Workflownode.references",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "nodeId"
+      }
+    },
+    {
+      "id": "relationship:Workflownode.workflow",
+      "type": "relationship",
+      "key": "Workflownode.workflow",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "workflowId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowreference.createdBy",
+      "type": "relationship",
+      "key": "Workflowreference.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowreference.modifiedBy",
+      "type": "relationship",
+      "key": "Workflowreference.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowreference.node",
+      "type": "relationship",
+      "key": "Workflowreference.node",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "nodeId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowreference.workflow",
+      "type": "relationship",
+      "key": "Workflowreference.workflow",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "workflowId",
+        "relatedKey": "id"
+      }
+    },
+    {
       "id": "route:ANY /",
       "type": "route",
       "key": "ANY /",
@@ -29981,6 +32185,78 @@
         "version": "v1",
         "method": "DELETE",
         "path": "/api/v1/wiki/{id}"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/workflow",
+      "type": "route",
+      "key": "DELETE /api/v1/workflow",
+      "attributes": {
+        "type": "rest",
+        "name": "workflow",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/workflow"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/workflow/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/workflow/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflow",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/workflow/{id}"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/workflowedge",
+      "type": "route",
+      "key": "DELETE /api/v1/workflowedge",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowedge",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/workflowedge"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/workflowedge/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/workflowedge/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowedge",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/workflowedge/{id}"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/workflownode",
+      "type": "route",
+      "key": "DELETE /api/v1/workflownode",
+      "attributes": {
+        "type": "rest",
+        "name": "workflownode",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/workflownode"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/workflownode/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/workflownode/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflownode",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/workflownode/{id}"
       }
     },
     {
@@ -31676,6 +33952,150 @@
       }
     },
     {
+      "id": "route:GET /api/v1/workflow",
+      "type": "route",
+      "key": "GET /api/v1/workflow",
+      "attributes": {
+        "type": "rest",
+        "name": "workflow",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflow"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflow/{id}",
+      "type": "route",
+      "key": "GET /api/v1/workflow/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflow",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflow/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflow/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/workflow/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflow",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflow/{id}/{relation}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowedge",
+      "type": "route",
+      "key": "GET /api/v1/workflowedge",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowedge",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowedge"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowedge/{id}",
+      "type": "route",
+      "key": "GET /api/v1/workflowedge/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowedge",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowedge/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowedge/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/workflowedge/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowedge",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowedge/{id}/{relation}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflownode",
+      "type": "route",
+      "key": "GET /api/v1/workflownode",
+      "attributes": {
+        "type": "rest",
+        "name": "workflownode",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflownode"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflownode/{id}",
+      "type": "route",
+      "key": "GET /api/v1/workflownode/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflownode",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflownode/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflownode/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/workflownode/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflownode",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflownode/{id}/{relation}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowreference",
+      "type": "route",
+      "key": "GET /api/v1/workflowreference",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowreference",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowreference"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowreference/{id}",
+      "type": "route",
+      "key": "GET /api/v1/workflowreference/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowreference",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowreference/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workflowreference/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/workflowreference/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowreference",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workflowreference/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/activity",
       "type": "route",
       "key": "OPTIONS /api/v1/activity",
@@ -32297,6 +34717,54 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/wiki"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/workflow",
+      "type": "route",
+      "key": "OPTIONS /api/v1/workflow",
+      "attributes": {
+        "type": "rest",
+        "name": "workflow",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/workflow"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/workflowedge",
+      "type": "route",
+      "key": "OPTIONS /api/v1/workflowedge",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowedge",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/workflowedge"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/workflownode",
+      "type": "route",
+      "key": "OPTIONS /api/v1/workflownode",
+      "attributes": {
+        "type": "rest",
+        "name": "workflownode",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/workflownode"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/workflowreference",
+      "type": "route",
+      "key": "OPTIONS /api/v1/workflowreference",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowreference",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/workflowreference"
       }
     },
     {
@@ -33308,6 +35776,78 @@
       }
     },
     {
+      "id": "route:PATCH /api/v1/workflow",
+      "type": "route",
+      "key": "PATCH /api/v1/workflow",
+      "attributes": {
+        "type": "rest",
+        "name": "workflow",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/workflow"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/workflow/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/workflow/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflow",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/workflow/{id}"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/workflowedge",
+      "type": "route",
+      "key": "PATCH /api/v1/workflowedge",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowedge",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/workflowedge"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/workflowedge/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/workflowedge/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowedge",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/workflowedge/{id}"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/workflownode",
+      "type": "route",
+      "key": "PATCH /api/v1/workflownode",
+      "attributes": {
+        "type": "rest",
+        "name": "workflownode",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/workflownode"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/workflownode/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/workflownode/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflownode",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/workflownode/{id}"
+      }
+    },
+    {
       "id": "route:POST /api/v1/activity",
       "type": "route",
       "key": "POST /api/v1/activity",
@@ -33857,6 +36397,42 @@
         "version": "v1",
         "method": "POST",
         "path": "/api/v1/wiki"
+      }
+    },
+    {
+      "id": "route:POST /api/v1/workflow",
+      "type": "route",
+      "key": "POST /api/v1/workflow",
+      "attributes": {
+        "type": "rest",
+        "name": "workflow",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/workflow"
+      }
+    },
+    {
+      "id": "route:POST /api/v1/workflowedge",
+      "type": "route",
+      "key": "POST /api/v1/workflowedge",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowedge",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/workflowedge"
+      }
+    },
+    {
+      "id": "route:POST /api/v1/workflownode",
+      "type": "route",
+      "key": "POST /api/v1/workflownode",
+      "attributes": {
+        "type": "rest",
+        "name": "workflownode",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/workflownode"
       }
     },
     {
@@ -34769,6 +37345,78 @@
         "version": "v1",
         "method": "PUT",
         "path": "/api/v1/wiki/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/workflow",
+      "type": "route",
+      "key": "PUT /api/v1/workflow",
+      "attributes": {
+        "type": "rest",
+        "name": "workflow",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/workflow"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/workflow/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/workflow/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflow",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/workflow/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/workflowedge",
+      "type": "route",
+      "key": "PUT /api/v1/workflowedge",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowedge",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/workflowedge"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/workflowedge/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/workflowedge/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflowedge",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/workflowedge/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/workflownode",
+      "type": "route",
+      "key": "PUT /api/v1/workflownode",
+      "attributes": {
+        "type": "rest",
+        "name": "workflownode",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/workflownode"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/workflownode/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/workflownode/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workflownode",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/workflownode/{id}"
       }
     },
     {
@@ -36541,6 +39189,141 @@
       "from": "action:wiki.related",
       "type": "requires",
       "to": "permission:wiki.get"
+    },
+    {
+      "from": "action:workflow.delete",
+      "type": "requires",
+      "to": "permission:workflow.delete"
+    },
+    {
+      "from": "action:workflow.get",
+      "type": "requires",
+      "to": "permission:workflow.get"
+    },
+    {
+      "from": "action:workflow.list",
+      "type": "requires",
+      "to": "permission:workflow.get"
+    },
+    {
+      "from": "action:workflow.patch",
+      "type": "requires",
+      "to": "permission:workflow.update"
+    },
+    {
+      "from": "action:workflow.patchCollection",
+      "type": "requires",
+      "to": "permission:workflow.update"
+    },
+    {
+      "from": "action:workflow.post",
+      "type": "requires",
+      "to": "permission:workflow.create"
+    },
+    {
+      "from": "action:workflow.put",
+      "type": "requires",
+      "to": "permission:workflow.update"
+    },
+    {
+      "from": "action:workflow.related",
+      "type": "requires",
+      "to": "permission:workflow.get"
+    },
+    {
+      "from": "action:workflowedge.delete",
+      "type": "requires",
+      "to": "permission:workflowedge.delete"
+    },
+    {
+      "from": "action:workflowedge.get",
+      "type": "requires",
+      "to": "permission:workflowedge.get"
+    },
+    {
+      "from": "action:workflowedge.list",
+      "type": "requires",
+      "to": "permission:workflowedge.get"
+    },
+    {
+      "from": "action:workflowedge.patch",
+      "type": "requires",
+      "to": "permission:workflowedge.update"
+    },
+    {
+      "from": "action:workflowedge.patchCollection",
+      "type": "requires",
+      "to": "permission:workflowedge.update"
+    },
+    {
+      "from": "action:workflowedge.post",
+      "type": "requires",
+      "to": "permission:workflowedge.create"
+    },
+    {
+      "from": "action:workflowedge.put",
+      "type": "requires",
+      "to": "permission:workflowedge.update"
+    },
+    {
+      "from": "action:workflowedge.related",
+      "type": "requires",
+      "to": "permission:workflowedge.get"
+    },
+    {
+      "from": "action:workflownode.delete",
+      "type": "requires",
+      "to": "permission:workflownode.delete"
+    },
+    {
+      "from": "action:workflownode.get",
+      "type": "requires",
+      "to": "permission:workflownode.get"
+    },
+    {
+      "from": "action:workflownode.list",
+      "type": "requires",
+      "to": "permission:workflownode.get"
+    },
+    {
+      "from": "action:workflownode.patch",
+      "type": "requires",
+      "to": "permission:workflownode.update"
+    },
+    {
+      "from": "action:workflownode.patchCollection",
+      "type": "requires",
+      "to": "permission:workflownode.update"
+    },
+    {
+      "from": "action:workflownode.post",
+      "type": "requires",
+      "to": "permission:workflownode.create"
+    },
+    {
+      "from": "action:workflownode.put",
+      "type": "requires",
+      "to": "permission:workflownode.update"
+    },
+    {
+      "from": "action:workflownode.related",
+      "type": "requires",
+      "to": "permission:workflownode.get"
+    },
+    {
+      "from": "action:workflowreference.get",
+      "type": "requires",
+      "to": "permission:workflowreference.get"
+    },
+    {
+      "from": "action:workflowreference.list",
+      "type": "requires",
+      "to": "permission:workflowreference.get"
+    },
+    {
+      "from": "action:workflowreference.related",
+      "type": "requires",
+      "to": "permission:workflowreference.get"
     },
     {
       "from": "case:acl/acl-admin-comment-allowed",
@@ -41768,6 +44551,266 @@
       "to": "fixture:useridentityId"
     },
     {
+      "from": "case:acl/acl-workflow-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflow-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflow-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflow-denied-acl-members",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:acl/acl-workflow-denied-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflow"
+    },
+    {
+      "from": "case:acl/acl-workflow-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workflow-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflow-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflow-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflow-detail-denied-acl-members",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:acl/acl-workflow-detail-denied-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:acl/acl-workflow-detail-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workflow-detail-denied-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-denied-acl-members",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-denied-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowedge"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-detail-denied-acl-members",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-detail-denied-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowedge/{id}"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-detail-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workflowedge-detail-denied-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:workflowedgeId"
+    },
+    {
+      "from": "case:acl/acl-workflownode-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflownode-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflownode-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflownode-denied-acl-members",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:acl/acl-workflownode-denied-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflownode"
+    },
+    {
+      "from": "case:acl/acl-workflownode-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workflownode-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflownode-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflownode-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflownode-detail-denied-acl-members",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:acl/acl-workflownode-detail-denied-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflownode/{id}"
+    },
+    {
+      "from": "case:acl/acl-workflownode-detail-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workflownode-detail-denied-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:workflownodeId"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-denied-acl-members",
+      "type": "covers",
+      "to": "controller:workflowreference"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-denied-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowreference"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-detail-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-detail-denied-acl-members",
+      "type": "covers",
+      "to": "controller:workflowreference"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-detail-denied-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowreference/{id}"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-detail-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workflowreference-detail-denied-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:workflowreferenceId"
+    },
+    {
       "from": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -42669,6 +45712,66 @@
     },
     {
       "from": "case:backend/delete-wiki-api-v1-wiki-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/delete-workflow-api-v1-workflow-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/delete-workflow-api-v1-workflow-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/delete-workflow-api-v1-workflow-runtime-id",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:backend/delete-workflow-api-v1-workflow-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-workflow-api-v1-workflow"
+    },
+    {
+      "from": "case:backend/delete-workflow-api-v1-workflow-runtime-id",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:backend/delete-workflow-api-v1-workflow-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/delete-workflownode-api-v1-workflownode-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/delete-workflownode-api-v1-workflownode-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/delete-workflownode-api-v1-workflownode-runtime-id",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:backend/delete-workflownode-api-v1-workflownode-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-workflownode-api-v1-workflownode"
+    },
+    {
+      "from": "case:backend/delete-workflownode-api-v1-workflownode-runtime-id",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workflownode/{id}"
+    },
+    {
+      "from": "case:backend/delete-workflownode-api-v1-workflownode-runtime-id",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -45823,6 +48926,316 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/get-workflow-api-v1-workflow",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflow"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-id",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-id",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-runtime-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-runtime-id",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-workflow-api-v1-workflow"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-runtime-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:backend/get-workflow-api-v1-workflow-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflowedge-api-v1-workflowedge",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflowedge-api-v1-workflowedge",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflowedge-api-v1-workflowedge",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:backend/get-workflowedge-api-v1-workflowedge",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowedge"
+    },
+    {
+      "from": "case:backend/get-workflowedge-api-v1-workflowedge",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflowedge-api-v1-workflowedge-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workflowedge-api-v1-workflowedge-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflowedge-api-v1-workflowedge-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflowedge-api-v1-workflowedge-id",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:backend/get-workflowedge-api-v1-workflowedge-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowedge/{id}"
+    },
+    {
+      "from": "case:backend/get-workflowedge-api-v1-workflowedge-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflowedge-api-v1-workflowedge-id",
+      "type": "uses_fixture",
+      "to": "fixture:workflowedgeId"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflownode"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-id",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflownode/{id}"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-id",
+      "type": "uses_fixture",
+      "to": "fixture:workflownodeId"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-runtime-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-runtime-id",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-workflownode-api-v1-workflownode"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-runtime-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflownode/{id}"
+    },
+    {
+      "from": "case:backend/get-workflownode-api-v1-workflownode-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflowreference-api-v1-workflowreference",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflowreference-api-v1-workflowreference",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflowreference-api-v1-workflowreference",
+      "type": "covers",
+      "to": "controller:workflowreference"
+    },
+    {
+      "from": "case:backend/get-workflowreference-api-v1-workflowreference",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowreference"
+    },
+    {
+      "from": "case:backend/get-workflowreference-api-v1-workflowreference",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflowreference-api-v1-workflowreference-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workflowreference-api-v1-workflowreference-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workflowreference-api-v1-workflowreference-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workflowreference-api-v1-workflowreference-id",
+      "type": "covers",
+      "to": "controller:workflowreference"
+    },
+    {
+      "from": "case:backend/get-workflowreference-api-v1-workflowreference-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowreference/{id}"
+    },
+    {
+      "from": "case:backend/get-workflowreference-api-v1-workflowreference-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workflowreference-api-v1-workflowreference-id",
+      "type": "uses_fixture",
+      "to": "fixture:workflowreferenceId"
+    },
+    {
       "from": "case:backend/patch-activity-api-v1-activity-id",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -46649,6 +50062,76 @@
     },
     {
       "from": "case:backend/patch-wiki-api-v1-wiki-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/patch-workflow-api-v1-workflow-id",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:backend/patch-workflow-api-v1-workflow-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/patch-workflow-api-v1-workflow-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/patch-workflow-api-v1-workflow-id",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:backend/patch-workflow-api-v1-workflow-id",
+      "type": "depends_on",
+      "to": "case:backend/post-workflow-api-v1-workflow"
+    },
+    {
+      "from": "case:backend/patch-workflow-api-v1-workflow-id",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:backend/patch-workflow-api-v1-workflow-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/patch-workflownode-api-v1-workflownode-id",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:backend/patch-workflownode-api-v1-workflownode-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/patch-workflownode-api-v1-workflownode-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/patch-workflownode-api-v1-workflownode-id",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:backend/patch-workflownode-api-v1-workflownode-id",
+      "type": "depends_on",
+      "to": "case:backend/post-workflownode-api-v1-workflownode"
+    },
+    {
+      "from": "case:backend/patch-workflownode-api-v1-workflownode-id",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflownode/{id}"
+    },
+    {
+      "from": "case:backend/patch-workflownode-api-v1-workflownode-id",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -47816,6 +51299,91 @@
       "from": "case:backend/post-wiki-api-v1-wiki",
       "type": "uses_fixture",
       "to": "fixture:projectId"
+    },
+    {
+      "from": "case:backend/post-workflow-api-v1-workflow",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-workflow-api-v1-workflow",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-workflow-api-v1-workflow",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:backend/post-workflow-api-v1-workflow",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflow"
+    },
+    {
+      "from": "case:backend/post-workflow-api-v1-workflow",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-workflowedge-api-v1-workflowedge",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-workflowedge-api-v1-workflowedge",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-workflowedge-api-v1-workflowedge",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:backend/post-workflowedge-api-v1-workflowedge",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:backend/post-workflowedge-api-v1-workflowedge",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-workflowedge-api-v1-workflowedge",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
+    },
+    {
+      "from": "case:backend/post-workflownode-api-v1-workflownode",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-workflownode-api-v1-workflownode",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-workflownode-api-v1-workflownode",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:backend/post-workflownode-api-v1-workflownode",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflownode"
+    },
+    {
+      "from": "case:backend/post-workflownode-api-v1-workflownode",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-workflownode-api-v1-workflownode",
+      "type": "uses_fixture",
+      "to": "fixture:workflowId"
     },
     {
       "from": "case:client/agent-create-makes-agent-user",
@@ -56448,6 +60016,886 @@
       "to": "fixture:useridentityId"
     },
     {
+      "from": "case:client/workflow-activate-counts-version",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflow-activate-counts-version",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflow-activate-counts-version",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflow-activate-counts-version",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:client/workflow-activate-counts-version",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflow-activate-counts-version",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:client/workflow-activate-counts-version",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflow-activate-rejects-unconnected-port",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflow-activate-rejects-unconnected-port",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflow-activate-rejects-unconnected-port",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflow-activate-rejects-unconnected-port",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:client/workflow-activate-rejects-unconnected-port",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflow-activate-rejects-unconnected-port",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:client/workflow-activate-rejects-unconnected-port",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-unknown-status",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-unknown-status",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-unknown-status",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-unknown-status",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-unknown-status",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflow"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-unknown-status",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflow-create-starts-as-draft",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflow-create-starts-as-draft",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflow-create-starts-as-draft",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflow-create-starts-as-draft",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:client/workflow-create-starts-as-draft",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflow"
+    },
+    {
+      "from": "case:client/workflow-create-starts-as-draft",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflow-create-starts-as-draft",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/workflow-delete",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflow-delete",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflow-delete",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:client/workflow-delete",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflow-delete",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:client/workflow-delete",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-taken-port",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-taken-port",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-taken-port",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-taken-port",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-taken-port",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-taken-port",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-end"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-taken-port",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-trigger"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-taken-port",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-taken-port",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-unknown-port",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-unknown-port",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-unknown-port",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-unknown-port",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-unknown-port",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-unknown-port",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-run-agent"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-unknown-port",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-trigger"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-unknown-port",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-rejects-unknown-port",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-blocked-to-end",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-blocked-to-end",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-blocked-to-end",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-blocked-to-end",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-blocked-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-blocked-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-end"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-blocked-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-run-agent"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-blocked-to-end",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-blocked-to-end",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-done-to-end",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-done-to-end",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-done-to-end",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-done-to-end",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-done-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-done-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-end"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-done-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-run-agent"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-done-to-end",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-done-to-end",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-failed-to-end",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-failed-to-end",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-failed-to-end",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-failed-to-end",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-failed-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-failed-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-end"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-failed-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-run-agent"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-failed-to-end",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-failed-to-end",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-limit-to-end",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-limit-to-end",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-limit-to-end",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-limit-to-end",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-limit-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-limit-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-end"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-limit-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-run-agent"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-limit-to-end",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-limit-to-end",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-needs-input-to-end",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-needs-input-to-end",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-needs-input-to-end",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-needs-input-to-end",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-needs-input-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-needs-input-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-end"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-needs-input-to-end",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-run-agent"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-needs-input-to-end",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-run-needs-input-to-end",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowedge-create-trigger-to-run",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflowedge-create-trigger-to-run",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowedge-create-trigger-to-run",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowedge-create-trigger-to-run",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-trigger-to-run",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflowedge-create-trigger-to-run",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-run-agent"
+    },
+    {
+      "from": "case:client/workflowedge-create-trigger-to-run",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-trigger"
+    },
+    {
+      "from": "case:client/workflowedge-create-trigger-to-run",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:client/workflowedge-create-trigger-to-run",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflownode-create-end",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflownode-create-end",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflownode-create-end",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-end",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflownode-create-end",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-end",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-invalid-config",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-invalid-config",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-invalid-config",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-invalid-config",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-invalid-config",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-invalid-config",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-invalid-config",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-kind-of-other-category",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-kind-of-other-category",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-kind-of-other-category",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-kind-of-other-category",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-kind-of-other-category",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-kind-of-other-category",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-kind-of-other-category",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-second-trigger",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-second-trigger",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-second-trigger",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-second-trigger",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-second-trigger",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-second-trigger",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-second-trigger",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflownode-create-run-agent",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflownode-create-run-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflownode-create-run-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflownode-create-run-agent",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-run-agent",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflownode-create-run-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-run-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflownode-create-run-agent",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:client/workflownode-create-trigger",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflownode-create-trigger",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflownode-create-trigger",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflownode-create-trigger",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-trigger",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflownode-create-trigger",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-trigger",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflownode-move-allowed-while-active",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workflownode-move-allowed-while-active",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflownode-move-allowed-while-active",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflownode-move-allowed-while-active",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:client/workflownode-move-allowed-while-active",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-run-agent"
+    },
+    {
+      "from": "case:client/workflownode-move-allowed-while-active",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflownode/{id}"
+    },
+    {
+      "from": "case:client/workflownode-move-allowed-while-active",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflownode-patch-rejected-while-active",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflownode-patch-rejected-while-active",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflownode-patch-rejected-while-active",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflownode-patch-rejected-while-active",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:client/workflownode-patch-rejected-while-active",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-run-agent"
+    },
+    {
+      "from": "case:client/workflownode-patch-rejected-while-active",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflownode/{id}"
+    },
+    {
+      "from": "case:client/workflownode-patch-rejected-while-active",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflownode-patch-rejected-while-active",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:client/workflowreference-gone-after-workflow-delete",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workflowreference-gone-after-workflow-delete",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowreference-gone-after-workflow-delete",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowreference-gone-after-workflow-delete",
+      "type": "covers",
+      "to": "controller:workflowreference"
+    },
+    {
+      "from": "case:client/workflowreference-gone-after-workflow-delete",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-run-agent"
+    },
+    {
+      "from": "case:client/workflowreference-gone-after-workflow-delete",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowreference"
+    },
+    {
+      "from": "case:client/workflowreference-gone-after-workflow-delete",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflowreference-lists-the-run-agent",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflowreference-lists-the-run-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflowreference-lists-the-run-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflowreference-lists-the-run-agent",
+      "type": "covers",
+      "to": "controller:workflowreference"
+    },
+    {
+      "from": "case:client/workflowreference-lists-the-run-agent",
+      "type": "depends_on",
+      "to": "case:client/workflownode-create-run-agent"
+    },
+    {
+      "from": "case:client/workflowreference-lists-the-run-agent",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workflowreference"
+    },
+    {
+      "from": "case:client/workflowreference-lists-the-run-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:live/live-conversation-comment-create-publishes-comment-created",
       "type": "asserts",
       "to": "assertion:hermes.expect"
@@ -60223,6 +64671,211 @@
       "to": "component:Filethumb"
     },
     {
+      "from": "controller:workflow",
+      "type": "has_action",
+      "to": "action:workflow.delete"
+    },
+    {
+      "from": "controller:workflow",
+      "type": "has_action",
+      "to": "action:workflow.deleteCollection"
+    },
+    {
+      "from": "controller:workflow",
+      "type": "has_action",
+      "to": "action:workflow.get"
+    },
+    {
+      "from": "controller:workflow",
+      "type": "has_action",
+      "to": "action:workflow.list"
+    },
+    {
+      "from": "controller:workflow",
+      "type": "has_action",
+      "to": "action:workflow.options"
+    },
+    {
+      "from": "controller:workflow",
+      "type": "has_action",
+      "to": "action:workflow.patch"
+    },
+    {
+      "from": "controller:workflow",
+      "type": "has_action",
+      "to": "action:workflow.patchCollection"
+    },
+    {
+      "from": "controller:workflow",
+      "type": "has_action",
+      "to": "action:workflow.post"
+    },
+    {
+      "from": "controller:workflow",
+      "type": "has_action",
+      "to": "action:workflow.put"
+    },
+    {
+      "from": "controller:workflow",
+      "type": "has_action",
+      "to": "action:workflow.putCollection"
+    },
+    {
+      "from": "controller:workflow",
+      "type": "has_action",
+      "to": "action:workflow.related"
+    },
+    {
+      "from": "controller:workflow",
+      "type": "serves",
+      "to": "model:Workflow"
+    },
+    {
+      "from": "controller:workflowedge",
+      "type": "has_action",
+      "to": "action:workflowedge.delete"
+    },
+    {
+      "from": "controller:workflowedge",
+      "type": "has_action",
+      "to": "action:workflowedge.deleteCollection"
+    },
+    {
+      "from": "controller:workflowedge",
+      "type": "has_action",
+      "to": "action:workflowedge.get"
+    },
+    {
+      "from": "controller:workflowedge",
+      "type": "has_action",
+      "to": "action:workflowedge.list"
+    },
+    {
+      "from": "controller:workflowedge",
+      "type": "has_action",
+      "to": "action:workflowedge.options"
+    },
+    {
+      "from": "controller:workflowedge",
+      "type": "has_action",
+      "to": "action:workflowedge.patch"
+    },
+    {
+      "from": "controller:workflowedge",
+      "type": "has_action",
+      "to": "action:workflowedge.patchCollection"
+    },
+    {
+      "from": "controller:workflowedge",
+      "type": "has_action",
+      "to": "action:workflowedge.post"
+    },
+    {
+      "from": "controller:workflowedge",
+      "type": "has_action",
+      "to": "action:workflowedge.put"
+    },
+    {
+      "from": "controller:workflowedge",
+      "type": "has_action",
+      "to": "action:workflowedge.putCollection"
+    },
+    {
+      "from": "controller:workflowedge",
+      "type": "has_action",
+      "to": "action:workflowedge.related"
+    },
+    {
+      "from": "controller:workflowedge",
+      "type": "serves",
+      "to": "model:Workflowedge"
+    },
+    {
+      "from": "controller:workflownode",
+      "type": "has_action",
+      "to": "action:workflownode.delete"
+    },
+    {
+      "from": "controller:workflownode",
+      "type": "has_action",
+      "to": "action:workflownode.deleteCollection"
+    },
+    {
+      "from": "controller:workflownode",
+      "type": "has_action",
+      "to": "action:workflownode.get"
+    },
+    {
+      "from": "controller:workflownode",
+      "type": "has_action",
+      "to": "action:workflownode.list"
+    },
+    {
+      "from": "controller:workflownode",
+      "type": "has_action",
+      "to": "action:workflownode.options"
+    },
+    {
+      "from": "controller:workflownode",
+      "type": "has_action",
+      "to": "action:workflownode.patch"
+    },
+    {
+      "from": "controller:workflownode",
+      "type": "has_action",
+      "to": "action:workflownode.patchCollection"
+    },
+    {
+      "from": "controller:workflownode",
+      "type": "has_action",
+      "to": "action:workflownode.post"
+    },
+    {
+      "from": "controller:workflownode",
+      "type": "has_action",
+      "to": "action:workflownode.put"
+    },
+    {
+      "from": "controller:workflownode",
+      "type": "has_action",
+      "to": "action:workflownode.putCollection"
+    },
+    {
+      "from": "controller:workflownode",
+      "type": "has_action",
+      "to": "action:workflownode.related"
+    },
+    {
+      "from": "controller:workflownode",
+      "type": "serves",
+      "to": "model:Workflownode"
+    },
+    {
+      "from": "controller:workflowreference",
+      "type": "has_action",
+      "to": "action:workflowreference.get"
+    },
+    {
+      "from": "controller:workflowreference",
+      "type": "has_action",
+      "to": "action:workflowreference.list"
+    },
+    {
+      "from": "controller:workflowreference",
+      "type": "has_action",
+      "to": "action:workflowreference.options"
+    },
+    {
+      "from": "controller:workflowreference",
+      "type": "has_action",
+      "to": "action:workflowreference.related"
+    },
+    {
+      "from": "controller:workflowreference",
+      "type": "serves",
+      "to": "model:Workflowreference"
+    },
+    {
       "from": "field:Activity.createdUserName",
       "type": "linked_to",
       "to": "field:Activity.createdUser"
@@ -60688,6 +65341,46 @@
       "to": "field:Wiki.id"
     },
     {
+      "from": "field:Workflow.createdUserName",
+      "type": "linked_to",
+      "to": "field:Workflow.createdUser"
+    },
+    {
+      "from": "field:Workflow.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Workflow.modifiedUser"
+    },
+    {
+      "from": "field:Workflowedge.createdUserName",
+      "type": "linked_to",
+      "to": "field:Workflowedge.createdUser"
+    },
+    {
+      "from": "field:Workflowedge.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Workflowedge.modifiedUser"
+    },
+    {
+      "from": "field:Workflownode.createdUserName",
+      "type": "linked_to",
+      "to": "field:Workflownode.createdUser"
+    },
+    {
+      "from": "field:Workflownode.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Workflownode.modifiedUser"
+    },
+    {
+      "from": "field:Workflowreference.createdUserName",
+      "type": "linked_to",
+      "to": "field:Workflowreference.createdUser"
+    },
+    {
+      "from": "field:Workflowreference.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Workflowreference.modifiedUser"
+    },
+    {
       "from": "model:Aclcontroller",
       "type": "has_field",
       "to": "field:Aclcontroller.createdUser"
@@ -60996,6 +65689,11 @@
       "from": "model:Agent",
       "type": "has_relationship",
       "to": "relationship:Agent.user"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_relationship",
+      "to": "relationship:Agent.workflowReferences"
     },
     {
       "from": "model:Agent",
@@ -66298,6 +70996,501 @@
       "to": "behaviour:softDeleteBehavior"
     },
     {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.createdUser"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.createdUserName"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.dateCreated"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.dateModified"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.deleted"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.description"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.id"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.modifiedUser"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.modifiedUserName"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.name"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.ownerId"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.scope"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.status"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.version"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_relationship",
+      "to": "relationship:Workflow.createdBy"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_relationship",
+      "to": "relationship:Workflow.edges"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_relationship",
+      "to": "relationship:Workflow.modifiedBy"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_relationship",
+      "to": "relationship:Workflow.nodes"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_relationship",
+      "to": "relationship:Workflow.owner"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_relationship",
+      "to": "relationship:Workflow.references"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "uses_behaviour",
+      "to": "behaviour:workflowBehavior"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_field",
+      "to": "field:Workflowedge.createdUser"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_field",
+      "to": "field:Workflowedge.createdUserName"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_field",
+      "to": "field:Workflowedge.dateCreated"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_field",
+      "to": "field:Workflowedge.dateModified"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_field",
+      "to": "field:Workflowedge.deleted"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_field",
+      "to": "field:Workflowedge.fromNodeId"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_field",
+      "to": "field:Workflowedge.fromPort"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_field",
+      "to": "field:Workflowedge.id"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_field",
+      "to": "field:Workflowedge.modifiedUser"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_field",
+      "to": "field:Workflowedge.modifiedUserName"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_field",
+      "to": "field:Workflowedge.toNodeId"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_field",
+      "to": "field:Workflowedge.workflowId"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_relationship",
+      "to": "relationship:Workflowedge.createdBy"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_relationship",
+      "to": "relationship:Workflowedge.fromNode"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_relationship",
+      "to": "relationship:Workflowedge.modifiedBy"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_relationship",
+      "to": "relationship:Workflowedge.toNode"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "has_relationship",
+      "to": "relationship:Workflowedge.workflow"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Workflowedge",
+      "type": "uses_behaviour",
+      "to": "behaviour:workflowEdgeBehavior"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.category"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.config"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.createdUser"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.createdUserName"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.dateCreated"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.dateModified"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.deleted"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.id"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.kind"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.modifiedUser"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.modifiedUserName"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.name"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.positionX"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.positionY"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_field",
+      "to": "field:Workflownode.workflowId"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_relationship",
+      "to": "relationship:Workflownode.createdBy"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_relationship",
+      "to": "relationship:Workflownode.modifiedBy"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_relationship",
+      "to": "relationship:Workflownode.references"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "has_relationship",
+      "to": "relationship:Workflownode.workflow"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Workflownode",
+      "type": "uses_behaviour",
+      "to": "behaviour:workflowNodeBehavior"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_field",
+      "to": "field:Workflowreference.createdUser"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_field",
+      "to": "field:Workflowreference.createdUserName"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_field",
+      "to": "field:Workflowreference.dateCreated"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_field",
+      "to": "field:Workflowreference.dateModified"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_field",
+      "to": "field:Workflowreference.deleted"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_field",
+      "to": "field:Workflowreference.entityId"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_field",
+      "to": "field:Workflowreference.entityType"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_field",
+      "to": "field:Workflowreference.id"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_field",
+      "to": "field:Workflowreference.modifiedUser"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_field",
+      "to": "field:Workflowreference.modifiedUserName"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_field",
+      "to": "field:Workflowreference.nodeId"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_field",
+      "to": "field:Workflowreference.workflowId"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_relationship",
+      "to": "relationship:Workflowreference.createdBy"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_relationship",
+      "to": "relationship:Workflowreference.modifiedBy"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_relationship",
+      "to": "relationship:Workflowreference.node"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "has_relationship",
+      "to": "relationship:Workflowreference.workflow"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Workflowreference",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
       "from": "permission:issue.description.create",
       "type": "guards",
       "to": "field:Issue.description"
@@ -66556,6 +71749,26 @@
       "from": "profile:aclFields",
       "type": "grants",
       "to": "permission:project.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "denies",
+      "to": "permission:workflow.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "denies",
+      "to": "permission:workflowedge.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "denies",
+      "to": "permission:workflownode.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "denies",
+      "to": "permission:workflowreference.get"
     },
     {
       "from": "profile:aclMembers",
@@ -67533,6 +72746,86 @@
       "to": "permission:wiki.update"
     },
     {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflow.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflow.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflow.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflow.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowedge.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowedge.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowedge.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowedge.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflownode.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflownode.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflownode.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflownode.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowreference.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowreference.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowreference.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workflowreference.update"
+    },
+    {
       "from": "relationship:Activity.createdBy",
       "type": "targets",
       "to": "model:User"
@@ -67576,6 +72869,11 @@
       "from": "relationship:Agent.user",
       "type": "targets",
       "to": "model:User"
+    },
+    {
+      "from": "relationship:Agent.workflowReferences",
+      "type": "targets",
+      "to": "model:Workflowreference"
     },
     {
       "from": "relationship:Agentcredential.agent",
@@ -68423,6 +73721,101 @@
       "to": "model:Vote"
     },
     {
+      "from": "relationship:Workflow.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workflow.edges",
+      "type": "targets",
+      "to": "model:Workflowedge"
+    },
+    {
+      "from": "relationship:Workflow.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workflow.nodes",
+      "type": "targets",
+      "to": "model:Workflownode"
+    },
+    {
+      "from": "relationship:Workflow.owner",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workflow.references",
+      "type": "targets",
+      "to": "model:Workflowreference"
+    },
+    {
+      "from": "relationship:Workflowedge.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workflowedge.fromNode",
+      "type": "targets",
+      "to": "model:Workflownode"
+    },
+    {
+      "from": "relationship:Workflowedge.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workflowedge.toNode",
+      "type": "targets",
+      "to": "model:Workflownode"
+    },
+    {
+      "from": "relationship:Workflowedge.workflow",
+      "type": "targets",
+      "to": "model:Workflow"
+    },
+    {
+      "from": "relationship:Workflownode.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workflownode.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workflownode.references",
+      "type": "targets",
+      "to": "model:Workflowreference"
+    },
+    {
+      "from": "relationship:Workflownode.workflow",
+      "type": "targets",
+      "to": "model:Workflow"
+    },
+    {
+      "from": "relationship:Workflowreference.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workflowreference.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workflowreference.node",
+      "type": "targets",
+      "to": "model:Workflownode"
+    },
+    {
+      "from": "relationship:Workflowreference.workflow",
+      "type": "targets",
+      "to": "model:Workflow"
+    },
+    {
       "from": "route:ANY /",
       "type": "handled_by",
       "to": "action:index.index"
@@ -68841,6 +74234,36 @@
       "from": "route:DELETE /api/v1/wiki/{id}",
       "type": "handled_by",
       "to": "action:wiki.delete"
+    },
+    {
+      "from": "route:DELETE /api/v1/workflow",
+      "type": "handled_by",
+      "to": "action:workflow.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/workflow/{id}",
+      "type": "handled_by",
+      "to": "action:workflow.delete"
+    },
+    {
+      "from": "route:DELETE /api/v1/workflowedge",
+      "type": "handled_by",
+      "to": "action:workflowedge.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/workflowedge/{id}",
+      "type": "handled_by",
+      "to": "action:workflowedge.delete"
+    },
+    {
+      "from": "route:DELETE /api/v1/workflownode",
+      "type": "handled_by",
+      "to": "action:workflownode.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/workflownode/{id}",
+      "type": "handled_by",
+      "to": "action:workflownode.delete"
     },
     {
       "from": "route:GET /api/v1/activity",
@@ -69548,6 +74971,66 @@
       "to": "action:wiki.related"
     },
     {
+      "from": "route:GET /api/v1/workflow",
+      "type": "handled_by",
+      "to": "action:workflow.list"
+    },
+    {
+      "from": "route:GET /api/v1/workflow/{id}",
+      "type": "handled_by",
+      "to": "action:workflow.get"
+    },
+    {
+      "from": "route:GET /api/v1/workflow/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:workflow.related"
+    },
+    {
+      "from": "route:GET /api/v1/workflowedge",
+      "type": "handled_by",
+      "to": "action:workflowedge.list"
+    },
+    {
+      "from": "route:GET /api/v1/workflowedge/{id}",
+      "type": "handled_by",
+      "to": "action:workflowedge.get"
+    },
+    {
+      "from": "route:GET /api/v1/workflowedge/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:workflowedge.related"
+    },
+    {
+      "from": "route:GET /api/v1/workflownode",
+      "type": "handled_by",
+      "to": "action:workflownode.list"
+    },
+    {
+      "from": "route:GET /api/v1/workflownode/{id}",
+      "type": "handled_by",
+      "to": "action:workflownode.get"
+    },
+    {
+      "from": "route:GET /api/v1/workflownode/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:workflownode.related"
+    },
+    {
+      "from": "route:GET /api/v1/workflowreference",
+      "type": "handled_by",
+      "to": "action:workflowreference.list"
+    },
+    {
+      "from": "route:GET /api/v1/workflowreference/{id}",
+      "type": "handled_by",
+      "to": "action:workflowreference.get"
+    },
+    {
+      "from": "route:GET /api/v1/workflowreference/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:workflowreference.related"
+    },
+    {
       "from": "route:OPTIONS /api/v1/activity",
       "type": "handled_by",
       "to": "action:activity.options"
@@ -69806,6 +75289,26 @@
       "from": "route:OPTIONS /api/v1/wiki",
       "type": "handled_by",
       "to": "action:wiki.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/workflow",
+      "type": "handled_by",
+      "to": "action:workflow.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/workflowedge",
+      "type": "handled_by",
+      "to": "action:workflowedge.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/workflownode",
+      "type": "handled_by",
+      "to": "action:workflownode.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/workflowreference",
+      "type": "handled_by",
+      "to": "action:workflowreference.options"
     },
     {
       "from": "route:PATCH /api/v1/activity",
@@ -70228,6 +75731,36 @@
       "to": "action:wiki.patch"
     },
     {
+      "from": "route:PATCH /api/v1/workflow",
+      "type": "handled_by",
+      "to": "action:workflow.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/workflow/{id}",
+      "type": "handled_by",
+      "to": "action:workflow.patch"
+    },
+    {
+      "from": "route:PATCH /api/v1/workflowedge",
+      "type": "handled_by",
+      "to": "action:workflowedge.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/workflowedge/{id}",
+      "type": "handled_by",
+      "to": "action:workflowedge.patch"
+    },
+    {
+      "from": "route:PATCH /api/v1/workflownode",
+      "type": "handled_by",
+      "to": "action:workflownode.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/workflownode/{id}",
+      "type": "handled_by",
+      "to": "action:workflownode.patch"
+    },
+    {
       "from": "route:POST /api/v1/activity",
       "type": "handled_by",
       "to": "action:activity.post"
@@ -70456,6 +75989,21 @@
       "from": "route:POST /api/v1/wiki",
       "type": "handled_by",
       "to": "action:wiki.post"
+    },
+    {
+      "from": "route:POST /api/v1/workflow",
+      "type": "handled_by",
+      "to": "action:workflow.post"
+    },
+    {
+      "from": "route:POST /api/v1/workflowedge",
+      "type": "handled_by",
+      "to": "action:workflowedge.post"
+    },
+    {
+      "from": "route:POST /api/v1/workflownode",
+      "type": "handled_by",
+      "to": "action:workflownode.post"
     },
     {
       "from": "route:PUT /api/v1/activity",
@@ -70836,6 +76384,36 @@
       "from": "route:PUT /api/v1/wiki/{id}",
       "type": "handled_by",
       "to": "action:wiki.put"
+    },
+    {
+      "from": "route:PUT /api/v1/workflow",
+      "type": "handled_by",
+      "to": "action:workflow.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/workflow/{id}",
+      "type": "handled_by",
+      "to": "action:workflow.put"
+    },
+    {
+      "from": "route:PUT /api/v1/workflowedge",
+      "type": "handled_by",
+      "to": "action:workflowedge.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/workflowedge/{id}",
+      "type": "handled_by",
+      "to": "action:workflowedge.put"
+    },
+    {
+      "from": "route:PUT /api/v1/workflownode",
+      "type": "handled_by",
+      "to": "action:workflownode.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/workflownode/{id}",
+      "type": "handled_by",
+      "to": "action:workflownode.put"
     },
     {
       "from": "route:system:default",

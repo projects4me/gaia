@@ -828,3 +828,64 @@
 | POST | /api/v1/wiki | rest | wiki.post |
 | PUT | /api/v1/wiki | rest | wiki.putCollection |
 | PUT | /api/v1/wiki/{id} | rest | wiki.put |
+
+<a id="workflow"></a>
+## workflow
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/workflow | rest | workflow.deleteCollection |
+| DELETE | /api/v1/workflow/{id} | rest | workflow.delete |
+| GET | /api/v1/workflow | rest | workflow.list |
+| GET | /api/v1/workflow/{id} | rest | workflow.get |
+| GET | /api/v1/workflow/{id}/{relation} | rest | workflow.related |
+| OPTIONS | /api/v1/workflow | rest | workflow.options |
+| PATCH | /api/v1/workflow | rest | workflow.patchCollection |
+| PATCH | /api/v1/workflow/{id} | rest | workflow.patch |
+| POST | /api/v1/workflow | rest | workflow.post |
+| PUT | /api/v1/workflow | rest | workflow.putCollection |
+| PUT | /api/v1/workflow/{id} | rest | workflow.put |
+
+<a id="workflowedge"></a>
+## workflowedge
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/workflowedge | rest | workflowedge.deleteCollection |
+| DELETE | /api/v1/workflowedge/{id} | rest | workflowedge.delete |
+| GET | /api/v1/workflowedge | rest | workflowedge.list |
+| GET | /api/v1/workflowedge/{id} | rest | workflowedge.get |
+| GET | /api/v1/workflowedge/{id}/{relation} | rest | workflowedge.related |
+| OPTIONS | /api/v1/workflowedge | rest | workflowedge.options |
+| PATCH | /api/v1/workflowedge | rest | workflowedge.patchCollection |
+| PATCH | /api/v1/workflowedge/{id} | rest | workflowedge.patch |
+| POST | /api/v1/workflowedge | rest | workflowedge.post |
+| PUT | /api/v1/workflowedge | rest | workflowedge.putCollection |
+| PUT | /api/v1/workflowedge/{id} | rest | workflowedge.put |
+
+<a id="workflownode"></a>
+## workflownode
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/workflownode | rest | workflownode.deleteCollection |
+| DELETE | /api/v1/workflownode/{id} | rest | workflownode.delete |
+| GET | /api/v1/workflownode | rest | workflownode.list |
+| GET | /api/v1/workflownode/{id} | rest | workflownode.get |
+| GET | /api/v1/workflownode/{id}/{relation} | rest | workflownode.related |
+| OPTIONS | /api/v1/workflownode | rest | workflownode.options |
+| PATCH | /api/v1/workflownode | rest | workflownode.patchCollection |
+| PATCH | /api/v1/workflownode/{id} | rest | workflownode.patch |
+| POST | /api/v1/workflownode | rest | workflownode.post |
+| PUT | /api/v1/workflownode | rest | workflownode.putCollection |
+| PUT | /api/v1/workflownode/{id} | rest | workflownode.put |
+
+<a id="workflowreference"></a>
+## workflowreference
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/workflowreference | rest | workflowreference.list |
+| GET | /api/v1/workflowreference/{id} | rest | workflowreference.get |
+| GET | /api/v1/workflowreference/{id}/{relation} | rest | workflowreference.related |
+| OPTIONS | /api/v1/workflowreference | rest | workflowreference.options |
