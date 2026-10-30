@@ -16424,10 +16424,13 @@
         "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\WorkflowTriggersComponent",
         "file": "app/api/v1/controllers/components/events/WorkflowTriggersComponent.php",
         "extends": null,
-        "implements": [],
+        "implements": [
+          "WorkflowChangeEvents"
+        ],
         "hooks": [
           "afterCreate",
-          "afterUpdate"
+          "afterUpdate",
+          "changed"
         ]
       }
     },
@@ -25795,6 +25798,373 @@
       }
     },
     {
+      "id": "field:Workflowrun.dateCreated",
+      "type": "field",
+      "key": "Workflowrun.dateCreated",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrun.dateModified",
+      "type": "field",
+      "key": "Workflowrun.dateModified",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrun.deleted",
+      "type": "field",
+      "key": "Workflowrun.deleted",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Workflowrun.depth",
+      "type": "field",
+      "key": "Workflowrun.depth",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_DEPTH",
+        "type": "int",
+        "null": false,
+        "default": 0
+      }
+    },
+    {
+      "id": "field:Workflowrun.error",
+      "type": "field",
+      "key": "Workflowrun.error",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_ERROR",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrun.eventId",
+      "type": "field",
+      "key": "Workflowrun.eventId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_EVENT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrun.eventName",
+      "type": "field",
+      "key": "Workflowrun.eventName",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_EVENT_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrun.finishedAt",
+      "type": "field",
+      "key": "Workflowrun.finishedAt",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_FINISHED_AT",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrun.id",
+      "type": "field",
+      "key": "Workflowrun.id",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Workflowrun.inputs",
+      "type": "field",
+      "key": "Workflowrun.inputs",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_INPUTS",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrun.parentRunId",
+      "type": "field",
+      "key": "Workflowrun.parentRunId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_PARENT_RUN_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrun.projectId",
+      "type": "field",
+      "key": "Workflowrun.projectId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_PROJECT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrun.startedAt",
+      "type": "field",
+      "key": "Workflowrun.startedAt",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_STARTED_AT",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrun.status",
+      "type": "field",
+      "key": "Workflowrun.status",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_STATUS",
+        "type": "varchar",
+        "length": "20",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowrun.triggerNodeId",
+      "type": "field",
+      "key": "Workflowrun.triggerNodeId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_TRIGGER_NODE_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowrun.workflowId",
+      "type": "field",
+      "key": "Workflowrun.workflowId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_WORKFLOW_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowrun.workflowVersion",
+      "type": "field",
+      "key": "Workflowrun.workflowVersion",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUNS_WORKFLOW_VERSION",
+        "type": "int",
+        "null": false,
+        "default": 0
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.category",
+      "type": "field",
+      "key": "Workflowrunstep.category",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_CATEGORY",
+        "type": "varchar",
+        "length": "20",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.dateCreated",
+      "type": "field",
+      "key": "Workflowrunstep.dateCreated",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.dateModified",
+      "type": "field",
+      "key": "Workflowrunstep.dateModified",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.deleted",
+      "type": "field",
+      "key": "Workflowrunstep.deleted",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.durationMs",
+      "type": "field",
+      "key": "Workflowrunstep.durationMs",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_DURATION_MS",
+        "type": "int",
+        "null": false,
+        "default": 0
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.error",
+      "type": "field",
+      "key": "Workflowrunstep.error",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_ERROR",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.finishedAt",
+      "type": "field",
+      "key": "Workflowrunstep.finishedAt",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_FINISHED_AT",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.id",
+      "type": "field",
+      "key": "Workflowrunstep.id",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.inputs",
+      "type": "field",
+      "key": "Workflowrunstep.inputs",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_INPUTS",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.kind",
+      "type": "field",
+      "key": "Workflowrunstep.kind",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_KIND",
+        "type": "varchar",
+        "length": "50",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.nodeId",
+      "type": "field",
+      "key": "Workflowrunstep.nodeId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_NODE_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.outputs",
+      "type": "field",
+      "key": "Workflowrunstep.outputs",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_OUTPUTS",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.port",
+      "type": "field",
+      "key": "Workflowrunstep.port",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_PORT",
+        "type": "varchar",
+        "length": "50",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.runId",
+      "type": "field",
+      "key": "Workflowrunstep.runId",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_RUN_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.sequence",
+      "type": "field",
+      "key": "Workflowrunstep.sequence",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_SEQUENCE",
+        "type": "int",
+        "null": false,
+        "default": 0
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.startedAt",
+      "type": "field",
+      "key": "Workflowrunstep.startedAt",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_STARTED_AT",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workflowrunstep.status",
+      "type": "field",
+      "key": "Workflowrunstep.status",
+      "attributes": {
+        "label": "LBL_WORKFLOW_RUN_STEPS_STATUS",
+        "type": "varchar",
+        "length": "20",
+        "null": false
+      }
+    },
+    {
       "id": "fixture:activityId",
       "type": "fixture",
       "key": "activityId",
@@ -27363,6 +27733,32 @@
       "attributes": {
         "file": "app/metadata/model/Workflowreference.php",
         "tableName": "workflow_references",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
+      "id": "model:Workflowrun",
+      "type": "model",
+      "key": "Workflowrun",
+      "attributes": {
+        "file": "app/metadata/model/Workflowrun.php",
+        "tableName": "workflow_runs",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
+      "id": "model:Workflowrunstep",
+      "type": "model",
+      "key": "Workflowrunstep",
+      "attributes": {
+        "file": "app/metadata/model/Workflowrunstep.php",
+        "tableName": "workflow_run_steps",
         "isView": false,
         "registered": true,
         "hasMetadata": true,
@@ -31327,6 +31723,66 @@
       "attributes": {
         "kind": "hasOne",
         "primaryKey": "workflowId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowrun.parentRun",
+      "type": "relationship",
+      "key": "Workflowrun.parentRun",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "parentRunId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowrun.project",
+      "type": "relationship",
+      "key": "Workflowrun.project",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "projectId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowrun.steps",
+      "type": "relationship",
+      "key": "Workflowrun.steps",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "runId"
+      }
+    },
+    {
+      "id": "relationship:Workflowrun.workflow",
+      "type": "relationship",
+      "key": "Workflowrun.workflow",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "workflowId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowrunstep.node",
+      "type": "relationship",
+      "key": "Workflowrunstep.node",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "nodeId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workflowrunstep.run",
+      "type": "relationship",
+      "key": "Workflowrunstep.run",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "runId",
         "relatedKey": "id"
       }
     },
@@ -71865,6 +72321,236 @@
       "to": "behaviour:softDeleteBehavior"
     },
     {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.dateCreated"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.dateModified"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.deleted"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.depth"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.error"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.eventId"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.eventName"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.finishedAt"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.id"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.inputs"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.parentRunId"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.projectId"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.startedAt"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.status"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.triggerNodeId"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.workflowId"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_field",
+      "to": "field:Workflowrun.workflowVersion"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_relationship",
+      "to": "relationship:Workflowrun.parentRun"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_relationship",
+      "to": "relationship:Workflowrun.project"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_relationship",
+      "to": "relationship:Workflowrun.steps"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "has_relationship",
+      "to": "relationship:Workflowrun.workflow"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Workflowrun",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.category"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.dateCreated"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.dateModified"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.deleted"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.durationMs"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.error"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.finishedAt"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.id"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.inputs"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.kind"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.nodeId"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.outputs"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.port"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.runId"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.sequence"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.startedAt"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_field",
+      "to": "field:Workflowrunstep.status"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_relationship",
+      "to": "relationship:Workflowrunstep.node"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "has_relationship",
+      "to": "relationship:Workflowrunstep.run"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Workflowrunstep",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
       "from": "permission:issue.description.create",
       "type": "guards",
       "to": "field:Issue.description"
@@ -74213,6 +74899,36 @@
       "from": "relationship:Workflowreference.workflow",
       "type": "targets",
       "to": "model:Workflow"
+    },
+    {
+      "from": "relationship:Workflowrun.parentRun",
+      "type": "targets",
+      "to": "model:Workflowrun"
+    },
+    {
+      "from": "relationship:Workflowrun.project",
+      "type": "targets",
+      "to": "model:Project"
+    },
+    {
+      "from": "relationship:Workflowrun.steps",
+      "type": "targets",
+      "to": "model:Workflowrunstep"
+    },
+    {
+      "from": "relationship:Workflowrun.workflow",
+      "type": "targets",
+      "to": "model:Workflow"
+    },
+    {
+      "from": "relationship:Workflowrunstep.node",
+      "type": "targets",
+      "to": "model:Workflownode"
+    },
+    {
+      "from": "relationship:Workflowrunstep.run",
+      "type": "targets",
+      "to": "model:Workflowrun"
     },
     {
       "from": "route:ANY /",

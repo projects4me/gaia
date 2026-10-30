@@ -7,8 +7,9 @@
 namespace Gaia\Libraries\Workflows;
 
 /**
- * A workflow's scope: the projects whose events it runs on. An empty scope
- * covers every project.
+ * A workflow's scope: the projects whose events it runs on. Every workflow
+ * belongs to projects, so an empty scope covers none (an Active workflow
+ * always has one, see workflowBehavior).
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Workflows
@@ -34,7 +35,7 @@ class WorkflowScope
 
     /**
      * Whether a scope covers an event in the project. An event with no
-     * project is covered only by an empty scope.
+     * project is covered by no scope.
      *
      * @param  string[]    $scope
      * @param  string|null $projectId
@@ -42,10 +43,6 @@ class WorkflowScope
      */
     public static function covers(array $scope, $projectId)
     {
-        if ($scope === []) {
-            return true;
-        }
-
         return $projectId !== null && $projectId !== '' && in_array((string) $projectId, $scope, true);
     }
 }

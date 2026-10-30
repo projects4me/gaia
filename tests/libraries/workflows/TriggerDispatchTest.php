@@ -35,8 +35,9 @@ class TriggerDispatchTest extends TestCase
     {
         $dispatcher = new TriggerDispatcher($this->nodes([
             'issue.created' => [
-                $this->node('wf-everywhere', []),
+                $this->node('wf-no-scope', []),
                 $this->node('wf-project-1', ['project-1']),
+                $this->node('wf-projects-1-3', ['project-3', 'project-1']),
                 $this->node('wf-project-2', ['project-2']),
             ],
         ]), $this->engine());
@@ -44,9 +45,9 @@ class TriggerDispatchTest extends TestCase
         $started = $dispatcher->dispatch(['eventName' => 'issue.created', 'projectId' => 'project-1']);
 
         $this->assertSame(2, $started);
-        $this->assertSame(['wf-everywhere', 'wf-project-1'], array_column($this->started, 0));
-        $this->assertSame('node-wf-project-1', $this->started[1][1]);
-        $this->assertSame('project-1', $this->started[1][2]['projectId']);
+        $this->assertSame(['wf-project-1', 'wf-projects-1-3'], array_column($this->started, 0));
+        $this->assertSame('node-wf-project-1', $this->started[0][1]);
+        $this->assertSame('project-1', $this->started[0][2]['projectId']);
     }
 
     public function testAnEventNoWorkflowWaitsForStartsNothing()
@@ -62,17 +63,20 @@ class TriggerDispatchTest extends TestCase
         $this->assertSame(['p1', 'p2'], WorkflowScope::decode('["p1","p2"]'));
         $this->assertSame([], WorkflowScope::decode(null));
         $this->assertSame([], WorkflowScope::decode('not json'));
-        $this->assertTrue(WorkflowScope::covers([], null));
+        $this->assertFalse(WorkflowScope::covers([], null), 'there are no workflows outside projects');
+        $this->assertFalse(WorkflowScope::covers([], 'p1'));
+        $this->assertTrue(WorkflowScope::covers(['p1'], 'p1'));
         $this->assertFalse(WorkflowScope::covers(['p1'], null));
         $this->assertFalse(WorkflowScope::covers(['p1'], 'p2'));
     }
 
-    public function testADueScheduleStartsItsWorkflow()
+    public function testADueScheduleStartsItsWorkflowOnceForEachProjectOfItsScope()
     {
         $runner = new ScheduleTriggerRunner($this->nodes([
             'schedule' => [
-                $this->node('wf-weekdays-9', [], ['cron' => '0 9 * * 1-5']),
-                $this->node('wf-hourly-15', [], ['cron' => '15 * * * *']),
+                $this->node('wf-weekdays-9', ['project-1', 'project-2'], ['cron' => '0 9 * * 1-5']),
+                $this->node('wf-hourly-15', ['project-1'], ['cron' => '15 * * * *']),
+                $this->node('wf-no-scope', [], ['cron' => '0 9 * * 1-5']),
                 $this->node('wf-broken', [], ['cron' => 'nonsense']),
                 $this->node('wf-no-cron', [], []),
             ],
@@ -81,11 +85,12 @@ class TriggerDispatchTest extends TestCase
         // Monday 2026-11-02 09:00:42 in UTC+5 is 04:00 UTC: neither is due
         $this->assertSame(0, $runner->run(new \DateTimeImmutable('2026-11-02 09:00:42', new \DateTimeZone('+05:00'))));
 
-        $this->assertSame(1, $runner->run(new \DateTimeImmutable('2026-11-02 09:00:42', new \DateTimeZone('UTC'))));
-        $this->assertSame('wf-weekdays-9', $this->started[0][0]);
+        $this->assertSame(2, $runner->run(new \DateTimeImmutable('2026-11-02 09:00:42', new \DateTimeZone('UTC'))));
+        $this->assertSame(['wf-weekdays-9', 'wf-weekdays-9'], array_column($this->started, 0));
+        $this->assertSame(['project-1', 'project-2'], array_column(array_column($this->started, 2), 'projectId'));
         $payload = $this->started[0][2];
         $this->assertSame('schedule', $payload['eventName']);
-        $this->assertNull($payload['projectId']);
+        $this->assertNotSame($payload['eventId'], $this->started[1][2]['eventId']);
         $this->assertSame(['cron' => '0 9 * * 1-5', 'firedAt' => '2026-11-02T09:00:00Z'], $payload['schedule']);
         $this->assertNotEmpty($payload['eventId']);
     }

@@ -34,7 +34,7 @@ class TriggerDispatcher
     public function __construct(ActiveTriggerNodes $nodes = null, WorkflowEngine $engine = null)
     {
         $this->nodes = $nodes ?: new ActiveTriggerNodes();
-        $this->engine = $engine ?: new LoggedWorkflowEngine();
+        $this->engine = $engine ?: new WorkflowRunner();
     }
 
     /**

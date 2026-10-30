@@ -34,7 +34,7 @@ class WorkflowBehaviorTest extends TestCase
 
     public function testCreateCannotStartActive()
     {
-        $model = $this->model(['name' => 'Triage', 'status' => 'Active']);
+        $model = $this->model(['name' => 'Triage', 'status' => 'Active', 'scope' => ['project-1']]);
 
         $this->assertFalse($this->behavior()->notify('beforeValidationOnCreate', $model));
         $this->assertSame(['Add a trigger and its steps before activating a workflow.'], $model->messages);
@@ -61,10 +61,23 @@ class WorkflowBehaviorTest extends TestCase
         ];
     }
 
+    public function testAnActiveWorkflowBelongsToAProject()
+    {
+        $model = $this->model(['id' => 'wf-1', 'name' => 'Triage', 'status' => 'Active', 'version' => 0, 'scope' => []],
+            ['status' => 'Draft', 'version' => 0]);
+
+        $this->assertFalse($this->behavior()->notify('beforeValidationOnUpdate', $model));
+        $this->assertSame(['An active workflow must belong to at least one project.'], $model->messages);
+
+        $draft = $this->model(['id' => 'wf-2', 'name' => 'Sketch', 'status' => 'Draft', 'version' => 0],
+            ['status' => 'Draft', 'version' => 0]);
+        $this->assertNotFalse($this->behavior()->notify('beforeValidationOnUpdate', $draft));
+    }
+
     public function testActivatingChecksTheGraph()
     {
-        $model = $this->model(['id' => 'wf-1', 'name' => 'Triage', 'status' => 'Active', 'version' => 0],
-            ['status' => 'Draft', 'version' => 0]);
+        $model = $this->model(['id' => 'wf-1', 'name' => 'Triage', 'status' => 'Active', 'version' => 0,
+            'scope' => ['project-1']], ['status' => 'Draft', 'version' => 0]);
 
         $this->assertFalse($this->behavior([], [])->notify('beforeValidationOnUpdate', $model));
         $this->assertSame(['A workflow needs exactly one trigger; it has 0.'], $model->messages);
@@ -72,8 +85,8 @@ class WorkflowBehaviorTest extends TestCase
 
     public function testActivatingAValidGraphCountsANewVersion()
     {
-        $model = $this->model(['id' => 'wf-1', 'name' => 'Triage', 'status' => 'Active', 'version' => 99],
-            ['status' => 'Disabled', 'version' => 2]);
+        $model = $this->model(['id' => 'wf-1', 'name' => 'Triage', 'status' => 'Active', 'version' => 99,
+            'scope' => ['project-1']], ['status' => 'Disabled', 'version' => 2]);
 
         $this->assertNotFalse($this->behavior()->notify('beforeValidationOnUpdate', $model));
         $this->assertSame(3, $model->version);
@@ -81,8 +94,8 @@ class WorkflowBehaviorTest extends TestCase
 
     public function testOtherUpdatesKeepTheVersion()
     {
-        $model = $this->model(['id' => 'wf-1', 'name' => 'Renamed', 'status' => 'Active', 'version' => 99],
-            ['status' => 'Active', 'version' => 2]);
+        $model = $this->model(['id' => 'wf-1', 'name' => 'Renamed', 'status' => 'Active', 'version' => 99,
+            'scope' => '["project-1"]'], ['status' => 'Active', 'version' => 2]);
 
         $this->assertNotFalse($this->behavior([], [])->notify('beforeValidationOnUpdate', $model));
         $this->assertSame(2, $model->version);
