@@ -15,4 +15,4 @@
 - aclNoSetting role ACL No Setting | allow 12, members 0, deny 14 | cases 35 | issuestatus/issuetype allowed, setting.* denied
 - aclProjectOnly role ACL Project Only | allow 5, members 0, deny 2 | cases 6 | project allowed, issue.get denied
 - anonymous no login | allow 0, members 0, deny 0 | cases 27
-- default role Admin | allow 176, members 0, deny 0 | cases 563 | Admin role of the seeded main user
+- default role Admin | allow 176, members 0, deny 0 | cases 564 | Admin role of the seeded main user
