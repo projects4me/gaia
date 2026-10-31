@@ -11391,6 +11391,24 @@
       }
     },
     {
+      "id": "case:client/client-project-get-with-collection-rels",
+      "type": "case",
+      "key": "client/client-project-get-with-collection-rels",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/project/{projectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/delete-comment-api-v1-comment-runtime-id",
       "type": "case",
       "key": "client/delete-comment-api-v1-comment-runtime-id",
@@ -55712,6 +55730,46 @@
       "from": "case:client/client-ideaplanissue-create",
       "type": "uses_fixture",
       "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/client-project-get-with-collection-rels",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/client-project-get-with-collection-rels",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:client/client-project-get-with-collection-rels",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-project-get-with-collection-rels",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-project-get-with-collection-rels",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/client-project-get-with-collection-rels",
+      "type": "exercises",
+      "to": "route:GET /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/client-project-get-with-collection-rels",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-project-get-with-collection-rels",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
     },
     {
       "from": "case:client/delete-comment-api-v1-comment-runtime-id",
