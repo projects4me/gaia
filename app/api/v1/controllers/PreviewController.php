@@ -6,11 +6,14 @@
 
 namespace  Gaia\MVC\REST\Controllers;
 
-use Gaia\Core\MVC\REST\Controllers\RestController;
+use Gaia\MVC\Models\Downloadtoken;
+use Gaia\MVC\Models\Upload;
 
 /**
  * Preview controller
  *
+ * Serves an image inline for a single-use download token created by the
+ * authenticated GET /upload?id=X&download=true call.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
@@ -19,9 +22,11 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class PreviewController extends \Phalcon\Mvc\Controller
 {
+    /** @var string[] non-executable raster types that may be served inline */
+    const PREVIEWABLE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
 
     /**
-     * Retrieve the user and image and return
+     * Retrieve the image the token points to and return it inline
      *
      * @param string $id
      * @return mixed
@@ -37,48 +42,35 @@ class PreviewController extends \Phalcon\Mvc\Controller
             throw new \Phalcon\Exception('Id must be set, please refer to guides.');
         }
 
-        $params = array(
-            'where' => '(Downloadtoken.downloadToken : '.$id.')',
-            'sort' => 'Downloadtoken.dateCreated',
-        );
+        // The token is consumed up front, so a second request (or a failure below) cannot reuse it
+        $downloadToken = Downloadtoken::consume($id);
 
-        $model = new Downloadtoken();
-        $data = $model->readAll($params);
-        if (isset($data[0]) && $data[0]->downloadToken) {
-            $logger->info("Found the download token");
-            $downloadToken = Downloadtoken::find(
-                "downloadToken = '".$data[0]->downloadToken."'"
-            );
-            // validate expiry
-            $expiry = new \DateTime($data[0]->expires,new \DateTimeZone('UTC'));
-            $now = new \DateTime('now',new \DateTimeZone('UTC'));
+        if ($downloadToken) {
+            $logger->info("Consumed the download token");
 
-            $diffInSeconds = $now->getTimestamp() - $expiry->getTimestamp();
-            $uploadRel = ($data[0]->relatedTo).'Upload';
+            $upload = Upload::findFirst([
+                'conditions' => 'id = :id:',
+                'bind' => ['id' => (string) $downloadToken->uploadId],
+            ]);
 
-            // If the download link has not expired
-            if ($diffInSeconds <= 0) {
-               $upload = $data[0]->$uploadRel;
-                $logger->info("valid download token provided");
-
+            // Only raster images are previewed (no SVG: it can carry script); anything else looks like an invalid token
+            if ($upload && in_array((string) $upload->fileMime, self::PREVIEWABLE_TYPES, true)) {
                 if (file_exists($upload->filePath)) {
-                    $logger->critical("File found, preparing for download");
+                    $logger->info("File found, preparing preview");
                     $this->response->setStatusCode(200, "OK");
                     $this->response->setContentType($upload->fileMime);
-                    $this->response->setHeader("Content-Type", $upload->fileMime);
-                    $this->response->setHeader("Content-Description", 'File Transfer');
-                    $this->response->setHeader("Content-Length", $upload->fileSize);
-                    readfile($upload->filePath);
-                    $this->response->send();
-                    $downloadToken->delete();
-                    $logger->debug("-Gaia.MVC.Controller.download->getAction");
+                    $this->response->setHeader("Content-Disposition", 'inline');
+                    $this->response->setHeader("X-Content-Type-Options", 'nosniff');
+                    $this->response->setHeader("Cache-Control", 'no-store');
+                    $this->response->setHeader("Content-Length", (string) filesize($upload->filePath));
+                    $this->response->setContent(file_get_contents($upload->filePath));
+
+                    $logger->debug("-Gaia.MVC.Controller.preview->getAction");
                     return $this->response;
-                } else {
-                    throw new \Gaia\Exception\FileNotfound("File not found");
                 }
+                $logger->critical("File mentioned in the data not found");
+                throw new \Gaia\Exception\FileNotFound("File not found");
             }
-            $logger->info("Expired download token provided");
-            $downloadToken->delete();
         }
         throw new \Gaia\Exception\ResourceNotFound();
     }
