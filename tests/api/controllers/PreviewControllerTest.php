@@ -93,10 +93,26 @@ class PreviewControllerTest extends TestCase
         $headers = $response->getHeaders();
         $this->assertSame('inline', $headers->get('Content-Disposition'));
         $this->assertSame('nosniff', $headers->get('X-Content-Type-Options'));
+        $this->assertSame('no-store', $headers->get('Cache-Control'));
         $this->assertNull(Downloadtoken::findFirst([
             'conditions' => 'downloadToken = :t:',
             'bind' => ['t' => $token->downloadToken],
         ]));
+    }
+
+    public function testSvgIsNotFound(): void
+    {
+        $token = $this->makeToken($this->makeUpload('image/svg+xml'));
+        $this->expectException(\Gaia\Exception\ResourceNotFound::class);
+        (new PreviewController())->getAction($token->downloadToken);
+    }
+
+    public function testTokenIsSingleUse(): void
+    {
+        $token = $this->makeToken($this->makeUpload('image/png'));
+        (new PreviewController())->getAction($token->downloadToken);
+        $this->expectException(\Gaia\Exception\ResourceNotFound::class);
+        (new PreviewController())->getAction($token->downloadToken);
     }
 
     public function testNonImageIsNotFound(): void

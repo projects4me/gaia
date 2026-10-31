@@ -22,6 +22,8 @@ use Gaia\MVC\Models\Upload;
  */
 class PreviewController extends \Phalcon\Mvc\Controller
 {
+    /** @var string[] non-executable raster types that may be served inline */
+    const PREVIEWABLE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
 
     /**
      * Retrieve the image the token points to and return it inline
@@ -40,48 +42,35 @@ class PreviewController extends \Phalcon\Mvc\Controller
             throw new \Phalcon\Exception('Id must be set, please refer to guides.');
         }
 
-        $downloadToken = Downloadtoken::findFirst([
-            'conditions' => 'downloadToken = :token:',
-            'bind' => ['token' => (string) $id],
-        ]);
+        // The token is consumed up front, so a second request (or a failure below) cannot reuse it
+        $downloadToken = Downloadtoken::consume($id);
 
         if ($downloadToken) {
-            $logger->info("Found the download token");
+            $logger->info("Consumed the download token");
 
-            $expiry = new \DateTime($downloadToken->expires, new \DateTimeZone('UTC'));
-            $now = new \DateTime('now', new \DateTimeZone('UTC'));
+            $upload = Upload::findFirst([
+                'conditions' => 'id = :id:',
+                'bind' => ['id' => (string) $downloadToken->uploadId],
+            ]);
 
-            // If the download link has not expired
-            if ($now->getTimestamp() - $expiry->getTimestamp() <= 0) {
-                $upload = Upload::findFirst([
-                    'conditions' => 'id = :id:',
-                    'bind' => ['id' => (string) $downloadToken->uploadId],
-                ]);
+            // Only raster images are previewed (no SVG: it can carry script); anything else looks like an invalid token
+            if ($upload && in_array((string) $upload->fileMime, self::PREVIEWABLE_TYPES, true)) {
+                if (file_exists($upload->filePath)) {
+                    $logger->info("File found, preparing preview");
+                    $this->response->setStatusCode(200, "OK");
+                    $this->response->setContentType($upload->fileMime);
+                    $this->response->setHeader("Content-Disposition", 'inline');
+                    $this->response->setHeader("X-Content-Type-Options", 'nosniff');
+                    $this->response->setHeader("Cache-Control", 'no-store');
+                    $this->response->setHeader("Content-Length", (string) filesize($upload->filePath));
+                    $this->response->setContent(file_get_contents($upload->filePath));
 
-                // Only images are previewed; anything else looks like an invalid token
-                if ($upload && strpos((string) $upload->fileMime, 'image/') === 0) {
-                    if (file_exists($upload->filePath)) {
-                        $logger->info("File found, preparing preview");
-                        $this->response->setStatusCode(200, "OK");
-                        $this->response->setContentType($upload->fileMime);
-                        $this->response->setHeader("Content-Disposition", 'inline');
-                        $this->response->setHeader("X-Content-Type-Options", 'nosniff');
-                        $this->response->setHeader("Content-Length", (string) filesize($upload->filePath));
-                        $this->response->setContent(file_get_contents($upload->filePath));
-
-                        // Single use
-                        $downloadToken->delete();
-                        $logger->debug("-Gaia.MVC.Controller.preview->getAction");
-                        return $this->response;
-                    }
-                    $logger->critical("File mentioned in the data not found");
-                    $downloadToken->delete();
-                    throw new \Gaia\Exception\FileNotFound("File not found");
+                    $logger->debug("-Gaia.MVC.Controller.preview->getAction");
+                    return $this->response;
                 }
-            } else {
-                $logger->info("Expired download token provided");
+                $logger->critical("File mentioned in the data not found");
+                throw new \Gaia\Exception\FileNotFound("File not found");
             }
-            $downloadToken->delete();
         }
         throw new \Gaia\Exception\ResourceNotFound();
     }
