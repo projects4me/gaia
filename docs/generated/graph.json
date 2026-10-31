@@ -12984,6 +12984,24 @@
       }
     },
     {
+      "id": "case:client/issuestatus-created-without-text-color-is-light",
+      "type": "case",
+      "key": "client/issuestatus-created-without-text-color-is-light",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issuestatus/{runtime.longNameStatusId}",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.longNameStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/issuestatus-delete-in-use-rejected",
       "type": "case",
       "key": "client/issuestatus-delete-in-use-rejected",
@@ -13283,24 +13301,6 @@
       }
     },
     {
-      "id": "case:client/issuestatus-patch-text-color-cleared",
-      "type": "case",
-      "key": "client/issuestatus-patch-text-color-cleared",
-      "attributes": {
-        "catalog": "client",
-        "file": "tools/api-tester/apis/client.json",
-        "method": "PATCH",
-        "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
-        "resource": "issuestatus",
-        "enabled": true,
-        "source": null,
-        "placeholders": [
-          "runtime.settingsStatusId"
-        ],
-        "stores": []
-      }
-    },
-    {
       "id": "case:client/issuestatus-patch-text-color-empty-rejected",
       "type": "case",
       "key": "client/issuestatus-patch-text-color-empty-rejected",
@@ -13340,6 +13340,24 @@
       "id": "case:client/issuestatus-patch-text-color-light-saved-lowercase",
       "type": "case",
       "key": "client/issuestatus-patch-text-color-light-saved-lowercase",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
+        "resource": "issuestatus",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.settingsStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuestatus-patch-text-color-null-rejected",
+      "type": "case",
+      "key": "client/issuestatus-patch-text-color-null-rejected",
       "attributes": {
         "catalog": "client",
         "file": "tools/api-tester/apis/client.json",
@@ -21295,7 +21313,8 @@
         "label": "LBL_ISSUE_STATUSES_TEXT_COLOR",
         "type": "varchar",
         "length": "5",
-        "null": true
+        "null": true,
+        "default": "light"
       }
     },
     {
@@ -58479,6 +58498,41 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/issuestatus-created-without-text-color-is-light",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/issuestatus-created-without-text-color-is-light",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuestatus-created-without-text-color-is-light",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuestatus-created-without-text-color-is-light",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/issuestatus-created-without-text-color-is-light",
+      "type": "depends_on",
+      "to": "case:client/issuestatus-name-30-chars-create"
+    },
+    {
+      "from": "case:client/issuestatus-created-without-text-color-is-light",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuestatus/{id}"
+    },
+    {
+      "from": "case:client/issuestatus-created-without-text-color-is-light",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/issuestatus-delete-in-use-rejected",
       "type": "asserts",
       "to": "assertion:shape"
@@ -59009,41 +59063,6 @@
       "to": "profile:default"
     },
     {
-      "from": "case:client/issuestatus-patch-text-color-cleared",
-      "type": "asserts",
-      "to": "assertion:attributesEqual"
-    },
-    {
-      "from": "case:client/issuestatus-patch-text-color-cleared",
-      "type": "asserts",
-      "to": "assertion:shape"
-    },
-    {
-      "from": "case:client/issuestatus-patch-text-color-cleared",
-      "type": "asserts",
-      "to": "assertion:status"
-    },
-    {
-      "from": "case:client/issuestatus-patch-text-color-cleared",
-      "type": "covers",
-      "to": "controller:issuestatus"
-    },
-    {
-      "from": "case:client/issuestatus-patch-text-color-cleared",
-      "type": "depends_on",
-      "to": "case:client/issuestatus-create-with-color-and-order"
-    },
-    {
-      "from": "case:client/issuestatus-patch-text-color-cleared",
-      "type": "exercises",
-      "to": "route:PATCH /api/v1/issuestatus/{id}"
-    },
-    {
-      "from": "case:client/issuestatus-patch-text-color-cleared",
-      "type": "runs_as",
-      "to": "profile:default"
-    },
-    {
       "from": "case:client/issuestatus-patch-text-color-empty-rejected",
       "type": "asserts",
       "to": "assertion:shape"
@@ -59135,6 +59154,36 @@
     },
     {
       "from": "case:client/issuestatus-patch-text-color-light-saved-lowercase",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuestatus-patch-text-color-null-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuestatus-patch-text-color-null-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuestatus-patch-text-color-null-rejected",
+      "type": "covers",
+      "to": "controller:issuestatus"
+    },
+    {
+      "from": "case:client/issuestatus-patch-text-color-null-rejected",
+      "type": "depends_on",
+      "to": "case:client/issuestatus-create-with-color-and-order"
+    },
+    {
+      "from": "case:client/issuestatus-patch-text-color-null-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuestatus/{id}"
+    },
+    {
+      "from": "case:client/issuestatus-patch-text-color-null-rejected",
       "type": "runs_as",
       "to": "profile:default"
     },

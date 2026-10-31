@@ -24,3 +24,9 @@ FROM (
 WHERE s.name = v.name
   AND s.system = 1
   AND (s.color IS NULL OR s."sortOrder" IS NULL);
+
+-- Label text colour (Issuestatus `textColor`): every status is dark or light, light by default.
+-- Fills the statuses saved before the default existed; a colour chosen in Settings is kept.
+UPDATE issue_statuses
+SET "textColor" = 'light'
+WHERE "textColor" IS NULL;
