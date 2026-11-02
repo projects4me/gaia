@@ -41,6 +41,8 @@ return array(
         'env'       => 'dev',
         'log'       => 'true',
         'logLevel'  => 'debug',
+        // Return raw framework error messages in API responses; never on in production.
+        'debug'     => getenv('GAIA_DEBUG') === 'true',
         'siteURL'   => '//projects4me/', // Better to have a protocol irrelevant path
     )
 );

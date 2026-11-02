@@ -228,7 +228,14 @@ try {
 } catch (\Gaia\Exception\ResourceLocked $e) {
     return $e->handle();
 } catch (\Phalcon\Exception $e) {
-    echo "PhalconException: ", $e->getMessage();
+    $debug = ($GLOBALS['settings']['application']['debug'] ?? false) === true;
+    $error = new \Gaia\Exception\PhalconError($e, $debug);
+    if ($error->isNotFound()) {
+        $logger->notice('PhalconException: ' . $e->getMessage());
+    } else {
+        $logger->error('PhalconException: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+    }
+    return $error->handle();
 } catch (\Gaia\Exception\Exception $e) {
     return $e->handle();
 }
