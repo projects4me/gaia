@@ -134,7 +134,7 @@ class IssuestatusController extends ValueLabelController
 
     /**
      * Return a 422 response when the attributes set a colour that is not `#rrggbb`
-     * or a label text colour that is not dark, light or null.
+     * or a label text colour that is not dark or light (an explicit null included).
      *
      * @param  array $attributes
      * @return \Phalcon\Http\Response|null

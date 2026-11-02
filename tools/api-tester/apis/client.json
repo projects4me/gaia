@@ -2302,7 +2302,7 @@
       }
     },
     {
-      "id": "issuestatus-patch-text-color-cleared",
+      "id": "issuestatus-patch-text-color-null-rejected",
       "method": "PATCH",
       "path": "/api/v1/issuestatus/{runtime.settingsStatusId}",
       "resource": "issuestatus",
@@ -2317,11 +2317,8 @@
         }
       },
       "expects": {
-        "status": 200,
-        "shape": "jsonapi.resource",
-        "attributesEqual": {
-          "textColor": null
-        }
+        "status": 422,
+        "shape": "error"
       }
     },
     {
@@ -3151,6 +3148,20 @@
       },
       "store": {
         "runtime.longNameStatusId": "data.id"
+      }
+    },
+    {
+      "id": "issuestatus-created-without-text-color-is-light",
+      "method": "GET",
+      "path": "/api/v1/issuestatus/{runtime.longNameStatusId}",
+      "resource": "issuestatus",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "textColor": "light"
+        }
       }
     },
     {

@@ -75,25 +75,25 @@ class IssuestatusTest extends TestCase
     }
 
     /**
-     * Dark, light (in any case) and null (automatic) are valid label text colours.
+     * Dark and light, in any case, are valid label text colours.
      *
      * @return void
      */
-    public function testDarkLightAndNullTextColorsAreValid()
+    public function testDarkAndLightTextColorsAreValid()
     {
-        foreach (['dark', 'light', 'Dark', 'LIGHT', null] as $textColor) {
+        foreach (['dark', 'light', 'Dark', 'LIGHT'] as $textColor) {
             $this->assertTrue(Issuestatus::isValidTextColor($textColor), var_export($textColor, true));
         }
     }
 
     /**
-     * Colour names, hex colours, "auto" and other values are not label text colours.
+     * Null, colour names, hex colours, "auto" and other values are not label text colours.
      *
      * @return void
      */
     public function testOtherTextColorsAreInvalid()
     {
-        $invalid = ['', 'black', 'white', '#000000', '#ffffff', 'auto', 'darker', ' dark', "dark\n", 1, true, []];
+        $invalid = [null, '', 'black', 'white', '#000000', '#ffffff', 'auto', 'darker', ' dark', "dark\n", 1, true, []];
 
         foreach ($invalid as $textColor) {
             $this->assertFalse(Issuestatus::isValidTextColor($textColor), var_export($textColor, true));
@@ -115,18 +115,23 @@ class IssuestatusTest extends TestCase
     }
 
     /**
-     * A status saved without a label text colour keeps it automatic (null).
+     * A status saved without a label text colour, or with a null one (saved before
+     * the default existed), gets the default light.
      *
      * @return void
      */
-    public function testUnsetTextColorStaysAutomatic()
+    public function testMissingTextColorDefaultsToLight()
     {
-        $status = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
-        $status->color = '#80B5D3';
+        $unset = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $unset->color = '#80B5D3';
+        $empty = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $empty->textColor = null;
 
-        $this->assertTrue($status->beforeValidation());
-        $this->assertSame('#80b5d3', $status->color);
-        $this->assertFalse(property_exists($status, 'textColor'));
+        $this->assertTrue($unset->beforeValidation());
+        $this->assertSame('#80b5d3', $unset->color);
+        $this->assertSame('light', $unset->textColor);
+        $this->assertTrue($empty->beforeValidation());
+        $this->assertSame('light', $empty->textColor);
     }
 
     /**
