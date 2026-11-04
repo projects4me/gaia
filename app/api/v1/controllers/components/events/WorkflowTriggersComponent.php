@@ -123,7 +123,7 @@ class WorkflowTriggersComponent implements WorkflowChangeEvents
             if ($id === null || $modelName === null) {
                 return;
             }
-            $names = $this->catalog->raisedBy($modelName, $on, array_keys($audit));
+            $names = $this->catalog->raisedBy($modelName, $on, $audit);
             if (!$names) {
                 return;
             }
