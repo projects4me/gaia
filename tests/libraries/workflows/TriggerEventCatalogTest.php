@@ -42,14 +42,20 @@ class TriggerEventCatalogTest extends TestCase
 
         $this->assertSame(
             ['issue.modified', 'issue.assignee.changed'],
-            $catalog->raisedBy('Issue', TriggerEventCatalog::ON_UPDATE, ['assignee', 'dateModified'])
+            $catalog->raisedBy('Issue', TriggerEventCatalog::ON_UPDATE, self::audit(['assignee', 'dateModified']))
         );
         $this->assertSame(
             ['issue.modified', 'issue.status.changed'],
-            $catalog->raisedBy('Issue', TriggerEventCatalog::ON_UPDATE, ['statusId'])
+            $catalog->raisedBy('Issue', TriggerEventCatalog::ON_UPDATE, self::audit(['statusId']))
         );
-        $this->assertSame(['issue.modified'], $catalog->raisedBy('Issue', TriggerEventCatalog::ON_UPDATE, ['subject']));
-        $this->assertSame(['wiki.modified'], $catalog->raisedBy('Wiki', TriggerEventCatalog::ON_UPDATE, ['markUp']));
+        $this->assertSame(
+            ['issue.modified'],
+            $catalog->raisedBy('Issue', TriggerEventCatalog::ON_UPDATE, self::audit(['subject']))
+        );
+        $this->assertSame(
+            ['wiki.modified'],
+            $catalog->raisedBy('Wiki', TriggerEventCatalog::ON_UPDATE, self::audit(['markUp']))
+        );
     }
 
     public function testBookkeepingAloneIsNoModification()
@@ -57,8 +63,40 @@ class TriggerEventCatalogTest extends TestCase
         $this->assertSame([], (new TriggerEventCatalog())->raisedBy(
             'Issue',
             TriggerEventCatalog::ON_UPDATE,
-            ['dateModified', 'modifiedUser', 'modifiedUserName', 'lastActivityDate']
+            self::audit(['dateModified', 'modifiedUser', 'modifiedUserName', 'lastActivityDate'])
         ));
+    }
+
+    public function testATransitionIsRaisedOnlyWhenItsFieldChangesToItsValue()
+    {
+        $catalog = new TriggerEventCatalog();
+        $update = function (array $audit) use ($catalog) {
+            return $catalog->raisedBy('Milestone', TriggerEventCatalog::ON_UPDATE, $audit);
+        };
+        $completed = [EventNames::MILESTONE_COMPLETED];
+
+        $this->assertSame($completed, $update([
+            'status' => ['old' => 'in_progress', 'new' => 'completed'],
+            'dateModified' => ['old' => 'a', 'new' => 'b'],
+        ]));
+        $this->assertSame($completed, $update(['status' => ['old' => null, 'new' => 'completed']]));
+        $this->assertSame([], $update(['status' => ['old' => 'completed', 'new' => 'completed']]));
+        $this->assertSame([], $update(['status' => ['old' => 'completed', 'new' => 'in_progress']]));
+        $this->assertSame([], $update(['status' => ['old' => 'new', 'new' => 'in_progress']]));
+        $this->assertSame([], $update(['name' => ['old' => 'v1', 'new' => 'v2']]));
+        $this->assertSame([], $catalog->raisedBy('Milestone', TriggerEventCatalog::ON_CREATE));
+    }
+
+    public function testAnEventWithoutATransitionIgnoresTheValues()
+    {
+        $this->assertSame(
+            ['issue.modified', 'issue.status.changed'],
+            (new TriggerEventCatalog())->raisedBy(
+                'Issue',
+                TriggerEventCatalog::ON_UPDATE,
+                ['status' => ['old' => 'Done', 'new' => 'Done']]
+            )
+        );
     }
 
     public function testSharedEventsKeepTheirLiveEventNames()
@@ -68,6 +106,7 @@ class TriggerEventCatalogTest extends TestCase
         $this->assertContains(EventNames::ISSUE_CREATED, $names);
         $this->assertContains(EventNames::ISSUE_STATUS_CHANGED, $names);
         $this->assertContains(EventNames::ISSUE_ASSIGNEE_CHANGED, $names);
+        $this->assertContains(EventNames::MILESTONE_COMPLETED, $names);
     }
 
     public function testTriggerKindsAreTheCatalogEventsAndTheSchedule()
@@ -138,10 +177,29 @@ class TriggerEventCatalogTest extends TestCase
         $this->assertSame('string', $modified['changes.subject.after']);
         $this->assertArrayNotHasKey('changes.dateModified.after', $modified);
 
+        $completed = $triggers[EventNames::MILESTONE_COMPLETED];
+        $this->assertSame('Milestone', $completed['module']);
+        $this->assertSame('Milestone completed', $completed['label']);
+        $this->assertSame(['status'], $completed['watchedFields']);
+        $paths = array_column($completed['fields'], 'type', 'path');
+        $this->assertArrayHasKey('milestone.name', $paths);
+        $this->assertArrayHasKey('changes.status.after', $paths);
+
         $this->assertNull($triggers['schedule']['module']);
         $this->assertSame(
             ['projectId', 'occurredAt', 'schedule.cron', 'schedule.firedAt'],
             array_column($triggers['schedule']['fields'], 'path')
         );
+    }
+
+    /**
+     * An update's audit that changed the fields.
+     *
+     * @param  string[] $fields
+     * @return array
+     */
+    private static function audit(array $fields)
+    {
+        return array_fill_keys($fields, ['old' => 'a', 'new' => 'b']);
     }
 }

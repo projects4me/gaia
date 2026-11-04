@@ -19,7 +19,7 @@ class Issue
 }
 
 /**
- * A record of a model that raises no trigger event.
+ * A milestone record: only its update to completed raises a trigger event.
  */
 class Milestone
 {
@@ -80,6 +80,26 @@ class WorkflowTriggersComponentTest extends TestCase
         $this->assertSame(['status' => ['before' => 'New', 'after' => 'Done']], $this->dispatched[1]['changes']);
     }
 
+    public function testCompletingAMilestoneRaisesMilestoneCompleted()
+    {
+        $this->fire('afterUpdate', $this->milestone(['old' => 'in_progress', 'new' => 'completed']));
+
+        $this->assertSame(['milestone.completed'], array_column($this->dispatched, 'eventName'));
+        $payload = $this->dispatched[0];
+        $this->assertSame('project-1', $payload['projectId']);
+        $this->assertSame(['type' => 'milestone', 'id' => 'milestone-1'], $payload['resource']);
+        $this->assertSame('Release 1', $payload['milestone']['name']);
+        $this->assertSame(['status' => ['before' => 'in_progress', 'after' => 'completed']], $payload['changes']);
+    }
+
+    public function testOtherMilestoneUpdatesRaiseNothing()
+    {
+        $this->fire('afterUpdate', $this->milestone(['old' => 'completed', 'new' => 'completed']));
+        $this->fire('afterUpdate', $this->milestone(['old' => 'new', 'new' => 'in_progress']));
+
+        $this->assertSame([], $this->dispatched);
+    }
+
     public function testAnUpdateWithoutChangesOrOfAnotherModelRaisesNothing()
     {
         $this->fire('afterUpdate', $this->issue(['id' => 'issue-1', 'audit' => []]));
@@ -107,6 +127,22 @@ class WorkflowTriggersComponentTest extends TestCase
         $component->afterCreate(new Event('rest:afterCreate', $this), null, $this->issue(['id' => 'issue-1']));
 
         $this->addToAssertionCount(1);
+    }
+
+    /**
+     * @param  array $status The status change: ['old' => ..., 'new' => ...].
+     * @return Milestone
+     */
+    private function milestone(array $status)
+    {
+        $milestone = new Milestone();
+        $milestone->id = 'milestone-1';
+        $milestone->projectId = 'project-1';
+        $milestone->name = 'Release 1';
+        $milestone->status = $status['new'];
+        $milestone->audit = ['status' => $status];
+
+        return $milestone;
     }
 
     /**

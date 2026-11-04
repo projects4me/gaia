@@ -67630,6 +67630,11 @@
     {
       "from": "controller:milestone",
       "type": "uses_component",
+      "to": "component:Events\\WorkflowTriggers"
+    },
+    {
+      "from": "controller:milestone",
+      "type": "uses_component",
       "to": "component:Notification"
     },
     {
