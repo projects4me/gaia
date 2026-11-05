@@ -5,6 +5,7 @@ COPY ./ /var/www/html
 # Deployed image only: OPcache on, Xdebug and xhprof not loaded (the env-dev base loads them)
 RUN docker-php-ext-enable opcache     && rm -f /usr/local/etc/php/conf.d/*xdebug*.ini /usr/local/etc/php/conf.d/*xhprof*.ini
 COPY ./docker/dev/opcache.ini /usr/local/etc/php/conf.d/zz-opcache.ini
+COPY ./docker/php/conf.d/custom.ini /usr/local/etc/php/conf.d/zz-custom.ini
 
 ENV HERMES_URL=http://hermes.projects4.me
 
