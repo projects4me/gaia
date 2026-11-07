@@ -138,7 +138,7 @@ class Query
         $this->queryBuilder->columns($params['fields']);
         $this->queryBuilder->groupBy($this->clause->groupBy);
         $this->queryBuilder->orderBy($this->clause->orderBy);
-        $this->queryBuilder->where($this->clause->where);
+        $this->queryBuilder->where($this->clause->where, $this->clause->getBindParams());
         $this->queryBuilder->having($this->clause->having);
 
         if (!empty($params['aclWhere'])) {

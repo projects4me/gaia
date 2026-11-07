@@ -103,7 +103,7 @@ class HasManyToMany
             $newRelField = $this->changeAliasOfRel($relMeta, $field[0]);
             $updatedWhere = str_replace($field[0], $newRelField, $where);
             if ($whereClause) {
-                $whereClause .= ` AND {$updatedWhere}`;
+                $whereClause .= " AND {$updatedWhere}";
             }
             else {
                 $whereClause = $updatedWhere;

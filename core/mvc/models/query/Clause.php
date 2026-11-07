@@ -6,6 +6,7 @@
 
 namespace Gaia\Core\MVC\Models\Query;
 
+use Gaia\Exception\BadRequest;
 use Gaia\Libraries\Utils\Util;
 
 /**
@@ -24,10 +25,42 @@ class Clause
      *
      * @param \Phalcon\DiInterface  $di
      */
-    function __construct(\Phalcon\Di\FactoryDefault $di)
+    function __construct(\Phalcon\Di\FactoryDefault $di, WhereFieldValidator $fieldValidator = null)
     {
         $this->di = $di;
+        $this->fieldValidator = $fieldValidator ?? new WhereFieldValidator($di);
     }
+
+    /**
+     * Placeholder prefix of the values bound by this clause (`:q0:`, `:q1:`, ...).
+     */
+    const BIND_PREFIX = 'q';
+
+    /**
+     * @var \Phalcon\Di\FactoryDefault
+     */
+    protected $di;
+
+    /**
+     * Checks the field of every where leaf.
+     *
+     * @var WhereFieldValidator
+     */
+    protected $fieldValidator;
+
+    /**
+     * Values bound to the placeholders of $where, keyed by placeholder name.
+     *
+     * @var array
+     */
+    protected $bind = [];
+
+    /**
+     * Number of placeholders handed out so far; names stay unique for the life of the clause.
+     *
+     * @var int
+     */
+    protected $bindCount = 0;
 
     /**
      * This is the WHERE clause of a query.
@@ -117,7 +150,9 @@ class Clause
      *
      * Note: Parenthesis are are allowed in a substatement.
      * Note: Subqueries are also not allowed.
-     * Note: Apostrophe must be preceded with \.
+     * Note: Values are bound as parameters, so an apostrophe needs no escaping (a legacy \' is read as ').
+     * Note: Fields must be `field` or `alias.field` naming a field of the model or of one of its relationships;
+     * anything else is a BadRequest (400).
      * @todo Allow : without spaces
      * @param string $statement
      * @param \Gaia\Core\MVC\Models\Query $query
@@ -146,12 +181,13 @@ class Clause
                 else {
                     $errorStr .= 'You have forgotten "("';
                 }
-                throw new \Phalcon\Exception($errorStr);
+                throw new BadRequest($errorStr);
             }
             // extract all the substatments based on parenthesis
             $expression = '@\([^(]*[^)]\)@';
             if (preg_match_all($expression, $statement, $matches)) {
                 $substatements = $matches[0];
+                $this->assertOnlyConnectorsBetween($substatements, $statement);
                 foreach ($substatements as $substatement) {
                     // Check for :,<,>,<:,>: in the string, if found then process
                     // ignoring the spaces
@@ -165,13 +201,21 @@ class Clause
                     }
                     $value = substr($substatement, $valueOffset, (strlen($substatement) - $valueOffset - 1));
 
-                    list($field, $operator) = explode(' ', substr($substatement, 1, $valueOffset));
+                    $head = ($valueOffset === false) ? [] : explode(' ', substr($substatement, 1, $valueOffset));
+                    if (count($head) < 2) {
+                        throw new BadRequest('Invalid query: cannot read a field and an operator in ' . $substatement);
+                    }
+                    list($field, $operator) = $head;
 
                     // Trim three components of the substatement
                     $operator = strtoupper(trim($operator));
                     $field = trim($field);
                     $value = trim($value);
                     $value = trim($value, "'");
+                    // Values are bound, so apostrophes need no escaping; read a legacy \' as '.
+                    $value = str_replace("\\'", "'", $value);
+
+                    $this->fieldValidator->assertValid($field, $query->modelAlias);
 
                     if ($field == "{$query->modelAlias}.id") {
                         $query->modelId = $value;
@@ -181,105 +225,15 @@ class Clause
 
                     $this->whereConditions['original'][$fieldParts[0]][] = $substatement;
 
-                    $translatedStatement = '';
-                    $likeField = $this->prepareLikeField($field, $query);
-                    $comparisonField = $this->prepareComparisonField($field, $value, $query);
-                    // parse based on the operator
-                    switch ($operator) {
-                        case ':':
-                            if ($this->isNullSentinelValue($value)) {
-                                $translatedStatement = "(" . $field . " IS NULL)";
-                            } else {
-                                $translatedStatement = "(" . $comparisonField . " = '" . $value . "')";
-                            }
-                            break;
-                        case '!:':
-                            if ($this->isNullSentinelValue($value)) {
-                                $translatedStatement = "(" . $field . " IS NOT NULL)";
-                            } else {
-                                $translatedStatement = "(" . $comparisonField . " != '" . $value . "')";
-                            }
-                            break;
-                        case '>':
-                            $translatedStatement = "(" . $comparisonField . " > '" . $value . "')";
-                            break;
-                        case '<':
-                            $translatedStatement = "(" . $comparisonField . " < '" . $value . "')";
-                            break;
-                        case '>:':
-                            $translatedStatement = "(" . $comparisonField . " >= '" . $value . "')";
-                            break;
-                        case '<:':
-                            $translatedStatement = "(" . $comparisonField . " <= '" . $value . "')";
-                            break;
-                        case 'CONTAINS':
-                            if (preg_match("@','@", $value)) {
-                                $translatedStatement = "(" . $field . " IN ('" . $value . "'))";
-                            }
-                            else {
-                                $translatedStatement = "(" . $likeField . " LIKE '%" . $value . "%')";
-                            }
-                            break;
-                        case 'STARTS':
-                            $translatedStatement = "(" . $likeField . " LIKE '" . $value . "%')";
-                            break;
-                        case 'ENDS':
-                            $translatedStatement = "(" . $likeField . " LIKE '%" . $value . "')";
-                            break;
-                        case '!CONTAINS':
-                            if (preg_match("@','@", $value)) {
-                                $translatedStatement = "(" . $field . " NOT IN ('" . $value . "'))";
-                            }
-                            else {
-                                $translatedStatement = "(" . $likeField . " NOT LIKE '%" . $value . "%')";
-                            }
-                            break;
-                        case '!STARTS':
-                            $translatedStatement = "(" . $likeField . " NOT LIKE '" . $value . "%')";
-                            break;
-                        case '!ENDS':
-                            $translatedStatement = "(" . $likeField . " NOT LIKE '%" . $value . "')";
-                            break;
-                        case 'NULL':
-                            $translatedStatement = "(" . $field . " IS NULL)";
-                            break;
-                        case '!NULL':
-                            $translatedStatement = "(" . $field . " IS NOT NULL)";
-                            break;
-                        case 'EMPTY':
-                            $translatedStatement = "(" . $field . " = '')";
-                            break;
-                        case '!EMPTY':
-                            $translatedStatement = "(" . $field . " != '')";
-                            break;
-                        case 'BETWEEN':
-                            list($upper, $lower) = explode(' AND ', $value);
-                            $upper = trim($upper, "'");
-                            $upper = trim($upper);
-                            $lower = trim($lower, "'");
-                            $lower = trim($lower);
-                            $translatedStatement = "(" . $field . " BETWEEN '" . $upper . "' AND '" . $lower . "')";
-                            break;
-                        case '!BETWEEN':
-                            list($upper, $lower) = explode(' AND ', $value);
-                            $upper = trim($upper, "'");
-                            $upper = trim($upper);
-                            $lower = trim($lower, "'");
-                            $lower = trim($lower);
-                            $translatedStatement = "(!(" . $field . " BETWEEN '" . $upper . "' AND '" . $lower . "'))";
-                            break;
-                        default:
-                            $translatedStatement = false;
-                            break;
-                    }
+                    $translatedStatement = $this->translateLeaf($field, $operator, $value, $query);
 
                     if ($translatedStatement) {
                         $this->whereConditions['translated'][$fieldParts[0]][] = $translatedStatement;
+                        $this->where = $this->replaceFirst($substatement, $translatedStatement, $this->where);
                     }
-                    $this->where = str_replace($substatement, $translatedStatement, $this->where);
                     // make sure that we were able to parse all substatements
                     if (!$translatedStatement) {
-                        throw new \Phalcon\Exception('Invalid query, please check the guides. ' .
+                        throw new BadRequest('Invalid query, please check the guides. ' .
                             'Most common issues are extra spaces and invalid operators, ' .
                             'please note that "=" is not allowed use ":" instead. ' .
                             'Possible issue in ' . $substatement);
@@ -287,10 +241,179 @@ class Clause
                 }
             }
             else {
-                throw new \Phalcon\Exception('Invalid query, please refer to guides. ' .
+                throw new BadRequest('Invalid query, please refer to guides. ' .
                     'Query must have at least one sub-statement enclosed in parenthesis.');
             }
         } // first condition ends here..
+    }
+
+    /**
+     * Translate one parsed leaf into PHQL. Every value goes into the bind map; only the validated field and
+     * fixed operators are written into the PHQL.
+     *
+     * @param string $field
+     * @param string $operator Upper-cased operator token.
+     * @param string $value
+     * @param \Gaia\Core\MVC\Models\Query $query
+     * @return string|false False when the operator is unknown.
+     * @throws BadRequest
+     */
+    protected function translateLeaf($field, $operator, $value, $query)
+    {
+        $comparisons = ['>' => '>', '<' => '<', '>:' => '>=', '<:' => '<='];
+        $likes = [
+            'CONTAINS' => ['LIKE', '%', '%'],
+            '!CONTAINS' => ['NOT LIKE', '%', '%'],
+            'STARTS' => ['LIKE', '', '%'],
+            '!STARTS' => ['NOT LIKE', '', '%'],
+            'ENDS' => ['LIKE', '%', ''],
+            '!ENDS' => ['NOT LIKE', '%', ''],
+        ];
+
+        switch ($operator) {
+            case ':':
+            case '!:':
+                $negated = ($operator === '!:');
+                if ($this->isNullSentinelValue($value)) {
+                    return "(" . $field . ($negated ? " IS NOT NULL)" : " IS NULL)");
+                }
+                return "(" . $this->prepareComparisonField($field, $value, $query)
+                    . ($negated ? " != " : " = ") . $this->bindValue($value) . ")";
+            case '>':
+            case '<':
+            case '>:':
+            case '<:':
+                return "(" . $this->prepareComparisonField($field, $value, $query)
+                    . " " . $comparisons[$operator] . " " . $this->bindValue($value) . ")";
+            case 'CONTAINS':
+            case '!CONTAINS':
+                if (preg_match("@','@", $value)) {
+                    $in = ($operator === 'CONTAINS') ? " IN " : " NOT IN ";
+                    return "(" . $field . $in . "(" . $this->bindList(explode("','", $value)) . "))";
+                }
+                // fall through: a single value is a LIKE
+            case 'STARTS':
+            case '!STARTS':
+            case 'ENDS':
+            case '!ENDS':
+                list($like, $before, $after) = $likes[$operator];
+                $pattern = $before . $this->escapeLike($value) . $after;
+                return "(" . $this->prepareLikeField($field, $query) . " " . $like . " " . $this->bindValue($pattern) . ")";
+            case 'NULL':
+                return "(" . $field . " IS NULL)";
+            case '!NULL':
+                return "(" . $field . " IS NOT NULL)";
+            case 'EMPTY':
+                return "(" . $field . " = '')";
+            case '!EMPTY':
+                return "(" . $field . " != '')";
+            case 'BETWEEN':
+            case '!BETWEEN':
+                $range = explode(' AND ', $value);
+                if (count($range) !== 2) {
+                    throw new BadRequest('Invalid query: BETWEEN needs "start AND end" for ' . $field);
+                }
+                $between = $field . " BETWEEN " . $this->bindValue(trim(trim($range[0]), "'"))
+                    . " AND " . $this->bindValue(trim(trim($range[1]), "'"));
+                return ($operator === 'BETWEEN') ? "(" . $between . ")" : "(!(" . $between . "))";
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Only leaves reach the PHQL as translated text, so everything around them must be grouping and the
+     * AND/OR connectors; e.g. `(Issue.subject : x) OR 1=1` is rejected.
+     *
+     * @param array  $substatements Leaves found in $statement.
+     * @param string $statement     The query as sent.
+     * @return void
+     * @throws BadRequest
+     */
+    protected function assertOnlyConnectorsBetween(array $substatements, $statement)
+    {
+        $rest = $statement;
+        foreach ($substatements as $substatement) {
+            $rest = $this->replaceFirst($substatement, ' ', $rest);
+        }
+
+        if (!preg_match('/^(?:\s|\(|\)|\bAND\b|\bOR\b)*$/i', $rest)) {
+            throw new BadRequest('Invalid query: only AND and OR may join the parenthesised conditions, got "'
+                . trim($rest) . '".');
+        }
+    }
+
+    /**
+     * Record a value in the bind map and return its PHQL placeholder.
+     *
+     * @param string $value
+     * @return string e.g. `:q3:`
+     */
+    protected function bindValue($value)
+    {
+        $name = self::BIND_PREFIX . $this->bindCount++;
+        $this->bind[$name] = (string) $value;
+        return ':' . $name . ':';
+    }
+
+    /**
+     * Bind each value of a list and return the comma-separated placeholders.
+     *
+     * @param array $values
+     * @return string e.g. `:q3:, :q4:`
+     */
+    protected function bindList(array $values)
+    {
+        $placeholders = [];
+        foreach ($values as $value) {
+            $placeholders[] = $this->bindValue($value);
+        }
+        return implode(', ', $placeholders);
+    }
+
+    /**
+     * Escape the LIKE wildcards in a value so it matches literally (backslash is the default LIKE escape).
+     *
+     * @param string $value
+     * @return string
+     */
+    protected function escapeLike($value)
+    {
+        return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $value);
+    }
+
+    /**
+     * Replace the first occurrence of $search, so repeated identical leaves each get their own translation.
+     *
+     * @param string $search
+     * @param string $replace
+     * @param string $subject
+     * @return string
+     */
+    protected function replaceFirst($search, $replace, $subject)
+    {
+        $position = strpos($subject, $search);
+        if ($position === false) {
+            return $subject;
+        }
+        return substr_replace($subject, $replace, $position, strlen($search));
+    }
+
+    /**
+     * The values bound to the placeholders still present in $where. Query splitting replaces leaves, so
+     * values whose placeholder is gone are left out (PDO rejects unused parameters).
+     *
+     * @return array Placeholder name => value.
+     */
+    public function getBindParams()
+    {
+        $bind = [];
+        foreach ($this->bind as $name => $value) {
+            if (strpos((string) $this->where, ':' . $name . ':') !== false) {
+                $bind[$name] = $value;
+            }
+        }
+        return $bind;
     }
 
     /**
@@ -583,25 +706,10 @@ class Clause
      */
     private function prepareINStatement($key, $ids)
     {
-        //preparing IN statement
-        $inStatement = "({$key} IN(";
+        // No ids binds a single empty string, which matches no record.
+        $values = ($ids != null) ? array_values((array) $ids) : [''];
 
-        if ($ids != null) {
-            foreach ($ids as $id) {
-                $inStatement .= "'{$id}',";
-            }
-            //remove last ',' from string
-            $inStatement = substr($inStatement, 0, -1);
-
-            //closing brackets
-            $inStatement .= "))";
-        }
-        else {
-            //closing bracket if there are no ids
-            $inStatement .= '""))';
-        }
-
-        return $inStatement;
+        return "({$key} IN(" . $this->bindList($values) . "))";
     }
 
     /**
@@ -618,7 +726,7 @@ class Clause
 
         $statementToInject = $this->prepareINStatement($key, $ids);
 
-        $this->where = str_replace($statementToReplace, $statementToInject, $this->where);
+        $this->where = $this->replaceFirst($statementToReplace, $statementToInject, $this->where);
     }
 
     /**
@@ -645,6 +753,6 @@ class Clause
     public function updateBaseWhereWithId($modelNamespace, $id)
     {
         $modelName = Util::extractClassFromNamespace($modelNamespace);
-        $this->where = "{$modelName}.id = '{$id}'";
+        $this->where = "{$modelName}.id = " . $this->bindValue($id);
     }
 }
