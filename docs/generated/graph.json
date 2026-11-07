@@ -15126,6 +15126,102 @@
       }
     },
     {
+      "id": "case:client/query-leaf-contains-null-word",
+      "type": "case",
+      "key": "client/query-leaf-contains-null-word",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-leaf-empty-operator",
+      "type": "case",
+      "key": "client/query-leaf-empty-operator",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-leaf-equals-empty-word",
+      "type": "case",
+      "key": "client/query-leaf-equals-empty-word",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-leaf-not-empty-operator",
+      "type": "case",
+      "key": "client/query-leaf-not-empty-operator",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-leaf-not-null-operator",
+      "type": "case",
+      "key": "client/query-leaf-not-null-operator",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-leaf-null-operator",
+      "type": "case",
+      "key": "client/query-leaf-null-operator",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/settings-export-rejected",
       "type": "case",
       "key": "client/settings-export-rejected",
@@ -62391,6 +62487,156 @@
       "from": "case:client/put-systemnotification-api-v1-systemnotification-id",
       "type": "uses_fixture",
       "to": "fixture:systemnotificationId"
+    },
+    {
+      "from": "case:client/query-leaf-contains-null-word",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-leaf-contains-null-word",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-leaf-contains-null-word",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-leaf-contains-null-word",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-leaf-contains-null-word",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-leaf-empty-operator",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-leaf-empty-operator",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-leaf-empty-operator",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-leaf-empty-operator",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-leaf-empty-operator",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-leaf-equals-empty-word",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-leaf-equals-empty-word",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-leaf-equals-empty-word",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-leaf-equals-empty-word",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-leaf-equals-empty-word",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-leaf-not-empty-operator",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-leaf-not-empty-operator",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-leaf-not-empty-operator",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-leaf-not-empty-operator",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-leaf-not-empty-operator",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-leaf-not-null-operator",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-leaf-not-null-operator",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-leaf-not-null-operator",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-leaf-not-null-operator",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-leaf-not-null-operator",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-leaf-null-operator",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-leaf-null-operator",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-leaf-null-operator",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-leaf-null-operator",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-leaf-null-operator",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/settings-export-rejected",
