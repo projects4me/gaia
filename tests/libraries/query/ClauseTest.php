@@ -184,6 +184,80 @@ class ClauseTest extends TestCase
         $this->assertSame(['q0' => ''], $this->clause->getBindParams());
     }
 
+    public function testQuotedValueMayHoldBrackets()
+    {
+        $this->clause->prepareWhere("(Issue.subject CONTAINS 'fix (urgent)')", $this->query);
+
+        $this->assertSame('(Issue.subject LIKE :q0:)', $this->clause->where);
+        $this->assertSame(['q0' => '%fix (urgent)%'], $this->clause->getBindParams());
+    }
+
+    public function testDoubledApostropheInQuotedValueIsOneApostrophe()
+    {
+        $this->clause->prepareWhere("(Issue.subject : 'O''Brien')", $this->query);
+
+        $this->assertSame('(Issue.subject = :q0:)', $this->clause->where);
+        $this->assertSame(['q0' => "O'Brien"], $this->clause->getBindParams());
+    }
+
+    public function testQuotedListWithSpacesBindsEachName()
+    {
+        $this->clause->prepareWhere("(project.name CONTAINS 'Rana Nouman','Hammad Hassan')", $this->query);
+
+        $this->assertSame('(project.name IN (:q0:, :q1:))', $this->clause->where);
+        $this->assertSame(['q0' => 'Rana Nouman', 'q1' => 'Hammad Hassan'], $this->clause->getBindParams());
+    }
+
+    public function testQuotedListItemsMayHoldCommasBracketsAndApostrophes()
+    {
+        $this->clause->prepareWhere("(Issue.subject !CONTAINS 'a, b','(c)','O''Brien')", $this->query);
+
+        $this->assertSame('(Issue.subject NOT IN (:q0:, :q1:, :q2:))', $this->clause->where);
+        $this->assertSame(['q0' => 'a, b', 'q1' => '(c)', 'q2' => "O'Brien"], $this->clause->getBindParams());
+    }
+
+    public function testKeywordsInsideQuotesArePlainText()
+    {
+        $this->clause->prepareWhere(
+            "((Issue.subject : 'NULL') AND (Issue.subject CONTAINS 'x) OR (y') AND (Issue.issueNumber BETWEEN 'A AND B' AND 'C'))",
+            $this->query
+        );
+
+        $this->assertSame(
+            '((Issue.subject = :q0:) AND (Issue.subject LIKE :q1:) AND (Issue.issueNumber BETWEEN :q2: AND :q3:))',
+            $this->clause->where
+        );
+        $this->assertSame(
+            ['q0' => 'NULL', 'q1' => '%x) OR (y%', 'q2' => 'A AND B', 'q3' => 'C'],
+            $this->clause->getBindParams()
+        );
+    }
+
+    public function testRepeatedLeavesAreEachTranslatedInPlace()
+    {
+        $this->clause->prepareWhere(
+            "((Issue.subject : '(Issue.subject : a)') OR (Issue.subject : a))",
+            $this->query
+        );
+
+        $this->assertSame('((Issue.subject = :q0:) OR (Issue.subject = :q1:))', $this->clause->where);
+        $this->assertSame(['q0' => '(Issue.subject : a)', 'q1' => 'a'], $this->clause->getBindParams());
+    }
+
+    public function testUnquotedNullSentinelStillMeansIsNull()
+    {
+        $this->clause->prepareWhere('(Issue.subject : null)', $this->query);
+
+        $this->assertSame('(Issue.subject IS NULL)', $this->clause->where);
+    }
+
+    public function testUnclosedQuoteIsReadAsBefore()
+    {
+        $this->clause->prepareWhere("(Issue.subject : 'abc)", $this->query);
+
+        $this->assertSame(['q0' => 'abc'], $this->clause->getBindParams());
+    }
+
     public function testIdIsBound()
     {
         $this->clause->updateBaseWhereWithId('Gaia\\MVC\\Models\\Issue', "1' OR '1'='1");

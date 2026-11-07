@@ -25,10 +25,14 @@ class Clause
      *
      * @param \Phalcon\DiInterface  $di
      */
-    function __construct(\Phalcon\Di\FactoryDefault $di, WhereFieldValidator $fieldValidator = null)
-    {
+    function __construct(
+        \Phalcon\Di\FactoryDefault $di,
+        WhereFieldValidator $fieldValidator = null,
+        WhereTokenizer $tokenizer = null
+    ) {
         $this->di = $di;
         $this->fieldValidator = $fieldValidator ?? new WhereFieldValidator($di);
+        $this->tokenizer = $tokenizer ?? new WhereTokenizer();
     }
 
     /**
@@ -47,6 +51,13 @@ class Clause
      * @var WhereFieldValidator
      */
     protected $fieldValidator;
+
+    /**
+     * Finds the leaves and splits the values of a where string, respecting quoted values.
+     *
+     * @var WhereTokenizer
+     */
+    protected $tokenizer;
 
     /**
      * Values bound to the placeholders of $where, keyed by placeholder name.
@@ -137,8 +148,13 @@ class Clause
      *
      * Otherwise there is no way to tell a string like "Yes,No" and "No, You don't" apart.
      *
-     * You can also encapsulate a string in single quotes and send it but if the delimiter ',' are foung in the input
-     * then it will be treated as multiple values.
+     * A value may be wrapped in single quotes; inside the quotes (, ), the comma and the words AND, OR, NULL
+     * and EMPTY are plain text, and an apostrophe is written as two apostrophes: 'O''Brien'. A list is
+     * split on the commas outside quotes. Unquoted values are read as before (see WhereTokenizer).
+     *
+     * <code>
+     *  ((Issue.subject CONTAINS 'fix (urgent)') OR (assignedTo.name CONTAINS 'Rana Nouman','O''Brien'))
+     * </code>
      *
      * <code>
      *  (Module.field !BETWEEN rangeStart AND rangeEnd)
@@ -148,7 +164,7 @@ class Clause
      *  ((Module.field CONTAINS data1,data2,data3) AND (Module.field <: data))
      * </code>
      *
-     * Note: Parenthesis are are allowed in a substatement.
+     * Note: Parenthesis are not allowed in a substatement outside a quoted value.
      * Note: Subqueries are also not allowed.
      * Note: Values are bound as parameters, so an apostrophe needs no escaping (a legacy \' is read as ').
      * Note: Fields must be `field` or `alias.field` naming a field of the model or of one of its relationships;
@@ -171,26 +187,13 @@ class Clause
             //retain original statement
             $this->where = $statement;
 
-            // ensure that the parenthesis are well formed
-            if (substr_count($statement, '(') != substr_count($statement, ')')) {
-                $errorStr = 'Invalid query, please refer to the guides. ' .
-                    'Please check the parenthesis in the query. ';
-                if (substr_count($statement, '(') > substr_count($statement, ')')) {
-                    $errorStr .= 'You have forgotten ")"';
-                }
-                else {
-                    $errorStr .= 'You have forgotten "("';
-                }
-                throw new BadRequest($errorStr);
-            }
-            // extract all the substatments based on parenthesis
-            $expression = '@\([^(]*[^)]\)@';
-            if (preg_match_all($expression, $statement, $matches)) {
-                $substatements = $matches[0];
-                $this->assertOnlyConnectorsBetween($substatements, $statement);
-                foreach ($substatements as $substatement) {
-                    // Check for :,<,>,<:,>: in the string, if found then process
-                    // ignoring the spaces
+            // extract the leaves; this also checks the quotes and the parentheses outside them
+            $leaves = $this->tokenizer->leaves($statement);
+            if ($leaves) {
+                $this->assertOnlyConnectorsBetween($leaves, $statement);
+                $translatedLeaves = [];
+                foreach ($leaves as $leaf) {
+                    $substatement = $leaf['text'];
 
                     if ($this->isNullaryLeaf($substatement)) {
                         $valueOffset = strlen($substatement) - 2;
@@ -207,18 +210,15 @@ class Clause
                     }
                     list($field, $operator) = $head;
 
-                    // Trim three components of the substatement
+                    // Trim three components of the substatement; the value stays raw (quotes and all)
                     $operator = strtoupper(trim($operator));
                     $field = trim($field);
                     $value = trim($value);
-                    $value = trim($value, "'");
-                    // Values are bound, so apostrophes need no escaping; read a legacy \' as '.
-                    $value = str_replace("\\'", "'", $value);
 
                     $this->fieldValidator->assertValid($field, $query->modelAlias);
 
                     if ($field == "{$query->modelAlias}.id") {
-                        $query->modelId = $value;
+                        $query->modelId = $this->readValue($value)['value'];
                     }
 
                     $fieldParts = explode('.', $field);
@@ -227,10 +227,6 @@ class Clause
 
                     $translatedStatement = $this->translateLeaf($field, $operator, $value, $query);
 
-                    if ($translatedStatement) {
-                        $this->whereConditions['translated'][$fieldParts[0]][] = $translatedStatement;
-                        $this->where = $this->replaceFirst($substatement, $translatedStatement, $this->where);
-                    }
                     // make sure that we were able to parse all substatements
                     if (!$translatedStatement) {
                         throw new BadRequest('Invalid query, please check the guides. ' .
@@ -238,6 +234,18 @@ class Clause
                             'please note that "=" is not allowed use ":" instead. ' .
                             'Possible issue in ' . $substatement);
                     }
+                    $this->whereConditions['translated'][$fieldParts[0]][] = $translatedStatement;
+                    $translatedLeaves[] = $translatedStatement;
+                }
+
+                // Splice the translations in by position, last leaf first so earlier offsets stay valid.
+                for ($i = count($leaves) - 1; $i >= 0; $i--) {
+                    $this->where = substr_replace(
+                        $this->where,
+                        $translatedLeaves[$i],
+                        $leaves[$i]['offset'],
+                        strlen($leaves[$i]['text'])
+                    );
                 }
             }
             else {
@@ -253,13 +261,15 @@ class Clause
      *
      * @param string $field
      * @param string $operator Upper-cased operator token.
-     * @param string $value
+     * @param string $rawValue The value as written, quotes included.
      * @param \Gaia\Core\MVC\Models\Query $query
      * @return string|false False when the operator is unknown.
      * @throws BadRequest
      */
-    protected function translateLeaf($field, $operator, $value, $query)
+    protected function translateLeaf($field, $operator, $rawValue, $query)
     {
+        $read = $this->readValue($rawValue);
+        $value = $read['value'];
         $comparisons = ['>' => '>', '<' => '<', '>:' => '>=', '<:' => '<='];
         $likes = [
             'CONTAINS' => ['LIKE', '%', '%'],
@@ -274,7 +284,7 @@ class Clause
             case ':':
             case '!:':
                 $negated = ($operator === '!:');
-                if ($this->isNullSentinelValue($value)) {
+                if (!$read['quoted'] && $this->isNullSentinelValue($value)) {
                     return "(" . $field . ($negated ? " IS NOT NULL)" : " IS NULL)");
                 }
                 return "(" . $this->prepareComparisonField($field, $value, $query)
@@ -287,9 +297,10 @@ class Clause
                     . " " . $comparisons[$operator] . " " . $this->bindValue($value) . ")";
             case 'CONTAINS':
             case '!CONTAINS':
-                if (preg_match("@','@", $value)) {
+                $items = $this->readList($rawValue);
+                if ($items !== null) {
                     $in = ($operator === 'CONTAINS') ? " IN " : " NOT IN ";
-                    return "(" . $field . $in . "(" . $this->bindList(explode("','", $value)) . "))";
+                    return "(" . $field . $in . "(" . $this->bindList($items) . "))";
                 }
                 // fall through: a single value is a LIKE
             case 'STARTS':
@@ -309,12 +320,12 @@ class Clause
                 return "(" . $field . " != '')";
             case 'BETWEEN':
             case '!BETWEEN':
-                $range = explode(' AND ', $value);
+                $range = $this->tokenizer->split($rawValue, ' AND ');
                 if (count($range) !== 2) {
                     throw new BadRequest('Invalid query: BETWEEN needs "start AND end" for ' . $field);
                 }
-                $between = $field . " BETWEEN " . $this->bindValue(trim(trim($range[0]), "'"))
-                    . " AND " . $this->bindValue(trim(trim($range[1]), "'"));
+                $between = $field . " BETWEEN " . $this->bindValue($this->readValue($range[0])['value'])
+                    . " AND " . $this->bindValue($this->readValue($range[1])['value']);
                 return ($operator === 'BETWEEN') ? "(" . $between . ")" : "(!(" . $between . "))";
             default:
                 return false;
@@ -325,22 +336,64 @@ class Clause
      * Only leaves reach the PHQL as translated text, so everything around them must be grouping and the
      * AND/OR connectors; e.g. `(Issue.subject : x) OR 1=1` is rejected.
      *
-     * @param array  $substatements Leaves found in $statement.
-     * @param string $statement     The query as sent.
+     * @param array  $leaves    Leaves found in $statement, as given by WhereTokenizer::leaves().
+     * @param string $statement The query as sent.
      * @return void
      * @throws BadRequest
      */
-    protected function assertOnlyConnectorsBetween(array $substatements, $statement)
+    protected function assertOnlyConnectorsBetween(array $leaves, $statement)
     {
         $rest = $statement;
-        foreach ($substatements as $substatement) {
-            $rest = $this->replaceFirst($substatement, ' ', $rest);
+        for ($i = count($leaves) - 1; $i >= 0; $i--) {
+            $rest = substr_replace($rest, ' ', $leaves[$i]['offset'], strlen($leaves[$i]['text']));
         }
 
         if (!preg_match('/^(?:\s|\(|\)|\bAND\b|\bOR\b)*$/i', $rest)) {
             throw new BadRequest('Invalid query: only AND and OR may join the parenthesised conditions, got "'
                 . trim($rest) . '".');
         }
+    }
+
+    /**
+     * Read one value as written: a quoted value gives its text ('O''Brien' is O'Brien); anything else is read
+     * as before, stray outer apostrophes trimmed and a legacy \' read as '.
+     *
+     * @param string $rawValue
+     * @return array ['value' => string, 'quoted' => bool]
+     */
+    protected function readValue($rawValue)
+    {
+        $unquoted = $this->tokenizer->unquote($rawValue);
+        if ($unquoted !== null) {
+            return ['value' => $unquoted, 'quoted' => true];
+        }
+
+        // Values are bound, so apostrophes need no escaping; read a legacy \' as '.
+        return ['value' => str_replace("\\'", "'", trim(trim($rawValue), "'")), 'quoted' => false];
+    }
+
+    /**
+     * The items of a list of quoted values such as 'a','b (c)', or null when $rawValue is not such a list.
+     *
+     * @param string $rawValue
+     * @return array|null
+     */
+    protected function readList($rawValue)
+    {
+        $parts = $this->tokenizer->split($rawValue, ',');
+        if (count($parts) < 2) {
+            return null;
+        }
+
+        $items = [];
+        foreach ($parts as $part) {
+            $item = $this->tokenizer->unquote($part);
+            if ($item === null) {
+                return null;
+            }
+            $items[] = $item;
+        }
+        return $items;
     }
 
     /**
@@ -474,6 +527,8 @@ class Clause
      * Extract all leaf-level WHERE substatements from a translated where string.
      * Handles substatements with at most one level of inner parentheses
      * (e.g. plain conditions and CAST(... AS ...) forms alike).
+     * The translated where holds placeholders instead of values, so no quoted text can reach this regex;
+     * the query as sent is read by WhereTokenizer.
      *
      * @param string $where
      * @return array
