@@ -115,6 +115,7 @@ $models['Issuestatus'] = array(
             'type' => 'varchar',
             'length' => '5',
             'null' => true,
+            'default' => 'light',
         ),
         'sortOrder' => array(
             'name' => 'sortOrder',

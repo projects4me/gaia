@@ -156,7 +156,7 @@ class Clause
                     // Check for :,<,>,<:,>: in the string, if found then process
                     // ignoring the spaces
 
-                    if (preg_match('@NULL|EMPTY@', $substatement)) {
+                    if ($this->isNullaryLeaf($substatement)) {
                         $valueOffset = strlen($substatement) - 2;
                     }
                     else {
@@ -408,6 +408,22 @@ class Clause
         }
 
         return 'CAST(' . $field . ' AS TEXT)';
+    }
+
+    /**
+     * Whether a leaf such as "(Issue.milestoneId !NULL)" uses a nullary operator.
+     * Only the operator token (second word) decides, never text inside the value.
+     *
+     * @param string $substatement Leaf including its parentheses.
+     * @return bool
+     */
+    protected function isNullaryLeaf($substatement)
+    {
+        $parts = explode(' ', trim(substr($substatement, 1, -1)), 3);
+        if (count($parts) !== 2) {
+            return false;
+        }
+        return in_array(strtoupper($parts[1]), ['NULL', '!NULL', 'EMPTY', '!EMPTY'], true);
     }
 
     /**

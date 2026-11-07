@@ -29,5 +29,5 @@
 - acl: group Project via projectId
 - controller: Gaia\MVC\REST\Controllers\MilestoneController
 - routes: DELETE /api/v1/milestone, DELETE /api/v1/milestone/{id}, GET /api/v1/milestone, GET /api/v1/milestone/{id}, GET /api/v1/milestone/{id}/{relation}, OPTIONS /api/v1/milestone, PATCH /api/v1/milestone, PATCH /api/v1/milestone/{id}, POST /api/v1/milestone, PUT /api/v1/milestone, PUT /api/v1/milestone/{id}
-- components: Events\MilestoneLiveEvents, Notification, ProjectActivities
+- components: Events\MilestoneLiveEvents, Events\WorkflowTriggers, Notification, ProjectActivities
 - cases: 13 (backend 6, client 7); gaia-dev cases milestone

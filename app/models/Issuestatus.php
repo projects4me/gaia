@@ -34,18 +34,25 @@ class Issuestatus extends Model
     public const COLOR_MESSAGE = 'Colour must be a hex colour in the form #rrggbb, e.g. #1a2b3c.';
 
     /**
-     * The label text colours a status may use; null means the UI picks one from the colour.
+     * The label text colours a status may use.
      *
      * @var array
      */
     public const TEXT_COLORS = ['dark', 'light'];
 
     /**
+     * The label text colour of a status saved without one.
+     *
+     * @var string
+     */
+    public const DEFAULT_TEXT_COLOR = 'light';
+
+    /**
      * Why an invalid label text colour is refused.
      *
      * @var string
      */
-    public const TEXT_COLOR_MESSAGE = 'Text colour must be dark, light or null.';
+    public const TEXT_COLOR_MESSAGE = 'Text colour must be dark or light.';
 
     /**
      * Whether the value is a colour a status may use: null (no colour) or `#rrggbb`.
@@ -59,27 +66,27 @@ class Issuestatus extends Model
     }
 
     /**
-     * Whether the value is a label text colour a status may use: null (automatic),
-     * `dark` or `light`, in any case.
+     * Whether the value is a label text colour a status may use: `dark` or `light`, in any case.
      *
      * @param  mixed $textColor
      * @return bool
      */
     public static function isValidTextColor($textColor)
     {
-        return $textColor === null || (is_string($textColor) && in_array(strtolower($textColor), self::TEXT_COLORS, true));
+        return is_string($textColor) && in_array(strtolower($textColor), self::TEXT_COLORS, true);
     }
 
     /**
      * Refuse to save an invalid colour or label text colour, and save valid ones
-     * lowercase so the same value is always stored the same way.
+     * lowercase so the same value is always stored the same way. A status without
+     * a label text colour gets the default one.
      *
      * @return bool
      */
     public function beforeValidation()
     {
         $color = $this->attributeValue('color');
-        $textColor = $this->attributeValue('textColor');
+        $textColor = $this->attributeValue('textColor') ?? self::DEFAULT_TEXT_COLOR;
 
         if (!self::isValidColor($color)) {
             $this->appendMessage(new Message(self::COLOR_MESSAGE, 'color', 'InvalidValue'));
@@ -95,9 +102,7 @@ class Issuestatus extends Model
             $this->color = strtolower($color);
         }
 
-        if ($textColor !== null) {
-            $this->textColor = strtolower($textColor);
-        }
+        $this->textColor = strtolower($textColor);
 
         return true;
     }

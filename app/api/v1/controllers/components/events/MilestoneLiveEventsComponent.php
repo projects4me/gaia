@@ -6,6 +6,7 @@
 
 namespace Gaia\MVC\REST\Controllers\Components\Events;
 
+use Gaia\Libraries\Workflows\TriggerEventCatalog;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\EventNames;
 use Phalcon\Events\Event;
 
@@ -75,7 +76,8 @@ class MilestoneLiveEventsComponent extends LiveEventsComponent
 
         $newStatus = $this->auditValue($model, 'status', 'new');
         $oldStatus = $this->auditValue($model, 'status', 'old');
-        if ($newStatus !== 'completed' || $oldStatus === 'completed') {
+        $completed = TriggerEventCatalog::MILESTONE_COMPLETED_STATUS;
+        if ($newStatus !== $completed || $oldStatus === $completed) {
             return;
         }
 
