@@ -6492,6 +6492,108 @@
         "status": 404,
         "shape": "error"
       }
+    },
+    {
+      "id": "query-leaf-contains-null-word",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.subject CONTAINS NULL pointer)"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-leaf-equals-empty-word",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.subject : EMPTY box)"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-leaf-null-operator",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.milestoneId NULL)"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-leaf-not-null-operator",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.milestoneId !NULL)"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-leaf-empty-operator",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.milestoneId EMPTY)"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-leaf-not-empty-operator",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.milestoneId !EMPTY)"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "source": "client"
     }
   ]
 }
