@@ -859,6 +859,27 @@
       }
     },
     {
+      "id": "client-project-get-with-collection-rels",
+      "method": "GET",
+      "path": "/api/v1/project/{projectId}",
+      "resource": "project",
+      "auth": true,
+      "query": {
+        "rels": "members,milestones,issuetypes,issuestatuses"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{projectId}"
+        ],
+        "includedTypesPresent": [
+          "user",
+          "milestone"
+        ]
+      }
+    },
+    {
       "id": "post-project-api-v1-project",
       "method": "POST",
       "path": "/api/v1/project",

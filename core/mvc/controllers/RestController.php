@@ -1186,34 +1186,62 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     final protected function prepareData($data, $params, $requireScalarFields = true, $type = 'all')
     {
         $result = [];
-        $acl = $this->getDI()->get('acl');
 
         if ($data['baseModel'] instanceof Resultset || $data['baseModel'] instanceof ResultStream) {
-            $data['baseModel']->setHydrateMode(Resultset::HYDRATE_ARRAYS);
+            $this->collectRows($data['baseModel'], $params, $requireScalarFields, $result);
 
-            foreach ($data['baseModel'] as $values) {
-                $modelAlias = Util::extractClassFromNamespace($this->modelName);
-                $this->removeSecureFields($values, $modelAlias);
-                if (isset($params['fields']) && !empty($params['fields'])) {
-                    $values = $this->updateFields($values, $params, $requireScalarFields);
-                }
-
-                // Apply ACL on fields.
-                $this->applyACL($values, $params);
-
-                // Only fields on which user has access become part of the response.
-                $values = $this->filterFieldsByACL($acl->getAllowedFields(), $values);
-
-                $this->flattenModelData($values, $result);
+            // Collection relationships the model loaded in their own query (Model::executeSeparateRels).
+            foreach ($data['relatedRows'] ?? [] as $relatedRows) {
+                $this->collectRows($relatedRows, $params, $requireScalarFields, $result, true);
             }
         } elseif (is_array($data)) {
             $result = $data;
         }
 
-        unset($data['baseModel']);
+        unset($data['baseModel'], $data['relatedRows']);
         $this->extractManyToManyRelationships($data, $result);
         $this->removeDuplicates($result);
         return $result;
+    }
+
+    /**
+     * Adds the rows of one result set to $result, keyed by base model id: removes secure
+     * fields, applies the requested fields and field ACL, then flattens each row.
+     *
+     * @param  Resultset|ResultStream $rows
+     * @param  array                  $params              User requested parameters.
+     * @param  bool                   $requireScalarFields Flag indicating whether scalar fields are required.
+     * @param  array                  $result              Reference to the result array.
+     * @param  bool                   $ownFieldAcl         Build the field allow-list from this set's own rows
+     *                                                     (their relationships differ from the base rows').
+     * @return void
+     */
+    private function collectRows($rows, $params, $requireScalarFields, &$result, $ownFieldAcl = false)
+    {
+        $acl = $this->getDI()->get('acl');
+        $modelAlias = Util::extractClassFromNamespace($this->modelName);
+        $allowedFields = null;
+        $rows->setHydrateMode(Resultset::HYDRATE_ARRAYS);
+
+        foreach ($rows as $values) {
+            $this->removeSecureFields($values, $modelAlias);
+            if (isset($params['fields']) && !empty($params['fields'])) {
+                $values = $this->updateFields($values, $params, $requireScalarFields);
+            }
+
+            // Apply ACL on fields.
+            if (!$ownFieldAcl) {
+                $this->applyACL($values, $params);
+                $allowedFields = $acl->getAllowedFields();
+            } elseif ($allowedFields === null) {
+                $allowedFields = $acl->allowedFieldsFor($values, $modelAlias, $params);
+            }
+
+            // Only fields on which user has access become part of the response.
+            $values = $this->filterFieldsByACL($allowedFields, $values);
+
+            $this->flattenModelData($values, $result);
+        }
     }
 
     /**

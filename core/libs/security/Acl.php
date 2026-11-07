@@ -1163,6 +1163,21 @@ class Acl
      */
     public function applyACLOnFields($values, $modelAlias, $params)
     {
+        $this->allowedFields = $this->allowedFieldsFor($values, $modelAlias, $params);
+    }
+
+    /**
+     * The `{module}.{field}.get` allow-list for a row of this shape, without storing it.
+     * Used for result sets whose rows carry other relationships than the base rows
+     * (collection relationships read in their own query).
+     *
+     * @param  array  $values
+     * @param  string $modelAlias
+     * @param  array  $params
+     * @return array
+     */
+    public function allowedFieldsFor($values, $modelAlias, $params)
+    {
         $fields = [];
 
         foreach ($values as $fieldName => $value) {
@@ -1173,7 +1188,7 @@ class Acl
             }
         }
 
-        $this->allowedFields = $fields;
+        return $fields;
     }
 
     /**

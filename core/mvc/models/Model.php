@@ -94,6 +94,13 @@ class Model extends PhalconModel
     protected $unbufferedExecution = false;
 
     /**
+     * Most base model ids bound into one separated relationship query.
+     *
+     * @var int
+     */
+    const SEPARATE_REL_ID_CHUNK = 500;
+
+    /**
      * This contains behaviors that are required by the model.
      *
      * @var array
@@ -175,6 +182,7 @@ class Model extends PhalconModel
         $this->action = 'read';
         $this->query = $this->instantiateQuery($this->modelAlias, $params);
         $this->query->prepareClauses($params, $this->query);
+        $separateRels = $this->takeSeparateRels($params);
 
         $this->relationship = $this->bootstrapRelationship($params);
         $this->relationship->loadRequestedRelationships($params['rels']);
@@ -187,6 +195,7 @@ class Model extends PhalconModel
         $this->fireEvent("beforeQuery");
 
         $resultSets = $this->executeQuery($params, 'prepareReadQuery');
+        $this->executeSeparateRels($resultSets, $separateRels, $params);
 
         $this->fireEvent("afterQuery");
 
@@ -209,6 +218,7 @@ class Model extends PhalconModel
 
         $this->query = $this->instantiateQuery($this->modelAlias, $params);
         $this->query->prepareClauses($params, $this->query);
+        $separateRels = $this->takeSeparateRels($params);
 
         $this->relationship = $this->bootstrapRelationship($params);
         $this->relationship->loadRequestedRelationships($params['rels']);
@@ -220,6 +230,7 @@ class Model extends PhalconModel
         $this->query->prepareReadAllQuery($this->getModelPath(), $params, $this->relationship);
         $this->fireEvent("beforeQuery");
         $resultSets = $this->executeQuery($params, 'prepareReadAllQuery');
+        $this->executeSeparateRels($resultSets, $separateRels, $params);
 
         $this->fireEvent("afterQuery");
 
@@ -417,6 +428,118 @@ class Model extends PhalconModel
         }
 
         return $result;
+    }
+
+    /**
+     * Removes from $params['rels'] the collection relationships that are loaded in their own
+     * query (@see CollectionRelsPlanner) and returns them.
+     *
+     * @param  array $params The read params; its rels lose the separated relationships.
+     * @return array
+     */
+    protected function takeSeparateRels(array &$params)
+    {
+        $metadata = $this->di->get('metaManager')->getModelMeta($this->modelAlias);
+        $separateRels = $this->instantiateCollectionRelsPlanner()->separateRels(
+            $params,
+            $metadata['relationships'] ?? [],
+            $this->query->getClause()->getFilteredRels()
+        );
+
+        if (!empty($separateRels)) {
+            $params['rels'] = array_values(array_diff($params['rels'], $separateRels));
+        }
+
+        return $separateRels;
+    }
+
+    /**
+     * Loads each separated relationship for the base models just read, one query per
+     * relationship and chunk of base ids, and adds the result sets to $resultSets['relatedRows'].
+     * Each row holds the base model id and the related model, the shape a joined row has.
+     *
+     * @param  array $resultSets   The read result sets; gains the 'relatedRows' list.
+     * @param  array $separateRels Relationship names from takeSeparateRels().
+     * @param  array $params       The read params.
+     * @return void
+     */
+    protected function executeSeparateRels(array &$resultSets, array $separateRels, array $params)
+    {
+        if (empty($separateRels) || empty($resultSets['baseModel'])) {
+            return;
+        }
+
+        $baseModelIds = array_values(array_unique(DataExtractor::extractModelIds($resultSets['baseModel'])));
+        if (empty($baseModelIds)) {
+            return;
+        }
+
+        $baseQuery = $this->query;
+        $baseRelationship = $this->relationship;
+
+        $resultSets['relatedRows'] = [];
+        try {
+            foreach ($separateRels as $relName) {
+                foreach (array_chunk($baseModelIds, self::SEPARATE_REL_ID_CHUNK) as $ids) {
+                    $resultSets['relatedRows'][] = $this->executeSeparateRel($relName, $ids, $params);
+                }
+            }
+        } finally {
+            $this->query = $baseQuery;
+            $this->relationship = $baseRelationship;
+        }
+    }
+
+    /**
+     * Reads one relationship for the given base model ids. Its query and relationship are
+     * swapped in while it runs so behaviours (soft delete, model identifier) apply to it as
+     * they do to the base query.
+     *
+     * @param  string $relName
+     * @param  array  $ids    Base model ids.
+     * @param  array  $params The read params.
+     * @return \Phalcon\Mvc\Model\ResultsetInterface
+     */
+    protected function executeSeparateRel($relName, array $ids, array $params)
+    {
+        $relParams = [
+            'id' => $params['id'] ?? null,
+            'rels' => [$relName],
+            'where' => '',
+            'sort' => '',
+            'order' => 'DESC',
+        ];
+
+        $this->query = $this->instantiateQuery($this->modelAlias, $relParams);
+        $this->query->prepareClauses($relParams, $this->query);
+
+        $this->relationship = $this->bootstrapRelationship($relParams);
+        $this->relationship->loadRequestedRelationships($relParams['rels']);
+        $this->relationship->setRelationshipFields($relParams['rels'], $this->query);
+
+        $this->fireEvent('beforeJoins');
+        $queryBuilder = $this->query->getPhalconQueryBuilder();
+        $this->relationship->prepareJoinsForQuery($relParams['rels'], $this->modelAlias, $queryBuilder);
+
+        $this->query->prepareReadAllQuery($this->getModelPath(), $relParams, $this->relationship);
+        $queryBuilder->columns(["{$this->modelAlias}.id", "{$relName}.*"]);
+        $queryBuilder->inWhere("{$this->modelAlias}.id", $ids);
+
+        $this->fireEvent('beforeQuery');
+        $result = $this->executeModel($this->query);
+        $this->fireEvent('afterQuery');
+
+        return $result;
+    }
+
+    /**
+     * This function returns a new CollectionRelsPlanner object.
+     *
+     * @return \Gaia\Core\MVC\Models\CollectionRelsPlanner
+     */
+    protected function instantiateCollectionRelsPlanner()
+    {
+        return new CollectionRelsPlanner();
     }
 
     /**

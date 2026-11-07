@@ -13,7 +13,8 @@ use Phalcon\Events\Manager as EventsManager;
  * @todo Remove before publishing
  */
 error_reporting(E_ERROR);
-ini_set('display_errors', true);
+// Fatal errors are logged and answered as JSON 500 by FatalErrorHandler, not printed.
+ini_set('display_errors', false);
 
 // Setup the application constants
 define('APP_PATH', realpath('..'));
@@ -34,6 +35,8 @@ $logger = new Logger(
     ]
 );
 $logger->setLogLevel(Logger::DEBUG);
+
+(new \Gaia\Libraries\Utils\FatalErrorHandler($logger))->register();
 
 // Allow from any origin
 if (isset($_SERVER['HTTP_ORIGIN'])) {
