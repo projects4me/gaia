@@ -6594,6 +6594,135 @@
         "shape": "jsonapi.collection"
       },
       "source": "client"
+    },
+    {
+      "id": "query-value-with-apostrophe",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.subject CONTAINS O'Brien)"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-value-injection-matches-literally",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.subject : API Tester Seed Issue' OR '1'='1)"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsExcludes": [
+          "{issueId}"
+        ]
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-value-plain-still-matches",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.subject : API Tester Seed Issue)"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{issueId}"
+        ]
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-unknown-field-is-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.nope : x)"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid query: unknown field \"Issue.nope\"."
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-malformed-field-is-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.subject;x : y)"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid query: \"Issue.subject;x\" is not a valid field name."
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-unknown-related-field-is-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(project.nope : x)"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid query: unknown field \"project.nope\"."
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-text-outside-conditions-is-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.subject : x) OR 1=1"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid query: only AND and OR may join the parenthesised conditions, got \"OR 1=1\"."
+      },
+      "source": "client"
     }
   ]
 }

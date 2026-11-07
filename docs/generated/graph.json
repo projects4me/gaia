@@ -15222,6 +15222,122 @@
       }
     },
     {
+      "id": "case:client/query-malformed-field-is-bad-request",
+      "type": "case",
+      "key": "client/query-malformed-field-is-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-text-outside-conditions-is-bad-request",
+      "type": "case",
+      "key": "client/query-text-outside-conditions-is-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-unknown-field-is-bad-request",
+      "type": "case",
+      "key": "client/query-unknown-field-is-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-unknown-related-field-is-bad-request",
+      "type": "case",
+      "key": "client/query-unknown-related-field-is-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-value-injection-matches-literally",
+      "type": "case",
+      "key": "client/query-value-injection-matches-literally",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-value-plain-still-matches",
+      "type": "case",
+      "key": "client/query-value-plain-still-matches",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-value-with-apostrophe",
+      "type": "case",
+      "key": "client/query-value-with-apostrophe",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/settings-export-rejected",
       "type": "case",
       "key": "client/settings-export-rejected",
@@ -62635,6 +62751,221 @@
     },
     {
       "from": "case:client/query-leaf-null-operator",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-malformed-field-is-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/query-malformed-field-is-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-malformed-field-is-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-malformed-field-is-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-malformed-field-is-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-malformed-field-is-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-text-outside-conditions-is-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/query-text-outside-conditions-is-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-text-outside-conditions-is-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-text-outside-conditions-is-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-text-outside-conditions-is-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-text-outside-conditions-is-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-unknown-field-is-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/query-unknown-field-is-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-unknown-field-is-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-unknown-field-is-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-unknown-field-is-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-unknown-field-is-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-unknown-related-field-is-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/query-unknown-related-field-is-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-unknown-related-field-is-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-unknown-related-field-is-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-unknown-related-field-is-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-unknown-related-field-is-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-value-injection-matches-literally",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/query-value-injection-matches-literally",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-value-injection-matches-literally",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-value-injection-matches-literally",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-value-injection-matches-literally",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-value-injection-matches-literally",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-value-injection-matches-literally",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/query-value-plain-still-matches",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/query-value-plain-still-matches",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-value-plain-still-matches",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-value-plain-still-matches",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-value-plain-still-matches",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-value-plain-still-matches",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-value-plain-still-matches",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/query-value-with-apostrophe",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-value-with-apostrophe",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-value-with-apostrophe",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-value-with-apostrophe",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-value-with-apostrophe",
       "type": "runs_as",
       "to": "profile:default"
     },
