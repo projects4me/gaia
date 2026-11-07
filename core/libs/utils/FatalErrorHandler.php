@@ -79,20 +79,44 @@ class FatalErrorHandler
             return;
         }
 
-        if ($this->logger) {
-            $this->logger->critical(sprintf(
-                'PHP fatal error: %s in %s on line %d',
-                $error['message'],
-                $error['file'],
-                $error['line']
-            ));
-        }
+        $this->log('critical', sprintf(
+            'PHP fatal error: %s in %s on line %d',
+            $error['message'],
+            $error['file'],
+            $error['line']
+        ));
 
-        if (headers_sent()) {
+        if (headers_sent($sentFile, $sentLine)) {
+            $this->log('warning', sprintf(
+                'Fatal error response skipped, output started in %s on line %d',
+                $sentFile,
+                $sentLine
+            ));
             return;
         }
 
         $this->respond();
+    }
+
+    /**
+     * Writes to the logger, if there is one, without letting a logger failure
+     * stop the JSON 500 from being sent.
+     *
+     * @param  string $level   Logger method, e.g. 'critical' or 'warning'.
+     * @param  string $message
+     * @return void
+     */
+    private function log($level, $message)
+    {
+        if (!$this->logger) {
+            return;
+        }
+
+        try {
+            $this->logger->{$level}($message);
+        } catch (\Throwable $e) {
+            // Logging must not block the client response.
+        }
     }
 
     /**
