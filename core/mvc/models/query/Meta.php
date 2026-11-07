@@ -216,6 +216,8 @@ class Meta
      * Extract all leaf-level WHERE substatements from a translated where string.
      * Handles substatements with at most one level of inner parentheses
      * (e.g. plain conditions and CAST(... AS ...) forms alike).
+     * The translated where holds placeholders instead of values, so no quoted text can reach this regex;
+     * the query as sent is read by WhereTokenizer.
      *
      * @param string $where
      * @return array

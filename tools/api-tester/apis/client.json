@@ -6653,6 +6653,66 @@
       "source": "client"
     },
     {
+      "id": "query-quoted-value-may-hold-brackets",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "((Issue.subject : API Tester Seed Issue) AND (Issue.subject !CONTAINS 'fix (urgent)'))"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{issueId}"
+        ]
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-quoted-value-doubled-apostrophe",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "((Issue.subject : API Tester Seed Issue) AND (Issue.subject !: 'O''Brien'))"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{issueId}"
+        ]
+      },
+      "source": "client"
+    },
+    {
+      "id": "query-quoted-list-items-with-spaces-and-brackets",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1,
+        "query": "(Issue.subject CONTAINS 'API Tester Seed Issue','fix (urgent)','O''Brien')"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{issueId}"
+        ]
+      },
+      "source": "client"
+    },
+    {
       "id": "query-unknown-field-is-bad-request",
       "method": "GET",
       "path": "/api/v1/issue",

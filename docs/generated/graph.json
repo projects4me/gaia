@@ -15238,6 +15238,60 @@
       }
     },
     {
+      "id": "case:client/query-quoted-list-items-with-spaces-and-brackets",
+      "type": "case",
+      "key": "client/query-quoted-list-items-with-spaces-and-brackets",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-quoted-value-doubled-apostrophe",
+      "type": "case",
+      "key": "client/query-quoted-value-doubled-apostrophe",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/query-quoted-value-may-hold-brackets",
+      "type": "case",
+      "key": "client/query-quoted-value-may-hold-brackets",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/query-text-outside-conditions-is-bad-request",
       "type": "case",
       "key": "client/query-text-outside-conditions-is-bad-request",
@@ -62783,6 +62837,111 @@
       "from": "case:client/query-malformed-field-is-bad-request",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-quoted-list-items-with-spaces-and-brackets",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/query-quoted-list-items-with-spaces-and-brackets",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-quoted-list-items-with-spaces-and-brackets",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-quoted-list-items-with-spaces-and-brackets",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-quoted-list-items-with-spaces-and-brackets",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-quoted-list-items-with-spaces-and-brackets",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-quoted-list-items-with-spaces-and-brackets",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/query-quoted-value-doubled-apostrophe",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/query-quoted-value-doubled-apostrophe",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-quoted-value-doubled-apostrophe",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-quoted-value-doubled-apostrophe",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-quoted-value-doubled-apostrophe",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-quoted-value-doubled-apostrophe",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-quoted-value-doubled-apostrophe",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/query-quoted-value-may-hold-brackets",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/query-quoted-value-may-hold-brackets",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/query-quoted-value-may-hold-brackets",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/query-quoted-value-may-hold-brackets",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/query-quoted-value-may-hold-brackets",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/query-quoted-value-may-hold-brackets",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/query-quoted-value-may-hold-brackets",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
     },
     {
       "from": "case:client/query-text-outside-conditions-is-bad-request",
