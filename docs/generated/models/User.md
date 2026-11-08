@@ -65,5 +65,5 @@
 - acl: -
 - controller: Gaia\MVC\REST\Controllers\UserController
 - routes: DELETE /api/v1/user, DELETE /api/v1/user/{id}, GET /api/v1/user, GET /api/v1/user/{id}, GET /api/v1/user/{id}/{relation}, OPTIONS /api/v1/user, PATCH /api/v1/user, PATCH /api/v1/user/{id}, POST /api/v1/user, PUT /api/v1/user, PUT /api/v1/user/{id}
-- components: Dashboard, GeneratePassword
-- cases: 25 (acl 1, backend 8, client 14, mail 2); gaia-dev cases user
+- components: Dashboard, Events\UserAccessLiveEvents, GeneratePassword
+- cases: 27 (acl 1, backend 8, client 14, live 2, mail 2); gaia-dev cases user

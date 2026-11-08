@@ -39,7 +39,7 @@ class MembershipController extends RestController
      * @var  $uses
      * @type array
      */
-    public $uses = array('ProjectActivities', 'Notification');
+    public $uses = array('ProjectActivities', 'Notification', 'Events\\MembershipLiveEvents');
 
     /**
      * Delete action to handle membership deletion and reassign in-progress issues to a new assignee.

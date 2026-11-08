@@ -17537,6 +17537,86 @@
       }
     },
     {
+      "id": "case:live/live-membership-create-publishes-user-access-changed",
+      "type": "case",
+      "key": "live/live-membership-create-publishes-user-access-changed",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.liveAccessMembershipId"
+        ]
+      }
+    },
+    {
+      "id": "case:live/live-membership-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "case",
+      "key": "live/live-membership-create-succeeds-when-hermes-unreachable-fail-open",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "otherProjectId"
+        ],
+        "stores": [
+          "runtime.failOpenMembershipId"
+        ]
+      }
+    },
+    {
+      "id": "case:live/live-membership-delete-publishes-user-access-changed",
+      "type": "case",
+      "key": "live/live-membership-delete-publishes-user-access-changed",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "DELETE",
+        "path": "/api/v1/membership/{runtime.liveAccessMembershipId}",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveAccessMembershipId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-membership-delete-succeeds-when-hermes-unreachable-fail-open",
+      "type": "case",
+      "key": "live/live-membership-delete-succeeds-when-hermes-unreachable-fail-open",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "DELETE",
+        "path": "/api/v1/membership/{runtime.failOpenMembershipId}",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.failOpenMembershipId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:live/live-setup-issuestatus-for-status-change",
       "type": "case",
       "key": "live/live-setup-issuestatus-for-status-change",
@@ -17555,6 +17635,42 @@
         "stores": [
           "runtime.liveStatusId"
         ]
+      }
+    },
+    {
+      "id": "case:live/live-user-account-status-change-publishes-user-access-changed",
+      "type": "case",
+      "key": "live/live-user-account-status-change-publishes-user-access-changed",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "PATCH",
+        "path": "/api/v1/user/{userId}",
+        "resource": "user",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-user-account-status-restore-publishes-user-access-changed",
+      "type": "case",
+      "key": "live/live-user-account-status-restore-publishes-user-access-changed",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "PATCH",
+        "path": "/api/v1/user/{userId}",
+        "resource": "user",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "userId"
+        ],
+        "stores": []
       }
     },
     {
@@ -18067,6 +18183,22 @@
       }
     },
     {
+      "id": "component:Events\\MembershipLiveEvents",
+      "type": "component",
+      "key": "Events\\MembershipLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\MembershipLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/MembershipLiveEventsComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterDelete"
+        ]
+      }
+    },
+    {
       "id": "component:Events\\MilestoneLiveEvents",
       "type": "component",
       "key": "Events\\MilestoneLiveEvents",
@@ -18167,6 +18299,22 @@
         "implements": [],
         "hooks": [
           "resolve"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\UserAccessLiveEvents",
+      "type": "component",
+      "key": "Events\\UserAccessLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\UserAccessLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/UserAccessLiveEventsComponent.php",
+        "extends": "LiveEventsComponent",
+        "implements": [],
+        "hooks": [
+          "afterAccessChange",
+          "publishAccessChanged"
         ]
       }
     },
@@ -67932,6 +68080,146 @@
       "to": "profile:default"
     },
     {
+      "from": "case:live/live-membership-create-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:hermes.expect"
+    },
+    {
+      "from": "case:live/live-membership-create-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-membership-create-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-membership-create-publishes-user-access-changed",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:live/live-membership-create-publishes-user-access-changed",
+      "type": "exercises",
+      "to": "route:POST /api/v1/membership"
+    },
+    {
+      "from": "case:live/live-membership-create-publishes-user-access-changed",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-membership-create-publishes-user-access-changed",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectId"
+    },
+    {
+      "from": "case:live/live-membership-create-publishes-user-access-changed",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:live/live-membership-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-membership-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-membership-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:live/live-membership-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "exercises",
+      "to": "route:POST /api/v1/membership"
+    },
+    {
+      "from": "case:live/live-membership-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-membership-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:live/live-membership-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectId"
+    },
+    {
+      "from": "case:live/live-membership-delete-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:hermes.expect"
+    },
+    {
+      "from": "case:live/live-membership-delete-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-membership-delete-publishes-user-access-changed",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:live/live-membership-delete-publishes-user-access-changed",
+      "type": "depends_on",
+      "to": "case:live/live-membership-create-publishes-user-access-changed"
+    },
+    {
+      "from": "case:live/live-membership-delete-publishes-user-access-changed",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/membership/{id}"
+    },
+    {
+      "from": "case:live/live-membership-delete-publishes-user-access-changed",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-membership-delete-publishes-user-access-changed",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:live/live-membership-delete-succeeds-when-hermes-unreachable-fail-open",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-membership-delete-succeeds-when-hermes-unreachable-fail-open",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:live/live-membership-delete-succeeds-when-hermes-unreachable-fail-open",
+      "type": "depends_on",
+      "to": "case:live/live-membership-create-succeeds-when-hermes-unreachable-fail-open"
+    },
+    {
+      "from": "case:live/live-membership-delete-succeeds-when-hermes-unreachable-fail-open",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/membership/{id}"
+    },
+    {
+      "from": "case:live/live-membership-delete-succeeds-when-hermes-unreachable-fail-open",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-membership-delete-succeeds-when-hermes-unreachable-fail-open",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
       "from": "case:live/live-setup-issuestatus-for-status-change",
       "type": "asserts",
       "to": "assertion:shape"
@@ -67960,6 +68248,86 @@
       "from": "case:live/live-setup-issuestatus-for-status-change",
       "type": "uses_fixture",
       "to": "fixture:projectId"
+    },
+    {
+      "from": "case:live/live-user-account-status-change-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:live/live-user-account-status-change-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:hermes.expect"
+    },
+    {
+      "from": "case:live/live-user-account-status-change-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-user-account-status-change-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-user-account-status-change-publishes-user-access-changed",
+      "type": "covers",
+      "to": "controller:user"
+    },
+    {
+      "from": "case:live/live-user-account-status-change-publishes-user-access-changed",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/user/{id}"
+    },
+    {
+      "from": "case:live/live-user-account-status-change-publishes-user-access-changed",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-user-account-status-change-publishes-user-access-changed",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:live/live-user-account-status-restore-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:live/live-user-account-status-restore-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:hermes.expect"
+    },
+    {
+      "from": "case:live/live-user-account-status-restore-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-user-account-status-restore-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-user-account-status-restore-publishes-user-access-changed",
+      "type": "covers",
+      "to": "controller:user"
+    },
+    {
+      "from": "case:live/live-user-account-status-restore-publishes-user-access-changed",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/user/{id}"
+    },
+    {
+      "from": "case:live/live-user-account-status-restore-publishes-user-access-changed",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-user-account-status-restore-publishes-user-access-changed",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
     },
     {
       "from": "case:mail/mail-cleanup-delete-created-user",
@@ -69834,6 +70202,11 @@
     {
       "from": "controller:membership",
       "type": "uses_component",
+      "to": "component:Events\\MembershipLiveEvents"
+    },
+    {
+      "from": "controller:membership",
+      "type": "uses_component",
       "to": "component:Notification"
     },
     {
@@ -71020,6 +71393,11 @@
       "from": "controller:user",
       "type": "uses_component",
       "to": "component:Dashboard"
+    },
+    {
+      "from": "controller:user",
+      "type": "uses_component",
+      "to": "component:Events\\UserAccessLiveEvents"
     },
     {
       "from": "controller:user",

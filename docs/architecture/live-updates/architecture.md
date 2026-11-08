@@ -70,6 +70,8 @@ Controller-attached components (REST `$uses`):
 | `CommentController`          | `ConversationCommentLiveEvents` | conversation comment created/updated/deleted                       |
 | `VoteController`             | `ConversationVoteLiveEvents`    | conversation vote added/removed                                    |
 | `ConversationroomController` | `ConversationLiveEvents`        | conversation.created                                               |
+| `MembershipController`       | `MembershipLiveEvents`          | `user.access.changed` for the member on create/delete (D-011)      |
+| `UserController`             | `UserAccessLiveEvents`          | `user.access.changed` when `accountStatus` changes, after session revocation (D-011) |
 
 
 Model hook (not REST):

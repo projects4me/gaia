@@ -15,6 +15,8 @@ use Gaia\MVC\REST\Controllers\Components\Events\IdeaLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeamessageLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanissueLiveEventsComponent;
+use Gaia\MVC\REST\Controllers\Components\Events\UserAccessLiveEventsComponent;
+use Gaia\MVC\REST\Controllers\Components\Events\MembershipLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\EventNames;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\HermesPublisher;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\ProjectIdResolver;
@@ -652,6 +654,72 @@ class LiveEventsComponentsTest extends TestCase
             'issue-1'
         ));
         $this->assertSame(array(), $posted);
+    }
+
+    public function testAccessChangePublishesUserScopedEventWithUserIdOnly()
+    {
+        $posted = array();
+        $component = $this->make(UserAccessLiveEventsComponent::class, $posted);
+
+        $component->afterAccessChange(new Event('afterAccessChange', $component), null, 'user-42');
+
+        $this->assertCount(1, $posted);
+        $this->assertEquals(EventNames::USER_ACCESS_CHANGED, $posted[0]['eventName']);
+        $this->assertEquals('user:user-42', $posted[0]['projectId']);
+        $this->assertEquals(array('type' => 'user', 'id' => 'user-42'), $posted[0]['resource']);
+        $this->assertSame(array(), $posted[0]['changes']);
+        $this->assertSame(array(), $this->metaWithoutActor($posted[0]));
+    }
+
+    public function testAccessChangeWithoutUserIdPublishesNothing()
+    {
+        $posted = array();
+        $component = $this->make(UserAccessLiveEventsComponent::class, $posted);
+
+        $component->publishAccessChanged('');
+        $component->publishAccessChanged(null);
+
+        $this->assertCount(0, $posted);
+    }
+
+    public function testAccessChangeFailsOpenWhenHermesIsDown()
+    {
+        $publisher = new HermesPublisher(function () {
+            throw new \RuntimeException('hermes down');
+        });
+        $component = new UserAccessLiveEventsComponent($publisher, $this->createStubResolver(null));
+
+        $component->publishAccessChanged('user-42');
+
+        $this->assertTrue(true);
+    }
+
+    public function testMembershipCreateAndDeletePublishAccessChangedForTheMember()
+    {
+        $posted = array();
+        $membership = new MembershipLiveEventsComponent($this->make(UserAccessLiveEventsComponent::class, $posted));
+        $model = (object) array('id' => 'm-1', 'projectId' => 'project-9', 'userId' => 'user-7');
+
+        $this->fire($membership, 'afterCreate', $model);
+        $this->fire($membership, 'afterDelete', $model);
+
+        $this->assertCount(2, $posted);
+        foreach ($posted as $envelope) {
+            $this->assertEquals(EventNames::USER_ACCESS_CHANGED, $envelope['eventName']);
+            $this->assertEquals('user:user-7', $envelope['projectId']);
+            $this->assertEquals('user-7', $envelope['resource']['id']);
+            $this->assertSame(array(), $envelope['changes']);
+        }
+    }
+
+    public function testMembershipWithoutUserPublishesNothing()
+    {
+        $posted = array();
+        $membership = new MembershipLiveEventsComponent($this->make(UserAccessLiveEventsComponent::class, $posted));
+
+        $this->fire($membership, 'afterCreate', (object) array('id' => 'm-1', 'projectId' => 'project-9'));
+
+        $this->assertCount(0, $posted);
     }
 
     /**

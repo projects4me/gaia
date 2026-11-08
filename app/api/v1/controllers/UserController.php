@@ -25,7 +25,7 @@ use Gaia\MVC\Models\User;
  */
 class UserController extends RestController
 {
-    public $uses = ['Dashboard', 'GeneratePassword'];
+    public $uses = ['Dashboard', 'GeneratePassword', 'Events\\UserAccessLiveEvents'];
 
     /**
      * Users created here are Humans; agents are created through the agent
@@ -52,7 +52,9 @@ class UserController extends RestController
      * role (see `AclLockoutGuard`). Soft-disables by revoking OAuth sessions
      * when `accountStatus` becomes non-authenticatable. Rejects changing a
      * user's type, a password on an agent user, and an agent writing its own
-     * user record.
+     * user record. When the saved `accountStatus` changed, fires
+     * `rest:afterAccessChange` after the session revocation, so Hermes
+     * hears user.access.changed once the tokens are gone.
      *
      * @return \Phalcon\Http\Response
      */
@@ -61,15 +63,17 @@ class UserController extends RestController
         global $logger;
 
         $attributes = $this->extractRequestAttributes();
-        $this->assertUserWritable(
-            isset($attributes['id']) && $attributes['id'] !== '' ? $attributes['id'] : $this->id,
-            $attributes
-        );
+        $userId = isset($attributes['id']) && $attributes['id'] !== '' ? $attributes['id'] : $this->id;
+        $this->assertUserWritable($userId, $attributes);
         $this->assertAclLockoutSafeForAttributes($attributes);
+        $statusBefore = $this->accountStatusesBefore(array($userId => $attributes));
 
         $response = parent::patchAction();
 
         $this->revokeSessionsIfDeactivated($attributes);
+        if ($this->succeeded($response)) {
+            $this->fireAccessChanges($statusBefore);
+        }
 
         $tempImagePath = APP_PATH . DS . 'filesystem' . DS . 'tmp' . DS . 'img' . DS . 'user' . DS . $this->id;
         //Check if user selected image exists in temp directory. If exists then move it to filesystem/img/user/ directory
@@ -94,12 +98,25 @@ class UserController extends RestController
      */
     public function patchCollectionAction()
     {
+        // Unlike patchAction, this path does not revoke sessions, so a
+        // deactivation here publishes user.access.changed while the
+        // user's tokens are still valid.
+        $byUser = array();
         foreach ($this->extractCollectionAttributes() as $attributes) {
             $this->assertUserWritable(isset($attributes['id']) ? $attributes['id'] : null, $attributes);
             $this->assertAclLockoutSafeForAttributes($attributes);
+            if (isset($attributes['id'])) {
+                $byUser[$attributes['id']] = $attributes;
+            }
+        }
+        $statusBefore = $this->accountStatusesBefore($byUser);
+
+        $response = parent::patchCollectionAction();
+        if ($this->succeeded($response)) {
+            $this->fireAccessChanges($statusBefore);
         }
 
-        return parent::patchCollectionAction();
+        return $response;
     }
 
     /**
@@ -208,6 +225,57 @@ class UserController extends RestController
 
         $user->sessionExpires = gmdate('Y-m-d H:i:s', time() - 1);
         $user->save();
+    }
+
+    /**
+     * The saved `accountStatus` of each user whose patch sets one.
+     *
+     * @param  array $attributesByUser Patch attributes keyed by user id
+     * @return array                   accountStatus keyed by user id
+     */
+    private function accountStatusesBefore(array $attributesByUser)
+    {
+        $statuses = array();
+        foreach ($attributesByUser as $userId => $attributes) {
+            if (!$userId || !is_array($attributes) || !array_key_exists('accountStatus', $attributes)) {
+                continue;
+            }
+            $user = User::findFirstById((string) $userId);
+            if ($user) {
+                $statuses[(string) $userId] = $user->accountStatus;
+            }
+        }
+        return $statuses;
+    }
+
+    /**
+     * Fire `rest:afterAccessChange` for each user whose saved
+     * `accountStatus` differs from before the patch, so the live events
+     * component tells Hermes (user.access.changed).
+     *
+     * @param  array $statusBefore accountStatus keyed by user id
+     * @return void
+     */
+    private function fireAccessChanges(array $statusBefore)
+    {
+        foreach ($statusBefore as $userId => $before) {
+            $user = User::findFirstById((string) $userId);
+            if ($user && (string) $user->accountStatus !== (string) $before) {
+                $this->eventsManager->fire('rest:afterAccessChange', $this, (string) $userId);
+            }
+        }
+    }
+
+    /**
+     * Whether a write response is a success (an unset status is a success).
+     *
+     * @param  \Phalcon\Http\ResponseInterface $response
+     * @return bool
+     */
+    private function succeeded($response)
+    {
+        $code = (int) $response->getStatusCode();
+        return $code === 0 || ($code >= 200 && $code < 300);
     }
 
     /**

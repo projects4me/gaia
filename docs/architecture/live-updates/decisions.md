@@ -112,6 +112,15 @@ are out of scope here.
 | Rationale | Only the agent's own runtime may receive the request. The prompt and the step's settings stay in Gaia: the runtime reads them from `GET /api/v1/workflowactorstep/{stepId}` with its own credentials, so nothing secret crosses the relay. |
 | Implications | Never put the prompt, step inputs or credentials in this event. A runtime that misses the event (Hermes down, fail-open per D-002) still finds its pending steps through the REST resource, and an unclaimed step times out to the 'failed' output. |
 
+### D-011 — Access changes are published to the affected user's scope, with the user id only
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | Gaia publishes `user.access.changed` with `projectId` `user:<userId>` (D-006), `resource` `{ type: 'user', id: <userId> }` and no `changes` when a user's saved `accountStatus` changes (`UserController` fires `rest:afterAccessChange` after a deactivation's session revocation) and when a membership is created or deleted (`MembershipLiveEventsComponent`). Hermes D-009 scoping applies; the Hermes handler re-checks that user's sockets. |
+| Rationale | Hermes checks a socket's access at connect and caches it, so a removed member or a disabled user would keep receiving events. Gaia owns access, so it tells Hermes when to re-check; Hermes asks Gaia for the new access rather than trusting a payload. |
+| Implications | Role changes are out of scope (they don't change what Hermes routes). A missed event (Hermes down, fail-open per D-002) leaves the cached access until it expires. |
+
 ---
 
 ## Open questions
