@@ -4679,6 +4679,140 @@
       }
     },
     {
+      "id": "introspect-service-caller-user-token",
+      "method": "POST",
+      "path": "/api/v1/introspect",
+      "resource": "introspect",
+      "auth": "serviceHermes",
+      "body": {
+        "token": "api-test-introspect-user"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "active": true,
+          "actorType": "user",
+          "sub": "api-test-user-0001",
+          "clientId": "projects4me",
+          "scope": "application"
+        },
+        "jsonPathAbsent": [
+          "agent",
+          "toolGrants"
+        ]
+      }
+    },
+    {
+      "id": "introspect-service-caller-agent-token",
+      "method": "POST",
+      "path": "/api/v1/introspect",
+      "resource": "introspect",
+      "auth": "serviceHermes",
+      "body": {
+        "token": "api-test-introspect-agent"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "active": true,
+          "actorType": "agent",
+          "sub": "api-test-user-acl-agent",
+          "clientId": "agent-api-tester-acl-agent",
+          "agent.id": "api-test-agent-000001"
+        }
+      }
+    },
+    {
+      "id": "introspect-service-caller-delegated-token",
+      "method": "POST",
+      "path": "/api/v1/introspect",
+      "resource": "introspect",
+      "auth": "serviceHermes",
+      "body": {
+        "token": "api-test-introspect-delegated"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "active": true,
+          "actorType": "agent",
+          "sub": "api-test-user-acl-agent",
+          "clientId": "service-api-tester-delegator",
+          "act": "service-api-tester-delegator",
+          "serviceKind": "runtime",
+          "scope": "issue.get",
+          "agent.id": "api-test-agent-000001"
+        }
+      }
+    },
+    {
+      "id": "introspect-service-caller-service-token",
+      "method": "POST",
+      "path": "/api/v1/introspect",
+      "resource": "introspect",
+      "auth": "serviceHermes",
+      "body": {
+        "token": "api-test-introspect-service"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "active": true,
+          "actorType": "service",
+          "clientId": "service-api-tester-delegator",
+          "serviceKind": "runtime",
+          "scope": "agent.delegate agent.read"
+        },
+        "jsonPathAbsent": [
+          "agent",
+          "toolGrants"
+        ]
+      }
+    },
+    {
+      "id": "introspect-service-caller-expired-token-inactive",
+      "method": "POST",
+      "path": "/api/v1/introspect",
+      "resource": "introspect",
+      "auth": "serviceHermes",
+      "body": {
+        "token": "api-test-introspect-expired"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "active": false
+        },
+        "jsonPathAbsent": [
+          "sub",
+          "actorType",
+          "clientId",
+          "scope",
+          "projectIds"
+        ]
+      }
+    },
+    {
+      "id": "introspect-service-without-scope-refused",
+      "method": "POST",
+      "path": "/api/v1/introspect",
+      "resource": "introspect",
+      "auth": "serviceRuntime",
+      "body": {
+        "token": "api-test-introspect-user"
+      },
+      "expects": {
+        "status": 401,
+        "shape": "error",
+        "errorEqual": "Only a service with the token.introspect scope may call this endpoint."
+      }
+    },
+    {
       "id": "token-client-credentials-signs-agent-in",
       "method": "POST",
       "path": "/api/v1/token",

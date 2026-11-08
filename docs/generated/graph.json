@@ -13099,6 +13099,102 @@
       }
     },
     {
+      "id": "case:client/introspect-service-caller-agent-token",
+      "type": "case",
+      "key": "client/introspect-service-caller-agent-token",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/introspect",
+        "resource": "introspect",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/introspect-service-caller-delegated-token",
+      "type": "case",
+      "key": "client/introspect-service-caller-delegated-token",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/introspect",
+        "resource": "introspect",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/introspect-service-caller-expired-token-inactive",
+      "type": "case",
+      "key": "client/introspect-service-caller-expired-token-inactive",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/introspect",
+        "resource": "introspect",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/introspect-service-caller-service-token",
+      "type": "case",
+      "key": "client/introspect-service-caller-service-token",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/introspect",
+        "resource": "introspect",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/introspect-service-caller-user-token",
+      "type": "case",
+      "key": "client/introspect-service-caller-user-token",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/introspect",
+        "resource": "introspect",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/introspect-service-without-scope-refused",
+      "type": "case",
+      "key": "client/introspect-service-without-scope-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/introspect",
+        "resource": "introspect",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/introspect-with-user-token-refused",
       "type": "case",
       "key": "client/introspect-with-user-token-refused",
@@ -32485,6 +32581,14 @@
         "roleId": "1",
         "role": "Admin",
         "roleDescription": "Admin role of the seeded main user"
+      }
+    },
+    {
+      "id": "profile:serviceHermes",
+      "type": "profile",
+      "key": "serviceHermes",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
       }
     },
     {
@@ -59868,6 +59972,201 @@
       "from": "case:client/get-wiki-api-v1-wiki",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/introspect-service-caller-agent-token",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/introspect-service-caller-agent-token",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/introspect-service-caller-agent-token",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/introspect-service-caller-agent-token",
+      "type": "covers",
+      "to": "controller:introspect"
+    },
+    {
+      "from": "case:client/introspect-service-caller-agent-token",
+      "type": "exercises",
+      "to": "route:POST /api/v1/introspect"
+    },
+    {
+      "from": "case:client/introspect-service-caller-agent-token",
+      "type": "runs_as",
+      "to": "profile:serviceHermes"
+    },
+    {
+      "from": "case:client/introspect-service-caller-delegated-token",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/introspect-service-caller-delegated-token",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/introspect-service-caller-delegated-token",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/introspect-service-caller-delegated-token",
+      "type": "covers",
+      "to": "controller:introspect"
+    },
+    {
+      "from": "case:client/introspect-service-caller-delegated-token",
+      "type": "exercises",
+      "to": "route:POST /api/v1/introspect"
+    },
+    {
+      "from": "case:client/introspect-service-caller-delegated-token",
+      "type": "runs_as",
+      "to": "profile:serviceHermes"
+    },
+    {
+      "from": "case:client/introspect-service-caller-expired-token-inactive",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/introspect-service-caller-expired-token-inactive",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/introspect-service-caller-expired-token-inactive",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/introspect-service-caller-expired-token-inactive",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/introspect-service-caller-expired-token-inactive",
+      "type": "covers",
+      "to": "controller:introspect"
+    },
+    {
+      "from": "case:client/introspect-service-caller-expired-token-inactive",
+      "type": "exercises",
+      "to": "route:POST /api/v1/introspect"
+    },
+    {
+      "from": "case:client/introspect-service-caller-expired-token-inactive",
+      "type": "runs_as",
+      "to": "profile:serviceHermes"
+    },
+    {
+      "from": "case:client/introspect-service-caller-service-token",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/introspect-service-caller-service-token",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/introspect-service-caller-service-token",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/introspect-service-caller-service-token",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/introspect-service-caller-service-token",
+      "type": "covers",
+      "to": "controller:introspect"
+    },
+    {
+      "from": "case:client/introspect-service-caller-service-token",
+      "type": "exercises",
+      "to": "route:POST /api/v1/introspect"
+    },
+    {
+      "from": "case:client/introspect-service-caller-service-token",
+      "type": "runs_as",
+      "to": "profile:serviceHermes"
+    },
+    {
+      "from": "case:client/introspect-service-caller-user-token",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/introspect-service-caller-user-token",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/introspect-service-caller-user-token",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/introspect-service-caller-user-token",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/introspect-service-caller-user-token",
+      "type": "covers",
+      "to": "controller:introspect"
+    },
+    {
+      "from": "case:client/introspect-service-caller-user-token",
+      "type": "exercises",
+      "to": "route:POST /api/v1/introspect"
+    },
+    {
+      "from": "case:client/introspect-service-caller-user-token",
+      "type": "runs_as",
+      "to": "profile:serviceHermes"
+    },
+    {
+      "from": "case:client/introspect-service-without-scope-refused",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/introspect-service-without-scope-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/introspect-service-without-scope-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/introspect-service-without-scope-refused",
+      "type": "covers",
+      "to": "controller:introspect"
+    },
+    {
+      "from": "case:client/introspect-service-without-scope-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/introspect"
+    },
+    {
+      "from": "case:client/introspect-service-without-scope-refused",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
     },
     {
       "from": "case:client/introspect-with-user-token-refused",
