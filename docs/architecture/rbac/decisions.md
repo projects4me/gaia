@@ -455,6 +455,15 @@ These scenarios are settled and should become tests later:
 | Rationale | Delegated agent tokens must never do more than their scopes allow, even when the agent's roles would. Scopes only narrow, so they can never grant what the ACL denies, and the exclusions keep a scoped token away from credentials and the security core (D-052) even under `*.*`. Reusing the permission names as the scope vocabulary means one catalog to read and no mapping to keep in step. |
 | Implications | `TokenScope` (`core/libs/security/TokenScope.php`) owns parsing, matching and the exclusion list. `RestController::authorize()` hands the token's scope to `Acl::setTokenScope()` after `verifyResourceRequest`; `Acl::isModelActionAllowed()` and `Acl::checkAccess()` consult it, so every module-action check made through the request's Acl (action, related, rels, clause usage, field prerequisite) is narrowed. Authorization-group checks (`{group}.get`) are not: a token scoped to `issue.get` still reads issues of projects the actor can see without `project.get` in scope. Endpoints outside `RestController::authorize()` (the token endpoint, uploads, previews) are not narrowed. Issuing scoped tokens is a later change; the api-tester `aclScopedToken` profile uses a seeded client whose `scope` column carries the patterns. |
 
+### D-065 — Services introspect any token with a service token
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | `POST /api/v1/introspect` accepts a service bearer token: no user, an active service client (`ServiceClientGuard`) and the scope word `token.introspect` itself (`IntrospectionCallerGuard`; a pattern such as `token.*` does not count). Such a caller gets `TokenIntrospection` of the posted token: `active`, `token_type`, `clientId`, `scope`, `exp`, `sub` (user id), `actorType` (`user`, `agent` or `service`), `act` (the service's client id when a service holds a token of an agent, i.e. a delegated token), `projectIds` (memberships, for users and agents) and `serviceKind` (the kind of the service client, for service and delegated tokens). Every active response has these keys (null or empty when they do not apply); an agent's token also carries `agent` and `toolGrants` as before. A missing, expired or revoked token, a disabled or deleted user, agent or service client, an agent token from a client that is not the agent's own, and a service token that names a person are `{"active": false}` with no detail. The `X-Ares-Secret` door (`AresCallerGuard`, `AgentTokenIntrospection`) is unchanged and is taken whenever that header is sent. |
+| Rationale | Hermes checks socket tokens with its own service token instead of the user's token and a membership query, so it needs the actor and its projects in one call. Requiring the exact scope word keeps introspection to services granted it (the `hermes` kind's default). |
+| Implications | Hermes (A Hermes) switches its socket auth to this response; Ares keeps the shared secret until it signs in as a service client. Delegated tokens (a service client with a user) are issued by the delegation grant; introspection already reports them. |
+
 ---
 
 ## Open questions
@@ -477,6 +486,7 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 
 | Date | Change |
 |------|--------|
+| 2026-11-09 | D-065: services with a `token.introspect` service token introspect any token: actor type (user, agent, service), client, delegation (`act`), scope and project ids; the Ares shared-secret door stays |
 | 2026-11-09 | D-064: token scopes (permission names with `*` wildcards) narrow the actor's ACL; hard exclusions for credentials, enrollment, roles, permissions and agent writes; words without a dot (legacy `application`) do not narrow |
 | 2026-11-09 | D-062, D-063: OAuth client kinds (app, agent, service); client_credentials branches on the kind; service clients get tokens without a user and are administered by admins only |
 | 2026-10-28 | D-061: session expiry stored per refresh token (`rememberMe`, `sessionExpires`) and sliding on refresh; a later sign-in no longer shortens other sessions |

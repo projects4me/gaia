@@ -8,17 +8,22 @@ namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
 use Gaia\Libraries\Agents\AgentTokenIntrospection;
+use Gaia\Libraries\Authorization\TokenIntrospection;
 use Gaia\Libraries\Security\AresCallerGuard;
+use Gaia\Libraries\Security\IntrospectionCallerGuard;
 
 /**
  * Introspect Controller
  *
- * Token introspection for Ares (RFC 7662 shaped). POST `token` (form field or
- * JSON body) with the `X-Ares-Secret` header; the response says whether the
- * token is an active agent token and, if it is, carries the agent and its
- * tool grants (see `AgentTokenIntrospection`). The caller is the Ares
- * service, not a user, so the OAuth check is off and `AresCallerGuard`
- * takes its place.
+ * Token introspection (RFC 7662 shaped). POST `token` (form field or JSON
+ * body). The caller is a service, not a user, so the OAuth check is off and
+ * one of two doors takes its place:
+ * - a service bearer token with the `token.introspect` scope
+ *   (`IntrospectionCallerGuard`): any token is introspected with its actor
+ *   type, client, scope and project ids (`TokenIntrospection`, D-065);
+ * - Ares's `X-Ares-Secret` header (`AresCallerGuard`): only agent tokens are
+ *   active, with the agent and its tool grants (`AgentTokenIntrospection`).
+ *   It stays until Ares signs in as a service client.
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Foundation
@@ -28,7 +33,7 @@ use Gaia\Libraries\Security\AresCallerGuard;
 class IntrospectController extends RestController
 {
     /**
-     * Ares authenticates with its service secret, not an OAuth token.
+     * Callers are services, checked by the guards, not users.
      *
      * @var bool
      */
@@ -38,19 +43,40 @@ class IntrospectController extends RestController
      * Introspect the posted token.
      *
      * @return \Phalcon\Http\Response
-     * @throws \Gaia\Exception\UnAuthorized When the caller is not Ares
+     * @throws \Gaia\Exception\UnAuthorized When the caller is neither a service that may introspect nor Ares
      */
     public function postAction()
     {
-        (new AresCallerGuard())->assertCaller($this->request->getHeader(AresCallerGuard::HEADER));
-
-        $result = (new AgentTokenIntrospection())->introspect($this->requestedToken());
+        $aresSecret = (string) $this->request->getHeader(AresCallerGuard::HEADER);
+        if ($aresSecret !== '') {
+            (new AresCallerGuard())->assertCaller($aresSecret);
+            $result = (new AgentTokenIntrospection())->introspect($this->requestedToken());
+        } else {
+            (new IntrospectionCallerGuard())->assertCaller($this->callerToken());
+            $result = (new TokenIntrospection())->introspect($this->requestedToken());
+        }
 
         $this->response->setStatusCode(200, 'OK');
         $this->response->setHeader('Cache-Control', 'no-store');
         $this->response->setJsonContent($result);
 
         return $this->response;
+    }
+
+    /**
+     * The caller's own bearer token from the Authorization header, read the
+     * way the OAuth server reads it (Apache may hide it from the request).
+     *
+     * @return string|null
+     */
+    private function callerToken()
+    {
+        $header = trim((string) $this->getOAuthRequest()->headers('AUTHORIZATION'));
+        if (preg_match('/^Bearer\s+(\S+)$/i', $header, $matches) !== 1) {
+            return null;
+        }
+
+        return $matches[1];
     }
 
     /**
