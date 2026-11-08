@@ -8,6 +8,7 @@
 - client_id varchar(36) required
 - client_secret varchar(80) required
 - grant_types varchar(80)
+- kind varchar(10) required
 - redirect_uri varchar(2000) required
 - scope varchar(100)
 - user_id varchar(36)

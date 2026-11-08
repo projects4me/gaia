@@ -52,7 +52,15 @@ class ProfileExtractorTest extends TestCase
         $root = dirname(__DIR__, 3);
         $profiles = array_column((new ProfileExtractor($root))->extract(), null, 'name');
 
-        $expected = array_diff((new FixtureExtractor($root))->extract()['profiles'], ['anonymous']);
+        // A service profile (client_credentials without an email) signs in as no user, so it has nothing to resolve.
+        $fixtures = json_decode((string) file_get_contents($root . '/tools/api-tester/fixtures/default.json'), true);
+        $userless = [];
+        foreach ($fixtures['authProfiles'] ?? [] as $name => $profile) {
+            if (!isset($profile['email'])) {
+                $userless[] = $name;
+            }
+        }
+        $expected = array_diff((new FixtureExtractor($root))->extract()['profiles'], array_merge(['anonymous'], $userless));
         $this->assertSame([], array_values(array_diff($expected, array_keys($profiles))));
         $this->assertSame(2, $profiles['aclMembers']['permissions']['project.get']);
         $this->assertSame(0, $profiles['aclFields']['permissions']['issue.subject.get']);
