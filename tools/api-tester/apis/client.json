@@ -4883,6 +4883,142 @@
       }
     },
     {
+      "id": "token-client-credentials-signs-service-in",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "form": {
+        "grant_type": "client_credentials",
+        "client_id": "service-api-tester-runtime",
+        "client_secret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "oauth.token"
+      }
+    },
+    {
+      "id": "serviceclient-token-refused-on-crud",
+      "method": "GET",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": "serviceRuntime",
+      "query": {
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 403,
+        "shape": "error",
+        "errorEqual": "Invalid Token"
+      }
+    },
+    {
+      "id": "serviceclient-patch-other-field-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/serviceclient/{serviceclientId}",
+      "resource": "serviceclient",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceclient",
+          "id": "{serviceclientId}",
+          "attributes": {
+            "name": "Renamed runtime"
+          }
+        }
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Only the status of a service client can be changed."
+      }
+    },
+    {
+      "id": "serviceclient-patch-bad-status-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/serviceclient/{serviceclientId}",
+      "resource": "serviceclient",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceclient",
+          "id": "{serviceclientId}",
+          "attributes": {
+            "status": "paused"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "serviceclient-patch-disables",
+      "method": "PATCH",
+      "path": "/api/v1/serviceclient/{serviceclientId}",
+      "resource": "serviceclient",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceclient",
+          "id": "{serviceclientId}",
+          "attributes": {
+            "status": "disabled"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "disabled"
+        }
+      }
+    },
+    {
+      "id": "token-client-credentials-refused-for-disabled-service",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "form": {
+        "grant_type": "client_credentials",
+        "client_id": "service-api-tester-runtime",
+        "client_secret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
+      },
+      "expects": {
+        "status": 401,
+        "shape": "error",
+        "errorEqual": "Client credentials are only for active service clients."
+      }
+    },
+    {
+      "id": "serviceclient-patch-enables",
+      "method": "PATCH",
+      "path": "/api/v1/serviceclient/{serviceclientId}",
+      "resource": "serviceclient",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceclient",
+          "id": "{serviceclientId}",
+          "attributes": {
+            "status": "active"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "active"
+        }
+      }
+    },
+    {
       "id": "post-issuetype-with-labels",
       "method": "POST",
       "path": "/api/v1/issuetype",

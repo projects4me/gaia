@@ -172,14 +172,14 @@ class OAuthServer
     }
 
     /**
-     * Adds the Client Credentials grant type, for agents only (see
-     * `AgentClientCredentials`).
+     * Adds the Client Credentials grant type, for agent and service clients
+     * (see `ClientCredentialsGrant`).
      *
      * @method addClientCredentialsGrant
      */
     protected function addClientCredentialsGrant()
     {
-        $this->server->addGrantType(new AgentClientCredentials($this->storage));
+        $this->server->addGrantType(new ClientCredentialsGrant($this->storage));
     }
 
     /**

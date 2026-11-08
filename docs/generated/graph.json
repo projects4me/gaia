@@ -1845,6 +1845,42 @@
       "attributes": {}
     },
     {
+      "id": "action:serviceclient.get",
+      "type": "action",
+      "key": "serviceclient.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceclient.list",
+      "type": "action",
+      "key": "serviceclient.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceclient.options",
+      "type": "action",
+      "key": "serviceclient.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceclient.patch",
+      "type": "action",
+      "key": "serviceclient.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceclient.patchCollection",
+      "type": "action",
+      "key": "serviceclient.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceclient.related",
+      "type": "action",
+      "key": "serviceclient.related",
+      "attributes": {}
+    },
+    {
       "id": "action:setting.get",
       "type": "action",
       "key": "setting.get",
@@ -3665,6 +3701,18 @@
         "hooks": [
           "notify",
           "nextVersion"
+        ]
+      }
+    },
+    {
+      "id": "behaviour:serviceClientBehavior",
+      "type": "behaviour",
+      "key": "serviceClientBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\serviceClientBehavior",
+        "file": "core/mvc/models/behaviors/serviceClientBehavior.php",
+        "hooks": [
+          "notify"
         ]
       }
     },
@@ -6139,6 +6187,94 @@
       }
     },
     {
+      "id": "case:acl/acl-serviceclient-detail-allowed-default",
+      "type": "case",
+      "key": "acl/acl-serviceclient-detail-allowed-default",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": "acl-serviceclient",
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-serviceclient-detail-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-serviceclient-detail-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": "acl-serviceclient",
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-serviceclient-list-allowed-default",
+      "type": "case",
+      "key": "acl/acl-serviceclient-list-allowed-default",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceclient",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": "acl-serviceclient",
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-serviceclient-list-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-serviceclient-list-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceclient",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": "acl-serviceclient",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-serviceclient-patch-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-serviceclient-patch-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": "acl-serviceclient",
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-setting-get-denied",
       "type": "case",
       "key": "acl/acl-setting-get-denied",
@@ -8568,6 +8704,40 @@
       }
     },
     {
+      "id": "case:backend/get-serviceclient-api-v1-serviceclient",
+      "type": "case",
+      "key": "backend/get-serviceclient-api-v1-serviceclient",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/serviceclient",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-serviceclient-api-v1-serviceclient-id",
+      "type": "case",
+      "key": "backend/get-serviceclient-api-v1-serviceclient-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/get-setting-api-v1-setting",
       "type": "case",
       "key": "backend/get-setting-api-v1-setting",
@@ -9767,6 +9937,24 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.savedsearchId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/patch-serviceclient-api-v1-serviceclient-id",
+      "type": "case",
+      "key": "backend/patch-serviceclient-api-v1-serviceclient-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [
+          "serviceclientId"
         ],
         "stores": []
       }
@@ -15392,6 +15580,94 @@
       }
     },
     {
+      "id": "case:client/serviceclient-patch-bad-status-rejected",
+      "type": "case",
+      "key": "client/serviceclient-patch-bad-status-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceclient-patch-disables",
+      "type": "case",
+      "key": "client/serviceclient-patch-disables",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceclient-patch-enables",
+      "type": "case",
+      "key": "client/serviceclient-patch-enables",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceclient-patch-other-field-rejected",
+      "type": "case",
+      "key": "client/serviceclient-patch-other-field-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceclient-token-refused-on-crud",
+      "type": "case",
+      "key": "client/serviceclient-token-refused-on-crud",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/settings-export-rejected",
       "type": "case",
       "key": "client/settings-export-rejected",
@@ -15803,6 +16079,22 @@
       }
     },
     {
+      "id": "case:client/token-client-credentials-refused-for-disabled-service",
+      "type": "case",
+      "key": "client/token-client-credentials-refused-for-disabled-service",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/token",
+        "resource": "token",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/token-client-credentials-refused-for-non-agent-client",
       "type": "case",
       "key": "client/token-client-credentials-refused-for-non-agent-client",
@@ -15872,6 +16164,22 @@
           "runtime.agentClientId",
           "runtime.agentClientSecret"
         ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/token-client-credentials-signs-service-in",
+      "type": "case",
+      "key": "client/token-client-credentials-signs-service-in",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/token",
+        "resource": "token",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
         "stores": []
       }
     },
@@ -18499,6 +18807,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\ScoreboardController",
         "file": "app/api/v1/controllers/ScoreboardController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:serviceclient",
+      "type": "controller",
+      "key": "serviceclient",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ServiceclientController",
+        "file": "app/api/v1/controllers/ServiceclientController.php",
         "extends": "RestController"
       }
     },
@@ -22390,6 +22709,18 @@
       }
     },
     {
+      "id": "field:Oauthclient.kind",
+      "type": "field",
+      "key": "Oauthclient.kind",
+      "attributes": {
+        "label": "LBL_OAUTH_CLIENTS_KIND",
+        "type": "varchar",
+        "length": "10",
+        "null": false,
+        "default": "app"
+      }
+    },
+    {
       "id": "field:Oauthclient.redirect_uri",
       "type": "field",
       "key": "Oauthclient.redirect_uri",
@@ -23240,6 +23571,164 @@
         "type": "varchar",
         "length": "36",
         "null": false
+      }
+    },
+    {
+      "id": "field:Serviceclient.clientId",
+      "type": "field",
+      "key": "Serviceclient.clientId",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_CLIENT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Serviceclient.createdUser",
+      "type": "field",
+      "key": "Serviceclient.createdUser",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Serviceclient.createdUserName",
+      "type": "field",
+      "key": "Serviceclient.createdUserName",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Serviceclient.dateCreated",
+      "type": "field",
+      "key": "Serviceclient.dateCreated",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Serviceclient.dateModified",
+      "type": "field",
+      "key": "Serviceclient.dateModified",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Serviceclient.deleted",
+      "type": "field",
+      "key": "Serviceclient.deleted",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Serviceclient.id",
+      "type": "field",
+      "key": "Serviceclient.id",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Serviceclient.kind",
+      "type": "field",
+      "key": "Serviceclient.kind",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_KIND",
+        "type": "varchar",
+        "length": "20",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Serviceclient.lastUsedAt",
+      "type": "field",
+      "key": "Serviceclient.lastUsedAt",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_LAST_USED_AT",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Serviceclient.modifiedUser",
+      "type": "field",
+      "key": "Serviceclient.modifiedUser",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Serviceclient.modifiedUserName",
+      "type": "field",
+      "key": "Serviceclient.modifiedUserName",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Serviceclient.name",
+      "type": "field",
+      "key": "Serviceclient.name",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_NAME",
+        "type": "varchar",
+        "length": "100",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Serviceclient.scopes",
+      "type": "field",
+      "key": "Serviceclient.scopes",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_SCOPES",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Serviceclient.status",
+      "type": "field",
+      "key": "Serviceclient.status",
+      "attributes": {
+        "label": "LBL_SERVICECLIENTS_STATUS",
+        "type": "varchar",
+        "length": "20",
+        "null": false,
+        "default": "active"
       }
     },
     {
@@ -28176,6 +28665,14 @@
       }
     },
     {
+      "id": "fixture:serviceclientId",
+      "type": "fixture",
+      "key": "serviceclientId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:skillId",
       "type": "fixture",
       "key": "skillId",
@@ -28944,6 +29441,19 @@
       "attributes": {
         "file": "app/metadata/model/Scoreboard.php",
         "tableName": "scoreboard",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
+      "id": "model:Serviceclient",
+      "type": "model",
+      "key": "Serviceclient",
+      "attributes": {
+        "file": "app/metadata/model/Serviceclient.php",
+        "tableName": "serviceclients",
         "isView": false,
         "registered": true,
         "hasMetadata": true,
@@ -30599,6 +31109,42 @@
       }
     },
     {
+      "id": "permission:serviceclient.create",
+      "type": "permission",
+      "key": "serviceclient.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:serviceclient.delete",
+      "type": "permission",
+      "key": "serviceclient.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:serviceclient.get",
+      "type": "permission",
+      "key": "serviceclient.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:serviceclient.update",
+      "type": "permission",
+      "key": "serviceclient.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
       "id": "permission:setting.get",
       "type": "permission",
       "key": "setting.get",
@@ -31627,6 +32173,14 @@
       }
     },
     {
+      "id": "profile:serviceRuntime",
+      "type": "profile",
+      "key": "serviceRuntime",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "relationship:Activity.createdBy",
       "type": "relationship",
       "key": "Activity.createdBy",
@@ -32616,6 +33170,26 @@
       "attributes": {
         "kind": "hasMany",
         "primaryKey": "userId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Serviceclient.createdBy",
+      "type": "relationship",
+      "key": "Serviceclient.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Serviceclient.modifiedBy",
+      "type": "relationship",
+      "key": "Serviceclient.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
         "relatedKey": "id"
       }
     },
@@ -35779,6 +36353,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/serviceclient",
+      "type": "route",
+      "key": "GET /api/v1/serviceclient",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceclient",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/serviceclient"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/serviceclient/{id}",
+      "type": "route",
+      "key": "GET /api/v1/serviceclient/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceclient",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/serviceclient/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/serviceclient/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/serviceclient/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceclient",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/serviceclient/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:GET /api/v1/setting",
       "type": "route",
       "key": "GET /api/v1/setting",
@@ -37099,6 +37709,18 @@
       }
     },
     {
+      "id": "route:OPTIONS /api/v1/serviceclient",
+      "type": "route",
+      "key": "OPTIONS /api/v1/serviceclient",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceclient",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/serviceclient"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/setting",
       "type": "route",
       "key": "OPTIONS /api/v1/setting",
@@ -38080,6 +38702,30 @@
         "version": "v1",
         "method": "PATCH",
         "path": "/api/v1/scoreboard/{id}"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/serviceclient",
+      "type": "route",
+      "key": "PATCH /api/v1/serviceclient",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceclient",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/serviceclient/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/serviceclient/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceclient",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{id}"
       }
     },
     {
@@ -41247,6 +41893,31 @@
       "from": "action:scoreboard.related",
       "type": "requires",
       "to": "permission:scoreboard.get"
+    },
+    {
+      "from": "action:serviceclient.get",
+      "type": "requires",
+      "to": "permission:serviceclient.get"
+    },
+    {
+      "from": "action:serviceclient.list",
+      "type": "requires",
+      "to": "permission:serviceclient.get"
+    },
+    {
+      "from": "action:serviceclient.patch",
+      "type": "requires",
+      "to": "permission:serviceclient.update"
+    },
+    {
+      "from": "action:serviceclient.patchCollection",
+      "type": "requires",
+      "to": "permission:serviceclient.update"
+    },
+    {
+      "from": "action:serviceclient.related",
+      "type": "requires",
+      "to": "permission:serviceclient.get"
     },
     {
       "from": "action:setting.get",
@@ -46694,6 +47365,161 @@
       "to": "profile:default"
     },
     {
+      "from": "case:acl/acl-serviceclient-detail-allowed-default",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-detail-allowed-default",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-detail-allowed-default",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-detail-allowed-default",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-detail-allowed-default",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-detail-allowed-default",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-detail-allowed-default",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-detail-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-detail-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-detail-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-detail-denied-acl-no-setting",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-list-allowed-default",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-list-allowed-default",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-list-allowed-default",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-list-allowed-default",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-list-allowed-default",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceclient"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-list-allowed-default",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-list-allowed-default",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-list-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-list-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-list-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-list-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceclient"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-list-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-patch-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-patch-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-patch-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-patch-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-patch-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-serviceclient-patch-denied-acl-no-setting",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
       "from": "case:acl/acl-setting-get-denied",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -51049,6 +51875,66 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/get-serviceclient-api-v1-serviceclient",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-serviceclient-api-v1-serviceclient",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-serviceclient-api-v1-serviceclient",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:backend/get-serviceclient-api-v1-serviceclient",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceclient"
+    },
+    {
+      "from": "case:backend/get-serviceclient-api-v1-serviceclient",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-serviceclient-api-v1-serviceclient-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-serviceclient-api-v1-serviceclient-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-serviceclient-api-v1-serviceclient-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-serviceclient-api-v1-serviceclient-id",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:backend/get-serviceclient-api-v1-serviceclient-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:backend/get-serviceclient-api-v1-serviceclient-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-serviceclient-api-v1-serviceclient-id",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
       "from": "case:backend/get-setting-api-v1-setting",
       "type": "asserts",
       "to": "assertion:shape"
@@ -53222,6 +54108,36 @@
       "from": "case:backend/patch-savedsearch-api-v1-savedsearch-id",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:backend/patch-serviceclient-api-v1-serviceclient-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/patch-serviceclient-api-v1-serviceclient-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/patch-serviceclient-api-v1-serviceclient-id",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:backend/patch-serviceclient-api-v1-serviceclient-id",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:backend/patch-serviceclient-api-v1-serviceclient-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/patch-serviceclient-api-v1-serviceclient-id",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
     },
     {
       "from": "case:backend/patch-setting-api-v1-setting-id",
@@ -63129,6 +64045,171 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/serviceclient-patch-bad-status-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceclient-patch-bad-status-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceclient-patch-bad-status-rejected",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:client/serviceclient-patch-bad-status-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:client/serviceclient-patch-bad-status-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceclient-patch-bad-status-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
+      "from": "case:client/serviceclient-patch-disables",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/serviceclient-patch-disables",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceclient-patch-disables",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceclient-patch-disables",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:client/serviceclient-patch-disables",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:client/serviceclient-patch-disables",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceclient-patch-disables",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
+      "from": "case:client/serviceclient-patch-enables",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/serviceclient-patch-enables",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceclient-patch-enables",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceclient-patch-enables",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:client/serviceclient-patch-enables",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:client/serviceclient-patch-enables",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceclient-patch-enables",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
+      "from": "case:client/serviceclient-patch-other-field-rejected",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/serviceclient-patch-other-field-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceclient-patch-other-field-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceclient-patch-other-field-rejected",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:client/serviceclient-patch-other-field-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:client/serviceclient-patch-other-field-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceclient-patch-other-field-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
+      "from": "case:client/serviceclient-token-refused-on-crud",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/serviceclient-token-refused-on-crud",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceclient-token-refused-on-crud",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceclient-token-refused-on-crud",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/serviceclient-token-refused-on-crud",
+      "type": "exercises",
+      "to": "route:GET /api/v1/project"
+    },
+    {
+      "from": "case:client/serviceclient-token-refused-on-crud",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
       "from": "case:client/settings-export-rejected",
       "type": "asserts",
       "to": "assertion:shape"
@@ -63879,6 +64960,36 @@
       "to": "profile:anonymous"
     },
     {
+      "from": "case:client/token-client-credentials-refused-for-disabled-service",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/token-client-credentials-refused-for-disabled-service",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/token-client-credentials-refused-for-disabled-service",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/token-client-credentials-refused-for-disabled-service",
+      "type": "covers",
+      "to": "controller:token"
+    },
+    {
+      "from": "case:client/token-client-credentials-refused-for-disabled-service",
+      "type": "exercises",
+      "to": "route:POST /api/v1/token"
+    },
+    {
+      "from": "case:client/token-client-credentials-refused-for-disabled-service",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
       "from": "case:client/token-client-credentials-refused-for-non-agent-client",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -64010,6 +65121,31 @@
     },
     {
       "from": "case:client/token-client-credentials-signs-agent-in",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/token-client-credentials-signs-service-in",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/token-client-credentials-signs-service-in",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/token-client-credentials-signs-service-in",
+      "type": "covers",
+      "to": "controller:token"
+    },
+    {
+      "from": "case:client/token-client-credentials-signs-service-in",
+      "type": "exercises",
+      "to": "route:POST /api/v1/token"
+    },
+    {
+      "from": "case:client/token-client-credentials-signs-service-in",
       "type": "runs_as",
       "to": "profile:anonymous"
     },
@@ -68759,6 +69895,41 @@
       "to": "model:Scoreboard"
     },
     {
+      "from": "controller:serviceclient",
+      "type": "has_action",
+      "to": "action:serviceclient.get"
+    },
+    {
+      "from": "controller:serviceclient",
+      "type": "has_action",
+      "to": "action:serviceclient.list"
+    },
+    {
+      "from": "controller:serviceclient",
+      "type": "has_action",
+      "to": "action:serviceclient.options"
+    },
+    {
+      "from": "controller:serviceclient",
+      "type": "has_action",
+      "to": "action:serviceclient.patch"
+    },
+    {
+      "from": "controller:serviceclient",
+      "type": "has_action",
+      "to": "action:serviceclient.patchCollection"
+    },
+    {
+      "from": "controller:serviceclient",
+      "type": "has_action",
+      "to": "action:serviceclient.related"
+    },
+    {
+      "from": "controller:serviceclient",
+      "type": "serves",
+      "to": "model:Serviceclient"
+    },
+    {
       "from": "controller:setting",
       "type": "has_action",
       "to": "action:setting.get"
@@ -70347,6 +71518,16 @@
       "from": "field:Scoreboard.modifiedUserName",
       "type": "linked_to",
       "to": "field:Scoreboard.modifiedUser"
+    },
+    {
+      "from": "field:Serviceclient.createdUserName",
+      "type": "linked_to",
+      "to": "field:Serviceclient.createdUser"
+    },
+    {
+      "from": "field:Serviceclient.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Serviceclient.modifiedUser"
     },
     {
       "from": "field:Setting.createdUserName",
@@ -73231,6 +74412,11 @@
     {
       "from": "model:Oauthclient",
       "type": "has_field",
+      "to": "field:Oauthclient.kind"
+    },
+    {
+      "from": "model:Oauthclient",
+      "type": "has_field",
       "to": "field:Oauthclient.redirect_uri"
     },
     {
@@ -73840,6 +75026,121 @@
     },
     {
       "from": "model:Scoreboard",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.clientId"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.createdUser"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.createdUserName"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.dateCreated"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.dateModified"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.deleted"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.id"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.kind"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.lastUsedAt"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.modifiedUser"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.modifiedUserName"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.name"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.scopes"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_field",
+      "to": "field:Serviceclient.status"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_relationship",
+      "to": "relationship:Serviceclient.createdBy"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "has_relationship",
+      "to": "relationship:Serviceclient.modifiedBy"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Serviceclient",
+      "type": "uses_behaviour",
+      "to": "behaviour:serviceClientBehavior"
+    },
+    {
+      "from": "model:Serviceclient",
       "type": "uses_behaviour",
       "to": "behaviour:softDeleteBehavior"
     },
@@ -77561,6 +78862,16 @@
     {
       "from": "profile:aclNoSetting",
       "type": "denies",
+      "to": "permission:serviceclient.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:serviceclient.update"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
       "to": "permission:setting.get"
     },
     {
@@ -78112,6 +79423,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:savedsearch.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:serviceclient.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:serviceclient.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:serviceclient.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:serviceclient.update"
     },
     {
       "from": "profile:default",
@@ -79065,6 +80396,16 @@
     },
     {
       "from": "relationship:Scoreboard.users",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Serviceclient.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Serviceclient.modifiedBy",
       "type": "targets",
       "to": "model:User"
     },
@@ -80494,6 +81835,21 @@
       "to": "action:scoreboard.related"
     },
     {
+      "from": "route:GET /api/v1/serviceclient",
+      "type": "handled_by",
+      "to": "action:serviceclient.list"
+    },
+    {
+      "from": "route:GET /api/v1/serviceclient/{id}",
+      "type": "handled_by",
+      "to": "action:serviceclient.get"
+    },
+    {
+      "from": "route:GET /api/v1/serviceclient/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:serviceclient.related"
+    },
+    {
       "from": "route:GET /api/v1/setting",
       "type": "handled_by",
       "to": "action:setting.list"
@@ -81044,6 +82400,11 @@
       "to": "action:scoreboard.options"
     },
     {
+      "from": "route:OPTIONS /api/v1/serviceclient",
+      "type": "handled_by",
+      "to": "action:serviceclient.options"
+    },
+    {
       "from": "route:OPTIONS /api/v1/setting",
       "type": "handled_by",
       "to": "action:setting.options"
@@ -81452,6 +82813,16 @@
       "from": "route:PATCH /api/v1/scoreboard/{id}",
       "type": "handled_by",
       "to": "action:scoreboard.patch"
+    },
+    {
+      "from": "route:PATCH /api/v1/serviceclient",
+      "type": "handled_by",
+      "to": "action:serviceclient.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/serviceclient/{id}",
+      "type": "handled_by",
+      "to": "action:serviceclient.patch"
     },
     {
       "from": "route:PATCH /api/v1/setting",

@@ -7,6 +7,7 @@
 namespace Gaia\Libraries\Security;
 
 use Gaia\Exception\UnAuthorized;
+use Gaia\Libraries\Authorization\ClientKind;
 use Gaia\MVC\Models\Oauthclient;
 use Gaia\MVC\Models\User;
 
@@ -59,7 +60,9 @@ class AgentLoginGuard
             'conditions' => 'client_id = :clientId:',
             'bind' => ['clientId' => (string) $clientId],
         ]);
-        $userId = $client ? (string) $client->user_id : '';
+        // A service client is never an agent, whatever user it names.
+        $isService = $client && (string) $client->kind === ClientKind::SERVICE;
+        $userId = $client && !$isService ? (string) $client->user_id : '';
 
         $user = $userId === '' ? false : User::findFirst([
             'conditions' => 'id = :id: AND deleted = 0',

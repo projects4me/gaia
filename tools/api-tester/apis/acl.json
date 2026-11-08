@@ -1740,6 +1740,90 @@
       "source": "acl-agent"
     },
     {
+      "id": "acl-serviceclient-list-allowed-default",
+      "method": "GET",
+      "path": "/api/v1/serviceclient",
+      "resource": "serviceclient",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{serviceclientId}"
+        ]
+      },
+      "source": "acl-serviceclient"
+    },
+    {
+      "id": "acl-serviceclient-detail-allowed-default",
+      "method": "GET",
+      "path": "/api/v1/serviceclient/{serviceclientId}",
+      "resource": "serviceclient",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "kind": "runtime",
+          "clientId": "service-api-tester-runtime"
+        }
+      },
+      "source": "acl-serviceclient"
+    },
+    {
+      "id": "acl-serviceclient-list-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/serviceclient",
+      "resource": "serviceclient",
+      "auth": "aclNoSetting",
+      "query": {
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 403,
+        "shape": "error"
+      },
+      "source": "acl-serviceclient"
+    },
+    {
+      "id": "acl-serviceclient-detail-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/serviceclient/{serviceclientId}",
+      "resource": "serviceclient",
+      "auth": "aclNoSetting",
+      "expects": {
+        "status": 403,
+        "shape": "error"
+      },
+      "source": "acl-serviceclient"
+    },
+    {
+      "id": "acl-serviceclient-patch-denied-acl-no-setting",
+      "method": "PATCH",
+      "path": "/api/v1/serviceclient/{serviceclientId}",
+      "resource": "serviceclient",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "serviceclient",
+          "id": "{serviceclientId}",
+          "attributes": {
+            "status": "disabled"
+          }
+        }
+      },
+      "expects": {
+        "status": 403,
+        "shape": "error"
+      },
+      "source": "acl-serviceclient"
+    },
+    {
       "id": "acl-agentcredential-allowed-default",
       "method": "GET",
       "path": "/api/v1/agentcredential",
