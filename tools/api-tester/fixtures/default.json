@@ -93,6 +93,7 @@
     "agentId": "api-test-agent-000001",
     "agentUserId": "api-test-user-acl-agent",
     "otherAgentId": "api-test-agent-000002",
+    "inactiveAgentId": "api-test-agent-000003",
     "otherAgentUserId": "api-test-user-agent2",
     "agentRoleId": "api-test-role-acl-agent",
     "agentUserroleId": "api-test-userrole-acl-agent",

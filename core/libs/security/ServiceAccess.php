@@ -61,6 +61,15 @@ class ServiceAccess
     const CLIENT_PARAM = 'serviceClientId';
 
     /**
+     * Resources that have no model of their own but read another model's
+     * rows (`GET /agentspec/{agentId}` is the spec of an Agent). They follow
+     * that model's opt-in, so the rule is declared once.
+     *
+     * @var string[]
+     */
+    const VIEWS = ['Agentspec' => 'Agent'];
+
+    /**
      * Source of model metadata (`getModelMeta($modelName)`).
      *
      * @var object
@@ -150,6 +159,8 @@ class ServiceAccess
      */
     protected function serviceMeta($modelName)
     {
+        $modelName = self::VIEWS[$modelName] ?? $modelName;
+
         try {
             $metadata = $this->metaManager->getModelMeta($modelName);
         } catch (\Throwable $e) {

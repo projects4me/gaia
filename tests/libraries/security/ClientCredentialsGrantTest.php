@@ -92,7 +92,7 @@ class ClientCredentialsGrantTest extends TestCase
         $this->assertNull($response->getParameter('refresh_token'));
         $token = $this->storedToken($response);
         $this->assertNull($token->user_id);
-        $this->assertSame('agent.delegate agent.read project.read issue.read serviceclient.rotate', $token->scope);
+        $this->assertSame('agent.delegate agent.read project.read issue.read agent.get agentspec.get agenttool.get agentskill.get skill.get serviceclient.rotate', $token->scope);
         $this->assertNotNull($this->serviceClient('runtime-1')->lastUsedAt);
     }
 

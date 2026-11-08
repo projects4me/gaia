@@ -2619,13 +2619,22 @@
       "source": "acl-serviceenrollment"
     },
     {
-      "id": "acl-service-token-agent-list-denied",
+      "id": "acl-service-token-agent-list-delegable-only",
       "method": "GET",
       "path": "/api/v1/agent",
       "resource": "agent",
       "auth": "serviceRuntime",
-      "query": { "limit": 5, "page": 1 },
-      "expects": { "status": 401, "shape": "error", "errorEqual": "Access Denied" },
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{otherAgentId}"], "idsExcludes": ["{agentId}", "{inactiveAgentId}"]},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-agent-detail-delegable-allowed",
+      "method": "GET",
+      "path": "/api/v1/agent/{otherAgentId}",
+      "resource": "agent",
+      "auth": "serviceRuntime",
+      "expects": {"status": 200, "shape": "jsonapi.resource", "idsIncludes": ["{otherAgentId}"]},
       "source": "acl-service-token"
     },
     {
@@ -2634,7 +2643,94 @@
       "path": "/api/v1/agent/{agentId}",
       "resource": "agent",
       "auth": "serviceRuntime",
-      "expects": { "status": 401, "shape": "error", "errorEqual": "Access Denied" },
+      "expects": {"status": 401, "shape": "error", "errorEqual": "Access Denied"},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-agent-detail-inactive-denied",
+      "method": "GET",
+      "path": "/api/v1/agent/{inactiveAgentId}",
+      "resource": "agent",
+      "auth": "serviceRuntime",
+      "expects": {"status": 401, "shape": "error", "errorEqual": "Access Denied"},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-agentspec-delegable-allowed",
+      "method": "GET",
+      "path": "/api/v1/agentspec/{otherAgentId}",
+      "resource": "agentspec",
+      "auth": "serviceRuntime",
+      "expects": {"status": 200},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-agentspec-non-delegable-denied",
+      "method": "GET",
+      "path": "/api/v1/agentspec/{agentId}",
+      "resource": "agentspec",
+      "auth": "serviceRuntime",
+      "expects": {"status": 401, "shape": "error", "errorEqual": "Access Denied"},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-agenttool-list-allowed",
+      "method": "GET",
+      "path": "/api/v1/agenttool",
+      "resource": "agenttool",
+      "auth": "serviceRuntime",
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 200, "shape": "jsonapi.collection", "idsExcludes": ["{agenttoolId}"]},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-agentskill-list-allowed",
+      "method": "GET",
+      "path": "/api/v1/agentskill",
+      "resource": "agentskill",
+      "auth": "serviceRuntime",
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 200, "shape": "jsonapi.collection", "idsExcludes": ["{agentskillId}"]},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-skill-list-allowed",
+      "method": "GET",
+      "path": "/api/v1/skill",
+      "resource": "skill",
+      "auth": "serviceRuntime",
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 200, "shape": "jsonapi.collection"},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-agentcredential-list-denied",
+      "method": "GET",
+      "path": "/api/v1/agentcredential",
+      "resource": "agentcredential",
+      "auth": "serviceRuntime",
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 401, "shape": "error", "errorEqual": "Access Denied"},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-useridentity-list-denied",
+      "method": "GET",
+      "path": "/api/v1/useridentity",
+      "resource": "useridentity",
+      "auth": "serviceRuntime",
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 401, "shape": "error", "errorEqual": "Access Denied"},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-hermes-agent-list-denied",
+      "method": "GET",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": "serviceHermes",
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 401, "shape": "error", "errorEqual": "Access Denied"},
       "source": "acl-service-token"
     },
     {

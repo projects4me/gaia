@@ -32,8 +32,8 @@
 ## Summary
 
 - behaviours: agentConfigBehavior, auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior
-- acl: assignment={"field":"sponsorId","condition":"Agent.sponsorId=:userId:"}
+- acl: assignment={"field":"sponsorId","condition":"Agent.sponsorId=:userId:"}; service={"actions":["get"],"kinds":["runtime"],"filter":"Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))"}
 - controller: Gaia\MVC\REST\Controllers\AgentController
 - routes: DELETE /api/v1/agent, DELETE /api/v1/agent/{id}, GET /api/v1/agent, GET /api/v1/agent/{id}, GET /api/v1/agent/{id}/{relation}, OPTIONS /api/v1/agent, PATCH /api/v1/agent, PATCH /api/v1/agent/{id}, POST /api/v1/agent, PUT /api/v1/agent, PUT /api/v1/agent/{id}
 - components: -
-- cases: 20 (acl 9, backend 6, client 5); gaia-dev cases agent
+- cases: 23 (acl 12, backend 6, client 5); gaia-dev cases agent
