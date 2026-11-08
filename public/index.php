@@ -229,6 +229,8 @@ try {
     return $e->handle();
 } catch (\Gaia\Exception\BadRequest $e) {
     return $e->handle();
+} catch (\Gaia\Exception\TooManyRequests $e) {
+    return $e->handle();
 } catch (\Phalcon\Exception $e) {
     $debug = ($GLOBALS['settings']['application']['debug'] ?? false) === true;
     $error = new \Gaia\Exception\PhalconError($e, $debug);

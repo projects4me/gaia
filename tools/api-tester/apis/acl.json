@@ -2543,6 +2543,64 @@
       "source": "acl-token-scope"
     },
     {
+      "id": "acl-serviceenrollment-list-allowed-default",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollment",
+      "resource": "serviceenrollment",
+      "auth": true,
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{serviceenrollmentId}"] },
+      "source": "acl-serviceenrollment"
+    },
+    {
+      "id": "acl-serviceenrollment-list-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollment",
+      "resource": "serviceenrollment",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error" },
+      "source": "acl-serviceenrollment"
+    },
+    {
+      "id": "acl-serviceenrollment-list-denied-anonymous",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollment",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 401, "shape": "error" },
+      "source": "acl-serviceenrollment"
+    },
+    {
+      "id": "acl-serviceenrollment-patch-denied-acl-no-setting",
+      "method": "PATCH",
+      "path": "/api/v1/serviceenrollment/{serviceenrollmentId}",
+      "resource": "serviceenrollment",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "serviceenrollment",
+          "id": "{serviceenrollmentId}",
+          "attributes": {
+            "status": "denied"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error" },
+      "source": "acl-serviceenrollment"
+    },
+    {
+      "id": "acl-serviceenrollment-scoped-token-denied",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollment",
+      "resource": "serviceenrollment",
+      "auth": "aclScopedToken",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error" },
+      "source": "acl-serviceenrollment"
+    },
+    {
       "id": "acl-service-token-agent-list-denied",
       "method": "GET",
       "path": "/api/v1/agent",

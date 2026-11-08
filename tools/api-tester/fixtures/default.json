@@ -100,6 +100,8 @@
     "agentcredentialId": "api-test-agentcredential-000001",
     "serviceclientId": "api-test-serviceclient-000001",
     "otherServiceclientId": "api-test-serviceclient-000002",
+    "serviceenrollmentId": "api-test-serviceenrollment-000001",
+    "serviceenrollmentPollToken": "api-tester-expired-poll-token",
     "toolserverId": "api-test-toolserver-000001",
     "toolId": "api-test-tool-000001",
     "agenttoolId": "api-test-agenttool-000001",

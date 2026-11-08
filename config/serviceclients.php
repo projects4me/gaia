@@ -22,6 +22,14 @@ $config['serviceClients'] = array(
             'scopes' => array('token.introspect', 'serviceclient.rotate'),
         ),
     ),
+    // Enrollment (Serviceenrollment, D-066): how long a request waits for an
+    // admin and its secret, and how many requests one IP address may make in
+    // a window.
+    'enrollment' => array(
+        'ttlMinutes' => 15,
+        'requestsPerIp' => (int) (getenv('SERVICE_ENROLLMENT_REQUESTS_PER_IP') ?: 5),
+        'windowMinutes' => 15,
+    ),
 );
 
 return $config;

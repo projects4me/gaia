@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 225,
-        "enabled": 206,
-        "disabled": 19,
-        "routeResources": 61,
-        "withMetadata": 46,
+        "total": 227,
+        "enabled": 207,
+        "disabled": 20,
+        "routeResources": 62,
+        "withMetadata": 47,
         "skippedResources": 13
     },
     "apis": [
@@ -1937,6 +1937,49 @@
             },
             "enabled": false,
             "skipReason": "No POST lifecycle to create disposable runtime id",
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-serviceenrollment-api-v1-serviceenrollment",
+            "method": "GET",
+            "path": "/api/v1/serviceenrollment",
+            "resource": "serviceenrollment",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-serviceenrollment-api-v1-serviceenrollment",
+            "method": "POST",
+            "path": "/api/v1/serviceenrollment",
+            "resource": "serviceenrollment",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "serviceenrollment",
+                    "attributes": {
+                        "name": "api-serviceenrollment-name",
+                        "kind": "api-serviceenrollmen",
+                        "userCode": "api-servic",
+                        "pollTokenHash": "api-serviceenrollment-pollTokenHash",
+                        "expiresAt": "CURRENT_DATETIME",
+                        "requesterIp": "api-serviceenrollment-requesterIp"
+                    }
+                }
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            },
+            "enabled": false,
+            "skipReason": "POST and GET by id are the anonymous request and poll, and a PATCH may change only the status; client and acl cases cover it",
             "source": "backend-metadata"
         },
         {

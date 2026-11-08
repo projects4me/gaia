@@ -37,6 +37,7 @@ $config['models'] = [
     'Savedsearch',
     'Scoreboard',
     'Serviceclient',
+    'Serviceenrollment',
     'Skill',
     'Tag',
     'Setting',
