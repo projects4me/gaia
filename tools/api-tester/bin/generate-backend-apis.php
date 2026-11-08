@@ -66,6 +66,7 @@ $skipMutations = [
     'agenttool' => 'A grant names a tool server or a tool, not both; client and acl cases cover it',
     'serviceclient' => 'Created by enrollment, not POST, and a PATCH may change only the status; acl cases cover it',
     'serviceenrollment' => 'POST and GET by id are the anonymous request and poll, and a PATCH may change only the status; client and acl cases cover it',
+    'serviceenrollmenttoken' => 'POST returns the token once and refuses an unconfigured kind; client and acl cases cover it',
     'workflowrun' => 'A POST is a test run (test: true), not a create; client cases cover it',
     'workflowedge' => 'An edge joins two nodes of its workflow on a free port; client cases cover it',
 ];

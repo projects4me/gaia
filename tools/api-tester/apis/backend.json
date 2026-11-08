@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 227,
-        "enabled": 207,
-        "disabled": 20,
-        "routeResources": 62,
-        "withMetadata": 47,
+        "total": 229,
+        "enabled": 208,
+        "disabled": 21,
+        "routeResources": 63,
+        "withMetadata": 48,
         "skippedResources": 13
     },
     "apis": [
@@ -1980,6 +1980,47 @@
             },
             "enabled": false,
             "skipReason": "POST and GET by id are the anonymous request and poll, and a PATCH may change only the status; client and acl cases cover it",
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+            "method": "GET",
+            "path": "/api/v1/serviceenrollmenttoken",
+            "resource": "serviceenrollmenttoken",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+            "method": "POST",
+            "path": "/api/v1/serviceenrollmenttoken",
+            "resource": "serviceenrollmenttoken",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "serviceenrollmenttoken",
+                    "attributes": {
+                        "name": "api-serviceenrollmenttoken-name",
+                        "kind": "api-serviceenrollmen",
+                        "tokenHash": "api-serviceenrollmenttoken-tokenHash",
+                        "expiresAt": "CURRENT_DATETIME"
+                    }
+                }
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            },
+            "enabled": false,
+            "skipReason": "POST returns the token once and refuses an unconfigured kind; client and acl cases cover it",
             "source": "backend-metadata"
         },
         {

@@ -274,6 +274,15 @@
             ],
             "identifier": "id"
         },
+        "serviceenrollmenttoken": {
+            "path": "/api/:version/serviceenrollmenttoken",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "DELETE"
+            ],
+            "identifier": "id"
+        },
         "agent": {
             "path": "/api/:version/agent",
             "allowedMethods": [

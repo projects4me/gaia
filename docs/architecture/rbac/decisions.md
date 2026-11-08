@@ -513,6 +513,17 @@ These scenarios are settled and should become tests later:
 | Rationale | No service secret should live forever, and nobody should have to hand a new one over: the service already holds a token that proves who it is. The grace period covers a crash between the rotation and the service storing its new secret. Exposing the secret to an admin would defeat the point, so rotation is the service's alone. A dedicated scope word keeps rotation out of broad scopes. |
 | Implications | The previous hash and its expiry (UTC) live on the `oauth_clients` row (`previous_client_secret`, `previous_secret_expires`); `core/libs/oauth2.0/storage/pdo.php` accepts the previous secret until it expires. A second rotation inside the grace period retires the first secret. The client's access tokens are kept (they expire on their own). The write does not go through the generic CRUD save, so the write behaviours never run without a user: `ServiceclientController` delegates to `ServiceClientSecrets::rotate()`. Clients created before this keep their stored scopes and need `serviceclient.rotate` added to rotate. When to rotate is each service's decision. |
 
+---
+
+### D-070 — An enrollment token lets a deployed service enroll without waiting for approval
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | An admin issues a single-use token with `POST /api/v1/serviceenrollmenttoken` (kind, name); the response carries the `token` once, and only its SHA-256 hash (`tokenHash`) is stored. The token expires after 15 minutes. `GET` lists tokens and `DELETE` revokes one (soft delete); there is no PUT or PATCH. A `Serviceenrollment` request that carries `enrollmentToken` is approved at once, with `approvedBy` set to the admin who issued the token, when the token is unused, unexpired, not revoked and of the same kind; the token is marked used in the same transaction. Any other token is refused with one error (`The enrollment token is not valid.`), whatever the reason. |
+| Rationale | A deploy pipeline has no admin to read a code to. The token carries the admin's approval ahead of time, limited to one use, one kind and a short time, so a leaked token is worth little. The secret still goes from Gaia to the service by the poll, never through the pipeline. One error for every failure keeps the endpoint from telling an attacker whether a token existed. |
+| Implications | `ServiceEnrollmentTokens` (`core/libs/authorization`) issues and redeems tokens; `ServiceEnrollments::request()` calls it inside a transaction with a row lock on the token, so two requests cannot spend one token. `serviceEnrollmentTokenBehavior` checks kind and name and keeps everything but `usedAt` fixed. `serviceenrollmenttoken.*` is excluded from scoped tokens (`TokenScope`). Permissions for the new module are granted by hand. |
+
 ## Open questions
 
 Track unsettled policy here. Do not generate tests from these until accepted.
@@ -533,6 +544,7 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 
 | Date | Change |
 |------|--------|
+| 2026-11-09 | D-070: single-use enrollment tokens (`POST /api/v1/serviceenrollmenttoken`, 15-minute expiry, stored hashed, revoked by DELETE); an enrollment request carrying a valid token of the same kind is approved at once as the issuing admin. |
 | 2026-11-09 | D-067: agent-delegation grant for runtimes (service clients with `agent.delegate`); `Agent.delegationScopes` bounds the delegated token's scope; one-hour token, no refresh token, rows kept |
 | 2026-11-09 | D-066: service tokens (no user) take a deny-by-default path: a resource opts in through `acl.service` (actions, kinds, optional row filter) and the token scope must cover it; reads only; denials are 401 |
 | 2026-11-09 | D-065: services with a `token.introspect` service token introspect any token: actor type (user, agent, service), client, delegation (`act`), scope and project ids; the Ares shared-secret door stays |

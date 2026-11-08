@@ -7416,6 +7416,205 @@
         ]
       },
       "source": "client"
+    },
+    {
+      "id": "serviceenrollmenttoken-admin-issues",
+      "method": "POST",
+      "path": "/api/v1/serviceenrollmenttoken",
+      "resource": "serviceenrollmenttoken",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceenrollmenttoken",
+          "attributes": {
+            "name": "API Tester Deploy Token",
+            "kind": "runtime"
+          }
+        }
+      },
+      "store": {
+        "runtime.enrollmentTokenId": "data.id",
+        "runtime.enrollmentToken": "data.attributes.token"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "kind": "runtime",
+          "name": "API Tester Deploy Token"
+        },
+        "attributesPresent": [
+          "token",
+          "expiresAt"
+        ],
+        "attributesAbsent": [
+          "tokenHash",
+          "usedAt"
+        ]
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-token-approves-at-once",
+      "method": "POST",
+      "path": "/api/v1/serviceenrollment",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "body": {
+        "data": {
+          "type": "serviceenrollment",
+          "attributes": {
+            "name": "API Tester Token Runtime",
+            "kind": "runtime",
+            "enrollmentToken": "{runtime.enrollmentToken}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "approved",
+          "kind": "runtime"
+        },
+        "attributesPresent": [
+          "pollToken"
+        ]
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-token-is-single-use",
+      "method": "POST",
+      "path": "/api/v1/serviceenrollment",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "body": {
+        "data": {
+          "type": "serviceenrollment",
+          "attributes": {
+            "name": "API Tester Token Runtime",
+            "kind": "runtime",
+            "enrollmentToken": "{runtime.enrollmentToken}"
+          }
+        }
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "The enrollment token is not valid."
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-unknown-token-refused",
+      "method": "POST",
+      "path": "/api/v1/serviceenrollment",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "body": {
+        "data": {
+          "type": "serviceenrollment",
+          "attributes": {
+            "name": "API Tester Token Runtime",
+            "kind": "runtime",
+            "enrollmentToken": "not-a-real-token"
+          }
+        }
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "The enrollment token is not valid."
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollmenttoken-admin-issues-to-revoke",
+      "method": "POST",
+      "path": "/api/v1/serviceenrollmenttoken",
+      "resource": "serviceenrollmenttoken",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceenrollmenttoken",
+          "attributes": {
+            "name": "API Tester Revoked Token",
+            "kind": "runtime"
+          }
+        }
+      },
+      "store": {
+        "runtime.revokedTokenId": "data.id",
+        "runtime.revokedToken": "data.attributes.token"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "token"
+        ]
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollmenttoken-admin-revokes",
+      "method": "DELETE",
+      "path": "/api/v1/serviceenrollmenttoken/{runtime.revokedTokenId}",
+      "resource": "serviceenrollmenttoken",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ],
+        "shape": "json"
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-revoked-token-refused",
+      "method": "POST",
+      "path": "/api/v1/serviceenrollment",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "body": {
+        "data": {
+          "type": "serviceenrollment",
+          "attributes": {
+            "name": "API Tester Token Runtime",
+            "kind": "runtime",
+            "enrollmentToken": "{runtime.revokedToken}"
+          }
+        }
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "The enrollment token is not valid."
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollmenttoken-unknown-kind-rejected",
+      "method": "POST",
+      "path": "/api/v1/serviceenrollmenttoken",
+      "resource": "serviceenrollmenttoken",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceenrollmenttoken",
+          "attributes": {
+            "name": "Bad kind",
+            "kind": "nope"
+          }
+        }
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error"
+      },
+      "source": "client"
     }
   ]
 }

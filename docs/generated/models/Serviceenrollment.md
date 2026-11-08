@@ -32,4 +32,4 @@
 - controller: Gaia\MVC\REST\Controllers\ServiceenrollmentController
 - routes: GET /api/v1/serviceenrollment, GET /api/v1/serviceenrollment/{id}, GET /api/v1/serviceenrollment/{id}/{relation}, OPTIONS /api/v1/serviceenrollment, PATCH /api/v1/serviceenrollment, PATCH /api/v1/serviceenrollment/{id}, POST /api/v1/serviceenrollment
 - components: -
-- cases: 19 (acl 5, backend 2, client 12); gaia-dev cases serviceenrollment
+- cases: 23 (acl 5, backend 2, client 16); gaia-dev cases serviceenrollment

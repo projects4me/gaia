@@ -13,7 +13,8 @@ use Gaia\Libraries\Authorization\ServiceEnrollments;
  * Serviceenrollment Controller
  *
  * A service enrolls itself without a token: POST makes a request and returns
- * its user code and poll token, and GET by id with `?pollToken=` reads it and,
+ * its user code and poll token (with a valid single-use `enrollmentToken` the
+ * request is approved at once, D-070), and GET by id with `?pollToken=` reads it and,
  * once an admin has approved it, returns the client id and secret, once
  * (`ServiceEnrollments`). Those two actions are anonymous; listing, related
  * reads and PATCH are authorized like any other admin resource. A PATCH
@@ -76,7 +77,8 @@ class ServiceenrollmentController extends RestController
         $requested = $this->enrollments()->request(
             isset($attributes['name']) ? $attributes['name'] : null,
             isset($attributes['kind']) ? $attributes['kind'] : null,
-            (string) $this->request->getClientAddress()
+            (string) $this->request->getClientAddress(),
+            isset($attributes['enrollmentToken']) ? $attributes['enrollmentToken'] : null
         );
 
         $document = $this->document($requested['enrollment']);

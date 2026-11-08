@@ -36,6 +36,7 @@ class TokenScope
         'serviceclient.*',
         'enrollment*.*',
         'serviceenrollment.*',
+        'serviceenrollmenttoken.*',
         'role.*',
         'userrole.*',
         'permission.*',
