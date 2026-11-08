@@ -16,6 +16,9 @@ use Gaia\Libraries\Utils\Csv;
 use Gaia\Libraries\Utils\Zip;
 use Gaia\Core\MVC\Models\ResultStream;
 use Gaia\Libraries\Security\AclLockoutGuard;
+use Gaia\Libraries\Security\ServiceAcl;
+use Gaia\Libraries\Security\ServiceClientGuard;
+use Gaia\Libraries\Authorization\ServiceClients;
 
 use function Gaia\Libraries\Utils\create_guid;
 
@@ -292,34 +295,69 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $this->loadComponents();
     }
     /**
-     * Make currentUser available as global and return the request's access token,
-     * whose scope authorize() hands to the Acl.
+     * The request's access token.
      *
-     * @global type $currentUser
-     * @param  type $request
-     * @return \Gaia\MVC\Models\Oauthaccesstoken The access token of the request.
+     * @param  \OAuth2\RequestInterface $request
+     * @return \Gaia\MVC\Models\Oauthaccesstoken
+     * @throws \Gaia\Exception\Access When the token is unknown
      */
-    private function setUser($request)
+    private function findAccessToken($request)
     {
-        global $currentUser;
         $token = str_replace('Bearer ', '', $request->headers['AUTHORIZATION']);
         $oAuthAccessToken = \Gaia\MVC\Models\Oauthaccesstoken::findFirst([
             'conditions' => 'access_token = :token:',
             'bind' => ['token' => (string) $token],
         ]);
-        if (isset($oAuthAccessToken->user_id)) {
-            $currentUser = \Gaia\MVC\Models\User::findFirst([
-                'conditions' => 'email = :email:',
-                'bind' => ['email' => (string) $oAuthAccessToken->user_id],
-            ]);
-            if (!$currentUser || !AclLockoutGuard::isAuthenticatableAccountStatus($currentUser->accountStatus)) {
-                throw new \Gaia\Exception\UnAuthorized(AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
-            }
-        } else {
+        if (!$oAuthAccessToken) {
             throw new \Gaia\Exception\Access("Invalid Token");
         }
 
         return $oAuthAccessToken;
+    }
+
+    /**
+     * Make the token's user the global currentUser and return the Acl that
+     * judges the request by the user's roles.
+     *
+     * @global type $currentUser
+     * @param  \Gaia\MVC\Models\Oauthaccesstoken $accessToken A token with a user_id.
+     * @return \Gaia\Libraries\Security\Acl
+     * @throws \Gaia\Exception\UnAuthorized When the user may not sign in
+     */
+    private function setUser($accessToken)
+    {
+        global $currentUser;
+        $currentUser = \Gaia\MVC\Models\User::findFirst([
+            'conditions' => 'email = :email:',
+            'bind' => ['email' => (string) $accessToken->user_id],
+        ]);
+        if (!$currentUser || !AclLockoutGuard::isAuthenticatableAccountStatus($currentUser->accountStatus)) {
+            throw new \Gaia\Exception\UnAuthorized(AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
+        }
+        $this->trackLastActivity($currentUser->id);
+
+        return new \Gaia\Libraries\Security\Acl($this->getDI());
+    }
+
+    /**
+     * A token without a user is a service token (D-066): there is no current
+     * user, the client must still be an active service client, its last use
+     * is stamped, and the request is judged by the deny-by-default ServiceAcl.
+     *
+     * @global type $currentUser
+     * @param  \Gaia\MVC\Models\Oauthaccesstoken $accessToken A token without a user_id.
+     * @return ServiceAcl
+     * @throws \Gaia\Exception\UnAuthorized When the client is not an active service client
+     */
+    private function setServiceClient($accessToken)
+    {
+        global $currentUser;
+        $currentUser = null;
+
+        $serviceClient = ServiceClientGuard::assertServiceTokenAllowed($accessToken);
+        (new ServiceClients())->recordUse($serviceClient->clientId);
+
+        return new ServiceAcl($this->getDI(), $serviceClient->kind);
     }
 
     /**
@@ -342,17 +380,18 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 $this->response->setJsonContent($response->getParameters());
                 throw new \Gaia\Exception\UnAuthorized("Invalid Token");
             }
-            $accessToken = $this->setUser($request);
-            $this->trackLastActivity($currentUser->id);
+            $accessToken = $this->findAccessToken($request);
+            $acl = ((string) $accessToken->user_id === '')
+                ? $this->setServiceClient($accessToken)
+                : $this->setUser($accessToken);
             $modelAlias = Util::extractClassFromNamespace($this->modelName);
             $resourceName = $this->controllerName . '.' . $action;
 
-            $acl = new \Gaia\Libraries\Security\Acl($this->getDI());
             $acl->setTokenScope(new \Gaia\Libraries\Security\TokenScope($accessToken->scope ?? null));
 
             $query = $this->request->get('query', null, '');
 
-            $acl->authorizeAction($resourceName, $currentUser->id, $modelAlias);
+            $acl->authorizeAction($resourceName, $currentUser->id ?? null, $modelAlias);
             $acl->authorizeClauseUsage(
                 $modelAlias,
                 $action,
@@ -700,6 +739,10 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         // if export is set, then we need to return the csvs.
         if ($export) {
+            // An export is an upload owned by the current user; a service request has none.
+            if (!isset($GLOBALS['currentUser']->id)) {
+                throw new \Gaia\Exception\UnAuthorized(ServiceAcl::ACCESS_DENIED_ERROR);
+            }
             return $this->exportData($data, $params, $model);
         }
 

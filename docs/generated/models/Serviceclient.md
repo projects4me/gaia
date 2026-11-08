@@ -27,4 +27,4 @@
 - controller: Gaia\MVC\REST\Controllers\ServiceclientController
 - routes: GET /api/v1/serviceclient, GET /api/v1/serviceclient/{id}, GET /api/v1/serviceclient/{id}/{relation}, OPTIONS /api/v1/serviceclient, PATCH /api/v1/serviceclient, PATCH /api/v1/serviceclient/{id}
 - components: -
-- cases: 12 (acl 5, backend 3, client 4); gaia-dev cases serviceclient
+- cases: 13 (acl 6, backend 3, client 4); gaia-dev cases serviceclient

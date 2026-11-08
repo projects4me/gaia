@@ -35,4 +35,4 @@
 - controller: Gaia\MVC\REST\Controllers\AgentController
 - routes: DELETE /api/v1/agent, DELETE /api/v1/agent/{id}, GET /api/v1/agent, GET /api/v1/agent/{id}, GET /api/v1/agent/{id}/{relation}, OPTIONS /api/v1/agent, PATCH /api/v1/agent, PATCH /api/v1/agent/{id}, POST /api/v1/agent, PUT /api/v1/agent, PUT /api/v1/agent/{id}
 - components: -
-- cases: 17 (acl 6, backend 6, client 5); gaia-dev cases agent
+- cases: 19 (acl 8, backend 6, client 5); gaia-dev cases agent

@@ -435,7 +435,7 @@ These scenarios are settled and should become tests later:
 | Status | Accepted |
 | Decision | `oauth_clients.kind` is `app` (people sign in through it with the password grant), `agent` (an agent's client, issued by `AgentCredentials`) or `service` (a `Serviceclient`). The client_credentials grant (`ClientCredentialsGrant`) reads the kind (`ClientKind`) once the secret checks out. A `service` client must pass `ServiceClientGuard`: no user on the oauth client and a live, active `Serviceclient`; its token has **no user_id** and the client's scopes (a requested scope must be part of them). Every other client must pass `AgentLoginGuard::assertClientCredentialsAllowed()`, as before: bound to an active agent user, the token is that user's. An `app` client has no agent user, so it gets nothing, and the agent guard refuses a `service` client whatever user it names. A disabled or deleted service client gets nothing. |
 | Rationale | Services (Talos runtimes, Hermes, later Ares) need an identity of their own that can never be taken for an agent, which is a user. Branching on a stored kind, not on whether a user is bound, keeps the two paths apart. |
-| Implications | The column defaults to `app`; `db/seeds/oauth_client_kinds.sql` (idempotent) marks existing agent clients `agent`, and `AgentCredentials::issue()` sets it on every issue or rotation. Agent clients not yet marked keep working, because only `service` takes the service path. A service token on any CRUD resource fails as any token without a user does (`RestController::setUser()` answers 403 Invalid Token); what service tokens may reach is a later decision. Service secrets are stored hashed like agent secrets: `core/libs/oauth2.0/storage/pdo.php` already checks a secret stored with PHP's password_hash. |
+| Implications | The column defaults to `app`; `db/seeds/oauth_client_kinds.sql` (idempotent) marks existing agent clients `agent`, and `AgentCredentials::issue()` sets it on every issue or rotation. Agent clients not yet marked keep working, because only `service` takes the service path. What a service token may reach on the CRUD resources is D-066. Service secrets are stored hashed like agent secrets: `core/libs/oauth2.0/storage/pdo.php` already checks a secret stored with PHP's password_hash. |
 
 ### D-063 — Service clients are not users and are administered by admins only
 
@@ -464,6 +464,15 @@ These scenarios are settled and should become tests later:
 | Rationale | Hermes checks socket tokens with its own service token instead of the user's token and a membership query, so it needs the actor and its projects in one call. Requiring the exact scope word keeps introspection to services granted it (the `hermes` kind's default). |
 | Implications | Hermes (A Hermes) switches its socket auth to this response; Ares keeps the shared secret until it signs in as a service client. Delegated tokens (a service client with a user) are issued by the delegation grant; introspection already reports them. |
 
+### D-066 — Service tokens reach only resources that opt in, deny by default
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | A token without a user is a service token. `RestController::authorize()` sends it down a path of its own: the token's client must still be an active service client (`ServiceClientGuard::assertServiceTokenAllowed()`, so a disabled or deleted client's tokens fail with 401 even before they are revoked), the client's `lastUsedAt` is stamped, there is **no current user**, and the request is judged by `ServiceAcl` instead of `Acl`. `ServiceAcl` never reads roles, permission rows or the resolution mode. An action resource is allowed only when its model opted in through `acl.service` in its metadata (`actions`, `kinds` of service client) **and** the token's scope covers it (D-064); a service token whose scope names no permission reaches nothing, and the D-064 exclusions still apply. Authorization groups must be open to the service the same way; related reads and includes follow the related model's opt-in; fields of a readable resource are readable (secure fields stay masked). Only `get` may be opened (`ServiceAccess::ACTIONS`). Membership record scopes do not apply; a resource may set `acl.service.filter`, a PHQL condition, to limit the rows a service sees (list and get through `aclWhere`, related reads through `assertRecordIdInScope`). Every denial is 401 `Access Denied`; a CSV export is refused (an export belongs to a user). |
+| Rationale | Runtimes must read a few things as themselves (delegable agents, specs, grants) without being users. Giving services roles would mix them into RBAC and the resolution mode; an explicit opt-in per resource keeps what they can reach visible in the metadata, and requiring the scope as well keeps each client to what it was issued. Writes stay closed because the write behaviours (`createdUserBehavior`, `modifiedUserBehavior`, `auditBehavior`) stamp a user. |
+| Implications | `ServiceAccess` (`core/libs/security/ServiceAccess.php`) reads the opt-ins; `ServiceAcl` (`core/libs/security/ServiceAcl.php`) extends `Acl` and replaces the permission, scope, record-scope and denial steps. With no current user, `currentUserBehavior` sets an empty `gaia.current_user_id`, `LiveEventEnvelope` sends no actor, and `trackLastActivity` does not run. No real resource opts in yet; that is per-resource work. Opening writes to services needs a decision on who the write is stamped as. |
+
 ---
 
 ## Open questions
@@ -486,6 +495,7 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 
 | Date | Change |
 |------|--------|
+| 2026-11-09 | D-066: service tokens (no user) take a deny-by-default path: a resource opts in through `acl.service` (actions, kinds, optional row filter) and the token scope must cover it; reads only; denials are 401 |
 | 2026-11-09 | D-065: services with a `token.introspect` service token introspect any token: actor type (user, agent, service), client, delegation (`act`), scope and project ids; the Ares shared-secret door stays |
 | 2026-11-09 | D-064: token scopes (permission names with `*` wildcards) narrow the actor's ACL; hard exclusions for credentials, enrollment, roles, permissions and agent writes; words without a dot (legacy `application`) do not narrow |
 | 2026-11-09 | D-062, D-063: OAuth client kinds (app, agent, service); client_credentials branches on the kind; service clients get tokens without a user and are administered by admins only |
