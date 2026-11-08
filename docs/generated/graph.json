@@ -6429,6 +6429,60 @@
       }
     },
     {
+      "id": "case:acl/acl-service-token-serviceclient-rotate-other-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-serviceclient-rotate-other-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{otherServiceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "otherServiceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-serviceclient-rotate-without-scope-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-serviceclient-rotate-without-scope-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{otherServiceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "otherServiceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-serviceclient-status-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-serviceclient-status-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-serviceclient-detail-allowed-default",
       "type": "case",
       "key": "acl/acl-serviceclient-detail-allowed-default",
@@ -16156,6 +16210,60 @@
       }
     },
     {
+      "id": "case:client/serviceclient-rotate-by-user-refused",
+      "type": "case",
+      "key": "client/serviceclient-rotate-by-user-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceclient-rotate-own-secret",
+      "type": "case",
+      "key": "client/serviceclient-rotate-own-secret",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceclient-rotate-with-other-field-rejected",
+      "type": "case",
+      "key": "client/serviceclient-rotate-with-other-field-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceclient/{serviceclientId}",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "serviceclientId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/serviceclient-token-refused-on-crud",
       "type": "case",
       "key": "client/serviceclient-token-refused-on-crud",
@@ -23636,6 +23744,27 @@
       }
     },
     {
+      "id": "field:Oauthclient.previous_client_secret",
+      "type": "field",
+      "key": "Oauthclient.previous_client_secret",
+      "attributes": {
+        "label": "LBL_OAUTH_CLIENTS_PREVIOUS_CLIENT_SECRET",
+        "type": "varchar",
+        "length": "80",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Oauthclient.previous_secret_expires",
+      "type": "field",
+      "key": "Oauthclient.previous_secret_expires",
+      "attributes": {
+        "label": "LBL_OAUTH_CLIENTS_PREVIOUS_SECRET_EXPIRES",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
       "id": "field:Oauthclient.redirect_uri",
       "type": "field",
       "key": "Oauthclient.redirect_uri",
@@ -29712,6 +29841,14 @@
       }
     },
     {
+      "id": "fixture:otherServiceclientId",
+      "type": "fixture",
+      "key": "otherServiceclientId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:otherUseridentityId",
       "type": "fixture",
       "key": "otherUseridentityId",
@@ -30584,7 +30721,24 @@
         "isView": false,
         "registered": true,
         "hasMetadata": true,
-        "acl": null
+        "acl": {
+          "service": {
+            "actions": [
+              "update"
+            ],
+            "kinds": [
+              "runtime",
+              "hermes"
+            ],
+            "filter": "Serviceclient.clientId = :serviceClientId:",
+            "fields": [
+              "rotateSecret"
+            ],
+            "scopes": {
+              "update": "serviceclient.rotate"
+            }
+          }
+        }
       }
     },
     {
@@ -49086,6 +49240,111 @@
       "to": "profile:serviceRuntime"
     },
     {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-other-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-other-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-other-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-other-denied",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-other-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-other-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-other-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherServiceclientId"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-without-scope-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-without-scope-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-without-scope-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-without-scope-denied",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-without-scope-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-without-scope-denied",
+      "type": "runs_as",
+      "to": "profile:serviceHermes"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-rotate-without-scope-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherServiceclientId"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-status-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-status-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-status-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-status-denied",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-status-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-status-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-status-denied",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
       "from": "case:acl/acl-serviceclient-detail-allowed-default",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -66376,6 +66635,111 @@
       "to": "fixture:serviceclientId"
     },
     {
+      "from": "case:client/serviceclient-rotate-by-user-refused",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-by-user-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-by-user-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-by-user-refused",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-by-user-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-by-user-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-by-user-refused",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-own-secret",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-own-secret",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-own-secret",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-own-secret",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-own-secret",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-own-secret",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-own-secret",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-with-other-field-rejected",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-with-other-field-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-with-other-field-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-with-other-field-rejected",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-with-other-field-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceclient/{id}"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-with-other-field-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceclient-rotate-with-other-field-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:serviceclientId"
+    },
+    {
       "from": "case:client/serviceclient-token-refused-on-crud",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -77359,6 +77723,16 @@
       "from": "model:Oauthclient",
       "type": "has_field",
       "to": "field:Oauthclient.kind"
+    },
+    {
+      "from": "model:Oauthclient",
+      "type": "has_field",
+      "to": "field:Oauthclient.previous_client_secret"
+    },
+    {
+      "from": "model:Oauthclient",
+      "type": "has_field",
+      "to": "field:Oauthclient.previous_secret_expires"
     },
     {
       "from": "model:Oauthclient",

@@ -5070,6 +5070,72 @@
       }
     },
     {
+      "id": "serviceclient-rotate-by-user-refused",
+      "method": "PATCH",
+      "path": "/api/v1/serviceclient/{serviceclientId}",
+      "resource": "serviceclient",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceclient",
+          "id": "{serviceclientId}",
+          "attributes": {
+            "rotateSecret": true
+          }
+        }
+      },
+      "expects": {
+        "status": 403,
+        "shape": "error",
+        "errorEqual": "A service client secret is rotated only by the service itself."
+      }
+    },
+    {
+      "id": "serviceclient-rotate-with-other-field-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/serviceclient/{serviceclientId}",
+      "resource": "serviceclient",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceclient",
+          "id": "{serviceclientId}",
+          "attributes": {
+            "rotateSecret": true,
+            "status": "active"
+          }
+        }
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "rotateSecret must be sent alone and set to true."
+      }
+    },
+    {
+      "id": "serviceclient-rotate-own-secret",
+      "method": "PATCH",
+      "path": "/api/v1/serviceclient/{serviceclientId}",
+      "resource": "serviceclient",
+      "auth": "serviceRuntime",
+      "body": {
+        "data": {
+          "type": "serviceclient",
+          "id": "{serviceclientId}",
+          "attributes": {
+            "rotateSecret": true
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "clientId": "service-api-tester-runtime"
+        }
+      }
+    },
+    {
       "id": "serviceclient-patch-bad-status-rejected",
       "method": "PATCH",
       "path": "/api/v1/serviceclient/{serviceclientId}",

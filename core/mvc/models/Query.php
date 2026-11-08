@@ -142,7 +142,9 @@ class Query
         $this->queryBuilder->having($this->clause->having);
 
         if (!empty($params['aclWhere'])) {
-            $this->queryBuilder->andWhere($params['aclWhere']);
+            // A service filter may bind the calling client (ServiceAcl, D-068).
+            $aclBind = isset($params['aclBind']) && is_array($params['aclBind']) ? $params['aclBind'] : [];
+            $this->queryBuilder->andWhere($params['aclWhere'], $aclBind);
         }
 
         // if pagination params are set then set them up

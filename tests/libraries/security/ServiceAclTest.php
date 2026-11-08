@@ -17,8 +17,10 @@ use PHPUnit\Framework\TestCase;
  * only when it opted in for the action and kind and the token's scope covers
  * it; no role or permission row is consulted, and every denial is a 401.
  *
- * `Widget` opts in for runtime reads with a record filter, `Gizmo` for
- * runtime reads grouped under `Widget`, `Gadget` does not opt in.
+ * `Widget` opts in for runtime reads and updates with a record filter,
+ * `Gizmo` for runtime reads grouped under `Widget`, `Gear` for updates
+ * without a filter, `Rotor` for updates of the calling client's own record
+ * through a dedicated scope (D-068), and `Gadget` does not opt in.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Tests\Libraries\Security
@@ -65,13 +67,63 @@ class ServiceAclTest extends TestCase
         $this->assertFalse($this->newAcl('widget.get', 'hermes')->isModelActionAllowed('Widget', 'get'));
     }
 
-    public function testWritesAreDenied()
+    public function testCreateIsDeniedAndUpdateNeedsARecordFilter()
     {
-        $acl = $this->newAcl('widget.*');
+        $acl = $this->newAcl('widget.* gear.*');
 
-        $this->assertFalse($acl->isModelActionAllowed('Widget', 'update'));
+        $this->assertTrue($acl->isModelActionAllowed('Widget', 'update'));
+        $this->assertFalse($acl->isModelActionAllowed('Gear', 'update'));
         $this->expectException(UnAuthorized::class);
         $acl->checkModelAccess('Widget', 'create');
+    }
+
+    public function testDedicatedScopeAloneGrantsTheAction()
+    {
+        $this->assertTrue($this->newAcl('rotor.rotate')->isModelActionAllowed('Rotor', 'update'));
+
+        foreach (['rotor.update', 'rotor.*', '*.*', 'rotor.rotate.extra'] as $scope) {
+            $this->assertFalse($this->newAcl($scope)->isModelActionAllowed('Rotor', 'update'), $scope);
+        }
+        $this->assertFalse($this->newAcl('rotor.rotate', 'hermes')->isModelActionAllowed('Rotor', 'update'));
+    }
+
+    public function testOnlyListedFieldsAreWritten()
+    {
+        $written = $this->newAcl('rotor.rotate')->authorizeWritableFields(
+            'Rotor',
+            ['id' => 'own-rotor', 'rotateSecret' => true, 'status' => 'disabled', 'name' => 'x'],
+            'update'
+        );
+
+        $this->assertSame(['id' => 'own-rotor', 'rotateSecret' => true], $written);
+    }
+
+    public function testFilterBindsTheCallingClient()
+    {
+        $params = [];
+        $this->newAcl('rotor.rotate')->applyRecordScope('Rotor', $params);
+
+        $this->assertSame('(Rotor.clientId = :serviceClientId:)', $params['aclWhere']);
+        $this->assertSame(['serviceClientId' => 'svc-self'], $params['aclBind']);
+
+        $params = [];
+        $this->newAcl('widget.get')->applyRecordScope('Widget', $params);
+        $this->assertSame([], $params['aclBind']);
+    }
+
+    public function testAWriteMustTargetARecordInsideTheFilter()
+    {
+        $acl = $this->newAcl('rotor.rotate');
+        $acl->assertWriteInScope('Rotor', ['rotateSecret' => true], 'own-rotor');
+
+        $this->expectException(UnAuthorized::class);
+        $acl->assertWriteInScope('Rotor', ['rotateSecret' => true], 'other-rotor');
+    }
+
+    public function testAWriteWithoutARecordIsDenied()
+    {
+        $this->expectException(UnAuthorized::class);
+        $this->newAcl('rotor.rotate')->assertWriteInScope('Rotor', ['rotateSecret' => true]);
     }
 
     public function testAuthorizationGroupMustBeOpenToTheService()
@@ -138,6 +190,14 @@ class ServiceAclTest extends TestCase
                         'filter' => 'Widget.shared = 1',
                     ]]],
                     'Gizmo' => ['acl' => ['service' => ['actions' => ['get'], 'kinds' => ['runtime']]]],
+                    'Gear' => ['acl' => ['service' => ['actions' => ['get', 'update'], 'kinds' => ['runtime']]]],
+                    'Rotor' => ['acl' => ['service' => [
+                        'actions' => ['update'],
+                        'kinds' => ['runtime'],
+                        'filter' => 'Rotor.clientId = :serviceClientId:',
+                        'fields' => ['rotateSecret'],
+                        'scopes' => ['update' => 'rotor.rotate'],
+                    ]]],
                     'Gadget' => ['acl' => []],
                 ];
 
@@ -150,7 +210,7 @@ class ServiceAclTest extends TestCase
 
             public function __construct($di, $kind, $access, array $groups)
             {
-                parent::__construct($di, $kind, $access);
+                parent::__construct($di, $kind, $access, 'svc-self');
                 $this->groups = $groups;
             }
 
@@ -171,6 +231,10 @@ class ServiceAclTest extends TestCase
 
             protected function recordMatchesFilter($modelName, $recordId, $filter)
             {
+                if ($modelName === 'Rotor') {
+                    return $recordId === 'own-rotor' && $this->filterBind($filter) === ['serviceClientId' => 'svc-self'];
+                }
+
                 return $recordId === 'shared-widget';
             }
         };

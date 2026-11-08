@@ -1023,12 +1023,14 @@ ON CONFLICT (client_id) DO UPDATE SET
   client_secret = EXCLUDED.client_secret,
   grant_types = EXCLUDED.grant_types,
   user_id = NULL,
-  kind = EXCLUDED.kind;
+  kind = EXCLUDED.kind,
+  previous_client_secret = NULL,
+  previous_secret_expires = NULL;
 
 INSERT INTO serviceclients (
   id, name, kind, status, scopes, "clientId", "lastUsedAt", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
 ) VALUES
-  ('api-test-serviceclient-000001', 'API Tester Runtime', 'runtime', 'active', '["agent.delegate","agent.read","project.read","issue.read"]', 'service-api-tester-runtime', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+  ('api-test-serviceclient-000001', 'API Tester Runtime', 'runtime', 'active', '["agent.delegate","agent.read","project.read","issue.read","serviceclient.rotate"]', 'service-api-tester-runtime', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, kind = EXCLUDED.kind, status = 'active', scopes = EXCLUDED.scopes, "clientId" = EXCLUDED."clientId", deleted = FALSE;
 
 -- Token introspection (D-065): the serviceHermes profile signs in as a hermes service client with the
@@ -1045,7 +1047,9 @@ ON CONFLICT (client_id) DO UPDATE SET
   client_secret = EXCLUDED.client_secret,
   grant_types = EXCLUDED.grant_types,
   user_id = NULL,
-  kind = EXCLUDED.kind;
+  kind = EXCLUDED.kind,
+  previous_client_secret = NULL,
+  previous_secret_expires = NULL;
 
 INSERT INTO serviceclients (
   id, name, kind, status, scopes, "clientId", "lastUsedAt", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
@@ -1378,6 +1382,7 @@ data = {
     "agentPermissionId": "atp-acl-acl-agent-agent-get",
     "agentcredentialId": "api-test-agentcredential-000001",
     "serviceclientId": "api-test-serviceclient-000001",
+    "otherServiceclientId": "api-test-serviceclient-000002",
     "serviceenrollmentId": "api-test-serviceenrollment-000001",
     "serviceenrollmentPollToken": "api-tester-expired-poll-token",
     "toolserverId": "api-test-toolserver-000001",

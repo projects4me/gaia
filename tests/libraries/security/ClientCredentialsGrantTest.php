@@ -92,7 +92,7 @@ class ClientCredentialsGrantTest extends TestCase
         $this->assertNull($response->getParameter('refresh_token'));
         $token = $this->storedToken($response);
         $this->assertNull($token->user_id);
-        $this->assertSame('agent.delegate agent.read project.read issue.read', $token->scope);
+        $this->assertSame('agent.delegate agent.read project.read issue.read serviceclient.rotate', $token->scope);
         $this->assertNotNull($this->serviceClient('runtime-1')->lastUsedAt);
     }
 
@@ -220,7 +220,7 @@ class ClientCredentialsGrantTest extends TestCase
     {
         $client = $this->createServiceClient('hermes-2', 'hermes');
 
-        $this->assertSame('["token.introspect"]', $client->scopes);
+        $this->assertSame('["token.introspect","serviceclient.rotate"]', $client->scopes);
         $this->assertSame(ServiceClients::STATUS_ACTIVE, $client->status);
     }
 

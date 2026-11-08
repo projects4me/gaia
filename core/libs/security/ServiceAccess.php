@@ -16,12 +16,20 @@ namespace Gaia\Libraries\Security;
  *         'actions' => array('get'),          // actions services may perform
  *         'kinds' => array('runtime'),        // service kinds (config/serviceclients.php)
  *         'filter' => 'Agent.delegable = 1',  // optional PHQL condition on the rows
+ *         'fields' => array('rotateSecret'),  // fields services may write
+ *         'scopes' => array('update' => 'serviceclient.rotate'), // dedicated scope per action
  *     ),
  * ),
  * ```
  *
  * Nothing is reachable unless declared: a resource without `service`, an
  * action or kind not listed, or an action outside `ACTIONS` is denied.
+ *
+ * The filter may name the calling client with the bound placeholder
+ * `:serviceClientId:` (`CLIENT_PARAM`), e.g. a service's own record. A write
+ * action is open only with a filter, and only the listed `fields` may be
+ * written (D-068). An action listed in `scopes` is granted only by a token
+ * carrying exactly that scope word, not by a pattern of the action resource.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Security
@@ -30,13 +38,27 @@ namespace Gaia\Libraries\Security;
 class ServiceAccess
 {
     /**
-     * Actions a resource may open to services. Writes are not among them:
-     * a service request has no current user, and the write behaviours
-     * (createdUser, modifiedUser, audit) stamp one.
+     * Actions a resource may open to services. Create and delete are not
+     * among them. An update must be limited by a filter, and a service request
+     * has no current user while the write behaviours (createdUser,
+     * modifiedUser, audit) stamp one: a resource that opens `update` performs
+     * the write itself (as `ServiceclientController` rotates a secret).
      *
      * @var string[]
      */
-    const ACTIONS = ['get'];
+    const ACTIONS = ['get', 'update'];
+
+    /**
+     * Actions that change data, open only together with a filter.
+     *
+     * @var string[]
+     */
+    const WRITE_ACTIONS = ['update'];
+
+    /**
+     * Name of the bound placeholder a filter uses for the calling client's id.
+     */
+    const CLIENT_PARAM = 'serviceClientId';
 
     /**
      * Source of model metadata (`getModelMeta($modelName)`).
@@ -68,8 +90,40 @@ class ServiceAccess
             return false;
         }
 
+        if (in_array($action, self::WRITE_ACTIONS, true) && $this->recordFilter($modelName) === null) {
+            return false;
+        }
+
         return in_array($action, $this->stringList($service, 'actions'), true)
             && in_array((string) $kind, $this->stringList($service, 'kinds'), true);
+    }
+
+    /**
+     * Whether a service may write the field (fields are closed unless listed).
+     *
+     * @param  string $modelName
+     * @param  string $field
+     * @return bool
+     */
+    public function allowsFieldWrite($modelName, $field)
+    {
+        return in_array((string) $field, $this->stringList($this->serviceMeta($modelName), 'fields'), true);
+    }
+
+    /**
+     * The scope word that alone grants the action, if the resource names one.
+     *
+     * @param  string $modelName
+     * @param  string $action
+     * @return string|null
+     */
+    public function requiredScope($modelName, $action)
+    {
+        $service = $this->serviceMeta($modelName);
+        $scopes = isset($service['scopes']) && is_array($service['scopes']) ? $service['scopes'] : [];
+        $scope = $scopes[$action] ?? null;
+
+        return is_string($scope) && trim($scope) !== '' ? $scope : null;
     }
 
     /**

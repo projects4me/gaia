@@ -73,13 +73,55 @@ class Pdo extends \OAuth2\Storage\Pdo
      */
     public function checkClientCredentials($client_id, $client_secret = null)
     {
-        $stmt = $this->db->prepare(
-            sprintf('SELECT client_secret FROM %s WHERE client_id = :client_id', $this->config['client_table'])
-        );
+        $stmt = $this->db->prepare(sprintf(
+            'SELECT client_secret, previous_client_secret, previous_secret_expires FROM %s WHERE client_id = :client_id',
+            $this->config['client_table']
+        ));
         $stmt->execute(['client_id' => $client_id]);
-        $stored = $stmt->fetchColumn();
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        if ($stored === false || $stored === null || $client_secret === null) {
+        if ($row === false || $client_secret === null) {
+            return false;
+        }
+
+        if ($this->secretMatches($row['client_secret'], $client_secret)) {
+            return true;
+        }
+
+        // A rotated secret's previous one is accepted until its grace period
+        // ends (ServiceClientSecrets, D-068).
+        return $this->isGraceSecretLive($row['previous_secret_expires'])
+            && $this->secretMatches($row['previous_client_secret'], $client_secret);
+    }
+
+    /**
+     * Whether a previous secret's grace period, stored as a UTC datetime, is
+     * still running.
+     *
+     * @param  string|null $expires
+     * @return bool
+     */
+    protected function isGraceSecretLive($expires)
+    {
+        if ($expires === null || $expires === '') {
+            return false;
+        }
+
+        $expiresAt = strtotime($expires . ' UTC');
+        return $expiresAt !== false && $expiresAt > time();
+    }
+
+    /**
+     * Whether a secret matches the stored one: a password_hash() is verified,
+     * a plain secret compared in constant time.
+     *
+     * @param  string|null $stored
+     * @param  string      $client_secret
+     * @return bool
+     */
+    protected function secretMatches($stored, $client_secret)
+    {
+        if ($stored === null) {
             return false;
         }
 

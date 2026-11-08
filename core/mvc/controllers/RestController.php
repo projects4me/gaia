@@ -366,7 +366,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $serviceClient = ServiceClientGuard::assertServiceTokenAllowed($accessToken);
         (new ServiceClients())->recordUse($serviceClient->clientId);
 
-        return new ServiceAcl($this->getDI(), $serviceClient->kind);
+        return new ServiceAcl($this->getDI(), $serviceClient->kind, null, $serviceClient->clientId);
     }
 
     /**

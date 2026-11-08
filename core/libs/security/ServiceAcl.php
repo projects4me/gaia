@@ -47,16 +47,25 @@ class ServiceAcl extends Acl
     protected $serviceAccess;
 
     /**
+     * The calling service client's id, bound to a filter's `:serviceClientId:`.
+     *
+     * @var string
+     */
+    protected $clientId;
+
+    /**
      * @param \Phalcon\Di\FactoryDefault $di
      * @param string                     $kind          The service client's kind.
      * @param ServiceAccess|null         $serviceAccess Read from the metadata manager when omitted.
+     * @param string                     $clientId      The service client's id (oauth client_id).
      */
-    public function __construct(\Phalcon\Di\FactoryDefault $di, $kind, ServiceAccess $serviceAccess = null)
+    public function __construct(\Phalcon\Di\FactoryDefault $di, $kind, ServiceAccess $serviceAccess = null, $clientId = '')
     {
         // The resolution mode governs role permissions, which never apply here:
         // keep whatever mode is current instead of resolving or changing it.
         parent::__construct($di, self::$resolutionMode);
         $this->kind = (string) $kind;
+        $this->clientId = (string) $clientId;
         $this->serviceAccess = $serviceAccess ?? new ServiceAccess($di->get('metaManager'));
     }
 
@@ -81,14 +90,27 @@ class ServiceAcl extends Acl
      */
     protected function isTokenScopeCovering($resourceName)
     {
-        return $this->tokenScope !== null
-            && $this->tokenScope->isScoped()
-            && $this->tokenScope->covers($resourceName);
+        if ($this->tokenScope === null || !$this->tokenScope->isScoped()) {
+            return false;
+        }
+
+        // An action the resource grants only through a dedicated scope word
+        // needs exactly that word (D-068).
+        $parts = explode('.', (string) $resourceName);
+        if (count($parts) === 2) {
+            $requiredScope = $this->serviceAccess->requiredScope(ucfirst($parts[0]), $parts[1]);
+            if ($requiredScope !== null) {
+                return $this->tokenScope->names($requiredScope);
+            }
+        }
+
+        return $this->tokenScope->covers($resourceName);
     }
 
     /**
      * Whether the model opted in for the action and this service kind.
-     * Field resources (`agent.name.get`) follow their module's action.
+     * Field resources (`agent.name.get`) follow their module's action; a
+     * field write also needs the field among the resource's service `fields`.
      *
      * @param  string $resourceName `{module}.{action}` or `{module}.{field}.{action}`
      * @return bool
@@ -100,7 +122,17 @@ class ServiceAcl extends Acl
             return false;
         }
 
-        return $this->serviceAccess->allows(ucfirst($parts[0]), end($parts), $this->kind);
+        $modelName = ucfirst($parts[0]);
+        $action = end($parts);
+        if (!$this->serviceAccess->allows($modelName, $action, $this->kind)) {
+            return false;
+        }
+
+        if (count($parts) === 3 && in_array($action, ServiceAccess::WRITE_ACTIONS, true)) {
+            return $this->serviceAccess->allowsFieldWrite($modelName, $parts[1]);
+        }
+
+        return true;
     }
 
     /**
@@ -149,7 +181,27 @@ class ServiceAcl extends Acl
         $filter = $this->serviceAccess->recordFilter($modelName);
         if ($filter !== null) {
             $params['aclWhere'] = '(' . $filter . ')';
+            $params['aclBind'] = $this->filterBind($filter);
         }
+    }
+
+    /**
+     * An update by a service must target a record inside the model's filter
+     * (a write action is open only with one, see `ServiceAccess::allows()`).
+     *
+     * @param  string      $modelName
+     * @param  array       $attributes
+     * @param  string|null $existingId
+     * @return void
+     * @throws \Gaia\Exception\UnAuthorized
+     */
+    public function assertWriteInScope($modelName, array $attributes, $existingId = null)
+    {
+        if ($existingId === null || (string) $existingId === '') {
+            $this->denyAccess("Access denied: a service may only change an existing {$modelName}");
+        }
+
+        $this->assertRecordIdInScope($modelName, $existingId);
     }
 
     /**
@@ -187,11 +239,28 @@ class ServiceAcl extends Acl
             ->columns(['COUNT(*) AS matches'])
             ->from([$modelName => 'Gaia\\MVC\\Models\\' . $modelName])
             ->where("{$modelName}.id = :recordId:", ['recordId' => $recordId])
-            ->andWhere('(' . $filter . ')')
+            ->andWhere('(' . $filter . ')', $this->filterBind($filter))
             ->getQuery()
             ->getSingleResult();
 
         return $row !== null && (int) $row->matches > 0;
+    }
+
+    /**
+     * The bind values a filter uses: the calling client's id when it names
+     * `:serviceClientId:`, nothing otherwise (an unused bind is an error).
+     *
+     * @param  string $filter
+     * @return array
+     */
+    protected function filterBind($filter)
+    {
+        $placeholder = ':' . ServiceAccess::CLIENT_PARAM . ':';
+        if (strpos((string) $filter, $placeholder) === false) {
+            return [];
+        }
+
+        return [ServiceAccess::CLIENT_PARAM => $this->clientId];
     }
 
     /**
