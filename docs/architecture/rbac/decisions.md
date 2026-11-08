@@ -482,6 +482,15 @@ These scenarios are settled and should become tests later:
 | Rationale | Talos runs Gaia-declared agents and must not hold their secrets: the runtime proves who it is and Gaia decides what it may do as the agent. The scope is always permission patterns, so a delegated token is always narrowed (D-064) and never reaches the hard exclusions; a dot-less word would leave it unscoped, which is why the stored list must not hold one. Keeping the token rows (no purge) leaves a record of which runtime acted for which agent and when. |
 | Implications | `AgentDelegationGrant` (`core/libs/authorization/AgentDelegationGrant.php`) is registered in `OAuthServer`; `AgentDelegationGuard` (`core/libs/security/AgentDelegationGuard.php`) checks the runtime and the agent; `AgentDelegationScopes` (`core/libs/agents/AgentDelegationScopes.php`) reads the stored list and works out the granted scope. A service client may use the grant whatever its `grant_types` list (`OAuthServer` gives the storage `kind_grant_types`, read by `Gaia\Libraries\Oauth\Storage\Pdo::checkRestrictedGrantType`), so its scopes alone decide. `delegationScopes` is checked by `agentConfigBehavior` and is writable by holders of `agent.update`; an agent cannot change its own (`AgentEscalationGuard::assertNotOwnAgent`), and scoped tokens never reach `agent.update` (D-064). Disabling a runtime still deletes its tokens (D-063). Any runtime with `agent.delegate` may act for any delegable agent: `agent.delegate` is granted only to runtime clients by admins (D-063), each agent's exposure is bounded by its own `delegationScopes`, and every token row names the runtime. Per-step scopes and binding a runtime to the agents it may run are out of scope. |
 
+### D-069 — Runtimes read the agents they may run
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | The `runtime` kind opts in (D-066, `acl.service`, action `get`) on `Agent`, `Agenttool`, `Agentskill` and `Skill`; `GET /agentspec/{agentId}` follows `Agent`'s opt-in (`ServiceAccess::VIEWS`). Each carries a record filter: an Agent is visible only when live, with `delegationScopes` neither empty nor `[]`, and an active (Active or Invited) agent user, the rule of `AgentDelegationGuard::assertAgentDelegable()`; Agenttool and Agentskill rows only for such agents; Skill rows only when such an agent holds them. The runtime kind's default scopes add `agent.get`, `agentspec.get`, `agenttool.get`, `agentskill.get` and `skill.get`. Agentcredential, Useridentity and every other model do not opt in, so they stay denied; a `hermes` token is refused everywhere. |
+| Rationale | A runtime discovers its agents from Gaia instead of naming them locally, and sees nothing it could not delegate to anyway. |
+| Implications | The filters are literal PHQL in the metadata, because metadata files are also loaded by tools without the autoloader. Skill files (`Upload`, relatedTo `skill`) are not opened: `Upload` is authorized through the `Project` group, which services cannot reach; the skill's `content` is readable. Follow-up if runtimes need the files. |
+
 ---
 
 ### D-066 — Services enroll themselves; only the request and the poll are anonymous

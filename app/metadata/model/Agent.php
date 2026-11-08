@@ -210,7 +210,14 @@ $models['Agent'] = array(
         'assignment' => [
             'field' => 'sponsorId',
             'condition' => 'Agent.sponsorId=:userId:'
-        ]
+        ],
+        // Runtimes read the agents they may run (D-066, D-069); `agentspec`
+        // follows this opt-in (ServiceAccess::VIEWS).
+        'service' => [
+            'actions' => ['get'],
+            'kinds' => ['runtime'],
+            'filter' => "Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))",
+        ],
     ],
 );
 

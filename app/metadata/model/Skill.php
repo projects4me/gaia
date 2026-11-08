@@ -141,6 +141,14 @@ $models['Skill'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior'
     ),
+    'acl' => [
+        // Runtimes read these for the agents they may run (D-066, D-069).
+        'service' => [
+            'actions' => ['get'],
+            'kinds' => ['runtime'],
+            'filter' => "Skill.id IN (SELECT DelegableSkill.skillId FROM Gaia\\MVC\\Models\\Agentskill DelegableSkill WHERE DelegableSkill.deleted = false AND DelegableSkill.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))))",
+        ],
+    ],
 );
 
 return $models;

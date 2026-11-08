@@ -981,15 +981,37 @@ INSERT INTO users (
 )
 ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email, deleted = 0;
 
+-- Agent: a third agent user whose account is disabled (delegable on paper, hidden from runtimes)
+INSERT INTO users (
+  id, password, email, name, deleted, "createdUser", "modifiedUser",
+  "createdUserName", "modifiedUserName", "accountStatus", "failedLoginAttempts"
+) VALUES (
+  'api-test-user-agent3',
+  '$2y$10$OH8mqmGV2uLOLyoSdLGm/ejzhLXVOsOz/Ld2fi610E/qWWTqQ6e1G',
+  'api-tester-agent3@example.com',
+  'API Tester Inactive Agent',
+  0,
+  'api-test-user-0001', 'api-test-user-0001',
+  'API Tester',
+  'API Tester',
+  'disabled',
+  0
+)
+ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email, "accountStatus" = 'disabled', deleted = 0;
+
 -- Agent: the aclAgent profile's user and the second user are agents (users.type plus an agents row)
-UPDATE users SET type = 'agent' WHERE id IN ('api-test-user-acl-agent', 'api-test-user-agent2');
+UPDATE users SET type = 'agent' WHERE id IN ('api-test-user-acl-agent', 'api-test-user-agent2', 'api-test-user-agent3');
 
 INSERT INTO agents (
   id, "userId", "name", "purpose", "sponsorId", "rolePrompt", "modelConfig", "maxTurns", "maxRunsPerIssue", "permissionMode", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
 ) VALUES
   ('api-test-agent-000001', 'api-test-user-acl-agent', 'API Tester ACL Agent', 'Seed agent that signs in', 'api-test-user-0001', 'You are a test agent.', '{"simple":"sonnet","complex":"opus","escalation":"opus"}', 40, 10, 'acceptEdits', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
-  ('api-test-agent-000002', 'api-test-user-agent2', 'API Tester Other Agent', 'Seed agent without a sponsor', NULL, NULL, NULL, NULL, NULL, NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+  ('api-test-agent-000002', 'api-test-user-agent2', 'API Tester Other Agent', 'Seed agent without a sponsor', NULL, NULL, NULL, NULL, NULL, NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-agent-000003', 'api-test-user-agent3', 'API Tester Inactive Agent', 'Seed agent with a disabled user', NULL, NULL, NULL, NULL, NULL, NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET "userId" = EXCLUDED."userId", name = EXCLUDED.name, "sponsorId" = EXCLUDED."sponsorId", deleted = FALSE;
+
+-- Runtime reads (D-068): only the second agent is delegable (agent 1 has no scopes, agent 3's user is disabled)
+UPDATE agents SET "delegationScopes" = '["issue.*"]' WHERE id IN ('api-test-agent-000002', 'api-test-agent-000003');
 
 -- Agentcredential: the aclAgent profile signs in with client_credentials (agents cannot use the
 -- password grant). Its client holds the bcrypt hash of the profile's clientSecret.
@@ -1030,7 +1052,7 @@ ON CONFLICT (client_id) DO UPDATE SET
 INSERT INTO serviceclients (
   id, name, kind, status, scopes, "clientId", "lastUsedAt", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
 ) VALUES
-  ('api-test-serviceclient-000001', 'API Tester Runtime', 'runtime', 'active', '["agent.delegate","agent.read","project.read","issue.read","serviceclient.rotate"]', 'service-api-tester-runtime', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+  ('api-test-serviceclient-000001', 'API Tester Runtime', 'runtime', 'active', '["agent.delegate","agent.read","project.read","issue.read","agent.get","agentspec.get","agenttool.get","agentskill.get","skill.get","serviceclient.rotate"]', 'service-api-tester-runtime', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, kind = EXCLUDED.kind, status = 'active', scopes = EXCLUDED.scopes, "clientId" = EXCLUDED."clientId", deleted = FALSE;
 
 -- Token introspection (D-065): the serviceHermes profile signs in as a hermes service client with the
@@ -1376,6 +1398,7 @@ data = {
     "agentId": "api-test-agent-000001",
     "agentUserId": "api-test-user-acl-agent",
     "otherAgentId": "api-test-agent-000002",
+    "inactiveAgentId": "api-test-agent-000003",
     "otherAgentUserId": "api-test-user-agent2",
     "agentRoleId": "api-test-role-acl-agent",
     "agentUserroleId": "api-test-userrole-acl-agent",

@@ -24,8 +24,8 @@
 ## Summary
 
 - behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior
-- acl: -
+- acl: service={"actions":["get"],"kinds":["runtime"],"filter":"Agenttool.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited')))"}
 - controller: Gaia\MVC\REST\Controllers\AgenttoolController
 - routes: DELETE /api/v1/agenttool, DELETE /api/v1/agenttool/{id}, GET /api/v1/agenttool, GET /api/v1/agenttool/{id}, GET /api/v1/agenttool/{id}/{relation}, OPTIONS /api/v1/agenttool, PATCH /api/v1/agenttool, PATCH /api/v1/agenttool/{id}, POST /api/v1/agenttool, PUT /api/v1/agenttool, PUT /api/v1/agenttool/{id}
 - components: -
-- cases: 13 (acl 6, backend 3, client 4); gaia-dev cases agenttool
+- cases: 14 (acl 7, backend 3, client 4); gaia-dev cases agenttool

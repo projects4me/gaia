@@ -28,4 +28,4 @@
 - controller: Gaia\MVC\REST\Controllers\UseridentityController
 - routes: DELETE /api/v1/useridentity, DELETE /api/v1/useridentity/{id}, GET /api/v1/useridentity, GET /api/v1/useridentity/{id}, GET /api/v1/useridentity/{id}/{relation}, OPTIONS /api/v1/useridentity, PATCH /api/v1/useridentity, PATCH /api/v1/useridentity/{id}, POST /api/v1/useridentity, PUT /api/v1/useridentity, PUT /api/v1/useridentity/{id}
 - components: -
-- cases: 11 (acl 2, backend 6, client 3); gaia-dev cases useridentity
+- cases: 12 (acl 3, backend 6, client 3); gaia-dev cases useridentity

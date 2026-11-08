@@ -23,8 +23,8 @@
 ## Summary
 
 - behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior
-- acl: -
+- acl: service={"actions":["get"],"kinds":["runtime"],"filter":"Skill.id IN (SELECT DelegableSkill.skillId FROM Gaia\\MVC\\Models\\Agentskill DelegableSkill WHERE DelegableSkill.deleted = false AND DelegableSkill.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))))"}
 - controller: Gaia\MVC\REST\Controllers\SkillController
 - routes: DELETE /api/v1/skill, DELETE /api/v1/skill/{id}, GET /api/v1/skill, GET /api/v1/skill/{id}, GET /api/v1/skill/{id}/{relation}, OPTIONS /api/v1/skill, PATCH /api/v1/skill, PATCH /api/v1/skill/{id}, POST /api/v1/skill, PUT /api/v1/skill, PUT /api/v1/skill/{id}
 - components: -
-- cases: 6 (backend 6); gaia-dev cases skill
+- cases: 7 (acl 1, backend 6); gaia-dev cases skill

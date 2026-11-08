@@ -6363,6 +6363,24 @@
       }
     },
     {
+      "id": "case:acl/acl-service-token-agent-detail-delegable-allowed",
+      "type": "case",
+      "key": "acl/acl-service-token-agent-detail-delegable-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agent/{otherAgentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "otherAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-service-token-agent-detail-denied",
       "type": "case",
       "key": "acl/acl-service-token-agent-detail-denied",
@@ -6381,9 +6399,135 @@
       }
     },
     {
-      "id": "case:acl/acl-service-token-agent-list-denied",
+      "id": "case:acl/acl-service-token-agent-detail-inactive-denied",
       "type": "case",
-      "key": "acl/acl-service-token-agent-list-denied",
+      "key": "acl/acl-service-token-agent-detail-inactive-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agent/{inactiveAgentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "inactiveAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-agent-list-delegable-only",
+      "type": "case",
+      "key": "acl/acl-service-token-agent-list-delegable-only",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "agentId",
+          "inactiveAgentId",
+          "otherAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-agentcredential-list-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-agentcredential-list-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentcredential",
+        "resource": "agentcredential",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-agentskill-list-allowed",
+      "type": "case",
+      "key": "acl/acl-service-token-agentskill-list-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentskill",
+        "resource": "agentskill",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "agentskillId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-agentspec-delegable-allowed",
+      "type": "case",
+      "key": "acl/acl-service-token-agentspec-delegable-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentspec/{otherAgentId}",
+        "resource": "agentspec",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "otherAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-agentspec-non-delegable-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-agentspec-non-delegable-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agentspec/{agentId}",
+        "resource": "agentspec",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "agentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-agenttool-list-allowed",
+      "type": "case",
+      "key": "acl/acl-service-token-agenttool-list-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agenttool",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "agenttoolId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-hermes-agent-list-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-hermes-agent-list-denied",
       "attributes": {
         "catalog": "acl",
         "file": "tools/api-tester/apis/acl.json",
@@ -6479,6 +6623,38 @@
         "placeholders": [
           "serviceclientId"
         ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-skill-list-allowed",
+      "type": "case",
+      "key": "acl/acl-service-token-skill-list-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/skill",
+        "resource": "skill",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-useridentity-list-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-useridentity-list-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/useridentity",
+        "resource": "useridentity",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [],
         "stores": []
       }
     },
@@ -29673,6 +29849,14 @@
       }
     },
     {
+      "id": "fixture:inactiveAgentId",
+      "type": "fixture",
+      "key": "inactiveAgentId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:issueId",
       "type": "fixture",
       "key": "issueId",
@@ -30132,6 +30316,15 @@
           "assignment": {
             "field": "sponsorId",
             "condition": "Agent.sponsorId=:userId:"
+          },
+          "service": {
+            "actions": [
+              "get"
+            ],
+            "kinds": [
+              "runtime"
+            ],
+            "filter": "Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))"
           }
         }
       }
@@ -30159,7 +30352,17 @@
         "isView": false,
         "registered": true,
         "hasMetadata": true,
-        "acl": null
+        "acl": {
+          "service": {
+            "actions": [
+              "get"
+            ],
+            "kinds": [
+              "runtime"
+            ],
+            "filter": "Agentskill.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited')))"
+          }
+        }
       }
     },
     {
@@ -30172,7 +30375,17 @@
         "isView": false,
         "registered": true,
         "hasMetadata": true,
-        "acl": null
+        "acl": {
+          "service": {
+            "actions": [
+              "get"
+            ],
+            "kinds": [
+              "runtime"
+            ],
+            "filter": "Agenttool.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited')))"
+          }
+        }
       }
     },
     {
@@ -30777,7 +30990,17 @@
         "isView": false,
         "registered": true,
         "hasMetadata": true,
-        "acl": null
+        "acl": {
+          "service": {
+            "actions": [
+              "get"
+            ],
+            "kinds": [
+              "runtime"
+            ],
+            "filter": "Skill.id IN (SELECT DelegableSkill.skillId FROM Gaia\\MVC\\Models\\Agentskill DelegableSkill WHERE DelegableSkill.deleted = false AND DelegableSkill.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))))"
+          }
+        }
       }
     },
     {
@@ -49115,6 +49338,41 @@
       "to": "profile:aclScopedToken"
     },
     {
+      "from": "case:acl/acl-service-token-agent-detail-delegable-allowed",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-delegable-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-delegable-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-delegable-allowed",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-delegable-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-delegable-allowed",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-delegable-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
       "from": "case:acl/acl-service-token-agent-detail-denied",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -49150,34 +49408,279 @@
       "to": "fixture:agentId"
     },
     {
-      "from": "case:acl/acl-service-token-agent-list-denied",
+      "from": "case:acl/acl-service-token-agent-detail-inactive-denied",
       "type": "asserts",
       "to": "assertion:errorEqual"
     },
     {
-      "from": "case:acl/acl-service-token-agent-list-denied",
+      "from": "case:acl/acl-service-token-agent-detail-inactive-denied",
       "type": "asserts",
       "to": "assertion:shape"
     },
     {
-      "from": "case:acl/acl-service-token-agent-list-denied",
+      "from": "case:acl/acl-service-token-agent-detail-inactive-denied",
       "type": "asserts",
       "to": "assertion:status"
     },
     {
-      "from": "case:acl/acl-service-token-agent-list-denied",
+      "from": "case:acl/acl-service-token-agent-detail-inactive-denied",
       "type": "covers",
       "to": "controller:agent"
     },
     {
-      "from": "case:acl/acl-service-token-agent-list-denied",
+      "from": "case:acl/acl-service-token-agent-detail-inactive-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-inactive-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-inactive-denied",
+      "type": "uses_fixture",
+      "to": "fixture:inactiveAgentId"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-delegable-only",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-delegable-only",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-delegable-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-delegable-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-delegable-only",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-delegable-only",
       "type": "exercises",
       "to": "route:GET /api/v1/agent"
     },
     {
-      "from": "case:acl/acl-service-token-agent-list-denied",
+      "from": "case:acl/acl-service-token-agent-list-delegable-only",
       "type": "runs_as",
       "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-delegable-only",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-delegable-only",
+      "type": "uses_fixture",
+      "to": "fixture:inactiveAgentId"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-delegable-only",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentcredential-list-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentcredential-list-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentcredential-list-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentcredential-list-denied",
+      "type": "covers",
+      "to": "controller:agentcredential"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentcredential-list-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentcredential"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentcredential-list-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentskill-list-allowed",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentskill-list-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentskill-list-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentskill-list-allowed",
+      "type": "covers",
+      "to": "controller:agentskill"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentskill-list-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentskill"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentskill-list-allowed",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentskill-list-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:agentskillId"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentspec-delegable-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentspec-delegable-allowed",
+      "type": "covers",
+      "to": "controller:agentspec"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentspec-delegable-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentspec/{id}"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentspec-delegable-allowed",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentspec-delegable-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentspec-non-delegable-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentspec-non-delegable-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentspec-non-delegable-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentspec-non-delegable-denied",
+      "type": "covers",
+      "to": "controller:agentspec"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentspec-non-delegable-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agentspec/{id}"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentspec-non-delegable-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-agentspec-non-delegable-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:acl/acl-service-token-agenttool-list-allowed",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-agenttool-list-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-agenttool-list-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-agenttool-list-allowed",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:acl/acl-service-token-agenttool-list-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agenttool"
+    },
+    {
+      "from": "case:acl/acl-service-token-agenttool-list-allowed",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-agenttool-list-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:agenttoolId"
+    },
+    {
+      "from": "case:acl/acl-service-token-hermes-agent-list-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-hermes-agent-list-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-hermes-agent-list-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-hermes-agent-list-denied",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-service-token-hermes-agent-list-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agent"
+    },
+    {
+      "from": "case:acl/acl-service-token-hermes-agent-list-denied",
+      "type": "runs_as",
+      "to": "profile:serviceHermes"
     },
     {
       "from": "case:acl/acl-service-token-issue-list-denied",
@@ -49343,6 +49846,61 @@
       "from": "case:acl/acl-service-token-serviceclient-status-denied",
       "type": "uses_fixture",
       "to": "fixture:serviceclientId"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-allowed",
+      "type": "covers",
+      "to": "controller:skill"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/skill"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-allowed",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-useridentity-list-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-useridentity-list-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-useridentity-list-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-useridentity-list-denied",
+      "type": "covers",
+      "to": "controller:useridentity"
+    },
+    {
+      "from": "case:acl/acl-service-token-useridentity-list-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/useridentity"
+    },
+    {
+      "from": "case:acl/acl-service-token-useridentity-list-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
     },
     {
       "from": "case:acl/acl-serviceclient-detail-allowed-default",

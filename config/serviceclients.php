@@ -15,7 +15,11 @@ $config['serviceClients'] = array(
     'kinds' => array(
         // A Talos runtime: acts for the agents it runs and reads their work.
         'runtime' => array(
-            'scopes' => array('agent.delegate', 'agent.read', 'project.read', 'issue.read', 'serviceclient.rotate'),
+            'scopes' => array(
+                'agent.delegate', 'agent.read', 'project.read', 'issue.read',
+                'agent.get', 'agentspec.get', 'agenttool.get', 'agentskill.get', 'skill.get',
+                'serviceclient.rotate',
+            ),
         ),
         // The Hermes relay: checks the tokens of the sockets it serves.
         'hermes' => array(
