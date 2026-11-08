@@ -1028,6 +1028,22 @@ INSERT INTO serviceclients (
   ('api-test-serviceclient-000001', 'API Tester Runtime', 'runtime', 'active', '["agent.delegate","agent.read","project.read","issue.read"]', 'service-api-tester-runtime', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, kind = EXCLUDED.kind, status = 'active', scopes = EXCLUDED.scopes, "clientId" = EXCLUDED."clientId", deleted = FALSE;
 
+-- Scoped token (D-064): the aclScopedToken profile signs in as the aclAgent user through a client whose
+-- scope narrows its tokens to issue.get, project.get and role.get (role.* stays a hard exclusion).
+-- Same secret as the aclAgent client.
+INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id, kind)
+VALUES (
+  'api-test-oauth-client-scoped', 'agent-api-tester-scoped',
+  '$2y$10$S55LDcjkRWihbnLkitDlFudFbf7VglJUgkdwvXuOpOQsqi7OL.Y.2',
+  '', 'client_credentials', 'issue.get project.get role.get', 'api-test-user-acl-agent', 'agent'
+)
+ON CONFLICT (client_id) DO UPDATE SET
+  client_secret = EXCLUDED.client_secret,
+  grant_types = EXCLUDED.grant_types,
+  scope = EXCLUDED.scope,
+  user_id = EXCLUDED.user_id,
+  kind = EXCLUDED.kind;
+
 -- Toolserver: seed records (gaia-dev scaffold resource)
 INSERT INTO tool_servers (
   id, "name", "kind", "location", "transport", "endpoint", "command", "spec", "description", "schemaRefreshedAt", "refreshError", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
@@ -1253,6 +1269,12 @@ data = {
       "grantType": "client_credentials",
       "clientId": "service-api-tester-runtime",
       "clientSecret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
+    },
+    "aclScopedToken": {
+      "email": "api-tester-acl-agent@example.com",
+      "grantType": "client_credentials",
+      "clientId": "agent-api-tester-scoped",
+      "clientSecret": "p4m_cs_api-tester-acl-agent-not-a-real-secret"
     }
   },
   "values": {

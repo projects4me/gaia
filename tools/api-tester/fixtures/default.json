@@ -42,6 +42,12 @@
       "grantType": "client_credentials",
       "clientId": "service-api-tester-runtime",
       "clientSecret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
+    },
+    "aclScopedToken": {
+      "email": "api-tester-acl-agent@example.com",
+      "grantType": "client_credentials",
+      "clientId": "agent-api-tester-scoped",
+      "clientSecret": "p4m_cs_api-tester-acl-agent-not-a-real-secret"
     }
   },
   "values": {
