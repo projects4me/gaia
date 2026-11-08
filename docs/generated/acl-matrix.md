@@ -10,8 +10,8 @@
 - An upper case letter allows the action on project members only; `-` means not granted.
 - `gaia-dev acl <resource> [profile]` explains one resource, including field permissions.
 
-<a id="matrix-1-2"></a>
-## Matrix (1/2)
+<a id="matrix-1-3"></a>
+## Matrix (1/3)
 
 | Resource | aclAgent | aclFields | aclMembers | aclNoConversation | aclNoProject | aclNoSetting | aclProjectOnly | aclScopedToken | anonymous | default | serviceHermes | serviceRuntime |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -50,8 +50,8 @@
 | project | ---- | g--- | G--- | g--- | ---- | g--- | g--- | ---- | ---- | gcud | ---- | ---- |
 | resetpassword | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 
-<a id="matrix-2-2"></a>
-## Matrix (2/2)
+<a id="matrix-2-3"></a>
+## Matrix (2/3)
 
 | Resource | aclAgent | aclFields | aclMembers | aclNoConversation | aclNoProject | aclNoSetting | aclProjectOnly | aclScopedToken | anonymous | default | serviceHermes | serviceRuntime |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -60,6 +60,7 @@
 | scoreboard | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | serviceclient | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |
 | serviceenrollment | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |
+| serviceenrollmenttoken | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |
 | setting | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | skill | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |
 | systemnotification | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
@@ -88,4 +89,10 @@
 | workflownode | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |
 | workflowreference | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |
 | workflowrun | ---- | -c-- | g--- | ---- | ---- | -c-- | -c-- | ---- | ---- | gcud | ---- | ---- |
+
+<a id="matrix-3-3"></a>
+## Matrix (3/3)
+
+| Resource | aclAgent | aclFields | aclMembers | aclNoConversation | aclNoProject | aclNoSetting | aclProjectOnly | aclScopedToken | anonymous | default | serviceHermes | serviceRuntime |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | workflowrunstep | ---- | ---- | g--- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |

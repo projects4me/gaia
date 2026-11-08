@@ -66,18 +66,25 @@ class ServiceEnrollments
     private $actingUser;
 
     /**
+     * @var ServiceEnrollmentTokens
+     */
+    private $tokens;
+
+    /**
      * @param array|null                    $config      `serviceClients.enrollment`; read from the application config when omitted
      * @param EnrollmentCodes|null          $codes
      * @param ServiceClientCredentials|null $credentials
      * @param EnrollmentRequestLimit|null   $limit
      * @param ActingUser|null               $actingUser
+     * @param ServiceEnrollmentTokens|null  $tokens
      */
     public function __construct(
         array $config = null,
         EnrollmentCodes $codes = null,
         ServiceClientCredentials $credentials = null,
         EnrollmentRequestLimit $limit = null,
-        ActingUser $actingUser = null
+        ActingUser $actingUser = null,
+        ServiceEnrollmentTokens $tokens = null
     ) {
         $this->config = $config === null ? self::loadConfig() : $config;
         $this->codes = $codes ?: new EnrollmentCodes();
@@ -87,19 +94,54 @@ class ServiceEnrollments
             isset($this->config['windowMinutes']) ? $this->config['windowMinutes'] : EnrollmentRequestLimit::DEFAULT_WINDOW_MINUTES
         );
         $this->actingUser = $actingUser ?: new ActingUser();
+        $this->tokens = $tokens ?: new ServiceEnrollmentTokens();
     }
 
     /**
-     * Create a pending request.
+     * Create a request: pending, or, with a valid enrollment token of the
+     * same kind, approved at once on behalf of the admin who issued the token
+     * (D-070). The token is spent in the same transaction; an invalid token
+     * is refused without saying why.
      *
-     * @param  string $name The service's name, for the admin and its client
-     * @param  string $kind A configured kind of service
-     * @param  string $ip   The address the request came from
+     * @param  string      $name            The service's name, for the admin and its client
+     * @param  string      $kind            A configured kind of service
+     * @param  string      $ip              The address the request came from
+     * @param  string|null $enrollmentToken A single-use token from `ServiceEnrollmentTokens`
      * @return array ['enrollment' => Serviceenrollment, 'pollToken' => string]
      * @throws \Gaia\Exception\TooManyRequests When the address has made too many requests
      * @throws \Gaia\Exception\BadRequest      When the request is not valid
      */
-    public function request($name, $kind, $ip)
+    public function request($name, $kind, $ip, $enrollmentToken = null)
+    {
+        if ($enrollmentToken === null) {
+            return $this->create($name, $kind, $ip, null);
+        }
+
+        return $this->transactional(function () use ($name, $kind, $ip, $enrollmentToken) {
+            // The limit comes first so an address that used up its window
+            // cannot keep trying tokens.
+            $this->limit->assertAllowed($ip, $this->now());
+            $token = $this->tokens->redeem($enrollmentToken, is_string($kind) ? $kind : '');
+            $issuer = $this->findUser($token->createdUser);
+            if (!$issuer) {
+                // Never approve with more authority than the issuer had.
+                throw new \Gaia\Exception\BadRequest(ServiceEnrollmentTokens::INVALID_ERROR);
+            }
+
+            return $this->create($name, $kind, $ip, $issuer);
+        });
+    }
+
+    /**
+     * Save a request, and approve it as the given admin when there is one.
+     *
+     * @param  mixed     $name
+     * @param  mixed     $kind
+     * @param  string    $ip
+     * @param  User|null $approver
+     * @return array
+     */
+    private function create($name, $kind, $ip, $approver)
     {
         $now = $this->now();
         $this->limit->assertAllowed($ip, $now);
@@ -116,6 +158,11 @@ class ServiceEnrollments
         $enrollment->expiresAt = gmdate('Y-m-d H:i:s', $now + 60 * $this->ttlMinutes());
         $enrollment->requesterIp = (string) $ip;
         $this->saveAs($enrollment, $this->systemUser());
+
+        if ($approver) {
+            $enrollment->status = ServiceEnrollmentStatus::APPROVED;
+            $this->saveAs($enrollment, $approver);
+        }
 
         return ['enrollment' => $enrollment, 'pollToken' => $pollToken];
     }

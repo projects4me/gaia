@@ -2806,6 +2806,64 @@
       },
       "expects": { "status": 401, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-service-token"
+    },
+    {
+      "id": "acl-serviceenrollmenttoken-list-allowed-default",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollmenttoken",
+      "resource": "serviceenrollmenttoken",
+      "auth": true,
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-serviceenrollmenttoken"
+    },
+    {
+      "id": "acl-serviceenrollmenttoken-list-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollmenttoken",
+      "resource": "serviceenrollmenttoken",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error" },
+      "source": "acl-serviceenrollmenttoken"
+    },
+    {
+      "id": "acl-serviceenrollmenttoken-issue-denied-acl-no-setting",
+      "method": "POST",
+      "path": "/api/v1/serviceenrollmenttoken",
+      "resource": "serviceenrollmenttoken",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "serviceenrollmenttoken",
+          "attributes": {
+            "name": "Denied",
+            "kind": "runtime"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error" },
+      "source": "acl-serviceenrollmenttoken"
+    },
+    {
+      "id": "acl-serviceenrollmenttoken-list-denied-anonymous",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollmenttoken",
+      "resource": "serviceenrollmenttoken",
+      "auth": false,
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 401, "shape": "error" },
+      "source": "acl-serviceenrollmenttoken"
+    },
+    {
+      "id": "acl-serviceenrollmenttoken-scoped-token-denied",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollmenttoken",
+      "resource": "serviceenrollmenttoken",
+      "auth": "aclScopedToken",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error" },
+      "source": "acl-serviceenrollmenttoken"
     }
   ]
 }

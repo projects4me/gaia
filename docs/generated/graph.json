@@ -1923,6 +1923,48 @@
       "attributes": {}
     },
     {
+      "id": "action:serviceenrollmenttoken.delete",
+      "type": "action",
+      "key": "serviceenrollmenttoken.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceenrollmenttoken.deleteCollection",
+      "type": "action",
+      "key": "serviceenrollmenttoken.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceenrollmenttoken.get",
+      "type": "action",
+      "key": "serviceenrollmenttoken.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceenrollmenttoken.list",
+      "type": "action",
+      "key": "serviceenrollmenttoken.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceenrollmenttoken.options",
+      "type": "action",
+      "key": "serviceenrollmenttoken.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceenrollmenttoken.post",
+      "type": "action",
+      "key": "serviceenrollmenttoken.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceenrollmenttoken.related",
+      "type": "action",
+      "key": "serviceenrollmenttoken.related",
+      "attributes": {}
+    },
+    {
       "id": "action:setting.get",
       "type": "action",
       "key": "setting.get",
@@ -3765,6 +3807,18 @@
       "attributes": {
         "class": "Gaia\\MVC\\Models\\Behaviors\\serviceEnrollmentBehavior",
         "file": "core/mvc/models/behaviors/serviceEnrollmentBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
+      "id": "behaviour:serviceEnrollmentTokenBehavior",
+      "type": "behaviour",
+      "key": "serviceEnrollmentTokenBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\serviceEnrollmentTokenBehavior",
+        "file": "core/mvc/models/behaviors/serviceEnrollmentTokenBehavior.php",
         "hooks": [
           "notify"
         ]
@@ -6831,6 +6885,86 @@
       }
     },
     {
+      "id": "case:acl/acl-serviceenrollmenttoken-issue-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-serviceenrollmenttoken-issue-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollmenttoken",
+        "resource": "serviceenrollmenttoken",
+        "enabled": true,
+        "source": "acl-serviceenrollmenttoken",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-serviceenrollmenttoken-list-allowed-default",
+      "type": "case",
+      "key": "acl/acl-serviceenrollmenttoken-list-allowed-default",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollmenttoken",
+        "resource": "serviceenrollmenttoken",
+        "enabled": true,
+        "source": "acl-serviceenrollmenttoken",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-serviceenrollmenttoken-list-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-serviceenrollmenttoken-list-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollmenttoken",
+        "resource": "serviceenrollmenttoken",
+        "enabled": true,
+        "source": "acl-serviceenrollmenttoken",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-serviceenrollmenttoken-list-denied-anonymous",
+      "type": "case",
+      "key": "acl/acl-serviceenrollmenttoken-list-denied-anonymous",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollmenttoken",
+        "resource": "serviceenrollmenttoken",
+        "enabled": true,
+        "source": "acl-serviceenrollmenttoken",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-serviceenrollmenttoken-scoped-token-denied",
+      "type": "case",
+      "key": "acl/acl-serviceenrollmenttoken-scoped-token-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollmenttoken",
+        "resource": "serviceenrollmenttoken",
+        "enabled": true,
+        "source": "acl-serviceenrollmenttoken",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-setting-get-denied",
       "type": "case",
       "key": "acl/acl-setting-get-denied",
@@ -9360,6 +9494,22 @@
       }
     },
     {
+      "id": "case:backend/get-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "type": "case",
+      "key": "backend/get-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollmenttoken",
+        "resource": "serviceenrollmenttoken",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/get-setting-api-v1-setting",
       "type": "case",
       "key": "backend/get-setting-api-v1-setting",
@@ -11301,6 +11451,22 @@
         "method": "POST",
         "path": "/api/v1/serviceenrollment",
         "resource": "serviceenrollment",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/post-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "type": "case",
+      "key": "backend/post-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollmenttoken",
+        "resource": "serviceenrollmenttoken",
         "enabled": false,
         "source": "backend-metadata",
         "placeholders": [],
@@ -16698,6 +16864,148 @@
       }
     },
     {
+      "id": "case:client/serviceenrollment-revoked-token-refused",
+      "type": "case",
+      "key": "client/serviceenrollment-revoked-token-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollment",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.revokedToken"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-token-approves-at-once",
+      "type": "case",
+      "key": "client/serviceenrollment-token-approves-at-once",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollment",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.enrollmentToken"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-token-is-single-use",
+      "type": "case",
+      "key": "client/serviceenrollment-token-is-single-use",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollment",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.enrollmentToken"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-unknown-token-refused",
+      "type": "case",
+      "key": "client/serviceenrollment-unknown-token-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollment",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollmenttoken-admin-issues",
+      "type": "case",
+      "key": "client/serviceenrollmenttoken-admin-issues",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollmenttoken",
+        "resource": "serviceenrollmenttoken",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": [
+          "runtime.enrollmentTokenId",
+          "runtime.enrollmentToken"
+        ]
+      }
+    },
+    {
+      "id": "case:client/serviceenrollmenttoken-admin-issues-to-revoke",
+      "type": "case",
+      "key": "client/serviceenrollmenttoken-admin-issues-to-revoke",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollmenttoken",
+        "resource": "serviceenrollmenttoken",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": [
+          "runtime.revokedTokenId",
+          "runtime.revokedToken"
+        ]
+      }
+    },
+    {
+      "id": "case:client/serviceenrollmenttoken-admin-revokes",
+      "type": "case",
+      "key": "client/serviceenrollmenttoken-admin-revokes",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/serviceenrollmenttoken/{runtime.revokedTokenId}",
+        "resource": "serviceenrollmenttoken",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.revokedTokenId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollmenttoken-unknown-kind-rejected",
+      "type": "case",
+      "key": "client/serviceenrollmenttoken-unknown-kind-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollmenttoken",
+        "resource": "serviceenrollmenttoken",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/settings-export-rejected",
       "type": "case",
       "key": "client/settings-export-rejected",
@@ -20007,6 +20315,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\ServiceenrollmentController",
         "file": "app/api/v1/controllers/ServiceenrollmentController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:serviceenrollmenttoken",
+      "type": "controller",
+      "key": "serviceenrollmenttoken",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ServiceenrollmenttokenController",
+        "file": "app/api/v1/controllers/ServiceenrollmenttokenController.php",
         "extends": "RestController"
       }
     },
@@ -25145,6 +25464,153 @@
         "type": "varchar",
         "length": "10",
         "null": false
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.createdUser",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.createdUser",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.createdUserName",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.createdUserName",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.dateCreated",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.dateCreated",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.dateModified",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.dateModified",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.deleted",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.deleted",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.expiresAt",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.expiresAt",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_EXPIRES_AT",
+        "type": "datetime",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.id",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.id",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.kind",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.kind",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_KIND",
+        "type": "varchar",
+        "length": "20",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.modifiedUser",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.modifiedUser",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.modifiedUserName",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.modifiedUserName",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.name",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.name",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_NAME",
+        "type": "varchar",
+        "length": "100",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.tokenHash",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.tokenHash",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_TOKEN_HASH",
+        "type": "varchar",
+        "length": "64",
+        "null": false,
+        "secure": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollmenttoken.usedAt",
+      "type": "field",
+      "key": "Serviceenrollmenttoken.usedAt",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTTOKENS_USED_AT",
+        "type": "datetime",
+        "null": true
       }
     },
     {
@@ -30968,6 +31434,19 @@
       }
     },
     {
+      "id": "model:Serviceenrollmenttoken",
+      "type": "model",
+      "key": "Serviceenrollmenttoken",
+      "attributes": {
+        "file": "app/metadata/model/Serviceenrollmenttoken.php",
+        "tableName": "serviceenrollmenttokens",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
       "id": "model:Setting",
       "type": "model",
       "key": "Setting",
@@ -32692,6 +33171,42 @@
       "id": "permission:serviceenrollment.update",
       "type": "permission",
       "key": "serviceenrollment.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:serviceenrollmenttoken.create",
+      "type": "permission",
+      "key": "serviceenrollmenttoken.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:serviceenrollmenttoken.delete",
+      "type": "permission",
+      "key": "serviceenrollmenttoken.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:serviceenrollmenttoken.get",
+      "type": "permission",
+      "key": "serviceenrollmenttoken.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:serviceenrollmenttoken.update",
+      "type": "permission",
+      "key": "serviceenrollmenttoken.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -34808,6 +35323,26 @@
       }
     },
     {
+      "id": "relationship:Serviceenrollmenttoken.createdBy",
+      "type": "relationship",
+      "key": "Serviceenrollmenttoken.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Serviceenrollmenttoken.modifiedBy",
+      "type": "relationship",
+      "key": "Serviceenrollmenttoken.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
       "id": "relationship:Setting.createdBy",
       "type": "relationship",
       "key": "Setting.createdBy",
@@ -36515,6 +37050,30 @@
       }
     },
     {
+      "id": "route:DELETE /api/v1/serviceenrollmenttoken",
+      "type": "route",
+      "key": "DELETE /api/v1/serviceenrollmenttoken",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollmenttoken",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/serviceenrollmenttoken"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/serviceenrollmenttoken/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/serviceenrollmenttoken/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollmenttoken",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/serviceenrollmenttoken/{id}"
+      }
+    },
+    {
       "id": "route:DELETE /api/v1/skill",
       "type": "route",
       "key": "DELETE /api/v1/skill",
@@ -38039,6 +38598,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/serviceenrollmenttoken",
+      "type": "route",
+      "key": "GET /api/v1/serviceenrollmenttoken",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollmenttoken",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollmenttoken"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/serviceenrollmenttoken/{id}",
+      "type": "route",
+      "key": "GET /api/v1/serviceenrollmenttoken/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollmenttoken",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollmenttoken/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/serviceenrollmenttoken/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/serviceenrollmenttoken/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollmenttoken",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollmenttoken/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:GET /api/v1/setting",
       "type": "route",
       "key": "GET /api/v1/setting",
@@ -39380,6 +39975,18 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/serviceenrollment"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/serviceenrollmenttoken",
+      "type": "route",
+      "key": "OPTIONS /api/v1/serviceenrollmenttoken",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollmenttoken",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/serviceenrollmenttoken"
       }
     },
     {
@@ -41228,6 +41835,18 @@
         "version": "v1",
         "method": "POST",
         "path": "/api/v1/serviceenrollment"
+      }
+    },
+    {
+      "id": "route:POST /api/v1/serviceenrollmenttoken",
+      "type": "route",
+      "key": "POST /api/v1/serviceenrollmenttoken",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollmenttoken",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollmenttoken"
       }
     },
     {
@@ -43646,6 +44265,31 @@
       "from": "action:serviceenrollment.related",
       "type": "requires",
       "to": "permission:serviceenrollment.get"
+    },
+    {
+      "from": "action:serviceenrollmenttoken.delete",
+      "type": "requires",
+      "to": "permission:serviceenrollmenttoken.delete"
+    },
+    {
+      "from": "action:serviceenrollmenttoken.get",
+      "type": "requires",
+      "to": "permission:serviceenrollmenttoken.get"
+    },
+    {
+      "from": "action:serviceenrollmenttoken.list",
+      "type": "requires",
+      "to": "permission:serviceenrollmenttoken.get"
+    },
+    {
+      "from": "action:serviceenrollmenttoken.post",
+      "type": "requires",
+      "to": "permission:serviceenrollmenttoken.create"
+    },
+    {
+      "from": "action:serviceenrollmenttoken.related",
+      "type": "requires",
+      "to": "permission:serviceenrollmenttoken.get"
     },
     {
       "from": "action:setting.get",
@@ -50198,6 +50842,131 @@
       "to": "profile:aclScopedToken"
     },
     {
+      "from": "case:acl/acl-serviceenrollmenttoken-issue-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-issue-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-issue-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:serviceenrollmenttoken"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-issue-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:POST /api/v1/serviceenrollmenttoken"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-issue-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-allowed-default",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-allowed-default",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-allowed-default",
+      "type": "covers",
+      "to": "controller:serviceenrollmenttoken"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-allowed-default",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollmenttoken"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-allowed-default",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:serviceenrollmenttoken"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollmenttoken"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-denied-anonymous",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-denied-anonymous",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-denied-anonymous",
+      "type": "covers",
+      "to": "controller:serviceenrollmenttoken"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-denied-anonymous",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollmenttoken"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-list-denied-anonymous",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-scoped-token-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-scoped-token-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-scoped-token-denied",
+      "type": "covers",
+      "to": "controller:serviceenrollmenttoken"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-scoped-token-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollmenttoken"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollmenttoken-scoped-token-denied",
+      "type": "runs_as",
+      "to": "profile:aclScopedToken"
+    },
+    {
       "from": "case:acl/acl-setting-get-denied",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -54728,6 +55497,31 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/get-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "type": "covers",
+      "to": "controller:serviceenrollmenttoken"
+    },
+    {
+      "from": "case:backend/get-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollmenttoken"
+    },
+    {
+      "from": "case:backend/get-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/get-setting-api-v1-setting",
       "type": "asserts",
       "to": "assertion:shape"
@@ -58159,6 +58953,31 @@
     },
     {
       "from": "case:backend/post-serviceenrollment-api-v1-serviceenrollment",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "type": "covers",
+      "to": "controller:serviceenrollmenttoken"
+    },
+    {
+      "from": "case:backend/post-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
+      "type": "exercises",
+      "to": "route:POST /api/v1/serviceenrollmenttoken"
+    },
+    {
+      "from": "case:backend/post-serviceenrollmenttoken-api-v1-serviceenrollmenttoken",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -67793,6 +68612,271 @@
       "to": "profile:anonymous"
     },
     {
+      "from": "case:client/serviceenrollment-revoked-token-refused",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-revoked-token-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-revoked-token-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-revoked-token-refused",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-revoked-token-refused",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollmenttoken-admin-issues-to-revoke"
+    },
+    {
+      "from": "case:client/serviceenrollment-revoked-token-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-revoked-token-refused",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-approves-at-once",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-approves-at-once",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-approves-at-once",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-approves-at-once",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-approves-at-once",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-approves-at-once",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollmenttoken-admin-issues"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-approves-at-once",
+      "type": "exercises",
+      "to": "route:POST /api/v1/serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-approves-at-once",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-is-single-use",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-is-single-use",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-is-single-use",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-is-single-use",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-is-single-use",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollmenttoken-admin-issues"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-is-single-use",
+      "type": "exercises",
+      "to": "route:POST /api/v1/serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-token-is-single-use",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-unknown-token-refused",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-unknown-token-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-unknown-token-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-unknown-token-refused",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-unknown-token-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-unknown-token-refused",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues",
+      "type": "asserts",
+      "to": "assertion:attributesAbsent"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues",
+      "type": "covers",
+      "to": "controller:serviceenrollmenttoken"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues",
+      "type": "exercises",
+      "to": "route:POST /api/v1/serviceenrollmenttoken"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues-to-revoke",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues-to-revoke",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues-to-revoke",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues-to-revoke",
+      "type": "covers",
+      "to": "controller:serviceenrollmenttoken"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues-to-revoke",
+      "type": "exercises",
+      "to": "route:POST /api/v1/serviceenrollmenttoken"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-issues-to-revoke",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-revokes",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-revokes",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-revokes",
+      "type": "covers",
+      "to": "controller:serviceenrollmenttoken"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-revokes",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollmenttoken-admin-issues-to-revoke"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-revokes",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/serviceenrollmenttoken/{id}"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-admin-revokes",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-unknown-kind-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-unknown-kind-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-unknown-kind-rejected",
+      "type": "covers",
+      "to": "controller:serviceenrollmenttoken"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-unknown-kind-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/serviceenrollmenttoken"
+    },
+    {
+      "from": "case:client/serviceenrollmenttoken-unknown-kind-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/settings-export-rejected",
       "type": "asserts",
       "to": "assertion:shape"
@@ -73778,6 +74862,46 @@
       "to": "model:Serviceenrollment"
     },
     {
+      "from": "controller:serviceenrollmenttoken",
+      "type": "has_action",
+      "to": "action:serviceenrollmenttoken.delete"
+    },
+    {
+      "from": "controller:serviceenrollmenttoken",
+      "type": "has_action",
+      "to": "action:serviceenrollmenttoken.deleteCollection"
+    },
+    {
+      "from": "controller:serviceenrollmenttoken",
+      "type": "has_action",
+      "to": "action:serviceenrollmenttoken.get"
+    },
+    {
+      "from": "controller:serviceenrollmenttoken",
+      "type": "has_action",
+      "to": "action:serviceenrollmenttoken.list"
+    },
+    {
+      "from": "controller:serviceenrollmenttoken",
+      "type": "has_action",
+      "to": "action:serviceenrollmenttoken.options"
+    },
+    {
+      "from": "controller:serviceenrollmenttoken",
+      "type": "has_action",
+      "to": "action:serviceenrollmenttoken.post"
+    },
+    {
+      "from": "controller:serviceenrollmenttoken",
+      "type": "has_action",
+      "to": "action:serviceenrollmenttoken.related"
+    },
+    {
+      "from": "controller:serviceenrollmenttoken",
+      "type": "serves",
+      "to": "model:Serviceenrollmenttoken"
+    },
+    {
       "from": "controller:setting",
       "type": "has_action",
       "to": "action:setting.get"
@@ -75391,6 +76515,16 @@
       "from": "field:Serviceenrollment.modifiedUserName",
       "type": "linked_to",
       "to": "field:Serviceenrollment.modifiedUser"
+    },
+    {
+      "from": "field:Serviceenrollmenttoken.createdUserName",
+      "type": "linked_to",
+      "to": "field:Serviceenrollmenttoken.createdUser"
+    },
+    {
+      "from": "field:Serviceenrollmenttoken.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Serviceenrollmenttoken.modifiedUser"
     },
     {
       "from": "field:Setting.createdUserName",
@@ -79163,6 +80297,116 @@
       "to": "behaviour:softDeleteBehavior"
     },
     {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.createdUser"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.createdUserName"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.dateCreated"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.dateModified"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.deleted"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.expiresAt"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.id"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.kind"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.modifiedUser"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.modifiedUserName"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.name"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.tokenHash"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_field",
+      "to": "field:Serviceenrollmenttoken.usedAt"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_relationship",
+      "to": "relationship:Serviceenrollmenttoken.createdBy"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "has_relationship",
+      "to": "relationship:Serviceenrollmenttoken.modifiedBy"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "uses_behaviour",
+      "to": "behaviour:serviceEnrollmentTokenBehavior"
+    },
+    {
+      "from": "model:Serviceenrollmenttoken",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
       "from": "model:Setting",
       "type": "has_field",
       "to": "field:Setting.createdUser"
@@ -82900,6 +84144,16 @@
     {
       "from": "profile:aclNoSetting",
       "type": "denies",
+      "to": "permission:serviceenrollmenttoken.create"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:serviceenrollmenttoken.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
       "to": "permission:setting.get"
     },
     {
@@ -83631,6 +84885,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:serviceenrollment.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:serviceenrollmenttoken.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:serviceenrollmenttoken.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:serviceenrollmenttoken.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:serviceenrollmenttoken.update"
     },
     {
       "from": "profile:default",
@@ -84618,6 +85892,16 @@
       "to": "model:Serviceclient"
     },
     {
+      "from": "relationship:Serviceenrollmenttoken.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Serviceenrollmenttoken.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
       "from": "relationship:Setting.createdBy",
       "type": "targets",
       "to": "model:User"
@@ -85438,6 +86722,16 @@
       "to": "action:scoreboard.delete"
     },
     {
+      "from": "route:DELETE /api/v1/serviceenrollmenttoken",
+      "type": "handled_by",
+      "to": "action:serviceenrollmenttoken.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/serviceenrollmenttoken/{id}",
+      "type": "handled_by",
+      "to": "action:serviceenrollmenttoken.delete"
+    },
+    {
       "from": "route:DELETE /api/v1/skill",
       "type": "handled_by",
       "to": "action:skill.deleteCollection"
@@ -86073,6 +87367,21 @@
       "to": "action:serviceenrollment.related"
     },
     {
+      "from": "route:GET /api/v1/serviceenrollmenttoken",
+      "type": "handled_by",
+      "to": "action:serviceenrollmenttoken.list"
+    },
+    {
+      "from": "route:GET /api/v1/serviceenrollmenttoken/{id}",
+      "type": "handled_by",
+      "to": "action:serviceenrollmenttoken.get"
+    },
+    {
+      "from": "route:GET /api/v1/serviceenrollmenttoken/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:serviceenrollmenttoken.related"
+    },
+    {
       "from": "route:GET /api/v1/setting",
       "type": "handled_by",
       "to": "action:setting.list"
@@ -86631,6 +87940,11 @@
       "from": "route:OPTIONS /api/v1/serviceenrollment",
       "type": "handled_by",
       "to": "action:serviceenrollment.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/serviceenrollmenttoken",
+      "type": "handled_by",
+      "to": "action:serviceenrollmenttoken.options"
     },
     {
       "from": "route:OPTIONS /api/v1/setting",
@@ -87401,6 +88715,11 @@
       "from": "route:POST /api/v1/serviceenrollment",
       "type": "handled_by",
       "to": "action:serviceenrollment.post"
+    },
+    {
+      "from": "route:POST /api/v1/serviceenrollmenttoken",
+      "type": "handled_by",
+      "to": "action:serviceenrollmenttoken.post"
     },
     {
       "from": "route:POST /api/v1/skill",

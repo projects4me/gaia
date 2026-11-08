@@ -490,7 +490,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -892,7 +892,10 @@ VALUES
   ('atp-acl-ns-serviceclient-update', 'api-test-role-acl-ns', 'serviceclient.update', 0, NOW(), NOW()),
   -- service enrollment requests are listed and decided by admins only (D-066)
   ('atp-acl-ns-serviceenrollment-get', 'api-test-role-acl-ns', 'serviceenrollment.get', 0, NOW(), NOW()),
-  ('atp-acl-ns-serviceenrollment-update', 'api-test-role-acl-ns', 'serviceenrollment.update', 0, NOW(), NOW());
+  ('atp-acl-ns-serviceenrollment-update', 'api-test-role-acl-ns', 'serviceenrollment.update', 0, NOW(), NOW()),
+  -- enrollment tokens are issued and listed by admins only (D-070)
+  ('atp-acl-ns-setoken-get', 'api-test-role-acl-ns', 'serviceenrollmenttoken.get', 0, NOW(), NOW()),
+  ('atp-acl-ns-setoken-create', 'api-test-role-acl-ns', 'serviceenrollmenttoken.create', 0, NOW(), NOW());
 
 -- Profile aclAgent (gaia-dev scaffold api-cases --new-profile)
 INSERT INTO users (

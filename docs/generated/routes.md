@@ -550,6 +550,19 @@
 | PATCH | /api/v1/serviceenrollment/{id} | rest | serviceenrollment.patch |
 | POST | /api/v1/serviceenrollment | rest | serviceenrollment.post |
 
+<a id="serviceenrollmenttoken"></a>
+## serviceenrollmenttoken
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/serviceenrollmenttoken | rest | serviceenrollmenttoken.deleteCollection |
+| DELETE | /api/v1/serviceenrollmenttoken/{id} | rest | serviceenrollmenttoken.delete |
+| GET | /api/v1/serviceenrollmenttoken | rest | serviceenrollmenttoken.list |
+| GET | /api/v1/serviceenrollmenttoken/{id} | rest | serviceenrollmenttoken.get |
+| GET | /api/v1/serviceenrollmenttoken/{id}/{relation} | rest | serviceenrollmenttoken.related |
+| OPTIONS | /api/v1/serviceenrollmenttoken | rest | serviceenrollmenttoken.options |
+| POST | /api/v1/serviceenrollmenttoken | rest | serviceenrollmenttoken.post |
+
 <a id="setting"></a>
 ## setting
 

@@ -38,6 +38,7 @@ $config['models'] = [
     'Scoreboard',
     'Serviceclient',
     'Serviceenrollment',
+    'Serviceenrollmenttoken',
     'Skill',
     'Tag',
     'Setting',

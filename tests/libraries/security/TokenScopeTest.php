@@ -105,6 +105,8 @@ class TokenScopeTest extends TestCase
             ['enrollment.create'],
             ['enrollmenttoken.get'],
             ['serviceenrollment.update'],
+            ['serviceenrollmenttoken.create'],
+            ['serviceenrollmenttoken.create'],
             ['role.get'],
             ['role.update'],
             ['userrole.create'],

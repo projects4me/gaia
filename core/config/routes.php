@@ -301,6 +301,15 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'serviceenrollmenttoken' => array(
+                'path' => '/api/:version/serviceenrollmenttoken',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'DELETE',
+                ),
+                'identifier' => 'id',
+            ),
             'agent' => array(
                 'path' => '/api/:version/agent',
                 'allowedMethods' => array(
