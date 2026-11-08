@@ -9,7 +9,7 @@
  * client_credentials, and the scopes each kind's client gets when it is
  * created without its own list. Every kind gets serviceclient.rotate, so
  * each service can rotate its own secret. See docs/architecture/rbac/decisions.md
- * (D-062, D-063, D-067).
+ * (D-062, D-063, D-068).
  */
 $config['serviceClients'] = array(
     'kinds' => array(

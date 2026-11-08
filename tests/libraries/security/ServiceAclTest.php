@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  * `Widget` opts in for runtime reads and updates with a record filter,
  * `Gizmo` for runtime reads grouped under `Widget`, `Gear` for updates
  * without a filter, `Rotor` for updates of the calling client's own record
- * through a dedicated scope (D-067), and `Gadget` does not opt in.
+ * through a dedicated scope (D-068), and `Gadget` does not opt in.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Tests\Libraries\Security

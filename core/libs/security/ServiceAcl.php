@@ -95,7 +95,7 @@ class ServiceAcl extends Acl
         }
 
         // An action the resource grants only through a dedicated scope word
-        // needs exactly that word (D-067).
+        // needs exactly that word (D-068).
         $parts = explode('.', (string) $resourceName);
         if (count($parts) === 2) {
             $requiredScope = $this->serviceAccess->requiredScope(ucfirst($parts[0]), $parts[1]);

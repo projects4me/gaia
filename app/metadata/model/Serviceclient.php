@@ -10,7 +10,7 @@
  * secret is only stored hashed, in the oauth_clients row named by clientId
  * (kind `service`). Clients are created by enrollment; the API only lists,
  * reads and enables or disables them (status), and a service rotates its own
- * secret (rotateSecret). See rbac decisions D-062, D-063, D-067.
+ * secret (rotateSecret). See rbac decisions D-062, D-063, D-068.
  */
 $models['Serviceclient'] = array(
     'tableName' => 'serviceclients',
@@ -119,7 +119,7 @@ $models['Serviceclient'] = array(
             'acl' => false
         ),
     ),
-    // A service rotates its own secret (D-067): PATCH rotateSecret on its own
+    // A service rotates its own secret (D-068): PATCH rotateSecret on its own
     // record, granted only by the serviceclient.rotate scope.
     'acl' => array(
         'service' => array(

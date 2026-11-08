@@ -11,7 +11,7 @@ use Gaia\MVC\Models\Oauthclient;
 use Gaia\MVC\Models\Serviceclient;
 
 /**
- * Rotating a service client's secret (D-067): a new secret replaces the
+ * Rotating a service client's secret (D-068): a new secret replaces the
  * current one, and the current one stays valid for a grace period so a service
  * that crashes before it stores the new secret can still sign in and rotate
  * again. Only hashes are stored; the new secret is returned once.

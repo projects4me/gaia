@@ -98,7 +98,7 @@ class TokenScope
     /**
      * Whether the token carries this exact scope word (no wildcard matching
      * and no exclusions), for a dedicated scope a resource names as the only
-     * one that grants an action (`acl.service.scopes`, D-067).
+     * one that grants an action (`acl.service.scopes`, D-068).
      *
      * @param  string $word e.g. serviceclient.rotate
      * @return bool
@@ -115,7 +115,7 @@ class TokenScope
      * @param  string   $resourceName
      * @return bool
      */
-    protected static function matchesAny(array $patterns, $resourceName)
+    public static function matchesAny(array $patterns, $resourceName)
     {
         foreach ($patterns as $pattern) {
             $regex = '/^' . str_replace('\*', '[^.]*', preg_quote($pattern, '/')) . '$/';

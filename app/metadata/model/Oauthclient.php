@@ -70,7 +70,7 @@ $models['Oauthclient'] = array(
        ),
        // A rotated service secret's previous hash, still accepted until
        // previous_secret_expires (UTC) so a service that crashes mid-rotation
-       // is not locked out. See ServiceClientSecrets (D-067).
+       // is not locked out. See ServiceClientSecrets (D-068).
        'previous_client_secret' => array(
            'name' => 'previous_client_secret',
            'label' => 'LBL_OAUTH_CLIENTS_PREVIOUS_CLIENT_SECRET',

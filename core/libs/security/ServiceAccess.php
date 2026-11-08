@@ -28,7 +28,7 @@ namespace Gaia\Libraries\Security;
  * The filter may name the calling client with the bound placeholder
  * `:serviceClientId:` (`CLIENT_PARAM`), e.g. a service's own record. A write
  * action is open only with a filter, and only the listed `fields` may be
- * written (D-067). An action listed in `scopes` is granted only by a token
+ * written (D-068). An action listed in `scopes` is granted only by a token
  * carrying exactly that scope word, not by a pattern of the action resource.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>

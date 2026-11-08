@@ -89,7 +89,7 @@ class Pdo extends \OAuth2\Storage\Pdo
         }
 
         // A rotated secret's previous one is accepted until its grace period
-        // ends (ServiceClientSecrets, D-067).
+        // ends (ServiceClientSecrets, D-068).
         return $this->isGraceSecretLive($row['previous_secret_expires'])
             && $this->secretMatches($row['previous_client_secret'], $client_secret);
     }
@@ -157,6 +157,28 @@ class Pdo extends \OAuth2\Storage\Pdo
         if (password_verify($password, $passwordHash)) {
             return $passwordHash;
         }
+    }
+
+    /**
+     * Whether the client may use the grant type: its `grant_types` list, or
+     * the grants its kind may always use (config `kind_grant_types`, kind =>
+     * grant types; `OAuthServer` sets it, e.g. service clients and the
+     * agent-delegation grant, whose own checks decide the rest).
+     *
+     * @param  string $client_id
+     * @param  string $grant_type
+     * @return bool
+     */
+    public function checkRestrictedGrantType($client_id, $grant_type)
+    {
+        $kindGrants = isset($this->config['kind_grant_types']) ? (array) $this->config['kind_grant_types'] : [];
+        $details = $this->getClientDetails($client_id);
+        $kind = is_array($details) && isset($details['kind']) ? (string) $details['kind'] : '';
+        if ($kind !== '' && isset($kindGrants[$kind]) && in_array($grant_type, (array) $kindGrants[$kind], true)) {
+            return true;
+        }
+
+        return parent::checkRestrictedGrantType($client_id, $grant_type);
     }
 
     /**

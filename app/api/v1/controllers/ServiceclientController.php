@@ -18,7 +18,7 @@ use Gaia\Libraries\Security\ServiceAcl;
  * only `status`; `serviceClientBehavior` checks the value and cuts a disabled
  * client's tokens off. A service's own may carry only `rotateSecret: true`,
  * on its own record: it gets a new secret once, and its previous secret stays
- * valid for a grace period (D-067).
+ * valid for a grace period (D-068).
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Foundation
@@ -64,7 +64,7 @@ class ServiceclientController extends RestController
 
     /**
      * Change the client's status (a user) or rotate its secret (the service
-     * itself, with its own service token; D-067).
+     * itself, with its own service token; D-068).
      *
      * @return \Phalcon\Http\Response
      * @throws \Gaia\Exception\BadRequest

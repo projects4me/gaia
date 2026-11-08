@@ -19,7 +19,7 @@ use Gaia\MVC\Models\Serviceclient;
 use Gaia\MVC\Models\User;
 
 /**
- * Tests that a service rotates its own secret (D-067): only its own
+ * Tests that a service rotates its own secret (D-068): only its own
  * Serviceclient record, only `rotateSecret`, only with the
  * `serviceclient.rotate` scope; the new secret works at once and the previous
  * one only for the grace period.

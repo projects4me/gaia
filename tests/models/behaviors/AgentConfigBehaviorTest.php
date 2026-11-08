@@ -60,6 +60,36 @@ class AgentConfigBehaviorTest extends TestCase
     }
 
     /**
+     * delegationScopes sent as a list is stored as its JSON text.
+     *
+     * @return void
+     */
+    public function testDelegationScopesListIsStoredAsJson()
+    {
+        $model = AgentConfigFakeModel::make(['delegationScopes' => ['issue.*', 'comment.get']]);
+
+        $this->assertNotFalse((new agentConfigBehavior())->notify('beforeValidationOnCreate', $model));
+        $this->assertSame('["issue.*","comment.get"]', $model->delegationScopes);
+        $this->assertSame([], $model->messages);
+    }
+
+    /**
+     * delegationScopes must be a JSON list of permission patterns: a word
+     * without a dot would not narrow a delegated token.
+     *
+     * @return void
+     */
+    public function testDelegationScopesMustBeAListOfPermissionNames()
+    {
+        foreach (['not json', '{"a":"issue.get"}', '["application"]', '["issue.get", ""]', '[1]'] as $value) {
+            $model = AgentConfigFakeModel::make(['delegationScopes' => $value]);
+
+            $this->assertFalse((new agentConfigBehavior())->notify('beforeValidationOnCreate', $model), $value);
+            $this->assertSame(['delegationScopes'], $model->messages);
+        }
+    }
+
+    /**
      * The run limits must be positive whole numbers.
      *
      * @return void
@@ -110,6 +140,7 @@ class AgentConfigFakeModel extends \Phalcon\Mvc\Model
     public $modelConfig;
     public $maxTurns;
     public $maxRunsPerIssue;
+    public $delegationScopes;
 
     /**
      * Fields of the messages appended by the behavior.
