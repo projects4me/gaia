@@ -525,6 +525,18 @@
 | PUT | /api/v1/scoreboard | rest | scoreboard.putCollection |
 | PUT | /api/v1/scoreboard/{id} | rest | scoreboard.put |
 
+<a id="serviceclient"></a>
+## serviceclient
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/serviceclient | rest | serviceclient.list |
+| GET | /api/v1/serviceclient/{id} | rest | serviceclient.get |
+| GET | /api/v1/serviceclient/{id}/{relation} | rest | serviceclient.related |
+| OPTIONS | /api/v1/serviceclient | rest | serviceclient.options |
+| PATCH | /api/v1/serviceclient | rest | serviceclient.patchCollection |
+| PATCH | /api/v1/serviceclient/{id} | rest | serviceclient.patch |
+
 <a id="setting"></a>
 ## setting
 

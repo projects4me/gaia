@@ -243,6 +243,9 @@ psql_db "$TEST_DB" -v ON_ERROR_STOP=1 < "$ROOT_DIR/db/seeds/settings.sql" >/dev/
 echo "==> Seeding translations (db/seeds/translations.sql)"
 psql_db "$TEST_DB" -v ON_ERROR_STOP=1 < "$ROOT_DIR/db/seeds/translations.sql" >/dev/null
 
+echo "==> Marking OAuth client kinds (db/seeds/oauth_client_kinds.sql)"
+psql_db "$TEST_DB" -v ON_ERROR_STOP=1 < "$ROOT_DIR/db/seeds/oauth_client_kinds.sql" >/dev/null
+
 echo "==> Seeding deterministic fixture entities modeled on pr4m patterns"
 # password hash for: unit-testing
 # Patterns mirrored from pr4m:
@@ -487,7 +490,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -883,7 +886,10 @@ VALUES
   -- credential grants without agent.update: issuing or revoking still needs update access to the agent
   ('atp-acl-ns-agent-update', 'api-test-role-acl-ns', 'agent.update', 0, NOW(), NOW()),
   ('atp-acl-ns-agentcred-create', 'api-test-role-acl-ns', 'agentcredential.create', 1, NOW(), NOW()),
-  ('atp-acl-ns-agentcred-delete', 'api-test-role-acl-ns', 'agentcredential.delete', 1, NOW(), NOW());
+  ('atp-acl-ns-agentcred-delete', 'api-test-role-acl-ns', 'agentcredential.delete', 1, NOW(), NOW()),
+  -- service clients are administered by admins only
+  ('atp-acl-ns-serviceclient-get', 'api-test-role-acl-ns', 'serviceclient.get', 0, NOW(), NOW()),
+  ('atp-acl-ns-serviceclient-update', 'api-test-role-acl-ns', 'serviceclient.update', 0, NOW(), NOW());
 
 -- Profile aclAgent (gaia-dev scaffold api-cases --new-profile)
 INSERT INTO users (
@@ -984,22 +990,43 @@ ON CONFLICT (id) DO UPDATE SET "userId" = EXCLUDED."userId", name = EXCLUDED.nam
 
 -- Agentcredential: the aclAgent profile signs in with client_credentials (agents cannot use the
 -- password grant). Its client holds the bcrypt hash of the profile's clientSecret.
-INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id)
+INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id, kind)
 VALUES (
   'api-test-oauth-client-acl-agent', 'agent-api-tester-acl-agent',
   '$2y$10$S55LDcjkRWihbnLkitDlFudFbf7VglJUgkdwvXuOpOQsqi7OL.Y.2',
-  '', 'client_credentials', NULL, 'api-test-user-acl-agent'
+  '', 'client_credentials', NULL, 'api-test-user-acl-agent', 'agent'
 )
 ON CONFLICT (client_id) DO UPDATE SET
   client_secret = EXCLUDED.client_secret,
   grant_types = EXCLUDED.grant_types,
-  user_id = EXCLUDED.user_id;
+  user_id = EXCLUDED.user_id,
+  kind = EXCLUDED.kind;
 
 INSERT INTO agentcredentials (
   id, "agentId", "clientId", "lastUsedAt", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
 ) VALUES
   ('api-test-agentcredential-000001', 'api-test-agent-000001', 'agent-api-tester-acl-agent', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET "agentId" = EXCLUDED."agentId", "clientId" = EXCLUDED."clientId", deleted = FALSE;
+
+-- Serviceclient: a runtime service client (no user). Its oauth client holds the bcrypt hash of the
+-- serviceRuntime profile's clientSecret; client cases show its token is refused on CRUD resources.
+INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id, kind)
+VALUES (
+  'api-test-oauth-client-service', 'service-api-tester-runtime',
+  '$2y$10$W3vHdhjl0OjQmePY7V9.4OJ9Z2zrGUGSEE5.GoKvYHsbjxann90Fu',
+  '', 'client_credentials', NULL, NULL, 'service'
+)
+ON CONFLICT (client_id) DO UPDATE SET
+  client_secret = EXCLUDED.client_secret,
+  grant_types = EXCLUDED.grant_types,
+  user_id = NULL,
+  kind = EXCLUDED.kind;
+
+INSERT INTO serviceclients (
+  id, name, kind, status, scopes, "clientId", "lastUsedAt", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-serviceclient-000001', 'API Tester Runtime', 'runtime', 'active', '["agent.delegate","agent.read","project.read","issue.read"]', 'service-api-tester-runtime', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, kind = EXCLUDED.kind, status = 'active', scopes = EXCLUDED.scopes, "clientId" = EXCLUDED."clientId", deleted = FALSE;
 
 -- Toolserver: seed records (gaia-dev scaffold resource)
 INSERT INTO tool_servers (
@@ -1221,6 +1248,11 @@ data = {
       "grantType": "client_credentials",
       "clientId": "agent-api-tester-acl-agent",
       "clientSecret": "p4m_cs_api-tester-acl-agent-not-a-real-secret"
+    },
+    "serviceRuntime": {
+      "grantType": "client_credentials",
+      "clientId": "service-api-tester-runtime",
+      "clientSecret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
     }
   },
   "values": {
@@ -1266,6 +1298,7 @@ data = {
     "agentUserroleId": "api-test-userrole-acl-agent",
     "agentPermissionId": "atp-acl-acl-agent-agent-get",
     "agentcredentialId": "api-test-agentcredential-000001",
+    "serviceclientId": "api-test-serviceclient-000001",
     "toolserverId": "api-test-toolserver-000001",
     "toolId": "api-test-tool-000001",
     "agenttoolId": "api-test-agenttool-000001",

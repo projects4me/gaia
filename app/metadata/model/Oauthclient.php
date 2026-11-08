@@ -57,6 +57,17 @@ $models['Oauthclient'] = array(
            'length' => '36',
            'null' => true,
        ),
+       // Who signs in with the client: app (people, password grant), agent
+       // (an agent user, client_credentials) or service (a Serviceclient,
+       // client_credentials without a user). See ClientKind.
+       'kind' => array(
+           'name' => 'kind',
+           'label' => 'LBL_OAUTH_CLIENTS_KIND',
+           'type' => 'varchar',
+           'length' => '10',
+           'null' => false,
+           'default' => 'app',
+       ),
     ),
     'indexes' => array(
         'client_id' => 'primary',

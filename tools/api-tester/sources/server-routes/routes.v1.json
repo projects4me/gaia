@@ -257,6 +257,14 @@
             ],
             "identifier": "id"
         },
+        "serviceclient": {
+            "path": "/api/:version/serviceclient",
+            "allowedMethods": [
+                "GET",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "agent": {
             "path": "/api/:version/agent",
             "allowedMethods": [

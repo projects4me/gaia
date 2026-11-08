@@ -284,6 +284,14 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'serviceclient' => array(
+                'path' => '/api/:version/serviceclient',
+                'allowedMethods' => array(
+                    'GET',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'agent' => array(
                 'path' => '/api/:version/agent',
                 'allowedMethods' => array(

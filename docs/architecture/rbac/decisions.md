@@ -426,6 +426,28 @@ These scenarios are settled and should become tests later:
 
 ---
 
+## Client identity decisions
+
+### D-062 — Every OAuth client has a kind, and client_credentials branches on it
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | `oauth_clients.kind` is `app` (people sign in through it with the password grant), `agent` (an agent's client, issued by `AgentCredentials`) or `service` (a `Serviceclient`). The client_credentials grant (`ClientCredentialsGrant`) reads the kind (`ClientKind`) once the secret checks out. A `service` client must pass `ServiceClientGuard`: no user on the oauth client and a live, active `Serviceclient`; its token has **no user_id** and the client's scopes (a requested scope must be part of them). Every other client must pass `AgentLoginGuard::assertClientCredentialsAllowed()`, as before: bound to an active agent user, the token is that user's. An `app` client has no agent user, so it gets nothing, and the agent guard refuses a `service` client whatever user it names. A disabled or deleted service client gets nothing. |
+| Rationale | Services (Talos runtimes, Hermes, later Ares) need an identity of their own that can never be taken for an agent, which is a user. Branching on a stored kind, not on whether a user is bound, keeps the two paths apart. |
+| Implications | The column defaults to `app`; `db/seeds/oauth_client_kinds.sql` (idempotent) marks existing agent clients `agent`, and `AgentCredentials::issue()` sets it on every issue or rotation. Agent clients not yet marked keep working, because only `service` takes the service path. A service token on any CRUD resource fails as any token without a user does (`RestController::setUser()` answers 403 Invalid Token); what service tokens may reach is a later decision. Service secrets are stored hashed like agent secrets: `core/libs/oauth2.0/storage/pdo.php` already checks a secret stored with PHP's password_hash. |
+
+### D-063 — Service clients are not users and are administered by admins only
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | A `Serviceclient` (name, kind, status, scopes, last use, oauth client id) has no row in `users`, so it is in no user list or picker. Its kind is a configured kind of service (`config/serviceclients.php`: `runtime`, `hermes`); a client created without scopes gets its kind's defaults (`ServiceClientScopes::defaultsFor()`). The API lists, reads and changes the status (active or disabled) of a client; any other change is refused (400), kind and oauth client id never change (`serviceClientBehavior`), and clients are created by enrollment, not POST. Disabling a client deletes its access tokens. The permissions are granted to admins by hand (no seed). |
+| Rationale | A service is infrastructure, not a person or an agent: modelling it as a user would put it in assignment pickers and under user-scoped ACL. |
+| Implications | Enrollment, secret rotation and what service tokens may access are later issues. |
+
+---
+
 ## Open questions
 
 Track unsettled policy here. Do not generate tests from these until accepted.
@@ -446,6 +468,7 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 
 | Date | Change |
 |------|--------|
+| 2026-11-09 | D-062, D-063: OAuth client kinds (app, agent, service); client_credentials branches on the kind; service clients get tokens without a user and are administered by admins only |
 | 2026-10-28 | D-061: session expiry stored per refresh token (`rememberMe`, `sessionExpires`) and sliding on refresh; a later sign-in no longer shortens other sessions |
 | 2026-09-15 | D-060: `project.get` scopes 0/1/2 (none/all/members); membership cascade via `groupKeys`; seed default members |
 | 2026-08-11 | D-011 revised: full-catalog materialization at role create via `RolePermissionSeeder`, seeded from resolution mode only (no role-name force-allow; privilege stays capability-based, D-052); missing rows still follow live resolution mode (catalog growth). D-014: `system.acl.resolutionMode` is create-time seed + aggregation + missing-row policy; flips do not rewrite rows. D-037: unset/DELETE → explicit `none`/deny (no row delete) |

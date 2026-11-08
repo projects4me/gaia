@@ -6,6 +6,7 @@
 
 namespace Gaia\Libraries\Agents;
 
+use Gaia\Libraries\Authorization\ClientKind;
 use Gaia\MVC\Models\Agent;
 use Gaia\MVC\Models\Agentcredential;
 use Gaia\MVC\Models\Oauthclient;
@@ -88,6 +89,7 @@ class AgentCredentials
             $client->grant_types = self::GRANT_TYPES;
             $client->scope = null;
             $client->user_id = $agent->userId;
+            $client->kind = ClientKind::AGENT;
             $this->save($client);
             $this->deleteAccessTokens($client->client_id);
 
