@@ -18,4 +18,4 @@
 - anonymous no login | allow 0, members 0, deny 0 | cases 39
 - default role Admin | allow 184, members 0, deny 0 | cases 602 | Admin role of the seeded main user
 - serviceHermes no login | allow 0, members 0, deny 0 | cases 5
-- serviceRuntime no login | allow 0, members 0, deny 0 | cases 2
+- serviceRuntime no login | allow 0, members 0, deny 0 | cases 6

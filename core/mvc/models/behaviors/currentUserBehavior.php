@@ -34,6 +34,8 @@ class currentUserBehavior extends Behavior implements BehaviorInterface
 
     /**
      * This function executes a query that will create a user defined variable.
+     * A service request has no current user (D-066); the variable is then
+     * empty, so nothing keyed on it matches.
      *
      * @param $model
      */
@@ -41,7 +43,8 @@ class currentUserBehavior extends Behavior implements BehaviorInterface
     {
         global $currentUser;
 
-        $query = $model->getDI()->get('dialect')->setCurrentUserIdentifier($currentUser->id);
+        $userId = isset($currentUser->id) ? (string) $currentUser->id : '';
+        $query = $model->getDI()->get('dialect')->setCurrentUserIdentifier($userId);
         $model->getReadConnection()->query($query);
     }
 }

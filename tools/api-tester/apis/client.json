@@ -5043,9 +5043,9 @@
         "page": 1
       },
       "expects": {
-        "status": 403,
+        "status": 401,
         "shape": "error",
-        "errorEqual": "Invalid Token"
+        "errorEqual": "Access Denied"
       }
     },
     {

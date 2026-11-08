@@ -58,4 +58,23 @@ class ServiceClientGuard
 
         return $serviceClient;
     }
+
+    /**
+     * The service client a user-less access token was issued to, or a
+     * rejection: its client must still be an active service client, so a
+     * disabled or deleted client's tokens stop working (D-066).
+     *
+     * @param  \Gaia\MVC\Models\Oauthaccesstoken $accessToken
+     * @return Serviceclient
+     * @throws UnAuthorized
+     */
+    public static function assertServiceTokenAllowed($accessToken)
+    {
+        $clientId = isset($accessToken->client_id) ? (string) $accessToken->client_id : '';
+        if ($clientId === '') {
+            throw new UnAuthorized(self::CLIENT_NOT_SERVICE_ERROR);
+        }
+
+        return self::assertClientCredentialsAllowed($clientId);
+    }
 }
