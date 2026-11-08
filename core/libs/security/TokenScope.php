@@ -95,6 +95,19 @@ class TokenScope
     }
 
     /**
+     * Whether the token carries this exact scope word (no wildcard matching
+     * and no exclusions), for a dedicated scope a resource names as the only
+     * one that grants an action (`acl.service.scopes`, D-067).
+     *
+     * @param  string $word e.g. serviceclient.rotate
+     * @return bool
+     */
+    public function names($word)
+    {
+        return in_array(strtolower((string) $word), $this->patterns, true);
+    }
+
+    /**
      * Whether any pattern matches the resource; `*` matches within one segment.
      *
      * @param  string[] $patterns

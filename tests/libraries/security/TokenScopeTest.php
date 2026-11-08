@@ -118,4 +118,13 @@ class TokenScopeTest extends TestCase
     {
         $this->assertTrue((new TokenScope('agent.get'))->covers('agent.get'));
     }
+
+    public function testNamesMatchesOnlyTheExactWord()
+    {
+        $this->assertTrue((new TokenScope('issue.get Serviceclient.Rotate'))->names('serviceclient.rotate'));
+
+        foreach (['serviceclient.*', '*.*', 'serviceclient.rotate.x', 'application', ''] as $scope) {
+            $this->assertFalse((new TokenScope($scope))->names('serviceclient.rotate'), $scope);
+        }
+    }
 }

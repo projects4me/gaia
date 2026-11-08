@@ -9,6 +9,8 @@
 - client_secret varchar(80) required
 - grant_types varchar(80)
 - kind varchar(10) required
+- previous_client_secret varchar(80)
+- previous_secret_expires datetime
 - redirect_uri varchar(2000) required
 - scope varchar(100)
 - user_id varchar(36)

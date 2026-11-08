@@ -2580,6 +2580,60 @@
       "query": { "limit": 5, "page": 1 },
       "expects": { "status": 401, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-serviceclient-rotate-other-denied",
+      "method": "PATCH",
+      "path": "/api/v1/serviceclient/{otherServiceclientId}",
+      "resource": "serviceclient",
+      "auth": "serviceRuntime",
+      "body": {
+        "data": {
+          "type": "serviceclient",
+          "id": "{otherServiceclientId}",
+          "attributes": {
+            "rotateSecret": true
+          }
+        }
+      },
+      "expects": { "status": 401, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-serviceclient-status-denied",
+      "method": "PATCH",
+      "path": "/api/v1/serviceclient/{serviceclientId}",
+      "resource": "serviceclient",
+      "auth": "serviceRuntime",
+      "body": {
+        "data": {
+          "type": "serviceclient",
+          "id": "{serviceclientId}",
+          "attributes": {
+            "status": "disabled"
+          }
+        }
+      },
+      "expects": { "status": 401, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-serviceclient-rotate-without-scope-denied",
+      "method": "PATCH",
+      "path": "/api/v1/serviceclient/{otherServiceclientId}",
+      "resource": "serviceclient",
+      "auth": "serviceHermes",
+      "body": {
+        "data": {
+          "type": "serviceclient",
+          "id": "{otherServiceclientId}",
+          "attributes": {
+            "rotateSecret": true
+          }
+        }
+      },
+      "expects": { "status": 401, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-service-token"
     }
   ]
 }

@@ -99,6 +99,7 @@
     "agentPermissionId": "atp-acl-acl-agent-agent-get",
     "agentcredentialId": "api-test-agentcredential-000001",
     "serviceclientId": "api-test-serviceclient-000001",
+    "otherServiceclientId": "api-test-serviceclient-000002",
     "toolserverId": "api-test-toolserver-000001",
     "toolId": "api-test-tool-000001",
     "agenttoolId": "api-test-agenttool-000001",

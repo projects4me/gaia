@@ -44,11 +44,31 @@ class ServiceAccessTest extends TestCase
         $this->assertFalse($this->access()->allows('Reading', 'get', 'runtime'));
     }
 
-    public function testWritesAreDeniedEvenWhenListed()
+    public function testCreateAndDeleteAreDeniedEvenWhenListed()
     {
-        foreach (['create', 'update', 'delete'] as $action) {
+        foreach (['create', 'delete'] as $action) {
             $this->assertFalse($this->access()->allows('Widget', $action, 'runtime'), $action);
         }
+    }
+
+    public function testUpdateIsOpenOnlyWithARecordFilter()
+    {
+        $this->assertTrue($this->access()->allows('Widget', 'update', 'runtime'));
+        $this->assertFalse($this->access()->allows('Gear', 'update', 'runtime'));
+    }
+
+    public function testOnlyListedFieldsMayBeWritten()
+    {
+        $this->assertTrue($this->access()->allowsFieldWrite('Widget', 'rotateSecret'));
+        $this->assertFalse($this->access()->allowsFieldWrite('Widget', 'status'));
+        $this->assertFalse($this->access()->allowsFieldWrite('Gear', 'rotateSecret'));
+    }
+
+    public function testRequiredScopeComesFromMetadata()
+    {
+        $this->assertSame('widget.rotate', $this->access()->requiredScope('Widget', 'update'));
+        $this->assertNull($this->access()->requiredScope('Widget', 'get'));
+        $this->assertNull($this->access()->requiredScope('Gadget', 'update'));
     }
 
     public function testRecordFilterComesFromMetadata()
@@ -71,6 +91,12 @@ class ServiceAccessTest extends TestCase
                         'actions' => ['get', 'create', 'update', 'delete'],
                         'kinds' => ['runtime'],
                         'filter' => 'Widget.shared = 1',
+                        'fields' => ['rotateSecret'],
+                        'scopes' => ['update' => 'widget.rotate'],
+                    ]]],
+                    'Gear' => ['acl' => ['service' => [
+                        'actions' => ['get', 'update'],
+                        'kinds' => ['runtime'],
                     ]]],
                     'Reading' => ['acl' => ['service' => [
                         'actions' => ['list'],
