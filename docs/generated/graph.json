@@ -4089,6 +4089,24 @@
       }
     },
     {
+      "id": "case:acl/acl-agent-patch-own-delegation-scopes-denied",
+      "type": "case",
+      "key": "acl/acl-agent-patch-own-delegation-scopes-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/agent/{agentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-agent",
+        "placeholders": [
+          "agentId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-agent-patch-own-user-denied",
       "type": "case",
       "key": "acl/acl-agent-patch-own-user-denied",
@@ -20361,6 +20379,16 @@
       "attributes": {
         "label": "LBL_AGENTS_DATE_MODIFIED",
         "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Agent.delegationScopes",
+      "type": "field",
+      "key": "Agent.delegationScopes",
+      "attributes": {
+        "label": "LBL_AGENTS_DELEGATION_SCOPES",
+        "type": "text",
         "null": true
       }
     },
@@ -44539,6 +44567,41 @@
     },
     {
       "from": "case:acl/acl-agent-patch-own-agent-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-delegation-scopes-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-delegation-scopes-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-delegation-scopes-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-delegation-scopes-denied",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-delegation-scopes-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-delegation-scopes-denied",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-agent-patch-own-delegation-scopes-denied",
       "type": "uses_fixture",
       "to": "fixture:agentId"
     },
@@ -74871,6 +74934,11 @@
       "from": "model:Agent",
       "type": "has_field",
       "to": "field:Agent.dateModified"
+    },
+    {
+      "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.delegationScopes"
     },
     {
       "from": "model:Agent",

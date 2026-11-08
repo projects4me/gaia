@@ -80,6 +80,14 @@ $models['Agent'] = array(
             'length' => '25',
             'null' => true,
         ),
+        // JSON list of permission patterns a runtime may act with for this
+        // agent (agent-delegation grant, D-067). Empty: never delegated.
+        'delegationScopes' => array(
+            'name' => 'delegationScopes',
+            'label' => 'LBL_AGENTS_DELEGATION_SCOPES',
+            'type' => 'text',
+            'null' => true,
+        ),
         'createdUser' => array(
             'name' => 'createdUser',
             'label' => 'LBL_AGENTS_CREATED_USER',

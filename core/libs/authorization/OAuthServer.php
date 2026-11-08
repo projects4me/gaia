@@ -43,6 +43,7 @@ class OAuthServer
         'password'        => 'addPasswordGrant',
         'refresh_token'   => 'addRefreshTokenGrant',
         'client_credentials' => 'addClientCredentialsGrant',
+        AgentDelegationGrant::GRANT_TYPE => 'addAgentDelegationGrant',
     ];
 
     /**
@@ -68,7 +69,12 @@ class OAuthServer
         );
 
 
-        $this->storage = new \Gaia\Libraries\Oauth\Storage\Pdo($pdo, ['user_table' => 'users']);
+        // A service client's scopes, not its grant_types, decide whether it
+        // may delegate (D-067).
+        $this->storage = new \Gaia\Libraries\Oauth\Storage\Pdo($pdo, [
+            'user_table' => 'users',
+            'kind_grant_types' => [ClientKind::SERVICE => [AgentDelegationGrant::GRANT_TYPE]],
+        ]);
         $this->server = new OAuth2\Server($this->storage, $config);
         $this->request = $request;
     }
@@ -180,6 +186,17 @@ class OAuthServer
     protected function addClientCredentialsGrant()
     {
         $this->server->addGrantType(new ClientCredentialsGrant($this->storage));
+    }
+
+    /**
+     * Adds the agent-delegation grant, for runtimes acting as an agent
+     * (see `AgentDelegationGrant`).
+     *
+     * @method addAgentDelegationGrant
+     */
+    protected function addAgentDelegationGrant()
+    {
+        $this->server->addGrantType(new AgentDelegationGrant($this->storage));
     }
 
     /**
