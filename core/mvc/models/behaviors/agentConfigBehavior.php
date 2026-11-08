@@ -6,6 +6,7 @@
 
 namespace Gaia\MVC\Models\Behaviors;
 
+use Gaia\Libraries\Agents\AgentDelegationScopes;
 use Phalcon\Messages\Message;
 use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\BehaviorInterface;
@@ -13,7 +14,9 @@ use Phalcon\Mvc\Model\Behavior;
 
 /**
  * This behavior checks an agent's runtime config: `modelConfig` is a JSON
- * object (an object sent as JSON is stored as its JSON text), `maxTurns` and
+ * object (an object sent as JSON is stored as its JSON text),
+ * `delegationScopes` is a JSON list of permission patterns (see
+ * `AgentDelegationScopes`; a list is stored as its JSON text), `maxTurns` and
  * `maxRunsPerIssue` are positive whole numbers, and `userId` never changes
  * once the agent exists, so the agent stays tied to its users row.
  *
@@ -89,6 +92,20 @@ class agentConfigBehavior extends Behavior implements BehaviorInterface
                 $model->appendMessage(new Message('modelConfig must be a JSON object', 'modelConfig'));
                 return false;
             }
+        }
+
+        $delegationScopes = $model->readAttribute('delegationScopes');
+        if (is_array($delegationScopes)) {
+            $delegationScopes = json_encode(array_values($delegationScopes));
+            $model->writeAttribute('delegationScopes', $delegationScopes);
+        }
+
+        if (AgentDelegationScopes::decode($delegationScopes) === null) {
+            $model->appendMessage(new Message(
+                'delegationScopes must be a JSON list of permission names, such as ["issue.get", "comment.*"]',
+                'delegationScopes'
+            ));
+            return false;
         }
 
         foreach (self::POSITIVE_INT_FIELDS as $field) {

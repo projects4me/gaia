@@ -1595,6 +1595,24 @@
       "source": "acl-agent"
     },
     {
+      "id": "acl-agent-patch-own-delegation-scopes-denied",
+      "method": "PATCH",
+      "path": "/api/v1/agent/{agentId}",
+      "resource": "agent",
+      "auth": "aclAgent",
+      "body": {
+        "data": {
+          "type": "agent",
+          "id": "{agentId}",
+          "attributes": {
+            "delegationScopes": ["*.*"]
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "An agent cannot change or delete its own agent record." },
+      "source": "acl-agent"
+    },
+    {
       "id": "acl-agent-delete-own-agent-denied",
       "method": "DELETE",
       "path": "/api/v1/agent/{agentId}",

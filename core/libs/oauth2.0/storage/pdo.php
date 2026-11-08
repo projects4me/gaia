@@ -118,6 +118,28 @@ class Pdo extends \OAuth2\Storage\Pdo
     }
 
     /**
+     * Whether the client may use the grant type: its `grant_types` list, or
+     * the grants its kind may always use (config `kind_grant_types`, kind =>
+     * grant types; `OAuthServer` sets it, e.g. service clients and the
+     * agent-delegation grant, whose own checks decide the rest).
+     *
+     * @param  string $client_id
+     * @param  string $grant_type
+     * @return bool
+     */
+    public function checkRestrictedGrantType($client_id, $grant_type)
+    {
+        $kindGrants = isset($this->config['kind_grant_types']) ? (array) $this->config['kind_grant_types'] : [];
+        $details = $this->getClientDetails($client_id);
+        $kind = is_array($details) && isset($details['kind']) ? (string) $details['kind'] : '';
+        if ($kind !== '' && isset($kindGrants[$kind]) && in_array($grant_type, (array) $kindGrants[$kind], true)) {
+            return true;
+        }
+
+        return parent::checkRestrictedGrantType($client_id, $grant_type);
+    }
+
+    /**
      * Sets the session window that the next refresh token stored by this
      * request carries (see `Gaia\Libraries\Authorization\SessionExpiry`).
      *

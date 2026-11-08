@@ -14,9 +14,10 @@ use Gaia\MVC\Models\Userrole;
 
 /**
  * Stops an agent from raising its own privileges, whatever its ACL allows:
- * an agent user cannot change or delete its own agent (the agents row and its
- * users row), assign or remove its own roles, or change the permissions of a
- * role it holds, or change its own tool grants. Human users are not affected.
+ * an agent user cannot change or delete its own agent (the agents row, so
+ * also its delegation scopes (D-067), and its users row), assign or remove
+ * its own roles, or change the permissions of a role it holds, or change its
+ * own tool grants. Human users are not affected.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Security

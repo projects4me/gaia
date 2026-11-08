@@ -101,7 +101,7 @@ class TokenScope
      * @param  string   $resourceName
      * @return bool
      */
-    protected static function matchesAny(array $patterns, $resourceName)
+    public static function matchesAny(array $patterns, $resourceName)
     {
         foreach ($patterns as $pattern) {
             $regex = '/^' . str_replace('\*', '[^.]*', preg_quote($pattern, '/')) . '$/';

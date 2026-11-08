@@ -7,7 +7,7 @@
 <a id="profiles"></a>
 ## Profiles
 
-- aclAgent role ACL Agent | allow 27, members 0, deny 1 | cases 22 | ACL Agent
+- aclAgent role ACL Agent | allow 27, members 0, deny 1 | cases 23 | ACL Agent
 - aclFields role ACL Field Restricted | allow 8, members 0, deny 7 | cases 25 | issue field ACL matrix for api-tester
 - aclMembers role ACL Project Members | allow 14, members 1, deny 6 | cases 52 | project.get=2 members scope
 - aclNoConversation role ACL No Conversation | allow 3, members 0, deny 1 | cases 3 | project+comment allowed, conversationroom.get denied

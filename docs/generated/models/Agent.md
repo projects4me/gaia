@@ -5,6 +5,7 @@
 <a id="fields"></a>
 ## Fields
 
+- delegationScopes text
 - maxRunsPerIssue int
 - maxTurns int
 - modelConfig text
@@ -35,4 +36,4 @@
 - controller: Gaia\MVC\REST\Controllers\AgentController
 - routes: DELETE /api/v1/agent, DELETE /api/v1/agent/{id}, GET /api/v1/agent, GET /api/v1/agent/{id}, GET /api/v1/agent/{id}/{relation}, OPTIONS /api/v1/agent, PATCH /api/v1/agent, PATCH /api/v1/agent/{id}, POST /api/v1/agent, PUT /api/v1/agent, PUT /api/v1/agent/{id}
 - components: -
-- cases: 19 (acl 8, backend 6, client 5); gaia-dev cases agent
+- cases: 20 (acl 9, backend 6, client 5); gaia-dev cases agent
