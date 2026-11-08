@@ -1881,6 +1881,48 @@
       "attributes": {}
     },
     {
+      "id": "action:serviceenrollment.get",
+      "type": "action",
+      "key": "serviceenrollment.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceenrollment.list",
+      "type": "action",
+      "key": "serviceenrollment.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceenrollment.options",
+      "type": "action",
+      "key": "serviceenrollment.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceenrollment.patch",
+      "type": "action",
+      "key": "serviceenrollment.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceenrollment.patchCollection",
+      "type": "action",
+      "key": "serviceenrollment.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceenrollment.post",
+      "type": "action",
+      "key": "serviceenrollment.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:serviceenrollment.related",
+      "type": "action",
+      "key": "serviceenrollment.related",
+      "attributes": {}
+    },
+    {
       "id": "action:setting.get",
       "type": "action",
       "key": "setting.get",
@@ -3711,6 +3753,18 @@
       "attributes": {
         "class": "Gaia\\MVC\\Models\\Behaviors\\serviceClientBehavior",
         "file": "core/mvc/models/behaviors/serviceClientBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
+      "id": "behaviour:serviceEnrollmentBehavior",
+      "type": "behaviour",
+      "key": "serviceEnrollmentBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\serviceEnrollmentBehavior",
+        "file": "core/mvc/models/behaviors/serviceEnrollmentBehavior.php",
         "hooks": [
           "notify"
         ]
@@ -6379,6 +6433,90 @@
       }
     },
     {
+      "id": "case:acl/acl-serviceenrollment-list-allowed-default",
+      "type": "case",
+      "key": "acl/acl-serviceenrollment-list-allowed-default",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "acl-serviceenrollment",
+        "placeholders": [
+          "serviceenrollmentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-serviceenrollment-list-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-serviceenrollment-list-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "acl-serviceenrollment",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-serviceenrollment-list-denied-anonymous",
+      "type": "case",
+      "key": "acl/acl-serviceenrollment-list-denied-anonymous",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "acl-serviceenrollment",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-serviceenrollment-patch-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-serviceenrollment-patch-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceenrollment/{serviceenrollmentId}",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "acl-serviceenrollment",
+        "placeholders": [
+          "serviceenrollmentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-serviceenrollment-scoped-token-denied",
+      "type": "case",
+      "key": "acl/acl-serviceenrollment-scoped-token-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "acl-serviceenrollment",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-setting-get-denied",
       "type": "case",
       "key": "acl/acl-setting-get-denied",
@@ -8892,6 +9030,22 @@
       }
     },
     {
+      "id": "case:backend/get-serviceenrollment-api-v1-serviceenrollment",
+      "type": "case",
+      "key": "backend/get-serviceenrollment-api-v1-serviceenrollment",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/get-setting-api-v1-setting",
       "type": "case",
       "key": "backend/get-setting-api-v1-setting",
@@ -10821,6 +10975,22 @@
         "stores": [
           "runtime.savedsearchId"
         ]
+      }
+    },
+    {
+      "id": "case:backend/post-serviceenrollment-api-v1-serviceenrollment",
+      "type": "case",
+      "key": "backend/post-serviceenrollment-api-v1-serviceenrollment",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollment",
+        "resource": "serviceenrollment",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
       }
     },
     {
@@ -15918,6 +16088,248 @@
       }
     },
     {
+      "id": "case:client/serviceenrollment-admin-approves",
+      "type": "case",
+      "key": "client/serviceenrollment-admin-approves",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.enrollmentId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-anonymous-patch-refused",
+      "type": "case",
+      "key": "client/serviceenrollment-anonymous-patch-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.enrollmentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-delivered-cannot-be-denied",
+      "type": "case",
+      "key": "client/serviceenrollment-delivered-cannot-be-denied",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.enrollmentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-enrolled-client-gets-token",
+      "type": "case",
+      "key": "client/serviceenrollment-enrolled-client-gets-token",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/token",
+        "resource": "token",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.enrolledClientId",
+          "runtime.enrolledClientSecret"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-expired-cannot-be-approved",
+      "type": "case",
+      "key": "client/serviceenrollment-expired-cannot-be-approved",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceenrollment/{serviceenrollmentId}",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "serviceenrollmentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-patch-other-field-rejected",
+      "type": "case",
+      "key": "client/serviceenrollment-patch-other-field-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.enrollmentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-poll-delivers-only-once",
+      "type": "case",
+      "key": "client/serviceenrollment-poll-delivers-only-once",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.enrollmentId",
+          "runtime.enrollmentPollToken"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-poll-delivers-secret",
+      "type": "case",
+      "key": "client/serviceenrollment-poll-delivers-secret",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.enrollmentId",
+          "runtime.enrollmentPollToken"
+        ],
+        "stores": [
+          "runtime.enrolledClientId",
+          "runtime.enrolledClientSecret"
+        ]
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-poll-expired",
+      "type": "case",
+      "key": "client/serviceenrollment-poll-expired",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment/{serviceenrollmentId}",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "serviceenrollmentId",
+          "serviceenrollmentPollToken"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-poll-pending-gives-no-secret",
+      "type": "case",
+      "key": "client/serviceenrollment-poll-pending-gives-no-secret",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.enrollmentId",
+          "runtime.enrollmentPollToken"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-poll-wrong-token-not-found",
+      "type": "case",
+      "key": "client/serviceenrollment-poll-wrong-token-not-found",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [
+          "runtime.enrollmentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-request-anonymous",
+      "type": "case",
+      "key": "client/serviceenrollment-request-anonymous",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollment",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": [
+          "runtime.enrollmentId",
+          "runtime.enrollmentPollToken"
+        ]
+      }
+    },
+    {
+      "id": "case:client/serviceenrollment-request-unknown-kind-rejected",
+      "type": "case",
+      "key": "client/serviceenrollment-request-unknown-kind-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollment",
+        "resource": "serviceenrollment",
+        "enabled": true,
+        "source": "client",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/settings-export-rejected",
       "type": "case",
       "key": "client/settings-export-rejected",
@@ -19216,6 +19628,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\ServiceclientController",
         "file": "app/api/v1/controllers/ServiceclientController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:serviceenrollment",
+      "type": "controller",
+      "key": "serviceenrollment",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ServiceenrollmentController",
+        "file": "app/api/v1/controllers/ServiceenrollmentController.php",
         "extends": "RestController"
       }
     },
@@ -24127,6 +24550,202 @@
         "length": "20",
         "null": false,
         "default": "active"
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.approvedBy",
+      "type": "field",
+      "key": "Serviceenrollment.approvedBy",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_APPROVED_BY",
+        "type": "varchar",
+        "length": "36",
+        "null": true,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.createdUser",
+      "type": "field",
+      "key": "Serviceenrollment.createdUser",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.createdUserName",
+      "type": "field",
+      "key": "Serviceenrollment.createdUserName",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.dateCreated",
+      "type": "field",
+      "key": "Serviceenrollment.dateCreated",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.dateModified",
+      "type": "field",
+      "key": "Serviceenrollment.dateModified",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.deleted",
+      "type": "field",
+      "key": "Serviceenrollment.deleted",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.expiresAt",
+      "type": "field",
+      "key": "Serviceenrollment.expiresAt",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_EXPIRES_AT",
+        "type": "datetime",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.id",
+      "type": "field",
+      "key": "Serviceenrollment.id",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.kind",
+      "type": "field",
+      "key": "Serviceenrollment.kind",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_KIND",
+        "type": "varchar",
+        "length": "20",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.modifiedUser",
+      "type": "field",
+      "key": "Serviceenrollment.modifiedUser",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.modifiedUserName",
+      "type": "field",
+      "key": "Serviceenrollment.modifiedUserName",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.name",
+      "type": "field",
+      "key": "Serviceenrollment.name",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_NAME",
+        "type": "varchar",
+        "length": "100",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.pollTokenHash",
+      "type": "field",
+      "key": "Serviceenrollment.pollTokenHash",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_POLL_TOKEN_HASH",
+        "type": "varchar",
+        "length": "64",
+        "null": false,
+        "secure": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.requesterIp",
+      "type": "field",
+      "key": "Serviceenrollment.requesterIp",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_REQUESTER_IP",
+        "type": "varchar",
+        "length": "45",
+        "null": false,
+        "secure": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.serviceclientId",
+      "type": "field",
+      "key": "Serviceenrollment.serviceclientId",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_SERVICECLIENT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.status",
+      "type": "field",
+      "key": "Serviceenrollment.status",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_STATUS",
+        "type": "varchar",
+        "length": "20",
+        "null": false,
+        "default": "pending"
+      }
+    },
+    {
+      "id": "field:Serviceenrollment.userCode",
+      "type": "field",
+      "key": "Serviceenrollment.userCode",
+      "attributes": {
+        "label": "LBL_SERVICEENROLLMENTS_USER_CODE",
+        "type": "varchar",
+        "length": "10",
+        "null": false
       }
     },
     {
@@ -29071,6 +29690,22 @@
       }
     },
     {
+      "id": "fixture:serviceenrollmentId",
+      "type": "fixture",
+      "key": "serviceenrollmentId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:serviceenrollmentPollToken",
+      "type": "fixture",
+      "key": "serviceenrollmentPollToken",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:skillId",
       "type": "fixture",
       "key": "skillId",
@@ -29852,6 +30487,19 @@
       "attributes": {
         "file": "app/metadata/model/Serviceclient.php",
         "tableName": "serviceclients",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
+      }
+    },
+    {
+      "id": "model:Serviceenrollment",
+      "type": "model",
+      "key": "Serviceenrollment",
+      "attributes": {
+        "file": "app/metadata/model/Serviceenrollment.php",
+        "tableName": "serviceenrollments",
         "isView": false,
         "registered": true,
         "hasMetadata": true,
@@ -31537,6 +32185,42 @@
       "id": "permission:serviceclient.update",
       "type": "permission",
       "key": "serviceclient.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:serviceenrollment.create",
+      "type": "permission",
+      "key": "serviceenrollment.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:serviceenrollment.delete",
+      "type": "permission",
+      "key": "serviceenrollment.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:serviceenrollment.get",
+      "type": "permission",
+      "key": "serviceenrollment.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:serviceenrollment.update",
+      "type": "permission",
+      "key": "serviceenrollment.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -33609,6 +34293,46 @@
       "attributes": {
         "kind": "hasOne",
         "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Serviceenrollment.approver",
+      "type": "relationship",
+      "key": "Serviceenrollment.approver",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "approvedBy",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Serviceenrollment.createdBy",
+      "type": "relationship",
+      "key": "Serviceenrollment.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Serviceenrollment.modifiedBy",
+      "type": "relationship",
+      "key": "Serviceenrollment.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Serviceenrollment.serviceclient",
+      "type": "relationship",
+      "key": "Serviceenrollment.serviceclient",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "serviceclientId",
         "relatedKey": "id"
       }
     },
@@ -36808,6 +37532,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/serviceenrollment",
+      "type": "route",
+      "key": "GET /api/v1/serviceenrollment",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollment",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/serviceenrollment/{id}",
+      "type": "route",
+      "key": "GET /api/v1/serviceenrollment/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollment",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/serviceenrollment/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/serviceenrollment/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollment",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/serviceenrollment/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:GET /api/v1/setting",
       "type": "route",
       "key": "GET /api/v1/setting",
@@ -38140,6 +38900,18 @@
       }
     },
     {
+      "id": "route:OPTIONS /api/v1/serviceenrollment",
+      "type": "route",
+      "key": "OPTIONS /api/v1/serviceenrollment",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollment",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/serviceenrollment"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/setting",
       "type": "route",
       "key": "OPTIONS /api/v1/setting",
@@ -39148,6 +39920,30 @@
       }
     },
     {
+      "id": "route:PATCH /api/v1/serviceenrollment",
+      "type": "route",
+      "key": "PATCH /api/v1/serviceenrollment",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollment",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/serviceenrollment"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/serviceenrollment/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/serviceenrollment/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollment",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/serviceenrollment/{id}"
+      }
+    },
+    {
       "id": "route:PATCH /api/v1/setting",
       "type": "route",
       "key": "PATCH /api/v1/setting",
@@ -39949,6 +40745,18 @@
         "version": "v1",
         "method": "POST",
         "path": "/api/v1/scoreboard"
+      }
+    },
+    {
+      "id": "route:POST /api/v1/serviceenrollment",
+      "type": "route",
+      "key": "POST /api/v1/serviceenrollment",
+      "attributes": {
+        "type": "rest",
+        "name": "serviceenrollment",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/serviceenrollment"
       }
     },
     {
@@ -42337,6 +43145,36 @@
       "from": "action:serviceclient.related",
       "type": "requires",
       "to": "permission:serviceclient.get"
+    },
+    {
+      "from": "action:serviceenrollment.get",
+      "type": "requires",
+      "to": "permission:serviceenrollment.get"
+    },
+    {
+      "from": "action:serviceenrollment.list",
+      "type": "requires",
+      "to": "permission:serviceenrollment.get"
+    },
+    {
+      "from": "action:serviceenrollment.patch",
+      "type": "requires",
+      "to": "permission:serviceenrollment.update"
+    },
+    {
+      "from": "action:serviceenrollment.patchCollection",
+      "type": "requires",
+      "to": "permission:serviceenrollment.update"
+    },
+    {
+      "from": "action:serviceenrollment.post",
+      "type": "requires",
+      "to": "permission:serviceenrollment.create"
+    },
+    {
+      "from": "action:serviceenrollment.related",
+      "type": "requires",
+      "to": "permission:serviceenrollment.get"
     },
     {
       "from": "action:setting.get",
@@ -48149,6 +48987,146 @@
       "to": "fixture:serviceclientId"
     },
     {
+      "from": "case:acl/acl-serviceenrollment-list-allowed-default",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-allowed-default",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-allowed-default",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-allowed-default",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-allowed-default",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollment"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-allowed-default",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-allowed-default",
+      "type": "uses_fixture",
+      "to": "fixture:serviceenrollmentId"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollment"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-denied-anonymous",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-denied-anonymous",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-denied-anonymous",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-denied-anonymous",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollment"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-list-denied-anonymous",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-patch-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-patch-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-patch-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-patch-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceenrollment/{id}"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-patch-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-patch-denied-acl-no-setting",
+      "type": "uses_fixture",
+      "to": "fixture:serviceenrollmentId"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-scoped-token-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-scoped-token-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-scoped-token-denied",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-scoped-token-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollment"
+    },
+    {
+      "from": "case:acl/acl-serviceenrollment-scoped-token-denied",
+      "type": "runs_as",
+      "to": "profile:aclScopedToken"
+    },
+    {
       "from": "case:acl/acl-setting-get-denied",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -52654,6 +53632,31 @@
       "to": "fixture:serviceclientId"
     },
     {
+      "from": "case:backend/get-serviceenrollment-api-v1-serviceenrollment",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-serviceenrollment-api-v1-serviceenrollment",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-serviceenrollment-api-v1-serviceenrollment",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:backend/get-serviceenrollment-api-v1-serviceenrollment",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollment"
+    },
+    {
+      "from": "case:backend/get-serviceenrollment-api-v1-serviceenrollment",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/get-setting-api-v1-setting",
       "type": "asserts",
       "to": "assertion:shape"
@@ -56062,6 +57065,31 @@
       "from": "case:backend/post-savedsearch-api-v1-savedsearch",
       "type": "uses_fixture",
       "to": "fixture:projectId"
+    },
+    {
+      "from": "case:backend/post-serviceenrollment-api-v1-serviceenrollment",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-serviceenrollment-api-v1-serviceenrollment",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-serviceenrollment-api-v1-serviceenrollment",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:backend/post-serviceenrollment-api-v1-serviceenrollment",
+      "type": "exercises",
+      "to": "route:POST /api/v1/serviceenrollment"
+    },
+    {
+      "from": "case:backend/post-serviceenrollment-api-v1-serviceenrollment",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:backend/post-skill-api-v1-skill",
@@ -65124,6 +66152,471 @@
       "to": "profile:serviceRuntime"
     },
     {
+      "from": "case:client/serviceenrollment-admin-approves",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-admin-approves",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-admin-approves",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-admin-approves",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-admin-approves",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollment-request-anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-admin-approves",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceenrollment/{id}"
+    },
+    {
+      "from": "case:client/serviceenrollment-admin-approves",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceenrollment-admin-approves",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/serviceenrollment-anonymous-patch-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-anonymous-patch-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-anonymous-patch-refused",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-anonymous-patch-refused",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollment-request-anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-anonymous-patch-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceenrollment/{id}"
+    },
+    {
+      "from": "case:client/serviceenrollment-anonymous-patch-refused",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-delivered-cannot-be-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-delivered-cannot-be-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-delivered-cannot-be-denied",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-delivered-cannot-be-denied",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollment-request-anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-delivered-cannot-be-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceenrollment/{id}"
+    },
+    {
+      "from": "case:client/serviceenrollment-delivered-cannot-be-denied",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceenrollment-enrolled-client-gets-token",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-enrolled-client-gets-token",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-enrolled-client-gets-token",
+      "type": "covers",
+      "to": "controller:token"
+    },
+    {
+      "from": "case:client/serviceenrollment-enrolled-client-gets-token",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollment-poll-delivers-secret"
+    },
+    {
+      "from": "case:client/serviceenrollment-enrolled-client-gets-token",
+      "type": "exercises",
+      "to": "route:POST /api/v1/token"
+    },
+    {
+      "from": "case:client/serviceenrollment-enrolled-client-gets-token",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-expired-cannot-be-approved",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-expired-cannot-be-approved",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-expired-cannot-be-approved",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-expired-cannot-be-approved",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceenrollment/{id}"
+    },
+    {
+      "from": "case:client/serviceenrollment-expired-cannot-be-approved",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceenrollment-expired-cannot-be-approved",
+      "type": "uses_fixture",
+      "to": "fixture:serviceenrollmentId"
+    },
+    {
+      "from": "case:client/serviceenrollment-patch-other-field-rejected",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-patch-other-field-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-patch-other-field-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-patch-other-field-rejected",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-patch-other-field-rejected",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollment-request-anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-patch-other-field-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/serviceenrollment/{id}"
+    },
+    {
+      "from": "case:client/serviceenrollment-patch-other-field-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-only-once",
+      "type": "asserts",
+      "to": "assertion:attributesAbsent"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-only-once",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-only-once",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-only-once",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-only-once",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-only-once",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollment-request-anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-only-once",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollment/{id}"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-only-once",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-secret",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-secret",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-secret",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-secret",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-secret",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-secret",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollment-request-anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-secret",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollment/{id}"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-delivers-secret",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-expired",
+      "type": "asserts",
+      "to": "assertion:attributesAbsent"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-expired",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-expired",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-expired",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-expired",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-expired",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollment/{id}"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-expired",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-expired",
+      "type": "uses_fixture",
+      "to": "fixture:serviceenrollmentId"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-expired",
+      "type": "uses_fixture",
+      "to": "fixture:serviceenrollmentPollToken"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-pending-gives-no-secret",
+      "type": "asserts",
+      "to": "assertion:attributesAbsent"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-pending-gives-no-secret",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-pending-gives-no-secret",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-pending-gives-no-secret",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-pending-gives-no-secret",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-pending-gives-no-secret",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollment-request-anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-pending-gives-no-secret",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollment/{id}"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-pending-gives-no-secret",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-wrong-token-not-found",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-wrong-token-not-found",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-wrong-token-not-found",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-wrong-token-not-found",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-wrong-token-not-found",
+      "type": "depends_on",
+      "to": "case:client/serviceenrollment-request-anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-wrong-token-not-found",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceenrollment/{id}"
+    },
+    {
+      "from": "case:client/serviceenrollment-poll-wrong-token-not-found",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-anonymous",
+      "type": "asserts",
+      "to": "assertion:attributesAbsent"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-anonymous",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-anonymous",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-anonymous",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-anonymous",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-anonymous",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-anonymous",
+      "type": "exercises",
+      "to": "route:POST /api/v1/serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-anonymous",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-unknown-kind-rejected",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-unknown-kind-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-unknown-kind-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-unknown-kind-rejected",
+      "type": "covers",
+      "to": "controller:serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-unknown-kind-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/serviceenrollment"
+    },
+    {
+      "from": "case:client/serviceenrollment-request-unknown-kind-rejected",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
       "from": "case:client/settings-export-rejected",
       "type": "asserts",
       "to": "assertion:shape"
@@ -71069,6 +72562,46 @@
       "to": "model:Serviceclient"
     },
     {
+      "from": "controller:serviceenrollment",
+      "type": "has_action",
+      "to": "action:serviceenrollment.get"
+    },
+    {
+      "from": "controller:serviceenrollment",
+      "type": "has_action",
+      "to": "action:serviceenrollment.list"
+    },
+    {
+      "from": "controller:serviceenrollment",
+      "type": "has_action",
+      "to": "action:serviceenrollment.options"
+    },
+    {
+      "from": "controller:serviceenrollment",
+      "type": "has_action",
+      "to": "action:serviceenrollment.patch"
+    },
+    {
+      "from": "controller:serviceenrollment",
+      "type": "has_action",
+      "to": "action:serviceenrollment.patchCollection"
+    },
+    {
+      "from": "controller:serviceenrollment",
+      "type": "has_action",
+      "to": "action:serviceenrollment.post"
+    },
+    {
+      "from": "controller:serviceenrollment",
+      "type": "has_action",
+      "to": "action:serviceenrollment.related"
+    },
+    {
+      "from": "controller:serviceenrollment",
+      "type": "serves",
+      "to": "model:Serviceenrollment"
+    },
+    {
       "from": "controller:setting",
       "type": "has_action",
       "to": "action:setting.get"
@@ -72672,6 +74205,16 @@
       "from": "field:Serviceclient.modifiedUserName",
       "type": "linked_to",
       "to": "field:Serviceclient.modifiedUser"
+    },
+    {
+      "from": "field:Serviceenrollment.createdUserName",
+      "type": "linked_to",
+      "to": "field:Serviceenrollment.createdUser"
+    },
+    {
+      "from": "field:Serviceenrollment.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Serviceenrollment.modifiedUser"
     },
     {
       "from": "field:Setting.createdUserName",
@@ -76285,6 +77828,146 @@
     },
     {
       "from": "model:Serviceclient",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.approvedBy"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.createdUser"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.createdUserName"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.dateCreated"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.dateModified"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.deleted"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.expiresAt"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.id"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.kind"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.modifiedUser"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.modifiedUserName"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.name"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.pollTokenHash"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.requesterIp"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.serviceclientId"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.status"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_field",
+      "to": "field:Serviceenrollment.userCode"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_relationship",
+      "to": "relationship:Serviceenrollment.approver"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_relationship",
+      "to": "relationship:Serviceenrollment.createdBy"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_relationship",
+      "to": "relationship:Serviceenrollment.modifiedBy"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "has_relationship",
+      "to": "relationship:Serviceenrollment.serviceclient"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Serviceenrollment",
+      "type": "uses_behaviour",
+      "to": "behaviour:serviceEnrollmentBehavior"
+    },
+    {
+      "from": "model:Serviceenrollment",
       "type": "uses_behaviour",
       "to": "behaviour:softDeleteBehavior"
     },
@@ -80016,6 +81699,16 @@
     {
       "from": "profile:aclNoSetting",
       "type": "denies",
+      "to": "permission:serviceenrollment.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:serviceenrollment.update"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
       "to": "permission:setting.get"
     },
     {
@@ -80727,6 +82420,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:serviceclient.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:serviceenrollment.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:serviceenrollment.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:serviceenrollment.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:serviceenrollment.update"
     },
     {
       "from": "profile:default",
@@ -81692,6 +83405,26 @@
       "from": "relationship:Serviceclient.modifiedBy",
       "type": "targets",
       "to": "model:User"
+    },
+    {
+      "from": "relationship:Serviceenrollment.approver",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Serviceenrollment.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Serviceenrollment.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Serviceenrollment.serviceclient",
+      "type": "targets",
+      "to": "model:Serviceclient"
     },
     {
       "from": "relationship:Setting.createdBy",
@@ -83134,6 +84867,21 @@
       "to": "action:serviceclient.related"
     },
     {
+      "from": "route:GET /api/v1/serviceenrollment",
+      "type": "handled_by",
+      "to": "action:serviceenrollment.list"
+    },
+    {
+      "from": "route:GET /api/v1/serviceenrollment/{id}",
+      "type": "handled_by",
+      "to": "action:serviceenrollment.get"
+    },
+    {
+      "from": "route:GET /api/v1/serviceenrollment/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:serviceenrollment.related"
+    },
+    {
       "from": "route:GET /api/v1/setting",
       "type": "handled_by",
       "to": "action:setting.list"
@@ -83689,6 +85437,11 @@
       "to": "action:serviceclient.options"
     },
     {
+      "from": "route:OPTIONS /api/v1/serviceenrollment",
+      "type": "handled_by",
+      "to": "action:serviceenrollment.options"
+    },
+    {
       "from": "route:OPTIONS /api/v1/setting",
       "type": "handled_by",
       "to": "action:setting.options"
@@ -84109,6 +85862,16 @@
       "to": "action:serviceclient.patch"
     },
     {
+      "from": "route:PATCH /api/v1/serviceenrollment",
+      "type": "handled_by",
+      "to": "action:serviceenrollment.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/serviceenrollment/{id}",
+      "type": "handled_by",
+      "to": "action:serviceenrollment.patch"
+    },
+    {
       "from": "route:PATCH /api/v1/setting",
       "type": "handled_by",
       "to": "action:setting.patchCollection"
@@ -84442,6 +86205,11 @@
       "from": "route:POST /api/v1/scoreboard",
       "type": "handled_by",
       "to": "action:scoreboard.post"
+    },
+    {
+      "from": "route:POST /api/v1/serviceenrollment",
+      "type": "handled_by",
+      "to": "action:serviceenrollment.post"
     },
     {
       "from": "route:POST /api/v1/skill",

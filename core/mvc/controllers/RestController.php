@@ -116,6 +116,15 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     protected $authorization = true;
 
     /**
+     * Actions of this controller that run without a token (dispatcher action
+     * names such as `post` or `get`). The other actions are authorized as
+     * usual. See rbac decision D-066.
+     *
+     * @var array $anonymousActions
+     */
+    protected $anonymousActions = array();
+
+    /**
      * Project authorization flag
      *
      * @var bool $projectAuthorization
@@ -330,7 +339,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     private function authorize()
     {
         global $currentUser;
-        if ($this->authorization) {
+        if ($this->authorization && !in_array($this->actionName, $this->anonymousActions, true)) {
             $request = $this->getOAuthRequest();
             $oauthServer = $this->getOAuthServer($request);
             $server = $oauthServer->getServer();

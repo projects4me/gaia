@@ -490,7 +490,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
+    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -889,7 +889,10 @@ VALUES
   ('atp-acl-ns-agentcred-delete', 'api-test-role-acl-ns', 'agentcredential.delete', 1, NOW(), NOW()),
   -- service clients are administered by admins only
   ('atp-acl-ns-serviceclient-get', 'api-test-role-acl-ns', 'serviceclient.get', 0, NOW(), NOW()),
-  ('atp-acl-ns-serviceclient-update', 'api-test-role-acl-ns', 'serviceclient.update', 0, NOW(), NOW());
+  ('atp-acl-ns-serviceclient-update', 'api-test-role-acl-ns', 'serviceclient.update', 0, NOW(), NOW()),
+  -- service enrollment requests are listed and decided by admins only (D-066)
+  ('atp-acl-ns-serviceenrollment-get', 'api-test-role-acl-ns', 'serviceenrollment.get', 0, NOW(), NOW()),
+  ('atp-acl-ns-serviceenrollment-update', 'api-test-role-acl-ns', 'serviceenrollment.update', 0, NOW(), NOW());
 
 -- Profile aclAgent (gaia-dev scaffold api-cases --new-profile)
 INSERT INTO users (
@@ -1063,6 +1066,19 @@ ON CONFLICT (access_token) DO UPDATE SET
   user_id = EXCLUDED.user_id,
   expires = EXCLUDED.expires,
   scope = EXCLUDED.scope;
+
+-- Serviceenrollment (D-066): requests from earlier runs are removed, so the per-address limit starts
+-- afresh. The seeded request is pending but already past its expiry; its poll token is
+-- api-tester-expired-poll-token (stored as its SHA-256).
+DELETE FROM serviceenrollments;
+INSERT INTO serviceenrollments (
+  id, name, kind, status, "userCode", "pollTokenHash", "expiresAt", "approvedBy", "serviceclientId", "requesterIp",
+  deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-serviceenrollment-000001', 'API Tester Expired Request', 'runtime', 'pending', 'EXP-1RD',
+   encode(sha256('api-tester-expired-poll-token'::bytea), 'hex'), (NOW() AT TIME ZONE 'UTC') - INTERVAL '1 hour',
+   NULL, NULL, '192.0.2.1', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester',
+   (NOW() AT TIME ZONE 'UTC') - INTERVAL '2 hours', (NOW() AT TIME ZONE 'UTC') - INTERVAL '2 hours');
 
 -- Scoped token (D-064): the aclScopedToken profile signs in as the aclAgent user through a client whose
 -- scope narrows its tokens to issue.get, project.get and role.get (role.* stays a hard exclusion).
@@ -1362,6 +1378,8 @@ data = {
     "agentPermissionId": "atp-acl-acl-agent-agent-get",
     "agentcredentialId": "api-test-agentcredential-000001",
     "serviceclientId": "api-test-serviceclient-000001",
+    "serviceenrollmentId": "api-test-serviceenrollment-000001",
+    "serviceenrollmentPollToken": "api-tester-expired-poll-token",
     "toolserverId": "api-test-toolserver-000001",
     "toolId": "api-test-tool-000001",
     "agenttoolId": "api-test-agenttool-000001",

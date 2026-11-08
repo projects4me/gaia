@@ -7053,6 +7053,303 @@
         "errorEqual": "Invalid query: only AND and OR may join the parenthesised conditions, got \"OR 1=1\"."
       },
       "source": "client"
+    },
+    {
+      "id": "serviceenrollment-request-anonymous",
+      "method": "POST",
+      "path": "/api/v1/serviceenrollment",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "body": {
+        "data": {
+          "type": "serviceenrollment",
+          "attributes": {
+            "name": "API Tester Enrolled Runtime",
+            "kind": "runtime"
+          }
+        }
+      },
+      "store": {
+        "runtime.enrollmentId": "data.id",
+        "runtime.enrollmentPollToken": "data.attributes.pollToken"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Tester Enrolled Runtime",
+          "kind": "runtime",
+          "status": "pending"
+        },
+        "attributesPresent": [
+          "userCode",
+          "expiresAt",
+          "pollToken"
+        ],
+        "attributesAbsent": [
+          "pollTokenHash",
+          "requesterIp",
+          "clientSecret"
+        ]
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-request-unknown-kind-rejected",
+      "method": "POST",
+      "path": "/api/v1/serviceenrollment",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "body": {
+        "data": {
+          "type": "serviceenrollment",
+          "attributes": {
+            "name": "API Tester Mailer",
+            "kind": "mailer"
+          }
+        }
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "kind must be one of: runtime, hermes"
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-poll-wrong-token-not-found",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "query": {
+        "pollToken": "not-the-poll-token"
+      },
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "No enrollment request matches this id and poll token."
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-poll-pending-gives-no-secret",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "query": {
+        "pollToken": "{runtime.enrollmentPollToken}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "pending"
+        },
+        "attributesAbsent": [
+          "clientId",
+          "clientSecret"
+        ]
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-patch-other-field-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+      "resource": "serviceenrollment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceenrollment",
+          "id": "{runtime.enrollmentId}",
+          "attributes": {
+            "kind": "hermes"
+          }
+        }
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Only the status of an enrollment request can be changed."
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-anonymous-patch-refused",
+      "method": "PATCH",
+      "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "body": {
+        "data": {
+          "type": "serviceenrollment",
+          "id": "{runtime.enrollmentId}",
+          "attributes": {
+            "status": "approved"
+          }
+        }
+      },
+      "expects": {
+        "status": 401,
+        "shape": "error"
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-admin-approves",
+      "method": "PATCH",
+      "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+      "resource": "serviceenrollment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceenrollment",
+          "id": "{runtime.enrollmentId}",
+          "attributes": {
+            "status": "approved"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "approved",
+          "approvedBy": "{userId}"
+        }
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-poll-delivers-secret",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "query": {
+        "pollToken": "{runtime.enrollmentPollToken}"
+      },
+      "store": {
+        "runtime.enrolledClientId": "data.attributes.clientId",
+        "runtime.enrolledClientSecret": "data.attributes.clientSecret"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "delivered"
+        },
+        "attributesPresent": [
+          "clientId",
+          "clientSecret"
+        ]
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-poll-delivers-only-once",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "query": {
+        "pollToken": "{runtime.enrollmentPollToken}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "delivered"
+        },
+        "attributesAbsent": [
+          "clientId",
+          "clientSecret"
+        ]
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-enrolled-client-gets-token",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "form": {
+        "grant_type": "client_credentials",
+        "client_id": "{runtime.enrolledClientId}",
+        "client_secret": "{runtime.enrolledClientSecret}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "oauth.token"
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-delivered-cannot-be-denied",
+      "method": "PATCH",
+      "path": "/api/v1/serviceenrollment/{runtime.enrollmentId}",
+      "resource": "serviceenrollment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceenrollment",
+          "id": "{runtime.enrollmentId}",
+          "attributes": {
+            "status": "denied"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-expired-cannot-be-approved",
+      "method": "PATCH",
+      "path": "/api/v1/serviceenrollment/{serviceenrollmentId}",
+      "resource": "serviceenrollment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "serviceenrollment",
+          "id": "{serviceenrollmentId}",
+          "attributes": {
+            "status": "approved"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      },
+      "source": "client"
+    },
+    {
+      "id": "serviceenrollment-poll-expired",
+      "method": "GET",
+      "path": "/api/v1/serviceenrollment/{serviceenrollmentId}",
+      "resource": "serviceenrollment",
+      "auth": false,
+      "query": {
+        "pollToken": "{serviceenrollmentPollToken}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "status": "expired"
+        },
+        "attributesAbsent": [
+          "clientId",
+          "clientSecret"
+        ]
+      },
+      "source": "client"
     }
   ]
 }

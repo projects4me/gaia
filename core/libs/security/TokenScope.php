@@ -35,6 +35,7 @@ class TokenScope
         'agentcredential.*',
         'serviceclient.*',
         'enrollment*.*',
+        'serviceenrollment.*',
         'role.*',
         'userrole.*',
         'permission.*',

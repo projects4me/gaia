@@ -8,7 +8,7 @@
  * Service clients (Serviceclient): the kinds of service that may sign in with
  * client_credentials, and the scopes each kind's client gets when it is
  * created without its own list. See docs/architecture/rbac/decisions.md
- * (D-062, D-063).
+ * (D-062, D-063, D-066).
  */
 $config['serviceClients'] = array(
     'kinds' => array(
@@ -20,6 +20,14 @@ $config['serviceClients'] = array(
         'hermes' => array(
             'scopes' => array('token.introspect'),
         ),
+    ),
+    // Enrollment (Serviceenrollment, D-066): how long a request waits for an
+    // admin and its secret, and how many requests one IP address may make in
+    // a window.
+    'enrollment' => array(
+        'ttlMinutes' => 15,
+        'requestsPerIp' => (int) (getenv('SERVICE_ENROLLMENT_REQUESTS_PER_IP') ?: 5),
+        'windowMinutes' => 15,
     ),
 );
 

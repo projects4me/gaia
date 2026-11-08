@@ -537,6 +537,19 @@
 | PATCH | /api/v1/serviceclient | rest | serviceclient.patchCollection |
 | PATCH | /api/v1/serviceclient/{id} | rest | serviceclient.patch |
 
+<a id="serviceenrollment"></a>
+## serviceenrollment
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/serviceenrollment | rest | serviceenrollment.list |
+| GET | /api/v1/serviceenrollment/{id} | rest | serviceenrollment.get |
+| GET | /api/v1/serviceenrollment/{id}/{relation} | rest | serviceenrollment.related |
+| OPTIONS | /api/v1/serviceenrollment | rest | serviceenrollment.options |
+| PATCH | /api/v1/serviceenrollment | rest | serviceenrollment.patchCollection |
+| PATCH | /api/v1/serviceenrollment/{id} | rest | serviceenrollment.patch |
+| POST | /api/v1/serviceenrollment | rest | serviceenrollment.post |
+
 <a id="setting"></a>
 ## setting
 
