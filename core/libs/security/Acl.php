@@ -88,6 +88,13 @@ class Acl
     protected $userId = null;
 
     /**
+     * Scope of the request's access token; narrows every action check (D-064).
+     *
+     * @var TokenScope|null
+     */
+    protected $tokenScope = null;
+
+    /**
      * Cached membership project ids for the current user (members scope).
      *
      * @var array|null
@@ -198,6 +205,29 @@ class Acl
 
         $this->checkAccess($resourceName);
         return $this;
+    }
+
+    /**
+     * Hold every later action check to the access token's scope (D-064).
+     *
+     * @param  TokenScope|null $tokenScope Null or unscoped leaves the ACL as is.
+     * @return $this
+     */
+    public function setTokenScope(?TokenScope $tokenScope = null)
+    {
+        $this->tokenScope = $tokenScope;
+        return $this;
+    }
+
+    /**
+     * Whether the token scope (if any) covers an action resource.
+     *
+     * @param  string $resourceName
+     * @return bool
+     */
+    protected function isTokenScopeCovering($resourceName)
+    {
+        return $this->tokenScope === null || $this->tokenScope->covers($resourceName);
     }
 
     /**
@@ -431,7 +461,8 @@ class Acl
      */
     public function isModelActionAllowed($modelName, $action)
     {
-        if (!$this->isResourceAllowed($this->buildResourceName($modelName, $action))) {
+        $resourceName = $this->buildResourceName($modelName, $action);
+        if (!$this->isTokenScopeCovering($resourceName) || !$this->isResourceAllowed($resourceName)) {
             return false;
         }
 
@@ -641,7 +672,7 @@ class Acl
      */
     public function checkAccess($resourceName)
     {
-        if ($this->isResourceAllowed($resourceName)) {
+        if ($this->isTokenScopeCovering($resourceName) && $this->isResourceAllowed($resourceName)) {
             return true;
         }
 

@@ -292,10 +292,12 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $this->loadComponents();
     }
     /**
-     * Make currentUser available as global
+     * Make currentUser available as global and return the request's access token,
+     * whose scope authorize() hands to the Acl.
      *
      * @global type $currentUser
      * @param  type $request
+     * @return \Gaia\MVC\Models\Oauthaccesstoken The access token of the request.
      */
     private function setUser($request)
     {
@@ -316,6 +318,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         } else {
             throw new \Gaia\Exception\Access("Invalid Token");
         }
+
+        return $oAuthAccessToken;
     }
 
     /**
@@ -338,12 +342,13 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 $this->response->setJsonContent($response->getParameters());
                 throw new \Gaia\Exception\UnAuthorized("Invalid Token");
             }
-            $this->setUser($request);
+            $accessToken = $this->setUser($request);
             $this->trackLastActivity($currentUser->id);
             $modelAlias = Util::extractClassFromNamespace($this->modelName);
             $resourceName = $this->controllerName . '.' . $action;
 
             $acl = new \Gaia\Libraries\Security\Acl($this->getDI());
+            $acl->setTokenScope(new \Gaia\Libraries\Security\TokenScope($accessToken->scope ?? null));
 
             $query = $this->request->get('query', null, '');
 

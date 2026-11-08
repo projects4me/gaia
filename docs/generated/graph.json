@@ -6187,6 +6187,110 @@
       }
     },
     {
+      "id": "case:acl/acl-scoped-token-comment-list-denied",
+      "type": "case",
+      "key": "acl/acl-scoped-token-comment-list-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/comment",
+        "resource": "comment",
+        "enabled": true,
+        "source": "acl-token-scope",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-scoped-token-issue-get-allowed",
+      "type": "case",
+      "key": "acl/acl-scoped-token-issue-get-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{issueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": "acl-token-scope",
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-scoped-token-issue-patch-denied",
+      "type": "case",
+      "key": "acl/acl-scoped-token-issue-patch-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{issueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": "acl-token-scope",
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-scoped-token-related-members-denied",
+      "type": "case",
+      "key": "acl/acl-scoped-token-related-members-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/project/{projectId}/members",
+        "resource": "project",
+        "enabled": true,
+        "source": "acl-token-scope",
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-scoped-token-rels-outside-scope-omitted",
+      "type": "case",
+      "key": "acl/acl-scoped-token-rels-outside-scope-omitted",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/project/{projectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": "acl-token-scope",
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-scoped-token-role-excluded",
+      "type": "case",
+      "key": "acl/acl-scoped-token-role-excluded",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/role",
+        "resource": "role",
+        "enabled": true,
+        "source": "acl-token-scope",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-serviceclient-detail-allowed-default",
       "type": "case",
       "key": "acl/acl-serviceclient-detail-allowed-default",
@@ -6685,6 +6789,56 @@
         "placeholders": [
           "toolserverId"
         ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-unscoped-agent-comment-list-allowed",
+      "type": "case",
+      "key": "acl/acl-unscoped-agent-comment-list-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/comment",
+        "resource": "comment",
+        "enabled": true,
+        "source": "acl-token-scope",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-unscoped-agent-rels-members-included",
+      "type": "case",
+      "key": "acl/acl-unscoped-agent-rels-members-included",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/project/{projectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": "acl-token-scope",
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-unscoped-agent-role-list-allowed",
+      "type": "case",
+      "key": "acl/acl-unscoped-agent-role-list-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/role",
+        "resource": "role",
+        "enabled": true,
+        "source": "acl-token-scope",
+        "placeholders": [],
         "stores": []
       }
     },
@@ -32154,6 +32308,19 @@
       }
     },
     {
+      "id": "profile:aclScopedToken",
+      "type": "profile",
+      "key": "aclScopedToken",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json",
+        "userId": "api-test-user-acl-agent",
+        "email": "api-tester-acl-agent@example.com",
+        "roleId": "api-test-role-acl-agent",
+        "role": "ACL Agent",
+        "roleDescription": "ACL Agent"
+      }
+    },
+    {
       "id": "profile:anonymous",
       "type": "profile",
       "key": "anonymous",
@@ -47365,6 +47532,216 @@
       "to": "profile:default"
     },
     {
+      "from": "case:acl/acl-scoped-token-comment-list-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-comment-list-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-comment-list-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-comment-list-denied",
+      "type": "covers",
+      "to": "controller:comment"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-comment-list-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/comment"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-comment-list-denied",
+      "type": "runs_as",
+      "to": "profile:aclScopedToken"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-get-allowed",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-get-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-get-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-get-allowed",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-get-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-get-allowed",
+      "type": "runs_as",
+      "to": "profile:aclScopedToken"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-get-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-patch-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-patch-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-patch-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-patch-denied",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-patch-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-patch-denied",
+      "type": "runs_as",
+      "to": "profile:aclScopedToken"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-issue-patch-denied",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-related-members-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-related-members-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-related-members-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-related-members-denied",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-related-members-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/project/{id}/{relation}"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-related-members-denied",
+      "type": "runs_as",
+      "to": "profile:aclScopedToken"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-related-members-denied",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-rels-outside-scope-omitted",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-rels-outside-scope-omitted",
+      "type": "asserts",
+      "to": "assertion:includedTypesAbsent"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-rels-outside-scope-omitted",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-rels-outside-scope-omitted",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-rels-outside-scope-omitted",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-rels-outside-scope-omitted",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-rels-outside-scope-omitted",
+      "type": "exercises",
+      "to": "route:GET /api/v1/project/{id}"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-rels-outside-scope-omitted",
+      "type": "runs_as",
+      "to": "profile:aclScopedToken"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-rels-outside-scope-omitted",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-role-excluded",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-role-excluded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-role-excluded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-role-excluded",
+      "type": "covers",
+      "to": "controller:role"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-role-excluded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/role"
+    },
+    {
+      "from": "case:acl/acl-scoped-token-role-excluded",
+      "type": "runs_as",
+      "to": "profile:aclScopedToken"
+    },
+    {
       "from": "case:acl/acl-serviceclient-detail-allowed-default",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -48283,6 +48660,96 @@
       "from": "case:acl/acl-toolserver-refresh-needs-update",
       "type": "uses_fixture",
       "to": "fixture:toolserverId"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-comment-list-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-comment-list-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-comment-list-allowed",
+      "type": "covers",
+      "to": "controller:comment"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-comment-list-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/comment"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-comment-list-allowed",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-rels-members-included",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-rels-members-included",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-rels-members-included",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-rels-members-included",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-rels-members-included",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-rels-members-included",
+      "type": "exercises",
+      "to": "route:GET /api/v1/project/{id}"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-rels-members-included",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-rels-members-included",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-role-list-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-role-list-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-role-list-allowed",
+      "type": "covers",
+      "to": "controller:role"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-role-list-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/role"
+    },
+    {
+      "from": "case:acl/acl-unscoped-agent-role-list-allowed",
+      "type": "runs_as",
+      "to": "profile:aclAgent"
     },
     {
       "from": "case:acl/acl-useridentity-denied-acl-no-setting",
@@ -79003,6 +79470,146 @@
       "from": "profile:aclProjectOnly",
       "type": "grants",
       "to": "permission:workflowrun.create"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "denies",
+      "to": "permission:agentcredential.create"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:agent.create"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:agent.delete"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:agent.get"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:agent.update"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:agentcredential.delete"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:agentcredential.get"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:agentspec.get"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:agenttool.create"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:agenttool.delete"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:agenttool.get"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:agenttool.update"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:permission.create"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:permission.delete"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:permission.get"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:permission.update"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:role.create"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:role.delete"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:role.get"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:role.update"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:user.create"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:user.delete"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:user.get"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:user.update"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:userrole.create"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:userrole.delete"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:userrole.get"
+    },
+    {
+      "from": "profile:aclScopedToken",
+      "type": "grants",
+      "to": "permission:userrole.update"
     },
     {
       "from": "profile:default",
