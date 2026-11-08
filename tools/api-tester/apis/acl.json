@@ -2432,6 +2432,115 @@
       "auth": "aclNoProject",
       "query": { "limit": 5, "page": 1 },
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" }
+    },
+    {
+      "id": "acl-scoped-token-issue-get-allowed",
+      "method": "GET",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": "aclScopedToken",
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{issueId}"]
+      },
+      "source": "acl-token-scope"
+    },
+    {
+      "id": "acl-scoped-token-issue-patch-denied",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": "aclScopedToken",
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{issueId}",
+          "attributes": { "priority": "low" }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-token-scope"
+    },
+    {
+      "id": "acl-unscoped-agent-comment-list-allowed",
+      "method": "GET",
+      "path": "/api/v1/comment",
+      "resource": "comment",
+      "auth": "aclAgent",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-token-scope"
+    },
+    {
+      "id": "acl-scoped-token-comment-list-denied",
+      "method": "GET",
+      "path": "/api/v1/comment",
+      "resource": "comment",
+      "auth": "aclScopedToken",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-token-scope"
+    },
+    {
+      "id": "acl-scoped-token-related-members-denied",
+      "method": "GET",
+      "path": "/api/v1/project/{projectId}/members",
+      "resource": "project",
+      "auth": "aclScopedToken",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-token-scope"
+    },
+    {
+      "id": "acl-unscoped-agent-rels-members-included",
+      "method": "GET",
+      "path": "/api/v1/project/{projectId}",
+      "resource": "project",
+      "auth": "aclAgent",
+      "query": { "rels": "issues,members" },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{projectId}"],
+        "includedTypesPresent": ["issue", "user"]
+      },
+      "source": "acl-token-scope"
+    },
+    {
+      "id": "acl-scoped-token-rels-outside-scope-omitted",
+      "method": "GET",
+      "path": "/api/v1/project/{projectId}",
+      "resource": "project",
+      "auth": "aclScopedToken",
+      "query": { "rels": "issues,members" },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": ["{projectId}"],
+        "includedTypesPresent": ["issue"],
+        "includedTypesAbsent": ["user"]
+      },
+      "source": "acl-token-scope"
+    },
+    {
+      "id": "acl-unscoped-agent-role-list-allowed",
+      "method": "GET",
+      "path": "/api/v1/role",
+      "resource": "role",
+      "auth": "aclAgent",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-token-scope"
+    },
+    {
+      "id": "acl-scoped-token-role-excluded",
+      "method": "GET",
+      "path": "/api/v1/role",
+      "resource": "role",
+      "auth": "aclScopedToken",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-token-scope"
     }
   ]
 }

@@ -23,4 +23,4 @@
 - controller: Gaia\MVC\REST\Controllers\RoleController
 - routes: DELETE /api/v1/role, DELETE /api/v1/role/{id}, GET /api/v1/role, GET /api/v1/role/{id}, GET /api/v1/role/{id}/{relation}, OPTIONS /api/v1/role, PATCH /api/v1/role, PATCH /api/v1/role/{id}, POST /api/v1/role, PUT /api/v1/role, PUT /api/v1/role/{id}
 - components: Role
-- cases: 14 (acl 2, backend 6, client 6); gaia-dev cases role
+- cases: 16 (acl 4, backend 6, client 6); gaia-dev cases role

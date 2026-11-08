@@ -446,6 +446,15 @@ These scenarios are settled and should become tests later:
 | Rationale | A service is infrastructure, not a person or an agent: modelling it as a user would put it in assignment pickers and under user-scoped ACL. |
 | Implications | Enrollment, secret rotation and what service tokens may access are later issues. |
 
+### D-064 — Token scopes narrow the actor's ACL
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | Effective access is the actor's ACL **and** the access token's scope. A scope word that names a permission (`issue.get`, `comment.create`) or a pattern of them with `*` wildcards within one segment (`issue.*`, `*.get`) narrows the token to the action resources one of its patterns covers. The requested action, related reads (`GET /resource/{id}/{relation}`, D-020) and included relationships (D-021, omitted when not covered) are all held to it. A scoped token can never reach the hard exclusions, whatever its scope: `agentcredential.*`, `serviceclient.*`, enrollment resources (`enrollment*.*`), `role.*`, `userrole.*`, `permission.*` and `agent.create` / `agent.update` / `agent.delete`. Scope words without a dot are not permissions and do not narrow: a token whose scope is empty or only such words (every token today carries the legacy OAuth default scope `application`) keeps the actor's full ACL. |
+| Rationale | Delegated agent tokens must never do more than their scopes allow, even when the agent's roles would. Scopes only narrow, so they can never grant what the ACL denies, and the exclusions keep a scoped token away from credentials and the security core (D-052) even under `*.*`. Reusing the permission names as the scope vocabulary means one catalog to read and no mapping to keep in step. |
+| Implications | `TokenScope` (`core/libs/security/TokenScope.php`) owns parsing, matching and the exclusion list. `RestController::authorize()` hands the token's scope to `Acl::setTokenScope()` after `verifyResourceRequest`; `Acl::isModelActionAllowed()` and `Acl::checkAccess()` consult it, so every module-action check made through the request's Acl (action, related, rels, clause usage, field prerequisite) is narrowed. Authorization-group checks (`{group}.get`) are not: a token scoped to `issue.get` still reads issues of projects the actor can see without `project.get` in scope. Endpoints outside `RestController::authorize()` (the token endpoint, uploads, previews) are not narrowed. Issuing scoped tokens is a later change; the api-tester `aclScopedToken` profile uses a seeded client whose `scope` column carries the patterns. |
+
 ---
 
 ## Open questions
@@ -468,6 +477,7 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 
 | Date | Change |
 |------|--------|
+| 2026-11-09 | D-064: token scopes (permission names with `*` wildcards) narrow the actor's ACL; hard exclusions for credentials, enrollment, roles, permissions and agent writes; words without a dot (legacy `application`) do not narrow |
 | 2026-11-09 | D-062, D-063: OAuth client kinds (app, agent, service); client_credentials branches on the kind; service clients get tokens without a user and are administered by admins only |
 | 2026-10-28 | D-061: session expiry stored per refresh token (`rememberMe`, `sessionExpires`) and sliding on refresh; a later sign-in no longer shortens other sessions |
 | 2026-09-15 | D-060: `project.get` scopes 0/1/2 (none/all/members); membership cascade via `groupKeys`; seed default members |
