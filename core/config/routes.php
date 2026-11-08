@@ -292,6 +292,15 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'serviceenrollment' => array(
+                'path' => '/api/:version/serviceenrollment',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'agent' => array(
                 'path' => '/api/:version/agent',
                 'allowedMethods' => array(
