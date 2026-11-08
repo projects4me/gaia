@@ -305,6 +305,180 @@
       "hermes": {
         "requireUp": false
       }
+    },
+    {
+      "id": "live-membership-create-publishes-user-access-changed",
+      "method": "POST",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "attributes": {
+            "userId": "{userId}",
+            "projectId": "{otherProjectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.liveAccessMembershipId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "expect": [
+          {
+            "eventName": "user.access.changed",
+            "projectId": "user:{userId}",
+            "resourceType": "user",
+            "resourceId": "{userId}"
+          }
+        ],
+        "timeoutMs": 5000
+      }
+    },
+    {
+      "id": "live-membership-delete-publishes-user-access-changed",
+      "method": "DELETE",
+      "path": "/api/v1/membership/{runtime.liveAccessMembershipId}",
+      "resource": "membership",
+      "auth": true,
+      "query": {
+        "newAssigneeId": "{userId}"
+      },
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      },
+      "hermes": {
+        "expect": [
+          {
+            "eventName": "user.access.changed",
+            "projectId": "user:{userId}",
+            "resourceType": "user",
+            "resourceId": "{userId}"
+          }
+        ],
+        "timeoutMs": 5000
+      }
+    },
+    {
+      "id": "live-user-account-status-change-publishes-user-access-changed",
+      "method": "PATCH",
+      "path": "/api/v1/user/{userId}",
+      "resource": "user",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "user",
+          "id": "{userId}",
+          "attributes": {
+            "accountStatus": "Invited"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "accountStatus": "Invited"
+        }
+      },
+      "hermes": {
+        "expect": [
+          {
+            "eventName": "user.access.changed",
+            "projectId": "user:{userId}",
+            "resourceType": "user",
+            "resourceId": "{userId}"
+          }
+        ],
+        "timeoutMs": 5000
+      }
+    },
+    {
+      "id": "live-user-account-status-restore-publishes-user-access-changed",
+      "method": "PATCH",
+      "path": "/api/v1/user/{userId}",
+      "resource": "user",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "user",
+          "id": "{userId}",
+          "attributes": {
+            "accountStatus": "Active"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "accountStatus": "Active"
+        }
+      },
+      "hermes": {
+        "expect": [
+          {
+            "eventName": "user.access.changed",
+            "projectId": "user:{userId}",
+            "resourceType": "user",
+            "resourceId": "{userId}"
+          }
+        ],
+        "timeoutMs": 5000
+      }
+    },
+    {
+      "id": "live-membership-create-succeeds-when-hermes-unreachable-fail-open",
+      "method": "POST",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "attributes": {
+            "userId": "{memberUserId}",
+            "projectId": "{otherProjectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.failOpenMembershipId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    },
+    {
+      "id": "live-membership-delete-succeeds-when-hermes-unreachable-fail-open",
+      "method": "DELETE",
+      "path": "/api/v1/membership/{runtime.failOpenMembershipId}",
+      "resource": "membership",
+      "auth": true,
+      "query": {
+        "newAssigneeId": "{memberUserId}"
+      },
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      },
+      "hermes": {
+        "requireUp": false
+      }
     }
   ]
 }

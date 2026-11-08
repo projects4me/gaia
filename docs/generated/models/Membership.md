@@ -23,5 +23,5 @@
 - acl: group Project via projectId
 - controller: Gaia\MVC\REST\Controllers\MembershipController
 - routes: DELETE /api/v1/membership, DELETE /api/v1/membership/{id}, GET /api/v1/membership, GET /api/v1/membership/{id}, GET /api/v1/membership/{id}/{relation}, OPTIONS /api/v1/membership, PATCH /api/v1/membership, PATCH /api/v1/membership/{id}, POST /api/v1/membership, PUT /api/v1/membership, PUT /api/v1/membership/{id}
-- components: Notification, ProjectActivities
-- cases: 11 (backend 5, client 6); gaia-dev cases membership
+- components: Events\MembershipLiveEvents, Notification, ProjectActivities
+- cases: 15 (backend 5, client 6, live 4); gaia-dev cases membership

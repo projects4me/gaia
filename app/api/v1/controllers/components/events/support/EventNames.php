@@ -171,6 +171,15 @@ class EventNames
     const WORKFLOW_AGENT_RUN_REQUESTED = 'workflow.agent.run.requested';
 
     /**
+     * A user's access changed: account status, a deactivation's session
+     * revocation, or a membership created or deleted. Scoped to
+     * user:<userId>; carries the user id only (hermes D-009).
+     *
+     * @var string
+     */
+    const USER_ACCESS_CHANGED = 'user.access.changed';
+
+    /**
      * Every name HermesPublisher is allowed to post.
      *
      * @var   array
@@ -199,6 +208,7 @@ class EventNames
         self::IDEA_PLAN_STATUS_CHANGED,
         self::IDEA_PLANISSUE_CREATED,
         self::WORKFLOW_AGENT_RUN_REQUESTED,
+        self::USER_ACCESS_CHANGED,
     );
 
     /**
