@@ -6291,6 +6291,72 @@
       }
     },
     {
+      "id": "case:acl/acl-service-token-agent-detail-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-agent-detail-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agent/{agentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "agentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-agent-list-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-agent-list-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-issue-list-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-issue-list-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-serviceclient-list-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-serviceclient-list-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/serviceclient",
+        "resource": "serviceclient",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-serviceclient-detail-allowed-default",
       "type": "case",
       "key": "acl/acl-serviceclient-detail-allowed-default",
@@ -47992,6 +48058,131 @@
       "from": "case:acl/acl-scoped-token-role-excluded",
       "type": "runs_as",
       "to": "profile:aclScopedToken"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-denied",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-detail-denied",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-denied",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agent"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-issue-list-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-issue-list-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-issue-list-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-issue-list-denied",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:acl/acl-service-token-issue-list-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:acl/acl-service-token-issue-list-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-list-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-list-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-list-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-list-denied",
+      "type": "covers",
+      "to": "controller:serviceclient"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-list-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/serviceclient"
+    },
+    {
+      "from": "case:acl/acl-service-token-serviceclient-list-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
     },
     {
       "from": "case:acl/acl-serviceclient-detail-allowed-default",

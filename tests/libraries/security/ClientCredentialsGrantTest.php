@@ -127,6 +127,40 @@ class ClientCredentialsGrantTest extends TestCase
         $this->tokenResponse(self::SERVICE_PREFIX . 'disabled-1', self::SERVICE_SECRET);
     }
 
+    public function testAnActiveServiceClientsTokenIsAccepted(): void
+    {
+        $this->createServiceClient('token-ok', 'runtime');
+        $token = $this->requestToken(self::SERVICE_PREFIX . 'token-ok', self::SERVICE_SECRET);
+
+        $client = ServiceClientGuard::assertServiceTokenAllowed($token);
+
+        $this->assertSame(self::SERVICE_PREFIX . 'token-ok', (string) $client->clientId);
+        $this->assertSame('runtime', (string) $client->kind);
+    }
+
+    public function testATokenOfAClientDisabledSinceItWasIssuedIsRefused(): void
+    {
+        $this->createServiceClient('token-disabled', 'runtime');
+        $token = $this->requestToken(self::SERVICE_PREFIX . 'token-disabled', self::SERVICE_SECRET);
+        // Disable without the behaviour, which would also delete the token.
+        \Phalcon\Di::getDefault()->get('db')->execute(
+            'UPDATE serviceclients SET status = ? WHERE "clientId" = ?',
+            [ServiceClients::STATUS_DISABLED, self::SERVICE_PREFIX . 'token-disabled']
+        );
+
+        $this->expectException(\Gaia\Exception\UnAuthorized::class);
+        $this->expectExceptionMessage(ServiceClientGuard::CLIENT_NOT_SERVICE_ERROR);
+
+        ServiceClientGuard::assertServiceTokenAllowed($token);
+    }
+
+    public function testATokenWithoutAClientIsRefused(): void
+    {
+        $this->expectException(\Gaia\Exception\UnAuthorized::class);
+
+        ServiceClientGuard::assertServiceTokenAllowed(new Oauthaccesstoken());
+    }
+
     public function testADeletedServiceClientGetsNothing(): void
     {
         $client = $this->createServiceClient('deleted-1', 'runtime');
