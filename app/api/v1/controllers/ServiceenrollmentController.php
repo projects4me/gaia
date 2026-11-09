@@ -105,6 +105,7 @@ class ServiceenrollmentController extends RestController
         if ($polled['secret'] !== null) {
             $document['data']['attributes']['clientId'] = $polled['clientId'];
             $document['data']['attributes']['clientSecret'] = $polled['secret'];
+            $document['data']['attributes']['serviceClientId'] = $polled['serviceClientId'];
         }
 
         $this->response->setStatusCode(200, "OK");

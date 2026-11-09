@@ -16768,7 +16768,8 @@
         ],
         "stores": [
           "runtime.enrolledClientId",
-          "runtime.enrolledClientSecret"
+          "runtime.enrolledClientSecret",
+          "runtime.enrolledServiceClientId"
         ]
       }
     },
