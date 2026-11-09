@@ -110,9 +110,27 @@ class HermesPublisher
             ));
         } catch (\Throwable $e) {
             if ($logger) {
-                $logger->error('Hermes ingest failed: ' . $e->getMessage());
+                $logger->error('Hermes ingest failed: ' . $e->getMessage() . $this->responseDetail($e));
             }
         }
+    }
+
+    /**
+     * Returns the Hermes response body of a failed publish, for the log line.
+     *
+     * @param  \Throwable $e The failure.
+     * @method responseDetail
+     * @return string
+     */
+    protected function responseDetail(\Throwable $e)
+    {
+        if (!method_exists($e, 'getResponse') || !$e->getResponse()) {
+            return '';
+        }
+
+        $body = (string) $e->getResponse()->getBody();
+
+        return $body === '' ? '' : ' | response: ' . substr($body, 0, 500);
     }
 
     /**

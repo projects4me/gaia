@@ -362,6 +362,28 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertEquals(EventNames::ISSUE_CREATED, $envelope['eventName']);
     }
 
+    public function testEmptyChangesAreEncodedAsJsonObject()
+    {
+        $posted = array();
+        $publisher = new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        });
+
+        $publisher->publishDomainEvent(
+            'workflow.agent.run.requested',
+            'runtimes',
+            'workflowrun',
+            'run-1',
+            array(),
+            array()
+        );
+
+        $this->assertCount(1, $posted);
+        $json = json_encode($posted[0]);
+        $this->assertStringContainsString('"changes":{}', $json);
+        $this->assertStringNotContainsString('"changes":[]', $json);
+    }
+
     public function testNotificationCreatedEnvelopeUsesUserScope()
     {
         $posted = array();
