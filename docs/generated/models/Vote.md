@@ -28,4 +28,4 @@
 - controller: Gaia\MVC\REST\Controllers\VoteController
 - routes: DELETE /api/v1/vote, DELETE /api/v1/vote/{id}, GET /api/v1/vote, GET /api/v1/vote/{id}, GET /api/v1/vote/{id}/{relation}, OPTIONS /api/v1/vote, PATCH /api/v1/vote, PATCH /api/v1/vote/{id}, POST /api/v1/vote, PUT /api/v1/vote, PUT /api/v1/vote/{id}
 - components: Events\ConversationVoteLiveEvents
-- cases: 6 (backend 4, client 2); gaia-dev cases vote
+- cases: 7 (backend 4, client 3); gaia-dev cases vote

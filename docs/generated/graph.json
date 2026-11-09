@@ -16492,6 +16492,299 @@
       }
     },
     {
+      "id": "case:client/room-activity-comment-and-vote-record-none",
+      "type": "case",
+      "key": "client/room-activity-comment-and-vote-record-none",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-comment-create",
+      "type": "case",
+      "key": "client/room-activity-comment-create",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/comment",
+        "resource": "comment",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-description-edit",
+      "type": "case",
+      "key": "client/room-activity-description-edit",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/conversationroom/{runtime.activityRoomId}",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-description-edited-recorded",
+      "type": "case",
+      "key": "client/room-activity-description-edited-recorded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-issue-change",
+      "type": "case",
+      "key": "client/room-activity-issue-change",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/conversationroom/{runtime.activityRoomId}",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectIssueId",
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-issue-changed-recorded",
+      "type": "case",
+      "key": "client/room-activity-issue-changed-recorded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-issue-clear",
+      "type": "case",
+      "key": "client/room-activity-issue-clear",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/conversationroom/{runtime.activityRoomId}",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-issue-linked-recorded",
+      "type": "case",
+      "key": "client/room-activity-issue-linked-recorded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-issue-set",
+      "type": "case",
+      "key": "client/room-activity-issue-set",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/conversationroom/{runtime.activityRoomId}",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-issue-unlinked-recorded",
+      "type": "case",
+      "key": "client/room-activity-issue-unlinked-recorded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-room-create",
+      "type": "case",
+      "key": "client/room-activity-room-create",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "projectShortcode"
+        ],
+        "stores": [
+          "runtime.activityRoomId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/room-activity-room-delete",
+      "type": "case",
+      "key": "client/room-activity-room-delete",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/conversationroom/{runtime.activityRoomId}",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-started-recorded",
+      "type": "case",
+      "key": "client/room-activity-started-recorded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-subject-edit",
+      "type": "case",
+      "key": "client/room-activity-subject-edit",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/conversationroom/{runtime.activityRoomId}",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-subject-edited-recorded",
+      "type": "case",
+      "key": "client/room-activity-subject-edited-recorded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/room-activity-vote-create",
+      "type": "case",
+      "key": "client/room-activity-vote-create",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/vote",
+        "resource": "vote",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.activityRoomId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/serviceclient-patch-bad-status-rejected",
       "type": "case",
       "key": "client/serviceclient-patch-bad-status-rejected",
@@ -19620,6 +19913,22 @@
         ],
         "stores": [
           "runtime.mailUserId"
+        ]
+      }
+    },
+    {
+      "id": "component:Conversationactivities",
+      "type": "component",
+      "key": "Conversationactivities",
+      "attributes": {
+        "kind": "component",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\ConversationactivitiesComponent",
+        "file": "app/api/v1/controllers/components/ConversationactivitiesComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate"
         ]
       }
     },
@@ -31193,6 +31502,15 @@
                   "localKey": "relatedId",
                   "relatedKey": "id",
                   "projectField": "projectId"
+                },
+                {
+                  "when": {
+                    "relatedTo": "conversationroom"
+                  },
+                  "relatedModel": "Conversationroom",
+                  "localKey": "relatedId",
+                  "relatedKey": "id",
+                  "projectField": "projectId"
                 }
               ]
             }
@@ -34699,6 +35017,17 @@
       "key": "serviceRuntime",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "relationship:Activity.conversationroom",
+      "type": "relationship",
+      "key": "Activity.conversationroom",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "relatedId",
+        "relatedKey": "id",
+        "condition": "Activity.relatedTo = \"conversationroom\""
       }
     },
     {
@@ -68309,6 +68638,566 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/room-activity-comment-and-vote-record-none",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/room-activity-comment-and-vote-record-none",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/room-activity-comment-and-vote-record-none",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-comment-and-vote-record-none",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-comment-and-vote-record-none",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/room-activity-comment-and-vote-record-none",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-comment-and-vote-record-none",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/room-activity-comment-and-vote-record-none",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-comment-create",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-comment-create",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-comment-create",
+      "type": "covers",
+      "to": "controller:comment"
+    },
+    {
+      "from": "case:client/room-activity-comment-create",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-comment-create",
+      "type": "exercises",
+      "to": "route:POST /api/v1/comment"
+    },
+    {
+      "from": "case:client/room-activity-comment-create",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-description-edit",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-description-edit",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-description-edit",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/room-activity-description-edit",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-description-edit",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/conversationroom/{id}"
+    },
+    {
+      "from": "case:client/room-activity-description-edit",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-description-edited-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/room-activity-description-edited-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/room-activity-description-edited-recorded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-description-edited-recorded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-description-edited-recorded",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/room-activity-description-edited-recorded",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-description-edited-recorded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/room-activity-description-edited-recorded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-issue-change",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-issue-change",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-issue-change",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/room-activity-issue-change",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-issue-change",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/conversationroom/{id}"
+    },
+    {
+      "from": "case:client/room-activity-issue-change",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-issue-change",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectIssueId"
+    },
+    {
+      "from": "case:client/room-activity-issue-changed-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/room-activity-issue-changed-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/room-activity-issue-changed-recorded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-issue-changed-recorded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-issue-changed-recorded",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/room-activity-issue-changed-recorded",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-issue-changed-recorded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/room-activity-issue-changed-recorded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-issue-clear",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-issue-clear",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-issue-clear",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/room-activity-issue-clear",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-issue-clear",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/conversationroom/{id}"
+    },
+    {
+      "from": "case:client/room-activity-issue-clear",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-issue-linked-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/room-activity-issue-linked-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/room-activity-issue-linked-recorded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-issue-linked-recorded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-issue-linked-recorded",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/room-activity-issue-linked-recorded",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-issue-linked-recorded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/room-activity-issue-linked-recorded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-issue-set",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-issue-set",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-issue-set",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/room-activity-issue-set",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-issue-set",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/conversationroom/{id}"
+    },
+    {
+      "from": "case:client/room-activity-issue-set",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-issue-set",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/room-activity-issue-unlinked-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/room-activity-issue-unlinked-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/room-activity-issue-unlinked-recorded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-issue-unlinked-recorded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-issue-unlinked-recorded",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/room-activity-issue-unlinked-recorded",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-issue-unlinked-recorded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/room-activity-issue-unlinked-recorded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-room-create",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-room-create",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-room-create",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/room-activity-room-create",
+      "type": "exercises",
+      "to": "route:POST /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/room-activity-room-create",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-room-create",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/room-activity-room-create",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/room-activity-room-delete",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-room-delete",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/room-activity-room-delete",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-room-delete",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/conversationroom/{id}"
+    },
+    {
+      "from": "case:client/room-activity-room-delete",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-started-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/room-activity-started-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/room-activity-started-recorded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-started-recorded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-started-recorded",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/room-activity-started-recorded",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-started-recorded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/room-activity-started-recorded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-subject-edit",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-subject-edit",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-subject-edit",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/room-activity-subject-edit",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-subject-edit",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/conversationroom/{id}"
+    },
+    {
+      "from": "case:client/room-activity-subject-edit",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-subject-edited-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/room-activity-subject-edited-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/room-activity-subject-edited-recorded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-subject-edited-recorded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-subject-edited-recorded",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/room-activity-subject-edited-recorded",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-subject-edited-recorded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/room-activity-subject-edited-recorded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/room-activity-vote-create",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/room-activity-vote-create",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/room-activity-vote-create",
+      "type": "covers",
+      "to": "controller:vote"
+    },
+    {
+      "from": "case:client/room-activity-vote-create",
+      "type": "depends_on",
+      "to": "case:client/room-activity-room-create"
+    },
+    {
+      "from": "case:client/room-activity-vote-create",
+      "type": "exercises",
+      "to": "route:POST /api/v1/vote"
+    },
+    {
+      "from": "case:client/room-activity-vote-create",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/serviceclient-patch-bad-status-rejected",
       "type": "asserts",
       "to": "assertion:shape"
@@ -74766,6 +75655,11 @@
     {
       "from": "controller:conversationroom",
       "type": "uses_component",
+      "to": "component:Conversationactivities"
+    },
+    {
+      "from": "controller:conversationroom",
+      "type": "uses_component",
       "to": "component:Events\\ConversationLiveEvents"
     },
     {
@@ -78142,6 +79036,11 @@
       "from": "model:Activity",
       "type": "has_field",
       "to": "field:Activity.type"
+    },
+    {
+      "from": "model:Activity",
+      "type": "has_relationship",
+      "to": "relationship:Activity.conversationroom"
     },
     {
       "from": "model:Activity",
@@ -86572,6 +87471,11 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:workflowrunstep.update"
+    },
+    {
+      "from": "relationship:Activity.conversationroom",
+      "type": "targets",
+      "to": "model:Conversationroom"
     },
     {
       "from": "relationship:Activity.createdBy",
