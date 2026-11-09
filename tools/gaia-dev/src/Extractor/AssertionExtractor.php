@@ -33,7 +33,7 @@ class AssertionExtractor
      */
     private const RUNNER_GROUPS = [
         'assertMail' => ['expect', 'mail', ['timeoutMs']],
-        'runCase' => ['hermes', 'hermes', ['timeoutMs', 'requireUp']],
+        'runCase' => ['hermes', 'hermes', ['timeoutMs', 'requireUp', 'observer']],
     ];
 
     /**

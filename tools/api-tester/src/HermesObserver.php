@@ -48,12 +48,14 @@ class HermesObserver
     /**
      * Subscribe before the Gaia write; call finish() after the write completes.
      *
-     * @param  string $token   OAuth bearer token (same user as the Gaia write)
+     * @param  string $token   OAuth bearer token of the observing socket
      * @param  array  $expect  List of match objects (eventName, projectId, ...)
      * @param  int    $timeoutMs
+     * @param  array  $absent  Match objects that must not arrive; the observer
+     *                         then listens for the whole timeout
      * @return array{finish: callable, cancel: callable}
      */
-    public function arm($token, array $expect, $timeoutMs = 5000)
+    public function arm($token, array $expect, $timeoutMs = 5000, array $absent = [])
     {
         if (!is_file($this->waitScript)) {
             throw new \RuntimeException('hermes-wait script missing: ' . $this->waitScript);
@@ -63,7 +65,9 @@ class HermesObserver
         $readyFile = $tmp . '.ready';
         $resultFile = $tmp . '.result';
         $expectFile = $tmp . '.expect.json';
+        $absentFile = $tmp . '.absent.json';
         file_put_contents($expectFile, json_encode(array_values($expect)));
+        file_put_contents($absentFile, json_encode(array_values($absent)));
 
         $cmd = [
             $this->nodeBin,
@@ -74,6 +78,8 @@ class HermesObserver
             $token,
             '--expect-file',
             $expectFile,
+            '--absent-file',
+            $absentFile,
             '--timeout-ms',
             (string) $timeoutMs,
             '--ready-file',
@@ -99,6 +105,7 @@ class HermesObserver
         );
         if (!is_resource($process)) {
             @unlink($expectFile);
+            @unlink($absentFile);
             throw new \RuntimeException('Failed to start hermes-wait (is node installed?)');
         }
 
@@ -118,7 +125,7 @@ class HermesObserver
                 $stdout .= (string) stream_get_contents($pipes[1]);
                 $stderr .= (string) stream_get_contents($pipes[2]);
                 $this->closeProcess($process, $pipes);
-                $this->cleanupFiles([$readyFile, $resultFile, $expectFile]);
+                $this->cleanupFiles([$readyFile, $resultFile, $expectFile, $absentFile]);
                 throw new \RuntimeException(
                     'hermes-wait exited before arming'
                     . ($stderr !== '' ? ': ' . trim($stderr) : '')
@@ -128,7 +135,7 @@ class HermesObserver
             if (microtime(true) > $deadline) {
                 proc_terminate($process);
                 $this->closeProcess($process, $pipes);
-                $this->cleanupFiles([$readyFile, $resultFile, $expectFile]);
+                $this->cleanupFiles([$readyFile, $resultFile, $expectFile, $absentFile]);
                 throw new \RuntimeException('Timed out waiting for hermes-wait to arm');
             }
             usleep(50000);
@@ -140,6 +147,8 @@ class HermesObserver
             'readyFile' => $readyFile,
             'resultFile' => $resultFile,
             'expectFile' => $expectFile,
+            'absentFile' => $absentFile,
+            'expectsNone' => count($expect) === 0,
             'timeoutMs' => $timeoutMs,
             'stdout' => &$stdout,
             'stderr' => &$stderr,
@@ -176,7 +185,7 @@ class HermesObserver
             if (microtime(true) > $deadline) {
                 proc_terminate($process);
                 $this->closeProcess($process, $pipes);
-                $this->cleanupFiles([$state['readyFile'], $state['resultFile'], $state['expectFile']]);
+                $this->cleanupFiles([$state['readyFile'], $state['resultFile'], $state['expectFile'], $state['absentFile']]);
                 throw new \RuntimeException('Timed out waiting for hermes-wait result');
             }
             usleep(50000);
@@ -204,7 +213,7 @@ class HermesObserver
         $raw = is_file($state['resultFile'])
             ? file_get_contents($state['resultFile'])
             : $state['stdout'];
-        $this->cleanupFiles([$state['readyFile'], $state['resultFile'], $state['expectFile']]);
+        $this->cleanupFiles([$state['readyFile'], $state['resultFile'], $state['expectFile'], $state['absentFile']]);
 
         $json = json_decode(trim((string) $raw), true);
         if (!is_array($json)) {
@@ -225,12 +234,16 @@ class HermesObserver
                 $message .= ' | out: ' . trim((string) $raw);
             }
             // Successful payload wins over a lost exit code (-1 after prior status read).
-            if (!empty($json['ok']) && !empty($json['matched']) && is_array($json['matched']) && $exitCode === -1) {
+            if (!empty($json['ok']) && isset($json['matched']) && is_array($json['matched'])
+                && ($json['matched'] || $state['expectsNone']) && $exitCode === -1) {
                 return $json['matched'];
             }
             throw new \RuntimeException($message);
         }
 
+        if ($state['expectsNone'] && isset($json['matched']) && $json['matched'] === []) {
+            return [];
+        }
         if (empty($json['matched']) || !is_array($json['matched'])) {
             throw new \RuntimeException('hermes-wait succeeded without matched envelopes');
         }
@@ -251,6 +264,7 @@ class HermesObserver
             isset($state['readyFile']) ? $state['readyFile'] : null,
             isset($state['resultFile']) ? $state['resultFile'] : null,
             isset($state['expectFile']) ? $state['expectFile'] : null,
+            isset($state['absentFile']) ? $state['absentFile'] : null,
         ]);
     }
 

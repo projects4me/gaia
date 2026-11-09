@@ -279,3 +279,17 @@ Cases may declare a `hermes` block (used by `apis/live.json`):
 
 - Requires `--hermes-url`. Runner arms `harness/hermes-wait` before the HTTP request.
 - Fail-open cases use `"hermes": { "requireUp": false }` and never touch Socket.IO.
+- `observer` (optional): the auth profile of the listening socket when it is not the writer, e.g.
+  `"observer": "serviceRuntime"` to listen on the `runtimes` scope, which only runtime service tokens may join.
+- `absent` (optional): match objects that must **not** arrive. The observer then listens for the whole
+  `timeoutMs` and fails the case if one arrives. A case may have `absent` without `expect`.
+
+```json
+"hermes": {
+  "observer": "serviceRuntime",
+  "absent": [
+    { "eventName": "workflow.agent.run.requested", "projectId": "runtimes", "resourceType": "workflowRun" }
+  ],
+  "timeoutMs": 3000
+}
+```

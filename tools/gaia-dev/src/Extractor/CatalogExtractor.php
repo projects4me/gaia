@@ -36,7 +36,7 @@ class CatalogExtractor
      */
     private const ASSERTION_GROUPS = [
         'expects' => [],
-        'hermes' => ['timeoutMs', 'requireUp'],
+        'hermes' => ['timeoutMs', 'requireUp', 'observer'],
         'mail' => [],
     ];
 

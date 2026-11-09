@@ -87,7 +87,7 @@ Workflow engine (not REST):
 
 | Source                  | Class                | Event                                                                  |
 | ----------------------- | -------------------- | ---------------------------------------------------------------------- |
-| `RunAgentActor` (D-010) | `AgentRunLiveEvents` | `workflow.agent.run.requested` scoped to `user:<agentUserId>`, ids only |
+| `RunAgentActor` (D-010, D-012) | `AgentRunLiveEvents` | `workflow.agent.run.requested` scoped to `user:<agentUserId>`, and also to `runtimes` for a delegable agent; ids only |
 
 
 Comments and votes publish only when `relatedTo` is a conversation room.
