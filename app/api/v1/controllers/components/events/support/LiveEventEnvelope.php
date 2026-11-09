@@ -60,7 +60,7 @@ class LiveEventEnvelope
                 'id' => (string) $resourceId,
             ),
             'actorId' => $actorId,
-            'changes' => $changes,
+            'changes' => empty($changes) ? new \stdClass() : $changes,
             'meta' => array_merge(
                 array(
                     'actorName' => $actorName,
