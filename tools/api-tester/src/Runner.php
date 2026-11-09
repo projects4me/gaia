@@ -200,6 +200,12 @@ class Runner
         $expectEvents = ($hermes && !empty($hermes['expect']) && is_array($hermes['expect']))
             ? $this->fixtures->resolve($hermes['expect'])
             : null;
+        $absentEvents = ($hermes && !empty($hermes['absent']) && is_array($hermes['absent']))
+            ? $this->fixtures->resolve($hermes['absent'])
+            : [];
+        if ($expectEvents === null && $absentEvents) {
+            $expectEvents = [];
+        }
 
         $observer = null;
         if ($expectEvents !== null) {
@@ -216,7 +222,10 @@ class Runner
             }
             $this->ensureHermesHealthy();
             $timeoutMs = isset($hermes['timeoutMs']) ? (int) $hermes['timeoutMs'] : 5000;
-            $observer = $this->hermesObserver->arm($token, $expectEvents, $timeoutMs);
+            // hermes.observer: the auth profile of the listening socket, when it
+            // is not the writer (e.g. serviceRuntime on the runtimes scope).
+            $observerToken = !empty($hermes['observer']) ? $this->getToken($hermes['observer']) : $token;
+            $observer = $this->hermesObserver->arm($observerToken, $expectEvents, $timeoutMs, $absentEvents);
         }
 
         $mail = isset($api['mail']) && is_array($api['mail']) ? $this->fixtures->resolve($api['mail']) : null;

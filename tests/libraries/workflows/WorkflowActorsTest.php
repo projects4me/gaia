@@ -106,8 +106,8 @@ class WorkflowActorsTest extends TestCase
         $this->assertSame('pending', $step['status']);
         $this->assertEqualsWithDelta($before + 600, strtotime($step['claimBy'] . ' UTC'), 5);
         $this->assertEqualsWithDelta($before + 3600, strtotime($step['finishBy'] . ' UTC'), 5);
-        $this->assertSame([$step], array_map(function ($request) {
-            return $request + ['status' => 'pending'];
+        $this->assertSame([$step + ['delegable' => false]], array_map(function ($request) {
+            return array_diff_key($request, ['delegable' => true]) + ['status' => 'pending', 'delegable' => $request['delegable']];
         }, $context->takeAgentRequests()));
         $this->assertSame(['agentId', 'actorUserId', 'claimBy', 'finishBy'], array_keys($outputs));
     }
@@ -123,6 +123,16 @@ class WorkflowActorsTest extends TestCase
         ]);
         $this->assertEqualsWithDelta($before + 15 * 60, strtotime($step['claimBy'] . ' UTC'), 5);
         $this->assertEqualsWithDelta($before + 240 * 60, strtotime($step['finishBy'] . ' UTC'), 5);
+    }
+
+    public function testRunAgentSaysWhetherAnyRuntimeMayTakeTheStep()
+    {
+        $context = $this->context();
+        $this->actors->actor('run_agent')->run(['agentId' => 'agent-3'], $context);
+        $this->actors->actor('run_agent')->run(['agentId' => 'agent-1'], $context);
+
+        $this->assertSame([true, false], array_column($context->takeAgentRequests(), 'delegable'));
+        $this->assertArrayNotHasKey('delegable', $this->steps->rows['step-1']);
     }
 
     public function testRunAgentRefusesAnAgentOutsideTheRunsProject()
@@ -477,6 +487,9 @@ class WorkflowActorsTest extends TestCase
                     'Agent' => [
                         'agent-1' => ['id' => 'agent-1', 'userId' => 'user-agent', 'maxTurns' => 30],
                         'agent-2' => ['id' => 'agent-2', 'userId' => 'user-stranger', 'maxTurns' => 30],
+                        'agent-3' => [
+                            'id' => 'agent-3', 'userId' => 'user-agent', 'maxTurns' => 30, 'delegationScopes' => '["issue.*"]',
+                        ],
                     ],
                     'Issue' => ['issue-1' => ['id' => 'issue-1', 'projectId' => 'project-1']],
                     'Comment' => ['comment-1' => ['id' => 'comment-1', 'relatedTo' => 'issue', 'relatedId' => 'issue-9']],

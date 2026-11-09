@@ -3426,6 +3426,18 @@
       }
     },
     {
+      "id": "assertion:hermes.absent",
+      "type": "assertion",
+      "key": "hermes.absent",
+      "attributes": {
+        "source": "tools/api-tester/src/Runner.php",
+        "line": 203,
+        "messages": [],
+        "values": [],
+        "example": "live/live-agent-run-non-delegable-agent-request-skips-runtimes"
+      }
+    },
+    {
       "id": "assertion:hermes.expect",
       "type": "assertion",
       "key": "hermes.expect",
@@ -3527,7 +3539,7 @@
       "key": "mail.bodyContains",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 312,
+        "line": 321,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -3539,7 +3551,7 @@
       "key": "mail.fromEmail",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 300,
+        "line": 309,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -3551,7 +3563,7 @@
       "key": "mail.fromName",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 300,
+        "line": 309,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -3563,7 +3575,7 @@
       "key": "mail.subject",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 287,
+        "line": 296,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -3575,7 +3587,7 @@
       "key": "mail.to",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 287,
+        "line": 296,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -18524,6 +18536,425 @@
           "workflownodeId"
         ],
         "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-cleanup-agent-membership",
+      "type": "case",
+      "key": "live/live-agent-run-cleanup-agent-membership",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "DELETE",
+        "path": "/api/v1/membership/{runtime.liveAgentMembershipId}",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveAgentMembershipId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-cleanup-delegable-agent-membership",
+      "type": "case",
+      "key": "live/live-agent-run-cleanup-delegable-agent-membership",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "DELETE",
+        "path": "/api/v1/membership/{runtime.liveDelegableMembershipId}",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveDelegableMembershipId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-cleanup-workflow",
+      "type": "case",
+      "key": "live/live-agent-run-cleanup-workflow",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "DELETE",
+        "path": "/api/v1/workflow/{runtime.liveRunFlowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveRunFlowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "type": "case",
+      "key": "live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectId",
+          "projectShortcode",
+          "runId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "type": "case",
+      "key": "live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectId",
+          "projectShortcode",
+          "runId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-activate",
+      "type": "case",
+      "key": "live/live-agent-run-setup-activate",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflow/{runtime.liveRunFlowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveRunFlowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-agent-membership",
+      "type": "case",
+      "key": "live/live-agent-run-setup-agent-membership",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "agentUserId",
+          "projectId"
+        ],
+        "stores": [
+          "runtime.liveAgentMembershipId"
+        ]
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-back-to-draft",
+      "type": "case",
+      "key": "live/live-agent-run-setup-back-to-draft",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflow/{runtime.liveRunFlowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveRunFlowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-delegable-agent-membership",
+      "type": "case",
+      "key": "live/live-agent-run-setup-delegable-agent-membership",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentUserId",
+          "projectId"
+        ],
+        "stores": [
+          "runtime.liveDelegableMembershipId"
+        ]
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-edge-blocked",
+      "type": "case",
+      "key": "live/live-agent-run-setup-edge-blocked",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveRunAgentNodeId",
+          "runtime.liveRunEndId",
+          "runtime.liveRunFlowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-edge-done",
+      "type": "case",
+      "key": "live/live-agent-run-setup-edge-done",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveRunAgentNodeId",
+          "runtime.liveRunEndId",
+          "runtime.liveRunFlowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-edge-failed",
+      "type": "case",
+      "key": "live/live-agent-run-setup-edge-failed",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveRunAgentNodeId",
+          "runtime.liveRunEndId",
+          "runtime.liveRunFlowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-edge-limit",
+      "type": "case",
+      "key": "live/live-agent-run-setup-edge-limit",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveRunAgentNodeId",
+          "runtime.liveRunEndId",
+          "runtime.liveRunFlowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-edge-needs-input",
+      "type": "case",
+      "key": "live/live-agent-run-setup-edge-needs-input",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveRunAgentNodeId",
+          "runtime.liveRunEndId",
+          "runtime.liveRunFlowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-edge-next",
+      "type": "case",
+      "key": "live/live-agent-run-setup-edge-next",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/workflowedge",
+        "resource": "workflowedge",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveRunAgentNodeId",
+          "runtime.liveRunFlowId",
+          "runtime.liveRunTriggerId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-end",
+      "type": "case",
+      "key": "live/live-agent-run-setup-end",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveRunFlowId"
+        ],
+        "stores": [
+          "runtime.liveRunEndId"
+        ]
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-reactivate",
+      "type": "case",
+      "key": "live/live-agent-run-setup-reactivate",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflow/{runtime.liveRunFlowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveRunFlowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-run-delegable-agent",
+      "type": "case",
+      "key": "live/live-agent-run-setup-run-delegable-agent",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentId",
+          "runtime.liveRunFlowId"
+        ],
+        "stores": [
+          "runtime.liveRunAgentNodeId"
+        ]
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-run-non-delegable-agent",
+      "type": "case",
+      "key": "live/live-agent-run-setup-run-non-delegable-agent",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflownode/{runtime.liveRunAgentNodeId}",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "agentId",
+          "runtime.liveRunAgentNodeId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-trigger",
+      "type": "case",
+      "key": "live/live-agent-run-setup-trigger",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveRunFlowId"
+        ],
+        "stores": [
+          "runtime.liveRunTriggerId"
+        ]
+      }
+    },
+    {
+      "id": "case:live/live-agent-run-setup-workflow",
+      "type": "case",
+      "key": "live/live-agent-run-setup-workflow",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/workflow",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "runId"
+        ],
+        "stores": [
+          "runtime.liveRunFlowId"
+        ]
       }
     },
     {
@@ -71771,6 +72202,781 @@
       "from": "case:client/workflowrun-test-run-returns-the-path-without-saving",
       "type": "uses_fixture",
       "to": "fixture:workflownodeId"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-agent-membership",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-agent-membership",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-agent-membership",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-agent-membership"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-agent-membership",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/membership/{id}"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-agent-membership",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-agent-membership",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-delegable-agent-membership",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-delegable-agent-membership",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-delegable-agent-membership",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-delegable-agent-membership"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-delegable-agent-membership",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/membership/{id}"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-delegable-agent-membership",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-delegable-agent-membership",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-workflow",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-workflow",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-workflow",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-workflow",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:live/live-agent-run-cleanup-workflow",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "type": "asserts",
+      "to": "assertion:hermes.expect"
+    },
+    {
+      "from": "case:live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:live/live-agent-run-delegable-agent-request-reaches-runtimes",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "type": "asserts",
+      "to": "assertion:hermes.absent"
+    },
+    {
+      "from": "case:live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:live/live-agent-run-non-delegable-agent-request-skips-runtimes",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-activate",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-activate",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-activate",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-activate",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-activate",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-activate",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-activate",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-agent-membership",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-agent-membership",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-agent-membership",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-agent-membership",
+      "type": "exercises",
+      "to": "route:POST /api/v1/membership"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-agent-membership",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-agent-membership",
+      "type": "uses_fixture",
+      "to": "fixture:agentUserId"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-agent-membership",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-back-to-draft",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-back-to-draft",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-back-to-draft",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-back-to-draft",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-back-to-draft",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-back-to-draft",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-back-to-draft",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-delegable-agent-membership",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-delegable-agent-membership",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-delegable-agent-membership",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-delegable-agent-membership",
+      "type": "exercises",
+      "to": "route:POST /api/v1/membership"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-delegable-agent-membership",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-delegable-agent-membership",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentUserId"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-delegable-agent-membership",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-blocked",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-blocked",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-blocked",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-blocked",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-end"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-blocked",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-run-delegable-agent"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-blocked",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-blocked",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-blocked",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-done",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-done",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-done",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-done",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-end"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-done",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-run-delegable-agent"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-done",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-done",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-done",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-failed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-failed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-failed",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-failed",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-end"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-failed",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-run-delegable-agent"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-failed",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-failed",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-failed",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-limit",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-limit",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-limit",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-limit",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-end"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-limit",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-run-delegable-agent"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-limit",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-limit",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-limit",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-needs-input",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-needs-input",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-needs-input",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-needs-input",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-end"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-needs-input",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-run-delegable-agent"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-needs-input",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-needs-input",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-needs-input",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-next",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-next",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-next",
+      "type": "covers",
+      "to": "controller:workflowedge"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-next",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-run-delegable-agent"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-next",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-trigger"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-next",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-next",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflowedge"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-edge-next",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-end",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-end",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-end",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-end",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-end",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflownode"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-end",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-reactivate",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-reactivate",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-reactivate",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-reactivate",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-reactivate",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-reactivate",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-reactivate",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-delegable-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-delegable-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-delegable-agent",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-delegable-agent",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-delegable-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflownode"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-delegable-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-delegable-agent",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-non-delegable-agent",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-non-delegable-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-non-delegable-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-non-delegable-agent",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-non-delegable-agent",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-run-delegable-agent"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-non-delegable-agent",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflownode/{id}"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-non-delegable-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-run-non-delegable-agent",
+      "type": "uses_fixture",
+      "to": "fixture:agentId"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-trigger",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-trigger",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-trigger",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-trigger",
+      "type": "depends_on",
+      "to": "case:live/live-agent-run-setup-workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-trigger",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflownode"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-trigger",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-workflow",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-workflow",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-workflow",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-workflow",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflow"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-workflow",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-workflow",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
     },
     {
       "from": "case:live/live-conversation-comment-create-publishes-comment-created",

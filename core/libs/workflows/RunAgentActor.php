@@ -6,6 +6,8 @@
 
 namespace Gaia\Libraries\Workflows;
 
+use Gaia\Libraries\Agents\AgentDelegationScopes;
+
 /**
  * The `run_agent` actor: records a pending step for the agent (the prompt
  * with its expressions resolved, session, model rule, max turns and the
@@ -13,6 +15,8 @@ namespace Gaia\Libraries\Workflows;
  * saved as waiting (see WorkflowRunner). The run waits until
  * the runtime reports an outcome (see ActorStepReports) or the step times
  * out (see ActorStepTimeouts); the outcome is the port the run goes on by.
+ * The request says whether the agent can be delegated (it has delegation
+ * scopes), so any runtime may be told about it, not only the agent's own.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Workflows
@@ -117,7 +121,7 @@ class RunAgentActor extends WorkflowAction
             'finishBy' => gmdate('Y-m-d H:i:s', $now + $finishMinutes * 60),
         ];
         $this->steps->create($step);
-        $context->requestAgent($step);
+        $context->requestAgent($step + ['delegable' => self::delegable($agent)]);
 
         return [
             'agentId' => $agentId,
@@ -125,6 +129,18 @@ class RunAgentActor extends WorkflowAction
             'claimBy' => $step['claimBy'],
             'finishBy' => $step['finishBy'],
         ];
+    }
+
+    /**
+     * Whether a runtime may act for the agent: it has valid, non-empty
+     * delegation scopes (see AgentDelegationScopes).
+     *
+     * @param  object $agent
+     * @return bool
+     */
+    private static function delegable($agent)
+    {
+        return (bool) AgentDelegationScopes::decode($agent->readAttribute('delegationScopes'));
     }
 
     /**

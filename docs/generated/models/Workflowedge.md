@@ -28,4 +28,4 @@
 - controller: Gaia\MVC\REST\Controllers\WorkflowedgeController
 - routes: DELETE /api/v1/workflowedge, DELETE /api/v1/workflowedge/{id}, GET /api/v1/workflowedge, GET /api/v1/workflowedge/{id}, GET /api/v1/workflowedge/{id}/{relation}, OPTIONS /api/v1/workflowedge, PATCH /api/v1/workflowedge, PATCH /api/v1/workflowedge/{id}, POST /api/v1/workflowedge, PUT /api/v1/workflowedge, PUT /api/v1/workflowedge/{id}
 - components: -
-- cases: 13 (acl 2, backend 3, client 8); gaia-dev cases workflowedge
+- cases: 19 (acl 2, backend 3, client 8, live 6); gaia-dev cases workflowedge

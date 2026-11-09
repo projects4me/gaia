@@ -16,6 +16,8 @@ use Gaia\MVC\REST\Controllers\Components\Events\Support\HermesPublisher;
  * carries ids only, never the prompt (hermes D-017): resource is the run,
  * meta the workflow, the step and the record the run is about. The runtime
  * reads the step from GET /api/v1/workflowactorstep/{stepId}.
+ * A delegable agent's request also goes to the `runtimes` scope (D-012), so
+ * any runtime can take it; the step's claim decides which one does.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\MVC\REST\Controllers\Components\Events
@@ -23,6 +25,11 @@ use Gaia\MVC\REST\Controllers\Components\Events\Support\HermesPublisher;
  */
 class AgentRunLiveEvents implements AgentRunRequests
 {
+    /**
+     * The scope every runtime listens on (hermes: runtime service tokens only).
+     */
+    const RUNTIMES_SCOPE = 'runtimes';
+
     /**
      * @var HermesPublisher
      */
@@ -45,9 +52,22 @@ class AgentRunLiveEvents implements AgentRunRequests
             return;
         }
 
+        $this->publish('user:' . (string) $step['actorUserId'], $step);
+        if (!empty($step['delegable'])) {
+            $this->publish(self::RUNTIMES_SCOPE, $step);
+        }
+    }
+
+    /**
+     * @param  string $scope
+     * @param  array  $step
+     * @return void
+     */
+    private function publish($scope, array $step)
+    {
         $this->publisher->publishDomainEvent(
             EventNames::WORKFLOW_AGENT_RUN_REQUESTED,
-            'user:' . (string) $step['actorUserId'],
+            $scope,
             'workflowRun',
             (string) $step['runId'],
             array(),

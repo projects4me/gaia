@@ -37,6 +37,7 @@ function parseArgs(argv) {
 		hermesUrl: null,
 		token: null,
 		expect: [],
+		absent: [],
 		timeoutMs: 5000,
 		readyFile: null,
 		resultFile: null
@@ -56,6 +57,9 @@ function parseArgs(argv) {
 			i++;
 		} else if (arg === '--expect-file' && next) {
 			options.expect = JSON.parse(fs.readFileSync(next, 'utf8'));
+			i++;
+		} else if (arg === '--absent-file' && next) {
+			options.absent = JSON.parse(fs.readFileSync(next, 'utf8'));
 			i++;
 		} else if (arg === '--timeout-ms' && next) {
 			options.timeoutMs = Number(next);
@@ -81,6 +85,8 @@ function printHelp() {
 
 Options:
   --expect-file <path>   Read expect array from JSON file
+  --absent-file <path>   Read an array of matches that must NOT arrive; the
+                         observer then listens for the whole timeout
   --timeout-ms <n>       Wait timeout after armed (default 5000)
   --ready-file <path>    Written when intents are accepted
   --result-file <path>   Write result JSON here (also printed on stdout)
@@ -128,8 +134,9 @@ async function main() {
 	if (!options.token) {
 		fail('Missing --token');
 	}
-	if (!Array.isArray(options.expect) || options.expect.length === 0) {
-		fail('Missing --expect / --expect-file (non-empty array required)');
+	if (!Array.isArray(options.expect) || !Array.isArray(options.absent)
+		|| options.expect.length + options.absent.length === 0) {
+		fail('Missing --expect / --expect-file / --absent-file (non-empty array required)');
 	}
 
 	const pending = options.expect.map((item, index) => ({
@@ -171,7 +178,7 @@ async function main() {
 		fail(error.message);
 	});
 
-	const intents = pending.map(({ item }) => ({
+	const intents = pending.map(({ item }) => item).concat(options.absent).map((item) => ({
 		projectId: item.projectId,
 		eventName: item.eventName
 	}));
@@ -200,7 +207,16 @@ async function main() {
 	}
 
 	const matched = await new Promise((resolve, reject) => {
+		const unexpected = [];
 		const timer = setTimeout(() => {
+			if (options.absent.length > 0 && pending.every((entry) => entry.matched)) {
+				if (unexpected.length > 0) {
+					reject(new Error(`received domain:event that must not arrive: ${JSON.stringify(unexpected)}`));
+				} else {
+					resolve(pending.map((entry) => entry.matched));
+				}
+				return;
+			}
 			reject(new Error(
 				`timed out waiting for domain:event after ${options.timeoutMs}ms; still pending: ${
 					JSON.stringify(pending.filter((p) => !p.matched).map((p) => p.item))
@@ -209,6 +225,9 @@ async function main() {
 		}, options.timeoutMs);
 
 		client.on('domain:event', (envelope) => {
+			if (options.absent.some((item) => matchesExpect(envelope, item))) {
+				unexpected.push(envelope);
+			}
 			for (const entry of pending) {
 				if (entry.matched) {
 					continue;
@@ -217,7 +236,7 @@ async function main() {
 					entry.matched = envelope;
 				}
 			}
-			if (pending.every((entry) => entry.matched)) {
+			if (options.absent.length === 0 && pending.every((entry) => entry.matched)) {
 				clearTimeout(timer);
 				resolve(pending.map((entry) => entry.matched));
 			}

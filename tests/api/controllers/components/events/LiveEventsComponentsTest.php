@@ -454,6 +454,36 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertStringNotContainsString('Secret plan', json_encode($posted[0]));
     }
 
+    public function testDelegableAgentRunRequestAlsoGoesToTheRuntimesScope()
+    {
+        $posted = array();
+        $publisher = new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        });
+        $events = new AgentRunLiveEvents($publisher);
+        $step = array(
+            'id' => 'step-1',
+            'runId' => 'run-1',
+            'workflowId' => 'workflow-1',
+            'actorUserId' => 'user-agent',
+            'entityType' => 'issue',
+            'entityId' => 'issue-1',
+            'prompt' => 'Secret plan',
+        );
+
+        $events->requested($step + array('delegable' => false));
+        $this->assertSame(array('user:user-agent'), array_column($posted, 'projectId'));
+
+        $posted = array();
+        $events->requested($step + array('delegable' => true));
+
+        $this->assertSame(array('user:user-agent', 'runtimes'), array_column($posted, 'projectId'));
+        $this->assertEquals(EventNames::WORKFLOW_AGENT_RUN_REQUESTED, $posted[1]['eventName']);
+        $this->assertEquals(array('type' => 'workflowRun', 'id' => 'run-1'), $posted[1]['resource']);
+        $this->assertEquals($this->metaWithoutActor($posted[0]), $this->metaWithoutActor($posted[1]));
+        $this->assertStringNotContainsString('Secret plan', json_encode($posted[1]));
+    }
+
     public function testNotificationLiveEventsIncludesRelatedToAndRelatedIdWhenSet()
     {
         $posted = array();

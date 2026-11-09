@@ -121,6 +121,15 @@ are out of scope here.
 | Rationale | Hermes checks a socket's access at connect and caches it, so a removed member or a disabled user would keep receiving events. Gaia owns access, so it tells Hermes when to re-check; Hermes asks Gaia for the new access rather than trusting a payload. |
 | Implications | Role changes are out of scope (they don't change what Hermes routes). A missed event (Hermes down, fail-open per D-002) leaves the cached access until it expires. |
 
+### D-012 — A delegable agent's run request also goes to the `runtimes` scope
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | When the agent of a 'Run agent' step has non-empty delegation scopes (agents D-067), `AgentRunLiveEvents` publishes `workflow.agent.run.requested` a second time, with `projectId` `runtimes` and the same `resource` and `meta` as D-010. `RunAgentActor` marks the request `delegable`; the publisher does not read the agent. Hermes accepts the `runtimes` scope for this event only, and only runtime service sockets may listen on it. |
+| Rationale | A runtime can then take run requests for every agent it may act for on one socket, instead of one socket per agent user. Only delegable agents qualify, because a runtime can act for an agent only through the delegation grant. |
+| Implications | Several runtimes may hear the same request; the step's claim (`RunAgentActor` claim window) decides which one takes it. Non-delegable agents are still told only over `user:<agentUserId>`. Routing to a specific runtime is out of scope. Ids only, as in D-010. |
+
 ---
 
 ## Open questions
