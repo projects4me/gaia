@@ -109,8 +109,14 @@ class ToolServerRefresher
                 return $counts;
             });
         } catch (ToolRefreshException $e) {
-            // A failed save propagates; otherwise the original error is rethrown.
-            $this->stamp($server, $lastRefreshedAt, $e->getMessage());
+            // A failed save propagates as a ToolRefreshException; otherwise the original error is rethrown.
+            try {
+                $this->stamp($server, $lastRefreshedAt, $e->getMessage());
+            } catch (ToolRefreshException $stampError) {
+                throw $stampError;
+            } catch (\Throwable $stampError) {
+                throw new ToolRefreshException('The tool server could not be updated.', 0, $stampError);
+            }
             throw $e;
         }
     }

@@ -103,6 +103,36 @@ class ToolServerRefresherTest extends TestCase
         $refresher->refresh($this->server('mcp', 'http', 'http://mcp.test/mcp'));
     }
 
+    public function testAnErrorStampThatThrowsIsWrappedWithItsCause()
+    {
+        $lister = $this->createMock(McpToolLister::class);
+        $lister->method('listTools')->willThrowException(new ToolRefreshException('The tool server could not be reached.'));
+        $sync = $this->createMock(ToolCatalogSync::class);
+        $cause = new \RuntimeException('db down');
+
+        $refresher = new class ($lister, $sync, $cause) extends ToolServerRefresher {
+            private $cause;
+
+            public function __construct($lister, $sync, $cause)
+            {
+                parent::__construct($lister, $sync);
+                $this->cause = $cause;
+            }
+
+            protected function stamp(Toolserver $server, $refreshedAt, $error)
+            {
+                throw $this->cause;
+            }
+        };
+
+        try {
+            $refresher->refresh($this->server('mcp', 'http', 'http://mcp.test/mcp'));
+            $this->fail('Expected a ToolRefreshException.');
+        } catch (ToolRefreshException $e) {
+            $this->assertSame('The tool server could not be updated.', $e->getMessage());
+            $this->assertSame($cause, $e->getPrevious());
+        }
+    }
     /**
      * @param  string      $kind
      * @param  string|null $transport
