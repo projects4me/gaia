@@ -621,6 +621,30 @@
       "attributes": {}
     },
     {
+      "id": "action:conversationroomcount.get",
+      "type": "action",
+      "key": "conversationroomcount.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:conversationroomcount.list",
+      "type": "action",
+      "key": "conversationroomcount.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:conversationroomcount.options",
+      "type": "action",
+      "key": "conversationroomcount.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:conversationroomcount.related",
+      "type": "action",
+      "key": "conversationroomcount.related",
+      "attributes": {}
+    },
+    {
       "id": "action:converser.delete",
       "type": "action",
       "key": "converser.delete",
@@ -4663,6 +4687,38 @@
       }
     },
     {
+      "id": "case:acl/acl-conversationroomcount-denied-without-conversationroom-group",
+      "type": "case",
+      "key": "acl/acl-conversationroomcount-denied-without-conversationroom-group",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount",
+        "resource": "conversationroomcount",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-conversationroomcount-denied-without-project-group",
+      "type": "case",
+      "key": "acl/acl-conversationroomcount-denied-without-project-group",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount",
+        "resource": "conversationroomcount",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-field-default-select-keeps-structural-projectId",
       "type": "case",
       "key": "acl/acl-field-default-select-keeps-structural-projectId",
@@ -5194,6 +5250,61 @@
         "enabled": true,
         "source": "acl-setting",
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-conversationroomcount-detail-member-allowed",
+      "type": "case",
+      "key": "acl/acl-members-conversationroomcount-detail-member-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount/{voteConversationroomId}",
+        "resource": "conversationroomcount",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "voteConversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-conversationroomcount-detail-non-member-denied",
+      "type": "case",
+      "key": "acl/acl-members-conversationroomcount-detail-non-member-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount/{otherProjectConversationroomId}",
+        "resource": "conversationroomcount",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectConversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-conversationroomcount-list-member-only",
+      "type": "case",
+      "key": "acl/acl-members-conversationroomcount-list-member-only",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount",
+        "resource": "conversationroomcount",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectConversationroomId",
+          "voteConversationroomId"
+        ],
         "stores": []
       }
     },
@@ -8715,6 +8826,40 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.conversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-conversationroomcount-api-v1-conversationroomcount",
+      "type": "case",
+      "key": "backend/get-conversationroomcount-api-v1-conversationroomcount",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount",
+        "resource": "conversationroomcount",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-conversationroomcount-api-v1-conversationroomcount-id",
+      "type": "case",
+      "key": "backend/get-conversationroomcount-api-v1-conversationroomcount-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount/{conversationroomId}",
+        "resource": "conversationroomcount",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "conversationroomId"
         ],
         "stores": []
       }
@@ -12392,6 +12537,64 @@
         "stores": [
           "runtime.clientPlanissueId"
         ]
+      }
+    },
+    {
+      "id": "case:client/conversationroomcount-empty-room-is-zero",
+      "type": "case",
+      "key": "client/conversationroomcount-empty-room-is-zero",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount/{emptyConversationroomId}",
+        "resource": "conversationroomcount",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "emptyConversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/conversationroomcount-lists-the-requested-rooms",
+      "type": "case",
+      "key": "client/conversationroomcount-lists-the-requested-rooms",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount",
+        "resource": "conversationroomcount",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "emptyConversationroomId",
+          "otherProjectConversationroomId",
+          "voteConversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/conversationroomcount-vote-room-tallies",
+      "type": "case",
+      "key": "client/conversationroomcount-vote-room-tallies",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount/{voteConversationroomId}",
+        "resource": "conversationroomcount",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "voteConversationroomId"
+        ],
+        "stores": []
       }
     },
     {
@@ -20750,6 +20953,17 @@
       }
     },
     {
+      "id": "controller:conversationroomcount",
+      "type": "controller",
+      "key": "conversationroomcount",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\ConversationroomcountController",
+        "file": "app/api/v1/controllers/ConversationroomcountController.php",
+        "extends": "RestController"
+      }
+    },
+    {
       "id": "controller:converser",
       "type": "controller",
       "key": "converser",
@@ -22963,6 +23177,80 @@
         "length": "255",
         "null": false,
         "fts": true
+      }
+    },
+    {
+      "id": "field:Conversationroomcount.agreeCount",
+      "type": "field",
+      "key": "Conversationroomcount.agreeCount",
+      "attributes": {
+        "label": "LBL_CONVERSATION_ROOM_COUNTS_AGREE_COUNT",
+        "type": "int",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Conversationroomcount.commentCount",
+      "type": "field",
+      "key": "Conversationroomcount.commentCount",
+      "attributes": {
+        "label": "LBL_CONVERSATION_ROOM_COUNTS_COMMENT_COUNT",
+        "type": "int",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Conversationroomcount.disagreeCount",
+      "type": "field",
+      "key": "Conversationroomcount.disagreeCount",
+      "attributes": {
+        "label": "LBL_CONVERSATION_ROOM_COUNTS_DISAGREE_COUNT",
+        "type": "int",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Conversationroomcount.id",
+      "type": "field",
+      "key": "Conversationroomcount.id",
+      "attributes": {
+        "label": "LBL_CONVERSATION_ROOM_COUNTS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Conversationroomcount.lastCommentDate",
+      "type": "field",
+      "key": "Conversationroomcount.lastCommentDate",
+      "attributes": {
+        "label": "LBL_CONVERSATION_ROOM_COUNTS_LAST_COMMENT_DATE",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Conversationroomcount.likeCount",
+      "type": "field",
+      "key": "Conversationroomcount.likeCount",
+      "attributes": {
+        "label": "LBL_CONVERSATION_ROOM_COUNTS_LIKE_COUNT",
+        "type": "int",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Conversationroomcount.projectId",
+      "type": "field",
+      "key": "Conversationroomcount.projectId",
+      "attributes": {
+        "label": "LBL_CONVERSATION_ROOM_COUNTS_PROJECT",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
       }
     },
     {
@@ -31016,6 +31304,14 @@
       }
     },
     {
+      "id": "fixture:emptyConversationroomId",
+      "type": "fixture",
+      "key": "emptyConversationroomId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:ideaId",
       "type": "fixture",
       "key": "ideaId",
@@ -31147,6 +31443,14 @@
       "id": "fixture:otherAgentUserId",
       "type": "fixture",
       "key": "otherAgentUserId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:otherProjectConversationroomId",
+      "type": "fixture",
+      "key": "otherProjectConversationroomId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -31395,6 +31699,14 @@
       "id": "fixture:useridentityId",
       "type": "fixture",
       "key": "useridentityId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:voteConversationroomId",
+      "type": "fixture",
+      "key": "voteConversationroomId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -31699,6 +32011,27 @@
           "group": true,
           "groups": [
             "Project"
+          ],
+          "groupKeys": {
+            "Project": "projectId"
+          }
+        }
+      }
+    },
+    {
+      "id": "model:Conversationroomcount",
+      "type": "model",
+      "key": "Conversationroomcount",
+      "attributes": {
+        "file": "app/metadata/model/Conversationroomcount.php",
+        "tableName": "conversation_room_counts",
+        "isView": true,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": {
+          "groups": [
+            "Project",
+            "Conversationroom"
           ],
           "groupKeys": {
             "Project": "projectId"
@@ -33097,6 +33430,42 @@
       "id": "permission:conversationroom.update",
       "type": "permission",
       "key": "conversationroom.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:conversationroomcount.create",
+      "type": "permission",
+      "key": "conversationroomcount.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:conversationroomcount.delete",
+      "type": "permission",
+      "key": "conversationroomcount.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:conversationroomcount.get",
+      "type": "permission",
+      "key": "conversationroomcount.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:conversationroomcount.update",
+      "type": "permission",
+      "key": "conversationroomcount.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -38603,6 +38972,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/conversationroomcount",
+      "type": "route",
+      "key": "GET /api/v1/conversationroomcount",
+      "attributes": {
+        "type": "rest",
+        "name": "conversationroomcount",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/conversationroomcount/{id}",
+      "type": "route",
+      "key": "GET /api/v1/conversationroomcount/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "conversationroomcount",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/conversationroomcount/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/conversationroomcount/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "conversationroomcount",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/conversationroomcount/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:GET /api/v1/converser",
       "type": "route",
       "key": "GET /api/v1/converser",
@@ -40448,6 +40853,18 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/conversationroom"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/conversationroomcount",
+      "type": "route",
+      "key": "OPTIONS /api/v1/conversationroomcount",
+      "attributes": {
+        "type": "rest",
+        "name": "conversationroomcount",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/conversationroomcount"
       }
     },
     {
@@ -44248,6 +44665,21 @@
       "to": "permission:conversationroom.get"
     },
     {
+      "from": "action:conversationroomcount.get",
+      "type": "requires",
+      "to": "permission:conversationroomcount.get"
+    },
+    {
+      "from": "action:conversationroomcount.list",
+      "type": "requires",
+      "to": "permission:conversationroomcount.get"
+    },
+    {
+      "from": "action:conversationroomcount.related",
+      "type": "requires",
+      "to": "permission:conversationroomcount.get"
+    },
+    {
       "from": "action:converser.delete",
       "type": "requires",
       "to": "permission:converser.delete"
@@ -47318,6 +47750,66 @@
       "to": "fixture:conversationroomId"
     },
     {
+      "from": "case:acl/acl-conversationroomcount-denied-without-conversationroom-group",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-conversationroomcount-denied-without-conversationroom-group",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-conversationroomcount-denied-without-conversationroom-group",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-conversationroomcount-denied-without-conversationroom-group",
+      "type": "covers",
+      "to": "controller:conversationroomcount"
+    },
+    {
+      "from": "case:acl/acl-conversationroomcount-denied-without-conversationroom-group",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroomcount"
+    },
+    {
+      "from": "case:acl/acl-conversationroomcount-denied-without-conversationroom-group",
+      "type": "runs_as",
+      "to": "profile:aclNoConversation"
+    },
+    {
+      "from": "case:acl/acl-conversationroomcount-denied-without-project-group",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-conversationroomcount-denied-without-project-group",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-conversationroomcount-denied-without-project-group",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-conversationroomcount-denied-without-project-group",
+      "type": "covers",
+      "to": "controller:conversationroomcount"
+    },
+    {
+      "from": "case:acl/acl-conversationroomcount-denied-without-project-group",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroomcount"
+    },
+    {
+      "from": "case:acl/acl-conversationroomcount-denied-without-project-group",
+      "type": "runs_as",
+      "to": "profile:aclNoProject"
+    },
+    {
       "from": "case:acl/acl-field-default-select-keeps-structural-projectId",
       "type": "asserts",
       "to": "assertion:attributesPresent"
@@ -48341,6 +48833,121 @@
       "from": "case:acl/acl-issuetype-project-count-denied-without-setting",
       "type": "runs_as",
       "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-member-allowed",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-member-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-member-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-member-allowed",
+      "type": "covers",
+      "to": "controller:conversationroomcount"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-member-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroomcount/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-member-allowed",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-member-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:voteConversationroomId"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-non-member-denied",
+      "type": "covers",
+      "to": "controller:conversationroomcount"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-non-member-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroomcount/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-non-member-denied",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-detail-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectConversationroomId"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-list-member-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-list-member-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-list-member-only",
+      "type": "covers",
+      "to": "controller:conversationroomcount"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-list-member-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroomcount"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-list-member-only",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectConversationroomId"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroomcount-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:voteConversationroomId"
     },
     {
       "from": "case:acl/acl-members-idea-create-non-member-project-denied",
@@ -54863,6 +55470,66 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/get-conversationroomcount-api-v1-conversationroomcount",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-conversationroomcount-api-v1-conversationroomcount",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-conversationroomcount-api-v1-conversationroomcount",
+      "type": "covers",
+      "to": "controller:conversationroomcount"
+    },
+    {
+      "from": "case:backend/get-conversationroomcount-api-v1-conversationroomcount",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroomcount"
+    },
+    {
+      "from": "case:backend/get-conversationroomcount-api-v1-conversationroomcount",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-conversationroomcount-api-v1-conversationroomcount-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-conversationroomcount-api-v1-conversationroomcount-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-conversationroomcount-api-v1-conversationroomcount-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-conversationroomcount-api-v1-conversationroomcount-id",
+      "type": "covers",
+      "to": "controller:conversationroomcount"
+    },
+    {
+      "from": "case:backend/get-conversationroomcount-api-v1-conversationroomcount-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroomcount/{id}"
+    },
+    {
+      "from": "case:backend/get-conversationroomcount-api-v1-conversationroomcount-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-conversationroomcount-api-v1-conversationroomcount-id",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
       "from": "case:backend/get-converser-api-v1-converser",
       "type": "asserts",
       "to": "assertion:shape"
@@ -61311,6 +61978,136 @@
       "from": "case:client/client-ideaplanissue-create",
       "type": "uses_fixture",
       "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/conversationroomcount-empty-room-is-zero",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/conversationroomcount-empty-room-is-zero",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/conversationroomcount-empty-room-is-zero",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/conversationroomcount-empty-room-is-zero",
+      "type": "covers",
+      "to": "controller:conversationroomcount"
+    },
+    {
+      "from": "case:client/conversationroomcount-empty-room-is-zero",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroomcount/{id}"
+    },
+    {
+      "from": "case:client/conversationroomcount-empty-room-is-zero",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/conversationroomcount-empty-room-is-zero",
+      "type": "uses_fixture",
+      "to": "fixture:emptyConversationroomId"
+    },
+    {
+      "from": "case:client/conversationroomcount-lists-the-requested-rooms",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/conversationroomcount-lists-the-requested-rooms",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/conversationroomcount-lists-the-requested-rooms",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/conversationroomcount-lists-the-requested-rooms",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/conversationroomcount-lists-the-requested-rooms",
+      "type": "covers",
+      "to": "controller:conversationroomcount"
+    },
+    {
+      "from": "case:client/conversationroomcount-lists-the-requested-rooms",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroomcount"
+    },
+    {
+      "from": "case:client/conversationroomcount-lists-the-requested-rooms",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/conversationroomcount-lists-the-requested-rooms",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/conversationroomcount-lists-the-requested-rooms",
+      "type": "uses_fixture",
+      "to": "fixture:emptyConversationroomId"
+    },
+    {
+      "from": "case:client/conversationroomcount-lists-the-requested-rooms",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectConversationroomId"
+    },
+    {
+      "from": "case:client/conversationroomcount-lists-the-requested-rooms",
+      "type": "uses_fixture",
+      "to": "fixture:voteConversationroomId"
+    },
+    {
+      "from": "case:client/conversationroomcount-vote-room-tallies",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/conversationroomcount-vote-room-tallies",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/conversationroomcount-vote-room-tallies",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/conversationroomcount-vote-room-tallies",
+      "type": "covers",
+      "to": "controller:conversationroomcount"
+    },
+    {
+      "from": "case:client/conversationroomcount-vote-room-tallies",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroomcount/{id}"
+    },
+    {
+      "from": "case:client/conversationroomcount-vote-room-tallies",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/conversationroomcount-vote-room-tallies",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/conversationroomcount-vote-room-tallies",
+      "type": "uses_fixture",
+      "to": "fixture:voteConversationroomId"
     },
     {
       "from": "case:client/delete-comment-api-v1-comment-runtime-id",
@@ -75663,6 +76460,31 @@
       "to": "component:Events\\ConversationLiveEvents"
     },
     {
+      "from": "controller:conversationroomcount",
+      "type": "has_action",
+      "to": "action:conversationroomcount.get"
+    },
+    {
+      "from": "controller:conversationroomcount",
+      "type": "has_action",
+      "to": "action:conversationroomcount.list"
+    },
+    {
+      "from": "controller:conversationroomcount",
+      "type": "has_action",
+      "to": "action:conversationroomcount.options"
+    },
+    {
+      "from": "controller:conversationroomcount",
+      "type": "has_action",
+      "to": "action:conversationroomcount.related"
+    },
+    {
+      "from": "controller:conversationroomcount",
+      "type": "serves",
+      "to": "model:Conversationroomcount"
+    },
+    {
       "from": "controller:converser",
       "type": "has_action",
       "to": "action:converser.delete"
@@ -80076,6 +80898,41 @@
       "from": "model:Conversationroom",
       "type": "uses_behaviour",
       "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Conversationroomcount",
+      "type": "has_field",
+      "to": "field:Conversationroomcount.agreeCount"
+    },
+    {
+      "from": "model:Conversationroomcount",
+      "type": "has_field",
+      "to": "field:Conversationroomcount.commentCount"
+    },
+    {
+      "from": "model:Conversationroomcount",
+      "type": "has_field",
+      "to": "field:Conversationroomcount.disagreeCount"
+    },
+    {
+      "from": "model:Conversationroomcount",
+      "type": "has_field",
+      "to": "field:Conversationroomcount.id"
+    },
+    {
+      "from": "model:Conversationroomcount",
+      "type": "has_field",
+      "to": "field:Conversationroomcount.lastCommentDate"
+    },
+    {
+      "from": "model:Conversationroomcount",
+      "type": "has_field",
+      "to": "field:Conversationroomcount.likeCount"
+    },
+    {
+      "from": "model:Conversationroomcount",
+      "type": "has_field",
+      "to": "field:Conversationroomcount.projectId"
     },
     {
       "from": "model:Converser",
@@ -86085,6 +86942,11 @@
     {
       "from": "profile:aclMembers",
       "type": "grants",
+      "to": "permission:conversationroomcount.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
       "to": "permission:idea.create"
     },
     {
@@ -86691,6 +87553,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:conversationroom.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:conversationroomcount.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:conversationroomcount.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:conversationroomcount.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:conversationroomcount.update"
     },
     {
       "from": "profile:default",
@@ -89163,6 +90045,21 @@
       "to": "action:conversationroom.related"
     },
     {
+      "from": "route:GET /api/v1/conversationroomcount",
+      "type": "handled_by",
+      "to": "action:conversationroomcount.list"
+    },
+    {
+      "from": "route:GET /api/v1/conversationroomcount/{id}",
+      "type": "handled_by",
+      "to": "action:conversationroomcount.get"
+    },
+    {
+      "from": "route:GET /api/v1/conversationroomcount/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:conversationroomcount.related"
+    },
+    {
       "from": "route:GET /api/v1/converser",
       "type": "handled_by",
       "to": "action:converser.list"
@@ -89931,6 +90828,11 @@
       "from": "route:OPTIONS /api/v1/conversationroom",
       "type": "handled_by",
       "to": "action:conversationroom.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/conversationroomcount",
+      "type": "handled_by",
+      "to": "action:conversationroomcount.options"
     },
     {
       "from": "route:OPTIONS /api/v1/converser",

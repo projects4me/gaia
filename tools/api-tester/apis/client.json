@@ -7959,6 +7959,64 @@
         "shape": "error"
       },
       "source": "client"
+    },
+    {
+      "id": "conversationroomcount-vote-room-tallies",
+      "method": "GET",
+      "path": "/api/v1/conversationroomcount/{voteConversationroomId}",
+      "resource": "conversationroomcount",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "data.attributes.commentCount": 4,
+          "data.attributes.likeCount": 2,
+          "data.attributes.agreeCount": 2,
+          "data.attributes.disagreeCount": 1,
+          "data.attributes.lastCommentDate": "2026-01-02 12:00:00+00",
+          "data.attributes.projectId": "{projectId}"
+        }
+      }
+    },
+    {
+      "id": "conversationroomcount-empty-room-is-zero",
+      "method": "GET",
+      "path": "/api/v1/conversationroomcount/{emptyConversationroomId}",
+      "resource": "conversationroomcount",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "data.attributes.commentCount": 0,
+          "data.attributes.likeCount": 0,
+          "data.attributes.agreeCount": 0,
+          "data.attributes.disagreeCount": 0
+        }
+      }
+    },
+    {
+      "id": "conversationroomcount-lists-the-requested-rooms",
+      "method": "GET",
+      "path": "/api/v1/conversationroomcount",
+      "resource": "conversationroomcount",
+      "auth": true,
+      "query": {
+        "query": "(Conversationroomcount.id CONTAINS '{voteConversationroomId}','{emptyConversationroomId}')"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{voteConversationroomId}",
+          "{emptyConversationroomId}"
+        ],
+        "idsExcludes": [
+          "{conversationroomId}",
+          "{otherProjectConversationroomId}"
+        ]
+      }
     }
   ]
 }

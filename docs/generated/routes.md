@@ -165,6 +165,16 @@
 | PUT | /api/v1/conversationroom | rest | conversationroom.putCollection |
 | PUT | /api/v1/conversationroom/{id} | rest | conversationroom.put |
 
+<a id="conversationroomcount"></a>
+## conversationroomcount
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/conversationroomcount | rest | conversationroomcount.list |
+| GET | /api/v1/conversationroomcount/{id} | rest | conversationroomcount.get |
+| GET | /api/v1/conversationroomcount/{id}/{relation} | rest | conversationroomcount.related |
+| OPTIONS | /api/v1/conversationroomcount | rest | conversationroomcount.options |
+
 <a id="converser"></a>
 ## converser
 
