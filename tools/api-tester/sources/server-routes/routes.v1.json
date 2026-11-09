@@ -36,6 +36,13 @@
             ],
             "identifier": "id"
         },
+        "conversationroomcount": {
+            "path": "/api/:version/conversationroomcount",
+            "allowedMethods": [
+                "GET"
+            ],
+            "identifier": "id"
+        },
         "chatroom": {
             "path": "/api/:version/chatroom",
             "allowedMethods": [

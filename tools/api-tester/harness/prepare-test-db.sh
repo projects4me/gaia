@@ -486,7 +486,7 @@ SELECT
   NOW()
 FROM (
   VALUES
-    ('activity'), ('comment'), ('conversationroom'), ('issue'), ('issuetype'),
+    ('activity'), ('comment'), ('conversationroom'), ('conversationroomcount'), ('issue'), ('issuetype'),
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
@@ -600,6 +600,7 @@ VALUES
   ('atp-acl-mem-issue-create', 'api-test-role-acl-mem', 'issue.create', 1, NOW(), NOW()),
   ('atp-acl-mem-comment-get', 'api-test-role-acl-mem', 'comment.get', 1, NOW(), NOW()),
   ('atp-acl-mem-conv-get', 'api-test-role-acl-mem', 'conversationroom.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-convcount-get', 'api-test-role-acl-mem', 'conversationroomcount.get', 1, NOW(), NOW()),
   ('atp-acl-mem-idea-get', 'api-test-role-acl-mem', 'idea.get', 1, NOW(), NOW()),
   ('atp-acl-mem-idea-create', 'api-test-role-acl-mem', 'idea.create', 1, NOW(), NOW()),
   ('atp-acl-mem-ideamessage-get', 'api-test-role-acl-mem', 'ideamessage.get', 1, NOW(), NOW()),
@@ -709,6 +710,53 @@ INSERT INTO comments (
   'API Tester', 'API Tester', 'conversationrooms', 'api-test-convroom-001'
 )
 ON CONFLICT (id) DO UPDATE SET deleted = 0, "relatedId" = EXCLUDED."relatedId";
+
+-- Conversation room counts: a vote room with known tallies and an empty room in the member's project,
+-- and a room in another project for the members scope.
+INSERT INTO conversation_rooms (
+  id, subject, deleted, "createdUser", "modifiedUser", "roomType", "projectId",
+  "createdUserName", "modifiedUserName", "projectShortcode", "dateModified"
+) VALUES
+  ('api-test-convroom-cnt-vote', 'API Test Vote Room', 0, 'api-test-user-0001', 'api-test-user-0001',
+   'vote', 'api-test-project-001', 'API Tester', 'API Tester', 'ATP', NOW()),
+  ('api-test-convroom-cnt-empty', 'API Test Empty Room', 0, 'api-test-user-0001', 'api-test-user-0001',
+   'project', 'api-test-project-001', 'API Tester', 'API Tester', 'ATP', NOW()),
+  ('api-test-convroom-cnt-other', 'API Test Other Project Room', 0, 'api-test-user-0001', 'api-test-user-0001',
+   'project', 'api-test-project-002', 'API Tester', 'API Tester', 'P4MM', NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = 0, "projectId" = EXCLUDED."projectId", "roomType" = EXCLUDED."roomType";
+
+DELETE FROM comments WHERE "relatedId" LIKE 'api-test-convroom-cnt-%';
+DELETE FROM votes WHERE "relatedId" LIKE 'api-test-convroom-cnt-%';
+
+-- Vote room: 2 agree, 1 disagree, 1 other comment, plus a deleted (and newer) agree that must not count.
+INSERT INTO comments (
+  id, comment, deleted, "createdUser", "modifiedUser", "createdUserName", "modifiedUserName",
+  "relatedTo", "relatedId", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-comment-cnt-01', 'I agree', 0, 'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester',
+   'conversationrooms', 'api-test-convroom-cnt-vote', '2026-01-01 09:00:00', '2026-01-01 09:00:00'),
+  ('api-test-comment-cnt-02', 'I agree', 0, 'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester',
+   'conversationrooms', 'api-test-convroom-cnt-vote', '2026-01-01 10:00:00', '2026-01-01 10:00:00'),
+  ('api-test-comment-cnt-03', 'I disagree', 0, 'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester',
+   'conversationrooms', 'api-test-convroom-cnt-vote', '2026-01-01 11:00:00', '2026-01-01 11:00:00'),
+  ('api-test-comment-cnt-04', 'Why not both?', 0, 'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester',
+   'conversationrooms', 'api-test-convroom-cnt-vote', '2026-01-02 12:00:00', '2026-01-02 12:00:00'),
+  ('api-test-comment-cnt-05', 'I agree', 1, 'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester',
+   'conversationrooms', 'api-test-convroom-cnt-vote', '2026-01-03 13:00:00', '2026-01-03 13:00:00'),
+  ('api-test-comment-cnt-06', 'Other project', 0, 'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester',
+   'conversationrooms', 'api-test-convroom-cnt-other', '2026-01-01 09:00:00', '2026-01-01 09:00:00');
+
+-- Vote room: 2 likes and 1 vote that is not a like.
+INSERT INTO votes (
+  id, vote, "createdUser", "modifiedUser", "createdUserName", "modifiedUserName",
+  "relatedTo", "relatedId", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-vote-cnt-01', 1, 'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester',
+   'conversationrooms', 'api-test-convroom-cnt-vote', NOW(), NOW()),
+  ('api-test-vote-cnt-02', 1, 'api-test-user-acl-mem', 'api-test-user-acl-mem', 'API Tester', 'API Tester',
+   'conversationrooms', 'api-test-convroom-cnt-vote', NOW(), NOW()),
+  ('api-test-vote-cnt-03', 0, 'api-test-user-acl-np', 'api-test-user-acl-np', 'API Tester', 'API Tester',
+   'conversationrooms', 'api-test-convroom-cnt-vote', NOW(), NOW());
 
 -- Ideas: one per project so members scope can be checked through the idea's children
 INSERT INTO ideas (
@@ -1381,6 +1429,9 @@ data = {
     "systemnotificationId": "api-test-sysnotif-01",
     "systemnotificationrecipientId": "api-test-sysnotifrec01",
     "conversationroomId": "api-test-convroom-001",
+    "voteConversationroomId": "api-test-convroom-cnt-vote",
+    "emptyConversationroomId": "api-test-convroom-cnt-empty",
+    "otherProjectConversationroomId": "api-test-convroom-cnt-other",
     "commentId": "api-test-comment-000001",
     "ideaId": "api-test-idea-000001",
     "otherProjectIdeaId": "api-test-idea-000002",
