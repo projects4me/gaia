@@ -12,6 +12,7 @@ $config['models'] = [
     'Chatroom',
     'Comment',
     'Conversationroom',
+    'Conversationroomcount',
     'Converser',
     'Dashboard',
     'Downloadtoken',

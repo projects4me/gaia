@@ -25,6 +25,7 @@
 | chatroom | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | comment | ---- | ---- | g--- | g--- | g--- | ---- | g--- | ---- | ---- | gcud | ---- | ---- |
 | conversationroom | ---- | ---- | g--- | ---- | g--- | ---- | g--- | ---- | ---- | gcud | ---- | ---- |
+| conversationroomcount | ---- | ---- | g--- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |
 | converser | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | download | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | error | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
@@ -48,13 +49,13 @@
 | permission | gcud | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | gcud | ---- | ---- |
 | preview | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | project | ---- | g--- | G--- | g--- | ---- | g--- | g--- | ---- | ---- | gcud | ---- | ---- |
-| resetpassword | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 
 <a id="matrix-2-3"></a>
 ## Matrix (2/3)
 
 | Resource | aclAgent | aclFields | aclMembers | aclNoConversation | aclNoProject | aclNoSetting | aclProjectOnly | aclScopedToken | anonymous | default | serviceHermes | serviceRuntime |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
+| resetpassword | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | role | gcud | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | gcud | ---- | ---- |
 | savedsearch | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |
 | scoreboard | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
@@ -88,11 +89,11 @@
 | workflowevent | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |
 | workflownode | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |
 | workflowreference | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |
-| workflowrun | ---- | -c-- | g--- | ---- | ---- | -c-- | -c-- | ---- | ---- | gcud | ---- | ---- |
 
 <a id="matrix-3-3"></a>
 ## Matrix (3/3)
 
 | Resource | aclAgent | aclFields | aclMembers | aclNoConversation | aclNoProject | aclNoSetting | aclProjectOnly | aclScopedToken | anonymous | default | serviceHermes | serviceRuntime |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
+| workflowrun | ---- | -c-- | g--- | ---- | ---- | -c-- | -c-- | ---- | ---- | gcud | ---- | ---- |
 | workflowrunstep | ---- | ---- | g--- | ---- | ---- | ---- | ---- | ---- | ---- | gcud | ---- | ---- |

@@ -2864,6 +2864,54 @@
       "query": { "limit": 5, "page": 1 },
       "expects": { "status": 403, "shape": "error" },
       "source": "acl-serviceenrollmenttoken"
+    },
+    {
+      "id": "acl-members-conversationroomcount-list-member-only",
+      "method": "GET",
+      "path": "/api/v1/conversationroomcount",
+      "resource": "conversationroomcount",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{voteConversationroomId}"], "idsExcludes": ["{otherProjectConversationroomId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-conversationroomcount-detail-member-allowed",
+      "method": "GET",
+      "path": "/api/v1/conversationroomcount/{voteConversationroomId}",
+      "resource": "conversationroomcount",
+      "auth": "aclMembers",
+      "expects": { "status": 200, "shape": "jsonapi.resource", "idsIncludes": ["{voteConversationroomId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-conversationroomcount-detail-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/conversationroomcount/{otherProjectConversationroomId}",
+      "resource": "conversationroomcount",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-conversationroomcount-denied-without-project-group",
+      "method": "GET",
+      "path": "/api/v1/conversationroomcount",
+      "resource": "conversationroomcount",
+      "auth": "aclNoProject",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-conversationroomcount-denied-without-conversationroom-group",
+      "method": "GET",
+      "path": "/api/v1/conversationroomcount",
+      "resource": "conversationroomcount",
+      "auth": "aclNoConversation",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
     }
   ]
 }

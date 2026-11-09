@@ -80,6 +80,8 @@ $fixtureIds = [
     'agenttool' => '{agenttoolId}',
     'agentskill' => '{agentskillId}',
     'conversationroom' => '{conversationroomId}',
+    // A count row's id is its room's id.
+    'conversationroomcount' => '{conversationroomId}',
     'idea' => '{ideaId}',
     'ideamessage' => '{ideamessageId}',
     'ideaplan' => '{ideaplanId}',
