@@ -124,13 +124,17 @@ class HermesPublisher
      */
     protected function responseDetail(\Throwable $e)
     {
-        if (!method_exists($e, 'getResponse') || !$e->getResponse()) {
+        try {
+            if (!method_exists($e, 'getResponse') || !$e->getResponse()) {
+                return '';
+            }
+
+            $body = $e->getResponse()->getBody()->read(500);
+        } catch (\Throwable $readError) {
             return '';
         }
 
-        $body = (string) $e->getResponse()->getBody();
-
-        return $body === '' ? '' : ' | response: ' . substr($body, 0, 500);
+        return $body === '' ? '' : ' | response: ' . $body;
     }
 
     /**

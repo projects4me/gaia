@@ -466,7 +466,7 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertEquals(EventNames::WORKFLOW_AGENT_RUN_REQUESTED, $posted[0]['eventName']);
         $this->assertEquals('user:user-agent', $posted[0]['projectId']);
         $this->assertEquals(array('type' => 'workflowRun', 'id' => 'run-1'), $posted[0]['resource']);
-        $this->assertEquals(array(), $posted[0]['changes']);
+        $this->assertEquals(new \stdClass(), $posted[0]['changes']);
         $this->assertEquals(array(
             'workflowId' => 'workflow-1',
             'stepId' => 'step-1',
@@ -719,7 +719,7 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertEquals(EventNames::USER_ACCESS_CHANGED, $posted[0]['eventName']);
         $this->assertEquals('user:user-42', $posted[0]['projectId']);
         $this->assertEquals(array('type' => 'user', 'id' => 'user-42'), $posted[0]['resource']);
-        $this->assertSame(array(), $posted[0]['changes']);
+        $this->assertEquals(new \stdClass(), $posted[0]['changes']);
         $this->assertSame(array(), $this->metaWithoutActor($posted[0]));
     }
 
@@ -760,7 +760,7 @@ class LiveEventsComponentsTest extends TestCase
             $this->assertEquals(EventNames::USER_ACCESS_CHANGED, $envelope['eventName']);
             $this->assertEquals('user:user-7', $envelope['projectId']);
             $this->assertEquals('user-7', $envelope['resource']['id']);
-            $this->assertSame(array(), $envelope['changes']);
+            $this->assertEquals(new \stdClass(), $envelope['changes']);
         }
     }
 
