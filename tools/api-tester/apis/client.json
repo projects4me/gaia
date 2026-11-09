@@ -7299,7 +7299,8 @@
       },
       "store": {
         "runtime.enrolledClientId": "data.attributes.clientId",
-        "runtime.enrolledClientSecret": "data.attributes.clientSecret"
+        "runtime.enrolledClientSecret": "data.attributes.clientSecret",
+        "runtime.enrolledServiceClientId": "data.attributes.serviceClientId"
       },
       "expects": {
         "status": 200,
@@ -7309,7 +7310,8 @@
         },
         "attributesPresent": [
           "clientId",
-          "clientSecret"
+          "clientSecret",
+          "serviceClientId"
         ]
       },
       "source": "client"
@@ -7331,7 +7333,8 @@
         },
         "attributesAbsent": [
           "clientId",
-          "clientSecret"
+          "clientSecret",
+          "serviceClientId"
         ]
       },
       "source": "client"

@@ -170,11 +170,11 @@ class ServiceEnrollments
     /**
      * Read a request with its poll token. A request past its expiry is marked
      * expired. An approved request is delivered: its service client is
-     * created and the client id and secret are returned, this once.
+     * created and the client id, secret and service client record id are returned, this once.
      *
      * @param  string $id
      * @param  mixed  $pollToken
-     * @return array ['enrollment' => Serviceenrollment, 'clientId' => string|null, 'secret' => string|null]
+     * @return array ['enrollment' => Serviceenrollment, 'clientId' => string|null, 'secret' => string|null, 'serviceClientId' => string|null]
      * @throws \Gaia\Exception\ResourceNotFound When no request matches the id and token
      */
     public function poll($id, $pollToken)
@@ -186,7 +186,7 @@ class ServiceEnrollments
                 throw new \Gaia\Exception\ResourceNotFound(self::NOT_FOUND_ERROR);
             }
 
-            $result = ['enrollment' => $enrollment, 'clientId' => null, 'secret' => null];
+            $result = ['enrollment' => $enrollment, 'clientId' => null, 'secret' => null, 'serviceClientId' => null];
             $now = $this->now();
             $current = ServiceEnrollmentStatus::current($enrollment->status, $enrollment->expiresAt, $now);
 
@@ -205,6 +205,7 @@ class ServiceEnrollments
 
                 $result['clientId'] = $issued['clientId'];
                 $result['secret'] = $issued['secret'];
+                $result['serviceClientId'] = (string) $issued['serviceclient']->id;
             }
 
             return $result;

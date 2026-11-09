@@ -92,6 +92,7 @@ class ServiceEnrollmentsTest extends TestCase
         $this->assertSame('pending', $polled['enrollment']->status);
         $this->assertNull($polled['secret']);
         $this->assertNull($polled['clientId']);
+        $this->assertNull($polled['serviceClientId']);
         $this->assertSame([], $service->saves);
     }
 
@@ -104,6 +105,7 @@ class ServiceEnrollmentsTest extends TestCase
         $second = $service->poll('enr-1', self::TOKEN);
 
         $this->assertSame('service-abc', $first['clientId']);
+        $this->assertSame('svc-1', $first['serviceClientId']);
         $this->assertSame('p4m_cs_secret', $first['secret']);
         $this->assertSame('delivered', $enrollment->status);
         $this->assertSame('svc-1', $enrollment->serviceclientId);
