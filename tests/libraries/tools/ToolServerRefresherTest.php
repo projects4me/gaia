@@ -85,7 +85,7 @@ class ToolServerRefresherTest extends TestCase
         }
     }
 
-    public function testAFailedErrorStampKeepsTheOriginalError()
+    public function testAFailedErrorStampPropagates()
     {
         $lister = $this->createMock(McpToolLister::class);
         $lister->method('listTools')->willThrowException(new ToolRefreshException('The tool server could not be reached.'));
@@ -99,7 +99,7 @@ class ToolServerRefresherTest extends TestCase
         };
 
         $this->expectException(ToolRefreshException::class);
-        $this->expectExceptionMessage('The tool server could not be reached.');
+        $this->expectExceptionMessage('The tool server could not be updated.');
         $refresher->refresh($this->server('mcp', 'http', 'http://mcp.test/mcp'));
     }
 

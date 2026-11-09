@@ -109,11 +109,8 @@ class ToolServerRefresher
                 return $counts;
             });
         } catch (ToolRefreshException $e) {
-            try {
-                $this->stamp($server, $lastRefreshedAt, $e->getMessage());
-            } catch (\Throwable $ignored) {
-                // Recording the error must not hide the error itself.
-            }
+            // A failed save propagates; otherwise the original error is rethrown.
+            $this->stamp($server, $lastRefreshedAt, $e->getMessage());
             throw $e;
         }
     }
