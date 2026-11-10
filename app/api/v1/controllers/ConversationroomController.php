@@ -24,5 +24,5 @@ class ConversationroomController extends RestController
      * @var $uses
      * @type array
      */
-    public $uses = array('Events\\ConversationLiveEvents');
+    public $uses = array('Events\\ConversationLiveEvents', 'Conversationactivities');
 }

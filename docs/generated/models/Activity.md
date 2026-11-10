@@ -18,6 +18,7 @@
 <a id="relationships"></a>
 ## Relationships
 
+- conversationroom hasOne -> Conversationroom
 - createdBy hasOne -> User
 - issue hasOne -> Issue
 - project hasOne -> Project
@@ -30,4 +31,4 @@
 - controller: Gaia\MVC\REST\Controllers\ActivityController
 - routes: DELETE /api/v1/activity, DELETE /api/v1/activity/{id}, GET /api/v1/activity, GET /api/v1/activity/{id}, GET /api/v1/activity/{id}/{relation}, OPTIONS /api/v1/activity, PATCH /api/v1/activity, PATCH /api/v1/activity/{id}, POST /api/v1/activity, PUT /api/v1/activity, PUT /api/v1/activity/{id}
 - components: -
-- cases: 7 (backend 6, client 1); gaia-dev cases activity
+- cases: 14 (backend 6, client 8); gaia-dev cases activity

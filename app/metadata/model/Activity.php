@@ -151,6 +151,12 @@ $models['Activity'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'relatedKey' => 'id',
                 'condition' => 'Activity.relatedTo = "issue"'
+            ),
+            'conversationroom' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
+                'relatedKey' => 'id',
+                'condition' => 'Activity.relatedTo = "conversationroom"'
             )
         )
     ),
@@ -175,6 +181,13 @@ $models['Activity'] = array(
                     [
                         'when' => ['relatedTo' => 'issue'],
                         'relatedModel' => 'Issue',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'projectId',
+                    ],
+                    [
+                        'when' => ['relatedTo' => 'conversationroom'],
+                        'relatedModel' => 'Conversationroom',
                         'localKey' => 'relatedId',
                         'relatedKey' => 'id',
                         'projectField' => 'projectId',

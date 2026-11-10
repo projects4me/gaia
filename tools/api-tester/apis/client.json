@@ -223,6 +223,347 @@
       }
     },
     {
+      "id": "room-activity-room-create",
+      "method": "POST",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "conversationroom",
+          "attributes": {
+            "subject": "API Tester Activity Room",
+            "description": "Activity room description",
+            "roomType": "discussion",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}"
+          }
+        }
+      },
+      "store": {
+        "runtime.activityRoomId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "room-activity-started-recorded",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedId : {runtime.activityRoomId}) AND (Activity.type : created))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.relatedTo": "conversationroom",
+          "data.0.attributes.type": "created",
+          "data.0.attributes.description": "Thread started"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "room-activity-subject-edit",
+      "method": "PATCH",
+      "path": "/api/v1/conversationroom/{runtime.activityRoomId}",
+      "resource": "conversationroom",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "conversationroom",
+          "id": "{runtime.activityRoomId}",
+          "attributes": {
+            "subject": "API Tester Activity Room Renamed"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "room-activity-subject-edited-recorded",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedId : {runtime.activityRoomId}) AND (Activity.description CONTAINS Subject))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.relatedTo": "conversationroom",
+          "data.0.attributes.type": "updated",
+          "data.0.attributes.description": "Subject edited"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "room-activity-description-edit",
+      "method": "PATCH",
+      "path": "/api/v1/conversationroom/{runtime.activityRoomId}",
+      "resource": "conversationroom",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "conversationroom",
+          "id": "{runtime.activityRoomId}",
+          "attributes": {
+            "description": "Activity room description edited"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "room-activity-description-edited-recorded",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedId : {runtime.activityRoomId}) AND (Activity.description CONTAINS Description))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.relatedTo": "conversationroom",
+          "data.0.attributes.type": "updated",
+          "data.0.attributes.description": "Description edited"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "room-activity-issue-set",
+      "method": "PATCH",
+      "path": "/api/v1/conversationroom/{runtime.activityRoomId}",
+      "resource": "conversationroom",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "conversationroom",
+          "id": "{runtime.activityRoomId}",
+          "attributes": {
+            "issueId": "{issueId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "room-activity-issue-linked-recorded",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedId : {runtime.activityRoomId}) AND (Activity.description CONTAINS Linked))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.type": "linked"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "room-activity-issue-change",
+      "method": "PATCH",
+      "path": "/api/v1/conversationroom/{runtime.activityRoomId}",
+      "resource": "conversationroom",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "conversationroom",
+          "id": "{runtime.activityRoomId}",
+          "attributes": {
+            "issueId": "{otherProjectIssueId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "room-activity-issue-changed-recorded",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedId : {runtime.activityRoomId}) AND (Activity.description CONTAINS Changed))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.type": "linked"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "room-activity-issue-clear",
+      "method": "PATCH",
+      "path": "/api/v1/conversationroom/{runtime.activityRoomId}",
+      "resource": "conversationroom",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "conversationroom",
+          "id": "{runtime.activityRoomId}",
+          "attributes": {
+            "issueId": null
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "room-activity-issue-unlinked-recorded",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedId : {runtime.activityRoomId}) AND (Activity.type : unlinked))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.type": "unlinked"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "room-activity-comment-create",
+      "method": "POST",
+      "path": "/api/v1/comment",
+      "resource": "comment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "comment",
+          "attributes": {
+            "relatedTo": "conversationrooms",
+            "relatedId": "{runtime.activityRoomId}",
+            "comment": "<p>API Tester Activity Comment</p>"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "room-activity-vote-create",
+      "method": "POST",
+      "path": "/api/v1/vote",
+      "resource": "vote",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "vote",
+          "attributes": {
+            "vote": 1,
+            "relatedTo": "conversationrooms",
+            "relatedId": "{runtime.activityRoomId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "room-activity-comment-and-vote-record-none",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedId : {runtime.activityRoomId}))",
+        "limit": 10,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.5.attributes.relatedTo": "conversationroom"
+        },
+        "jsonPathAbsent": [
+          "data.6"
+        ]
+      }
+    },
+    {
+      "id": "room-activity-room-delete",
+      "method": "DELETE",
+      "path": "/api/v1/conversationroom/{runtime.activityRoomId}",
+      "resource": "conversationroom",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
       "id": "get-dashboard-api-v1-dashboard-id",
       "method": "GET",
       "path": "/api/v1/dashboard/{dashboardId}",
