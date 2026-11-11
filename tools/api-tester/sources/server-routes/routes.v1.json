@@ -73,6 +73,17 @@
             ],
             "identifier": "id"
         },
+        "doc": {
+            "path": "/api/:version/doc",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "idea": {
             "path": "/api/:version/idea",
             "allowedMethods": [

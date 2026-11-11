@@ -51,6 +51,12 @@ $models['Tagged'] = array(
     'functions' => array(),
     'relationships' => array(
       'hasMany' => array(
+          'doc' => array(
+              'primaryKey' => 'relatedId',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Doc',
+              'relatedKey' => 'id',
+              'condition' => 'Tagged.relatedTo = "doc"'
+          ),
           'tag' => array(
               'primaryKey' => 'tagId',
               'relatedModel' => '\\Gaia\\MVC\\Models\\Tag',

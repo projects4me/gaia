@@ -200,6 +200,11 @@ $models['Project'] = array(
             ),
         ),
         'hasMany' => array(
+            'docs' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Doc',
+                'relatedKey' => 'projectId',
+            ),
             'issues' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',

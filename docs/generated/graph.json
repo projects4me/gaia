@@ -711,6 +711,72 @@
       "attributes": {}
     },
     {
+      "id": "action:doc.delete",
+      "type": "action",
+      "key": "doc.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:doc.deleteCollection",
+      "type": "action",
+      "key": "doc.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:doc.get",
+      "type": "action",
+      "key": "doc.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:doc.list",
+      "type": "action",
+      "key": "doc.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:doc.options",
+      "type": "action",
+      "key": "doc.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:doc.patch",
+      "type": "action",
+      "key": "doc.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:doc.patchCollection",
+      "type": "action",
+      "key": "doc.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:doc.post",
+      "type": "action",
+      "key": "doc.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:doc.put",
+      "type": "action",
+      "key": "doc.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:doc.putCollection",
+      "type": "action",
+      "key": "doc.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:doc.related",
+      "type": "action",
+      "key": "doc.related",
+      "attributes": {}
+    },
+    {
       "id": "action:download.get",
       "type": "action",
       "key": "download.get",
@@ -4719,6 +4785,22 @@
       }
     },
     {
+      "id": "case:acl/acl-doc-denied-without-project-group",
+      "type": "case",
+      "key": "acl/acl-doc-denied-without-project-group",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/doc",
+        "resource": "doc",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-field-default-select-keeps-structural-projectId",
       "type": "case",
       "key": "acl/acl-field-default-select-keeps-structural-projectId",
@@ -5304,6 +5386,61 @@
         "placeholders": [
           "otherProjectConversationroomId",
           "voteConversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-doc-detail-member-allowed",
+      "type": "case",
+      "key": "acl/acl-members-doc-detail-member-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/doc/{docId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "docId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-doc-detail-non-member-denied",
+      "type": "case",
+      "key": "acl/acl-members-doc-detail-non-member-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/doc/{otherProjectDocId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectDocId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-doc-list-member-only",
+      "type": "case",
+      "key": "acl/acl-members-doc-list-member-only",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/doc",
+        "resource": "doc",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "docId",
+          "otherProjectDocId"
         ],
         "stores": []
       }
@@ -7986,6 +8123,24 @@
       }
     },
     {
+      "id": "case:backend/delete-doc-api-v1-doc-runtime-id",
+      "type": "case",
+      "key": "backend/delete-doc-api-v1-doc-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "DELETE",
+        "path": "/api/v1/doc/{runtime.docId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.docId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-idea-api-v1-idea-runtime-id",
       "type": "case",
       "key": "backend/delete-idea-api-v1-idea-runtime-id",
@@ -8877,6 +9032,58 @@
         "enabled": true,
         "source": "backend-metadata",
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-doc-api-v1-doc",
+      "type": "case",
+      "key": "backend/get-doc-api-v1-doc",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/doc",
+        "resource": "doc",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-doc-api-v1-doc-id",
+      "type": "case",
+      "key": "backend/get-doc-api-v1-doc-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/doc/{docId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "docId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-doc-api-v1-doc-runtime-id",
+      "type": "case",
+      "key": "backend/get-doc-api-v1-doc-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/doc/{runtime.docId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.docId"
+        ],
         "stores": []
       }
     },
@@ -10709,6 +10916,24 @@
       }
     },
     {
+      "id": "case:backend/patch-doc-api-v1-doc-id",
+      "type": "case",
+      "key": "backend/patch-doc-api-v1-doc-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "PATCH",
+        "path": "/api/v1/doc/{runtime.docId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.docId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/patch-idea-api-v1-idea-id",
       "type": "case",
       "key": "backend/patch-idea-api-v1-idea-id",
@@ -11312,6 +11537,26 @@
           "userId"
         ],
         "stores": []
+      }
+    },
+    {
+      "id": "case:backend/post-doc-api-v1-doc",
+      "type": "case",
+      "key": "backend/post-doc-api-v1-doc",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/doc",
+        "resource": "doc",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": [
+          "runtime.docId"
+        ]
       }
     },
     {
@@ -12322,6 +12567,101 @@
         "placeholders": [
           "otherAgentId",
           "runtime.createdToolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-doc-create",
+      "type": "case",
+      "key": "client/client-doc-create",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/doc",
+        "resource": "doc",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.clientDocId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/client-doc-create-missing-title-rejected",
+      "type": "case",
+      "key": "client/client-doc-create-missing-title-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/doc",
+        "resource": "doc",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-doc-delete",
+      "type": "case",
+      "key": "client/client-doc-delete",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/doc/{runtime.clientDocId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.clientDocId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-doc-get-with-owner-and-tag",
+      "type": "case",
+      "key": "client/client-doc-get-with-owner-and-tag",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/doc/{runtime.clientDocId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.clientDocId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-doc-list-by-project",
+      "type": "case",
+      "key": "client/client-doc-list-by-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/doc",
+        "resource": "doc",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "runtime.clientDocId"
         ],
         "stores": []
       }
@@ -20975,6 +21315,17 @@
       }
     },
     {
+      "id": "controller:doc",
+      "type": "controller",
+      "key": "doc",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\DocController",
+        "file": "app/api/v1/controllers/DocController.php",
+        "extends": "RestController"
+      }
+    },
+    {
       "id": "controller:download",
       "type": "controller",
       "key": "download",
@@ -23362,6 +23713,155 @@
         "label": "LBL_DASHBOARD_WIDGETS",
         "type": "text",
         "null": true
+      }
+    },
+    {
+      "id": "field:Doc.body",
+      "type": "field",
+      "key": "Doc.body",
+      "attributes": {
+        "label": "LBL_DOC_BODY",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Doc.createdUser",
+      "type": "field",
+      "key": "Doc.createdUser",
+      "attributes": {
+        "label": "LBL_DOC_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Doc.createdUserName",
+      "type": "field",
+      "key": "Doc.createdUserName",
+      "attributes": {
+        "label": "LBL_DOC_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Doc.dateCreated",
+      "type": "field",
+      "key": "Doc.dateCreated",
+      "attributes": {
+        "label": "LBL_DOC_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Doc.dateModified",
+      "type": "field",
+      "key": "Doc.dateModified",
+      "attributes": {
+        "label": "LBL_DOC_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Doc.deleted",
+      "type": "field",
+      "key": "Doc.deleted",
+      "attributes": {
+        "label": "LBL_DOC_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Doc.id",
+      "type": "field",
+      "key": "Doc.id",
+      "attributes": {
+        "label": "LBL_DOC_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Doc.locked",
+      "type": "field",
+      "key": "Doc.locked",
+      "attributes": {
+        "label": "LBL_DOC_LOCKED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0
+      }
+    },
+    {
+      "id": "field:Doc.modifiedUser",
+      "type": "field",
+      "key": "Doc.modifiedUser",
+      "attributes": {
+        "label": "LBL_DOC_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Doc.modifiedUserName",
+      "type": "field",
+      "key": "Doc.modifiedUserName",
+      "attributes": {
+        "label": "LBL_DOC_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Doc.ownerId",
+      "type": "field",
+      "key": "Doc.ownerId",
+      "attributes": {
+        "label": "LBL_DOC_OWNER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Doc.projectId",
+      "type": "field",
+      "key": "Doc.projectId",
+      "attributes": {
+        "label": "LBL_DOC_PROJECT",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Doc.title",
+      "type": "field",
+      "key": "Doc.title",
+      "attributes": {
+        "label": "LBL_DOC_TITLE",
+        "type": "varchar",
+        "length": "255",
+        "null": false
       }
     },
     {
@@ -31304,6 +31804,14 @@
       }
     },
     {
+      "id": "fixture:docId",
+      "type": "fixture",
+      "key": "docId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:emptyConversationroomId",
       "type": "fixture",
       "key": "emptyConversationroomId",
@@ -31451,6 +31959,14 @@
       "id": "fixture:otherProjectConversationroomId",
       "type": "fixture",
       "key": "otherProjectConversationroomId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:otherProjectDocId",
+      "type": "fixture",
+      "key": "otherProjectDocId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -32063,6 +32579,26 @@
         "registered": true,
         "hasMetadata": true,
         "acl": null
+      }
+    },
+    {
+      "id": "model:Doc",
+      "type": "model",
+      "key": "Doc",
+      "attributes": {
+        "file": "app/metadata/model/Doc.php",
+        "tableName": "doc",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": {
+          "groups": [
+            "Project"
+          ],
+          "groupKeys": {
+            "Project": "projectId"
+          }
+        }
       }
     },
     {
@@ -33502,6 +34038,42 @@
       "id": "permission:converser.update",
       "type": "permission",
       "key": "converser.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:doc.create",
+      "type": "permission",
+      "key": "doc.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:doc.delete",
+      "type": "permission",
+      "key": "doc.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:doc.get",
+      "type": "permission",
+      "key": "doc.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:doc.update",
+      "type": "permission",
+      "key": "doc.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -35805,6 +36377,70 @@
       }
     },
     {
+      "id": "relationship:Doc.createdBy",
+      "type": "relationship",
+      "key": "Doc.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Doc.modifiedBy",
+      "type": "relationship",
+      "key": "Doc.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Doc.owner",
+      "type": "relationship",
+      "key": "Doc.owner",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "ownerId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Doc.project",
+      "type": "relationship",
+      "key": "Doc.project",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "projectId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Doc.tag",
+      "type": "relationship",
+      "key": "Doc.tag",
+      "attributes": {
+        "kind": "hasManyToMany",
+        "primaryKey": "id",
+        "rhsKey": "relatedId",
+        "lhsKey": "tagId",
+        "secondaryKey": "id",
+        "condition": "tagTagged.relatedTo = \"doc\""
+      }
+    },
+    {
+      "id": "relationship:Doc.tagged",
+      "type": "relationship",
+      "key": "Doc.tagged",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "relatedId",
+        "condition": "tagged.relatedTo = \"doc\""
+      }
+    },
+    {
       "id": "relationship:Downloadtoken.issueUpload",
       "type": "relationship",
       "key": "Downloadtoken.issueUpload",
@@ -36257,6 +36893,16 @@
       }
     },
     {
+      "id": "relationship:Project.docs",
+      "type": "relationship",
+      "key": "Project.docs",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "projectId"
+      }
+    },
+    {
       "id": "relationship:Project.issues",
       "type": "relationship",
       "key": "Project.issues",
@@ -36600,6 +37246,17 @@
         "lhsKey": "relatedId",
         "secondaryKey": "id",
         "condition": "wikiTagged.relatedTo = \"wiki\""
+      }
+    },
+    {
+      "id": "relationship:Tagged.doc",
+      "type": "relationship",
+      "key": "Tagged.doc",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "relatedId",
+        "relatedKey": "id",
+        "condition": "Tagged.relatedTo = \"doc\""
       }
     },
     {
@@ -37817,6 +38474,30 @@
         "version": "v1",
         "method": "DELETE",
         "path": "/api/v1/converser/{id}"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/doc",
+      "type": "route",
+      "key": "DELETE /api/v1/doc",
+      "attributes": {
+        "type": "rest",
+        "name": "doc",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/doc"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/doc/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/doc/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "doc",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/doc/{id}"
       }
     },
     {
@@ -39041,6 +39722,42 @@
         "version": "v1",
         "method": "GET",
         "path": "/api/v1/converser/{id}/{relation}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/doc",
+      "type": "route",
+      "key": "GET /api/v1/doc",
+      "attributes": {
+        "type": "rest",
+        "name": "doc",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/doc"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/doc/{id}",
+      "type": "route",
+      "key": "GET /api/v1/doc/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "doc",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/doc/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/doc/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/doc/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "doc",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/doc/{id}/{relation}"
       }
     },
     {
@@ -40880,6 +41597,18 @@
       }
     },
     {
+      "id": "route:OPTIONS /api/v1/doc",
+      "type": "route",
+      "key": "OPTIONS /api/v1/doc",
+      "attributes": {
+        "type": "rest",
+        "name": "doc",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/doc"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/forgetpassword",
       "type": "route",
       "key": "OPTIONS /api/v1/forgetpassword",
@@ -41741,6 +42470,30 @@
         "version": "v1",
         "method": "PATCH",
         "path": "/api/v1/converser/{id}"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/doc",
+      "type": "route",
+      "key": "PATCH /api/v1/doc",
+      "attributes": {
+        "type": "rest",
+        "name": "doc",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/doc"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/doc/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/doc/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "doc",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/doc/{id}"
       }
     },
     {
@@ -42776,6 +43529,18 @@
       }
     },
     {
+      "id": "route:POST /api/v1/doc",
+      "type": "route",
+      "key": "POST /api/v1/doc",
+      "attributes": {
+        "type": "rest",
+        "name": "doc",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/doc"
+      }
+    },
+    {
       "id": "route:POST /api/v1/forgetpassword",
       "type": "route",
       "key": "POST /api/v1/forgetpassword",
@@ -43517,6 +44282,30 @@
         "version": "v1",
         "method": "PUT",
         "path": "/api/v1/converser/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/doc",
+      "type": "route",
+      "key": "PUT /api/v1/doc",
+      "attributes": {
+        "type": "rest",
+        "name": "doc",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/doc"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/doc/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/doc/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "doc",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/doc/{id}"
       }
     },
     {
@@ -44718,6 +45507,46 @@
       "from": "action:converser.related",
       "type": "requires",
       "to": "permission:converser.get"
+    },
+    {
+      "from": "action:doc.delete",
+      "type": "requires",
+      "to": "permission:doc.delete"
+    },
+    {
+      "from": "action:doc.get",
+      "type": "requires",
+      "to": "permission:doc.get"
+    },
+    {
+      "from": "action:doc.list",
+      "type": "requires",
+      "to": "permission:doc.get"
+    },
+    {
+      "from": "action:doc.patch",
+      "type": "requires",
+      "to": "permission:doc.update"
+    },
+    {
+      "from": "action:doc.patchCollection",
+      "type": "requires",
+      "to": "permission:doc.update"
+    },
+    {
+      "from": "action:doc.post",
+      "type": "requires",
+      "to": "permission:doc.create"
+    },
+    {
+      "from": "action:doc.put",
+      "type": "requires",
+      "to": "permission:doc.update"
+    },
+    {
+      "from": "action:doc.related",
+      "type": "requires",
+      "to": "permission:doc.get"
     },
     {
       "from": "action:forgetpassword.get",
@@ -47810,6 +48639,36 @@
       "to": "profile:aclNoProject"
     },
     {
+      "from": "case:acl/acl-doc-denied-without-project-group",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-doc-denied-without-project-group",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-doc-denied-without-project-group",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-doc-denied-without-project-group",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:acl/acl-doc-denied-without-project-group",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doc"
+    },
+    {
+      "from": "case:acl/acl-doc-denied-without-project-group",
+      "type": "runs_as",
+      "to": "profile:aclNoProject"
+    },
+    {
       "from": "case:acl/acl-field-default-select-keeps-structural-projectId",
       "type": "asserts",
       "to": "assertion:attributesPresent"
@@ -48948,6 +49807,121 @@
       "from": "case:acl/acl-members-conversationroomcount-list-member-only",
       "type": "uses_fixture",
       "to": "fixture:voteConversationroomId"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-member-allowed",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-member-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-member-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-member-allowed",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-member-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-member-allowed",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-member-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:docId"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-non-member-denied",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-non-member-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-non-member-denied",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-doc-detail-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectDocId"
+    },
+    {
+      "from": "case:acl/acl-members-doc-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-members-doc-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-members-doc-list-member-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-doc-list-member-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-doc-list-member-only",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:acl/acl-members-doc-list-member-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doc"
+    },
+    {
+      "from": "case:acl/acl-members-doc-list-member-only",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-doc-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:docId"
+    },
+    {
+      "from": "case:acl/acl-members-doc-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectDocId"
     },
     {
       "from": "case:acl/acl-members-idea-create-non-member-project-denied",
@@ -54020,6 +54994,36 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/delete-doc-api-v1-doc-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/delete-doc-api-v1-doc-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/delete-doc-api-v1-doc-runtime-id",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:backend/delete-doc-api-v1-doc-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-doc-api-v1-doc"
+    },
+    {
+      "from": "case:backend/delete-doc-api-v1-doc-runtime-id",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:backend/delete-doc-api-v1-doc-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/delete-idea-api-v1-idea-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -55551,6 +56555,101 @@
     },
     {
       "from": "case:backend/get-converser-api-v1-converser",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doc"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-id",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-id",
+      "type": "uses_fixture",
+      "to": "fixture:docId"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-runtime-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-runtime-id",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-doc-api-v1-doc"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-runtime-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:backend/get-doc-api-v1-doc-runtime-id",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -58810,6 +59909,41 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/patch-doc-api-v1-doc-id",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:backend/patch-doc-api-v1-doc-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/patch-doc-api-v1-doc-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/patch-doc-api-v1-doc-id",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:backend/patch-doc-api-v1-doc-id",
+      "type": "depends_on",
+      "to": "case:backend/post-doc-api-v1-doc"
+    },
+    {
+      "from": "case:backend/patch-doc-api-v1-doc-id",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:backend/patch-doc-api-v1-doc-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/patch-idea-api-v1-idea-id",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -59903,6 +61037,36 @@
       "from": "case:backend/post-converser-api-v1-converser",
       "type": "uses_fixture",
       "to": "fixture:userId"
+    },
+    {
+      "from": "case:backend/post-doc-api-v1-doc",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-doc-api-v1-doc",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-doc-api-v1-doc",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:backend/post-doc-api-v1-doc",
+      "type": "exercises",
+      "to": "route:POST /api/v1/doc"
+    },
+    {
+      "from": "case:backend/post-doc-api-v1-doc",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-doc-api-v1-doc",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
     },
     {
       "from": "case:backend/post-idea-api-v1-idea",
@@ -61583,6 +62747,186 @@
       "from": "case:client/agenttool-grant-whole-server",
       "type": "uses_fixture",
       "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:client/client-doc-create",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-doc-create",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-doc-create",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-doc-create",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:client/client-doc-create",
+      "type": "exercises",
+      "to": "route:POST /api/v1/doc"
+    },
+    {
+      "from": "case:client/client-doc-create",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-doc-create",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-doc-create",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/client-doc-create-missing-title-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-doc-create-missing-title-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-doc-create-missing-title-rejected",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:client/client-doc-create-missing-title-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/doc"
+    },
+    {
+      "from": "case:client/client-doc-create-missing-title-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-doc-create-missing-title-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-doc-create-missing-title-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/client-doc-delete",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-doc-delete",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:client/client-doc-delete",
+      "type": "depends_on",
+      "to": "case:client/client-doc-create"
+    },
+    {
+      "from": "case:client/client-doc-delete",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:client/client-doc-delete",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-doc-get-with-owner-and-tag",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/client-doc-get-with-owner-and-tag",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:client/client-doc-get-with-owner-and-tag",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-doc-get-with-owner-and-tag",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-doc-get-with-owner-and-tag",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:client/client-doc-get-with-owner-and-tag",
+      "type": "depends_on",
+      "to": "case:client/client-doc-create"
+    },
+    {
+      "from": "case:client/client-doc-get-with-owner-and-tag",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:client/client-doc-get-with-owner-and-tag",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-doc-list-by-project",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/client-doc-list-by-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-doc-list-by-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-doc-list-by-project",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:client/client-doc-list-by-project",
+      "type": "depends_on",
+      "to": "case:client/client-doc-create"
+    },
+    {
+      "from": "case:client/client-doc-list-by-project",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doc"
+    },
+    {
+      "from": "case:client/client-doc-list-by-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-doc-list-by-project",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
     },
     {
       "from": "case:client/client-idea-create",
@@ -76545,6 +77889,66 @@
       "to": "model:Converser"
     },
     {
+      "from": "controller:doc",
+      "type": "has_action",
+      "to": "action:doc.delete"
+    },
+    {
+      "from": "controller:doc",
+      "type": "has_action",
+      "to": "action:doc.deleteCollection"
+    },
+    {
+      "from": "controller:doc",
+      "type": "has_action",
+      "to": "action:doc.get"
+    },
+    {
+      "from": "controller:doc",
+      "type": "has_action",
+      "to": "action:doc.list"
+    },
+    {
+      "from": "controller:doc",
+      "type": "has_action",
+      "to": "action:doc.options"
+    },
+    {
+      "from": "controller:doc",
+      "type": "has_action",
+      "to": "action:doc.patch"
+    },
+    {
+      "from": "controller:doc",
+      "type": "has_action",
+      "to": "action:doc.patchCollection"
+    },
+    {
+      "from": "controller:doc",
+      "type": "has_action",
+      "to": "action:doc.post"
+    },
+    {
+      "from": "controller:doc",
+      "type": "has_action",
+      "to": "action:doc.put"
+    },
+    {
+      "from": "controller:doc",
+      "type": "has_action",
+      "to": "action:doc.putCollection"
+    },
+    {
+      "from": "controller:doc",
+      "type": "has_action",
+      "to": "action:doc.related"
+    },
+    {
+      "from": "controller:doc",
+      "type": "serves",
+      "to": "model:Doc"
+    },
+    {
       "from": "controller:download",
       "type": "has_action",
       "to": "action:download.get"
@@ -79275,6 +80679,16 @@
       "to": "field:Conversationroom.projectId"
     },
     {
+      "from": "field:Doc.createdUserName",
+      "type": "linked_to",
+      "to": "field:Doc.createdUser"
+    },
+    {
+      "from": "field:Doc.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Doc.modifiedUser"
+    },
+    {
       "from": "field:Idea.createdUserName",
       "type": "linked_to",
       "to": "field:Idea.createdUser"
@@ -81015,6 +82429,131 @@
       "to": "behaviour:softDeleteBehavior"
     },
     {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.body"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.createdUser"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.createdUserName"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.dateCreated"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.dateModified"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.deleted"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.id"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.locked"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.modifiedUser"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.modifiedUserName"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.ownerId"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.projectId"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_field",
+      "to": "field:Doc.title"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_relationship",
+      "to": "relationship:Doc.createdBy"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_relationship",
+      "to": "relationship:Doc.modifiedBy"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_relationship",
+      "to": "relationship:Doc.owner"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_relationship",
+      "to": "relationship:Doc.project"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_relationship",
+      "to": "relationship:Doc.tag"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_relationship",
+      "to": "relationship:Doc.tagged"
+    },
+    {
+      "from": "model:Doc",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Doc",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Doc",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Doc",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Doc",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Doc",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
       "from": "model:Downloadtoken",
       "type": "has_field",
       "to": "field:Downloadtoken.createdUser"
@@ -82657,6 +84196,11 @@
     {
       "from": "model:Project",
       "type": "has_relationship",
+      "to": "relationship:Project.docs"
+    },
+    {
+      "from": "model:Project",
+      "type": "has_relationship",
       "to": "relationship:Project.issues"
     },
     {
@@ -83863,6 +85407,11 @@
       "from": "model:Tagged",
       "type": "has_field",
       "to": "field:Tagged.tagId"
+    },
+    {
+      "from": "model:Tagged",
+      "type": "has_relationship",
+      "to": "relationship:Tagged.doc"
     },
     {
       "from": "model:Tagged",
@@ -86947,6 +88496,16 @@
     {
       "from": "profile:aclMembers",
       "type": "grants",
+      "to": "permission:doc.create"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:doc.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
       "to": "permission:idea.create"
     },
     {
@@ -87573,6 +89132,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:conversationroomcount.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:doc.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:doc.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:doc.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:doc.update"
     },
     {
       "from": "profile:default",
@@ -88565,6 +90144,41 @@
       "to": "model:User"
     },
     {
+      "from": "relationship:Doc.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Doc.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Doc.owner",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Doc.project",
+      "type": "targets",
+      "to": "model:Project"
+    },
+    {
+      "from": "relationship:Doc.tag",
+      "type": "targets",
+      "to": "model:Tag"
+    },
+    {
+      "from": "relationship:Doc.tag",
+      "type": "via",
+      "to": "model:Tagged"
+    },
+    {
+      "from": "relationship:Doc.tagged",
+      "type": "targets",
+      "to": "model:Tagged"
+    },
+    {
       "from": "relationship:Downloadtoken.issueUpload",
       "type": "targets",
       "to": "model:Upload"
@@ -88785,6 +90399,11 @@
       "to": "model:User"
     },
     {
+      "from": "relationship:Project.docs",
+      "type": "targets",
+      "to": "model:Doc"
+    },
+    {
       "from": "relationship:Project.issues",
       "type": "targets",
       "to": "model:Issue"
@@ -88968,6 +90587,11 @@
       "from": "relationship:Tag.wiki",
       "type": "via",
       "to": "model:Tagged"
+    },
+    {
+      "from": "relationship:Tagged.doc",
+      "type": "targets",
+      "to": "model:Doc"
     },
     {
       "from": "relationship:Tagged.issue",
@@ -89565,6 +91189,16 @@
       "to": "action:converser.delete"
     },
     {
+      "from": "route:DELETE /api/v1/doc",
+      "type": "handled_by",
+      "to": "action:doc.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/doc/{id}",
+      "type": "handled_by",
+      "to": "action:doc.delete"
+    },
+    {
       "from": "route:DELETE /api/v1/idea",
       "type": "handled_by",
       "to": "action:idea.deleteCollection"
@@ -90073,6 +91707,21 @@
       "from": "route:GET /api/v1/converser/{id}/{relation}",
       "type": "handled_by",
       "to": "action:converser.related"
+    },
+    {
+      "from": "route:GET /api/v1/doc",
+      "type": "handled_by",
+      "to": "action:doc.list"
+    },
+    {
+      "from": "route:GET /api/v1/doc/{id}",
+      "type": "handled_by",
+      "to": "action:doc.get"
+    },
+    {
+      "from": "route:GET /api/v1/doc/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:doc.related"
     },
     {
       "from": "route:GET /api/v1/forgetpassword",
@@ -90840,6 +92489,11 @@
       "to": "action:converser.options"
     },
     {
+      "from": "route:OPTIONS /api/v1/doc",
+      "type": "handled_by",
+      "to": "action:doc.options"
+    },
+    {
       "from": "route:OPTIONS /api/v1/forgetpassword",
       "type": "handled_by",
       "to": "action:forgetpassword.options"
@@ -91198,6 +92852,16 @@
       "from": "route:PATCH /api/v1/converser/{id}",
       "type": "handled_by",
       "to": "action:converser.patch"
+    },
+    {
+      "from": "route:PATCH /api/v1/doc",
+      "type": "handled_by",
+      "to": "action:doc.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/doc/{id}",
+      "type": "handled_by",
+      "to": "action:doc.patch"
     },
     {
       "from": "route:PATCH /api/v1/idea",
@@ -91630,6 +93294,11 @@
       "to": "action:converser.post"
     },
     {
+      "from": "route:POST /api/v1/doc",
+      "type": "handled_by",
+      "to": "action:doc.post"
+    },
+    {
       "from": "route:POST /api/v1/forgetpassword",
       "type": "handled_by",
       "to": "action:forgetpassword.post"
@@ -91938,6 +93607,16 @@
       "from": "route:PUT /api/v1/converser/{id}",
       "type": "handled_by",
       "to": "action:converser.put"
+    },
+    {
+      "from": "route:PUT /api/v1/doc",
+      "type": "handled_by",
+      "to": "action:doc.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/doc/{id}",
+      "type": "handled_by",
+      "to": "action:doc.put"
     },
     {
       "from": "route:PUT /api/v1/idea",

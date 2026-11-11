@@ -16,6 +16,7 @@ $config['models'] = [
     'Converser',
     'Dashboard',
     'Downloadtoken',
+    'Doc',
     'Idea',
     'Ideamessage',
     'Ideaplan',

@@ -1530,6 +1530,44 @@
       "source": "acl-group"
     },
     {
+      "id": "acl-doc-denied-without-project-group",
+      "method": "GET",
+      "path": "/api/v1/doc",
+      "resource": "doc",
+      "auth": "aclNoProject",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-doc-list-member-only",
+      "method": "GET",
+      "path": "/api/v1/doc",
+      "resource": "doc",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{docId}"], "idsExcludes": ["{otherProjectDocId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-doc-detail-member-allowed",
+      "method": "GET",
+      "path": "/api/v1/doc/{docId}",
+      "resource": "doc",
+      "auth": "aclMembers",
+      "expects": { "status": 200, "shape": "jsonapi.resource", "idsIncludes": ["{docId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-doc-detail-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/doc/{otherProjectDocId}",
+      "resource": "doc",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
       "id": "acl-idea-denied-without-project-group",
       "method": "GET",
       "path": "/api/v1/idea",

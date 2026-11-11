@@ -192,6 +192,23 @@
 | PUT | /api/v1/converser | rest | converser.putCollection |
 | PUT | /api/v1/converser/{id} | rest | converser.put |
 
+<a id="doc"></a>
+## doc
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/doc | rest | doc.deleteCollection |
+| DELETE | /api/v1/doc/{id} | rest | doc.delete |
+| GET | /api/v1/doc | rest | doc.list |
+| GET | /api/v1/doc/{id} | rest | doc.get |
+| GET | /api/v1/doc/{id}/{relation} | rest | doc.related |
+| OPTIONS | /api/v1/doc | rest | doc.options |
+| PATCH | /api/v1/doc | rest | doc.patchCollection |
+| PATCH | /api/v1/doc/{id} | rest | doc.patch |
+| POST | /api/v1/doc | rest | doc.post |
+| PUT | /api/v1/doc | rest | doc.putCollection |
+| PUT | /api/v1/doc/{id} | rest | doc.put |
+
 <a id="download"></a>
 ## download
 

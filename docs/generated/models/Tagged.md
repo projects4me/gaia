@@ -13,6 +13,7 @@
 <a id="relationships"></a>
 ## Relationships
 
+- doc hasMany -> Doc
 - issue hasMany -> Issue
 - project hasMany -> Project
 - tag hasMany -> Tag
