@@ -77,6 +77,8 @@
     "emptyConversationroomId": "api-test-convroom-cnt-empty",
     "otherProjectConversationroomId": "api-test-convroom-cnt-other",
     "commentId": "api-test-comment-000001",
+    "docId": "api-test-doc-000001",
+    "otherProjectDocId": "api-test-doc-000002",
     "ideaId": "api-test-idea-000001",
     "otherProjectIdeaId": "api-test-idea-000002",
     "ideamessageId": "api-test-ideamsg-00001",

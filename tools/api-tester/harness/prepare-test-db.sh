@@ -490,7 +490,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
+    ('systemsetting'), ('userrole'), ('doc'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -601,6 +601,8 @@ VALUES
   ('atp-acl-mem-comment-get', 'api-test-role-acl-mem', 'comment.get', 1, NOW(), NOW()),
   ('atp-acl-mem-conv-get', 'api-test-role-acl-mem', 'conversationroom.get', 1, NOW(), NOW()),
   ('atp-acl-mem-convcount-get', 'api-test-role-acl-mem', 'conversationroomcount.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-doc-get', 'api-test-role-acl-mem', 'doc.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-doc-create', 'api-test-role-acl-mem', 'doc.create', 1, NOW(), NOW()),
   ('atp-acl-mem-idea-get', 'api-test-role-acl-mem', 'idea.get', 1, NOW(), NOW()),
   ('atp-acl-mem-idea-create', 'api-test-role-acl-mem', 'idea.create', 1, NOW(), NOW()),
   ('atp-acl-mem-ideamessage-get', 'api-test-role-acl-mem', 'ideamessage.get', 1, NOW(), NOW()),
@@ -757,6 +759,17 @@ INSERT INTO votes (
    'conversationrooms', 'api-test-convroom-cnt-vote', NOW(), NOW()),
   ('api-test-vote-cnt-03', 0, 'api-test-user-acl-np', 'api-test-user-acl-np', 'API Tester', 'API Tester',
    'conversationrooms', 'api-test-convroom-cnt-vote', NOW(), NOW());
+
+-- Docs: one per project so the members scope can be checked
+INSERT INTO doc (
+  id, "projectId", title, body, "ownerId", locked, deleted,
+  "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-doc-000001', 'api-test-project-001', 'API Tester Doc', 'Seed doc', 'api-test-user-0001', FALSE, FALSE,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-doc-000002', 'api-test-project-002', 'API Tester Other Doc', 'Seed doc outside membership', 'api-test-user-0001', FALSE, FALSE,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
 -- Ideas: one per project so members scope can be checked through the idea's children
 INSERT INTO ideas (
@@ -1433,6 +1446,8 @@ data = {
     "emptyConversationroomId": "api-test-convroom-cnt-empty",
     "otherProjectConversationroomId": "api-test-convroom-cnt-other",
     "commentId": "api-test-comment-000001",
+    "docId": "api-test-doc-000001",
+    "otherProjectDocId": "api-test-doc-000002",
     "ideaId": "api-test-idea-000001",
     "otherProjectIdeaId": "api-test-idea-000002",
     "ideamessageId": "api-test-ideamsg-00001",

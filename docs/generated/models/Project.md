@@ -27,6 +27,7 @@
 - activities hasMany -> Activity
 - conversations hasMany -> Conversationroom
 - createdBy hasOne -> User
+- docs hasMany -> Doc
 - issues hasMany -> Issue
 - issuestatuses hasMany -> Issuestatus
 - issuetypes hasMany -> Issuetype

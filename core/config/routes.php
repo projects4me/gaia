@@ -100,6 +100,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'doc' => array(
+                'path' => '/api/:version/doc',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'idea' => array(
                 'path' => '/api/:version/idea',
                 'allowedMethods' => array(

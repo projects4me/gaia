@@ -82,6 +82,7 @@ $fixtureIds = [
     'conversationroom' => '{conversationroomId}',
     // A count row's id is its room's id.
     'conversationroomcount' => '{conversationroomId}',
+    'doc' => '{docId}',
     'idea' => '{ideaId}',
     'ideamessage' => '{ideamessageId}',
     'ideaplan' => '{ideaplanId}',
@@ -125,6 +126,7 @@ $extraAttributes = [
     'issue' => [
         'subject' => 'API Tester Runtime Issue',
         'owner' => '{userId}',
+        'ownerId' => '{userId}',
         'assignee' => '{userId}',
         'reportedUser' => '{userId}',
         'typeId' => '{issuetypeId}',

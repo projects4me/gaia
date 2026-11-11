@@ -8017,6 +8017,104 @@
           "{otherProjectConversationroomId}"
         ]
       }
+    },
+    {
+      "id": "client-doc-create",
+      "method": "POST",
+      "path": "/api/v1/doc",
+      "resource": "doc",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "doc",
+          "attributes": {
+            "projectId": "{projectId}",
+            "ownerId": "{userId}",
+            "title": "Client doc",
+            "body": "Client doc body"
+          }
+        }
+      },
+      "store": {
+        "runtime.clientDocId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "title": "Client doc"
+        }
+      }
+    },
+    {
+      "id": "client-doc-create-missing-title-rejected",
+      "method": "POST",
+      "path": "/api/v1/doc",
+      "resource": "doc",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "doc",
+          "attributes": {
+            "projectId": "{projectId}",
+            "ownerId": "{userId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "client-doc-list-by-project",
+      "method": "GET",
+      "path": "/api/v1/doc",
+      "resource": "doc",
+      "auth": true,
+      "query": {
+        "query": "((Doc.projectId : {projectId}))"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{runtime.clientDocId}"
+        ]
+      }
+    },
+    {
+      "id": "client-doc-get-with-owner-and-tag",
+      "method": "GET",
+      "path": "/api/v1/doc/{runtime.clientDocId}",
+      "resource": "doc",
+      "auth": true,
+      "query": {
+        "rels": "owner,tag"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{runtime.clientDocId}"
+        ],
+        "includedTypesPresent": [
+          "user"
+        ]
+      }
+    },
+    {
+      "id": "client-doc-delete",
+      "method": "DELETE",
+      "path": "/api/v1/doc/{runtime.clientDocId}",
+      "resource": "doc",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
     }
   ]
 }
