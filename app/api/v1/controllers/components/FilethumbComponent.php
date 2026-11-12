@@ -49,7 +49,8 @@ class FilethumbComponent
     /**
      * Replaces the thumbnail flag of an upload resource with the data URI of
      * its thumbnail image. Other resources, and uploads without a thumbnail
-     * file, are left untouched.
+     * file, are left untouched. Thumbnails are always written as JPEG by
+     * UploadController::_generateThumb(), whatever the upload's own type.
      *
      * @param array $resource The resource object, changed in place
      */
@@ -71,11 +72,6 @@ class FilethumbComponent
             return;
         }
 
-        $mime = $resource['attributes']['fileMime'] ?? '';
-        if ($mime === '' || $mime === null) {
-            $mime = 'application/octet-stream';
-        }
-
-        $resource['attributes']['fileThumbnail'] = 'data:'.$mime.';base64,'.base64_encode($contents);
+        $resource['attributes']['fileThumbnail'] = 'data:image/jpeg;base64,'.base64_encode($contents);
     }
 }

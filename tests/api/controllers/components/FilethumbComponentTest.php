@@ -60,7 +60,7 @@ class FilethumbComponentTest extends TestCase
     {
         $this->makeThumb('t-1');
         $out = $this->run_(['data' => [$this->upload('t-1')]]);
-        $this->assertSame('data:image/png;base64,' . base64_encode('abc'), $out['data'][0]['attributes']['fileThumbnail']);
+        $this->assertSame('data:image/jpeg;base64,' . base64_encode('abc'), $out['data'][0]['attributes']['fileThumbnail']);
     }
 
     public function testConvertsSingleResourceAndIncluded()
@@ -68,8 +68,8 @@ class FilethumbComponentTest extends TestCase
         $this->makeThumb('t-2');
         $this->makeThumb('t-3');
         $out = $this->run_(['data' => $this->upload('t-2'), 'included' => [$this->upload('t-3')]]);
-        $this->assertStringStartsWith('data:image/png;base64,', $out['data']['attributes']['fileThumbnail']);
-        $this->assertStringStartsWith('data:image/png;base64,', $out['included'][0]['attributes']['fileThumbnail']);
+        $this->assertStringStartsWith('data:image/jpeg;base64,', $out['data']['attributes']['fileThumbnail']);
+        $this->assertStringStartsWith('data:image/jpeg;base64,', $out['included'][0]['attributes']['fileThumbnail']);
     }
 
     public function testLeavesNonThumbnailsAndOtherTypesAlone()
