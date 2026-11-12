@@ -22,7 +22,7 @@ use function Gaia\Libraries\Utils\create_guid as create_guid;
  */
 class UploadController extends RestController
 {
-    public $uses = array('Fileattachment');
+    public $uses = array('Fileattachment', 'Filethumb');
     /**
      * Streams the uploaded file's bytes.
      *
