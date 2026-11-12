@@ -28,23 +28,50 @@ class FilethumbComponent
         global $logger;
         $logger->debug('Gaia.Controller.Component.filethumb::afterRead()');
 
-        $included = $controller->finalData['included'];
-        $uploads = array_filter($included,function($v,$k){
-            return $v['type'] == 'upload';
-        },ARRAY_FILTER_USE_BOTH);
+        foreach (['data', 'included'] as $section) {
+            if (empty($controller->finalData[$section]) || !is_array($controller->finalData[$section])) {
+                continue;
+            }
 
-        foreach($uploads as $key => $value) {
-            if ($value['attributes']['fileThumbnail']){
+            if (isset($controller->finalData[$section]['type'])) {
+                // a single resource
+                $this->convertThumbnail($controller->finalData[$section]);
+                continue;
+            }
 
-                $logger->debug('File '.$value['attributes']['name'].' with thumbnail found');
-                $targetPath = APP_PATH . DS. 'filesystem'.DS.'uploads' . DS.
-                                "thumbnail/thumb_" . $value['id']. '.jpg';
-
-
-                $thumbdata = 'data:'.$value['attributes']['fileMime'].';base64,'.base64_encode(file_get_contents($targetPath));
-                $controller->finalData['included'][$key]['attributes']['fileThumbnail'] = $thumbdata;
+            foreach ($controller->finalData[$section] as $key => $resource) {
+                $this->convertThumbnail($controller->finalData[$section][$key]);
             }
         }
         $logger->debug('-Gaia.Controller.Component.filethumb::afterRead()');
+    }
+
+    /**
+     * Replaces the thumbnail flag of an upload resource with the data URI of
+     * its thumbnail image. Other resources, and uploads without a thumbnail
+     * file, are left untouched. Thumbnails are always written as JPEG by
+     * UploadController::_generateThumb(), whatever the upload's own type.
+     *
+     * @param array $resource The resource object, changed in place
+     */
+    private function convertThumbnail(&$resource)
+    {
+        global $logger;
+
+        if (!is_array($resource) || ($resource['type'] ?? null) != 'upload' || empty($resource['attributes']['fileThumbnail'])) {
+            return;
+        }
+
+        $logger->debug('File '.($resource['attributes']['name'] ?? '').' with thumbnail found');
+        $targetPath = APP_PATH . DS. 'filesystem'.DS.'uploads' . DS.
+                        "thumbnail/thumb_" . $resource['id']. '.jpg';
+
+        $contents = is_readable($targetPath) ? file_get_contents($targetPath) : false;
+        if ($contents === false) {
+            $logger->warning('Thumbnail file of upload '.$resource['id'].' is missing or unreadable');
+            return;
+        }
+
+        $resource['attributes']['fileThumbnail'] = 'data:image/jpeg;base64,'.base64_encode($contents);
     }
 }

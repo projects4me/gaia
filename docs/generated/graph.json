@@ -79789,6 +79789,11 @@
       "to": "component:Fileattachment"
     },
     {
+      "from": "controller:upload",
+      "type": "uses_component",
+      "to": "component:Filethumb"
+    },
+    {
       "from": "controller:user",
       "type": "has_action",
       "to": "action:user.delete"
