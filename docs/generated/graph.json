@@ -3882,6 +3882,18 @@
       }
     },
     {
+      "id": "behaviour:docBehavior",
+      "type": "behaviour",
+      "key": "docBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\docBehavior",
+        "file": "core/mvc/models/behaviors/docBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:doccontentBehavior",
       "type": "behaviour",
       "key": "doccontentBehavior",
@@ -4879,6 +4891,79 @@
       }
     },
     {
+      "id": "case:acl/acl-doc-lock-by-project-admin-allowed",
+      "type": "case",
+      "key": "acl/acl-doc-lock-by-project-admin-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/doc/{membersLockedDocId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "doc-lock",
+        "placeholders": [
+          "membersLockedDocId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-doc-update-denied-without-doc-update",
+      "type": "case",
+      "key": "acl/acl-doc-update-denied-without-doc-update",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/doc/{docId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "acl-action",
+        "placeholders": [
+          "docId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-doccontent-create-locked-doc-rejected",
+      "type": "case",
+      "key": "acl/acl-doccontent-create-locked-doc-rejected",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/doccontent",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "doc-lock",
+        "placeholders": [
+          "lockedDocId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-doccontent-delete-locked-doc-rejected",
+      "type": "case",
+      "key": "acl/acl-doccontent-delete-locked-doc-rejected",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "DELETE",
+        "path": "/api/v1/doccontent/{lockedDoccontentId}",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "doc-lock",
+        "placeholders": [
+          "lockedDoccontentId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-doccontent-denied-without-project-group",
       "type": "case",
       "key": "acl/acl-doccontent-denied-without-project-group",
@@ -4891,6 +4976,24 @@
         "enabled": true,
         "source": "acl-group",
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-doccontent-update-locked-doc-rejected",
+      "type": "case",
+      "key": "acl/acl-doccontent-update-locked-doc-rejected",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/doccontent/{lockedDoccontentId}",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "doc-lock",
+        "placeholders": [
+          "lockedDoccontentId"
+        ],
         "stores": []
       }
     },
@@ -5485,6 +5588,24 @@
       }
     },
     {
+      "id": "case:acl/acl-members-doc-delete-denied-without-doc-delete",
+      "type": "case",
+      "key": "acl/acl-members-doc-delete-denied-without-doc-delete",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "DELETE",
+        "path": "/api/v1/doc/{docId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "acl-action",
+        "placeholders": [
+          "docId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-members-doc-detail-member-allowed",
       "type": "case",
       "key": "acl/acl-members-doc-detail-member-allowed",
@@ -5540,6 +5661,78 @@
       }
     },
     {
+      "id": "case:acl/acl-members-doc-lock-by-other-editor-rejected",
+      "type": "case",
+      "key": "acl/acl-members-doc-lock-by-other-editor-rejected",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/doc/{docId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "doc-lock",
+        "placeholders": [
+          "docId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-doc-lock-by-owner-allowed",
+      "type": "case",
+      "key": "acl/acl-members-doc-lock-by-owner-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/doc/{membersDocId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "doc-lock",
+        "placeholders": [
+          "membersDocId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-doc-owner-change-by-other-editor-rejected",
+      "type": "case",
+      "key": "acl/acl-members-doc-owner-change-by-other-editor-rejected",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/doc/{docId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "doc-lock",
+        "placeholders": [
+          "docId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-doc-unlock-by-owner-allowed",
+      "type": "case",
+      "key": "acl/acl-members-doc-unlock-by-owner-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/doc/{membersLockedDocId}",
+        "resource": "doc",
+        "enabled": true,
+        "source": "doc-lock",
+        "placeholders": [
+          "membersLockedDocId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-members-doccontent-detail-member-allowed",
       "type": "case",
       "key": "acl/acl-members-doccontent-detail-member-allowed",
@@ -5590,6 +5783,24 @@
         "placeholders": [
           "doccontentId",
           "otherProjectDoccontentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-doccontent-update-denied-without-doccontent-update",
+      "type": "case",
+      "key": "acl/acl-members-doccontent-update-denied-without-doccontent-update",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/doccontent/{doccontentId}",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "acl-action",
+        "placeholders": [
+          "doccontentId"
         ],
         "stores": []
       }
@@ -32426,9 +32637,41 @@
       }
     },
     {
+      "id": "fixture:lockedDocId",
+      "type": "fixture",
+      "key": "lockedDocId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:lockedDoccontentId",
+      "type": "fixture",
+      "key": "lockedDoccontentId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:memberUserId",
       "type": "fixture",
       "key": "memberUserId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:membersDocId",
+      "type": "fixture",
+      "key": "membersDocId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:membersLockedDocId",
+      "type": "fixture",
+      "key": "membersLockedDocId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -49473,6 +49716,131 @@
       "to": "profile:aclNoProject"
     },
     {
+      "from": "case:acl/acl-doc-lock-by-project-admin-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-doc-lock-by-project-admin-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-doc-lock-by-project-admin-allowed",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:acl/acl-doc-lock-by-project-admin-allowed",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:acl/acl-doc-lock-by-project-admin-allowed",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-doc-lock-by-project-admin-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:membersLockedDocId"
+    },
+    {
+      "from": "case:acl/acl-doc-update-denied-without-doc-update",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-doc-update-denied-without-doc-update",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-doc-update-denied-without-doc-update",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-doc-update-denied-without-doc-update",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:acl/acl-doc-update-denied-without-doc-update",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:acl/acl-doc-update-denied-without-doc-update",
+      "type": "runs_as",
+      "to": "profile:aclProjectOnly"
+    },
+    {
+      "from": "case:acl/acl-doc-update-denied-without-doc-update",
+      "type": "uses_fixture",
+      "to": "fixture:docId"
+    },
+    {
+      "from": "case:acl/acl-doccontent-create-locked-doc-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-doccontent-create-locked-doc-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-doccontent-create-locked-doc-rejected",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:acl/acl-doccontent-create-locked-doc-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/doccontent"
+    },
+    {
+      "from": "case:acl/acl-doccontent-create-locked-doc-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-doccontent-create-locked-doc-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:lockedDocId"
+    },
+    {
+      "from": "case:acl/acl-doccontent-create-locked-doc-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:acl/acl-doccontent-delete-locked-doc-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-doccontent-delete-locked-doc-rejected",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:acl/acl-doccontent-delete-locked-doc-rejected",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/doccontent/{id}"
+    },
+    {
+      "from": "case:acl/acl-doccontent-delete-locked-doc-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-doccontent-delete-locked-doc-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:lockedDoccontentId"
+    },
+    {
       "from": "case:acl/acl-doccontent-denied-without-project-group",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -49501,6 +49869,36 @@
       "from": "case:acl/acl-doccontent-denied-without-project-group",
       "type": "runs_as",
       "to": "profile:aclNoProject"
+    },
+    {
+      "from": "case:acl/acl-doccontent-update-locked-doc-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-doccontent-update-locked-doc-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-doccontent-update-locked-doc-rejected",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:acl/acl-doccontent-update-locked-doc-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/doccontent/{id}"
+    },
+    {
+      "from": "case:acl/acl-doccontent-update-locked-doc-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:acl/acl-doccontent-update-locked-doc-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:lockedDoccontentId"
     },
     {
       "from": "case:acl/acl-field-default-select-keeps-structural-projectId",
@@ -50643,6 +51041,41 @@
       "to": "fixture:voteConversationroomId"
     },
     {
+      "from": "case:acl/acl-members-doc-delete-denied-without-doc-delete",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-doc-delete-denied-without-doc-delete",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-doc-delete-denied-without-doc-delete",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-doc-delete-denied-without-doc-delete",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:acl/acl-members-doc-delete-denied-without-doc-delete",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-doc-delete-denied-without-doc-delete",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-doc-delete-denied-without-doc-delete",
+      "type": "uses_fixture",
+      "to": "fixture:docId"
+    },
+    {
       "from": "case:acl/acl-members-doc-detail-member-allowed",
       "type": "asserts",
       "to": "assertion:idsIncludes"
@@ -50758,6 +51191,126 @@
       "to": "fixture:otherProjectDocId"
     },
     {
+      "from": "case:acl/acl-members-doc-lock-by-other-editor-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-doc-lock-by-other-editor-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-doc-lock-by-other-editor-rejected",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:acl/acl-members-doc-lock-by-other-editor-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-doc-lock-by-other-editor-rejected",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-doc-lock-by-other-editor-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:docId"
+    },
+    {
+      "from": "case:acl/acl-members-doc-lock-by-owner-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-doc-lock-by-owner-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-doc-lock-by-owner-allowed",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:acl/acl-members-doc-lock-by-owner-allowed",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-doc-lock-by-owner-allowed",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-doc-lock-by-owner-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:membersDocId"
+    },
+    {
+      "from": "case:acl/acl-members-doc-owner-change-by-other-editor-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-doc-owner-change-by-other-editor-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-doc-owner-change-by-other-editor-rejected",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:acl/acl-members-doc-owner-change-by-other-editor-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-doc-owner-change-by-other-editor-rejected",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-doc-owner-change-by-other-editor-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:docId"
+    },
+    {
+      "from": "case:acl/acl-members-doc-unlock-by-owner-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-doc-unlock-by-owner-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-doc-unlock-by-owner-allowed",
+      "type": "covers",
+      "to": "controller:doc"
+    },
+    {
+      "from": "case:acl/acl-members-doc-unlock-by-owner-allowed",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/doc/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-doc-unlock-by-owner-allowed",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-doc-unlock-by-owner-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:membersLockedDocId"
+    },
+    {
       "from": "case:acl/acl-members-doccontent-detail-member-allowed",
       "type": "asserts",
       "to": "assertion:idsIncludes"
@@ -50871,6 +51424,41 @@
       "from": "case:acl/acl-members-doccontent-list-member-only",
       "type": "uses_fixture",
       "to": "fixture:otherProjectDoccontentId"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-update-denied-without-doccontent-update",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-update-denied-without-doccontent-update",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-update-denied-without-doccontent-update",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-update-denied-without-doccontent-update",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-update-denied-without-doccontent-update",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/doccontent/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-update-denied-without-doccontent-update",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-update-denied-without-doccontent-update",
+      "type": "uses_fixture",
+      "to": "fixture:doccontentId"
     },
     {
       "from": "case:acl/acl-members-idea-create-non-member-project-denied",
@@ -83915,6 +84503,11 @@
     {
       "from": "model:Doc",
       "type": "uses_behaviour",
+      "to": "behaviour:docBehavior"
+    },
+    {
+      "from": "model:Doc",
+      "type": "uses_behaviour",
       "to": "behaviour:modifiedUserBehavior"
     },
     {
@@ -89940,6 +90533,21 @@
     {
       "from": "profile:aclMembers",
       "type": "denies",
+      "to": "permission:doc.delete"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "denies",
+      "to": "permission:doccontent.update"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "denies",
+      "to": "permission:project.update"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "denies",
       "to": "permission:workflow.get"
     },
     {
@@ -89991,6 +90599,11 @@
       "from": "profile:aclMembers",
       "type": "grants",
       "to": "permission:doc.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:doc.update"
     },
     {
       "from": "profile:aclMembers",
@@ -90276,6 +90889,11 @@
       "from": "profile:aclNoSetting",
       "type": "grants",
       "to": "permission:workflowrun.create"
+    },
+    {
+      "from": "profile:aclProjectOnly",
+      "type": "denies",
+      "to": "permission:doc.update"
     },
     {
       "from": "profile:aclProjectOnly",

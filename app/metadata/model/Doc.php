@@ -166,7 +166,8 @@ $models['Doc'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'docBehavior'
     ),
     'acl' => [
         'groups' => ['Project'],
