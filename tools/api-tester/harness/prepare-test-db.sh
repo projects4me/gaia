@@ -582,7 +582,9 @@ VALUES
   ('atp-acl-pi-user-get', 'api-test-role-acl-pi', 'user.get', 1, NOW(), NOW()),
   -- May start a test run and read workflow nodes, but not their settings.
   ('atp-acl-pi-workflowrun-create', 'api-test-role-acl-pi', 'workflowrun.create', 1, NOW(), NOW()),
-  ('atp-acl-pi-workflownode-config-get', 'api-test-role-acl-pi', 'workflownode.config.get', 0, NOW(), NOW());
+  ('atp-acl-pi-workflownode-config-get', 'api-test-role-acl-pi', 'workflownode.config.get', 0, NOW(), NOW()),
+  -- Docs D-005: a doc write needs doc.update.
+  ('atp-acl-pi-doc-update', 'api-test-role-acl-pi', 'doc.update', 0, NOW(), NOW());
 
 -- No-conversation role: project+comment allowed, conversationroom.get denied (multi-group)
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
@@ -603,8 +605,14 @@ VALUES
   ('atp-acl-mem-convcount-get', 'api-test-role-acl-mem', 'conversationroomcount.get', 1, NOW(), NOW()),
   ('atp-acl-mem-doc-get', 'api-test-role-acl-mem', 'doc.get', 1, NOW(), NOW()),
   ('atp-acl-mem-doc-create', 'api-test-role-acl-mem', 'doc.create', 1, NOW(), NOW()),
+  -- A doc editor that is no project admin: may edit docs, not delete them, not
+  -- write content, and may lock only the docs it owns (Docs D-005).
+  ('atp-acl-mem-doc-update', 'api-test-role-acl-mem', 'doc.update', 1, NOW(), NOW()),
+  ('atp-acl-mem-doc-delete', 'api-test-role-acl-mem', 'doc.delete', 0, NOW(), NOW()),
+  ('atp-acl-mem-project-update', 'api-test-role-acl-mem', 'project.update', 0, NOW(), NOW()),
   ('atp-acl-mem-doccontent-get', 'api-test-role-acl-mem', 'doccontent.get', 1, NOW(), NOW()),
   ('atp-acl-mem-doccontent-create', 'api-test-role-acl-mem', 'doccontent.create', 1, NOW(), NOW()),
+  ('atp-acl-mem-doccontent-update', 'api-test-role-acl-mem', 'doccontent.update', 0, NOW(), NOW()),
   ('atp-acl-mem-idea-get', 'api-test-role-acl-mem', 'idea.get', 1, NOW(), NOW()),
   ('atp-acl-mem-idea-create', 'api-test-role-acl-mem', 'idea.create', 1, NOW(), NOW()),
   ('atp-acl-mem-ideamessage-get', 'api-test-role-acl-mem', 'ideamessage.get', 1, NOW(), NOW()),
@@ -763,7 +771,9 @@ INSERT INTO votes (
    'conversationrooms', 'api-test-convroom-cnt-vote', NOW(), NOW());
 
 -- Docs: one per project so the members scope can be checked; 000003 holds seeded content,
--- 000001 and 000004 have none so the content create cases have a doc to fill
+-- 000001 and 000004 have none so the content create cases have a doc to fill.
+-- 000005/000006 are owned by the members user (unlocked/locked) for the lock cases;
+-- 000007 is locked and holds content 0003, so content writes on it are rejected.
 INSERT INTO doc (
   id, "projectId", title, "ownerId", locked, deleted,
   "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
@@ -775,8 +785,14 @@ INSERT INTO doc (
   ('api-test-doc-000003', 'api-test-project-001', 'API Tester Doc With Content', 'api-test-user-0001', FALSE, FALSE,
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
   ('api-test-doc-000004', 'api-test-project-001', 'API Tester Doc For Client Content', 'api-test-user-0001', FALSE, FALSE,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-doc-000005', 'api-test-project-001', 'API Tester Members Doc', 'api-test-user-acl-mem', FALSE, FALSE,
+   'api-test-user-acl-mem', 'API Tester', 'api-test-user-acl-mem', 'API Tester', NOW(), NOW()),
+  ('api-test-doc-000006', 'api-test-project-001', 'API Tester Members Locked Doc', 'api-test-user-acl-mem', TRUE, FALSE,
+   'api-test-user-acl-mem', 'API Tester', 'api-test-user-acl-mem', 'API Tester', NOW(), NOW()),
+  ('api-test-doc-000007', 'api-test-project-001', 'API Tester Locked Doc', 'api-test-user-0001', TRUE, FALSE,
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
-ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE, locked = EXCLUDED.locked;
 
 -- Doc content: one row per doc, one in each project so the members scope can be checked
 INSERT INTO doccontent (
@@ -786,6 +802,8 @@ INSERT INTO doccontent (
   ('api-test-doccontent-0001', 'api-test-doc-000003', 'api-test-project-001', 'c2VlZA==', '<p>Seed</p>', 'Seed', 8, FALSE,
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
   ('api-test-doccontent-0002', 'api-test-doc-000002', 'api-test-project-002', 'c2VlZA==', '<p>Seed</p>', 'Seed', 8, FALSE,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-doccontent-0003', 'api-test-doc-000007', 'api-test-project-001', 'c2VlZA==', '<p>Seed</p>', 'Seed', 8, FALSE,
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
@@ -1470,6 +1488,10 @@ data = {
     "contentClientDocId": "api-test-doc-000004",
     "doccontentId": "api-test-doccontent-0001",
     "otherProjectDoccontentId": "api-test-doccontent-0002",
+    "membersDocId": "api-test-doc-000005",
+    "membersLockedDocId": "api-test-doc-000006",
+    "lockedDocId": "api-test-doc-000007",
+    "lockedDoccontentId": "api-test-doccontent-0003",
     "ideaId": "api-test-idea-000001",
     "otherProjectIdeaId": "api-test-idea-000002",
     "ideamessageId": "api-test-ideamsg-00001",

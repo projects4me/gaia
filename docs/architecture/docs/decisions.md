@@ -6,7 +6,7 @@ Agreed decisions for the Docs module in Gaia. Add a new decision whenever behavi
 |-------|-------|
 | Status | In progress |
 | Scope | Gaia backend, `Doc` resource |
-| Primary code | `app/metadata/model/Doc.php`, `app/api/v1/controllers/DocController.php` |
+| Primary code | `app/metadata/model/Doc.php`, `app/api/v1/controllers/DocController.php`, `core/mvc/models/behaviors/docBehavior.php`, `core/mvc/models/behaviors/doccontentBehavior.php` |
 
 ---
 
@@ -47,3 +47,12 @@ Agreed decisions for the Docs module in Gaia. Add a new decision whenever behavi
 | Decision | A doc has one `Doccontent` row holding the merged Yjs state. Gaia enforces this: a second row for the same `docId` fails validation, and the unique index on `docId` backs it up against concurrent creates. A deleted row still counts, so a doc whose row was deleted cannot get a second one; restoring a deleted row is not part of this resource yet. |
 | Rationale | An update log grows without bound and needs compaction. Version history is out of scope for now. |
 | Consequence | Version history, if wanted, is a separate resource later. |
+
+### D-005 — A locked doc's content is read-only; only its owner or a project admin changes the lock
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | While `Doc.locked` is true, its `Doccontent` row cannot be created or changed (`doccontentBehavior` fails validation, 422) or deleted (its `beforeDelete` cancels the delete before the soft delete runs, 409). Only the doc's stored `ownerId`, or a user whose ACL allows `project.update` (the project admin capability, as in RBAC D-052 privilege is a grant, not a role name), may change `locked`; `docBehavior` fails validation (422) for anyone else. The same rule guards a change of `ownerId`, and the owner is read from the stored row, so an editor cannot make itself the owner and then change the lock. Every other doc write still needs `doc.update`, and content writes `doccontent.update`, like any resource. |
+| Rationale | Gaia owns authorization (D-003), so the collab server and the UI cannot be trusted to honor the lock. A validation rule in the model's behaviour holds for every write path, not only REST. |
+| Consequence | Outside a request (no ACL loaded, e.g. a workflow) only the owner may change the lock. Under the permissive resolution mode (RBAC D-011) a role with no row for `doc.update` or `doccontent.update` is allowed, so a role meant to only read or create docs needs explicit deny rows. |

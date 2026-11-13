@@ -2988,6 +2988,188 @@
       "auth": "aclMembers",
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
+    },
+    {
+      "id": "acl-doc-update-denied-without-doc-update",
+      "method": "PATCH",
+      "path": "/api/v1/doc/{docId}",
+      "resource": "doc",
+      "auth": "aclProjectOnly",
+      "body": {
+        "data": {
+          "type": "doc",
+          "id": "{docId}",
+          "attributes": {
+            "title": "Renamed without doc.update"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-action"
+    },
+    {
+      "id": "acl-members-doc-delete-denied-without-doc-delete",
+      "method": "DELETE",
+      "path": "/api/v1/doc/{docId}",
+      "resource": "doc",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-action"
+    },
+    {
+      "id": "acl-members-doccontent-update-denied-without-doccontent-update",
+      "method": "PATCH",
+      "path": "/api/v1/doccontent/{doccontentId}",
+      "resource": "doccontent",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "doccontent",
+          "id": "{doccontentId}",
+          "attributes": {
+            "html": "<p>Denied</p>",
+            "plainText": "Denied"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-action"
+    },
+    {
+      "id": "acl-doccontent-update-locked-doc-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/doccontent/{lockedDoccontentId}",
+      "resource": "doccontent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "doccontent",
+          "id": "{lockedDoccontentId}",
+          "attributes": {
+            "html": "<p>Locked</p>",
+            "plainText": "Locked"
+          }
+        }
+      },
+      "expects": { "status": 422, "shape": "error" },
+      "source": "doc-lock"
+    },
+    {
+      "id": "acl-members-doc-lock-by-owner-allowed",
+      "method": "PATCH",
+      "path": "/api/v1/doc/{membersDocId}",
+      "resource": "doc",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "doc",
+          "id": "{membersDocId}",
+          "attributes": {
+            "locked": true
+          }
+        }
+      },
+      "expects": { "status": 200, "shape": "jsonapi.resource" },
+      "source": "doc-lock"
+    },
+    {
+      "id": "acl-members-doc-unlock-by-owner-allowed",
+      "method": "PATCH",
+      "path": "/api/v1/doc/{membersLockedDocId}",
+      "resource": "doc",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "doc",
+          "id": "{membersLockedDocId}",
+          "attributes": {
+            "locked": false
+          }
+        }
+      },
+      "expects": { "status": 200, "shape": "jsonapi.resource" },
+      "source": "doc-lock"
+    },
+    {
+      "id": "acl-members-doc-lock-by-other-editor-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/doc/{docId}",
+      "resource": "doc",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "doc",
+          "id": "{docId}",
+          "attributes": {
+            "locked": true
+          }
+        }
+      },
+      "expects": { "status": 422, "shape": "error" },
+      "source": "doc-lock"
+    },
+    {
+      "id": "acl-members-doc-owner-change-by-other-editor-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/doc/{docId}",
+      "resource": "doc",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "doc",
+          "id": "{docId}",
+          "attributes": {
+            "ownerId": "api-test-user-acl-mem"
+          }
+        }
+      },
+      "expects": { "status": 422, "shape": "error" },
+      "source": "doc-lock"
+    },
+    {
+      "id": "acl-doc-lock-by-project-admin-allowed",
+      "method": "PATCH",
+      "path": "/api/v1/doc/{membersLockedDocId}",
+      "resource": "doc",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "doc",
+          "id": "{membersLockedDocId}",
+          "attributes": {
+            "locked": true
+          }
+        }
+      },
+      "expects": { "status": 200, "shape": "jsonapi.resource" },
+      "source": "doc-lock"
+    },
+    {
+      "id": "acl-doccontent-create-locked-doc-rejected",
+      "method": "POST",
+      "path": "/api/v1/doccontent",
+      "resource": "doccontent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "doccontent",
+          "attributes": {
+            "docId": "{lockedDocId}",
+            "projectId": "{projectId}"
+          }
+        }
+      },
+      "expects": { "status": 422, "shape": "error" },
+      "source": "doc-lock"
+    },
+    {
+      "id": "acl-doccontent-delete-locked-doc-rejected",
+      "method": "DELETE",
+      "path": "/api/v1/doccontent/{lockedDoccontentId}",
+      "resource": "doccontent",
+      "auth": true,
+      "expects": { "status": 409 },
+      "source": "doc-lock"
     }
   ]
 }
