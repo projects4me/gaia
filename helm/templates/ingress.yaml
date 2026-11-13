@@ -5,7 +5,18 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Release.Name }}
+  {{- if and .Values.ingress.tls .Values.ingress.tls.enabled }}
+  annotations:
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.tls.issuer }}
+  {{- end }}
 spec:
+  {{- if and .Values.ingress.tls .Values.ingress.tls.enabled }}
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - {{ .Values.ingress.host }}
+    secretName: {{ .Release.Name }}-tls
+  {{- end }}
   rules:
   - host: {{ .Values.ingress.host }}
     http:

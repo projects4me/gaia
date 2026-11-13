@@ -18,5 +18,7 @@ ingress:
   path: /
   pathType: Prefix
   port: 80
+  tls:
+    enabled: false
 
 resources: {}
