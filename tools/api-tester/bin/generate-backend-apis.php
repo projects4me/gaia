@@ -83,6 +83,7 @@ $fixtureIds = [
     // A count row's id is its room's id.
     'conversationroomcount' => '{conversationroomId}',
     'doc' => '{docId}',
+    'doccontent' => '{doccontentId}',
     'idea' => '{ideaId}',
     'ideamessage' => '{ideamessageId}',
     'ideaplan' => '{ideaplanId}',
@@ -345,6 +346,7 @@ function sampleValue($resource, $name, array $fieldMeta, array $relatedDefaults)
         'userId' => '{userId}',
         'issueId' => '{issueId}',
         'ideaId' => '{ideaId}',
+        'docId' => '{docId}',
         'ideaplanId' => '{ideaplanId}',
         'milestoneId' => '{milestoneId}',
         'roleId' => '{roleId}',

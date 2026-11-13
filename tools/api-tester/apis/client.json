@@ -8030,8 +8030,7 @@
           "attributes": {
             "projectId": "{projectId}",
             "ownerId": "{userId}",
-            "title": "Client doc",
-            "body": "Client doc body"
+            "title": "Client doc"
           }
         }
       },
@@ -8114,6 +8113,122 @@
           200,
           204
         ]
+      }
+    },
+    {
+      "id": "client-doccontent-create",
+      "method": "POST",
+      "path": "/api/v1/doccontent",
+      "resource": "doccontent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "doccontent",
+          "attributes": {
+            "docId": "{contentClientDocId}",
+            "projectId": "{projectId}",
+            "state": "SGVsbG8=",
+            "html": "<p>Hello</p>",
+            "plainText": "Hello"
+          }
+        }
+      },
+      "store": {
+        "runtime.clientDoccontentId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "plainText": "Hello"
+        }
+      }
+    },
+    {
+      "id": "client-doccontent-get-by-doc",
+      "method": "GET",
+      "path": "/api/v1/doccontent",
+      "resource": "doccontent",
+      "auth": true,
+      "query": {
+        "query": "((Doccontent.docId : {contentClientDocId}))"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{runtime.clientDoccontentId}"
+        ]
+      }
+    },
+    {
+      "id": "client-doccontent-update",
+      "method": "PATCH",
+      "path": "/api/v1/doccontent/{runtime.clientDoccontentId}",
+      "resource": "doccontent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "doccontent",
+          "id": "{runtime.clientDoccontentId}",
+          "attributes": {
+            "html": "<p>Hello again</p>",
+            "plainText": "Hello again"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "plainText": "Hello again"
+        }
+      }
+    },
+    {
+      "id": "client-doccontent-duplicate-doc-rejected",
+      "method": "POST",
+      "path": "/api/v1/doccontent",
+      "resource": "doccontent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "doccontent",
+          "attributes": {
+            "docId": "{contentClientDocId}",
+            "projectId": "{projectId}",
+            "state": "SGVsbG8=",
+            "html": "<p>Hello</p>",
+            "plainText": "Hello"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "client-doccontent-other-project-doc-rejected",
+      "method": "POST",
+      "path": "/api/v1/doccontent",
+      "resource": "doccontent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "doccontent",
+          "attributes": {
+            "docId": "{otherProjectDocId}",
+            "projectId": "{projectId}",
+            "state": "SGVsbG8=",
+            "html": "<p>Hello</p>",
+            "plainText": "Hello"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
       }
     }
   ]

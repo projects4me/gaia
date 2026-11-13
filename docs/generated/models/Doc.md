@@ -5,7 +5,6 @@
 <a id="fields"></a>
 ## Fields
 
-- body text
 - locked bool(1) required
 - ownerId varchar(36) required
 - projectId varchar(36) required
@@ -15,6 +14,7 @@
 <a id="relationships"></a>
 ## Relationships
 
+- content hasOne -> Doccontent
 - createdBy hasOne -> User
 - modifiedBy hasOne -> User
 - owner hasOne -> User

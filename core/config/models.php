@@ -17,6 +17,7 @@ $config['models'] = [
     'Dashboard',
     'Downloadtoken',
     'Doc',
+    'Doccontent',
     'Idea',
     'Ideamessage',
     'Ideaplan',

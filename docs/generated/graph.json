@@ -777,6 +777,72 @@
       "attributes": {}
     },
     {
+      "id": "action:doccontent.delete",
+      "type": "action",
+      "key": "doccontent.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:doccontent.deleteCollection",
+      "type": "action",
+      "key": "doccontent.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:doccontent.get",
+      "type": "action",
+      "key": "doccontent.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:doccontent.list",
+      "type": "action",
+      "key": "doccontent.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:doccontent.options",
+      "type": "action",
+      "key": "doccontent.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:doccontent.patch",
+      "type": "action",
+      "key": "doccontent.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:doccontent.patchCollection",
+      "type": "action",
+      "key": "doccontent.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:doccontent.post",
+      "type": "action",
+      "key": "doccontent.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:doccontent.put",
+      "type": "action",
+      "key": "doccontent.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:doccontent.putCollection",
+      "type": "action",
+      "key": "doccontent.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:doccontent.related",
+      "type": "action",
+      "key": "doccontent.related",
+      "attributes": {}
+    },
+    {
       "id": "action:download.get",
       "type": "action",
       "key": "download.get",
@@ -3816,6 +3882,18 @@
       }
     },
     {
+      "id": "behaviour:doccontentBehavior",
+      "type": "behaviour",
+      "key": "doccontentBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\doccontentBehavior",
+        "file": "core/mvc/models/behaviors/doccontentBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:encryptPasswordBehavior",
       "type": "behaviour",
       "key": "encryptPasswordBehavior",
@@ -4801,6 +4879,22 @@
       }
     },
     {
+      "id": "case:acl/acl-doccontent-denied-without-project-group",
+      "type": "case",
+      "key": "acl/acl-doccontent-denied-without-project-group",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/doccontent",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-field-default-select-keeps-structural-projectId",
       "type": "case",
       "key": "acl/acl-field-default-select-keeps-structural-projectId",
@@ -5441,6 +5535,61 @@
         "placeholders": [
           "docId",
           "otherProjectDocId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-doccontent-detail-member-allowed",
+      "type": "case",
+      "key": "acl/acl-members-doccontent-detail-member-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/doccontent/{doccontentId}",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "doccontentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-doccontent-detail-non-member-denied",
+      "type": "case",
+      "key": "acl/acl-members-doccontent-detail-non-member-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/doccontent/{otherProjectDoccontentId}",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectDoccontentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-doccontent-list-member-only",
+      "type": "case",
+      "key": "acl/acl-members-doccontent-list-member-only",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/doccontent",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "doccontentId",
+          "otherProjectDoccontentId"
         ],
         "stores": []
       }
@@ -8141,6 +8290,24 @@
       }
     },
     {
+      "id": "case:backend/delete-doccontent-api-v1-doccontent-runtime-id",
+      "type": "case",
+      "key": "backend/delete-doccontent-api-v1-doccontent-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "DELETE",
+        "path": "/api/v1/doccontent/{runtime.doccontentId}",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.doccontentId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-idea-api-v1-idea-runtime-id",
       "type": "case",
       "key": "backend/delete-idea-api-v1-idea-runtime-id",
@@ -9083,6 +9250,58 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.docId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-doccontent-api-v1-doccontent",
+      "type": "case",
+      "key": "backend/get-doccontent-api-v1-doccontent",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/doccontent",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-doccontent-api-v1-doccontent-id",
+      "type": "case",
+      "key": "backend/get-doccontent-api-v1-doccontent-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/doccontent/{doccontentId}",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "doccontentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-doccontent-api-v1-doccontent-runtime-id",
+      "type": "case",
+      "key": "backend/get-doccontent-api-v1-doccontent-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/doccontent/{runtime.doccontentId}",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.doccontentId"
         ],
         "stores": []
       }
@@ -11560,6 +11779,27 @@
       }
     },
     {
+      "id": "case:backend/post-doccontent-api-v1-doccontent",
+      "type": "case",
+      "key": "backend/post-doccontent-api-v1-doccontent",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/doccontent",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "docId",
+          "projectId"
+        ],
+        "stores": [
+          "runtime.doccontentId"
+        ]
+      }
+    },
+    {
       "id": "case:backend/post-idea-api-v1-idea",
       "type": "case",
       "key": "backend/post-idea-api-v1-idea",
@@ -12662,6 +12902,102 @@
         "placeholders": [
           "projectId",
           "runtime.clientDocId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-doccontent-create",
+      "type": "case",
+      "key": "client/client-doccontent-create",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/doccontent",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "contentClientDocId",
+          "projectId"
+        ],
+        "stores": [
+          "runtime.clientDoccontentId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/client-doccontent-duplicate-doc-rejected",
+      "type": "case",
+      "key": "client/client-doccontent-duplicate-doc-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/doccontent",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "contentClientDocId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-doccontent-get-by-doc",
+      "type": "case",
+      "key": "client/client-doccontent-get-by-doc",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/doccontent",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "contentClientDocId",
+          "runtime.clientDoccontentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-doccontent-other-project-doc-rejected",
+      "type": "case",
+      "key": "client/client-doccontent-other-project-doc-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/doccontent",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectDocId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-doccontent-update",
+      "type": "case",
+      "key": "client/client-doccontent-update",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/doccontent/{runtime.clientDoccontentId}",
+        "resource": "doccontent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.clientDoccontentId"
         ],
         "stores": []
       }
@@ -21326,6 +21662,17 @@
       }
     },
     {
+      "id": "controller:doccontent",
+      "type": "controller",
+      "key": "doccontent",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\DoccontentController",
+        "file": "app/api/v1/controllers/DoccontentController.php",
+        "extends": "RestController"
+      }
+    },
+    {
       "id": "controller:download",
       "type": "controller",
       "key": "download",
@@ -23716,16 +24063,6 @@
       }
     },
     {
-      "id": "field:Doc.body",
-      "type": "field",
-      "key": "Doc.body",
-      "attributes": {
-        "label": "LBL_DOC_BODY",
-        "type": "text",
-        "null": true
-      }
-    },
-    {
       "id": "field:Doc.createdUser",
       "type": "field",
       "key": "Doc.createdUser",
@@ -23862,6 +24199,163 @@
         "type": "varchar",
         "length": "255",
         "null": false
+      }
+    },
+    {
+      "id": "field:Doccontent.byteSize",
+      "type": "field",
+      "key": "Doccontent.byteSize",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_BYTE_SIZE",
+        "type": "int",
+        "null": false,
+        "default": 0
+      }
+    },
+    {
+      "id": "field:Doccontent.createdUser",
+      "type": "field",
+      "key": "Doccontent.createdUser",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Doccontent.createdUserName",
+      "type": "field",
+      "key": "Doccontent.createdUserName",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Doccontent.dateCreated",
+      "type": "field",
+      "key": "Doccontent.dateCreated",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Doccontent.dateModified",
+      "type": "field",
+      "key": "Doccontent.dateModified",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Doccontent.deleted",
+      "type": "field",
+      "key": "Doccontent.deleted",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Doccontent.docId",
+      "type": "field",
+      "key": "Doccontent.docId",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_DOC",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Doccontent.html",
+      "type": "field",
+      "key": "Doccontent.html",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_HTML",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Doccontent.id",
+      "type": "field",
+      "key": "Doccontent.id",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Doccontent.modifiedUser",
+      "type": "field",
+      "key": "Doccontent.modifiedUser",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Doccontent.modifiedUserName",
+      "type": "field",
+      "key": "Doccontent.modifiedUserName",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Doccontent.plainText",
+      "type": "field",
+      "key": "Doccontent.plainText",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_PLAIN_TEXT",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Doccontent.projectId",
+      "type": "field",
+      "key": "Doccontent.projectId",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_PROJECT",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Doccontent.state",
+      "type": "field",
+      "key": "Doccontent.state",
+      "attributes": {
+        "label": "LBL_DOCCONTENT_STATE",
+        "type": "text",
+        "null": true
       }
     },
     {
@@ -31780,6 +32274,14 @@
       }
     },
     {
+      "id": "fixture:contentClientDocId",
+      "type": "fixture",
+      "key": "contentClientDocId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:conversationroomId",
       "type": "fixture",
       "key": "conversationroomId",
@@ -31807,6 +32309,22 @@
       "id": "fixture:docId",
       "type": "fixture",
       "key": "docId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:doccontentDocId",
+      "type": "fixture",
+      "key": "doccontentDocId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:doccontentId",
+      "type": "fixture",
+      "key": "doccontentId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -31967,6 +32485,14 @@
       "id": "fixture:otherProjectDocId",
       "type": "fixture",
       "key": "otherProjectDocId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:otherProjectDoccontentId",
+      "type": "fixture",
+      "key": "otherProjectDoccontentId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -32588,6 +33114,26 @@
       "attributes": {
         "file": "app/metadata/model/Doc.php",
         "tableName": "doc",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": {
+          "groups": [
+            "Project"
+          ],
+          "groupKeys": {
+            "Project": "projectId"
+          }
+        }
+      }
+    },
+    {
+      "id": "model:Doccontent",
+      "type": "model",
+      "key": "Doccontent",
+      "attributes": {
+        "file": "app/metadata/model/Doccontent.php",
+        "tableName": "doccontent",
         "isView": false,
         "registered": true,
         "hasMetadata": true,
@@ -34074,6 +34620,42 @@
       "id": "permission:doc.update",
       "type": "permission",
       "key": "doc.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:doccontent.create",
+      "type": "permission",
+      "key": "doccontent.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:doccontent.delete",
+      "type": "permission",
+      "key": "doccontent.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:doccontent.get",
+      "type": "permission",
+      "key": "doccontent.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:doccontent.update",
+      "type": "permission",
+      "key": "doccontent.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -36377,6 +36959,16 @@
       }
     },
     {
+      "id": "relationship:Doc.content",
+      "type": "relationship",
+      "key": "Doc.content",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "id",
+        "relatedKey": "docId"
+      }
+    },
+    {
       "id": "relationship:Doc.createdBy",
       "type": "relationship",
       "key": "Doc.createdBy",
@@ -36438,6 +37030,46 @@
         "primaryKey": "id",
         "relatedKey": "relatedId",
         "condition": "tagged.relatedTo = \"doc\""
+      }
+    },
+    {
+      "id": "relationship:Doccontent.createdBy",
+      "type": "relationship",
+      "key": "Doccontent.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Doccontent.doc",
+      "type": "relationship",
+      "key": "Doccontent.doc",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "docId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Doccontent.modifiedBy",
+      "type": "relationship",
+      "key": "Doccontent.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Doccontent.project",
+      "type": "relationship",
+      "key": "Doccontent.project",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "projectId",
+        "relatedKey": "id"
       }
     },
     {
@@ -38501,6 +39133,30 @@
       }
     },
     {
+      "id": "route:DELETE /api/v1/doccontent",
+      "type": "route",
+      "key": "DELETE /api/v1/doccontent",
+      "attributes": {
+        "type": "rest",
+        "name": "doccontent",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/doccontent"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/doccontent/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/doccontent/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "doccontent",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/doccontent/{id}"
+      }
+    },
+    {
       "id": "route:DELETE /api/v1/idea",
       "type": "route",
       "key": "DELETE /api/v1/idea",
@@ -39758,6 +40414,42 @@
         "version": "v1",
         "method": "GET",
         "path": "/api/v1/doc/{id}/{relation}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/doccontent",
+      "type": "route",
+      "key": "GET /api/v1/doccontent",
+      "attributes": {
+        "type": "rest",
+        "name": "doccontent",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/doccontent"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/doccontent/{id}",
+      "type": "route",
+      "key": "GET /api/v1/doccontent/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "doccontent",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/doccontent/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/doccontent/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/doccontent/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "doccontent",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/doccontent/{id}/{relation}"
       }
     },
     {
@@ -41609,6 +42301,18 @@
       }
     },
     {
+      "id": "route:OPTIONS /api/v1/doccontent",
+      "type": "route",
+      "key": "OPTIONS /api/v1/doccontent",
+      "attributes": {
+        "type": "rest",
+        "name": "doccontent",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/doccontent"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/forgetpassword",
       "type": "route",
       "key": "OPTIONS /api/v1/forgetpassword",
@@ -42494,6 +43198,30 @@
         "version": "v1",
         "method": "PATCH",
         "path": "/api/v1/doc/{id}"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/doccontent",
+      "type": "route",
+      "key": "PATCH /api/v1/doccontent",
+      "attributes": {
+        "type": "rest",
+        "name": "doccontent",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/doccontent"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/doccontent/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/doccontent/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "doccontent",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/doccontent/{id}"
       }
     },
     {
@@ -43541,6 +44269,18 @@
       }
     },
     {
+      "id": "route:POST /api/v1/doccontent",
+      "type": "route",
+      "key": "POST /api/v1/doccontent",
+      "attributes": {
+        "type": "rest",
+        "name": "doccontent",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/doccontent"
+      }
+    },
+    {
       "id": "route:POST /api/v1/forgetpassword",
       "type": "route",
       "key": "POST /api/v1/forgetpassword",
@@ -44306,6 +45046,30 @@
         "version": "v1",
         "method": "PUT",
         "path": "/api/v1/doc/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/doccontent",
+      "type": "route",
+      "key": "PUT /api/v1/doccontent",
+      "attributes": {
+        "type": "rest",
+        "name": "doccontent",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/doccontent"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/doccontent/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/doccontent/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "doccontent",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/doccontent/{id}"
       }
     },
     {
@@ -45547,6 +46311,46 @@
       "from": "action:doc.related",
       "type": "requires",
       "to": "permission:doc.get"
+    },
+    {
+      "from": "action:doccontent.delete",
+      "type": "requires",
+      "to": "permission:doccontent.delete"
+    },
+    {
+      "from": "action:doccontent.get",
+      "type": "requires",
+      "to": "permission:doccontent.get"
+    },
+    {
+      "from": "action:doccontent.list",
+      "type": "requires",
+      "to": "permission:doccontent.get"
+    },
+    {
+      "from": "action:doccontent.patch",
+      "type": "requires",
+      "to": "permission:doccontent.update"
+    },
+    {
+      "from": "action:doccontent.patchCollection",
+      "type": "requires",
+      "to": "permission:doccontent.update"
+    },
+    {
+      "from": "action:doccontent.post",
+      "type": "requires",
+      "to": "permission:doccontent.create"
+    },
+    {
+      "from": "action:doccontent.put",
+      "type": "requires",
+      "to": "permission:doccontent.update"
+    },
+    {
+      "from": "action:doccontent.related",
+      "type": "requires",
+      "to": "permission:doccontent.get"
     },
     {
       "from": "action:forgetpassword.get",
@@ -48669,6 +49473,36 @@
       "to": "profile:aclNoProject"
     },
     {
+      "from": "case:acl/acl-doccontent-denied-without-project-group",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-doccontent-denied-without-project-group",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-doccontent-denied-without-project-group",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-doccontent-denied-without-project-group",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:acl/acl-doccontent-denied-without-project-group",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doccontent"
+    },
+    {
+      "from": "case:acl/acl-doccontent-denied-without-project-group",
+      "type": "runs_as",
+      "to": "profile:aclNoProject"
+    },
+    {
       "from": "case:acl/acl-field-default-select-keeps-structural-projectId",
       "type": "asserts",
       "to": "assertion:attributesPresent"
@@ -49922,6 +50756,121 @@
       "from": "case:acl/acl-members-doc-list-member-only",
       "type": "uses_fixture",
       "to": "fixture:otherProjectDocId"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-member-allowed",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-member-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-member-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-member-allowed",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-member-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doccontent/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-member-allowed",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-member-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:doccontentId"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-non-member-denied",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-non-member-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doccontent/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-non-member-denied",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-detail-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectDoccontentId"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-list-member-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-list-member-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-list-member-only",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-list-member-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doccontent"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-list-member-only",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:doccontentId"
+    },
+    {
+      "from": "case:acl/acl-members-doccontent-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectDoccontentId"
     },
     {
       "from": "case:acl/acl-members-idea-create-non-member-project-denied",
@@ -55024,6 +55973,36 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/delete-doccontent-api-v1-doccontent-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/delete-doccontent-api-v1-doccontent-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/delete-doccontent-api-v1-doccontent-runtime-id",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:backend/delete-doccontent-api-v1-doccontent-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-doccontent-api-v1-doccontent"
+    },
+    {
+      "from": "case:backend/delete-doccontent-api-v1-doccontent-runtime-id",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/doccontent/{id}"
+    },
+    {
+      "from": "case:backend/delete-doccontent-api-v1-doccontent-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/delete-idea-api-v1-idea-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -56650,6 +57629,101 @@
     },
     {
       "from": "case:backend/get-doc-api-v1-doc-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doccontent"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-id",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doccontent/{id}"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-id",
+      "type": "uses_fixture",
+      "to": "fixture:doccontentId"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-runtime-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-runtime-id",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-doccontent-api-v1-doccontent"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-runtime-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doccontent/{id}"
+    },
+    {
+      "from": "case:backend/get-doccontent-api-v1-doccontent-runtime-id",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -61069,6 +62143,41 @@
       "to": "fixture:projectId"
     },
     {
+      "from": "case:backend/post-doccontent-api-v1-doccontent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-doccontent-api-v1-doccontent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-doccontent-api-v1-doccontent",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:backend/post-doccontent-api-v1-doccontent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/doccontent"
+    },
+    {
+      "from": "case:backend/post-doccontent-api-v1-doccontent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-doccontent-api-v1-doccontent",
+      "type": "uses_fixture",
+      "to": "fixture:docId"
+    },
+    {
+      "from": "case:backend/post-doccontent-api-v1-doccontent",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
       "from": "case:backend/post-idea-api-v1-idea",
       "type": "asserts",
       "to": "assertion:shape"
@@ -62927,6 +64036,191 @@
       "from": "case:client/client-doc-list-by-project",
       "type": "uses_fixture",
       "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-doccontent-create",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-doccontent-create",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-doccontent-create",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-doccontent-create",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:client/client-doccontent-create",
+      "type": "exercises",
+      "to": "route:POST /api/v1/doccontent"
+    },
+    {
+      "from": "case:client/client-doccontent-create",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-doccontent-create",
+      "type": "uses_fixture",
+      "to": "fixture:contentClientDocId"
+    },
+    {
+      "from": "case:client/client-doccontent-create",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-doccontent-duplicate-doc-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-doccontent-duplicate-doc-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-doccontent-duplicate-doc-rejected",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:client/client-doccontent-duplicate-doc-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/doccontent"
+    },
+    {
+      "from": "case:client/client-doccontent-duplicate-doc-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-doccontent-duplicate-doc-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:contentClientDocId"
+    },
+    {
+      "from": "case:client/client-doccontent-duplicate-doc-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-doccontent-get-by-doc",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/client-doccontent-get-by-doc",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-doccontent-get-by-doc",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-doccontent-get-by-doc",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:client/client-doccontent-get-by-doc",
+      "type": "depends_on",
+      "to": "case:client/client-doccontent-create"
+    },
+    {
+      "from": "case:client/client-doccontent-get-by-doc",
+      "type": "exercises",
+      "to": "route:GET /api/v1/doccontent"
+    },
+    {
+      "from": "case:client/client-doccontent-get-by-doc",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-doccontent-get-by-doc",
+      "type": "uses_fixture",
+      "to": "fixture:contentClientDocId"
+    },
+    {
+      "from": "case:client/client-doccontent-other-project-doc-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-doccontent-other-project-doc-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-doccontent-other-project-doc-rejected",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:client/client-doccontent-other-project-doc-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/doccontent"
+    },
+    {
+      "from": "case:client/client-doccontent-other-project-doc-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-doccontent-other-project-doc-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectDocId"
+    },
+    {
+      "from": "case:client/client-doccontent-other-project-doc-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-doccontent-update",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-doccontent-update",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-doccontent-update",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-doccontent-update",
+      "type": "covers",
+      "to": "controller:doccontent"
+    },
+    {
+      "from": "case:client/client-doccontent-update",
+      "type": "depends_on",
+      "to": "case:client/client-doccontent-create"
+    },
+    {
+      "from": "case:client/client-doccontent-update",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/doccontent/{id}"
+    },
+    {
+      "from": "case:client/client-doccontent-update",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/client-idea-create",
@@ -77949,6 +79243,66 @@
       "to": "model:Doc"
     },
     {
+      "from": "controller:doccontent",
+      "type": "has_action",
+      "to": "action:doccontent.delete"
+    },
+    {
+      "from": "controller:doccontent",
+      "type": "has_action",
+      "to": "action:doccontent.deleteCollection"
+    },
+    {
+      "from": "controller:doccontent",
+      "type": "has_action",
+      "to": "action:doccontent.get"
+    },
+    {
+      "from": "controller:doccontent",
+      "type": "has_action",
+      "to": "action:doccontent.list"
+    },
+    {
+      "from": "controller:doccontent",
+      "type": "has_action",
+      "to": "action:doccontent.options"
+    },
+    {
+      "from": "controller:doccontent",
+      "type": "has_action",
+      "to": "action:doccontent.patch"
+    },
+    {
+      "from": "controller:doccontent",
+      "type": "has_action",
+      "to": "action:doccontent.patchCollection"
+    },
+    {
+      "from": "controller:doccontent",
+      "type": "has_action",
+      "to": "action:doccontent.post"
+    },
+    {
+      "from": "controller:doccontent",
+      "type": "has_action",
+      "to": "action:doccontent.put"
+    },
+    {
+      "from": "controller:doccontent",
+      "type": "has_action",
+      "to": "action:doccontent.putCollection"
+    },
+    {
+      "from": "controller:doccontent",
+      "type": "has_action",
+      "to": "action:doccontent.related"
+    },
+    {
+      "from": "controller:doccontent",
+      "type": "serves",
+      "to": "model:Doccontent"
+    },
+    {
       "from": "controller:download",
       "type": "has_action",
       "to": "action:download.get"
@@ -80694,6 +82048,16 @@
       "to": "field:Doc.modifiedUser"
     },
     {
+      "from": "field:Doccontent.createdUserName",
+      "type": "linked_to",
+      "to": "field:Doccontent.createdUser"
+    },
+    {
+      "from": "field:Doccontent.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Doccontent.modifiedUser"
+    },
+    {
       "from": "field:Idea.createdUserName",
       "type": "linked_to",
       "to": "field:Idea.createdUser"
@@ -82436,11 +83800,6 @@
     {
       "from": "model:Doc",
       "type": "has_field",
-      "to": "field:Doc.body"
-    },
-    {
-      "from": "model:Doc",
-      "type": "has_field",
       "to": "field:Doc.createdUser"
     },
     {
@@ -82501,6 +83860,11 @@
     {
       "from": "model:Doc",
       "type": "has_relationship",
+      "to": "relationship:Doc.content"
+    },
+    {
+      "from": "model:Doc",
+      "type": "has_relationship",
       "to": "relationship:Doc.createdBy"
     },
     {
@@ -82555,6 +83919,126 @@
     },
     {
       "from": "model:Doc",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.byteSize"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.createdUser"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.createdUserName"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.dateCreated"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.dateModified"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.deleted"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.docId"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.html"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.id"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.modifiedUser"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.modifiedUserName"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.plainText"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.projectId"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_field",
+      "to": "field:Doccontent.state"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_relationship",
+      "to": "relationship:Doccontent.createdBy"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_relationship",
+      "to": "relationship:Doccontent.doc"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_relationship",
+      "to": "relationship:Doccontent.modifiedBy"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "has_relationship",
+      "to": "relationship:Doccontent.project"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "uses_behaviour",
+      "to": "behaviour:doccontentBehavior"
+    },
+    {
+      "from": "model:Doccontent",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Doccontent",
       "type": "uses_behaviour",
       "to": "behaviour:softDeleteBehavior"
     },
@@ -88511,6 +89995,16 @@
     {
       "from": "profile:aclMembers",
       "type": "grants",
+      "to": "permission:doccontent.create"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:doccontent.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
       "to": "permission:idea.create"
     },
     {
@@ -89157,6 +90651,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:doc.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:doccontent.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:doccontent.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:doccontent.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:doccontent.update"
     },
     {
       "from": "profile:default",
@@ -90149,6 +91663,11 @@
       "to": "model:User"
     },
     {
+      "from": "relationship:Doc.content",
+      "type": "targets",
+      "to": "model:Doccontent"
+    },
+    {
       "from": "relationship:Doc.createdBy",
       "type": "targets",
       "to": "model:User"
@@ -90182,6 +91701,26 @@
       "from": "relationship:Doc.tagged",
       "type": "targets",
       "to": "model:Tagged"
+    },
+    {
+      "from": "relationship:Doccontent.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Doccontent.doc",
+      "type": "targets",
+      "to": "model:Doc"
+    },
+    {
+      "from": "relationship:Doccontent.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Doccontent.project",
+      "type": "targets",
+      "to": "model:Project"
     },
     {
       "from": "relationship:Downloadtoken.issueUpload",
@@ -91204,6 +92743,16 @@
       "to": "action:doc.delete"
     },
     {
+      "from": "route:DELETE /api/v1/doccontent",
+      "type": "handled_by",
+      "to": "action:doccontent.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/doccontent/{id}",
+      "type": "handled_by",
+      "to": "action:doccontent.delete"
+    },
+    {
       "from": "route:DELETE /api/v1/idea",
       "type": "handled_by",
       "to": "action:idea.deleteCollection"
@@ -91727,6 +93276,21 @@
       "from": "route:GET /api/v1/doc/{id}/{relation}",
       "type": "handled_by",
       "to": "action:doc.related"
+    },
+    {
+      "from": "route:GET /api/v1/doccontent",
+      "type": "handled_by",
+      "to": "action:doccontent.list"
+    },
+    {
+      "from": "route:GET /api/v1/doccontent/{id}",
+      "type": "handled_by",
+      "to": "action:doccontent.get"
+    },
+    {
+      "from": "route:GET /api/v1/doccontent/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:doccontent.related"
     },
     {
       "from": "route:GET /api/v1/forgetpassword",
@@ -92499,6 +94063,11 @@
       "to": "action:doc.options"
     },
     {
+      "from": "route:OPTIONS /api/v1/doccontent",
+      "type": "handled_by",
+      "to": "action:doccontent.options"
+    },
+    {
       "from": "route:OPTIONS /api/v1/forgetpassword",
       "type": "handled_by",
       "to": "action:forgetpassword.options"
@@ -92867,6 +94436,16 @@
       "from": "route:PATCH /api/v1/doc/{id}",
       "type": "handled_by",
       "to": "action:doc.patch"
+    },
+    {
+      "from": "route:PATCH /api/v1/doccontent",
+      "type": "handled_by",
+      "to": "action:doccontent.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/doccontent/{id}",
+      "type": "handled_by",
+      "to": "action:doccontent.patch"
     },
     {
       "from": "route:PATCH /api/v1/idea",
@@ -93304,6 +94883,11 @@
       "to": "action:doc.post"
     },
     {
+      "from": "route:POST /api/v1/doccontent",
+      "type": "handled_by",
+      "to": "action:doccontent.post"
+    },
+    {
       "from": "route:POST /api/v1/forgetpassword",
       "type": "handled_by",
       "to": "action:forgetpassword.post"
@@ -93622,6 +95206,16 @@
       "from": "route:PUT /api/v1/doc/{id}",
       "type": "handled_by",
       "to": "action:doc.put"
+    },
+    {
+      "from": "route:PUT /api/v1/doccontent",
+      "type": "handled_by",
+      "to": "action:doccontent.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/doccontent/{id}",
+      "type": "handled_by",
+      "to": "action:doccontent.put"
     },
     {
       "from": "route:PUT /api/v1/idea",

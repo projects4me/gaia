@@ -30,12 +30,6 @@ $models['Doc'] = array(
             'length' => '255',
             'null' => false,
         ),
-        'body' => array(
-            'name' => 'body',
-            'label' => 'LBL_DOC_BODY',
-            'type' => 'text',
-            'null' => true,
-        ),
         'ownerId' => array(
             'name' => 'ownerId',
             'label' => 'LBL_DOC_OWNER',
@@ -139,6 +133,11 @@ $models['Doc'] = array(
                 'primaryKey' => 'modifiedUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
+            ),
+            'content' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Doccontent',
+                'relatedKey' => 'docId'
             ),
         ),
         'hasMany' => array(
