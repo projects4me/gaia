@@ -31,6 +31,8 @@ require_once(APP_PATH . '/core/libs/meta/migration/driver.php');
 require_once APP_PATH . '/core/libs/config.php';
 
 require_once APP_PATH . '/core/libs/utils/executiontime.php';
+require_once APP_PATH . '/core/libs/utils/ServerTiming.php';
+require_once APP_PATH . '/core/libs/utils/ServerTimingRecorder.php';
 require_once(APP_PATH . '/core/libs/utils/utility_functions.php');
 require_once APP_PATH . '/core/libs/utils/Util.php';
 

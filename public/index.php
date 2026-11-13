@@ -115,6 +115,9 @@ try {
             function ($event, $connection) use ($dblogger) {
                 if ($event->getType() == 'beforeQuery') {
                     $GLOBALS['timer']->diff();
+                    if (isset($GLOBALS['serverTiming'])) {
+                        $GLOBALS['serverTiming']->beforeQuery();
+                    }
                     $sqlVariables = $connection->getSQLVariables();
                     if (isset($sqlVariables)) {
                         $dblogger->debug(print_r($connection->getSQLBindTypes(), 1) . ' ' . join(', ', $sqlVariables));
@@ -123,6 +126,9 @@ try {
                     }
                 }
                 if ($event->getType() == 'afterQuery') {
+                    if (isset($GLOBALS['serverTiming'])) {
+                        $GLOBALS['serverTiming']->afterQuery($connection->getSQLStatement());
+                    }
                     $dblogger->debug('Query execution time:' . ($GLOBALS['timer']->diff()) . ' seconds');
                     $dblogger->debug($connection->getSQLStatement());
                 }
@@ -166,6 +172,16 @@ try {
         new \Gaia\Libraries\Config($di)
     );
 
+    // Server-Timing breakdown, only when SERVER_TIMING=1 (see config/servertiming.php)
+    if (($GLOBALS['settings']['servertiming']['enabled'] ?? false) === true) {
+        $serverTiming = new \Gaia\Libraries\Utils\ServerTimingRecorder(
+            $stime,
+            (string) ($GLOBALS['settings']['servertiming']['allowOrigin'] ?? '')
+        );
+        $serverTiming->registerHeaders();
+        $GLOBALS['serverTiming'] = $serverTiming;
+    }
+
     $di->set(
         'dialectFactory',
         new \Gaia\Db\Factory\DialectFactory($di, $GLOBALS['settings']['database']['adapter'])
@@ -207,6 +223,10 @@ try {
      * @todo move the migration away to elsewhere
      */
     // $di->get('migrationDriver')->migrate();
+
+    if (isset($serverTiming)) {
+        $serverTiming->markBooted();
+    }
 
     //Handle the request
     $app = new \Phalcon\Mvc\Application($di);
