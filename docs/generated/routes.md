@@ -209,6 +209,23 @@
 | PUT | /api/v1/doc | rest | doc.putCollection |
 | PUT | /api/v1/doc/{id} | rest | doc.put |
 
+<a id="doccontent"></a>
+## doccontent
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/doccontent | rest | doccontent.deleteCollection |
+| DELETE | /api/v1/doccontent/{id} | rest | doccontent.delete |
+| GET | /api/v1/doccontent | rest | doccontent.list |
+| GET | /api/v1/doccontent/{id} | rest | doccontent.get |
+| GET | /api/v1/doccontent/{id}/{relation} | rest | doccontent.related |
+| OPTIONS | /api/v1/doccontent | rest | doccontent.options |
+| PATCH | /api/v1/doccontent | rest | doccontent.patchCollection |
+| PATCH | /api/v1/doccontent/{id} | rest | doccontent.patch |
+| POST | /api/v1/doccontent | rest | doccontent.post |
+| PUT | /api/v1/doccontent | rest | doccontent.putCollection |
+| PUT | /api/v1/doccontent/{id} | rest | doccontent.put |
+
 <a id="download"></a>
 ## download
 

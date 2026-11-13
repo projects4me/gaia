@@ -2950,6 +2950,44 @@
       "query": { "limit": 5, "page": 1 },
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
+    },
+    {
+      "id": "acl-doccontent-denied-without-project-group",
+      "method": "GET",
+      "path": "/api/v1/doccontent",
+      "resource": "doccontent",
+      "auth": "aclNoProject",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-doccontent-list-member-only",
+      "method": "GET",
+      "path": "/api/v1/doccontent",
+      "resource": "doccontent",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{doccontentId}"], "idsExcludes": ["{otherProjectDoccontentId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-doccontent-detail-member-allowed",
+      "method": "GET",
+      "path": "/api/v1/doccontent/{doccontentId}",
+      "resource": "doccontent",
+      "auth": "aclMembers",
+      "expects": { "status": 200, "shape": "jsonapi.resource", "idsIncludes": ["{doccontentId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-doccontent-detail-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/doccontent/{otherProjectDoccontentId}",
+      "resource": "doccontent",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
     }
   ]
 }

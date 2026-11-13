@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 237,
-        "enabled": 216,
+        "total": 242,
+        "enabled": 221,
         "disabled": 21,
-        "routeResources": 65,
-        "withMetadata": 50,
+        "routeResources": 66,
+        "withMetadata": 51,
         "skippedResources": 13
     },
     "apis": [
@@ -555,6 +555,91 @@
             "method": "DELETE",
             "path": "/api/v1/doc/{runtime.docId}",
             "resource": "doc",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-doccontent-api-v1-doccontent",
+            "method": "GET",
+            "path": "/api/v1/doccontent",
+            "resource": "doccontent",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-doccontent-api-v1-doccontent-id",
+            "method": "GET",
+            "path": "/api/v1/doccontent/{doccontentId}",
+            "resource": "doccontent",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{doccontentId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-doccontent-api-v1-doccontent",
+            "method": "POST",
+            "path": "/api/v1/doccontent",
+            "resource": "doccontent",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "doccontent",
+                    "attributes": {
+                        "docId": "{docId}",
+                        "projectId": "{projectId}"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.doccontentId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-doccontent-api-v1-doccontent-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/doccontent/{runtime.doccontentId}",
+            "resource": "doccontent",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.doccontentId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-doccontent-api-v1-doccontent-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/doccontent/{runtime.doccontentId}",
+            "resource": "doccontent",
             "auth": true,
             "expects": {
                 "status": [

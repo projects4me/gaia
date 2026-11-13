@@ -490,7 +490,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('doc'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
+    ('systemsetting'), ('userrole'), ('doc'), ('doccontent'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -603,6 +603,8 @@ VALUES
   ('atp-acl-mem-convcount-get', 'api-test-role-acl-mem', 'conversationroomcount.get', 1, NOW(), NOW()),
   ('atp-acl-mem-doc-get', 'api-test-role-acl-mem', 'doc.get', 1, NOW(), NOW()),
   ('atp-acl-mem-doc-create', 'api-test-role-acl-mem', 'doc.create', 1, NOW(), NOW()),
+  ('atp-acl-mem-doccontent-get', 'api-test-role-acl-mem', 'doccontent.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-doccontent-create', 'api-test-role-acl-mem', 'doccontent.create', 1, NOW(), NOW()),
   ('atp-acl-mem-idea-get', 'api-test-role-acl-mem', 'idea.get', 1, NOW(), NOW()),
   ('atp-acl-mem-idea-create', 'api-test-role-acl-mem', 'idea.create', 1, NOW(), NOW()),
   ('atp-acl-mem-ideamessage-get', 'api-test-role-acl-mem', 'ideamessage.get', 1, NOW(), NOW()),
@@ -760,14 +762,30 @@ INSERT INTO votes (
   ('api-test-vote-cnt-03', 0, 'api-test-user-acl-np', 'api-test-user-acl-np', 'API Tester', 'API Tester',
    'conversationrooms', 'api-test-convroom-cnt-vote', NOW(), NOW());
 
--- Docs: one per project so the members scope can be checked
+-- Docs: one per project so the members scope can be checked; 000003 holds seeded content,
+-- 000001 and 000004 have none so the content create cases have a doc to fill
 INSERT INTO doc (
-  id, "projectId", title, body, "ownerId", locked, deleted,
+  id, "projectId", title, "ownerId", locked, deleted,
   "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
 ) VALUES
-  ('api-test-doc-000001', 'api-test-project-001', 'API Tester Doc', 'Seed doc', 'api-test-user-0001', FALSE, FALSE,
+  ('api-test-doc-000001', 'api-test-project-001', 'API Tester Doc', 'api-test-user-0001', FALSE, FALSE,
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
-  ('api-test-doc-000002', 'api-test-project-002', 'API Tester Other Doc', 'Seed doc outside membership', 'api-test-user-0001', FALSE, FALSE,
+  ('api-test-doc-000002', 'api-test-project-002', 'API Tester Other Doc', 'api-test-user-0001', FALSE, FALSE,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-doc-000003', 'api-test-project-001', 'API Tester Doc With Content', 'api-test-user-0001', FALSE, FALSE,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-doc-000004', 'api-test-project-001', 'API Tester Doc For Client Content', 'api-test-user-0001', FALSE, FALSE,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+-- Doc content: one row per doc, one in each project so the members scope can be checked
+INSERT INTO doccontent (
+  id, "docId", "projectId", state, html, "plainText", "byteSize", deleted,
+  "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-doccontent-0001', 'api-test-doc-000003', 'api-test-project-001', 'c2VlZA==', '<p>Seed</p>', 'Seed', 8, FALSE,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-doccontent-0002', 'api-test-doc-000002', 'api-test-project-002', 'c2VlZA==', '<p>Seed</p>', 'Seed', 8, FALSE,
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
@@ -1448,6 +1466,10 @@ data = {
     "commentId": "api-test-comment-000001",
     "docId": "api-test-doc-000001",
     "otherProjectDocId": "api-test-doc-000002",
+    "doccontentDocId": "api-test-doc-000003",
+    "contentClientDocId": "api-test-doc-000004",
+    "doccontentId": "api-test-doccontent-0001",
+    "otherProjectDoccontentId": "api-test-doccontent-0002",
     "ideaId": "api-test-idea-000001",
     "otherProjectIdeaId": "api-test-idea-000002",
     "ideamessageId": "api-test-ideamsg-00001",
