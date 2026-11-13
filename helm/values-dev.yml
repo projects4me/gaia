@@ -18,5 +18,8 @@ ingress:
   path: /
   pathType: Prefix
   port: 80
+  tls:
+    enabled: true
+    issuer: letsencrypt
 
 resources: {}
