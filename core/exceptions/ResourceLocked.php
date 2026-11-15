@@ -16,21 +16,20 @@ namespace Gaia\Exception;
  */
 class ResourceLocked extends \Exception
 {
+    use SendsErrorResponse;
+
     /**
-     * This function is used to set and return the http response.
+     * Build the http response without sending it. An empty message leaves the body empty.
      *
+     * @param \Phalcon\Http\Response|null $response the response to build on; a new one when null
      * @return \Phalcon\Http\Response
      */
-    public function handle()
+    public function toResponse(?\Phalcon\Http\Response $response = null): \Phalcon\Http\Response
     {
-        $di = \Phalcon\Di::getDefault();
-        $response = $di->get('response');
-        $response->setStatusCode("423", "Locked");
-        ($this->getMessage()) && $response->setJsonContent([
+        $body = $this->getMessage() ? [
             'error' => "resourceLocked",
             'error_description' => $this->getMessage()
-        ]);
-        $response->send();
-        return $response;
+        ] : null;
+        return ErrorResponse::build(423, 'Locked', $body, [], $response);
     }
 }
