@@ -16,18 +16,17 @@ namespace Gaia\Exception;
  */
 class FileNotFound extends \Exception
 {
+    use SendsErrorResponse;
+
     /**
-     * This function is used to set and return the http response.
-     * 
+     * Build the http response without sending it. An empty message leaves the body empty.
+     *
+     * @param \Phalcon\Http\Response|null $response the response to build on; a new one when null
      * @return \Phalcon\Http\Response
      */
-    public function handle()
+    public function toResponse(?\Phalcon\Http\Response $response = null): \Phalcon\Http\Response
     {
-        $di = \Phalcon\Di::getDefault();
-        $response = $di->get('response');
-        $response->setStatusCode("500", "Internal Server Error");
-        ($this->getMessage()) && $response->setJsonContent(array('error' => $this->getMessage()));
-        $response->send();
-        return $response;
+        $body = $this->getMessage() ? ['error' => $this->getMessage()] : null;
+        return ErrorResponse::build(500, 'Internal Server Error', $body, [], $response);
     }
 }

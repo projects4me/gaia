@@ -16,17 +16,16 @@ namespace Gaia\Exception;
  */
 class Access extends \Exception
 {
+    use SendsErrorResponse;
+
     /**
-     * This function is used to set and return the http response.
-     * 
+     * Build the http response without sending it.
+     *
+     * @param \Phalcon\Http\Response|null $response the response to build on; a new one when null
      * @return \Phalcon\Http\Response
      */
-    public function handle() {
-        $di = \Phalcon\Di::getDefault();
-        $response = $di->get('response');
-        $response->setStatusCode("403", "Forbidden");
-        $response->setJsonContent(array('error' => $this->getMessage()));
-        $response->send();
-        return $response;
+    public function toResponse(?\Phalcon\Http\Response $response = null): \Phalcon\Http\Response
+    {
+        return ErrorResponse::build(403, 'Forbidden', ['error' => $this->getMessage()], [], $response);
     }
 }
