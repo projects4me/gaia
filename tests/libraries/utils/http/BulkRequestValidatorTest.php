@@ -9,6 +9,7 @@ namespace Gaia\Tests\Libraries\Utils\Http;
 use Gaia\Core\MVC\Http\BulkItem;
 use Gaia\Core\MVC\Http\BulkRequestValidator;
 use Gaia\Core\MVC\Http\BulkRoutePolicy;
+use Gaia\Core\MVC\Http\SubRequest;
 use Gaia\Exception\BadRequest;
 use PHPUnit\Framework\TestCase;
 
@@ -60,8 +61,19 @@ class BulkRequestValidatorTest extends TestCase
         }, $items));
         $this->assertSame('/api/v1/issue?query=((Issue.status : new))', $items[0]->url());
         $this->assertSame('POST', $items[1]->method());
-        $this->assertSame($body, $items[1]->body());
+        $this->assertEquals(json_decode(json_encode($body)), $items[1]->body());
         $this->assertNull($items[2]->body());
+    }
+
+    public function testBodyKeepsJsonObjectsApartFromArrays(): void
+    {
+        $body = '{"data":{"type":"issue","attributes":{},"meta":{"0":"a","1":"b"},"tags":[]}}';
+        $rawBody = '{"requests":[{"id":"create","method":"POST","url":"/api/v1/issue","body":' . $body . '}]}';
+
+        $items = $this->validator()->validate($rawBody);
+        $request = SubRequest::fromUrl('POST', $items[0]->url(), $items[0]->body(), '');
+
+        $this->assertSame($body, $request->getRawBody());
     }
 
     /**
@@ -76,6 +88,8 @@ class BulkRequestValidatorTest extends TestCase
             'no requests' => ['{"other": []}', 'requests must be a non-empty array'],
             'empty requests' => ['{"requests": []}', 'requests must be a non-empty array'],
             'requests is an object' => ['{"requests": {"a": ' . json_encode($call) . '}}', 'requests must be a non-empty array'],
+            'requests is a numeric-key object' => ['{"requests": {"0": ' . json_encode($call) . '}}', 'requests must be a non-empty array'],
+            'batch is an array' => ['[' . json_encode(['requests' => [$call]]) . ']', 'requests must be a non-empty array'],
             'too many' => [json_encode(['requests' => [
                 $call, ['id' => 'b'] + $call, ['id' => 'c'] + $call, ['id' => 'd'] + $call,
             ]]), 'at most 3 requests'],

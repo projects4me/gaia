@@ -33,7 +33,7 @@ final class BulkItem
     private $url;
 
     /**
-     * @var array|null
+     * @var array|\stdClass|null
      */
     private $body;
 
@@ -41,9 +41,10 @@ final class BulkItem
      * @param string $id the client's id, unique within the batch
      * @param string $method GET, POST, PATCH or DELETE
      * @param string $url relative /api/v1/... path with an optional query string
-     * @param array|null $body the decoded JSON body; null for none
+     * @param array|\stdClass|null $body the JSON body decoded with objects as
+     *   stdClass (so {} stays apart from []); null for none
      */
-    public function __construct(string $id, string $method, string $url, ?array $body)
+    public function __construct(string $id, string $method, string $url, $body)
     {
         $this->id = $id;
         $this->method = $method;
@@ -76,9 +77,9 @@ final class BulkItem
     }
 
     /**
-     * @return array|null
+     * @return array|\stdClass|null
      */
-    public function body(): ?array
+    public function body()
     {
         return $this->body;
     }

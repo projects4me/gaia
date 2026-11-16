@@ -81,9 +81,12 @@ class BulkRequestValidator
             throw new BadRequest("The bulk request body may not exceed {$this->maxBodyBytes} bytes");
         }
 
-        $batch = json_decode($rawBody, true);
-        $requests = is_array($batch) ? ($batch['requests'] ?? null) : null;
-        if (!is_array($requests) || $requests === [] || array_keys($requests) !== range(0, count($requests) - 1)) {
+        // Decoded with objects kept as stdClass: a JSON array is the only
+        // container that becomes a PHP array, so a numeric-key object is not
+        // mistaken for one, and item bodies keep {} apart from [].
+        $batch = json_decode($rawBody);
+        $requests = $batch instanceof \stdClass ? ($batch->requests ?? null) : null;
+        if (!is_array($requests) || $requests === []) {
             throw new BadRequest('requests must be a non-empty array');
         }
 
@@ -116,21 +119,21 @@ class BulkRequestValidator
     private function item(int $index, $request): BulkItem
     {
         $at = "requests[{$index}]";
-        if (!is_array($request)) {
+        if (!$request instanceof \stdClass) {
             throw new BadRequest("{$at} must be an object");
         }
 
-        $id = $request['id'] ?? null;
+        $id = $request->id ?? null;
         if (!is_string($id) || $id === '') {
             throw new BadRequest("{$at}.id must be a non-empty string");
         }
 
-        $method = $request['method'] ?? null;
+        $method = $request->method ?? null;
         if (!is_string($method) || !in_array($method, self::METHODS, true)) {
             throw new BadRequest("{$at}.method must be one of " . implode(', ', self::METHODS));
         }
 
-        $url = $request['url'] ?? null;
+        $url = $request->url ?? null;
         if (!is_string($url)) {
             throw new BadRequest("{$at}.url must be a string");
         }
@@ -139,8 +142,8 @@ class BulkRequestValidator
             throw new BadRequest("{$at}.url: {$refusal}");
         }
 
-        $body = $request['body'] ?? null;
-        if ($body !== null && !is_array($body)) {
+        $body = $request->body ?? null;
+        if ($body !== null && !is_array($body) && !$body instanceof \stdClass) {
             throw new BadRequest("{$at}.body must be a JSON object, an array or null");
         }
 

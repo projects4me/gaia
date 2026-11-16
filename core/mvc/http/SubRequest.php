@@ -39,7 +39,7 @@ class SubRequest extends \Phalcon\Http\Request implements OAuthRequestSource
     private $query;
 
     /**
-     * @var array|null
+     * @var array|\stdClass|null
      */
     private $body;
 
@@ -52,10 +52,11 @@ class SubRequest extends \Phalcon\Http\Request implements OAuthRequestSource
      * @param string $method HTTP method, any case
      * @param string $path URI path without the query string
      * @param array $query query parameters, as parse_str() gives them
-     * @param array|null $body the decoded JSON body; null for none
+     * @param array|\stdClass|null $body the decoded JSON body (objects as
+     *   stdClass keep {} apart from [] in getRawBody()); null for none
      * @param string $authorization the Authorization header value
      */
-    public function __construct(string $method, string $path, array $query, ?array $body, string $authorization)
+    public function __construct(string $method, string $path, array $query, $body, string $authorization)
     {
         $this->method = strtoupper($method);
         $this->path = $path;
@@ -69,11 +70,11 @@ class SubRequest extends \Phalcon\Http\Request implements OAuthRequestSource
      *
      * @param string $method
      * @param string $url path with an optional query string, e.g. /api/v1/issue?query=...
-     * @param array|null $body
+     * @param array|\stdClass|null $body
      * @param string $authorization
      * @return self
      */
-    public static function fromUrl(string $method, string $url, ?array $body, string $authorization): self
+    public static function fromUrl(string $method, string $url, $body, string $authorization): self
     {
         $path = (string) (parse_url($url, PHP_URL_PATH) ?? '');
         $query = [];
@@ -154,7 +155,9 @@ class SubRequest extends \Phalcon\Http\Request implements OAuthRequestSource
     public function toOAuthRequest(): \OAuth2\Request
     {
         // Same body handling as createFromGlobals() for a JSON request.
-        $parameters = in_array($this->method, ['POST', 'PUT', 'DELETE'], true) ? ($this->body ?? []) : [];
+        $parameters = in_array($this->method, ['POST', 'PUT', 'DELETE'], true)
+            ? ($this->getJsonRawBody(true) ?: [])
+            : [];
 
         return new \OAuth2\Request(
             $this->query,
@@ -234,9 +237,9 @@ class SubRequest extends \Phalcon\Http\Request implements OAuthRequestSource
     /**
      * The decoded body, null when there is none.
      *
-     * @return array|null
+     * @return array|\stdClass|null
      */
-    public function body(): ?array
+    public function body()
     {
         return $this->body;
     }
