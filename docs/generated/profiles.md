@@ -12,10 +12,10 @@
 - aclMembers role ACL Project Members | allow 19, members 1, deny 6 | cases 61 | project.get=2 members scope
 - aclNoConversation role ACL No Conversation | allow 3, members 0, deny 1 | cases 4 | project+comment allowed, conversationroom.get denied
 - aclNoProject role ACL No Project | allow 3, members 0, deny 3 | cases 23 | issue/comment allowed, project.get denied
-- aclNoSetting role ACL No Setting | allow 12, members 0, deny 20 | cases 42 | issuestatus/issuetype allowed, setting.* denied
-- aclProjectOnly role ACL Project Only | allow 5, members 0, deny 2 | cases 6 | project allowed, issue.get denied
+- aclNoSetting role ACL No Setting | allow 12, members 0, deny 21 | cases 43 | issuestatus/issuetype allowed, setting.* denied
+- aclProjectOnly role ACL Project Only | allow 5, members 0, deny 2 | cases 7 | project allowed, issue.get denied
 - aclScopedToken role ACL Agent | allow 27, members 0, deny 1 | cases 8 | ACL Agent
-- anonymous no login | allow 0, members 0, deny 0 | cases 44
-- default role Admin | allow 200, members 0, deny 0 | cases 674 | Admin role of the seeded main user
+- anonymous no login | allow 0, members 0, deny 0 | cases 45
+- default role Admin | allow 200, members 0, deny 0 | cases 680 | Admin role of the seeded main user
 - serviceHermes no login | allow 0, members 0, deny 0 | cases 7
 - serviceRuntime no login | allow 0, members 0, deny 0 | cases 18

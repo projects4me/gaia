@@ -8230,6 +8230,297 @@
         "status": 422,
         "shape": "error"
       }
+    },
+    {
+      "id": "bulk-task-board-batch",
+      "method": "POST",
+      "path": "/api/v1/bulk",
+      "resource": "bulk",
+      "auth": true,
+      "body": {
+        "requests": [
+          {
+            "id": "milestones",
+            "method": "GET",
+            "url": "/api/v1/milestone?query=((Milestone.projectId : {projectId}))&limit=20"
+          },
+          {
+            "id": "lanes",
+            "method": "GET",
+            "url": "/api/v1/issue?query=((Issue.milestoneId : {milestoneId}))&limit=50"
+          },
+          {
+            "id": "statuses",
+            "method": "GET",
+            "url": "/api/v1/issuestatus?limit=50"
+          }
+        ]
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "responses.0.id": "milestones",
+          "responses.0.status": 200,
+          "responses.1.id": "lanes",
+          "responses.1.status": 200,
+          "responses.2.id": "statuses",
+          "responses.2.status": 200
+        }
+      }
+    },
+    {
+      "id": "bulk-write-kept-when-later-item-fails",
+      "method": "POST",
+      "path": "/api/v1/bulk",
+      "resource": "bulk",
+      "auth": true,
+      "body": {
+        "requests": [
+          {
+            "id": "tag",
+            "method": "POST",
+            "url": "/api/v1/tag",
+            "body": {
+              "data": {
+                "type": "tag",
+                "attributes": {
+                  "tag": "api-tester-bulk-tag-{runId}"
+                }
+              }
+            }
+          },
+          {
+            "id": "missing",
+            "method": "GET",
+            "url": "/api/v1/agentspec/api-test-no-such-agent"
+          }
+        ]
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "responses.0.status": 201,
+          "responses.0.body.data.attributes.tag": "api-tester-bulk-tag-{runId}",
+          "responses.1.status": 404
+        }
+      }
+    },
+    {
+      "id": "bulk-write-kept-verify",
+      "method": "GET",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": true,
+      "query": {
+        "query": "((Tag.tag : 'api-tester-bulk-tag-{runId}'))",
+        "limit": 5
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.tag": "api-tester-bulk-tag-{runId}"
+        }
+      },
+      "note": "no rollback: the tag created before the failed item stays"
+    },
+    {
+      "id": "bulk-too-many-requests-rejected",
+      "method": "POST",
+      "path": "/api/v1/bulk",
+      "resource": "bulk",
+      "auth": true,
+      "body": {
+        "requests": [
+          {
+            "id": "p0",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p1",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p2",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p3",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p4",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p5",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p6",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p7",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p8",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p9",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p10",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p11",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p12",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p13",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p14",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p15",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p16",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p17",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p18",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p19",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p20",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p21",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p22",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p23",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p24",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "p25",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          }
+        ]
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "A bulk request may hold at most 25 requests"
+      }
+    },
+    {
+      "id": "bulk-nested-bulk-rejected",
+      "method": "POST",
+      "path": "/api/v1/bulk",
+      "resource": "bulk",
+      "auth": true,
+      "body": {
+        "requests": [
+          {
+            "id": "inner",
+            "method": "POST",
+            "url": "/api/v1/bulk",
+            "body": {
+              "requests": []
+            }
+          }
+        ]
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "requests[0].url: 'bulk' cannot run in a bulk request"
+      }
+    },
+    {
+      "id": "bulk-unknown-route-rejected",
+      "method": "POST",
+      "path": "/api/v1/bulk",
+      "resource": "bulk",
+      "auth": true,
+      "body": {
+        "requests": [
+          {
+            "id": "ok",
+            "method": "GET",
+            "url": "/api/v1/project?limit=1"
+          },
+          {
+            "id": "bad",
+            "method": "GET",
+            "url": "/api/v1/nosuchresource"
+          }
+        ]
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "requests[1].url: '/api/v1/nosuchresource' is not a Gaia REST route"
+      }
     }
   ]
 }
