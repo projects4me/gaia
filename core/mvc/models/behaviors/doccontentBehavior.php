@@ -17,7 +17,8 @@ use Phalcon\Mvc\Model\Behavior;
  * This behavior checks the content row of a doc: the docId must be a doc of the
  * same projectId, and a doc has one content row only (a deleted row counts, so
  * the row is not duplicated; the unique index on docId backs this up against
- * concurrent creates). The size of the state is kept in byteSize.
+ * concurrent creates). The size of the state is kept in byteSize. Content of
+ * a locked doc cannot be created, changed or deleted (Docs D-005).
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
@@ -46,7 +47,20 @@ class doccontentBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeValidationOnCreate($model)
     {
-        return $this->setByteSize($model) && $this->checkDoc($model) && $this->checkUnique($model);
+        return $this->setByteSize($model) && $this->checkDoc($model) && $this->checkUnique($model)
+            && $this->checkUnlocked($model, [$model->docId]);
+    }
+
+    /**
+     * Runs before softDeleteBehavior (listed after this behavior), whose
+     * update of the deleted flag does not cancel the delete when it fails.
+     *
+     * @param  ModelInterface $model
+     * @return bool
+     */
+    protected function beforeDelete($model)
+    {
+        return $this->checkUnlocked($model, [$model->docId]);
     }
 
     /**
@@ -62,6 +76,9 @@ class doccontentBehavior extends Behavior implements BehaviorInterface
             return false;
         }
         $snapshot = $model->getSnapshotData();
+        if (!$this->checkUnlocked($model, [$snapshot['docId'] ?? null, $model->docId])) {
+            return false;
+        }
         if (is_array($snapshot)
             && (string) ($snapshot['docId'] ?? '') === (string) $model->docId
             && (string) ($snapshot['projectId'] ?? '') === (string) $model->projectId
@@ -131,6 +148,44 @@ class doccontentBehavior extends Behavior implements BehaviorInterface
         }
 
         return true;
+    }
+
+    /**
+     * Reject the save while any of the given docs is locked.
+     *
+     * @param  ModelInterface $model
+     * @param  array          $docIds The stored and the new docId
+     * @return bool
+     */
+    protected function checkUnlocked($model, array $docIds)
+    {
+        $docIds = array_values(array_unique(array_filter(array_map('strval', $docIds), 'strlen')));
+        if (!empty($docIds) && $this->isAnyDocLocked($docIds)) {
+            return $this->reject($model, 'docId', 'The doc is locked; its content cannot be changed.');
+        }
+
+        return true;
+    }
+
+    /**
+     * Whether any of the docs is locked.
+     *
+     * @param  array $docIds
+     * @return bool
+     */
+    protected function isAnyDocLocked(array $docIds)
+    {
+        $docs = Doc::find([
+            'conditions' => 'id IN ({docIds:array})',
+            'bind' => ['docIds' => $docIds],
+        ]);
+        foreach ($docs as $doc) {
+            if (docBehavior::isLocked($doc->locked)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

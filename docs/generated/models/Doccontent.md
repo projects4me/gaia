@@ -29,4 +29,4 @@
 - controller: Gaia\MVC\REST\Controllers\DoccontentController
 - routes: DELETE /api/v1/doccontent, DELETE /api/v1/doccontent/{id}, GET /api/v1/doccontent, GET /api/v1/doccontent/{id}, GET /api/v1/doccontent/{id}/{relation}, OPTIONS /api/v1/doccontent, PATCH /api/v1/doccontent, PATCH /api/v1/doccontent/{id}, POST /api/v1/doccontent, PUT /api/v1/doccontent, PUT /api/v1/doccontent/{id}
 - components: -
-- cases: 14 (acl 4, backend 5, client 5); gaia-dev cases doccontent
+- cases: 18 (acl 8, backend 5, client 5); gaia-dev cases doccontent

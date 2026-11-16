@@ -12,7 +12,8 @@ use Phalcon\Mvc\ModelInterface;
 
 /**
  * Unit tests for doccontentBehavior: the doc must be of the content's project,
- * a doc has one content row, and byteSize follows the state.
+ * a doc has one content row, byteSize follows the state, and the content of a
+ * locked doc cannot be written.
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Gaia\Tests
@@ -106,17 +107,90 @@ class DoccontentBehaviorTest extends TestCase
     }
 
     /**
+     * Content cannot be created for a locked doc.
+     *
+     * @return void
+     */
+    public function testCreateRejectsContentOfALockedDoc()
+    {
+        $behavior = $this->behavior(true, true, true);
+        $model = $this->model('x');
+        $model->expects($this->once())->method('appendMessage');
+
+        $this->assertFalse($behavior->notify('beforeValidationOnCreate', $model));
+    }
+
+    /**
+     * Content of a locked doc cannot be changed, even when only the derived
+     * copies are sent.
+     *
+     * @return void
+     */
+    public function testUpdateRejectsContentOfALockedDoc()
+    {
+        $behavior = $this->behavior(true, true, true);
+        $behavior->expects($this->once())->method('isAnyDocLocked')->with(['doc-1']);
+        $model = $this->model('x');
+        $model->method('getSnapshotData')->willReturn(['docId' => 'doc-1', 'projectId' => 'project-1']);
+
+        $this->assertFalse($behavior->notify('beforeValidationOnUpdate', $model));
+    }
+
+    /**
+     * Moving content checks the lock of both the stored and the new doc.
+     *
+     * @return void
+     */
+    public function testUpdateChecksTheLockOfTheStoredAndTheNewDoc()
+    {
+        $behavior = $this->behavior(true, true, false);
+        $behavior->expects($this->once())->method('isAnyDocLocked')->with(['doc-0', 'doc-1']);
+        $model = $this->model('x');
+        $model->method('getSnapshotData')->willReturn(['docId' => 'doc-0', 'projectId' => 'project-1']);
+
+        $this->assertTrue($behavior->notify('beforeValidationOnUpdate', $model));
+    }
+
+    /**
+     * Content of a locked doc cannot be deleted; the check runs before the
+     * soft delete, whose own update failure would not cancel the delete.
+     *
+     * @return void
+     */
+    public function testDeleteRejectsContentOfALockedDoc()
+    {
+        $behavior = $this->behavior(true, true, true);
+        $behavior->expects($this->once())->method('isAnyDocLocked')->with(['doc-1']);
+        $model = $this->model('x');
+        $model->expects($this->once())->method('appendMessage');
+
+        $this->assertFalse($behavior->notify('beforeDelete', $model));
+    }
+
+    /**
+     * Content of an unlocked doc may be deleted.
+     *
+     * @return void
+     */
+    public function testDeleteAllowsContentOfAnUnlockedDoc()
+    {
+        $this->assertTrue($this->behavior(true, true, false)->notify('beforeDelete', $this->model('x')));
+    }
+
+    /**
      * @param  bool $docOk
      * @param  bool $uniqueOk
+     * @param  bool $locked
      * @return doccontentBehavior
      */
-    private function behavior($docOk, $uniqueOk)
+    private function behavior($docOk, $uniqueOk, $locked = false)
     {
         $behavior = $this->getMockBuilder(doccontentBehavior::class)
-            ->setMethods(['checkDoc', 'checkUnique'])
+            ->setMethods(['checkDoc', 'checkUnique', 'isAnyDocLocked'])
             ->getMock();
         $behavior->method('checkDoc')->willReturn($docOk);
         $behavior->method('checkUnique')->willReturn($uniqueOk);
+        $behavior->method('isAnyDocLocked')->willReturn($locked);
         return $behavior;
     }
 
