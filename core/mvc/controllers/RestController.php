@@ -1707,13 +1707,14 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     }
 
     /**
-     * Returns an OAuth2 request object created from the global variables.
+     * Returns the OAuth2 request for the current request (a sub-request's own
+     * body and headers when one is running).
      *
      * @return \OAuth2\Request The OAuth2 request object.
      */
     public function getOAuthRequest()
     {
-        return \OAuth2\Request::createFromGlobals();
+        return \Gaia\Core\MVC\Http\OAuthRequestFactory::fromHttpRequest($this->request);
     }
 
     /**
