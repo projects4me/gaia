@@ -185,13 +185,30 @@ class DocLiveEventsComponentTest extends TestCase
 
     public function testNotifierSkipsRequestWhenSecretIsNotConfigured()
     {
+        global $settings;
         putenv('COLLAB_SECRET');
+        $hadCollab = is_object($settings) && isset($settings->collab);
+        $configured = $hadCollab ? $settings->collab : null;
+        if (is_object($settings)) {
+            $settings->collab = (object) array('url' => '', 'secret' => '');
+        }
+
         $history = array();
         $stack = \GuzzleHttp\HandlerStack::create(new \GuzzleHttp\Handler\MockHandler(array(new \GuzzleHttp\Psr7\Response(204))));
         $stack->push(\GuzzleHttp\Middleware::history($history));
         $notifier = new CollabNotifier(new \GuzzleHttp\Client(array('handler' => $stack)));
 
-        $this->assertFalse($notifier->notifyAccessChanged('doc-1', 'locked'));
-        $this->assertCount(0, $history);
+        try {
+            $this->assertFalse($notifier->notifyAccessChanged('doc-1', 'locked'));
+            $this->assertCount(0, $history);
+        } finally {
+            if (is_object($settings)) {
+                if ($hadCollab) {
+                    $settings->collab = $configured;
+                } else {
+                    unset($settings->collab);
+                }
+            }
+        }
     }
 }
