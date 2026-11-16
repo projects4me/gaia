@@ -70,7 +70,7 @@ class SubRequestRunner
         $started = microtime(true);
         $request = SubRequest::fromUrl($method, $url, $body, $authorization);
         $request->setDI($this->di);
-        $response = new Response();
+        $response = new CapturedResponse();
         $response->setDI($this->di);
         $scope = new SubRequestScope($this->di);
 

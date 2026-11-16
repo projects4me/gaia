@@ -7,6 +7,7 @@ use Gaia\Tests\Libraries\Utils\Http\Fake\ProbeController;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Http\Request;
 use Phalcon\Http\Response;
+use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Router;
 use PHPUnit\Framework\TestCase;
 
@@ -134,6 +135,7 @@ class SubRequestRunnerTest extends TestCase
             'uri' => '/api/v1/probe/abc?query=%28%28Issue.id+%3A+1%29%29&page=2',
             'query' => '((Issue.id : 1))',
             'page' => 2,
+            'url' => '/api/v1/probe/abc',
             'body' => ['data' => ['type' => 'issue', 'id' => 'abc']],
             'user' => 'Bearer inner',
             'oauthAuthorization' => 'Bearer inner',
@@ -207,8 +209,14 @@ class SubRequestRunnerTest extends TestCase
 
     public function testResponseIsCapturedNotSent(): void
     {
-        $result = $this->runner()->run('POST', '/api/v1/send', ['x' => 1], 'Bearer inner');
+        ob_start();
+        try {
+            $result = $this->runner()->run('POST', '/api/v1/send', ['x' => 1], 'Bearer inner');
+        } finally {
+            $output = ob_get_clean();
+        }
 
+        $this->assertSame('', $output);
         $this->assertSame(201, $result->status());
         $this->assertSame(['sent' => false], $result->body());
         $this->assertFalse($this->outerResponse->isSent());
@@ -250,6 +258,7 @@ class SubRequestRunnerTest extends TestCase
 
     public function testOuterCookiesAreHiddenFromTheSubCallAndRestored(): void
     {
+        $originalCookies = $_COOKIE ?? [];
         $_COOKIE = ['outerSession' => 'secret'];
         try {
             $result = $this->runner()->run('GET', '/api/v1/probe', null, 'Bearer inner');
@@ -258,7 +267,46 @@ class SubRequestRunnerTest extends TestCase
             $this->assertSame([], $result->body()['cookies']);
             $this->assertSame(['outerSession' => 'secret'], $_COOKIE);
         } finally {
-            $_COOKIE = [];
+            $_COOKIE = $originalCookies;
         }
+    }
+
+    public function testCallWithoutAuthorizationDoesNotInheritTheOuterToken(): void
+    {
+        $result = $this->runner()->run('GET', '/api/v1/probe', null, '');
+
+        $this->assertSame(200, $result->status());
+        $this->assertSame('', $result->body()['user']);
+        $this->assertSame('', $result->body()['oauthAuthorization']);
+        $this->assertOuterStateRestored();
+    }
+
+    public function testUnregisteredOuterControllerInstanceIsRestored(): void
+    {
+        // The dispatcher builds controllers with getShared(): the instance is
+        // cached while no service is registered for the class.
+        $outerController = $this->di->getShared(ProbeController::class);
+        $this->assertFalse($this->di->has(ProbeController::class));
+        $outerDispatcher = new class ($outerController) extends Dispatcher {
+            private $active;
+
+            public function __construct($active)
+            {
+                $this->active = $active;
+            }
+
+            public function getActiveController(): \Phalcon\Mvc\ControllerInterface
+            {
+                return $this->active;
+            }
+        };
+        $this->di->setShared('dispatcher', $outerDispatcher);
+
+        $result = $this->runner()->run('GET', '/api/v1/probe', null, 'Bearer inner');
+
+        $this->assertSame(200, $result->status());
+        $this->assertSame($outerController, $this->di->getShared(ProbeController::class));
+        $this->assertSame($outerDispatcher, $this->di->getShared('dispatcher'));
+        $this->assertOuterStateRestored();
     }
 }

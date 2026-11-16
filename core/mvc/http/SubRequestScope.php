@@ -68,9 +68,10 @@ class SubRequestScope
     private $currentUser;
 
     /**
-     * Controller classes dispatched inside the scope => the outer service to restore (null for none).
+     * Controller classes dispatched inside the scope => the outer service or
+     * controller instance to restore (null for none).
      *
-     * @var array<string, \Phalcon\Di\ServiceInterface|null>
+     * @var array<string, \Phalcon\Di\ServiceInterface|object|null>
      */
     private $handlers = [];
 
@@ -132,9 +133,29 @@ class SubRequestScope
             // service (with the instance it resolved) to put back in leave().
             $this->handlers[$handlerClass] = $this->di->has($handlerClass)
                 ? $this->di->getService($handlerClass)
-                : null;
+                : $this->outerController($handlerClass);
         }
         $this->di->remove($handlerClass);
+    }
+
+    /**
+     * The outer dispatcher's controller when it is of this class. The
+     * dispatcher builds controllers with getShared(), which caches an
+     * unregistered class without registering a service (has() is false), so
+     * the instance itself is what leave() must put back.
+     *
+     * @param string $handlerClass
+     * @return object|null
+     */
+    private function outerController(string $handlerClass)
+    {
+        $dispatcher = $this->services['dispatcher'] ?? null;
+        if (!$dispatcher instanceof \Phalcon\Dispatcher\DispatcherInterface || !method_exists($dispatcher, 'getActiveController')) {
+            return null;
+        }
+        $controller = $dispatcher->getActiveController();
+
+        return $controller instanceof $handlerClass ? $controller : null;
     }
 
     /**
@@ -151,8 +172,10 @@ class SubRequestScope
         $this->entered = false;
         foreach ($this->handlers as $handlerClass => $outerService) {
             $this->di->remove($handlerClass);
-            if ($outerService !== null) {
+            if ($outerService instanceof \Phalcon\Di\ServiceInterface) {
                 $this->di->setService($handlerClass, $outerService);
+            } elseif ($outerService !== null) {
+                $this->di->setShared($handlerClass, $outerService);
             }
         }
         foreach ($this->services as $name => $instance) {

@@ -127,11 +127,15 @@ class SubRequest extends \Phalcon\Http\Request implements OAuthRequestSource
             $server['HTTP_AUTHORIZATION'] = $this->authorization;
         }
 
+        // The rewrite rule passes the routed path as _url (buildHAL() builds
+        // its links from it); it is not part of the public query string.
+        $get = ['_url' => $this->path] + $this->query;
+
         return [
             '_SERVER' => $server,
-            '_GET' => $this->query,
+            '_GET' => $get,
             '_POST' => [],
-            '_REQUEST' => $this->query,
+            '_REQUEST' => $get,
             '_FILES' => [],
             '_COOKIE' => [],
         ];
@@ -140,7 +144,10 @@ class SubRequest extends \Phalcon\Http\Request implements OAuthRequestSource
     /**
      * The OAuth2 request for this call, from its own query, body and headers
      * and no cookies (createFromGlobals() would read the outer request's body
-     * from php://input). Read while the superglobals are overlaid.
+     * from php://input). Read while the superglobals are overlaid. The
+     * headers are passed explicitly: with no Authorization in $_SERVER the
+     * OAuth2 library falls back to apache_request_headers(), which returns
+     * the outer request's token.
      *
      * @return \OAuth2\Request
      */
@@ -156,8 +163,25 @@ class SubRequest extends \Phalcon\Http\Request implements OAuthRequestSource
             [],
             [],
             $_SERVER,
-            $this->getRawBody()
+            $this->getRawBody(),
+            $this->oauthHeaders()
         );
+    }
+
+    /**
+     * The headers the OAuth2 library reads: this call's Authorization (empty
+     * when it has none) and, with a body, its content type.
+     *
+     * @return array
+     */
+    private function oauthHeaders(): array
+    {
+        $headers = ['AUTHORIZATION' => $this->authorization];
+        if ($this->body !== null) {
+            $headers['CONTENT_TYPE'] = 'application/json';
+        }
+
+        return $headers;
     }
 
     /**

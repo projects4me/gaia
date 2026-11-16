@@ -62,6 +62,7 @@ class ProbeController extends \Phalcon\Mvc\Controller
             'uri' => $this->request->getURI(),
             'query' => $this->request->get('query'),
             'page' => $this->request->getQuery('page', 'int'),
+            'url' => $this->request->getQuery('_url'),
             'body' => $this->request->getJsonRawBody(true),
             'user' => $this->user,
             'oauthAuthorization' => OAuthRequestFactory::fromHttpRequest($this->request)->headers('AUTHORIZATION'),
@@ -95,7 +96,8 @@ class ProbeController extends \Phalcon\Mvc\Controller
     }
 
     /**
-     * Try to write to the client directly; the runner must not send it.
+     * Send the response directly, as ForgetpasswordController::postAction()
+     * does; the runner must capture it without writing to the client.
      *
      * @return Response
      */
@@ -103,6 +105,7 @@ class ProbeController extends \Phalcon\Mvc\Controller
     {
         $this->response->setStatusCode(201, 'Created');
         $this->response->setJsonContent(['sent' => false]);
+        $this->response->send();
 
         return $this->response;
     }
