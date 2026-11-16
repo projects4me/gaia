@@ -146,4 +146,28 @@ class DocLiveEventsComponentTest extends TestCase
         $notifier = new CollabNotifier(new \GuzzleHttp\Client(array('handler' => $stack)));
         $this->assertFalse($notifier->notifyAccessChanged('doc-1', 'deleted'));
     }
+
+    public function testCreatePublishesLockedAsBool()
+    {
+        foreach (array('t' => true, 'f' => false) as $raw => $expected) {
+            $doc = $this->doc();
+            $doc->locked = $raw;
+            $component = $this->component();
+            $this->fire($component, 'afterCreate', $doc);
+            $this->assertSame($expected, $this->posted[0]['changes']['locked']);
+        }
+    }
+
+    public function testNotifierDoesNotFollowRedirects()
+    {
+        $history = array();
+        $stack = \GuzzleHttp\HandlerStack::create(new \GuzzleHttp\Handler\MockHandler(array(
+            new \GuzzleHttp\Psr7\Response(302, array('Location' => 'http://elsewhere.example/steal')),
+        )));
+        $stack->push(\GuzzleHttp\Middleware::history($history));
+        $notifier = new CollabNotifier(new \GuzzleHttp\Client(array('handler' => $stack)));
+
+        $notifier->notifyAccessChanged('doc-1', 'locked');
+        $this->assertCount(1, $history);
+    }
 }

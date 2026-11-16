@@ -66,6 +66,7 @@ class CollabNotifier
                 'connect_timeout' => 0.5,
             ));
             $client->post($this->accessUrl((string) $docId), array(
+                'allow_redirects' => false,
                 'headers' => array(
                     'Content-Type' => 'application/json',
                     'X-Collab-Secret' => $this->secret(),

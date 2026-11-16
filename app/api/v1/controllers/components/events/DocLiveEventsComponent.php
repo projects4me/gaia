@@ -61,7 +61,12 @@ class DocLiveEventsComponent extends LiveEventsComponent
      */
     public function afterCreate(Event $event, $controller, $model)
     {
-        $this->publishDocEvent(EventNames::DOC_CREATED, $model, $this->pick(self::TRACKED_FIELDS, $model));
+        $fields = $this->pick(self::TRACKED_FIELDS, $model);
+        if (array_key_exists('locked', $fields)) {
+            $fields['locked'] = docBehavior::isLocked($fields['locked']);
+        }
+
+        $this->publishDocEvent(EventNames::DOC_CREATED, $model, $fields);
     }
 
     /**
