@@ -16,6 +16,18 @@ class DocLiveEventsComponentTest extends TestCase
 {
     protected $posted = array();
     protected $notified = array();
+    protected $previousSecret;
+
+    protected function setUp(): void
+    {
+        $this->previousSecret = getenv('COLLAB_SECRET');
+        putenv('COLLAB_SECRET=test-secret');
+    }
+
+    protected function tearDown(): void
+    {
+        putenv($this->previousSecret === false ? 'COLLAB_SECRET' : 'COLLAB_SECRET=' . $this->previousSecret);
+    }
 
     protected function component($failCollab = false)
     {
@@ -169,5 +181,17 @@ class DocLiveEventsComponentTest extends TestCase
 
         $notifier->notifyAccessChanged('doc-1', 'locked');
         $this->assertCount(1, $history);
+    }
+
+    public function testNotifierSkipsRequestWhenSecretIsNotConfigured()
+    {
+        putenv('COLLAB_SECRET');
+        $history = array();
+        $stack = \GuzzleHttp\HandlerStack::create(new \GuzzleHttp\Handler\MockHandler(array(new \GuzzleHttp\Psr7\Response(204))));
+        $stack->push(\GuzzleHttp\Middleware::history($history));
+        $notifier = new CollabNotifier(new \GuzzleHttp\Client(array('handler' => $stack)));
+
+        $this->assertFalse($notifier->notifyAccessChanged('doc-1', 'locked'));
+        $this->assertCount(0, $history);
     }
 }

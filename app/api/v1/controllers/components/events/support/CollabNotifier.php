@@ -56,6 +56,13 @@ class CollabNotifier
         }
 
         try {
+            if (!is_callable($this->httpClient) && $this->secret() === '') {
+                if ($logger) {
+                    $logger->error('Collab access notify skipped: COLLAB_SECRET is not configured');
+                }
+                return false;
+            }
+
             if (is_callable($this->httpClient)) {
                 ($this->httpClient)((string) $docId, $reason);
                 return true;
@@ -99,7 +106,7 @@ class CollabNotifier
      */
     protected function secret()
     {
-        return $this->setting('secret', getenv('COLLAB_SECRET') ?: 'collab-dev-secret');
+        return $this->setting('secret', (string) getenv('COLLAB_SECRET'));
     }
 
     /**
