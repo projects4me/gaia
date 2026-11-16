@@ -180,6 +180,27 @@ class EventNames
     const USER_ACCESS_CHANGED = 'user.access.changed';
 
     /**
+     * Doc created.
+     *
+     * @var string
+     */
+    const DOC_CREATED = 'doc.created';
+
+    /**
+     * Doc title, locked state or owner changed.
+     *
+     * @var string
+     */
+    const DOC_UPDATED = 'doc.updated';
+
+    /**
+     * Doc deleted.
+     *
+     * @var string
+     */
+    const DOC_DELETED = 'doc.deleted';
+
+    /**
      * Every name HermesPublisher is allowed to post.
      *
      * @var   array
@@ -209,6 +230,9 @@ class EventNames
         self::IDEA_PLANISSUE_CREATED,
         self::WORKFLOW_AGENT_RUN_REQUESTED,
         self::USER_ACCESS_CHANGED,
+        self::DOC_CREATED,
+        self::DOC_UPDATED,
+        self::DOC_DELETED,
     );
 
     /**

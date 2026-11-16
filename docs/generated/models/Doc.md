@@ -29,5 +29,5 @@
 - acl: group Project via projectId
 - controller: Gaia\MVC\REST\Controllers\DocController
 - routes: DELETE /api/v1/doc, DELETE /api/v1/doc/{id}, GET /api/v1/doc, GET /api/v1/doc/{id}, GET /api/v1/doc/{id}/{relation}, OPTIONS /api/v1/doc, PATCH /api/v1/doc, PATCH /api/v1/doc/{id}, POST /api/v1/doc, PUT /api/v1/doc, PUT /api/v1/doc/{id}
-- components: -
+- components: Events\DocLiveEvents
 - cases: 22 (acl 11, backend 6, client 5); gaia-dev cases doc

@@ -18,5 +18,5 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
  */
 class DocController extends RestController
 {
-
+    public $uses = array('Events\\DocLiveEvents');
 }

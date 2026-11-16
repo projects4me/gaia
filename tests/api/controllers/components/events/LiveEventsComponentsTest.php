@@ -11,12 +11,14 @@ use Gaia\MVC\REST\Controllers\Components\Events\ConversationVoteLiveEventsCompon
 use Gaia\MVC\REST\Controllers\Components\Events\ConversationLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\AgentRunLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\NotificationLiveEvents;
+use Gaia\MVC\REST\Controllers\Components\Events\DocLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeamessageLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanissueLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\UserAccessLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\MembershipLiveEventsComponent;
+use Gaia\MVC\REST\Controllers\Components\Events\Support\CollabNotifier;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\EventNames;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\HermesPublisher;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\ProjectIdResolver;
@@ -781,6 +783,23 @@ class LiveEventsComponentsTest extends TestCase
     protected function metaWithoutActor(array $envelope)
     {
         return array_diff_key($envelope['meta'], array('actorName' => true));
+    }
+
+    public function testDocEventsPublishCreatedUpdatedAndDeleted()
+    {
+        $posted = array();
+        $publisher = new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        });
+        $component = new DocLiveEventsComponent($publisher, $this->createStubResolver('project-1'), new CollabNotifier(function () {
+        }));
+        $doc = (object) array('id' => 'doc-1', 'projectId' => 'project-1', 'title' => 'T', 'audit' => array('title' => array('old' => 'A', 'new' => 'T')));
+        $this->fire($component, 'afterCreate', $doc);
+        $this->fire($component, 'afterUpdate', $doc);
+        $this->fire($component, 'afterDelete', $doc);
+
+        $this->assertEquals(array(EventNames::DOC_CREATED, EventNames::DOC_UPDATED, EventNames::DOC_DELETED), array_column($posted, 'eventName'));
+        $this->assertEquals('doc-1', $posted[1]['meta']['docId']);
     }
 
     /**
