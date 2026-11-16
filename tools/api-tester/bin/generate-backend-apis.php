@@ -56,6 +56,7 @@ $skipResources = [
     'systemnotification' => 'GET-list only custom notifications feed',
     'badge' => 'No route identifier; nonstandard ACL resource',
     'scoreboard' => 'No route identifier; nonstandard ACL resource',
+    'bulk' => 'Runs a batch of other REST calls; acl and client cases cover it',
 ];
 
 /** Resources where mutations are unsafe even if metadata exists (GET still enabled). */

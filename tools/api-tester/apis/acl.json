@@ -2988,6 +2988,77 @@
       "auth": "aclMembers",
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
+    },
+    {
+      "id": "acl-bulk-denied-without-token",
+      "method": "POST",
+      "path": "/api/v1/bulk",
+      "resource": "bulk",
+      "auth": false,
+      "body": {
+        "requests": [
+          {
+            "id": "projects",
+            "method": "GET",
+            "url": "/api/v1/project?limit=5"
+          }
+        ]
+      },
+      "expects": { "status": 401, "shape": "error" },
+      "source": "acl-bulk"
+    },
+    {
+      "id": "acl-bulk-denied-without-grant",
+      "method": "POST",
+      "path": "/api/v1/bulk",
+      "resource": "bulk",
+      "auth": "aclNoSetting",
+      "body": {
+        "requests": [
+          {
+            "id": "projects",
+            "method": "GET",
+            "url": "/api/v1/project?limit=5"
+          }
+        ]
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "note": "bulk.create is denied for the role, so no item runs",
+      "source": "acl-bulk"
+    },
+    {
+      "id": "acl-bulk-item-denied-others-allowed",
+      "method": "POST",
+      "path": "/api/v1/bulk",
+      "resource": "bulk",
+      "auth": "aclProjectOnly",
+      "body": {
+        "requests": [
+          {
+            "id": "projects",
+            "method": "GET",
+            "url": "/api/v1/project?limit=5"
+          },
+          {
+            "id": "issues",
+            "method": "GET",
+            "url": "/api/v1/issue?limit=5"
+          },
+          {
+            "id": "project",
+            "method": "GET",
+            "url": "/api/v1/project/{projectId}"
+          },
+          {
+            "id": "missing",
+            "method": "GET",
+            "url": "/api/v1/agentspec/api-test-no-such-agent"
+          }
+        ]
+      },
+      "expects": { "status": 200, "shape": "json", "jsonEqual": {"responses.0.id": "projects", "responses.0.status": 200, "responses.1.id": "issues", "responses.1.status": 403, "responses.1.body.error": "Access Denied", "responses.2.id": "project", "responses.2.status": 200, "responses.2.body.data.id": "{projectId}", "responses.3.id": "missing", "responses.3.status": 404} },
+      "note": "each item is authorized on its own: issue.get is denied for the role, the other items still return",
+      "source": "acl-bulk"
     }
   ]
 }

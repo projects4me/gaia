@@ -61,11 +61,12 @@ class SubRequestRunner
      *
      * @param string $method HTTP method
      * @param string $url path with an optional query string, e.g. /api/v1/issue?query=...
-     * @param array|null $body the JSON body, decoded; null for none
+     * @param array|\stdClass|null $body the JSON body, decoded (objects as
+     *   stdClass keep {} apart from []); null for none
      * @param string $authorization the Authorization header, e.g. "Bearer abc"
      * @return SubResult
      */
-    public function run(string $method, string $url, ?array $body, string $authorization): SubResult
+    public function run(string $method, string $url, $body, string $authorization): SubResult
     {
         $started = microtime(true);
         $request = SubRequest::fromUrl($method, $url, $body, $authorization);
