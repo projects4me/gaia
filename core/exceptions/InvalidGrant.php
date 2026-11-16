@@ -16,21 +16,19 @@ namespace Gaia\Exception;
  */
 class InvalidGrant extends \Exception
 {
+    use SendsErrorResponse;
+
     /**
-     * This function is used to set and return the http response.
+     * Build the http response without sending it.
      *
+     * @param \Phalcon\Http\Response|null $response the response to build on; a new one when null
      * @return \Phalcon\Http\Response
      */
-    public function handle()
+    public function toResponse(?\Phalcon\Http\Response $response = null): \Phalcon\Http\Response
     {
-        $di = \Phalcon\Di::getDefault();
-        $response = $di->get('response');
-        $response->setStatusCode("401", "Unauthorized");
-        $response->setJsonContent([
+        return ErrorResponse::build(401, 'Unauthorized', [
             'error' => 'invalid_grant',
             'error_description' => 'Invalid email and password combination'
-        ]);
-        $response->send();
-        return $response;
+        ], [], $response);
     }
 }

@@ -114,6 +114,14 @@
 | PUT | /api/v1/badge | rest | badge.putCollection |
 | PUT | /api/v1/badge/{id} | rest | badge.put |
 
+<a id="bulk"></a>
+## bulk
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| OPTIONS | /api/v1/bulk | rest | bulk.options |
+| POST | /api/v1/bulk | rest | bulk.post |
+
 <a id="chatroom"></a>
 ## chatroom
 

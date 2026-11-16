@@ -423,6 +423,18 @@
       "attributes": {}
     },
     {
+      "id": "action:bulk.options",
+      "type": "action",
+      "key": "bulk.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:bulk.post",
+      "type": "action",
+      "key": "bulk.post",
+      "attributes": {}
+    },
+    {
       "id": "action:chatroom.delete",
       "type": "action",
       "key": "chatroom.delete",
@@ -4736,6 +4748,56 @@
         "source": "acl-group",
         "placeholders": [
           "agenttoolId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-bulk-denied-without-grant",
+      "type": "case",
+      "key": "acl/acl-bulk-denied-without-grant",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/bulk",
+        "resource": "bulk",
+        "enabled": true,
+        "source": "acl-bulk",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-bulk-denied-without-token",
+      "type": "case",
+      "key": "acl/acl-bulk-denied-without-token",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/bulk",
+        "resource": "bulk",
+        "enabled": true,
+        "source": "acl-bulk",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-bulk-item-denied-others-allowed",
+      "type": "case",
+      "key": "acl/acl-bulk-item-denied-others-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/bulk",
+        "resource": "bulk",
+        "enabled": true,
+        "source": "acl-bulk",
+        "placeholders": [
+          "projectId"
         ],
         "stores": []
       }
@@ -13018,6 +13080,109 @@
         "placeholders": [
           "otherAgentId",
           "runtime.createdToolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/bulk-nested-bulk-rejected",
+      "type": "case",
+      "key": "client/bulk-nested-bulk-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/bulk",
+        "resource": "bulk",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/bulk-task-board-batch",
+      "type": "case",
+      "key": "client/bulk-task-board-batch",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/bulk",
+        "resource": "bulk",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "milestoneId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/bulk-too-many-requests-rejected",
+      "type": "case",
+      "key": "client/bulk-too-many-requests-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/bulk",
+        "resource": "bulk",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/bulk-unknown-route-rejected",
+      "type": "case",
+      "key": "client/bulk-unknown-route-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/bulk",
+        "resource": "bulk",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/bulk-write-kept-verify",
+      "type": "case",
+      "key": "client/bulk-write-kept-verify",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/bulk-write-kept-when-later-item-fails",
+      "type": "case",
+      "key": "client/bulk-write-kept-when-later-item-fails",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/bulk",
+        "resource": "bulk",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId"
         ],
         "stores": []
       }
@@ -21803,6 +21968,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\BadgeController",
         "file": "app/api/v1/controllers/BadgeController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:bulk",
+      "type": "controller",
+      "key": "bulk",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\BulkController",
+        "file": "app/api/v1/controllers/BulkController.php",
         "extends": "RestController"
       }
     },
@@ -34653,6 +34829,15 @@
       }
     },
     {
+      "id": "permission:bulk.create",
+      "type": "permission",
+      "key": "bulk.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
       "id": "permission:chatroom.create",
       "type": "permission",
       "key": "chatroom.create",
@@ -42472,6 +42657,18 @@
       }
     },
     {
+      "id": "route:OPTIONS /api/v1/bulk",
+      "type": "route",
+      "key": "OPTIONS /api/v1/bulk",
+      "attributes": {
+        "type": "rest",
+        "name": "bulk",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/bulk"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/chatroom",
       "type": "route",
       "key": "OPTIONS /api/v1/chatroom",
@@ -44452,6 +44649,18 @@
       }
     },
     {
+      "id": "route:POST /api/v1/bulk",
+      "type": "route",
+      "key": "POST /api/v1/bulk",
+      "attributes": {
+        "type": "rest",
+        "name": "bulk",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/bulk"
+      }
+    },
+    {
       "id": "route:POST /api/v1/chatroom",
       "type": "route",
       "key": "POST /api/v1/chatroom",
@@ -46339,6 +46548,11 @@
       "from": "action:badge.related",
       "type": "requires",
       "to": "permission:badge.get"
+    },
+    {
+      "from": "action:bulk.post",
+      "type": "requires",
+      "to": "permission:bulk.create"
     },
     {
       "from": "action:chatroom.delete",
@@ -49429,6 +49643,96 @@
       "from": "case:acl/acl-agenttool-detail-denied-acl-no-setting",
       "type": "uses_fixture",
       "to": "fixture:agenttoolId"
+    },
+    {
+      "from": "case:acl/acl-bulk-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-bulk-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-bulk-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-bulk-denied-without-grant",
+      "type": "covers",
+      "to": "controller:bulk"
+    },
+    {
+      "from": "case:acl/acl-bulk-denied-without-grant",
+      "type": "exercises",
+      "to": "route:POST /api/v1/bulk"
+    },
+    {
+      "from": "case:acl/acl-bulk-denied-without-grant",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-bulk-denied-without-token",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-bulk-denied-without-token",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-bulk-denied-without-token",
+      "type": "covers",
+      "to": "controller:bulk"
+    },
+    {
+      "from": "case:acl/acl-bulk-denied-without-token",
+      "type": "exercises",
+      "to": "route:POST /api/v1/bulk"
+    },
+    {
+      "from": "case:acl/acl-bulk-denied-without-token",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:acl/acl-bulk-item-denied-others-allowed",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:acl/acl-bulk-item-denied-others-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-bulk-item-denied-others-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-bulk-item-denied-others-allowed",
+      "type": "covers",
+      "to": "controller:bulk"
+    },
+    {
+      "from": "case:acl/acl-bulk-item-denied-others-allowed",
+      "type": "exercises",
+      "to": "route:POST /api/v1/bulk"
+    },
+    {
+      "from": "case:acl/acl-bulk-item-denied-others-allowed",
+      "type": "runs_as",
+      "to": "profile:aclProjectOnly"
+    },
+    {
+      "from": "case:acl/acl-bulk-item-denied-others-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
     },
     {
       "from": "case:acl/acl-comment-denied-without-conversation-group",
@@ -64444,6 +64748,196 @@
       "from": "case:client/agenttool-grant-whole-server",
       "type": "uses_fixture",
       "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:client/bulk-nested-bulk-rejected",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/bulk-nested-bulk-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/bulk-nested-bulk-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/bulk-nested-bulk-rejected",
+      "type": "covers",
+      "to": "controller:bulk"
+    },
+    {
+      "from": "case:client/bulk-nested-bulk-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/bulk"
+    },
+    {
+      "from": "case:client/bulk-nested-bulk-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/bulk-task-board-batch",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/bulk-task-board-batch",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/bulk-task-board-batch",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/bulk-task-board-batch",
+      "type": "covers",
+      "to": "controller:bulk"
+    },
+    {
+      "from": "case:client/bulk-task-board-batch",
+      "type": "exercises",
+      "to": "route:POST /api/v1/bulk"
+    },
+    {
+      "from": "case:client/bulk-task-board-batch",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/bulk-task-board-batch",
+      "type": "uses_fixture",
+      "to": "fixture:milestoneId"
+    },
+    {
+      "from": "case:client/bulk-task-board-batch",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/bulk-too-many-requests-rejected",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/bulk-too-many-requests-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/bulk-too-many-requests-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/bulk-too-many-requests-rejected",
+      "type": "covers",
+      "to": "controller:bulk"
+    },
+    {
+      "from": "case:client/bulk-too-many-requests-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/bulk"
+    },
+    {
+      "from": "case:client/bulk-too-many-requests-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/bulk-unknown-route-rejected",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/bulk-unknown-route-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/bulk-unknown-route-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/bulk-unknown-route-rejected",
+      "type": "covers",
+      "to": "controller:bulk"
+    },
+    {
+      "from": "case:client/bulk-unknown-route-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/bulk"
+    },
+    {
+      "from": "case:client/bulk-unknown-route-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/bulk-write-kept-verify",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/bulk-write-kept-verify",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/bulk-write-kept-verify",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/bulk-write-kept-verify",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/bulk-write-kept-verify",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tag"
+    },
+    {
+      "from": "case:client/bulk-write-kept-verify",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/bulk-write-kept-when-later-item-fails",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/bulk-write-kept-when-later-item-fails",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/bulk-write-kept-when-later-item-fails",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/bulk-write-kept-when-later-item-fails",
+      "type": "covers",
+      "to": "controller:bulk"
+    },
+    {
+      "from": "case:client/bulk-write-kept-when-later-item-fails",
+      "type": "exercises",
+      "to": "route:POST /api/v1/bulk"
+    },
+    {
+      "from": "case:client/bulk-write-kept-when-later-item-fails",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/client-doc-create",
@@ -79471,6 +79965,16 @@
       "to": "model:Badge"
     },
     {
+      "from": "controller:bulk",
+      "type": "has_action",
+      "to": "action:bulk.options"
+    },
+    {
+      "from": "controller:bulk",
+      "type": "has_action",
+      "to": "action:bulk.post"
+    },
+    {
       "from": "controller:chatroom",
       "type": "has_action",
       "to": "action:chatroom.delete"
@@ -90763,6 +91267,11 @@
     {
       "from": "profile:aclNoSetting",
       "type": "denies",
+      "to": "permission:bulk.create"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
       "to": "permission:serviceclient.get"
     },
     {
@@ -94651,6 +95160,11 @@
       "to": "action:badge.options"
     },
     {
+      "from": "route:OPTIONS /api/v1/bulk",
+      "type": "handled_by",
+      "to": "action:bulk.options"
+    },
+    {
       "from": "route:OPTIONS /api/v1/chatroom",
       "type": "handled_by",
       "to": "action:chatroom.options"
@@ -95474,6 +95988,11 @@
       "from": "route:POST /api/v1/badge",
       "type": "handled_by",
       "to": "action:badge.post"
+    },
+    {
+      "from": "route:POST /api/v1/bulk",
+      "type": "handled_by",
+      "to": "action:bulk.post"
     },
     {
       "from": "route:POST /api/v1/chatroom",

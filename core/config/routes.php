@@ -674,6 +674,12 @@ $config['routes'] = array(
                     'GET',
                 ],
                 'identifier' => 'id'
+            ],
+            'bulk' => [
+                'path' => '/api/:version/bulk',
+                'allowedMethods' => [
+                    'POST',
+                ],
             ]
         )
     ),

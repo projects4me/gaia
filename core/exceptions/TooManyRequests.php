@@ -17,6 +17,8 @@ namespace Gaia\Exception;
  */
 class TooManyRequests extends \Exception
 {
+    use SendsErrorResponse;
+
     /**
      * Seconds the caller should wait before trying again.
      *
@@ -45,21 +47,16 @@ class TooManyRequests extends \Exception
     }
 
     /**
-     * This function is used to set and return the http response.
+     * Build the http response, with Retry-After, without sending it.
      *
+     * @param \Phalcon\Http\Response|null $response the response to build on; a new one when null
      * @return \Phalcon\Http\Response
      */
-    public function handle()
+    public function toResponse(?\Phalcon\Http\Response $response = null): \Phalcon\Http\Response
     {
-        $di = \Phalcon\Di::getDefault();
-        $response = $di->get('response');
-        $response->setStatusCode(429, "Too Many Requests");
-        $response->setHeader('Retry-After', (string) $this->retryAfter);
-        $response->setJsonContent([
+        return ErrorResponse::build(429, 'Too Many Requests', [
             'error' => 'tooManyRequests',
             'error_description' => $this->getMessage()
-        ]);
-        $response->send();
-        return $response;
+        ], ['Retry-After' => (string) $this->retryAfter], $response);
     }
 }
