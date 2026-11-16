@@ -66,6 +66,8 @@ class ProbeController extends \Phalcon\Mvc\Controller
             'body' => $this->request->getJsonRawBody(true),
             'user' => $this->user,
             'oauthAuthorization' => OAuthRequestFactory::fromHttpRequest($this->request)->headers('AUTHORIZATION'),
+            'oauthUser' => OAuthRequestFactory::fromHttpRequest($this->request)->headers('PHP_AUTH_USER'),
+            'oauthPassword' => OAuthRequestFactory::fromHttpRequest($this->request)->headers('PHP_AUTH_PW'),
             'id' => $this->dispatcher->getParam('id'),
             'cookies' => array_merge($_COOKIE, OAuthRequestFactory::fromHttpRequest($this->request)->cookies),
         ]);

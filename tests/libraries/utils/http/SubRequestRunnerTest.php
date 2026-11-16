@@ -139,6 +139,8 @@ class SubRequestRunnerTest extends TestCase
             'body' => ['data' => ['type' => 'issue', 'id' => 'abc']],
             'user' => 'Bearer inner',
             'oauthAuthorization' => 'Bearer inner',
+            'oauthUser' => null,
+            'oauthPassword' => null,
             'id' => 'abc',
             'cookies' => [],
         ], $result->body());
@@ -278,6 +280,28 @@ class SubRequestRunnerTest extends TestCase
         $this->assertSame(200, $result->status());
         $this->assertSame('', $result->body()['user']);
         $this->assertSame('', $result->body()['oauthAuthorization']);
+        $this->assertOuterStateRestored();
+    }
+
+    public function testBasicAuthorizationGivesTheOAuthClientCredentials(): void
+    {
+        $result = $this->runner()->run('GET', '/api/v1/probe', null, 'Basic ' . base64_encode('client:se:cret'));
+
+        $this->assertSame(200, $result->status());
+        $this->assertSame('client', $result->body()['oauthUser']);
+        $this->assertSame('se:cret', $result->body()['oauthPassword']);
+        $this->assertOuterStateRestored();
+    }
+
+    public function testBearerAndInvalidBasicAuthorizationGiveNoClientCredentials(): void
+    {
+        foreach (['Bearer inner', 'Basic not*base64', 'Basic ' . base64_encode('nocolon'), ''] as $authorization) {
+            $result = $this->runner()->run('GET', '/api/v1/probe', null, $authorization);
+
+            $this->assertSame(200, $result->status(), $authorization);
+            $this->assertNull($result->body()['oauthUser'], $authorization);
+            $this->assertNull($result->body()['oauthPassword'], $authorization);
+        }
         $this->assertOuterStateRestored();
     }
 

@@ -176,12 +176,33 @@ class SubRequest extends \Phalcon\Http\Request implements OAuthRequestSource
      */
     private function oauthHeaders(): array
     {
-        $headers = ['AUTHORIZATION' => $this->authorization];
+        $headers = ['AUTHORIZATION' => $this->authorization] + $this->basicCredentials();
         if ($this->body !== null) {
             $headers['CONTENT_TYPE'] = 'application/json';
         }
 
         return $headers;
+    }
+
+    /**
+     * The client credentials of a Basic Authorization, as the OAuth2 library
+     * reads them (PHP_AUTH_USER, PHP_AUTH_PW); empty for any other value.
+     * With explicit headers the library does not derive them itself.
+     *
+     * @return array
+     */
+    private function basicCredentials(): array
+    {
+        if (stripos($this->authorization, 'basic ') !== 0) {
+            return [];
+        }
+        $decoded = base64_decode(trim(substr($this->authorization, 6)), true);
+        if ($decoded === false || strpos($decoded, ':') === false) {
+            return [];
+        }
+        [$user, $password] = explode(':', $decoded, 2);
+
+        return ['PHP_AUTH_USER' => $user, 'PHP_AUTH_PW' => $password];
     }
 
     /**
