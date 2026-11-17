@@ -117,6 +117,7 @@ class ScaffoldLiveEventsTest extends TestCase
 
         $this->assertSame([
             'EventNames::REPORT_CREATED is not in EventNames::ALL',
+            'EventNames::REPORT_CREATED (report.created) is not enabled on the hermes channel in app/metadata/events.php',
             'EventNames::REPORT_CREATED (report.created) is emitted by no component',
             'EventNames::REPORT_CREATED (report.created) has no case in tests/api/controllers/components/events/LiveEventsComponentsTest.php',
         ], (new LiveEventsCheck($root))->problems());
@@ -158,6 +159,7 @@ class ScaffoldLiveEventsTest extends TestCase
         file_put_contents($root . '/app/api/v1/controllers/components/events/support/EventNames.php', $changes['app/api/v1/controllers/components/events/support/EventNames.php']);
 
         $this->assertSame([
+            'EventNames::REPORT_CREATED (report.created) is not enabled on the hermes channel in app/metadata/events.php',
             'EventNames::REPORT_CREATED (report.created) has no case in tests/api/controllers/components/events/LiveEventsComponentsTest.php',
             "ReportLiveEventsComponent is in no controller's \$uses",
         ], (new LiveEventsCheck($root))->problems());
@@ -173,6 +175,8 @@ class ScaffoldLiveEventsTest extends TestCase
         foreach (['app/api/v1/controllers/components/events', 'tests/api/controllers/components/events'] as $directory) {
             $this->copy(self::ROOT . '/' . $directory, $root . '/' . $directory);
         }
+        mkdir($root . '/app/metadata', 0777, true);
+        copy(self::ROOT . '/app/metadata/events.php', $root . '/app/metadata/events.php');
         foreach (glob(self::ROOT . '/app/api/v1/controllers/*Controller.php') as $file) {
             if (!is_dir($root . '/app/api/v1/controllers')) {
                 mkdir($root . '/app/api/v1/controllers', 0777, true);

@@ -88,7 +88,7 @@ class LiveEventsScaffold
                 . "    const {$constant} = '{$spec->eventName($event)}';\n\n";
             $all .= "        self::{$constant},\n";
         }
-        $marker = "    /**\n     * Every name HermesPublisher is allowed to post.";
+        $marker = "    /**\n     * Every name this class declares.";
         if (strpos($text, $marker) === false || !preg_match('/(const ALL = array\(\n.*?\n)(    \);)/s', $text, $match, PREG_OFFSET_CAPTURE)) {
             throw new ScaffoldException(self::NAMES_PATH . ' no longer has the ALL list the scaffold extends');
         }

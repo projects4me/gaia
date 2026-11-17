@@ -113,7 +113,8 @@ Local compose: OG Gaia publishes to Hermes `:9000`; `gaia-test` publishes to `he
 
 | Area              | Path                                                                     |
 | ----------------- | ------------------------------------------------------------------------ |
-| Allowlist         | `app/api/v1/controllers/components/events/support/EventNames.php`        |
+| Event registry    | `app/metadata/events.php` (read by `core/libs/events/EventRegistry.php`) |
+| Event names       | `app/api/v1/controllers/components/events/support/EventNames.php`        |
 | Envelope          | `app/api/v1/controllers/components/events/support/LiveEventEnvelope.php` |
 | HTTP ingest       | `app/api/v1/controllers/components/events/support/HermesPublisher.php`   |
 | Project id        | `app/api/v1/controllers/components/events/support/ProjectIdResolver.php` |
@@ -126,7 +127,7 @@ Local compose: OG Gaia publishes to Hermes `:9000`; `gaia-test` publishes to `he
 | Live api-tester   | `tools/api-tester/apis/live.json`                                        |
 
 
-`EventNames` must stay in lockstep with `hermes/src/contract/names.js`.
+`EventNames` must stay in lockstep with `hermes/src/contract/names.js`. Which events Gaia sends to Hermes is the registry's call (D-013): an event goes out only when its entry is enabled and lists the `hermes` channel.
 
 ## Testing
 

@@ -6,6 +6,8 @@
 
 namespace Gaia\MVC\REST\Controllers\Components\Events\Support;
 
+use Gaia\Libraries\Events\EventRegistry;
+
 /**
  * This class posts a domain-event envelope to Hermes. Failures are logged
  * and swallowed so the REST save is not rolled back.
@@ -24,22 +26,33 @@ class HermesPublisher
     protected $httpClient;
 
     /**
-     * Creates a publisher, optionally with a test HTTP client.
+     * The event registry that decides which events go to Hermes.
      *
-     * @param  mixed $httpClient Guzzle client or callable that receives the envelope.
+     * @var  EventRegistry
+     * @type EventRegistry
+     */
+    protected $registry;
+
+    /**
+     * Creates a publisher, optionally with a test HTTP client and registry.
+     *
+     * @param  mixed              $httpClient Guzzle client or callable that receives the envelope.
+     * @param  EventRegistry|null $registry   The event registry; null reads app/metadata/events.php.
      * @method __construct
      * @return void
      */
-    public function __construct($httpClient = null)
+    public function __construct($httpClient = null, ?EventRegistry $registry = null)
     {
         $this->httpClient = $httpClient;
+        $this->registry = $registry ?: new EventRegistry();
     }
 
     /**
      * Builds and posts a domain-event envelope. Returns null when required
-     * fields are missing or the event name is not allowlisted.
+     * fields are missing or the registry does not send the event to Hermes
+     * (unknown, disabled or not on the hermes channel).
      *
-     * @param  string $eventName    Allowlisted event name from EventNames.
+     * @param  string $eventName    Event name from EventNames.
      * @param  string $projectId    Project id, or user:<userId> for notifications.
      * @param  string $resourceType Resource type (issue, milestone, comment, ...).
      * @param  string $resourceId   Persisted resource id.
@@ -61,9 +74,15 @@ class HermesPublisher
         if (empty($eventName) || empty($projectId) || empty($resourceType) || empty($resourceId)) {
             return null;
         }
-        if (!EventNames::isAllowed($eventName)) {
+        if (!$this->registry->has($eventName)) {
             if ($logger) {
                 $logger->error('Hermes publish rejected unknown event: ' . $eventName);
+            }
+            return null;
+        }
+        if (!$this->registry->publishes($eventName, EventRegistry::CHANNEL_HERMES)) {
+            if ($logger) {
+                $logger->debug('Hermes publish skipped, the registry does not send it to Hermes: ' . $eventName);
             }
             return null;
         }
