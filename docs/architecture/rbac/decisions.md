@@ -524,6 +524,17 @@ These scenarios are settled and should become tests later:
 | Rationale | A deploy pipeline has no admin to read a code to. The token carries the admin's approval ahead of time, limited to one use, one kind and a short time, so a leaked token is worth little. The secret still goes from Gaia to the service by the poll, never through the pipeline. One error for every failure keeps the endpoint from telling an attacker whether a token existed. |
 | Implications | `ServiceEnrollmentTokens` (`core/libs/authorization`) issues and redeems tokens; `ServiceEnrollments::request()` calls it inside a transaction with a row lock on the token, so two requests cannot spend one token. `serviceEnrollmentTokenBehavior` checks kind and name and keeps everything but `usedAt` fixed. `serviceenrollmenttoken.*` is excluded from scoped tokens (`TokenScope`). Permissions for the new module are granted by hand. |
 
+---
+
+### D-071 — System fields are invisible and read-only through the API, and never audited
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | A field flagged `'system' => true` in model metadata is managed by the system (e.g. a search embedding, the text it was made from, its hash). Through the REST API it is never selected or serialized (the record, its includes, `fields=` and CSV export; a requested system field is silently omitted, like D-033), a system field in a POST/PUT/PATCH body is discarded (like D-034), and naming one in `query`, `sort`, `group` or `having` fails with HTTP 400 `Invalid query: unknown field`, the same as a field that does not exist. It has no field-ACL resource in the permission catalog, and the audit diff leaves it out (a change to system fields only writes no audit row). |
+| Rationale | No role should be able to read or set these columns, so they sit outside field ACL rather than relying on grants; answering 400 rather than 403 (D-036) does not tell a client the column exists. The flag lives in metadata so a module adds such columns without touching the controller. |
+| Implications | `Manager::getSystemFields()` lists a model's system fields (`Manager::systemFieldsOf()` for loaded metadata). `Acl::isFieldActionAllowed()` denies every action on them before the structural bypass (D-035), so `Acl::filterAuthorizedFields()`, `Acl::applyACLOnFields()` and `Acl::authorizeWritableFields()` drop them; `Acl::authorizeClauseUsage()` and `WhereFieldValidator::assertValid()` reject them as unknown; `Query::getModelFields()` leaves them out of the default select; `AclMapCatalog::isFieldCatalogEligible()` skips them; `auditBehavior` filters them from the changed fields. There is no generic bypass: internal code that needs a system field (first: the Ares search columns) reads and writes it through the model directly. |
+
 ## Open questions
 
 Track unsettled policy here. Do not generate tests from these until accepted.
@@ -545,6 +556,7 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 | Date | Change |
 |------|--------|
 | 2026-11-09 | D-066: the delivering poll also returns `serviceClientId`, the Serviceclient record id, so a service can rotate its own secret (D-068) |
+| 2026-11-17 | D-071: model metadata `'system' => true` hides a field from the API (never selected, serialized, written, filtered or sorted on; 400 as an unknown field in clauses), keeps it out of the permission catalog and out of the audit diff |
 | 2026-11-09 | D-070: single-use enrollment tokens (`POST /api/v1/serviceenrollmenttoken`, 15-minute expiry, stored hashed, revoked by DELETE); an enrollment request carrying a valid token of the same kind is approved at once as the issuing admin. |
 | 2026-11-09 | D-067: agent-delegation grant for runtimes (service clients with `agent.delegate`); `Agent.delegationScopes` bounds the delegated token's scope; one-hour token, no refresh token, rows kept |
 | 2026-11-09 | D-066: service tokens (no user) take a deny-by-default path: a resource opts in through `acl.service` (actions, kinds, optional row filter) and the token scope must cover it; reads only; denials are 401 |

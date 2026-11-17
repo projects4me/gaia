@@ -199,6 +199,11 @@ class AclMapCatalog
             return false;
         }
 
+        // System fields have no grants: the API never exposes them (D-071).
+        if (!empty($fieldMeta['system'])) {
+            return false;
+        }
+
         if (isset($fieldMeta['linkedTo']) && $fieldMeta['linkedTo'] !== '' && $fieldMeta['linkedTo'] !== null) {
             return false;
         }

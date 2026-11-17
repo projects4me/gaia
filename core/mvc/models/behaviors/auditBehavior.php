@@ -9,6 +9,7 @@ namespace Gaia\MVC\Models\Behaviors;
 use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\BehaviorInterface;
 use Phalcon\Mvc\Model\Behavior;
+use Gaia\Libraries\Utils\Util;
 
 /**
  * This behavior serves the purpose of maintaining the Audit Information.
@@ -41,7 +42,8 @@ class auditBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeUpdate(&$model)
     {
-        $changedFields = $model->getChangedFields();
+        // System fields are managed by the system and never audited (D-071).
+        $changedFields = array_diff($model->getChangedFields(), $this->getSystemFields($model));
         if (count($changedFields) > 0) {
             $originalData = $model->getSnapshotData();
             $model->isChanged = true;
@@ -54,5 +56,17 @@ class auditBehavior extends Behavior implements BehaviorInterface
             }
             $model->audit = $audit;
         }
+    }
+
+    /**
+     * The model's fields flagged `system` in its metadata.
+     *
+     * @param ModelInterface $model
+     * @return array
+     */
+    protected function getSystemFields($model)
+    {
+        $modelName = Util::extractClassFromNamespace(get_class($model));
+        return $model->getDI()->get('metaManager')->getSystemFields($modelName);
     }
 }

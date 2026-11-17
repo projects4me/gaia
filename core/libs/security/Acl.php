@@ -6,6 +6,7 @@
 
 namespace Gaia\Libraries\Security;
 
+use Gaia\Libraries\Meta\Manager;
 use Gaia\MVC\Models\Permission;
 use Gaia\MVC\Models\Project;
 
@@ -311,6 +312,11 @@ class Acl
                 }
             }
 
+            // System fields are not part of the API: a clause naming one fails like an unknown field (D-071).
+            if ($this->isSystemField($targetModel, $field)) {
+                throw new \Gaia\Exception\BadRequest('Invalid query: unknown field "' . $alias . '.' . $field . '".');
+            }
+
             if (!$this->isFieldActionAllowed($targetModel, $field, 'get')) {
                 $this->denyAccess(
                     'Access denied to query criteria for '
@@ -331,6 +337,11 @@ class Acl
      */
     public function isFieldActionAllowed($modelName, $field, $action)
     {
+        // No grant reaches a system field through the API (D-071).
+        if ($this->isSystemField($modelName, $field)) {
+            return false;
+        }
+
         if ($this->isStructuralField($modelName, $field)) {
             return true;
         }
@@ -431,6 +442,11 @@ class Acl
         $filtered = [];
 
         foreach ($payload as $field => $value) {
+            // System fields are written by the system only; a user body cannot set them (D-071).
+            if ($this->isSystemField($modelName, $field)) {
+                continue;
+            }
+
             if ($field === 'id' || $this->isStructuralField($modelName, $field)) {
                 $filtered[$field] = $value;
                 continue;
@@ -1387,6 +1403,24 @@ class Acl
         }
 
         return AclMapCatalog::isStructuralFieldName($field, $meta);
+    }
+
+    /**
+     * Whether a field is flagged `system` in the model metadata: hidden from the API, never user-written (D-071).
+     *
+     * @param  string $modelName
+     * @param  string $field
+     * @return bool
+     */
+    protected function isSystemField($modelName, $field)
+    {
+        try {
+            $meta = $this->di->get('metaManager')->getModelMeta($modelName);
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        return in_array($field, Manager::systemFieldsOf($meta), true);
     }
 
     /**

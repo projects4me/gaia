@@ -10,7 +10,8 @@ use Gaia\Exception\BadRequest;
 
 /**
  * Checks that a field named in a query leaf is a plain identifier (`field` or `alias.field`) that names a field of
- * the queried model or of one of its relationships, so nothing but a known field name reaches the PHQL.
+ * the queried model or of one of its relationships, so nothing but a known field name reaches the PHQL. System
+ * fields count as unknown.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Core\Mvc\Models\Query
@@ -69,7 +70,8 @@ class WhereFieldValidator
             return;
         }
 
-        if (!array_key_exists($fieldName, $fields)) {
+        // A system field is not part of the API, so it reads as unknown (D-071).
+        if (!array_key_exists($fieldName, $fields) || !empty($fields[$fieldName]['system'])) {
             throw new BadRequest('Invalid query: unknown field "' . $field . '".');
         }
     }
