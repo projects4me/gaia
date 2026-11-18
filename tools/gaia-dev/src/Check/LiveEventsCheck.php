@@ -10,7 +10,8 @@ use GaiaDev\Scaffold\LiveEventsScaffold;
 use GaiaDev\Scaffold\LiveEventsSpec;
 
 /**
- * Checks the live events: every EventNames constant is in its ALL list, emitted by a component and covered by a
+ * Checks the live events: every EventNames constant is in its ALL list, enabled on the hermes channel in the
+ * event registry, emitted by a component and covered by a
  * case in LiveEventsComponentsTest, and every component is listed in a controller's `$uses`.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
@@ -19,6 +20,11 @@ use GaiaDev\Scaffold\LiveEventsSpec;
  */
 class LiveEventsCheck
 {
+    /**
+     * The event registry (live-updates D-013), relative to the repository root.
+     */
+    public const REGISTRY_PATH = 'app/metadata/events.php';
+
     /**
      * @var string
      */
@@ -43,12 +49,17 @@ class LiveEventsCheck
         foreach (glob($this->root . '/' . LiveEventsSpec::EVENTS_DIRECTORY . '/*.php') ?: [] as $file) {
             $components[basename($file, '.php')] = file_get_contents($file);
         }
+        $registry = $this->registry();
         $problems = [];
 
         preg_match_all("/const ([A-Z_]+) = '([a-z.]+)';/", $names, $constants, PREG_SET_ORDER);
         foreach ($constants as [, $constant, $value]) {
             if (strpos($names, "self::{$constant},") === false) {
                 $problems[] = "EventNames::{$constant} is not in EventNames::ALL";
+            }
+            $entry = $registry[$value] ?? null;
+            if (!is_array($entry) || empty($entry['enabled']) || !in_array('hermes', (array) ($entry['channels'] ?? []), true)) {
+                $problems[] = "EventNames::{$constant} ({$value}) is not enabled on the hermes channel in " . self::REGISTRY_PATH;
             }
             $emitted = false;
             foreach ($components as $source) {
@@ -97,6 +108,17 @@ class LiveEventsCheck
         }
 
         return $code;
+    }
+
+    /**
+     * @return array the event registry's definitions by name, empty when the file is missing
+     */
+    private function registry(): array
+    {
+        $file = $this->root . '/' . self::REGISTRY_PATH;
+        $events = is_file($file) ? require $file : [];
+
+        return is_array($events) ? $events : [];
     }
 
     /**

@@ -17,6 +17,7 @@ use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanissueLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\UserAccessLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\MembershipLiveEventsComponent;
+use Gaia\Libraries\Events\EventRegistry;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\EventNames;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\HermesPublisher;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\ProjectIdResolver;
@@ -705,6 +706,34 @@ class LiveEventsComponentsTest extends TestCase
             'issue',
             'issue-1'
         ));
+        $this->assertSame(array(), $posted);
+    }
+
+    public function testPublisherDropsAnEventTheRegistryDisables()
+    {
+        $posted = array();
+        $registry = new EventRegistry(array(
+            EventNames::ISSUE_CREATED => array('scope' => 'project', 'channels' => array('hermes'), 'enabled' => false),
+            EventNames::MILESTONE_CREATED => array('scope' => 'project', 'channels' => array('hermes'), 'enabled' => true),
+        ));
+        $publisher = new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        }, $registry);
+
+        $this->assertNull($publisher->publishDomainEvent(EventNames::ISSUE_CREATED, 'project-1', 'issue', 'issue-1'));
+        $this->assertNotNull($publisher->publishDomainEvent(EventNames::MILESTONE_CREATED, 'project-1', 'milestone', 'm-1'));
+        $this->assertCount(1, $posted);
+        $this->assertEquals(EventNames::MILESTONE_CREATED, $posted[0]['eventName']);
+    }
+
+    public function testPublisherDropsAWorkflowOnlyEvent()
+    {
+        $posted = array();
+        $publisher = new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        });
+
+        $this->assertNull($publisher->publishDomainEvent('comment.added', 'project-1', 'comment', 'comment-1'));
         $this->assertSame(array(), $posted);
     }
 

@@ -6,9 +6,14 @@
 
 namespace Gaia\MVC\REST\Controllers\Components\Events\Support;
 
+use Gaia\Libraries\Events\EventRegistry;
+
 /**
- * This class holds the allowlisted Hermes domain-event names. Keep in
- * lockstep with hermes/src/contract/names.js EVENT_ALLOWLIST.
+ * This class holds the names of the Hermes domain events, so code refers to
+ * them by constant. Which of them Gaia sends is the event registry's call
+ * (app/metadata/events.php, live-updates D-013): the enabled events on the
+ * hermes channel. Keep the names in lockstep with
+ * hermes/src/contract/names.js EVENT_ALLOWLIST.
  *
  * @class   EventNames
  * @package Gaia\MVC\REST\Controllers\Components\Events\Support
@@ -180,7 +185,9 @@ class EventNames
     const USER_ACCESS_CHANGED = 'user.access.changed';
 
     /**
-     * Every name HermesPublisher is allowed to post.
+     * Every name this class declares. It is not the allowlist: what
+     * HermesPublisher posts is allowed() (the registry). gaia-dev's
+     * live-events scaffold and check still read this list.
      *
      * @var   array
      * @type  array
@@ -212,7 +219,19 @@ class EventNames
     );
 
     /**
-     * Returns true when the event name is in the Gaia/Hermes allowlist.
+     * The names HermesPublisher may post: the registry's enabled events on
+     * the hermes channel.
+     *
+     * @method allowed
+     * @return string[]
+     */
+    public static function allowed()
+    {
+        return (new EventRegistry())->names(EventRegistry::CHANNEL_HERMES);
+    }
+
+    /**
+     * Returns true when the registry enables the event on the hermes channel.
      *
      * @param  string $eventName The domain-event name to check.
      * @method isAllowed
@@ -220,6 +239,6 @@ class EventNames
      */
     public static function isAllowed($eventName)
     {
-        return in_array($eventName, self::ALL, true);
+        return (new EventRegistry())->publishes($eventName, EventRegistry::CHANNEL_HERMES);
     }
 }
