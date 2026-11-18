@@ -16174,6 +16174,140 @@
       }
     },
     {
+      "id": "case:client/mentions-comment-create-with-mention",
+      "type": "case",
+      "key": "client/mentions-comment-create-with-mention",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/comment",
+        "resource": "comment",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.mentionCommentId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/mentions-comment-delete",
+      "type": "case",
+      "key": "client/mentions-comment-delete",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/comment/{runtime.mentionCommentId}",
+        "resource": "comment",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.mentionCommentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/mentions-comment-update-with-mention",
+      "type": "case",
+      "key": "client/mentions-comment-update-with-mention",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/comment/{runtime.mentionCommentId}",
+        "resource": "comment",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.mentionCommentId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/mentions-conversationroom-update-description-with-mention",
+      "type": "case",
+      "key": "client/mentions-conversationroom-update-description-with-mention",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/conversationroom/{conversationroomId}",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/mentions-issue-collection-patch-description",
+      "type": "case",
+      "key": "client/mentions-issue-collection-patch-description",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/mentions-issue-update-description-unchanged",
+      "type": "case",
+      "key": "client/mentions-issue-update-description-unchanged",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{issueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/mentions-issue-update-description-with-mention",
+      "type": "case",
+      "key": "client/mentions-issue-update-description-with-mention",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{issueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/notification-mark-all-read-ignores-body-user",
       "type": "case",
       "key": "client/notification-mark-all-read-ignores-body-user",
@@ -70482,6 +70616,271 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/mentions-comment-create-with-mention",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/mentions-comment-create-with-mention",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/mentions-comment-create-with-mention",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/mentions-comment-create-with-mention",
+      "type": "covers",
+      "to": "controller:comment"
+    },
+    {
+      "from": "case:client/mentions-comment-create-with-mention",
+      "type": "exercises",
+      "to": "route:POST /api/v1/comment"
+    },
+    {
+      "from": "case:client/mentions-comment-create-with-mention",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/mentions-comment-create-with-mention",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/mentions-comment-create-with-mention",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/mentions-comment-delete",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/mentions-comment-delete",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/mentions-comment-delete",
+      "type": "covers",
+      "to": "controller:comment"
+    },
+    {
+      "from": "case:client/mentions-comment-delete",
+      "type": "depends_on",
+      "to": "case:client/mentions-comment-create-with-mention"
+    },
+    {
+      "from": "case:client/mentions-comment-delete",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/comment/{id}"
+    },
+    {
+      "from": "case:client/mentions-comment-delete",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/mentions-comment-update-with-mention",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/mentions-comment-update-with-mention",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/mentions-comment-update-with-mention",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/mentions-comment-update-with-mention",
+      "type": "covers",
+      "to": "controller:comment"
+    },
+    {
+      "from": "case:client/mentions-comment-update-with-mention",
+      "type": "depends_on",
+      "to": "case:client/mentions-comment-create-with-mention"
+    },
+    {
+      "from": "case:client/mentions-comment-update-with-mention",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/comment/{id}"
+    },
+    {
+      "from": "case:client/mentions-comment-update-with-mention",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/mentions-comment-update-with-mention",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/mentions-conversationroom-update-description-with-mention",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/mentions-conversationroom-update-description-with-mention",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/mentions-conversationroom-update-description-with-mention",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/mentions-conversationroom-update-description-with-mention",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/mentions-conversationroom-update-description-with-mention",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/conversationroom/{id}"
+    },
+    {
+      "from": "case:client/mentions-conversationroom-update-description-with-mention",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/mentions-conversationroom-update-description-with-mention",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/mentions-conversationroom-update-description-with-mention",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/mentions-issue-collection-patch-description",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/mentions-issue-collection-patch-description",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/mentions-issue-collection-patch-description",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/mentions-issue-collection-patch-description",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue"
+    },
+    {
+      "from": "case:client/mentions-issue-collection-patch-description",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/mentions-issue-collection-patch-description",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/mentions-issue-collection-patch-description",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-unchanged",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-unchanged",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-unchanged",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-unchanged",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-unchanged",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-unchanged",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-unchanged",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-unchanged",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-with-mention",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-with-mention",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-with-mention",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-with-mention",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-with-mention",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-with-mention",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-with-mention",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/mentions-issue-update-description-with-mention",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
       "from": "case:client/notification-mark-all-read-ignores-body-user",
       "type": "asserts",
       "to": "assertion:jsonEqual"
@@ -85154,6 +85553,11 @@
     {
       "from": "model:Comment",
       "type": "uses_behaviour",
+      "to": "behaviour:mentionsBehavior"
+    },
+    {
+      "from": "model:Comment",
+      "type": "uses_behaviour",
       "to": "behaviour:modifiedUserBehavior"
     },
     {
@@ -85290,6 +85694,11 @@
       "from": "model:Conversationroom",
       "type": "uses_behaviour",
       "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Conversationroom",
+      "type": "uses_behaviour",
+      "to": "behaviour:mentionsBehavior"
     },
     {
       "from": "model:Conversationroom",
@@ -86380,6 +86789,11 @@
       "from": "model:Issue",
       "type": "uses_behaviour",
       "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Issue",
+      "type": "uses_behaviour",
+      "to": "behaviour:mentionsBehavior"
     },
     {
       "from": "model:Issue",

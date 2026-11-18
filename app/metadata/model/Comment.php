@@ -154,8 +154,10 @@ $models['Comment'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'mentionsBehavior'
     ),
+    'mentions' => ['fields' => ['comment']],
     'acl' => [
         'groups' => ['Project', 'Conversationroom'],
         'groupKeys' => [

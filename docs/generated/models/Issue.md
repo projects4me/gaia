@@ -52,9 +52,9 @@
 <a id="summary"></a>
 ## Summary
 
-- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior
+- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, mentionsBehavior, modifiedUserBehavior, softDeleteBehavior
 - acl: group Project via projectId
 - controller: Gaia\MVC\REST\Controllers\IssueController
 - routes: DELETE /api/v1/issue, DELETE /api/v1/issue/{id}, GET /api/v1/issue, GET /api/v1/issue/{id}, GET /api/v1/issue/{id}/{relation}, OPTIONS /api/v1/issue, PATCH /api/v1/issue, PATCH /api/v1/issue/{id}, POST /api/v1/issue, PUT /api/v1/issue, PUT /api/v1/issue/{id}
 - components: Events\IssueLiveEvents, Events\WorkflowReplies, Events\WorkflowTriggers, Filethumb, Issueactivities, Notification
-- cases: 78 (acl 35, backend 6, client 31, live 6); gaia-dev cases issue
+- cases: 81 (acl 35, backend 6, client 34, live 6); gaia-dev cases issue
