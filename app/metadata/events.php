@@ -246,8 +246,8 @@ return [
         'enabled' => true,
     ],
     'user.access.changed' => [
-        'description' => "A user's access changed: account status, session revocation, or a membership "
-            . 'created or deleted; scoped to user:<userId>, user id only (D-011).',
+        'description' => "A user's access changed: account status, session revocation, a membership "
+            . 'or a role assignment created, changed or deleted; scoped to user:<userId>, user id only (D-011).',
         'scope' => 'user',
         'channels' => ['hermes'],
         'consumers' => ['prometheus', 'hermes'],

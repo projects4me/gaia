@@ -368,6 +368,106 @@
       }
     },
     {
+      "id": "live-userrole-create-publishes-user-access-changed",
+      "method": "POST",
+      "path": "/api/v1/userrole",
+      "resource": "userrole",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "userrole",
+          "attributes": {
+            "userId": "{memberUserId}",
+            "roleId": "{roleId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.liveAccessUserroleId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "expect": [
+          {
+            "eventName": "user.access.changed",
+            "projectId": "user:{memberUserId}",
+            "resourceType": "user",
+            "resourceId": "{memberUserId}"
+          }
+        ],
+        "timeoutMs": 5000
+      }
+    },
+    {
+      "id": "live-userrole-delete-publishes-user-access-changed",
+      "method": "DELETE",
+      "path": "/api/v1/userrole/{runtime.liveAccessUserroleId}",
+      "resource": "userrole",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      },
+      "hermes": {
+        "expect": [
+          {
+            "eventName": "user.access.changed",
+            "projectId": "user:{memberUserId}",
+            "resourceType": "user",
+            "resourceId": "{memberUserId}"
+          }
+        ],
+        "timeoutMs": 5000
+      }
+    },
+    {
+      "id": "live-userrole-create-succeeds-when-hermes-unreachable-fail-open",
+      "method": "POST",
+      "path": "/api/v1/userrole",
+      "resource": "userrole",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "userrole",
+          "attributes": {
+            "userId": "{memberUserId}",
+            "roleId": "{roleId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.failOpenUserroleId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    },
+    {
+      "id": "live-userrole-cleanup-fail-open-assignment",
+      "method": "DELETE",
+      "path": "/api/v1/userrole/{runtime.failOpenUserroleId}",
+      "resource": "userrole",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    },
+    {
       "id": "live-user-account-status-change-publishes-user-access-changed",
       "method": "PATCH",
       "path": "/api/v1/user/{userId}",

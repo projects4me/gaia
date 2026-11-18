@@ -71,6 +71,7 @@ Controller-attached components (REST `$uses`):
 | `VoteController`             | `ConversationVoteLiveEvents`    | conversation vote added/removed                                    |
 | `ConversationroomController` | `ConversationLiveEvents`        | conversation.created                                               |
 | `MembershipController`       | `MembershipLiveEvents`          | `user.access.changed` for the member on create/delete (D-011)      |
+| `UserroleController`         | `UserroleLiveEvents`            | `user.access.changed` for the user on role assignment create/update/delete (D-011) |
 | `UserController`             | `UserAccessLiveEvents`          | `user.access.changed` when `accountStatus` changes, after session revocation (D-011) |
 
 

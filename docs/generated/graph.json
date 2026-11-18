@@ -20850,6 +20850,85 @@
       }
     },
     {
+      "id": "case:live/live-userrole-cleanup-fail-open-assignment",
+      "type": "case",
+      "key": "live/live-userrole-cleanup-fail-open-assignment",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "DELETE",
+        "path": "/api/v1/userrole/{runtime.failOpenUserroleId}",
+        "resource": "userrole",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.failOpenUserroleId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-userrole-create-publishes-user-access-changed",
+      "type": "case",
+      "key": "live/live-userrole-create-publishes-user-access-changed",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/userrole",
+        "resource": "userrole",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "roleId"
+        ],
+        "stores": [
+          "runtime.liveAccessUserroleId"
+        ]
+      }
+    },
+    {
+      "id": "case:live/live-userrole-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "case",
+      "key": "live/live-userrole-create-succeeds-when-hermes-unreachable-fail-open",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/userrole",
+        "resource": "userrole",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "roleId"
+        ],
+        "stores": [
+          "runtime.failOpenUserroleId"
+        ]
+      }
+    },
+    {
+      "id": "case:live/live-userrole-delete-publishes-user-access-changed",
+      "type": "case",
+      "key": "live/live-userrole-delete-publishes-user-access-changed",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "DELETE",
+        "path": "/api/v1/userrole/{runtime.liveAccessUserroleId}",
+        "resource": "userrole",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.liveAccessUserroleId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:mail/mail-cleanup-delete-created-user",
       "type": "case",
       "key": "mail/mail-cleanup-delete-created-user",
@@ -21507,6 +21586,23 @@
         "hooks": [
           "afterAccessChange",
           "publishAccessChanged"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\UserroleLiveEvents",
+      "type": "component",
+      "key": "Events\\UserroleLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\UserroleLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/UserroleLiveEventsComponent.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterDelete",
+          "afterUpdate"
         ]
       }
     },
@@ -79029,6 +79125,141 @@
       "to": "fixture:userId"
     },
     {
+      "from": "case:live/live-userrole-cleanup-fail-open-assignment",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-userrole-cleanup-fail-open-assignment",
+      "type": "covers",
+      "to": "controller:userrole"
+    },
+    {
+      "from": "case:live/live-userrole-cleanup-fail-open-assignment",
+      "type": "depends_on",
+      "to": "case:live/live-userrole-create-succeeds-when-hermes-unreachable-fail-open"
+    },
+    {
+      "from": "case:live/live-userrole-cleanup-fail-open-assignment",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/userrole/{id}"
+    },
+    {
+      "from": "case:live/live-userrole-cleanup-fail-open-assignment",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-userrole-create-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:hermes.expect"
+    },
+    {
+      "from": "case:live/live-userrole-create-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-userrole-create-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-userrole-create-publishes-user-access-changed",
+      "type": "covers",
+      "to": "controller:userrole"
+    },
+    {
+      "from": "case:live/live-userrole-create-publishes-user-access-changed",
+      "type": "exercises",
+      "to": "route:POST /api/v1/userrole"
+    },
+    {
+      "from": "case:live/live-userrole-create-publishes-user-access-changed",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-userrole-create-publishes-user-access-changed",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:live/live-userrole-create-publishes-user-access-changed",
+      "type": "uses_fixture",
+      "to": "fixture:roleId"
+    },
+    {
+      "from": "case:live/live-userrole-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-userrole-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-userrole-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "covers",
+      "to": "controller:userrole"
+    },
+    {
+      "from": "case:live/live-userrole-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "exercises",
+      "to": "route:POST /api/v1/userrole"
+    },
+    {
+      "from": "case:live/live-userrole-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-userrole-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:live/live-userrole-create-succeeds-when-hermes-unreachable-fail-open",
+      "type": "uses_fixture",
+      "to": "fixture:roleId"
+    },
+    {
+      "from": "case:live/live-userrole-delete-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:hermes.expect"
+    },
+    {
+      "from": "case:live/live-userrole-delete-publishes-user-access-changed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-userrole-delete-publishes-user-access-changed",
+      "type": "covers",
+      "to": "controller:userrole"
+    },
+    {
+      "from": "case:live/live-userrole-delete-publishes-user-access-changed",
+      "type": "depends_on",
+      "to": "case:live/live-userrole-create-publishes-user-access-changed"
+    },
+    {
+      "from": "case:live/live-userrole-delete-publishes-user-access-changed",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/userrole/{id}"
+    },
+    {
+      "from": "case:live/live-userrole-delete-publishes-user-access-changed",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-userrole-delete-publishes-user-access-changed",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
       "from": "case:mail/mail-cleanup-delete-created-user",
       "type": "asserts",
       "to": "assertion:status"
@@ -82542,6 +82773,11 @@
       "from": "controller:userrole",
       "type": "serves",
       "to": "model:Userrole"
+    },
+    {
+      "from": "controller:userrole",
+      "type": "uses_component",
+      "to": "component:Events\\UserroleLiveEvents"
     },
     {
       "from": "controller:userskill",
