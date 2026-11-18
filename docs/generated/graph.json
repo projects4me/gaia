@@ -21268,6 +21268,23 @@
       }
     },
     {
+      "id": "component:Events\\DocLiveEvents",
+      "type": "component",
+      "key": "Events\\DocLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\DocLiveEventsComponent",
+        "file": "app/api/v1/controllers/components/events/DocLiveEventsComponent.php",
+        "extends": "LiveEventsComponent",
+        "implements": [],
+        "hooks": [
+          "afterCreate",
+          "afterUpdate",
+          "afterDelete"
+        ]
+      }
+    },
+    {
       "id": "component:Events\\IdeaLiveEvents",
       "type": "component",
       "key": "Events\\IdeaLiveEvents",
@@ -21406,6 +21423,21 @@
         "implements": [],
         "hooks": [
           "publishCreated"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\Support\\CollabNotifier",
+      "type": "component",
+      "key": "Events\\Support\\CollabNotifier",
+      "attributes": {
+        "kind": "support",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\Support\\CollabNotifier",
+        "file": "app/api/v1/controllers/components/events/support/CollabNotifier.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "notifyAccessChanged"
         ]
       }
     },
@@ -80333,6 +80365,11 @@
       "from": "controller:doc",
       "type": "serves",
       "to": "model:Doc"
+    },
+    {
+      "from": "controller:doc",
+      "type": "uses_component",
+      "to": "component:Events\\DocLiveEvents"
     },
     {
       "from": "controller:doccontent",
