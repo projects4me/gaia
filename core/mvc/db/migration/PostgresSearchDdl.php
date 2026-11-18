@@ -67,7 +67,7 @@ class PostgresSearchDdl
      *
      * @var array
      */
-    private const TEXT_SOURCE_TYPES = array('varchar', 'char', 'text', 'tinytext', 'mediumtext', 'longtext');
+    public const TEXT_SOURCE_TYPES = array('varchar', 'char', 'text', 'tinytext', 'mediumtext', 'longtext');
 
     /**
      * This function tells whether a metadata field type is built by this class.

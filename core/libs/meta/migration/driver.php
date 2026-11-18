@@ -8,6 +8,7 @@ namespace Gaia\Libraries\Meta\Migration;
 
 use Gaia\Libraries\Meta\Manager as metaManager;
 use Gaia\Libraries\Meta\Migration as metaMigration;
+use Gaia\Libraries\Search\SearchableRegistry;
 
 /**
  * This class is responsible for synchronizing the database by using the
@@ -81,6 +82,9 @@ class Driver
                     }
                 }
             }
+
+            // Before any DDL: every search block is valid and no two models share a search type.
+            (new SearchableRegistry($this->di->get('metaManager'), $models))->types();
 
             // before migrating table or views, let's migrate functions. Because table or views use
             // functions. So migrating functions is required first.

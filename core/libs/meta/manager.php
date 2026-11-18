@@ -10,6 +10,7 @@ use Phalcon\Db\Column;
 use Phalcon\Mvc\Model\MetaData;
 use Gaia\Libraries\file\Handler as fileHandler;
 use Gaia\Libraries\Utils\Util;
+use Gaia\Libraries\Search\SearchBlock;
 
 /**
  * This class is used for the metadata storage, retrival and maintenance.
@@ -81,6 +82,8 @@ class Manager
         $metadata = $this->di->get('fileHandler')->readFile(APP_PATH . self::basePath . '/model/' . $model . '.php');
         // Routes without a model metadata file (e.g. Issueplanning) read as null
         $metadata = isset($metadata[$model]) ? $metadata[$model] : array();
+        // A search block adds its system columns (D-071) before the fields are parsed
+        $metadata = SearchBlock::apply($model, $metadata);
         $fields = $this->parseFields($metadata);
 
         $modelMeta = array(
@@ -113,11 +116,11 @@ class Manager
             // How every column must be bound/casted
             MetaData::MODELS_DATA_TYPES_BIND => $fields['bind'],
 
-            // Fields that must be ignored from INSERT SQL statements
-            MetaData::MODELS_AUTOMATIC_DEFAULT_INSERT => array(),//$fields['default'],
+            // Fields that must be ignored from INSERT SQL statements: generated columns, which the database computes
+            MetaData::MODELS_AUTOMATIC_DEFAULT_INSERT => $fields['generated'],
 
             // Fields that must be ignored from UPDATE SQL statements
-            MetaData::MODELS_AUTOMATIC_DEFAULT_UPDATE => array(),//$fields['default'],
+            MetaData::MODELS_AUTOMATIC_DEFAULT_UPDATE => $fields['generated'],
 
             // Default values for columns
             MetaData::MODELS_DEFAULT_VALUES => array(),//$fields['default'],
@@ -137,6 +140,9 @@ class Manager
             'behaviors' => (isset($metadata['behaviors']) ? $metadata['behaviors'] : array()),
 
             'acl' => (isset($metadata['acl']) ? $metadata['acl'] : array()),
+
+            // The validated search block, or null when the model is not searchable
+            SearchBlock::KEY => (isset($metadata[SearchBlock::KEY]) ? $metadata[SearchBlock::KEY] : null),
         );
 
         self::$cachedModelMeta[$model] = $modelMeta;
@@ -198,6 +204,7 @@ class Manager
             'notNull' => array(),
             'type' => array(),
             'bind' => array(),
+            'generated' => array(),
             'id' => false,
         );
         // Routes without model metadata (e.g. Issueplanning) have no table and no fields
@@ -225,6 +232,11 @@ class Manager
 
             // set the field data bind type
             $data['bind'][$field] = $this->getBindType($properties['type']);
+
+            // A generated column (e.g. a search tsvector) is never written
+            if (isset($properties['generated'])) {
+                $data['generated'][$field] = true;
+            }
 
             // if default value is set in metadata then set it
             if (isset($properties['default'])) {

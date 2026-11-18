@@ -88,6 +88,7 @@ $loader->registerNamespaces(
         "Gaia\\Workflows\\Process" => APP_PATH . '/app/workflows/process/',
         "Gaia\\Workflows\\Actions" => APP_PATH . '/core/workflows/actions/',
         "Gaia\\Libraries\\Utils" => APP_PATH . '/core/libs/utils/',
+        "Gaia\\Libraries\\Search" => APP_PATH . '/core/libs/search/',
         "Gaia\\Services" => APP_PATH . '/core/services/',
     ]
 );

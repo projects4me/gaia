@@ -18,6 +18,7 @@ use Phalcon\Db\Column;
 use Phalcon\Db\Index;
 use Phalcon\Migrations\Mvc\Model\Migration as PhalconMigration;
 use Gaia\Libraries\Meta\Manager as metaManager;
+use Gaia\Libraries\Search\SearchBlock;
 
 /**
  * This class is responsible for synchronizing the database by using the
@@ -313,14 +314,19 @@ class Migration extends PhalconMigration
     }
 
     /**
-     * This function returns metadata of given model.
+     * This function returns metadata of given model, with the columns and indexes of its search block.
      *
      * @param  $model
      * @return array
      */
     private function getMetaData($model)
     {
-        return $this->di->get('fileHandler')->readFile(APP_PATH . metaManager::basePath . '/model/' . $model . '.php');
+        $meta = $this->di->get('fileHandler')->readFile(APP_PATH . metaManager::basePath . '/model/' . $model . '.php');
+        if (isset($meta[$model]) && is_array($meta[$model])) {
+            $meta[$model] = SearchBlock::apply($model, $meta[$model]);
+        }
+
+        return $meta;
     }
 
     /**
