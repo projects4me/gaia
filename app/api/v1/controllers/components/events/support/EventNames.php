@@ -193,6 +193,13 @@ class EventNames
     const USER_ACCESS_CHANGED = 'user.access.changed';
 
     /**
+     * A user was mentioned in a record's text.
+     *
+     * @var string
+     */
+    const USER_MENTIONED = 'user.mentioned';
+
+    /**
      * The names HermesPublisher may post: the registry's enabled events on
      * the hermes channel.
      *
