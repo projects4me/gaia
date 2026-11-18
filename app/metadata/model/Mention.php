@@ -62,6 +62,14 @@ $models['Mention'] = array(
             'null' => true,
             'relatedIdentifier' => true
         ),
+        'projectId' => array(
+            'name' => 'projectId',
+            'label' => 'LBL_MENTIONS_PROJECT_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+            'relatedIdentifier' => true
+        ),
         'notified' => array(
             'name' => 'notified',
             'label' => 'LBL_MENTIONS_NOTIFIED',
@@ -78,6 +86,12 @@ $models['Mention'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
+        'projectId' => 'INDEX',
+        'userId' => 'INDEX',
+        'relatedTo_relatedId' => array(
+            'type' => 'index',
+            'columns' => array('relatedTo', 'relatedId'),
+        ),
     ),
     'foriegnKeys' => array(
 
@@ -91,6 +105,11 @@ $models['Mention'] = array(
             'createdUser' => array(
                 'primaryKey' => 'createdUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'project' => array(
+                'primaryKey' => 'projectId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
                 'relatedKey' => 'id'
             ),
             'user' => array(

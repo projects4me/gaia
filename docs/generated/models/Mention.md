@@ -6,6 +6,7 @@
 ## Fields
 
 - notified bool required
+- projectId varchar(36)
 - relatedId varchar(36)
 - relatedTo varchar(30) required
 - userId varchar(36) required
@@ -17,6 +18,7 @@
 - activity hasOne -> Activity
 - comment hasOne -> Comment
 - createdUser hasOne -> User
+- project hasOne -> Project
 - user hasOne -> User
 
 <a id="summary"></a>
