@@ -11,6 +11,7 @@ php tools/gaia-dev/bin/gaia-dev graph export           # write docs/generated/gr
 php tools/gaia-dev/bin/gaia-dev graph export --check   # exit 1 when the committed graph.json is stale
 php tools/gaia-dev/bin/gaia-dev docs generate          # write the pages under docs/generated from graph.json
 php tools/gaia-dev/bin/gaia-dev docs generate --check  # exit 1 when a committed page is stale, missing or orphaned
+`docs generate` also writes `docs/generated/events.json`, the event registry as a sorted list of `{name, scope, channels, enabled, description}`, for the Hermes allowlist check.
 ```
 
 ```bash
@@ -23,8 +24,8 @@ php tools/gaia-dev/bin/gaia-dev scaffold resource Report --parent=Project --fiel
 php tools/gaia-dev/bin/gaia-dev check resource Report            # exit 1 when a touchpoint is missing or inconsistent
 php tools/gaia-dev/bin/gaia-dev scaffold behavior reportTotals --model=Report --events=beforeSave   # class, failing test, metadata entry
 php tools/gaia-dev/bin/gaia-dev check behavior [--skip-tests]   # exit 1 on a missing class or test, or a test failing alone
-php tools/gaia-dev/bin/gaia-dev scaffold live-events Report --events=created,updated --fields=title,status [--parent=reportId:Report]   # component, EventNames, controller $uses, test cases; prints the Hermes names to add
-php tools/gaia-dev/bin/gaia-dev check live-events   # exit 1 on an event name with no component or test, or a component in no $uses
+php tools/gaia-dev/bin/gaia-dev scaffold live-events Report --events=created,updated --fields=title,status [--parent=reportId:Report] [--scope=project|user]   # component, EventNames, registry entry (app/metadata/events.php), controller $uses, test cases; prints the Hermes names to add
+php tools/gaia-dev/bin/gaia-dev check live-events   # exit 1 on a constant not enabled on the hermes channel in the registry, a hermes registry entry with no constant, an unknown channel or scope, a name with no component or test, or a component in no $uses
 php tools/gaia-dev/bin/gaia-dev scaffold action Tag patch [--domain=TagRules]   # thin override of a standard action (no new route) + its acl and client cases; names the domain class to write
 php tools/gaia-dev/bin/gaia-dev check action   # exit 1 when a scaffolded action lacks its route, permission rule or acl/client cases
 ```

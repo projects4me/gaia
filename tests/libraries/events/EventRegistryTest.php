@@ -81,13 +81,13 @@ class EventRegistryTest extends TestCase
     public function testTheFileSendsEveryEventNamesConstantToHermes()
     {
         $hermes = (new EventRegistry())->names(EventRegistry::CHANNEL_HERMES);
-        $declared = EventNames::ALL;
+        $declared = array_values((new \ReflectionClass(EventNames::class))->getConstants());
         sort($hermes);
         sort($declared);
 
         $this->assertSame($declared, $hermes);
         $this->assertSame((new EventRegistry())->names(EventRegistry::CHANNEL_HERMES), EventNames::allowed());
-        $this->assertCount(23, $declared);
+        $this->assertCount(24, $declared);
     }
 
     public function testTheFileRaisesEveryWorkflowTriggerWithTheCatalogsSource()
@@ -113,7 +113,7 @@ class EventRegistryTest extends TestCase
             $registry->names(EventRegistry::CHANNEL_WORKFLOW)
         ));
 
-        $this->assertCount(28, $everyName);
+        $this->assertCount(29, $everyName);
         foreach ($everyName as $name) {
             $definition = $registry->definition($name);
             $this->assertNotEmpty($definition['description'], $name);

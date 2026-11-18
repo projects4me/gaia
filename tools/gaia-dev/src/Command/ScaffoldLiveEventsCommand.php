@@ -51,7 +51,7 @@ class ScaffoldLiveEventsCommand
     {
         try {
             if (count($arguments) !== 1) {
-                throw new ScaffoldException('Usage: gaia-dev scaffold live-events <Model> [--events=created,updated,deleted] [--prefix=idea.message] [--fields=a,b] [--parent=ideaId:Idea] [--dry-run]');
+                throw new ScaffoldException('Usage: gaia-dev scaffold live-events <Model> [--events=created,updated,deleted] [--prefix=idea.message] [--fields=a,b] [--parent=ideaId:Idea] [--scope=project|user] [--dry-run]');
             }
             $spec = new LiveEventsSpec($arguments[0], $options);
             $scaffold = new LiveEventsScaffold($root);
