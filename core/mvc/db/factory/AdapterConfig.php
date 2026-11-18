@@ -18,11 +18,11 @@ namespace Gaia\Db\Factory;
 class AdapterConfig
 {
     /**
-     * Keys used only for building PDO connections, not for Phalcon migration setup.
+     * Keys used only for building PDO connections or by the migration driver, not for Phalcon migration setup.
      *
      * @var array
      */
-    private static $connectionMetaKeys = array('connectionClass', 'connectionKeys');
+    private static $connectionMetaKeys = array('connectionClass', 'connectionKeys', 'extensions');
 
     /**
      * This function removes adapter connection metadata from a merged database config.

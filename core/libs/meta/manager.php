@@ -298,6 +298,12 @@ class Manager
             case 'bigInt':
                 $dbType = Column::TYPE_BIGINTEGER;
                 break;
+            // pgvector and tsvector values travel as text ('[0.1,0.2]', 'word:1A');
+            // the migration handler writes the real column type.
+            case 'vector':
+            case 'tsvector':
+                $dbType = Column::TYPE_TEXT;
+                break;
         }
         return $dbType;
     }
@@ -354,6 +360,10 @@ class Manager
                 break;
             case 'bigInt':
                 $bindType = Column::BIND_PARAM_INT;
+                break;
+            case 'vector':
+            case 'tsvector':
+                $bindType = Column::BIND_PARAM_STR;
                 break;
         }
         return $bindType;
