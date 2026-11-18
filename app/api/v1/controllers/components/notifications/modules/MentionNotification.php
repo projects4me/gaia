@@ -98,7 +98,7 @@ class MentionNotification
         ]);
         $this->recipientService->notifyUsers($notification, [(string) $mention->userId]);
 
-        $mention->notified = true;
+        $mention->isNotified = true;
         $this->markNotified($mention);
 
         return $notification;
