@@ -13411,6 +13411,27 @@
       }
     },
     {
+      "id": "case:client/client-idea-create-with-mention",
+      "type": "case",
+      "key": "client/client-idea-create-with-mention",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/idea",
+        "resource": "idea",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.clientMentionIdeaId"
+        ]
+      }
+    },
+    {
       "id": "case:client/client-idea-get-with-children",
       "type": "case",
       "key": "client/client-idea-get-with-children",
@@ -13424,6 +13445,25 @@
         "source": null,
         "placeholders": [
           "runtime.clientIdeaId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-idea-update-with-mention",
+      "type": "case",
+      "key": "client/client-idea-update-with-mention",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/idea/{runtime.clientMentionIdeaId}",
+        "resource": "idea",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.clientMentionIdeaId",
+          "userId"
         ],
         "stores": []
       }
@@ -13446,6 +13486,27 @@
         ],
         "stores": [
           "runtime.clientMessageId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/client-ideamessage-create-with-mention",
+      "type": "case",
+      "key": "client/client-ideamessage-create-with-mention",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/ideamessage",
+        "resource": "ideamessage",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.clientMentionIdeaId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.clientMentionMessageId"
         ]
       }
     },
@@ -13499,6 +13560,25 @@
         "source": null,
         "placeholders": [
           "ideaId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-ideamessage-update-with-mention",
+      "type": "case",
+      "key": "client/client-ideamessage-update-with-mention",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/ideamessage/{runtime.clientMentionMessageId}",
+        "resource": "ideamessage",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.clientMentionMessageId",
+          "userId"
         ],
         "stores": []
       }
@@ -65374,6 +65454,46 @@
       "to": "fixture:projectId"
     },
     {
+      "from": "case:client/client-idea-create-with-mention",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-idea-create-with-mention",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-idea-create-with-mention",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-idea-create-with-mention",
+      "type": "covers",
+      "to": "controller:idea"
+    },
+    {
+      "from": "case:client/client-idea-create-with-mention",
+      "type": "exercises",
+      "to": "route:POST /api/v1/idea"
+    },
+    {
+      "from": "case:client/client-idea-create-with-mention",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-idea-create-with-mention",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-idea-create-with-mention",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
       "from": "case:client/client-idea-get-with-children",
       "type": "asserts",
       "to": "assertion:idsIncludes"
@@ -65412,6 +65532,46 @@
       "from": "case:client/client-idea-get-with-children",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-idea-update-with-mention",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-idea-update-with-mention",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-idea-update-with-mention",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-idea-update-with-mention",
+      "type": "covers",
+      "to": "controller:idea"
+    },
+    {
+      "from": "case:client/client-idea-update-with-mention",
+      "type": "depends_on",
+      "to": "case:client/client-idea-create-with-mention"
+    },
+    {
+      "from": "case:client/client-idea-update-with-mention",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/idea/{id}"
+    },
+    {
+      "from": "case:client/client-idea-update-with-mention",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-idea-update-with-mention",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
     },
     {
       "from": "case:client/client-ideamessage-create",
@@ -65454,6 +65614,46 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/client-ideamessage-create-with-mention",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-ideamessage-create-with-mention",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-ideamessage-create-with-mention",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-ideamessage-create-with-mention",
+      "type": "covers",
+      "to": "controller:ideamessage"
+    },
+    {
+      "from": "case:client/client-ideamessage-create-with-mention",
+      "type": "depends_on",
+      "to": "case:client/client-idea-create-with-mention"
+    },
+    {
+      "from": "case:client/client-ideamessage-create-with-mention",
+      "type": "exercises",
+      "to": "route:POST /api/v1/ideamessage"
+    },
+    {
+      "from": "case:client/client-ideamessage-create-with-mention",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-ideamessage-create-with-mention",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
       "from": "case:client/client-ideamessage-create-with-screens",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -65547,6 +65747,46 @@
       "from": "case:client/client-ideamessage-screens-of-another-idea-rejected",
       "type": "uses_fixture",
       "to": "fixture:ideaId"
+    },
+    {
+      "from": "case:client/client-ideamessage-update-with-mention",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-ideamessage-update-with-mention",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-ideamessage-update-with-mention",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-ideamessage-update-with-mention",
+      "type": "covers",
+      "to": "controller:ideamessage"
+    },
+    {
+      "from": "case:client/client-ideamessage-update-with-mention",
+      "type": "depends_on",
+      "to": "case:client/client-ideamessage-create-with-mention"
+    },
+    {
+      "from": "case:client/client-ideamessage-update-with-mention",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/ideamessage/{id}"
+    },
+    {
+      "from": "case:client/client-ideamessage-update-with-mention",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-ideamessage-update-with-mention",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
     },
     {
       "from": "case:client/client-ideaplan-create-version-1",
@@ -85356,6 +85596,11 @@
     {
       "from": "model:Idea",
       "type": "uses_behaviour",
+      "to": "behaviour:mentionsBehavior"
+    },
+    {
+      "from": "model:Idea",
+      "type": "uses_behaviour",
       "to": "behaviour:modifiedUserBehavior"
     },
     {
@@ -85452,6 +85697,11 @@
       "from": "model:Ideamessage",
       "type": "uses_behaviour",
       "to": "behaviour:ideaScreensBehavior"
+    },
+    {
+      "from": "model:Ideamessage",
+      "type": "uses_behaviour",
+      "to": "behaviour:mentionsBehavior"
     },
     {
       "from": "model:Ideamessage",
