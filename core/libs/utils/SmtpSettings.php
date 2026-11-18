@@ -10,7 +10,7 @@ use Gaia\MVC\Models\Setting;
 
 /**
  * SMTP settings: values saved in Settings > Email win, anything unset falls
- * back to the `smtp` config (core/config/smtp.php, SMTP_* env vars).
+ * back to the non-secret defaults in core/config/smtp.php (no host or credentials).
  *
  * Settings are read on every call, so saved values take effect without a
  * restart.
@@ -68,7 +68,7 @@ class SmtpSettings
         } catch (\Exception $e) {
             global $logger;
             if (isset($logger)) {
-                $logger->error('Email settings could not be read; using the smtp config: ' . $e->getMessage());
+                $logger->error('Email settings could not be read; using the config defaults:' . $e->getMessage());
             }
             $settings = [];
         }

@@ -13,7 +13,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Saved email settings override the smtp config; unset settings fall back
+ * Saved email settings override the smtp config defaults; unset settings fall back
  * to it (agaia-3959). Also checks how Mailer maps the result onto PHPMailer.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
@@ -29,7 +29,7 @@ class SmtpSettingsTest extends TestCase
      * @var array
      */
     private $config = [
-        'host' => 'smtp.gmail.com',
+        'host' => 'smtp.example.com',
         'user' => 'Projects4me',
         'auth' => true,
         'port' => 587,
@@ -42,7 +42,7 @@ class SmtpSettingsTest extends TestCase
     {
         $smtp = SmtpSettings::resolve($this->config, []);
 
-        $this->assertSame('smtp.gmail.com', $smtp['host']);
+        $this->assertSame('smtp.example.com', $smtp['host']);
         $this->assertSame(587, $smtp['port']);
         $this->assertSame('tls', $smtp['encryption']);
         $this->assertTrue($smtp['auth']);
@@ -51,6 +51,30 @@ class SmtpSettingsTest extends TestCase
         $this->assertSame('Projects4me', $smtp['fromName']);
         $this->assertSame('env-user@example.com', $smtp['fromEmail']);
         $this->assertArrayNotHasKey('resetTokenTimeout', $smtp);
+    }
+
+    public function testShippedConfigHasNoHostOrCredentials()
+    {
+        $config = (include dirname(__DIR__, 3) . '/core/config/smtp.php')['smtp'];
+        $smtp = SmtpSettings::resolve($config, []);
+
+        $this->assertArrayNotHasKey('host', $config);
+        $this->assertArrayNotHasKey('username', $config);
+        $this->assertArrayNotHasKey('password', $config);
+        $this->assertNull($smtp['host']);
+        $this->assertNull($smtp['username']);
+        $this->assertNull($smtp['password']);
+        $this->assertSame(587, $smtp['port']);
+        $this->assertSame('tls', $smtp['encryption']);
+    }
+
+    public function testMailerWithNoHostSendsNothingAndFailsOpen()
+    {
+        $config = (include dirname(__DIR__, 3) . '/core/config/smtp.php')['smtp'];
+        $mailer = new Mailer(null, SmtpSettings::resolve($config, []));
+
+        $this->assertFalse($mailer->send('a@example.com', 'A', 'Subject', '<p>x</p>', 'x'));
+        $this->assertSame(Mailer::NO_HOST_ERROR, $mailer->getError());
     }
 
     public function testBlankAndNullSettingsFallBackToConfig()
@@ -62,7 +86,7 @@ class SmtpSettingsTest extends TestCase
             'email.smtpPassword' => null,
         ]);
 
-        $this->assertSame('smtp.gmail.com', $smtp['host']);
+        $this->assertSame('smtp.example.com', $smtp['host']);
         $this->assertSame(587, $smtp['port']);
         $this->assertSame('env-user@example.com', $smtp['username']);
         $this->assertSame('env-secret', $smtp['password']);
@@ -125,7 +149,7 @@ class SmtpSettingsTest extends TestCase
             ['email.smtpPassword']
         ));
 
-        $this->assertSame('smtp.gmail.com', $smtp['host']);
+        $this->assertSame('smtp.example.com', $smtp['host']);
     }
 
     /**
