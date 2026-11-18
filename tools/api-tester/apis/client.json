@@ -8521,6 +8521,106 @@
         "shape": "error",
         "errorEqual": "requests[1].url: '/api/v1/nosuchresource' is not a Gaia REST route"
       }
+    },
+    {
+      "id": "client-idea-create-with-mention",
+      "method": "POST",
+      "path": "/api/v1/idea",
+      "resource": "idea",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "idea",
+          "attributes": {
+            "projectId": "{projectId}",
+            "title": "Idea with a mention",
+            "status": "new",
+            "description": "Please look, [@member](/app/user/{userId})"
+          }
+        }
+      },
+      "store": {
+        "runtime.clientMentionIdeaId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "title": "Idea with a mention"
+        }
+      }
+    },
+    {
+      "id": "client-idea-update-with-mention",
+      "method": "PATCH",
+      "path": "/api/v1/idea/{runtime.clientMentionIdeaId}",
+      "resource": "idea",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "idea",
+          "id": "{runtime.clientMentionIdeaId}",
+          "attributes": {
+            "description": "Edited, [@member](/app/user/{userId}) again"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "description": "Edited, [@member](/app/user/{userId}) again"
+        }
+      }
+    },
+    {
+      "id": "client-ideamessage-create-with-mention",
+      "method": "POST",
+      "path": "/api/v1/ideamessage",
+      "resource": "ideamessage",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "ideamessage",
+          "attributes": {
+            "ideaId": "{runtime.clientMentionIdeaId}",
+            "body": "Over to you, [@member](/app/user/{userId})"
+          }
+        }
+      },
+      "store": {
+        "runtime.clientMentionMessageId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "kind": "message"
+        }
+      }
+    },
+    {
+      "id": "client-ideamessage-update-with-mention",
+      "method": "PATCH",
+      "path": "/api/v1/ideamessage/{runtime.clientMentionMessageId}",
+      "resource": "ideamessage",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "ideamessage",
+          "id": "{runtime.clientMentionMessageId}",
+          "attributes": {
+            "body": "Edited, [@member](/app/user/{userId})"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "body": "Edited, [@member](/app/user/{userId})"
+        }
+      }
     }
   ]
 }
