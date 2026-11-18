@@ -10,6 +10,7 @@ use Phalcon\Mvc\Model\MetaData;
 use Gaia\Libraries\Meta\Manager;
 use Gaia\Libraries\Utils\Util;
 use Gaia\Core\MVC\Models\Query\Clause;
+use Gaia\Core\MVC\Models\Query\PhqlIdentifiers;
 
 /**
  * This class prepares phalcon supported queries (PHQL) by the given metadata.
@@ -136,11 +137,14 @@ class Query
             array_push($params['fields'], $count);
         }
 
-        $this->queryBuilder->columns($params['fields']);
-        $this->queryBuilder->groupBy($this->clause->groupBy);
-        $this->queryBuilder->orderBy($this->clause->orderBy);
-        $this->queryBuilder->where($this->clause->where, $this->clause->getBindParams());
-        $this->queryBuilder->having($this->clause->having);
+        // Columns reach Phalcon as [Model].[field]: its PHQL scanner strips a leading "not" from a
+        // plain name after a dot (agaia-4678). The ACL filter above still sees the plain form.
+        $identifiers = new PhqlIdentifiers();
+        $this->queryBuilder->columns($identifiers->bracketColumns($params['fields']));
+        $this->queryBuilder->groupBy($identifiers->bracketTerms($this->clause->groupBy));
+        $this->queryBuilder->orderBy($identifiers->bracketTerms($this->clause->orderBy));
+        $this->queryBuilder->where($identifiers->bracket($this->clause->where), $this->clause->getBindParams());
+        $this->queryBuilder->having($identifiers->bracket($this->clause->having));
 
         if (!empty($params['aclWhere'])) {
             // A service filter may bind the calling client (ServiceAcl, D-068).

@@ -8,12 +8,12 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 242,
-        "enabled": 221,
-        "disabled": 21,
+        "total": 245,
+        "enabled": 225,
+        "disabled": 20,
         "routeResources": 67,
-        "withMetadata": 51,
-        "skippedResources": 14
+        "withMetadata": 52,
+        "skippedResources": 13
     },
     "apis": [
         {
@@ -2823,10 +2823,67 @@
             "auth": true,
             "expects": {
                 "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-mention-api-v1-mention",
+            "method": "POST",
+            "path": "/api/v1/mention",
+            "resource": "mention",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "mention",
+                    "attributes": {
+                        "relatedTo": "api-mention-relatedTo",
+                        "notified": 0,
+                        "userId": "{userId}"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.mentionId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-mention-api-v1-mention-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/mention/{runtime.mentionId}",
+            "resource": "mention",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.mentionId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-mention-api-v1-mention-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/mention/{runtime.mentionId}",
+            "resource": "mention",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
                 "shape": "json"
             },
-            "enabled": false,
-            "skipReason": "Backend SQL error on list (Mention.ified); blocked until fixed",
             "source": "backend-metadata"
         },
         {

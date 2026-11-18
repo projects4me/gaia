@@ -29,4 +29,4 @@
 - controller: Gaia\MVC\REST\Controllers\MentionController
 - routes: DELETE /api/v1/mention, DELETE /api/v1/mention/{id}, GET /api/v1/mention, GET /api/v1/mention/{id}, GET /api/v1/mention/{id}/{relation}, OPTIONS /api/v1/mention, PATCH /api/v1/mention, PATCH /api/v1/mention/{id}, POST /api/v1/mention, PUT /api/v1/mention, PUT /api/v1/mention/{id}
 - components: -
-- cases: 1 (backend 1); gaia-dev cases mention
+- cases: 8 (backend 4, client 4); gaia-dev cases mention
