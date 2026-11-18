@@ -51,8 +51,13 @@ class LiveEventsSpec
     public $parent;
 
     /**
+     * @var string project or user: what the event's projectId is (the registry's `scope`)
+     */
+    public $scope = 'project';
+
+    /**
      * @param string $model
-     * @param array $options parsed command line options: events, prefix, fields, parent
+     * @param array $options parsed command line options: events, prefix, fields, parent, scope
      * @throws ScaffoldException
      */
     public function __construct(string $model, array $options)
@@ -83,6 +88,13 @@ class LiveEventsSpec
             }
         }
         $this->fields = array_values(array_unique($fields));
+
+        if (isset($options['scope'])) {
+            if (!in_array($options['scope'], ['project', 'user'], true)) {
+                throw new ScaffoldException("--scope '{$options['scope']}' must be project or user");
+            }
+            $this->scope = (string) $options['scope'];
+        }
 
         if (isset($options['parent'])) {
             if (!preg_match('/^([a-z][A-Za-z0-9]*):([A-Z][A-Za-z0-9]*)$/', (string) $options['parent'], $parent)) {

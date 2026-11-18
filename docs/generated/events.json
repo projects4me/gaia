@@ -1,0 +1,267 @@
+[
+    {
+        "name": "comment.added",
+        "scope": "project",
+        "channels": [
+            "workflow"
+        ],
+        "enabled": true,
+        "description": "Comment added (any comment, not only conversation rooms)."
+    },
+    {
+        "name": "conversation.comment.created",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Conversation-room comment created."
+    },
+    {
+        "name": "conversation.comment.deleted",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Conversation-room comment deleted."
+    },
+    {
+        "name": "conversation.comment.updated",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Conversation-room comment updated."
+    },
+    {
+        "name": "conversation.created",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Conversation room created."
+    },
+    {
+        "name": "conversation.vote.added",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Conversation-room vote added."
+    },
+    {
+        "name": "conversation.vote.removed",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Conversation-room vote removed."
+    },
+    {
+        "name": "idea.created",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Idea created."
+    },
+    {
+        "name": "idea.message.created",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Idea message created."
+    },
+    {
+        "name": "idea.plan.created",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Idea plan created."
+    },
+    {
+        "name": "idea.plan.status.changed",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Idea plan status or error changed."
+    },
+    {
+        "name": "idea.planissue.created",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Idea plan issue created."
+    },
+    {
+        "name": "idea.updated",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Idea title, description or status changed."
+    },
+    {
+        "name": "issue.assignee.changed",
+        "scope": "project",
+        "channels": [
+            "hermes",
+            "workflow"
+        ],
+        "enabled": true,
+        "description": "Issue assignee changed."
+    },
+    {
+        "name": "issue.created",
+        "scope": "project",
+        "channels": [
+            "hermes",
+            "workflow"
+        ],
+        "enabled": true,
+        "description": "Issue created."
+    },
+    {
+        "name": "issue.dates.changed",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Issue start or end date changed."
+    },
+    {
+        "name": "issue.dependency.created",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Issue parent/dependency created."
+    },
+    {
+        "name": "issue.dependency.deleted",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Issue parent/dependency removed."
+    },
+    {
+        "name": "issue.modified",
+        "scope": "project",
+        "channels": [
+            "workflow"
+        ],
+        "enabled": true,
+        "description": "Issue changed in any field but bookkeeping."
+    },
+    {
+        "name": "issue.status.changed",
+        "scope": "project",
+        "channels": [
+            "hermes",
+            "workflow"
+        ],
+        "enabled": true,
+        "description": "Issue status or milestone lane changed."
+    },
+    {
+        "name": "milestone.completed",
+        "scope": "project",
+        "channels": [
+            "hermes",
+            "workflow"
+        ],
+        "enabled": true,
+        "description": "Milestone status transitioned to completed."
+    },
+    {
+        "name": "milestone.created",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "Milestone created."
+    },
+    {
+        "name": "notification.created",
+        "scope": "user",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "System notification created for a recipient; scoped to user:<recipientId>."
+    },
+    {
+        "name": "time.logged",
+        "scope": "project",
+        "channels": [
+            "workflow"
+        ],
+        "enabled": true,
+        "description": "Time logged."
+    },
+    {
+        "name": "user.access.changed",
+        "scope": "user",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "A user's access changed: account status, session revocation, a membership or a role assignment created, changed or deleted; scoped to user:<userId>, user id only (D-011)."
+    },
+    {
+        "name": "wiki.created",
+        "scope": "project",
+        "channels": [
+            "workflow"
+        ],
+        "enabled": true,
+        "description": "Wiki page created."
+    },
+    {
+        "name": "wiki.modified",
+        "scope": "project",
+        "channels": [
+            "workflow"
+        ],
+        "enabled": true,
+        "description": "Wiki page changed in any field but bookkeeping."
+    },
+    {
+        "name": "workflow.agent.run.requested",
+        "scope": "user",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "A workflow's 'Run agent' step waits for the agent's runtime; scoped to user:<agentUserId>, and also runtimes for a delegable agent; ids only (D-010, D-012)."
+    },
+    {
+        "name": "workflow.run.finished",
+        "scope": "project",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "A workflow run completed or failed; scoped to the run's project; ids only, no error text."
+    }
+]

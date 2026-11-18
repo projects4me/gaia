@@ -45,7 +45,7 @@ are out of scope here.
 | | |
 |---|---|
 | Status | Superseded by D-013 (the allowlist now comes from the event registry) |
-| Decision | Publishable names live in `EventNames`. `HermesPublisher` refuses anything outside `EventNames::ALL` before HTTP. |
+| Decision | Publishable names live in `EventNames`. `HermesPublisher` refuses anything outside the allowlist (originally a hand-kept list in `EventNames`, now `EventNames::allowed()`) before HTTP. |
 | Rationale | Hermes will reject unknown names anyway. Failing locally keeps garbage off the wire and documents the contract in PHP. |
 | Implications | Adding a live event requires `EventNames` plus the matching Hermes allowlist (`hermes/src/contract/names.js`). |
 
@@ -139,7 +139,7 @@ are out of scope here.
 | Status | Accepted |
 | Decision | `app/metadata/events.php` records every domain event Gaia raises, keyed by name: description, scope (`project` or `user`), the write that raises it (`source`, in `TriggerEventCatalog`'s shape), its channels (`hermes`, `workflow`), its consumers (documentation only) and `enabled`. `EventRegistry` (`core/libs/events`) loads it with a plain `require` once per request. The registry replaces the hand-kept allowlist of D-003: `EventNames::isAllowed` and `EventNames::allowed()` answer from it (enabled and on `hermes`), and `HermesPublisher` drops, with a debug log, a known event that is disabled or not on `hermes` before any HTTP call. `EventNames` keeps its constants so code refers to events by name. |
 | Rationale | Gaia raised events from two lists kept by hand (`EventNames` for Hermes, `TriggerEventCatalog` for workflows); one registry makes adding, removing or switching off an event one edit. A PHP file and not a database table: the registry is read on almost every API call, a `require` of a PHP array is served from opcache with no query, and changing it is a reviewed code change, like the model metadata next to it. |
-| Implications | Hermes still has its own allowlist (`hermes/src/contract/names.js`); a name on the `hermes` channel must be there too. Turning `enabled` off needs a deploy, not an admin screen. An unknown name is still logged as an error. `TriggerEventCatalog` and gaia-dev's live-events scaffold and check do not read the registry yet (follow-up issues); until then `EventNames::ALL` lists the declared constants for the tooling and is not the allowlist. |
+| Implications | Hermes still has its own allowlist (`hermes/src/contract/names.js`); a name on the `hermes` channel must be there too. Turning `enabled` off needs a deploy, not an admin screen. An unknown name is still logged as an error. `TriggerEventCatalog` does not read the registry yet (a follow-up issue). gaia-dev's live-events scaffold writes the registry entry next to the `EventNames` constant, `check live-events` ties constants and hermes entries together, and `docs generate` exports the registry to `docs/generated/events.json` for Hermes' CI check; the hand-kept constants list in `EventNames` is gone. |
 
 ---
 

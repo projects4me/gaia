@@ -10,6 +10,7 @@
 - [Assertion vocabulary](assertions.md): the `expects` keys with one real case each
 - [Auth profiles](profiles.md): role, grants and case counts
 - [Change bundles](bundles/README.md): the touchpoints, exemplar PRs and golden files per kind of change
+- [Event registry](events.json): every domain event with its scope, channels and enabled flag, for the Hermes CI check
 - Models: `models/<Model>.md`, 77 pages (`gaia-dev model <Name>` prints the same)
 
 <a id="rules"></a>

@@ -65,6 +65,7 @@ class ScaffoldLiveEventsTest extends TestCase
         $this->assertSame([
             'app/api/v1/controllers/components/events/ReportLiveEventsComponent.php',
             'app/api/v1/controllers/components/events/support/EventNames.php',
+            'app/metadata/events.php',
             'app/api/v1/controllers/ReportController.php',
             'tests/api/controllers/components/events/LiveEventsComponentsTest.php',
             'app/api/v1/controllers/components/events/support/ProjectIdResolver.php',
@@ -73,7 +74,10 @@ class ScaffoldLiveEventsTest extends TestCase
             $this->assertNotEmpty(token_get_all($text, TOKEN_PARSE));
         }
         $this->assertStringContainsString("const REPORT_CREATED = 'report.created';", $changes['app/api/v1/controllers/components/events/support/EventNames.php']);
-        $this->assertStringContainsString("        self::REPORT_DELETED,\n    );", $changes['app/api/v1/controllers/components/events/support/EventNames.php']);
+        $this->assertStringNotContainsString('self::REPORT_DELETED', $changes['app/api/v1/controllers/components/events/support/EventNames.php']);
+        $registry = $changes['app/metadata/events.php'];
+        $this->assertStringContainsString("    'report.created' => [\n        'description' => 'Report created.',\n        'scope' => 'project',\n        'channels' => ['hermes'],\n        'consumers' => ['prometheus'],\n        'enabled' => true,\n    ],\n    'report.deleted' => [", $registry);
+        $this->assertStringEndsWith("    ],\n];\n", $registry);
         $this->assertStringContainsString("'reportId' => 'Report',", $changes['app/api/v1/controllers/components/events/support/ProjectIdResolver.php']);
         $this->assertStringContainsString("array('Events\\\\ReportLiveEvents')", $changes['app/api/v1/controllers/ReportController.php']);
         $this->assertStringContainsString('public function testReportCreatedPublishesItsEvent()', $changes[LiveEventsSpec::TEST_PATH]);
@@ -108,18 +112,50 @@ class ScaffoldLiveEventsTest extends TestCase
         $this->assertSame([], (new LiveEventsCheck(self::ROOT))->problems());
     }
 
-    public function testTheCheckReportsAConstantMissingFromAllAndOneNoComponentEmits()
+    public function testTheCheckReportsAConstantMissingFromTheRegistryAndOneNoComponentEmits()
     {
         $root = $this->copyOfTheEventFiles();
         $changes = (new LiveEventsScaffold($root))->plan(new LiveEventsSpec('Report', ['events' => 'created']));
         $namesPath = 'app/api/v1/controllers/components/events/support/EventNames.php';
-        file_put_contents($root . '/' . $namesPath, str_replace('self::REPORT_CREATED,', '', $changes[$namesPath]));
+        file_put_contents($root . '/' . $namesPath, $changes[$namesPath]);
 
         $this->assertSame([
-            'EventNames::REPORT_CREATED is not in EventNames::ALL',
             'EventNames::REPORT_CREATED (report.created) is not enabled on the hermes channel in app/metadata/events.php',
             'EventNames::REPORT_CREATED (report.created) is emitted by no component',
             'EventNames::REPORT_CREATED (report.created) has no case in tests/api/controllers/components/events/LiveEventsComponentsTest.php',
+        ], (new LiveEventsCheck($root))->problems());
+    }
+
+    public function testTheScaffoldedRegistryEntryMakesTheCheckGreenOnceTheRestExists()
+    {
+        $root = $this->copyOfTheEventFiles();
+        $changes = (new LiveEventsScaffold($root))->plan(new LiveEventsSpec('Report', ['scope' => 'user']));
+        file_put_contents($root . '/' . LiveEventsScaffold::REGISTRY_PATH, $changes[LiveEventsScaffold::REGISTRY_PATH]);
+
+        $this->assertStringContainsString("'scope' => 'user'", $changes[LiveEventsScaffold::REGISTRY_PATH]);
+        $this->assertNotContains(
+            'EventNames::REPORT_CREATED (report.created) is not enabled on the hermes channel in app/metadata/events.php',
+            (new LiveEventsCheck($root))->problems()
+        );
+        $this->expectException(ScaffoldException::class);
+        (new LiveEventsScaffold($root))->plan(new LiveEventsSpec('Report', []));
+    }
+
+    public function testTheCheckReportsAHermesEntryWithoutAConstantAndUnknownChannelsAndScopes()
+    {
+        $root = $this->copyOfTheEventFiles();
+        $registry = file_get_contents($root . '/app/metadata/events.php');
+        $registry = str_replace("
+];", "
+    'ghost.created' => ['description' => 'x', 'scope' => 'galaxy', 'channels' => ['hermes', 'smoke'], 'enabled' => true],
+];", rtrim($registry) . "
+");
+        file_put_contents($root . '/app/metadata/events.php', $registry);
+
+        $this->assertSame([
+            "ghost.created has the unknown channel 'smoke' in app/metadata/events.php",
+            "ghost.created has the unknown scope 'galaxy' in app/metadata/events.php",
+            'ghost.created is on the hermes channel in app/metadata/events.php but has no EventNames constant',
         ], (new LiveEventsCheck($root))->problems());
     }
 

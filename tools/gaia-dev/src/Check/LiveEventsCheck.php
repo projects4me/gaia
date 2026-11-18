@@ -10,9 +10,9 @@ use GaiaDev\Scaffold\LiveEventsScaffold;
 use GaiaDev\Scaffold\LiveEventsSpec;
 
 /**
- * Checks the live events: every EventNames constant is in its ALL list, enabled on the hermes channel in the
- * event registry, emitted by a component and covered by a
- * case in LiveEventsComponentsTest, and every component is listed in a controller's `$uses`.
+ * Checks the live events: every EventNames constant is enabled on the hermes channel in the event registry,
+ * emitted by a component and covered by a case in LiveEventsComponentsTest; every registry entry on the hermes
+ * channel has a constant and every channel and scope is known; every component is listed in a controller's `$uses`.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package GaiaDev\Check
@@ -24,6 +24,10 @@ class LiveEventsCheck
      * The event registry (live-updates D-013), relative to the repository root.
      */
     public const REGISTRY_PATH = 'app/metadata/events.php';
+
+    public const CHANNELS = ['hermes', 'workflow'];
+
+    public const SCOPES = ['project', 'user'];
 
     /**
      * @var string
@@ -54,9 +58,6 @@ class LiveEventsCheck
 
         preg_match_all("/const ([A-Z_]+) = '([a-z.]+)';/", $names, $constants, PREG_SET_ORDER);
         foreach ($constants as [, $constant, $value]) {
-            if (strpos($names, "self::{$constant},") === false) {
-                $problems[] = "EventNames::{$constant} is not in EventNames::ALL";
-            }
             $entry = $registry[$value] ?? null;
             if (!is_array($entry) || empty($entry['enabled']) || !in_array('hermes', (array) ($entry['channels'] ?? []), true)) {
                 $problems[] = "EventNames::{$constant} ({$value}) is not enabled on the hermes channel in " . self::REGISTRY_PATH;
@@ -70,6 +71,21 @@ class LiveEventsCheck
             }
             if (strpos($tests, "'{$value}'") === false && strpos($tests, "EventNames::{$constant}") === false) {
                 $problems[] = "EventNames::{$constant} ({$value}) has no case in " . LiveEventsSpec::TEST_PATH;
+            }
+        }
+
+        $values = array_column($constants, 2);
+        foreach ($registry as $name => $entry) {
+            $entry = is_array($entry) ? $entry : [];
+            $channels = (array) ($entry['channels'] ?? []);
+            foreach (array_diff($channels, self::CHANNELS) as $channel) {
+                $problems[] = "{$name} has the unknown channel '{$channel}' in " . self::REGISTRY_PATH;
+            }
+            if (!in_array($entry['scope'] ?? null, self::SCOPES, true)) {
+                $problems[] = "{$name} has the unknown scope '" . (is_scalar($entry['scope'] ?? null) ? $entry['scope'] : '') . "' in " . self::REGISTRY_PATH;
+            }
+            if (in_array('hermes', $channels, true) && !in_array($name, $values, true)) {
+                $problems[] = "{$name} is on the hermes channel in " . self::REGISTRY_PATH . ' but has no EventNames constant';
             }
         }
 
