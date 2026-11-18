@@ -6,7 +6,6 @@
 
 namespace Gaia\Libraries\Security;
 
-use Gaia\Libraries\Meta\Manager;
 use Gaia\MVC\Models\Permission;
 use Gaia\MVC\Models\Project;
 
@@ -1414,13 +1413,12 @@ class Acl
      */
     protected function isSystemField($modelName, $field)
     {
+        // A deny rule fails closed: if the metadata cannot be read, treat the field as hidden.
         try {
-            $meta = $this->di->get('metaManager')->getModelMeta($modelName);
+            return $this->di->get('metaManager')->isSystemField($modelName, $field);
         } catch (\Throwable $e) {
-            return false;
+            return true;
         }
-
-        return in_array($field, Manager::systemFieldsOf($meta), true);
     }
 
     /**

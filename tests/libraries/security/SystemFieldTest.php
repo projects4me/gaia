@@ -89,6 +89,28 @@ class SystemFieldTest extends TestCase
         $this->assertSame([], Manager::systemFieldsOf([]));
     }
 
+    public function testOnlyALiteralTrueFlagsASystemField()
+    {
+        $this->assertSame(['flagged'], Manager::systemFieldsOf(['fields' => [
+            'flagged' => ['system' => true],
+            'quoted' => ['system' => 'false'],
+            'numeric' => ['system' => 1],
+            'plain' => ['type' => 'varchar'],
+        ]]));
+    }
+
+    public function testAnUnreadableMetadataDeniesTheField()
+    {
+        $this->di->setShared('metaManager', new class {
+            public function isSystemField($modelName, $fieldName)
+            {
+                throw new \RuntimeException('metadata unavailable');
+            }
+        });
+
+        $this->assertFalse($this->acl()->isFieldActionAllowed(self::MODEL, 'name', 'get'));
+    }
+
     public function testNoActionIsAllowedOnASystemField()
     {
         $acl = $this->acl();

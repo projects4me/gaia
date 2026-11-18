@@ -441,12 +441,24 @@ class Manager
 
         $systemFields = [];
         foreach ($modelMeta['fields'] as $fieldName => $fieldMeta) {
-            if (is_array($fieldMeta) && !empty($fieldMeta['system'])) {
+            if (self::isSystemFieldMeta($fieldMeta)) {
                 $systemFields[] = $fieldName;
             }
         }
 
         return $systemFields;
+    }
+
+    /**
+     * Whether one field's metadata flags it as a system field: only a literal `'system' => true` counts.
+     *
+     * @method isSystemFieldMeta
+     * @param  mixed $fieldMeta
+     * @return bool
+     */
+    public static function isSystemFieldMeta($fieldMeta)
+    {
+        return is_array($fieldMeta) && ($fieldMeta['system'] ?? false) === true;
     }
 
     /**
