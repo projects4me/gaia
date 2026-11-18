@@ -3,7 +3,13 @@
   ~ Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
   -->
 
-<phpunit bootstrap="./TestHelper.php"
+<!--
+  Tests in the "quarantine" group reveal a product bug that has its own issue
+  (named in the test's docblock). CI excludes them with exclude-group quarantine.
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="./TestHelper.php"
          backupGlobals="false"
          backupStaticAttributes="false"
          verbose="true"
@@ -12,20 +18,17 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false"
-         syntaxCheck="true">
-    <testsuite name="Phalcon - Testsuite">
-        <directory>../tests</directory>
-    </testsuite>
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Gaia">
+            <directory>.</directory>
+            <exclude>./tools/gaia-dev/fixtures</exclude>
+        </testsuite>
+    </testsuites>
 
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <coverage processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">../app/models</directory>
-            <exclude>
-                <directory suffix=".php">../foundation/config</directory>
-                <file>../foundation/libs/authorization/oAuthServer.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
-
+        </include>
+    </coverage>
 </phpunit>
