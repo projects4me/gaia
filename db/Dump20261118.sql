@@ -2,7 +2,6 @@
 -- PostgreSQL database dump
 --
 
-\restrict DH90O0B3cNL2X6pV3e1a4UYXLrx155HBnu7tHaWCbeJ1biOfIMaSaFOcOQSEeJa
 
 -- Dumped from database version 16.16 (Debian 16.16-1.pgdg12+1)
 -- Dumped by pg_dump version 16.16 (Debian 16.16-1.pgdg12+1)
@@ -71973,5 +71972,4 @@ CREATE TRIGGER update_issue_status BEFORE UPDATE ON public.issues FOR EACH ROW E
 -- PostgreSQL database dump complete
 --
 
-\unrestrict DH90O0B3cNL2X6pV3e1a4UYXLrx155HBnu7tHaWCbeJ1biOfIMaSaFOcOQSEeJa
 
