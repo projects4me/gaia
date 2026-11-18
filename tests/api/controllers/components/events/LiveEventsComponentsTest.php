@@ -10,6 +10,7 @@ use Gaia\MVC\REST\Controllers\Components\Events\ConversationCommentLiveEventsCom
 use Gaia\MVC\REST\Controllers\Components\Events\ConversationVoteLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\ConversationLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\AgentRunLiveEvents;
+use Gaia\MVC\REST\Controllers\Components\Events\WorkflowRunLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\NotificationLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeamessageLiveEventsComponent;
@@ -475,6 +476,40 @@ class LiveEventsComponentsTest extends TestCase
             'entityId' => 'issue-1',
         ), $this->metaWithoutActor($posted[0]));
         $this->assertStringNotContainsString('Secret plan', json_encode($posted[0]));
+    }
+
+    public function testFinishedRunIsPublishedToItsProjectWithIdsOnly()
+    {
+        $posted = array();
+        $publisher = new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        });
+        $events = new WorkflowRunLiveEvents($publisher);
+
+        $events->finished(array(
+            'runId' => 'run-1',
+            'workflowId' => 'workflow-1',
+            'projectId' => 'project-1',
+            'status' => 'failed',
+            'test' => false,
+            'entityType' => 'issue',
+            'entityId' => 'issue-1',
+            'error' => 'Secret failure',
+        ));
+        $events->finished(array('runId' => 'run-2', 'workflowId' => 'workflow-1', 'status' => 'completed'));
+
+        $this->assertCount(1, $posted);
+        $this->assertEquals(EventNames::WORKFLOW_RUN_FINISHED, $posted[0]['eventName']);
+        $this->assertEquals('project-1', $posted[0]['projectId']);
+        $this->assertEquals(array('type' => 'workflowRun', 'id' => 'run-1'), $posted[0]['resource']);
+        $this->assertEquals(array(
+            'workflowId' => 'workflow-1',
+            'status' => 'failed',
+            'test' => false,
+            'entityType' => 'issue',
+            'entityId' => 'issue-1',
+        ), $this->metaWithoutActor($posted[0]));
+        $this->assertStringNotContainsString('Secret failure', json_encode($posted[0]));
     }
 
     public function testDelegableAgentRunRequestAlsoGoesToTheRuntimesScope()

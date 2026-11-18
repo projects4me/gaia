@@ -165,7 +165,7 @@ class WorkflowTriggersComponent implements WorkflowChangeEvents
      */
     public function runner()
     {
-        return new WorkflowRunner($this, null, null, null, null, null, new AgentRunLiveEvents());
+        return new WorkflowRunner($this, null, null, null, null, null, new AgentRunLiveEvents(), new WorkflowRunLiveEvents());
     }
 
     /**

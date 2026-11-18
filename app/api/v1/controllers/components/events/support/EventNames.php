@@ -176,6 +176,14 @@ class EventNames
     const WORKFLOW_AGENT_RUN_REQUESTED = 'workflow.agent.run.requested';
 
     /**
+     * A workflow run completed or failed. Scoped to the run's project; carries
+     * ids only, no error text.
+     *
+     * @var string
+     */
+    const WORKFLOW_RUN_FINISHED = 'workflow.run.finished';
+
+    /**
      * A user's access changed: account status, a deactivation's session
      * revocation, or a membership created or deleted. Scoped to
      * user:<userId>; carries the user id only (hermes D-009).
@@ -215,6 +223,7 @@ class EventNames
         self::IDEA_PLAN_STATUS_CHANGED,
         self::IDEA_PLANISSUE_CREATED,
         self::WORKFLOW_AGENT_RUN_REQUESTED,
+        self::WORKFLOW_RUN_FINISHED,
         self::USER_ACCESS_CHANGED,
     );
 

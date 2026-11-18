@@ -21527,6 +21527,23 @@
       }
     },
     {
+      "id": "component:Events\\WorkflowRunLiveEvents",
+      "type": "component",
+      "key": "Events\\WorkflowRunLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\WorkflowRunLiveEvents",
+        "file": "app/api/v1/controllers/components/events/WorkflowRunLiveEvents.php",
+        "extends": null,
+        "implements": [
+          "WorkflowRunEvents"
+        ],
+        "hooks": [
+          "finished"
+        ]
+      }
+    },
+    {
       "id": "component:Events\\WorkflowTriggers",
       "type": "component",
       "key": "Events\\WorkflowTriggers",
