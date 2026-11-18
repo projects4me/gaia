@@ -23,8 +23,6 @@ require APP_PATH . '/autoload.php';
 
 require APP_PATH . '/tests/autoload.php';
 
-require APP_PATH . '/tests/UnitTestCase.php';
-
 global $logger;
 $loggerAdapter = new StreamAdapter(APP_PATH . '/logs/application.log');
 $logger = new Logger(

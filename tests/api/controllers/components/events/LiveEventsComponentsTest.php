@@ -577,7 +577,9 @@ class LiveEventsComponentsTest extends TestCase
         }));
 
         $row = (object) array('id' => 'm-1', 'userId' => 'user-42', 'relatedTo' => 'comment', 'relatedId' => 'c-1');
-        $this->assertNull($events->publishMentioned($row));
+        $envelope = $events->publishMentioned($row);
+
+        $this->assertEquals(EventNames::USER_MENTIONED, $envelope['eventName']);
     }
 
     public function testNotificationLiveEventsIncludesRelatedToAndRelatedIdWhenSet()
