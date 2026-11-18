@@ -23,9 +23,9 @@
 <a id="summary"></a>
 ## Summary
 
-- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior
+- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, mentionsBehavior, modifiedUserBehavior, softDeleteBehavior
 - acl: group Project via Array; group Conversationroom via ?
 - controller: Gaia\MVC\REST\Controllers\CommentController
 - routes: DELETE /api/v1/comment, DELETE /api/v1/comment/{id}, GET /api/v1/comment, GET /api/v1/comment/{id}, GET /api/v1/comment/{id}/{relation}, OPTIONS /api/v1/comment, PATCH /api/v1/comment, PATCH /api/v1/comment/{id}, POST /api/v1/comment, PUT /api/v1/comment, PUT /api/v1/comment/{id}
 - components: Events\ConversationCommentLiveEvents, Events\WorkflowReplies, Events\WorkflowTriggers, Issuemention, Notification
-- cases: 21 (acl 7, backend 5, client 7, live 2); gaia-dev cases comment
+- cases: 24 (acl 7, backend 5, client 10, live 2); gaia-dev cases comment
