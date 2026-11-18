@@ -260,4 +260,11 @@ return [
         'consumers' => ['prometheus', 'hermes'],
         'enabled' => true,
     ],
+    'user.mentioned' => [
+        'description' => 'A user was mentioned in a record; scoped to user:<mentionedUserId>; ids only.',
+        'scope' => 'user',
+        'channels' => ['hermes'],
+        'consumers' => ['talos', 'prometheus'],
+        'enabled' => true,
+    ],
 ];

@@ -12,6 +12,7 @@ use Gaia\MVC\REST\Controllers\Components\Events\ConversationLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\AgentRunLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\WorkflowRunLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\NotificationLiveEvents;
+use Gaia\MVC\REST\Controllers\Components\Events\MentionLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeamessageLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanLiveEventsComponent;
@@ -541,6 +542,42 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertEquals(array('type' => 'workflowRun', 'id' => 'run-1'), $posted[1]['resource']);
         $this->assertEquals($this->metaWithoutActor($posted[0]), $this->metaWithoutActor($posted[1]));
         $this->assertStringNotContainsString('Secret plan', json_encode($posted[1]));
+    }
+
+    public function testMentionPublishesUserScopedEventWithIdsOnly()
+    {
+        $posted = array();
+        $events = new MentionLiveEvents(new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        }));
+
+        $events->publishMentioned((object) array(
+            'id' => 'm-1', 'userId' => 'user-42', 'relatedTo' => 'comment', 'relatedId' => 'c-1',
+            'projectId' => 'project-1', 'createdUser' => 'user-1',
+        ));
+        $events->publishMentioned((object) array(
+            'id' => 'm-2', 'userId' => 'user-43', 'relatedTo' => 'comment', 'relatedId' => 'c-1',
+            'projectId' => 'project-1', 'createdUser' => 'user-1',
+        ));
+        $this->assertNull($events->publishMentioned((object) array('id' => 'm-3')));
+
+        $this->assertCount(2, $posted);
+        $this->assertEquals(EventNames::USER_MENTIONED, $posted[0]['eventName']);
+        $this->assertEquals('user:user-42', $posted[0]['projectId']);
+        $this->assertEquals('user:user-43', $posted[1]['projectId']);
+        $this->assertEquals('m-1', $posted[0]['meta']['mentionId']);
+        $this->assertEquals('user-1', $posted[0]['meta']['actorId']);
+        $this->assertEquals('project-1', $posted[0]['meta']['projectId']);
+    }
+
+    public function testMentionPublishFailsOpenWhenHermesIsDown()
+    {
+        $events = new MentionLiveEvents(new HermesPublisher(function () {
+            throw new \RuntimeException('Hermes down');
+        }));
+
+        $row = (object) array('id' => 'm-1', 'userId' => 'user-42', 'relatedTo' => 'comment', 'relatedId' => 'c-1');
+        $this->assertNull($events->publishMentioned($row));
     }
 
     public function testNotificationLiveEventsIncludesRelatedToAndRelatedIdWhenSet()

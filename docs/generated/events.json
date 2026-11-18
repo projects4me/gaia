@@ -229,6 +229,15 @@
         "description": "A user's access changed: account status, session revocation, a membership or a role assignment created, changed or deleted; scoped to user:<userId>, user id only (D-011)."
     },
     {
+        "name": "user.mentioned",
+        "scope": "user",
+        "channels": [
+            "hermes"
+        ],
+        "enabled": true,
+        "description": "A user was mentioned in a record; scoped to user:<mentionedUserId>; ids only."
+    },
+    {
         "name": "wiki.created",
         "scope": "project",
         "channels": [

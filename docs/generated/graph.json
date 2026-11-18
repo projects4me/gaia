@@ -20732,6 +20732,26 @@
       }
     },
     {
+      "id": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "case",
+      "key": "live/live-comment-mention-publishes-user-mentioned",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/comment",
+        "resource": "comment",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.liveConversationroomId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:live/live-conversation-comment-create-publishes-comment-created",
       "type": "case",
       "key": "live/live-conversation-comment-create-publishes-comment-created",
@@ -21680,6 +21700,21 @@
         "hooks": [
           "afterCreate",
           "afterDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Events\\MentionLiveEvents",
+      "type": "component",
+      "key": "Events\\MentionLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\MentionLiveEvents",
+        "file": "app/api/v1/controllers/components/events/MentionLiveEvents.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "publishMentioned"
         ]
       }
     },
@@ -79169,6 +79204,46 @@
       "from": "case:live/live-agent-run-setup-workflow",
       "type": "uses_fixture",
       "to": "fixture:projectId"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "asserts",
+      "to": "assertion:hermes.expect"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "covers",
+      "to": "controller:comment"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "depends_on",
+      "to": "case:live/live-conversationroom-create-publishes-conversation-created"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "exercises",
+      "to": "route:POST /api/v1/comment"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
     },
     {
       "from": "case:live/live-conversation-comment-create-publishes-comment-created",

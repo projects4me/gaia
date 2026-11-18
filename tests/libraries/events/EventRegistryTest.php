@@ -27,6 +27,7 @@ class EventRegistryTest extends TestCase
         EventNames::NOTIFICATION_CREATED,
         EventNames::WORKFLOW_AGENT_RUN_REQUESTED,
         EventNames::USER_ACCESS_CHANGED,
+        EventNames::USER_MENTIONED,
     ];
 
     private function registry()
