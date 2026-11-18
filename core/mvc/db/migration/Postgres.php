@@ -210,19 +210,7 @@ class Postgres
     private function syncSearchColumn($connection, PostgresSearchDdl $ddl, $tableName, $columnName, $definition)
     {
         $signature = $ddl->signature($definition);
-        $current = $connection->fetchOne(
-            "SELECT col_description(table_class.oid, attribute.attnum) AS signature,
-                    format_type(attribute.atttypid, attribute.atttypmod) AS type
-             FROM pg_class table_class
-             JOIN pg_namespace table_schema ON table_schema.oid = table_class.relnamespace
-             JOIN pg_attribute attribute ON attribute.attrelid = table_class.oid
-             WHERE table_schema.nspname = ?
-             AND table_class.relname = ?
-             AND attribute.attname = ?
-             AND NOT attribute.attisdropped",
-            \PDO::FETCH_ASSOC,
-            array($this->getDefaultSchema(), $tableName, $columnName)
-        );
+        $current = $this->describeSearchColumn($connection, $tableName, $columnName);
         if (!empty($current) && $current['signature'] === $signature) {
             return;
         }
@@ -241,19 +229,10 @@ class Postgres
         }
         $connection->begin();
         try {
-            if (!empty($current) && PostgresSearchDdl::isVectorDefinition($definition)) {
+            if (!empty($current) && PostgresSearchDdl::isVectorDefinition($current['type'])) {
                 // Block writes until the column is replaced, so no embedding lands after the check.
                 $connection->execute("LOCK TABLE {$quotedTable} IN SHARE ROW EXCLUSIVE MODE");
-                $filled = $connection->fetchOne(
-                    "SELECT COUNT(*) AS total FROM {$quotedTable} WHERE {$quotedColumn} IS NOT NULL",
-                    \PDO::FETCH_ASSOC
-                );
-                if ((int) $filled['total'] > 0) {
-                    throw new \Gaia\Exception\MigrationDriver(
-                        "Vector column {$tableName}.{$columnName} is {$current['type']} but metadata wants {$definition}; "
-                        . "it holds {$filled['total']} values. Clear them (SET {$columnName} = NULL) and migrate again."
-                    );
-                }
+                $this->assertVectorColumnEmpty($connection, $tableName, $columnName, $current['type'], $definition);
             }
             if (!empty($current)) {
                 $this->dropDependentViews($connection, $tableName, $columnName);
@@ -267,6 +246,61 @@ class Postgres
         } catch (\Exception $e) {
             $connection->rollback();
             throw $e;
+        }
+    }
+
+    /**
+     * This function reads a column's signature comment and type, or returns null when the
+     * table or the column does not exist.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param string $tableName
+     * @param string $columnName
+     * @return array|null ['signature' => string|null, 'type' => string]
+     */
+    private function describeSearchColumn($connection, $tableName, $columnName)
+    {
+        $row = $connection->fetchOne(
+            "SELECT col_description(table_class.oid, attribute.attnum) AS signature,
+                    format_type(attribute.atttypid, attribute.atttypmod) AS type
+             FROM pg_class table_class
+             JOIN pg_namespace table_schema ON table_schema.oid = table_class.relnamespace
+             JOIN pg_attribute attribute ON attribute.attrelid = table_class.oid
+             WHERE table_schema.nspname = ?
+             AND table_class.relname = ?
+             AND attribute.attname = ?
+             AND NOT attribute.attisdropped",
+            \PDO::FETCH_ASSOC,
+            array($this->getDefaultSchema(), $tableName, $columnName)
+        );
+
+        return empty($row) ? null : $row;
+    }
+
+    /**
+     * This function stops the migration when a vector column that is about to be replaced
+     * still holds embeddings, which the database cannot rebuild.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param string $tableName
+     * @param string $columnName
+     * @param string $currentType Column type as format_type() reports it
+     * @param string $definition New column definition
+     * @return void
+     * @throws \Gaia\Exception\MigrationDriver
+     */
+    private function assertVectorColumnEmpty($connection, $tableName, $columnName, $currentType, $definition)
+    {
+        $filled = $connection->fetchOne(
+            'SELECT COUNT(*) AS total FROM ' . $connection->escapeIdentifier($tableName)
+            . ' WHERE ' . $connection->escapeIdentifier($columnName) . ' IS NOT NULL',
+            \PDO::FETCH_ASSOC
+        );
+        if ((int) $filled['total'] > 0) {
+            throw new \Gaia\Exception\MigrationDriver(
+                "Vector column {$tableName}.{$columnName} is {$currentType} but metadata wants {$definition}; "
+                . "it holds {$filled['total']} values. Clear them (SET {$columnName} = NULL) and migrate again."
+            );
         }
     }
 
@@ -407,11 +441,11 @@ class Postgres
             $quotedField = $connection->escapeIdentifier($field);
             $unique = ($type === 'unique') ? 'UNIQUE ' : '';
             $createSql = "CREATE {$unique}INDEX IF NOT EXISTS {$indexName} ON {$quotedTable} ({$quotedField})";
-            $named = $this->describeNamedIndex($connection, $tableName . '_' . $field);
+            $named = $this->describeNamedIndex($connection, $tableName, $tableName . '_' . $field);
             if (!empty($named)) {
                 // A search index of the old kind, or a plain index where uniqueness is now wanted, is replaced.
                 if ($named['method'] !== 'btree' || ($type === 'unique' && !$named['unique'])) {
-                    $this->replaceIndex($connection, $tableName . '_' . $field, $createSql);
+                    $this->replaceIndex($connection, $tableName, $named, $createSql);
                 }
                 continue;
             }
@@ -437,34 +471,52 @@ class Postgres
     {
         $ddl = new PostgresSearchDdl();
         $indexName = $tableName . '_' . $field;
-        $current = $this->describeNamedIndex($connection, $indexName);
+        $current = $this->describeNamedIndex($connection, $tableName, $indexName);
         if (empty($current)) {
             $connection->execute($ddl->createIndexSql($tableName, $field, $kind));
             return;
         }
-        if (!$ddl->indexMatchesKind($current['method'], $current['opclass'], $current['defaultOpclass'], $kind)) {
-            $this->replaceIndex($connection, $indexName, $ddl->createIndexSql($tableName, $field, $kind));
+        // Reuse only a valid, full (no WHERE) index whose single key is this column.
+        $reusable = $current['valid'] && !$current['partial'] && $current['columns'] === array($field)
+            && $ddl->indexMatchesKind($current['method'], $current['opclass'], $current['defaultOpclass'], $kind);
+        if (!$reusable) {
+            $this->replaceIndex($connection, $tableName, $current, $ddl->createIndexSql($tableName, $field, $kind));
         }
     }
 
     /**
-     * This function reads an index's access method, uniqueness and the operator class of
-     * its first column from the catalogs, or returns null when no index has that name.
+     * This function reads an index from the catalogs: its access method, the operator class
+     * of its first column, its key columns, whether it is unique, valid or partial, and the
+     * constraint that owns it. It returns null when no index has that name, and stops when
+     * the name belongs to another table's index (a {table}_{field} collision).
      *
      * @param \Phalcon\Db\AdapterInterface $connection
+     * @param string $tableName Table the index should belong to
      * @param string $indexName
-     * @return array|null ['method' => string, 'opclass' => string, 'defaultOpclass' => bool, 'unique' => bool]
+     * @return array|null
+     * @throws \Gaia\Exception\MigrationDriver
      */
-    private function describeNamedIndex($connection, $indexName)
+    private function describeNamedIndex($connection, $tableName, $indexName)
     {
         $row = $connection->fetchOne(
-            'SELECT access_method.amname AS method, operator_class.opcname AS opclass,
-                    operator_class.opcdefault AS default_opclass, index_info.indisunique AS is_unique
+            'SELECT table_class.relname AS table_name, access_method.amname AS method,
+                    operator_class.opcname AS opclass, operator_class.opcdefault AS default_opclass,
+                    index_info.indisunique AS is_unique, index_info.indisvalid AS is_valid,
+                    index_info.indpred IS NOT NULL AS is_partial,
+                    (SELECT string_agg(key_attribute.attname, \',\' ORDER BY key_position.ordinality)
+                     FROM unnest(index_info.indkey) WITH ORDINALITY AS key_position(attnum, ordinality)
+                     LEFT JOIN pg_attribute key_attribute ON key_attribute.attrelid = index_info.indrelid
+                         AND key_attribute.attnum = key_position.attnum) AS key_columns,
+                    index_info.indnatts - array_length(array_remove(index_info.indkey::int2[], 0::int2), 1) AS expressions,
+                    owning_constraint.conname AS constraint_name
              FROM pg_class index_class
              JOIN pg_namespace index_schema ON index_schema.oid = index_class.relnamespace
              JOIN pg_index index_info ON index_info.indexrelid = index_class.oid
+             JOIN pg_class table_class ON table_class.oid = index_info.indrelid
              JOIN pg_am access_method ON access_method.oid = index_class.relam
              JOIN pg_opclass operator_class ON operator_class.oid = index_info.indclass[0]
+             LEFT JOIN pg_constraint owning_constraint ON owning_constraint.conindid = index_class.oid
+                 AND owning_constraint.conrelid = index_info.indrelid
              WHERE index_schema.nspname = ? AND index_class.relname = ?',
             \PDO::FETCH_ASSOC,
             array($this->getDefaultSchema(), $indexName)
@@ -472,12 +524,25 @@ class Postgres
         if (empty($row)) {
             return null;
         }
+        if ($row['table_name'] !== $tableName) {
+            throw new \Gaia\Exception\MigrationDriver(
+                "Index name {$indexName} for table {$tableName} is already used by table {$row['table_name']}."
+            );
+        }
+        $isTrue = function ($value) {
+            return in_array($value, array(true, 't', 1, '1'), true);
+        };
 
         return array(
+            'name' => $indexName,
             'method' => $row['method'],
             'opclass' => $row['opclass'],
-            'defaultOpclass' => in_array($row['default_opclass'], array(true, 't', 1, '1'), true),
-            'unique' => in_array($row['is_unique'], array(true, 't', 1, '1'), true),
+            'defaultOpclass' => $isTrue($row['default_opclass']),
+            'unique' => $isTrue($row['is_unique']),
+            'valid' => $isTrue($row['is_valid']),
+            'partial' => $isTrue($row['is_partial']) || (int) $row['expressions'] > 0,
+            'columns' => $row['key_columns'] === null ? array() : explode(',', $row['key_columns']),
+            'constraint' => $row['constraint_name'],
         );
     }
 
@@ -485,16 +550,26 @@ class Postgres
      * This function drops an index and creates its replacement in one transaction, so
      * a failed build (e.g. a statement timeout) keeps the old index.
      *
+     * An index that backs a constraint (e.g. UNIQUE) is removed by dropping the constraint.
+     *
      * @param \Phalcon\Db\AdapterInterface $connection
-     * @param string $indexName Index to drop
+     * @param string $tableName Table the index belongs to
+     * @param array $current Index to drop, from describeNamedIndex()
      * @param string $createSql CREATE INDEX statement of the replacement
      * @return void
      */
-    private function replaceIndex($connection, $indexName, $createSql)
+    private function replaceIndex($connection, $tableName, array $current, $createSql)
     {
         $connection->begin();
         try {
-            $connection->execute('DROP INDEX IF EXISTS ' . $connection->escapeIdentifier($indexName));
+            if ($current['constraint'] !== null) {
+                $connection->execute(
+                    'ALTER TABLE ' . $connection->escapeIdentifier($tableName)
+                    . ' DROP CONSTRAINT ' . $connection->escapeIdentifier($current['constraint'])
+                );
+            } else {
+                $connection->execute('DROP INDEX IF EXISTS ' . $connection->escapeIdentifier($current['name']));
+            }
             $connection->execute($createSql);
             $connection->commit();
         } catch (\Exception $e) {
@@ -529,6 +604,52 @@ class Postgres
                 );
             }
         }
+
+        foreach ($indexes as $field => $type) {
+            if ($type !== 'hnsw_cosine') {
+                continue;
+            }
+            if (!$this->hasAccessMethod($connection, 'hnsw')) {
+                throw new \Gaia\Exception\MigrationDriver(
+                    "Index {$tableName}.{$field} needs the hnsw access method; update pgvector to 0.5.0 or later."
+                );
+            }
+            $dimensions = isset($searchColumns[$field]) ? PostgresSearchDdl::vectorDimensions($searchColumns[$field]) : null;
+            if ($dimensions !== null && $dimensions > PostgresSearchDdl::HNSW_MAX_DIMENSIONS) {
+                throw new \Gaia\Exception\MigrationDriver(
+                    "Index {$tableName}.{$field} is hnsw on vector({$dimensions}); hnsw indexes at most "
+                    . PostgresSearchDdl::HNSW_MAX_DIMENSIONS . ' dimensions.'
+                );
+            }
+        }
+
+        // A vector column that will be replaced must be empty, checked before any column is touched.
+        foreach ($searchColumns as $columnName => $definition) {
+            $current = $this->describeSearchColumn($connection, $tableName, $columnName);
+            if (!empty($current) && PostgresSearchDdl::isVectorDefinition($current['type'])
+                && $current['type'] !== $definition
+            ) {
+                $this->assertVectorColumnEmpty($connection, $tableName, $columnName, $current['type'], $definition);
+            }
+        }
+    }
+
+    /**
+     * This function tells whether the server has an index access method (e.g. hnsw).
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param string $method
+     * @return bool
+     */
+    private function hasAccessMethod($connection, $method)
+    {
+        $found = $connection->fetchOne(
+            'SELECT COUNT(*) AS total FROM pg_am WHERE amname = ?',
+            \PDO::FETCH_ASSOC,
+            array($method)
+        );
+
+        return (int) $found['total'] > 0;
     }
 
     /**

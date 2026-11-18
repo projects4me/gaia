@@ -72,6 +72,8 @@ class PostgresSearchDdlTest extends TestCase
             'zero' => array(array('dimensions' => 0)),
             'fractional' => array(array('dimensions' => 3.9)),
             'fractional string' => array(array('dimensions' => '3.9')),
+            'above the pgvector limit' => array(array('dimensions' => 16001)),
+            'above the pgvector limit as string' => array(array('dimensions' => '16001')),
         );
     }
 
@@ -197,6 +199,12 @@ class PostgresSearchDdlTest extends TestCase
         $this->assertFalse($ddl->indexMatchesKind('gin', 'gin_trgm_ops', false, 'gin'));
         $this->assertFalse($ddl->indexMatchesKind('gin', 'tsvector_ops', true, 'gin_trgm'));
         $this->assertFalse($ddl->indexMatchesKind('hnsw', 'vector_l2_ops', true, 'hnsw_cosine'));
+    }
+
+    public function testVectorDimensionsAreReadFromADefinition()
+    {
+        $this->assertSame(1536, PostgresSearchDdl::vectorDimensions('vector(1536)'));
+        $this->assertNull(PostgresSearchDdl::vectorDimensions('tsvector GENERATED ALWAYS AS (x) STORED'));
     }
 
     public function testRequiredExtensions()

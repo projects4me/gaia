@@ -48,6 +48,20 @@ class PostgresSearchDdl
     private const WEIGHTS = array('A', 'B', 'C', 'D');
 
     /**
+     * Most dimensions a pgvector vector column takes.
+     *
+     * @var int
+     */
+    public const VECTOR_MAX_DIMENSIONS = 16000;
+
+    /**
+     * Most dimensions an hnsw index on a vector column takes.
+     *
+     * @var int
+     */
+    public const HNSW_MAX_DIMENSIONS = 2000;
+
+    /**
      * Field types a tsvector may read. Their ::text cast is immutable, which a stored
      * generated column needs (dates and numbers cast through the session settings).
      *
@@ -149,6 +163,18 @@ class PostgresSearchDdl
     }
 
     /**
+     * This function returns the dimensions of a vector column definition or type
+     * (vector(N)), or null for anything else.
+     *
+     * @param string $definition
+     * @return int|null
+     */
+    public static function vectorDimensions($definition)
+    {
+        return preg_match('/^vector\((\d+)\)$/', $definition, $match) ? (int) $match[1] : null;
+    }
+
+    /**
      * This function tells whether an existing index, as the catalogs describe it, matches
      * an index kind: the same access method and operator class (the type's default one
      * for a kind without an explicit class).
@@ -197,9 +223,9 @@ class PostgresSearchDdl
         $raw = isset($schema['dimensions']) ? $schema['dimensions'] : null;
         $isInteger = is_int($raw) || (is_string($raw) && ctype_digit($raw));
         $dimensions = $isInteger ? (int) $raw : 0;
-        if ($dimensions < 1) {
+        if ($dimensions < 1 || $dimensions > self::VECTOR_MAX_DIMENSIONS) {
             throw new \Gaia\Exception\MigrationDriver(
-                "Vector field {$schema['name']} needs a positive 'dimensions'."
+                "Vector field {$schema['name']} needs 'dimensions' between 1 and " . self::VECTOR_MAX_DIMENSIONS . '.'
             );
         }
 

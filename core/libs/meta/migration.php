@@ -283,6 +283,10 @@ class Migration extends PhalconMigration
             }
             // Multi-column index: 'name' => ['type' => 'unique'|'index', 'columns' => [...]]
             if (is_array($type)) {
+                // One on a vector/tsvector column waits for syncSearchSchema, which adds that column.
+                if (array_intersect($type['columns'], array_keys($tableDescription['searchColumns']))) {
+                    continue;
+                }
                 $name = $meta[$model]['tableName'] . '_' . $field;
                 $indexType = (isset($type['type']) && $type['type'] === 'unique') ? 'UNIQUE' : '';
                 $tableDescription['indexes'][] = new Index($name, $type['columns'], $indexType);

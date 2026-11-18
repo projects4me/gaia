@@ -181,6 +181,74 @@ class PostgresSearchMigrationTest extends TestCase
         $this->assertStringContainsString('USING btree (subject)', $this->indexDefinition('subject'));
     }
 
+    public function testPartialSearchIndexIsReplacedByAFullOne()
+    {
+        (new Postgres())->createExtensions($this->db, array('pg_trgm'));
+        $meta = $this->fixtureMeta(false);
+        $this->migrate($meta);
+        $this->db->execute('DROP INDEX "' . self::TABLE . '_subject"');
+        $this->db->execute(
+            'CREATE INDEX "' . self::TABLE . '_subject" ON "' . self::TABLE . '" USING gin ("subject" gin_trgm_ops)'
+            . ' WHERE "description" IS NOT NULL'
+        );
+
+        $this->migrate($meta);
+
+        $this->assertStringNotContainsString('WHERE', $this->indexDefinition('subject'));
+        $this->assertStringContainsString('gin_trgm_ops', $this->indexDefinition('subject'));
+    }
+
+    public function testConstraintBackedUniqueIndexIsReplacedBySearchIndex()
+    {
+        (new Postgres())->createExtensions($this->db, array('pg_trgm'));
+        $meta = $this->fixtureMeta(false);
+        unset($meta['TestSearchFixture']['indexes']['subject']);
+        $this->migrate($meta);
+        $this->db->execute(
+            'ALTER TABLE "' . self::TABLE . '" ADD CONSTRAINT "' . self::TABLE . '_subject" UNIQUE ("subject")'
+        );
+
+        $meta['TestSearchFixture']['indexes']['subject'] = 'gin_trgm';
+        $this->migrate($meta);
+
+        $this->assertStringContainsString('gin_trgm_ops', $this->indexDefinition('subject'));
+        $constraint = $this->db->fetchOne(
+            'SELECT COUNT(*) AS total FROM pg_constraint WHERE conname = ?',
+            \PDO::FETCH_ASSOC,
+            array(self::TABLE . '_subject')
+        );
+        $this->assertSame(0, (int) $constraint['total']);
+    }
+
+    public function testIndexNameUsedByAnotherTableIsReported()
+    {
+        (new Postgres())->createExtensions($this->db, array('pg_trgm'));
+        $this->db->execute('CREATE TABLE "' . self::TABLE . '_other" ("subject" varchar(10))');
+        $this->db->execute(
+            'CREATE INDEX "' . self::TABLE . '_subject" ON "' . self::TABLE . '_other" ("subject")'
+        );
+        try {
+            $this->migrate($this->fixtureMeta(false));
+            $this->fail('An index name owned by another table was reused');
+        } catch (\Gaia\Exception\MigrationDriver $e) {
+            $this->assertStringContainsString('already used by table ' . self::TABLE . '_other', $e->getMessage());
+        }
+    }
+
+    public function testCompositeIndexOnASearchColumnIsCreatedAfterIt()
+    {
+        (new Postgres())->createExtensions($this->db, array('pg_trgm'));
+        $meta = $this->fixtureMeta(false);
+        $meta['TestSearchFixture']['indexes']['subjectSearch'] = array(
+            'type' => 'index',
+            'columns' => array('id', 'searchVector'),
+        );
+
+        $this->migrate($meta);
+
+        $this->assertStringContainsString('(id, "searchVector")', $this->indexDefinition('subjectSearch'));
+    }
+
     /**
      * Fixture model metadata, shaped like a file in app/metadata/model.
      *
@@ -307,6 +375,7 @@ class PostgresSearchMigrationTest extends TestCase
 
     private function dropFixture()
     {
+        $this->db->execute('DROP TABLE IF EXISTS "' . self::TABLE . '_other"');
         $this->db->execute('DROP TABLE IF EXISTS "' . self::TABLE . '"');
     }
 }
