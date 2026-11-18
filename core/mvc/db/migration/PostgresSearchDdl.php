@@ -53,7 +53,7 @@ class PostgresSearchDdl
      *
      * @var array
      */
-    private const TEXT_SOURCE_TYPES = array('varchar', 'char', 'text', 'mediumtext', 'longtext');
+    private const TEXT_SOURCE_TYPES = array('varchar', 'char', 'text', 'tinytext', 'mediumtext', 'longtext');
 
     /**
      * This function tells whether a metadata field type is built by this class.
@@ -149,25 +149,27 @@ class PostgresSearchDdl
     }
 
     /**
-     * This function tells whether an existing index definition (pg_indexes.indexdef)
-     * matches an index kind: the same access method and operator class.
+     * This function tells whether an existing index, as the catalogs describe it, matches
+     * an index kind: the same access method and operator class (the type's default one
+     * for a kind without an explicit class).
      *
-     * @param string $indexDefinition Definition as PostgreSQL reports it
+     * @param string $method Access method (pg_am.amname)
+     * @param string $opclass Operator class of the indexed column (pg_opclass.opcname)
+     * @param bool $defaultOpclass Whether that class is the type's default (pg_opclass.opcdefault)
      * @param string $kind Index kind (gin, gin_trgm or hnsw_cosine)
      * @return bool
      */
-    public function indexMatchesKind($indexDefinition, $kind)
+    public function indexMatchesKind($method, $opclass, $defaultOpclass, $kind)
     {
         $definition = self::INDEX_KINDS[$kind];
-        if (stripos($indexDefinition, ' USING ' . $definition['method'] . ' ') === false) {
+        if ($method !== $definition['method']) {
             return false;
         }
-        $hasOpclass = preg_match('/\b[a-z_]+_ops\b/i', $indexDefinition) === 1;
         if ($definition['opclass'] === '') {
-            return !$hasOpclass;
+            return $defaultOpclass;
         }
 
-        return stripos($indexDefinition, $definition['opclass']) !== false;
+        return $opclass === $definition['opclass'];
     }
 
     /**
@@ -192,7 +194,9 @@ class PostgresSearchDdl
      */
     private function vectorDefinition(array $schema)
     {
-        $dimensions = isset($schema['dimensions']) ? (int) $schema['dimensions'] : 0;
+        $raw = isset($schema['dimensions']) ? $schema['dimensions'] : null;
+        $isInteger = is_int($raw) || (is_string($raw) && ctype_digit($raw));
+        $dimensions = $isInteger ? (int) $raw : 0;
         if ($dimensions < 1) {
             throw new \Gaia\Exception\MigrationDriver(
                 "Vector field {$schema['name']} needs a positive 'dimensions'."

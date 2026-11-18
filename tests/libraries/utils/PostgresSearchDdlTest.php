@@ -52,13 +52,37 @@ class PostgresSearchDdlTest extends TestCase
         $this->assertSame('vector(1536)', $sql);
     }
 
-    public function testVectorFieldWithoutDimensionsIsRejected()
+    /**
+     * @dataProvider invalidDimensionsProvider
+     */
+    public function testVectorFieldWithoutPositiveIntegerDimensionsIsRejected(array $schema)
     {
         $this->expectException(\Gaia\Exception\MigrationDriver::class);
 
         (new PostgresSearchDdl())->columnDefinition(
-            array('name' => 'embedding', 'type' => 'vector', 'null' => true),
+            array_merge(array('name' => 'embedding', 'type' => 'vector', 'null' => true), $schema),
             $this->fields()
+        );
+    }
+
+    public function invalidDimensionsProvider()
+    {
+        return array(
+            'missing' => array(array()),
+            'zero' => array(array('dimensions' => 0)),
+            'fractional' => array(array('dimensions' => 3.9)),
+            'fractional string' => array(array('dimensions' => '3.9')),
+        );
+    }
+
+    public function testVectorDimensionsMayBeAnIntegerString()
+    {
+        $this->assertSame(
+            'vector(3)',
+            (new PostgresSearchDdl())->columnDefinition(
+                array('name' => 'embedding', 'type' => 'vector', 'dimensions' => '3', 'null' => true),
+                $this->fields()
+            )
         );
     }
 
@@ -111,6 +135,20 @@ class PostgresSearchDdlTest extends TestCase
         );
     }
 
+    public function testTinytextFeedsATsvector()
+    {
+        $fields = array('summary' => array('name' => 'summary', 'type' => 'tinytext', 'null' => true));
+
+        $this->assertStringContainsString(
+            'coalesce("summary"::text',
+            (new PostgresSearchDdl())->columnDefinition(
+                array('name' => 'searchVector', 'type' => 'tsvector', 'null' => true,
+                    'generated' => array('sources' => array('summary' => 'A'))),
+                $fields
+            )
+        );
+    }
+
     public function invalidTsvectorProvider()
     {
         return array(
@@ -151,17 +189,14 @@ class PostgresSearchDdlTest extends TestCase
     public function testIndexDefinitionsMatchOnlyTheirKind()
     {
         $ddl = new PostgresSearchDdl();
-        $btree = 'CREATE INDEX fixtures_subject ON public.fixtures USING btree (subject)';
-        $gin = 'CREATE INDEX "fixtures_searchVector" ON public.fixtures USING gin ("searchVector")';
-        $trigram = 'CREATE INDEX fixtures_subject ON public.fixtures USING gin (subject gin_trgm_ops)';
-        $hnsw = 'CREATE INDEX fixtures_embedding ON public.fixtures USING hnsw (embedding vector_cosine_ops)';
 
-        $this->assertTrue($ddl->indexMatchesKind($gin, 'gin'));
-        $this->assertTrue($ddl->indexMatchesKind($trigram, 'gin_trgm'));
-        $this->assertTrue($ddl->indexMatchesKind($hnsw, 'hnsw_cosine'));
-        $this->assertFalse($ddl->indexMatchesKind($btree, 'gin_trgm'));
-        $this->assertFalse($ddl->indexMatchesKind($trigram, 'gin'));
-        $this->assertFalse($ddl->indexMatchesKind($gin, 'gin_trgm'));
+        $this->assertTrue($ddl->indexMatchesKind('gin', 'tsvector_ops', true, 'gin'));
+        $this->assertTrue($ddl->indexMatchesKind('gin', 'gin_trgm_ops', false, 'gin_trgm'));
+        $this->assertTrue($ddl->indexMatchesKind('hnsw', 'vector_cosine_ops', false, 'hnsw_cosine'));
+        $this->assertFalse($ddl->indexMatchesKind('btree', 'text_ops', true, 'gin_trgm'));
+        $this->assertFalse($ddl->indexMatchesKind('gin', 'gin_trgm_ops', false, 'gin'));
+        $this->assertFalse($ddl->indexMatchesKind('gin', 'tsvector_ops', true, 'gin_trgm'));
+        $this->assertFalse($ddl->indexMatchesKind('hnsw', 'vector_l2_ops', true, 'hnsw_cosine'));
     }
 
     public function testRequiredExtensions()

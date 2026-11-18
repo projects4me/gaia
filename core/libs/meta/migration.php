@@ -106,6 +106,8 @@ class Migration extends PhalconMigration
         $tableName = $tableDefinition['tableName'];
 
         $indexes = isset($meta[$model]['indexes']) ? $meta[$model]['indexes'] : [];
+        // Before any DDL: an unsupported index kind or a missing extension leaves the table untouched.
+        $handler->checkSearchSchema(self::$connection, $tableName, $tableDefinition['searchColumns'], $indexes);
 
         if ($handler->shouldSyncExistingTableOnly(self::$connection, $tableName)) {
             $handler->syncExistingTable(
@@ -196,7 +198,8 @@ class Migration extends PhalconMigration
      * (`extensions`), e.g. vector and pg_trgm. It is idempotent.
      *
      * @param array $extensions Extension names
-     * @return array Names of the extensions the database server does not have
+     * @return array Names of the extensions that were not created: the server does not
+     *               ship them or the database user may not create them
      */
     public function migrateExtensions(array $extensions)
     {

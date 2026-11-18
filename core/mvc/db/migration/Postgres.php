@@ -188,7 +188,6 @@ class Postgres
     public function syncSearchSchema($connection, $tableName, array $searchColumns, array $indexes)
     {
         $ddl = new PostgresSearchDdl();
-        $this->assertExtensions($connection, $tableName, array_merge(array_values($searchColumns), array_values($indexes)));
         foreach ($searchColumns as $columnName => $definition) {
             $this->syncSearchColumn($connection, $ddl, $tableName, $columnName, $definition);
         }
@@ -239,19 +238,23 @@ class Postgres
                 );
                 return;
             }
-            $filled = $connection->fetchOne(
-                "SELECT COUNT(*) AS total FROM {$quotedTable} WHERE {$quotedColumn} IS NOT NULL",
-                \PDO::FETCH_ASSOC
-            );
-            if ((int) $filled['total'] > 0) {
-                throw new \Gaia\Exception\MigrationDriver(
-                    "Vector column {$tableName}.{$columnName} is {$current['type']} but metadata wants {$definition}; "
-                    . "it holds {$filled['total']} values. Clear them (SET {$columnName} = NULL) and migrate again."
-                );
-            }
         }
         $connection->begin();
         try {
+            if (!empty($current) && PostgresSearchDdl::isVectorDefinition($definition)) {
+                // Block writes until the column is replaced, so no embedding lands after the check.
+                $connection->execute("LOCK TABLE {$quotedTable} IN SHARE ROW EXCLUSIVE MODE");
+                $filled = $connection->fetchOne(
+                    "SELECT COUNT(*) AS total FROM {$quotedTable} WHERE {$quotedColumn} IS NOT NULL",
+                    \PDO::FETCH_ASSOC
+                );
+                if ((int) $filled['total'] > 0) {
+                    throw new \Gaia\Exception\MigrationDriver(
+                        "Vector column {$tableName}.{$columnName} is {$current['type']} but metadata wants {$definition}; "
+                        . "it holds {$filled['total']} values. Clear them (SET {$columnName} = NULL) and migrate again."
+                    );
+                }
+            }
             if (!empty($current)) {
                 $this->dropDependentViews($connection, $tableName, $columnName);
                 $connection->execute("ALTER TABLE {$quotedTable} DROP COLUMN {$quotedColumn}");
@@ -396,16 +399,26 @@ class Postgres
                 $this->syncSearchIndex($connection, $tableName, $field, $type);
                 continue;
             }
-            if ($type === 'primary' || isset($existing[$field])) {
+            if ($type === 'primary') {
                 continue;
             }
 
             $indexName = $connection->escapeIdentifier($tableName . '_' . $field);
             $quotedField = $connection->escapeIdentifier($field);
             $unique = ($type === 'unique') ? 'UNIQUE ' : '';
-            $connection->execute(
-                "CREATE {$unique}INDEX IF NOT EXISTS {$indexName} ON {$quotedTable} ({$quotedField})"
-            );
+            $createSql = "CREATE {$unique}INDEX IF NOT EXISTS {$indexName} ON {$quotedTable} ({$quotedField})";
+            $named = $this->describeNamedIndex($connection, $tableName . '_' . $field);
+            if (!empty($named)) {
+                // A search index of the old kind, or a plain index where uniqueness is now wanted, is replaced.
+                if ($named['method'] !== 'btree' || ($type === 'unique' && !$named['unique'])) {
+                    $this->replaceIndex($connection, $tableName . '_' . $field, $createSql);
+                }
+                continue;
+            }
+            if (isset($existing[$field])) {
+                continue;
+            }
+            $connection->execute($createSql);
         }
     }
 
@@ -424,33 +437,87 @@ class Postgres
     {
         $ddl = new PostgresSearchDdl();
         $indexName = $tableName . '_' . $field;
-        $current = $connection->fetchOne(
-            'SELECT indexdef FROM pg_indexes WHERE schemaname = ? AND tablename = ? AND indexname = ?',
-            \PDO::FETCH_ASSOC,
-            array($this->getDefaultSchema(), $tableName, $indexName)
-        );
-        if (!empty($current)) {
-            if ($ddl->indexMatchesKind($current['indexdef'], $kind)) {
-                return;
-            }
-            $connection->execute('DROP INDEX IF EXISTS ' . $connection->escapeIdentifier($indexName));
+        $current = $this->describeNamedIndex($connection, $indexName);
+        if (empty($current)) {
+            $connection->execute($ddl->createIndexSql($tableName, $field, $kind));
+            return;
         }
-        $connection->execute($ddl->createIndexSql($tableName, $field, $kind));
+        if (!$ddl->indexMatchesKind($current['method'], $current['opclass'], $current['defaultOpclass'], $kind)) {
+            $this->replaceIndex($connection, $indexName, $ddl->createIndexSql($tableName, $field, $kind));
+        }
     }
 
     /**
-     * This function checks that the extensions a table's search columns and indexes need
-     * are installed, so a missing one fails before any DDL with a message naming it.
+     * This function reads an index's access method, uniqueness and the operator class of
+     * its first column from the catalogs, or returns null when no index has that name.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param string $indexName
+     * @return array|null ['method' => string, 'opclass' => string, 'defaultOpclass' => bool, 'unique' => bool]
+     */
+    private function describeNamedIndex($connection, $indexName)
+    {
+        $row = $connection->fetchOne(
+            'SELECT access_method.amname AS method, operator_class.opcname AS opclass,
+                    operator_class.opcdefault AS default_opclass, index_info.indisunique AS is_unique
+             FROM pg_class index_class
+             JOIN pg_namespace index_schema ON index_schema.oid = index_class.relnamespace
+             JOIN pg_index index_info ON index_info.indexrelid = index_class.oid
+             JOIN pg_am access_method ON access_method.oid = index_class.relam
+             JOIN pg_opclass operator_class ON operator_class.oid = index_info.indclass[0]
+             WHERE index_schema.nspname = ? AND index_class.relname = ?',
+            \PDO::FETCH_ASSOC,
+            array($this->getDefaultSchema(), $indexName)
+        );
+        if (empty($row)) {
+            return null;
+        }
+
+        return array(
+            'method' => $row['method'],
+            'opclass' => $row['opclass'],
+            'defaultOpclass' => in_array($row['default_opclass'], array(true, 't', 1, '1'), true),
+            'unique' => in_array($row['is_unique'], array(true, 't', 1, '1'), true),
+        );
+    }
+
+    /**
+     * This function drops an index and creates its replacement in one transaction, so
+     * a failed build (e.g. a statement timeout) keeps the old index.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param string $indexName Index to drop
+     * @param string $createSql CREATE INDEX statement of the replacement
+     * @return void
+     */
+    private function replaceIndex($connection, $indexName, $createSql)
+    {
+        $connection->begin();
+        try {
+            $connection->execute('DROP INDEX IF EXISTS ' . $connection->escapeIdentifier($indexName));
+            $connection->execute($createSql);
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollback();
+            throw $e;
+        }
+    }
+
+    /**
+     * This function checks, before the table is created or changed, that the extensions
+     * its search columns and indexes need are installed, so a missing one fails with a
+     * message naming it and leaves the table untouched.
      *
      * @param \Phalcon\Db\AdapterInterface $connection
      * @param string $tableName
-     * @param array $definitions Column definitions and index kinds of the table
+     * @param array $searchColumns Column name => definition from searchColumnDefinition()
+     * @param array $indexes Metadata indexes map (field => type)
      * @return void
      * @throws \Gaia\Exception\MigrationDriver
      */
-    private function assertExtensions($connection, $tableName, array $definitions)
+    public function checkSearchSchema($connection, $tableName, array $searchColumns, array $indexes)
     {
-        foreach ($definitions as $definition) {
+        foreach (array_merge(array_values($searchColumns), array_values($indexes)) as $definition) {
             if (!is_string($definition)) {
                 continue;
             }

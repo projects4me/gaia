@@ -35,7 +35,11 @@ class PostgresSearchMigrationTest extends TestCase
         if (!class_exists(\Phalcon\Di\FactoryDefault::class) || !class_exists(Migration::class)) {
             $this->markTestSkipped('Phalcon migrations are not available in this PHP runtime');
         }
-        $this->db = \Phalcon\Di::getDefault()->getShared('db');
+        $db = \Phalcon\Di::getDefault()->getShared('db');
+        if ($db->getType() !== 'pgsql') {
+            $this->markTestSkipped('PostgreSQL search columns need a PostgreSQL database');
+        }
+        $this->db = $db;
         $this->dropFixture();
     }
 
@@ -120,6 +124,7 @@ class PostgresSearchMigrationTest extends TestCase
             } catch (\Gaia\Exception\MigrationDriver $e) {
                 $this->assertStringContainsString('extension vector', $e->getMessage());
             }
+            $this->assertFalse($this->tableExists(), 'The table was created before the extension check');
             return;
         }
 
@@ -143,6 +148,12 @@ class PostgresSearchMigrationTest extends TestCase
         } catch (\Gaia\Exception\MigrationDriver $e) {
             $this->assertSame('vector(3)', $this->columnType('embedding'));
         }
+        $row = $this->db->fetchOne(
+            'SELECT "embedding"::text AS v FROM "' . self::TABLE . '" WHERE "id" = ?',
+            \PDO::FETCH_ASSOC,
+            array('fixture-1')
+        );
+        $this->assertSame('[1,2,3]', $row['v']);
 
         // Once cleared, it is recreated with the new dimensions.
         $this->db->execute('UPDATE "' . self::TABLE . '" SET "embedding" = NULL');
@@ -162,6 +173,12 @@ class PostgresSearchMigrationTest extends TestCase
         $this->migrate($meta);
 
         $this->assertStringContainsString('USING gin (subject gin_trgm_ops)', $this->indexDefinition('subject'));
+
+        // And back: a unique index replaces the trigram index of the same name.
+        $meta['TestSearchFixture']['indexes']['subject'] = 'unique';
+        $this->migrate($meta);
+        $this->assertStringContainsString('CREATE UNIQUE INDEX', $this->indexDefinition('subject'));
+        $this->assertStringContainsString('USING btree (subject)', $this->indexDefinition('subject'));
     }
 
     /**
@@ -213,6 +230,8 @@ class PostgresSearchMigrationTest extends TestCase
         $prepare->setAccessible(true);
         $definition = $prepare->invoke(new Migration($di), 'TestSearchFixture', $meta);
         $indexes = $meta['TestSearchFixture']['indexes'];
+        // Same order as Migration::migrateTable: the preflight runs before any DDL.
+        $handler->checkSearchSchema($this->db, self::TABLE, $definition['searchColumns'], $indexes);
 
         if ($handler->shouldSyncExistingTableOnly($this->db, self::TABLE)) {
             $handler->syncExistingTable(
@@ -230,6 +249,16 @@ class PostgresSearchMigrationTest extends TestCase
             'indexes' => $definition['indexes'],
         ));
         $handler->syncSearchSchema($this->db, self::TABLE, $definition['searchColumns'], $indexes);
+    }
+
+    private function tableExists()
+    {
+        $row = $this->db->fetchOne(
+            "SELECT to_regclass('public." . self::TABLE . "') IS NOT NULL AS present",
+            \PDO::FETCH_ASSOC
+        );
+
+        return in_array($row['present'], array(true, 't', 1, '1'), true);
     }
 
     private function column($name)

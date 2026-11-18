@@ -117,7 +117,29 @@ class Mysql
     }
 
     /**
-     * This function rejects search indexes, which only PostgreSQL supports.
+     * This function rejects search indexes, which only PostgreSQL supports. It runs
+     * before the table is created or changed.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param string $tableName Table name from model metadata
+     * @param array $searchColumns Column name => definition (always empty on MySQL)
+     * @param array $indexes Metadata indexes map (field => type)
+     * @return void
+     * @throws \Gaia\Exception\MigrationDriver
+     */
+    public function checkSearchSchema($connection, $tableName, array $searchColumns, array $indexes)
+    {
+        foreach ($indexes as $field => $type) {
+            if ($this->isSearchIndexKind($type)) {
+                throw new \Gaia\Exception\MigrationDriver(
+                    "Index {$tableName}.{$field} of kind {$type} needs PostgreSQL."
+                );
+            }
+        }
+    }
+
+    /**
+     * This function has nothing to sync on MySQL; it repeats the search index check.
      *
      * @param \Phalcon\Db\AdapterInterface $connection Active database connection
      * @param string $tableName Table name from model metadata
@@ -128,13 +150,7 @@ class Mysql
      */
     public function syncSearchSchema($connection, $tableName, array $searchColumns, array $indexes)
     {
-        foreach ($indexes as $field => $type) {
-            if ($this->isSearchIndexKind($type)) {
-                throw new \Gaia\Exception\MigrationDriver(
-                    "Index {$tableName}.{$field} of kind {$type} needs PostgreSQL."
-                );
-            }
-        }
+        $this->checkSearchSchema($connection, $tableName, $searchColumns, $indexes);
     }
 
     /**

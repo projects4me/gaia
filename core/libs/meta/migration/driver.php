@@ -67,8 +67,9 @@ class Driver
             $database = $GLOBALS['settings']->database;
             $extensions = isset($database->extensions) ? $database->extensions->toArray() : array();
             foreach ($this->di->get('metaMigration')->migrateExtensions($extensions) as $skipped) {
-                $result['extension:' . $skipped] = "Extension $skipped is not available on this server; skipped";
-                error_log("Migration: PostgreSQL extension $skipped is not available on this server; skipped");
+                $message = "Extension $skipped could not be created (not available on this server, or the database user may not create it); skipped";
+                $result['extension:' . $skipped] = $message;
+                error_log("Migration: PostgreSQL $message");
             }
 
             // iterate through all the model metadata defined in the system
