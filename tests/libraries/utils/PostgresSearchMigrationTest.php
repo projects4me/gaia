@@ -250,6 +250,58 @@ class PostgresSearchMigrationTest extends TestCase
     }
 
     /**
+     * A model with a search block (agaia-4655) migrates with its system search columns and their indexes. On a
+     * server without pgvector the block leaves out its semantic fields, which add the vector column.
+     */
+    public function testASearchBlockMigratesItsColumnsAndIndexes()
+    {
+        $skipped = (new Postgres())->createExtensions($this->db, array('vector', 'pg_trgm'));
+        $this->assertNotContains('pg_trgm', $skipped);
+        $withVector = !in_array('vector', $skipped, true);
+        $model = array(
+            'tableName' => self::TABLE,
+            'fields' => array(
+                'id' => array('name' => 'id', 'type' => 'char', 'length' => 36, 'null' => false),
+                'subject' => array('name' => 'subject', 'type' => 'varchar', 'length' => 255, 'null' => true),
+                'description' => array('name' => 'description', 'type' => 'text', 'null' => true),
+            ),
+            'indexes' => array('id' => 'primary'),
+            'search' => array(
+                'type' => 'fixture',
+                'fts' => array('subject' => 'A', 'description' => 'B'),
+                'fuzzy' => array('subject'),
+                'semantic' => array('subject', 'description'),
+                'display' => array('title' => 'subject'),
+            ),
+        );
+        if (!$withVector) {
+            unset($model['search']['semantic']);
+        }
+        $meta = $this->migrationMetaData('TestSearchFixture', $model);
+
+        $this->migrate($meta);
+        $this->migrate($meta);
+
+        $this->assertSame('tsvector', $this->columnType('searchVector'));
+        $this->assertSame('s', $this->column('searchVector')['attgenerated']);
+        $this->assertStringContainsString('USING gin ("searchVector")', $this->indexDefinition('searchVector'));
+        $this->assertStringContainsString('USING gin (subject gin_trgm_ops)', $this->indexDefinition('subject'));
+        if (!$withVector) {
+            $this->assertFalse($this->column('searchEmbedding'));
+            return;
+        }
+        $this->assertSame('text', $this->columnType('searchSemanticText'));
+        $this->assertSame('character varying(64)', $this->columnType('searchSemanticHash'));
+        $this->assertSame('vector(768)', $this->columnType('searchEmbedding'));
+        $this->assertSame('character varying(64)', $this->columnType('searchEmbeddingHash'));
+        $this->assertStringStartsWith('timestamp', $this->columnType('searchEmbeddedAt'));
+        $this->assertStringContainsString(
+            'USING hnsw ("searchEmbedding" vector_cosine_ops)',
+            $this->indexDefinition('searchEmbedding')
+        );
+    }
+
+    /**
      * Fixture model metadata, shaped like a file in app/metadata/model.
      *
      * @param bool $withVector
@@ -317,6 +369,36 @@ class PostgresSearchMigrationTest extends TestCase
             'indexes' => $definition['indexes'],
         ));
         $handler->syncSearchSchema($this->db, self::TABLE, $definition['searchColumns'], $indexes);
+    }
+
+    /**
+     * The metadata Migration reads for a model whose file holds the given raw metadata: the production path that
+     * applies the search block.
+     *
+     * @param string $model
+     * @param array $raw
+     * @return array
+     */
+    private function migrationMetaData($model, array $raw)
+    {
+        $di = new \Phalcon\Di\FactoryDefault();
+        $di->set('fileHandler', new class (array($model => $raw)) {
+            private $meta;
+
+            public function __construct(array $meta)
+            {
+                $this->meta = $meta;
+            }
+
+            public function readFile($path)
+            {
+                return $this->meta;
+            }
+        });
+        $read = new \ReflectionMethod(Migration::class, 'getMetaData');
+        $read->setAccessible(true);
+
+        return $read->invoke(new Migration($di), $model);
     }
 
     private function tableExists()
