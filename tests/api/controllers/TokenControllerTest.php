@@ -54,6 +54,23 @@ class TokenControllerTest extends TestCase
     protected function setUp(): void
     {
         $this->controller = $this->getTokenControllerMock();
+        $this->unlockTestUser();
+    }
+
+    /**
+     * Clear the test user's failed sign-in state, so a lockout left by one test
+     * (or a quarantined test that is skipped) doesn't lock the user for the next.
+     *
+     * @return void
+     */
+    protected function unlockTestUser(): void
+    {
+        $user = User::findFirstByEmail('test@gmail.com');
+        if ($user && ($user->failedLoginAttempts || $user->lastFailedAttempt)) {
+            $user->failedLoginAttempts = 0;
+            $user->lastFailedAttempt = null;
+            $user->save();
+        }
     }
 
     /**
