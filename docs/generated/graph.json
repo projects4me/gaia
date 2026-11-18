@@ -3956,6 +3956,18 @@
       }
     },
     {
+      "id": "behaviour:mentionsBehavior",
+      "type": "behaviour",
+      "key": "mentionsBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\mentionsBehavior",
+        "file": "core/mvc/models/behaviors/mentionsBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:modelIdentifierBehavior",
       "type": "behaviour",
       "key": "modelIdentifierBehavior",
@@ -26262,6 +26274,18 @@
       }
     },
     {
+      "id": "field:Mention.projectId",
+      "type": "field",
+      "key": "Mention.projectId",
+      "attributes": {
+        "label": "LBL_MENTIONS_PROJECT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true,
+        "relatedIdentifier": true
+      }
+    },
+    {
       "id": "field:Mention.relatedId",
       "type": "field",
       "key": "Mention.relatedId",
@@ -37857,6 +37881,16 @@
       "attributes": {
         "kind": "hasOne",
         "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Mention.project",
+      "type": "relationship",
+      "key": "Mention.project",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "projectId",
         "relatedKey": "id"
       }
     },
@@ -86247,6 +86281,11 @@
     {
       "from": "model:Mention",
       "type": "has_field",
+      "to": "field:Mention.projectId"
+    },
+    {
+      "from": "model:Mention",
+      "type": "has_field",
       "to": "field:Mention.relatedId"
     },
     {
@@ -86273,6 +86312,11 @@
       "from": "model:Mention",
       "type": "has_relationship",
       "to": "relationship:Mention.createdUser"
+    },
+    {
+      "from": "model:Mention",
+      "type": "has_relationship",
+      "to": "relationship:Mention.project"
     },
     {
       "from": "model:Mention",
@@ -93023,6 +93067,11 @@
       "from": "relationship:Mention.createdUser",
       "type": "targets",
       "to": "model:User"
+    },
+    {
+      "from": "relationship:Mention.project",
+      "type": "targets",
+      "to": "model:Project"
     },
     {
       "from": "relationship:Mention.user",
