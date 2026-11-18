@@ -6,6 +6,8 @@
 
 namespace Gaia\Libraries\Security;
 
+use Gaia\Libraries\Meta\Manager;
+
 /**
  * Builds module/action and module/field ACL catalogs by inspecting REST controllers
  * and model metadata.
@@ -196,6 +198,11 @@ class AclMapCatalog
         }
 
         if (!empty($fieldMeta['secure'])) {
+            return false;
+        }
+
+        // System fields have no grants: the API never exposes them (D-071).
+        if (Manager::isSystemFieldMeta($fieldMeta)) {
             return false;
         }
 

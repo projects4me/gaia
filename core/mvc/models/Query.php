@@ -7,6 +7,7 @@
 namespace Gaia\Core\MVC\Models;
 
 use Phalcon\Mvc\Model\MetaData;
+use Gaia\Libraries\Meta\Manager;
 use Gaia\Libraries\Utils\Util;
 use Gaia\Core\MVC\Models\Query\Clause;
 
@@ -265,14 +266,15 @@ class Query
     }
 
     /**
-     * This function returns the fields in the current model.
+     * This function returns the fields in the current model, without its system fields.
      *
      * @return array
      */
     public function getModelFields()
     {
         $metadata = $this->di->get('metaManager')->getModelMeta($this->modelAlias);
-        $fields = $metadata[MetaData::MODELS_ATTRIBUTES];
+        // System fields are never selected for an API read (D-071).
+        $fields = array_values(array_diff($metadata[MetaData::MODELS_ATTRIBUTES], Manager::systemFieldsOf($metadata)));
         foreach ($fields as &$field) {
             $field = $this->modelAlias . '.' . $field;
         }

@@ -401,6 +401,67 @@ class Manager
     }
 
     /**
+     * Return the names of a model's system fields: fields flagged `'system' => true` in its metadata. The system
+     * manages them; the REST API never reads, writes, filters or audits them (D-071).
+     *
+     * @method getSystemFields
+     * @param  string $modelName
+     * @return array
+     */
+    public function getSystemFields($modelName)
+    {
+        return self::systemFieldsOf($this->getModelMeta($modelName));
+    }
+
+    /**
+     * Whether a field of a model is flagged `'system' => true` in its metadata.
+     *
+     * @method isSystemField
+     * @param  string $modelName
+     * @param  string $fieldName
+     * @return bool
+     */
+    public function isSystemField($modelName, $fieldName)
+    {
+        return in_array($fieldName, $this->getSystemFields($modelName), true);
+    }
+
+    /**
+     * The system field names in an already loaded model metadata array (as returned by getModelMeta).
+     *
+     * @method systemFieldsOf
+     * @param  array $modelMeta
+     * @return array
+     */
+    public static function systemFieldsOf($modelMeta)
+    {
+        if (empty($modelMeta['fields']) || !is_array($modelMeta['fields'])) {
+            return [];
+        }
+
+        $systemFields = [];
+        foreach ($modelMeta['fields'] as $fieldName => $fieldMeta) {
+            if (self::isSystemFieldMeta($fieldMeta)) {
+                $systemFields[] = $fieldName;
+            }
+        }
+
+        return $systemFields;
+    }
+
+    /**
+     * Whether one field's metadata flags it as a system field: only a literal `'system' => true` counts.
+     *
+     * @method isSystemFieldMeta
+     * @param  mixed $fieldMeta
+     * @return bool
+     */
+    public static function isSystemFieldMeta($fieldMeta)
+    {
+        return is_array($fieldMeta) && ($fieldMeta['system'] ?? false) === true;
+    }
+
+    /**
      * This function is used to get related model name for the given relationship.
      *
      * @param $modelAlias The alias of model.
