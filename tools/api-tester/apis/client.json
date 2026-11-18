@@ -8621,6 +8621,155 @@
           "body": "Edited, [@member](/app/user/{userId})"
         }
       }
+    },
+    {
+      "id": "mentions-issue-update-description-with-mention",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{issueId}",
+          "attributes": {
+            "description": "<p><a href=\"/app/user/{userId}\">@Api Tester</a> please look</p>"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "description": "<p><a href=\"/app/user/{userId}\">@Api Tester</a> please look</p>"
+        }
+      }
+    },
+    {
+      "id": "mentions-issue-update-description-unchanged",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{issueId}",
+          "attributes": {
+            "description": "<p><a href=\"/app/user/{userId}\">@Api Tester</a> please look</p>"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "description": "<p><a href=\"/app/user/{userId}\">@Api Tester</a> please look</p>"
+        }
+      }
+    },
+    {
+      "id": "mentions-issue-collection-patch-description",
+      "method": "PATCH",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "collection": [
+          {
+            "id": "{issueId}",
+            "description": "<p><a href=\"/app/user/{userId}\">@Api Tester</a> please look</p><p>again</p>"
+          }
+        ]
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "mentions-comment-create-with-mention",
+      "method": "POST",
+      "path": "/api/v1/comment",
+      "resource": "comment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "comment",
+          "attributes": {
+            "relatedTo": "conversationrooms",
+            "relatedId": "{conversationroomId}",
+            "comment": "<p><a href=\"/app/user/{userId}\">@Api Tester</a> please look</p>"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "comment": "<p><a href=\"/app/user/{userId}\">@Api Tester</a> please look</p>"
+        }
+      },
+      "store": {
+        "runtime.mentionCommentId": "data.id"
+      }
+    },
+    {
+      "id": "mentions-conversationroom-update-description-with-mention",
+      "method": "PATCH",
+      "path": "/api/v1/conversationroom/{conversationroomId}",
+      "resource": "conversationroom",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "conversationroom",
+          "id": "{conversationroomId}",
+          "attributes": {
+            "description": "<p><a href=\"/app/user/{userId}\">@Api Tester</a> please look</p>"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "description": "<p><a href=\"/app/user/{userId}\">@Api Tester</a> please look</p>"
+        }
+      }
+    },
+    {
+      "id": "mentions-comment-update-with-mention",
+      "method": "PATCH",
+      "path": "/api/v1/comment/{runtime.mentionCommentId}",
+      "resource": "comment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "comment",
+          "id": "{runtime.mentionCommentId}",
+          "attributes": {
+            "comment": "<p><a href=\"/app/user/{userId}\">@Api Tester</a> please look</p><p>edited</p>"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "comment": "<p><a href=\"/app/user/{userId}\">@Api Tester</a> please look</p><p>edited</p>"
+        }
+      }
+    },
+    {
+      "id": "mentions-comment-delete",
+      "method": "DELETE",
+      "path": "/api/v1/comment/{runtime.mentionCommentId}",
+      "resource": "comment",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
     }
   ]
 }
