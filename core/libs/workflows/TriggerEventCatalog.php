@@ -6,7 +6,7 @@
 
 namespace Gaia\Libraries\Workflows;
 
-use Gaia\MVC\REST\Controllers\Components\Events\Support\EventNames;
+use Gaia\Libraries\Events\EventRegistry;
 
 /**
  * The domain events a workflow can start on, per module: which write of
@@ -53,54 +53,49 @@ class TriggerEventCatalog
     ];
 
     /**
-     * Events by name: the model, the write that raises it, a label and, for
-     * update events, the watched fields (none: any change but bookkeeping)
-     * and optionally a transition, `to`: field => the value it must change
-     * to from another value.
-     *
-     * @var array
+     * @var EventRegistry
      */
-    private const EVENTS = [
-        EventNames::ISSUE_CREATED => [
-            'model' => 'Issue', 'on' => self::ON_CREATE, 'label' => 'Issue created', 'fields' => [],
-        ],
-        self::ISSUE_MODIFIED => [
-            'model' => 'Issue', 'on' => self::ON_UPDATE, 'label' => 'Issue modified', 'fields' => [],
-        ],
-        EventNames::ISSUE_ASSIGNEE_CHANGED => [
-            'model' => 'Issue', 'on' => self::ON_UPDATE, 'label' => 'Issue assignee changed',
-            'fields' => ['assignee'],
-        ],
-        EventNames::ISSUE_STATUS_CHANGED => [
-            'model' => 'Issue', 'on' => self::ON_UPDATE, 'label' => 'Issue status changed',
-            'fields' => ['status', 'statusId'],
-        ],
-        self::COMMENT_ADDED => [
-            'model' => 'Comment', 'on' => self::ON_CREATE, 'label' => 'Comment added', 'fields' => [],
-        ],
-        self::WIKI_CREATED => [
-            'model' => 'Wiki', 'on' => self::ON_CREATE, 'label' => 'Wiki page created', 'fields' => [],
-        ],
-        self::WIKI_MODIFIED => [
-            'model' => 'Wiki', 'on' => self::ON_UPDATE, 'label' => 'Wiki page modified', 'fields' => [],
-        ],
-        self::TIME_LOGGED => [
-            'model' => 'Timelog', 'on' => self::ON_CREATE, 'label' => 'Time logged', 'fields' => [],
-        ],
-        EventNames::MILESTONE_COMPLETED => [
-            'model' => 'Milestone', 'on' => self::ON_UPDATE, 'label' => 'Milestone completed',
-            'fields' => ['status'], 'to' => ['status' => self::MILESTONE_COMPLETED_STATUS],
-        ],
-    ];
+    private $registry;
 
     /**
-     * Every event name, in catalog order.
+     * @param EventRegistry|null $registry the event registry; null reads the registry file
+     */
+    public function __construct(?EventRegistry $registry = null)
+    {
+        $this->registry = $registry ?: new EventRegistry();
+    }
+
+    /**
+     * Every workflow trigger event, in registry order: the enabled registry
+     * events on the workflow channel that name their source write. Each is
+     * its source: the model, the write that raises it (`on`), a label and,
+     * for update events, the watched fields (none: any change but
+     * bookkeeping) and optionally a transition, `to`: field => the value it
+     * must change to from another value.
+     *
+     * @return array
+     */
+    private function events()
+    {
+        $events = [];
+        foreach ($this->registry->names(EventRegistry::CHANNEL_WORKFLOW) as $name) {
+            $source = $this->registry->definition($name)['source'] ?? null;
+            if (is_array($source)) {
+                $events[$name] = $source;
+            }
+        }
+
+        return $events;
+    }
+
+    /**
+     * Every event name, in registry order.
      *
      * @return string[]
      */
     public function names()
     {
-        return array_keys(self::EVENTS);
+        return array_keys($this->events());
     }
 
     /**
@@ -109,7 +104,7 @@ class TriggerEventCatalog
      */
     public function has($name)
     {
-        return isset(self::EVENTS[$name]);
+        return is_string($name) && isset($this->events()[$name]);
     }
 
     /**
@@ -125,7 +120,7 @@ class TriggerEventCatalog
             throw new \InvalidArgumentException("Unknown workflow trigger event {$name}.");
         }
 
-        return self::EVENTS[$name];
+        return $this->events()[$name];
     }
 
     /**
@@ -135,7 +130,7 @@ class TriggerEventCatalog
      */
     public function models()
     {
-        return array_values(array_unique(array_column(self::EVENTS, 'model')));
+        return array_values(array_unique(array_column($this->events(), 'model')));
     }
 
     /**
@@ -153,7 +148,7 @@ class TriggerEventCatalog
     {
         $changed = array_values(array_diff(array_keys($audit), self::BOOKKEEPING_FIELDS));
         $names = [];
-        foreach (self::EVENTS as $name => $event) {
+        foreach ($this->events() as $name => $event) {
             if ($event['model'] !== $model || $event['on'] !== $on) {
                 continue;
             }

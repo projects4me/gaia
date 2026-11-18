@@ -6,6 +6,7 @@
 
 namespace Gaia\Tests\Libraries\Workflows;
 
+use Gaia\Libraries\Events\EventRegistry;
 use Gaia\Libraries\Workflows\ModelFieldTypes;
 use Gaia\Libraries\Workflows\NodeConfigRules;
 use Gaia\Libraries\Workflows\NodeKindCatalog;
@@ -97,6 +98,32 @@ class TriggerEventCatalogTest extends TestCase
                 ['status' => ['old' => 'Done', 'new' => 'Done']]
             )
         );
+    }
+
+    public function testADisabledOrNonWorkflowEventIsNeitherOfferedNorRaised()
+    {
+        $entry = function (array $channels, $enabled) {
+            return [
+                'channels' => $channels,
+                'enabled' => $enabled,
+                'source' => ['model' => 'Issue', 'on' => 'create', 'label' => 'X', 'fields' => []],
+            ];
+        };
+        $catalog = new TriggerEventCatalog(new EventRegistry([
+            'issue.created' => $entry(['workflow'], true),
+            'wiki.created' => $entry(['workflow'], false),
+            'comment.added' => $entry(['hermes'], true),
+        ]));
+
+        $this->assertSame(['issue.created'], $catalog->names());
+        $this->assertFalse($catalog->has('wiki.created'));
+        $this->assertFalse($catalog->has('comment.added'));
+        $this->assertSame(['Issue'], $catalog->models());
+        $this->assertSame(['issue.created'], $catalog->raisedBy('Issue', TriggerEventCatalog::ON_CREATE));
+
+        $disabled = new TriggerEventCatalog(new EventRegistry(['issue.created' => $entry(['workflow'], false)]));
+        $this->assertSame([], $disabled->names());
+        $this->assertSame([], $disabled->raisedBy('Issue', TriggerEventCatalog::ON_CREATE));
     }
 
     public function testSharedEventsKeepTheirLiveEventNames()
