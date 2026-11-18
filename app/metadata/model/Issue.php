@@ -7,6 +7,14 @@
 $models['Issue'] = array(
     'tableName' => 'issues',
     'fts' => false,
+    'search' => array(
+        'type' => 'issue',
+        'fts' => array('subject' => 'A', 'description' => 'B'),
+        'fuzzy' => array('subject'),
+        'semantic' => array('subject', 'description'),
+        'exact' => array('issueNumber'),
+        'display' => array('title' => 'subject', 'snippet' => 'description')
+    ),
     'fields' => array(
         'id' => array(
             'name' => 'id',
