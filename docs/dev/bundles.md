@@ -250,7 +250,7 @@ existing component's payload.
 1. `app/api/v1/controllers/components/events/<X>LiveEventsComponent.php`, extending `LiveEventsComponent`.
 2. `app/api/v1/controllers/<X>Controller.php`: `public $uses = array('Events\\<X>LiveEvents');`.
 3. `app/api/v1/controllers/components/events/support/EventNames.php`: the event-name constants, and
-   `app/metadata/events.php`: one registry entry per event (scope, `hermes` channel, enabled). The registry
+   `app/metadata/events.php`: one registry entry per event (`scopes`, `hermes` channel, enabled). The registry
    decides what Gaia sends; the scaffold writes both.
 4. `app/api/v1/controllers/components/events/support/ProjectIdResolver.php`: how to find the project for the
    resource (also needed by bundle U).

@@ -786,8 +786,8 @@ class LiveEventsComponentsTest extends TestCase
     {
         $posted = array();
         $registry = new EventRegistry(array(
-            EventNames::ISSUE_CREATED => array('scope' => 'project', 'channels' => array('hermes'), 'enabled' => false),
-            EventNames::MILESTONE_CREATED => array('scope' => 'project', 'channels' => array('hermes'), 'enabled' => true),
+            EventNames::ISSUE_CREATED => array('scopes' => array('project'), 'channels' => array('hermes'), 'enabled' => false),
+            EventNames::MILESTONE_CREATED => array('scopes' => array('project'), 'channels' => array('hermes'), 'enabled' => true),
         ));
         $publisher = new HermesPublisher(function ($envelope) use (&$posted) {
             $posted[] = $envelope;
@@ -797,6 +797,24 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertNotNull($publisher->publishDomainEvent(EventNames::MILESTONE_CREATED, 'project-1', 'milestone', 'm-1'));
         $this->assertCount(1, $posted);
         $this->assertEquals(EventNames::MILESTONE_CREATED, $posted[0]['eventName']);
+    }
+
+    public function testPublisherDropsAPlannedEvent()
+    {
+        $posted = array();
+        $registry = new EventRegistry(array(
+            'doc.created' => array(
+                'scopes' => array('project'), 'channels' => array('hermes'), 'enabled' => true, 'planned' => true,
+            ),
+        ));
+        $publisher = new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        }, $registry);
+
+        $this->assertNull($publisher->publishDomainEvent('doc.created', 'project-1', 'doc', 'doc-1'));
+        $this->assertSame(array(), $posted);
+        $this->assertFalse(EventNames::isAllowed('doc.created'));
+        $this->assertNotContains('doc.created', EventNames::allowed());
     }
 
     public function testPublisherDropsAWorkflowOnlyEvent()

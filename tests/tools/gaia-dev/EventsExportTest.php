@@ -21,7 +21,7 @@ class EventsExportTest extends TestCase
 {
     private const ROOT = __DIR__ . '/../../..';
 
-    public function testItListsEveryRegistryEventSortedByNameWithTheFiveFields()
+    public function testItListsEveryRegistryEventSortedByNameWithItsFields()
     {
         $pages = (new EventsExport(self::ROOT))->build();
         $events = json_decode($pages['events.json'], true);
@@ -33,10 +33,35 @@ class EventsExportTest extends TestCase
         $this->assertSame($sorted, $names);
         $this->assertSame(count($registry), count($events));
         foreach ($events as $event) {
-            $this->assertSame(['name', 'scope', 'channels', 'enabled', 'description'], array_keys($event));
-            $this->assertSame($registry[$event['name']]['channels'], $event['channels']);
-            $this->assertSame($registry[$event['name']]['enabled'], $event['enabled']);
+            $entry = $registry[$event['name']];
+            $fields = isset($entry['serviceKind'])
+                ? ['name', 'scopes', 'serviceKind', 'channels', 'enabled', 'planned', 'description']
+                : ['name', 'scopes', 'channels', 'enabled', 'planned', 'description'];
+            $this->assertSame($fields, array_keys($event), $event['name']);
+            $this->assertSame($entry['scopes'], $event['scopes']);
+            $this->assertSame($entry['channels'], $event['channels']);
+            $this->assertSame($entry['enabled'], $event['enabled']);
+            $this->assertSame(!empty($entry['planned']), $event['planned']);
         }
+    }
+
+    public function testItListsThePlannedEventsAndTheRuntimesScope()
+    {
+        $events = [];
+        foreach (json_decode((new EventsExport(self::ROOT))->build()['events.json'], true) as $event) {
+            $events[$event['name']] = $event;
+        }
+
+        foreach (['doc.created', 'doc.updated', 'doc.deleted'] as $name) {
+            $this->assertTrue($events[$name]['planned'], $name);
+            $this->assertSame(['project'], $events[$name]['scopes'], $name);
+            $this->assertSame(['hermes'], $events[$name]['channels'], $name);
+        }
+        $this->assertTrue($events['search.semantic.changed']['planned']);
+        $this->assertSame(['service'], $events['search.semantic.changed']['scopes']);
+        $this->assertSame('ares', $events['search.semantic.changed']['serviceKind']);
+        $this->assertSame(['user', 'runtimes'], $events['workflow.agent.run.requested']['scopes']);
+        $this->assertFalse($events['workflow.agent.run.requested']['planned']);
     }
 
     public function testItWritesNothingWithoutARegistry()

@@ -76,7 +76,7 @@ class ScaffoldLiveEventsTest extends TestCase
         $this->assertStringContainsString("const REPORT_CREATED = 'report.created';", $changes['app/api/v1/controllers/components/events/support/EventNames.php']);
         $this->assertStringNotContainsString('self::REPORT_DELETED', $changes['app/api/v1/controllers/components/events/support/EventNames.php']);
         $registry = $changes['app/metadata/events.php'];
-        $this->assertStringContainsString("    'report.created' => [\n        'description' => 'Report created.',\n        'scope' => 'project',\n        'channels' => ['hermes'],\n        'consumers' => ['prometheus'],\n        'enabled' => true,\n    ],\n    'report.deleted' => [", $registry);
+        $this->assertStringContainsString("    'report.created' => [\n        'description' => 'Report created.',\n        'scopes' => ['project'],\n        'channels' => ['hermes'],\n        'consumers' => ['prometheus'],\n        'enabled' => true,\n    ],\n    'report.deleted' => [", $registry);
         $this->assertStringEndsWith("    ],\n];\n", $registry);
         $this->assertStringContainsString("'reportId' => 'Report',", $changes['app/api/v1/controllers/components/events/support/ProjectIdResolver.php']);
         $this->assertStringContainsString("array('Events\\\\ReportLiveEvents')", $changes['app/api/v1/controllers/ReportController.php']);
@@ -132,7 +132,7 @@ class ScaffoldLiveEventsTest extends TestCase
         $changes = (new LiveEventsScaffold($root))->plan(new LiveEventsSpec('Report', ['scope' => 'user']));
         file_put_contents($root . '/' . LiveEventsScaffold::REGISTRY_PATH, $changes[LiveEventsScaffold::REGISTRY_PATH]);
 
-        $this->assertStringContainsString("'scope' => 'user'", $changes[LiveEventsScaffold::REGISTRY_PATH]);
+        $this->assertStringContainsString("'scopes' => ['user']", $changes[LiveEventsScaffold::REGISTRY_PATH]);
         $this->assertNotContains(
             'EventNames::REPORT_CREATED (report.created) is not enabled on the hermes channel in app/metadata/events.php',
             (new LiveEventsCheck($root))->problems()
@@ -147,7 +147,7 @@ class ScaffoldLiveEventsTest extends TestCase
         $registry = file_get_contents($root . '/app/metadata/events.php');
         $registry = str_replace("
 ];", "
-    'ghost.created' => ['description' => 'x', 'scope' => 'galaxy', 'channels' => ['hermes', 'smoke'], 'enabled' => true],
+    'ghost.created' => ['description' => 'x', 'scopes' => ['galaxy'], 'channels' => ['hermes', 'smoke'], 'enabled' => true],
 ];", rtrim($registry) . "
 ");
         file_put_contents($root . '/app/metadata/events.php', $registry);
@@ -157,6 +157,50 @@ class ScaffoldLiveEventsTest extends TestCase
             "ghost.created has the unknown scope 'galaxy' in app/metadata/events.php",
             'ghost.created is on the hermes channel in app/metadata/events.php but has no EventNames constant',
         ], (new LiveEventsCheck($root))->problems());
+    }
+
+    public function testTheCheckReportsAMisplacedOrMissingServiceKindAndMissingScopes()
+    {
+        $root = $this->copyOfTheEventFiles();
+        $registry = file_get_contents($root . '/app/metadata/events.php');
+        $registry = str_replace("
+];", "
+    'ghost.indexed' => ['description' => 'x', 'scopes' => ['service'], 'channels' => ['workflow'], 'enabled' => true],
+    'ghost.blank' => ['description' => 'x', 'scopes' => ['service'], 'serviceKind' => '', 'channels' => ['workflow'], 'enabled' => true],
+    'ghost.watched' => ['description' => 'x', 'scopes' => ['user'], 'serviceKind' => 'ares', 'channels' => ['workflow'], 'enabled' => true],
+    'ghost.lost' => ['description' => 'x', 'channels' => ['workflow'], 'enabled' => true],
+];", rtrim($registry) . "
+");
+        file_put_contents($root . '/app/metadata/events.php', $registry);
+
+        $this->assertSame([
+            'ghost.indexed has the service scope but no serviceKind in app/metadata/events.php',
+            'ghost.blank has the service scope but no serviceKind in app/metadata/events.php',
+            'ghost.watched has a serviceKind but no service scope in app/metadata/events.php',
+            'ghost.lost lists no scopes in app/metadata/events.php',
+        ], (new LiveEventsCheck($root))->problems());
+    }
+
+    public function testAPlannedEntryNeedsNoConstantOrCaseUntilCodeEmitsIt()
+    {
+        $root = $this->copyOfTheEventFiles();
+        $this->assertSame([], (new LiveEventsCheck($root))->problems());
+
+        $changes = (new LiveEventsScaffold($root))->plan(new LiveEventsSpec('Report', ['events' => 'created']));
+        foreach ($changes as $path => $content) {
+            file_put_contents($root . '/' . $path, $content);
+        }
+        $registry = file_get_contents($root . '/app/metadata/events.php');
+        file_put_contents($root . '/app/metadata/events.php', str_replace(
+            "    'report.created' => [\n",
+            "    'report.created' => [\n        'planned' => true,\n",
+            $registry
+        ));
+
+        $this->assertSame(
+            ['remove planned from report.created in app/metadata/events.php'],
+            (new LiveEventsCheck($root))->problems()
+        );
     }
 
     public function testACommentedOrLongerConstantReferenceIsNotAnEmission()

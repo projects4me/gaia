@@ -113,7 +113,7 @@ class LiveEventsScaffold
             }
             $entries .= "    '{$name}' => [\n"
                 . "        'description' => '{$spec->model} {$event}.',\n"
-                . "        'scope' => '{$spec->scope}',\n"
+                . "        'scopes' => ['{$spec->scope}'],\n"
                 . "        'channels' => ['hermes'],\n"
                 . "        'consumers' => ['prometheus'],\n"
                 . "        'enabled' => true,\n"

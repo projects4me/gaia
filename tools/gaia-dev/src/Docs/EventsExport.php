@@ -10,7 +10,8 @@ use GaiaDev\Scaffold\LiveEventsScaffold;
 
 /**
  * The event registry (app/metadata/events.php) as docs/generated/events.json: a list sorted by name of
- * {name, scope, channels, enabled, description}, so Hermes can check its allowlist against it in CI.
+ * {name, scopes, serviceKind (service scope only), channels, enabled, planned, description}, so Hermes can
+ * check its allowlist against it in CI.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package GaiaDev\Docs
@@ -46,11 +47,17 @@ class EventsExport
         $events = [];
         $registry = is_array($registry) ? $registry : [];
         foreach ($registry as $name => $entry) {
-            $events[] = [
+            $event = [
                 'name' => (string) $name,
-                'scope' => (string) ($entry['scope'] ?? ''),
+                'scopes' => array_values((array) ($entry['scopes'] ?? [])),
+            ];
+            if (isset($entry['serviceKind'])) {
+                $event['serviceKind'] = (string) $entry['serviceKind'];
+            }
+            $events[] = $event + [
                 'channels' => array_values((array) ($entry['channels'] ?? [])),
                 'enabled' => !empty($entry['enabled']),
+                'planned' => !empty($entry['planned']),
                 'description' => (string) ($entry['description'] ?? ''),
             ];
         }
