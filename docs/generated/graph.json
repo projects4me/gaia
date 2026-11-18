@@ -22102,6 +22102,21 @@
       }
     },
     {
+      "id": "component:Notifications\\Modules\\MentionNotification",
+      "type": "component",
+      "key": "Notifications\\Modules\\MentionNotification",
+      "attributes": {
+        "kind": "notification",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Modules\\MentionNotification",
+        "file": "app/api/v1/controllers/components/notifications/modules/MentionNotification.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "component:Notifications\\Modules\\MilestoneNotification",
       "type": "component",
       "key": "Notifications\\Modules\\MilestoneNotification",
