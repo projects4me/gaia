@@ -187,8 +187,10 @@ $models['Conversationroom'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'mentionsBehavior'
     ),
+    'mentions' => ['fields' => ['description']],
     'acl' => [
         'group' => true,
         'groups' => ['Project'],

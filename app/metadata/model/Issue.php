@@ -352,8 +352,10 @@ $models['Issue'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'mentionsBehavior'
     ),
+    'mentions' => ['fields' => ['description']],
     'acl' => [
         'groups' => ['Project'],
         'groupKeys' => [
