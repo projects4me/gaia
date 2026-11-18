@@ -162,7 +162,7 @@ class MentionRecorder
     {
         $rows = User::find([
             'columns' => 'id',
-            'conditions' => 'id IN ({userIds:array}) AND deleted = false',
+            'conditions' => 'id IN ({userIds:array}) AND deleted = 0',
             'bind' => ['userIds' => $userIds],
         ]);
 
