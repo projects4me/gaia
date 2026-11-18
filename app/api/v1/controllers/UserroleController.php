@@ -38,6 +38,13 @@ class UserroleController extends RestController
     protected $systemLevel = true;
 
     /**
+     * Components: publishes user.access.changed when a role assignment changes.
+     *
+     * @var array
+     */
+    public $uses = array('Events\\UserroleLiveEvents');
+
+    /**
      * Reject an agent assigning a role to itself (see `AgentEscalationGuard`).
      *
      * @return \Phalcon\Http\Response

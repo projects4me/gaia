@@ -17,6 +17,7 @@ use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanissueLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\UserAccessLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\MembershipLiveEventsComponent;
+use Gaia\MVC\REST\Controllers\Components\Events\UserroleLiveEventsComponent;
 use Gaia\Libraries\Events\EventRegistry;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\EventNames;
 use Gaia\MVC\REST\Controllers\Components\Events\Support\HermesPublisher;
@@ -800,6 +801,40 @@ class LiveEventsComponentsTest extends TestCase
 
         $this->fire($membership, 'afterCreate', (object) array('id' => 'm-1', 'projectId' => 'project-9'));
 
+        $this->assertCount(0, $posted);
+    }
+
+    public function testUserroleCreateDeleteAndMoveToAnotherUserPublishAccessChanged()
+    {
+        $posted = array();
+        $userrole = new UserroleLiveEventsComponent($this->make(UserAccessLiveEventsComponent::class, $posted));
+        $model = (object) array('id' => 'ur-1', 'userId' => 'user-7', 'roleId' => 'role-1');
+
+        $this->fire($userrole, 'afterCreate', $model);
+        $this->fire($userrole, 'afterDelete', $model);
+        $this->assertCount(2, $posted);
+        $this->assertEquals('user:user-7', $posted[0]['projectId']);
+        $this->assertEquals(EventNames::USER_ACCESS_CHANGED, $posted[1]['eventName']);
+
+        $posted = array();
+        $moved = (object) array('id' => 'ur-1', 'userId' => 'user-8', 'roleId' => 'role-1',
+            'audit' => array('userId' => array('old' => 'user-7', 'new' => 'user-8')));
+        $this->fire($userrole, 'afterUpdate', $moved);
+        $this->assertEquals(array('user:user-8', 'user:user-7'), array_column($posted, 'projectId'));
+    }
+
+    public function testUserroleRoleChangePublishesOnceAndUnrelatedUpdatePublishesNothing()
+    {
+        $posted = array();
+        $userrole = new UserroleLiveEventsComponent($this->make(UserAccessLiveEventsComponent::class, $posted));
+
+        $this->fire($userrole, 'afterUpdate', (object) array('id' => 'ur-1', 'userId' => 'user-7',
+            'audit' => array('roleId' => array('old' => 'r-1', 'new' => 'r-2'))));
+        $this->assertCount(1, $posted);
+
+        $posted = array();
+        $this->fire($userrole, 'afterUpdate', (object) array('id' => 'ur-1', 'userId' => 'user-7',
+            'audit' => array('dateModified' => array('old' => 'a', 'new' => 'b'))));
         $this->assertCount(0, $posted);
     }
 

@@ -22,5 +22,5 @@
 - acl: assignment={"field":"createdUser","condition":"Userrole.createdUser=:userId:"}
 - controller: Gaia\MVC\REST\Controllers\UserroleController
 - routes: DELETE /api/v1/userrole, DELETE /api/v1/userrole/{id}, GET /api/v1/userrole, GET /api/v1/userrole/{id}, GET /api/v1/userrole/{id}/{relation}, OPTIONS /api/v1/userrole, PATCH /api/v1/userrole, PATCH /api/v1/userrole/{id}, POST /api/v1/userrole, PUT /api/v1/userrole, PUT /api/v1/userrole/{id}
-- components: -
-- cases: 7 (acl 3, backend 4); gaia-dev cases userrole
+- components: Events\UserroleLiveEvents
+- cases: 11 (acl 3, backend 4, live 4); gaia-dev cases userrole
