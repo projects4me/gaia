@@ -11,8 +11,9 @@ use GaiaDev\Scaffold\LiveEventsSpec;
 
 /**
  * Checks the live events: every EventNames constant is enabled on the hermes channel in the event registry,
- * emitted by a component and covered by a case in LiveEventsComponentsTest; every registry entry on the hermes
- * channel has a constant and every channel and scope is known; every component is listed in a controller's `$uses`.
+ * emitted by a component and covered by a case in LiveEventsComponentsTest; every non-planned registry entry on the
+ * hermes channel has a constant; a planned entry is emitted by no component; every channel and scope is known and
+ * serviceKind comes with the service scope only; every component is listed in a controller's `$uses`.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package GaiaDev\Check
@@ -27,7 +28,7 @@ class LiveEventsCheck
 
     public const CHANNELS = ['hermes', 'workflow'];
 
-    public const SCOPES = ['project', 'user'];
+    public const SCOPES = ['project', 'user', 'runtimes', 'service'];
 
     /**
      * @var string
@@ -59,12 +60,18 @@ class LiveEventsCheck
         preg_match_all("/const ([A-Z_]+) = '([a-z.]+)';/", $names, $constants, PREG_SET_ORDER);
         foreach ($constants as [, $constant, $value]) {
             $entry = $registry[$value] ?? null;
-            if (!is_array($entry) || empty($entry['enabled']) || !in_array('hermes', (array) ($entry['channels'] ?? []), true)) {
-                $problems[] = "EventNames::{$constant} ({$value}) is not enabled on the hermes channel in " . self::REGISTRY_PATH;
-            }
             $emitted = false;
             foreach ($components as $source) {
                 $emitted = $emitted || preg_match('/EventNames::' . $constant . '\b/', $this->code($source)) === 1;
+            }
+            if (is_array($entry) && !empty($entry['planned'])) {
+                if ($emitted) {
+                    $problems[] = "remove planned from {$value} in " . self::REGISTRY_PATH;
+                }
+                continue;
+            }
+            if (!is_array($entry) || empty($entry['enabled']) || !in_array('hermes', (array) ($entry['channels'] ?? []), true)) {
+                $problems[] = "EventNames::{$constant} ({$value}) is not enabled on the hermes channel in " . self::REGISTRY_PATH;
             }
             if (!$emitted) {
                 $problems[] = "EventNames::{$constant} ({$value}) is emitted by no component";
@@ -81,10 +88,23 @@ class LiveEventsCheck
             foreach (array_diff($channels, self::CHANNELS) as $channel) {
                 $problems[] = "{$name} has the unknown channel '{$channel}' in " . self::REGISTRY_PATH;
             }
-            if (!in_array($entry['scope'] ?? null, self::SCOPES, true)) {
-                $problems[] = "{$name} has the unknown scope '" . (is_scalar($entry['scope'] ?? null) ? $entry['scope'] : '') . "' in " . self::REGISTRY_PATH;
+            $scopes = is_array($entry['scopes'] ?? null) ? $entry['scopes'] : [];
+            if ($scopes === []) {
+                $problems[] = "{$name} lists no scopes in " . self::REGISTRY_PATH;
             }
-            if (in_array('hermes', $channels, true) && !in_array($name, $values, true)) {
+            foreach ($scopes as $scope) {
+                if (!in_array($scope, self::SCOPES, true)) {
+                    $problems[] = "{$name} has the unknown scope '" . (is_scalar($scope) ? $scope : '') . "' in " . self::REGISTRY_PATH;
+                }
+            }
+            $service = in_array('service', $scopes, true);
+            if ($service && (!is_string($entry['serviceKind'] ?? null) || $entry['serviceKind'] === '')) {
+                $problems[] = "{$name} has the service scope but no serviceKind in " . self::REGISTRY_PATH;
+            }
+            if (!$service && isset($entry['serviceKind'])) {
+                $problems[] = "{$name} has a serviceKind but no service scope in " . self::REGISTRY_PATH;
+            }
+            if (in_array('hermes', $channels, true) && empty($entry['planned']) && !in_array($name, $values, true)) {
                 $problems[] = "{$name} is on the hermes channel in " . self::REGISTRY_PATH . ' but has no EventNames constant';
             }
         }
