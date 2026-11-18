@@ -189,7 +189,7 @@ class MentionRecorder
         $mention->relatedId = $relatedId;
         $mention->projectId = $projectId;
         $mention->userId = $userId;
-        $mention->notified = false;
+        $mention->isNotified = false;
         if ($mention->save()) {
             return true;
         }

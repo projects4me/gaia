@@ -88,7 +88,7 @@ class MentionNotificationTest extends TestCase
     {
         return (object) [
             'userId' => $userId, 'relatedTo' => $relatedTo, 'relatedId' => $relatedId,
-            'projectId' => 'p-1', 'createdUser' => 'actor', 'notified' => false,
+            'projectId' => 'p-1', 'createdUser' => 'actor', 'isNotified' => false,
         ];
     }
 

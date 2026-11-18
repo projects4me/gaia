@@ -26641,13 +26641,14 @@
       }
     },
     {
-      "id": "field:Mention.notified",
+      "id": "field:Mention.isNotified",
       "type": "field",
-      "key": "Mention.notified",
+      "key": "Mention.isNotified",
       "attributes": {
         "label": "LBL_MENTIONS_NOTIFIED",
         "type": "bool",
-        "null": false
+        "null": false,
+        "default": false
       }
     },
     {
@@ -87283,7 +87284,7 @@
     {
       "from": "model:Mention",
       "type": "has_field",
-      "to": "field:Mention.notified"
+      "to": "field:Mention.isNotified"
     },
     {
       "from": "model:Mention",
