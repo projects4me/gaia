@@ -8,6 +8,7 @@ namespace Gaia\MVC\Models;
 
 use Gaia\Core\MVC\Models\Model;
 use Gaia\MVC\REST\Controllers\Components\Events\MentionLiveEvents;
+use Gaia\MVC\REST\Controllers\Components\Notifications\Modules\MentionNotification;
 
 /**
  * Mention Model
@@ -35,6 +36,14 @@ class Mention extends Model
         } catch (\Throwable $e) {
             if ($logger) {
                 $logger->error('Mention publish failed: ' . $e->getMessage());
+            }
+        }
+
+        try {
+            (new MentionNotification())->notify($this);
+        } catch (\Throwable $e) {
+            if ($logger) {
+                $logger->error('Mention notification failed: ' . $e->getMessage());
             }
         }
     }

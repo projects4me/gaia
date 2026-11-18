@@ -53,6 +53,7 @@ class IssueNotification implements NotificationModuleInterface
             $logger->debug('IssueNotification::onCreate()');
 
             $project = Project::findFirstById($model->projectId);
+            $mentioned = MentionNotification::mentionedUserIds('issue', (string) $model->id);
 
             // Notify assignee if different from current user
             if ($model->assignee && $model->assignee !== $currentUser->id) {
@@ -72,8 +73,10 @@ class IssueNotification implements NotificationModuleInterface
                     ),
                 ];
                 $notification = CreateModel::execute('systemnotification', $notificationData);
-                $this->recipientService->notifyUsers($notification, [$model->assignee]);
-                $this->recipientService->notifyIssueRecipients($notification, $model, [], ['watchers']);
+                if (!in_array($model->assignee, $mentioned)) {
+                    $this->recipientService->notifyUsers($notification, [$model->assignee]);
+                }
+                $this->recipientService->notifyIssueRecipients($notification, $model, $mentioned, ['watchers']);
             }
 
             // Notify owner if different from current user
@@ -94,8 +97,10 @@ class IssueNotification implements NotificationModuleInterface
                     ),
                 ];
                 $notification = CreateModel::execute('systemnotification', $notificationData);
-                $this->recipientService->notifyUsers($notification, [$model->owner]);
-                $this->recipientService->notifyIssueRecipients($notification, $model, [], ['watchers']);
+                if (!in_array($model->owner, $mentioned)) {
+                    $this->recipientService->notifyUsers($notification, [$model->owner]);
+                }
+                $this->recipientService->notifyIssueRecipients($notification, $model, $mentioned, ['watchers']);
             }
 
             $logger->debug('-IssueNotification::onCreate()');
