@@ -83,6 +83,11 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
     private $events;
 
     /**
+     * @var WorkflowRunEvents|null
+     */
+    private $runEvents;
+
+    /**
      * @param WorkflowChangeEvents|null $events  Raises the events of the run's changes; none when null.
      * @param WorkflowGraphReader|null  $graph
      * @param RunJournal|null           $journal
@@ -90,6 +95,7 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
      * @param UserSelector|null         $users
      * @param ActorCatalog|null         $actors
      * @param AgentRunRequests|null     $requests Tells agents' runtimes about their steps; none when null.
+     * @param WorkflowRunEvents|null    $runEvents Told when a run completes or fails; none when null.
      */
     public function __construct(
         WorkflowChangeEvents $events = null,
@@ -98,7 +104,8 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
         ActionCatalog $actions = null,
         UserSelector $users = null,
         ActorCatalog $actors = null,
-        AgentRunRequests $requests = null
+        AgentRunRequests $requests = null,
+        WorkflowRunEvents $runEvents = null
     ) {
         $users = $users ?: new UserSelector();
         $this->expressions = new ExpressionResolver($users->functions());
@@ -111,6 +118,7 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
         $this->actors = $actors
             ?: new ActorCatalog(new WorkflowRecords(), $users, $this->expressions, new ActorSteps());
         $this->requests = $requests;
+        $this->runEvents = $runEvents;
         $this->guard = new LoopGuard();
     }
 
@@ -249,6 +257,37 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
             );
         }
         $this->requestAgents($context, $status);
+        $this->announceEnd($context, $status);
+    }
+
+    /**
+     * Tells the outside the run ended. A waiting run has not, and a failure to
+     * tell never touches the run.
+     *
+     * @param  RunContext $context
+     * @param  string     $status
+     * @return void
+     */
+    private function announceEnd(RunContext $context, $status)
+    {
+        if ($this->runEvents === null || !in_array($status, [RunStatus::COMPLETED, RunStatus::FAILED], true)) {
+            return;
+        }
+        $payload = $context->payload;
+        $resource = isset($payload['resource']) && is_array($payload['resource']) ? $payload['resource'] : [];
+        try {
+            $this->runEvents->finished([
+                'runId' => $context->runId,
+                'workflowId' => $context->workflow['id'],
+                'projectId' => isset($payload['projectId']) ? $payload['projectId'] : null,
+                'status' => $status,
+                'test' => false,
+                'entityType' => isset($resource['type']) ? $resource['type'] : null,
+                'entityId' => isset($resource['id']) ? $resource['id'] : null,
+            ]);
+        } catch (\Throwable $exception) {
+            $this->log('error', "Run {$context->runId} end could not be announced: {$exception->getMessage()}");
+        }
     }
 
     /**

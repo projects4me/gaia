@@ -15,6 +15,7 @@ use Gaia\Libraries\Workflows\RunJournal;
 use Gaia\Libraries\Workflows\WorkflowAction;
 use Gaia\Libraries\Workflows\WorkflowChangeEvents;
 use Gaia\Libraries\Workflows\WorkflowGraphReader;
+use Gaia\Libraries\Workflows\WorkflowRunEvents;
 use Gaia\Libraries\Workflows\WorkflowRunner;
 use Gaia\Libraries\Workflows\WorkflowStepException;
 use PHPUnit\Framework\TestCase;
@@ -54,6 +55,16 @@ class WorkflowRunnerTest extends TestCase
      * @var array[] The steps the agents' runtimes were told about.
      */
     private $requested = [];
+
+    /**
+     * @var array The runs announced as ended.
+     */
+    private $ended = [];
+
+    /**
+     * @var bool Whether announcing a run's end throws.
+     */
+    private $announceFails = false;
 
     private const PAYLOAD = [
         'eventId' => 'event-1',
@@ -130,6 +141,49 @@ class WorkflowRunnerTest extends TestCase
         $this->assertNull($steps[1]['port']);
         $this->assertSame('user-stranger is not a member', $steps[1]['error']);
         $this->assertSame([['run-1', 'failed', 'user-stranger is not a member']], $this->journal['finished']);
+    }
+
+    public function testACompletedRunIsAnnouncedOnce()
+    {
+        $this->runner($this->commentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
+
+        $this->assertSame([[
+            'runId' => 'run-1',
+            'workflowId' => 'wf-1',
+            'projectId' => 'project-1',
+            'status' => 'completed',
+            'test' => false,
+            'entityType' => 'issue',
+            'entityId' => 'issue-1',
+        ]], $this->ended);
+    }
+
+    public function testAFailedRunIsAnnounced()
+    {
+        $this->journal['fail'] = ['step:agent'];
+
+        $this->runner($this->agentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
+
+        $this->assertSame(['failed'], array_column($this->ended, 'status'));
+    }
+
+    public function testAWaitingRunIsNotAnnouncedUntilItEnds()
+    {
+        $this->runner($this->agentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
+        $this->assertSame([], $this->ended);
+
+        $this->runner($this->agentGraph())->resume($this->journal['steps'][1]['id'], 'done', ['outcome' => 'done']);
+
+        $this->assertSame(['completed'], array_column($this->ended, 'status'));
+    }
+
+    public function testARunStillEndsWhenItsAnnouncementFails()
+    {
+        $this->announceFails = true;
+
+        $this->runner($this->commentGraph())->start('wf-1', 'trigger', self::PAYLOAD);
+
+        $this->assertSame([['run-1', 'completed', null]], $this->journal['finished']);
     }
 
     public function testAnActorStepLeavesTheRunWaiting()
@@ -463,7 +517,26 @@ class WorkflowRunnerTest extends TestCase
             }
         };
 
-        return new WorkflowRunner($events, $graph, $journal, $actions, null, $actors, $requests);
+        $runEvents = new class ($this->ended, $this->announceFails) implements WorkflowRunEvents {
+            private $ended;
+            private $fails;
+
+            public function __construct(array &$ended, $fails)
+            {
+                $this->ended = &$ended;
+                $this->fails = $fails;
+            }
+
+            public function finished(array $run)
+            {
+                if ($this->fails) {
+                    throw new \RuntimeException('hermes down');
+                }
+                $this->ended[] = $run;
+            }
+        };
+
+        return new WorkflowRunner($events, $graph, $journal, $actions, null, $actors, $requests, $runEvents);
     }
 
     /**

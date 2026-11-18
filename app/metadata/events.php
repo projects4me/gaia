@@ -245,6 +245,13 @@ return [
         'consumers' => ['talos'],
         'enabled' => true,
     ],
+    'workflow.run.finished' => [
+        'description' => "A workflow run completed or failed; scoped to the run's project; ids only, no error text.",
+        'scope' => 'project',
+        'channels' => ['hermes'],
+        'consumers' => ['prometheus', 'talos'],
+        'enabled' => true,
+    ],
     'user.access.changed' => [
         'description' => "A user's access changed: account status, session revocation, a membership "
             . 'or a role assignment created, changed or deleted; scoped to user:<userId>, user id only (D-011).',

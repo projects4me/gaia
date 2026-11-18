@@ -89,6 +89,7 @@ Workflow engine (not REST):
 | Source                  | Class                | Event                                                                  |
 | ----------------------- | -------------------- | ---------------------------------------------------------------------- |
 | `RunAgentActor` (D-010, D-012) | `AgentRunLiveEvents` | `workflow.agent.run.requested` scoped to `user:<agentUserId>`, and also to `runtimes` for a delegable agent; ids only |
+| `WorkflowRunner` | `WorkflowRunLiveEvents` | `workflow.run.finished` scoped to the run's project when a run completes or fails (not while waiting); ids only, no error text |
 
 
 Comments and votes publish only when `relatedTo` is a conversation room.
