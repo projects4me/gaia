@@ -105,7 +105,7 @@ jobs:
         PGPASSWORD: nouman
       run: |
         psql -h postgres -U nouman -d pr4m -v ON_ERROR_STOP=1 \
-          -f db/Dump20260810.sql
+          -f db/Dump20261118.sql
 
     - name: Migrate pr4m schema from metadata
       env:
