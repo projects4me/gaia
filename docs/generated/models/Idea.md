@@ -24,9 +24,9 @@
 <a id="summary"></a>
 ## Summary
 
-- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior
+- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, mentionsBehavior, modifiedUserBehavior, softDeleteBehavior
 - acl: group Project via projectId
 - controller: Gaia\MVC\REST\Controllers\IdeaController
 - routes: DELETE /api/v1/idea, DELETE /api/v1/idea/{id}, GET /api/v1/idea, GET /api/v1/idea/{id}, GET /api/v1/idea/{id}/{relation}, OPTIONS /api/v1/idea, PATCH /api/v1/idea, PATCH /api/v1/idea/{id}, POST /api/v1/idea, PUT /api/v1/idea, PUT /api/v1/idea/{id}
 - components: Events\IdeaLiveEvents
-- cases: 15 (acl 7, backend 6, client 2); gaia-dev cases idea
+- cases: 17 (acl 7, backend 6, client 4); gaia-dev cases idea

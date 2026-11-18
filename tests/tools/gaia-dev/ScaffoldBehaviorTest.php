@@ -92,7 +92,7 @@ class ScaffoldBehaviorTest extends TestCase
             ['core/mvc/models/behaviors/reportTotalsBehavior.php', 'tests/models/behaviors/ReportTotalsBehaviorTest.php', 'app/metadata/model/Ideamessage.php'],
             array_keys($changes)
         );
-        $this->assertStringContainsString("        'ideaReferencesBehavior',\n        'reportTotalsBehavior'\n    ),", $changes['app/metadata/model/Ideamessage.php']);
+        $this->assertStringContainsString("        'mentionsBehavior',\n        'reportTotalsBehavior'\n    ),", $changes['app/metadata/model/Ideamessage.php']);
         $this->assertFileDoesNotExist(self::ROOT . '/core/mvc/models/behaviors/reportTotalsBehavior.php');
     }
 

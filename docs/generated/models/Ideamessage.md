@@ -22,9 +22,9 @@
 <a id="summary"></a>
 ## Summary
 
-- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, ideaReferencesBehavior, ideaScreensBehavior, softDeleteBehavior
+- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, ideaReferencesBehavior, ideaScreensBehavior, mentionsBehavior, softDeleteBehavior
 - acl: group Project via Array
 - controller: Gaia\MVC\REST\Controllers\IdeamessageController
 - routes: DELETE /api/v1/ideamessage, DELETE /api/v1/ideamessage/{id}, GET /api/v1/ideamessage, GET /api/v1/ideamessage/{id}, GET /api/v1/ideamessage/{id}/{relation}, OPTIONS /api/v1/ideamessage, PATCH /api/v1/ideamessage, PATCH /api/v1/ideamessage/{id}, POST /api/v1/ideamessage, PUT /api/v1/ideamessage, PUT /api/v1/ideamessage/{id}
 - components: Events\IdeamessageLiveEvents
-- cases: 14 (acl 4, backend 6, client 4); gaia-dev cases ideamessage
+- cases: 16 (acl 4, backend 6, client 6); gaia-dev cases ideamessage

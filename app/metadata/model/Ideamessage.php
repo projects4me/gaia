@@ -120,8 +120,10 @@ $models['Ideamessage'] = array(
         'createdUserBehavior',
         'softDeleteBehavior',
         'ideaScreensBehavior',
-        'ideaReferencesBehavior'
+        'ideaReferencesBehavior',
+        'mentionsBehavior'
     ),
+    'mentions' => ['fields' => ['body']],
     'acl' => [
         'groups' => ['Project'],
         'groupKeys' => [
