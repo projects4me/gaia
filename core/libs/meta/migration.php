@@ -105,12 +105,15 @@ class Migration extends PhalconMigration
         $tableDefinition = $this->prepareTableDefinition($model, $meta);
         $tableName = $tableDefinition['tableName'];
 
+        $indexes = isset($meta[$model]['indexes']) ? $meta[$model]['indexes'] : [];
+
         if ($handler->shouldSyncExistingTableOnly(self::$connection, $tableName)) {
             $handler->syncExistingTable(
                 self::$connection,
                 $tableName,
                 $tableDefinition['columns'],
-                isset($meta[$model]['indexes']) ? $meta[$model]['indexes'] : []
+                $indexes,
+                $tableDefinition['searchColumns']
             );
             $this->migrateTriggers($model, $meta);
             return;
@@ -124,6 +127,7 @@ class Migration extends PhalconMigration
                 'options' => $handler->getTableOptions(),
             )
         );
+        $handler->syncSearchSchema(self::$connection, $tableName, $tableDefinition['searchColumns'], $indexes);
 
         $this->migrateTriggers($model, $meta);
     }
@@ -188,6 +192,18 @@ class Migration extends PhalconMigration
     }
 
     /**
+     * This function creates the database extensions listed in the database config
+     * (`extensions`), e.g. vector and pg_trgm. It is idempotent.
+     *
+     * @param array $extensions Extension names
+     * @return array Names of the extensions the database server does not have
+     */
+    public function migrateExtensions(array $extensions)
+    {
+        return $this->di->get('migrationHandler')->createExtensions(self::$connection, $extensions);
+    }
+
+    /**
      * This function is responsible for reading the individual metadata from
      * the application and process it for this class
      *
@@ -205,10 +221,18 @@ class Migration extends PhalconMigration
             'tableName' => $meta[$model]['tableName'],
             'columns' => array(),
             'indexes' => array(),
+            // vector/tsvector columns, which Phalcon's Column cannot express: name => definition
+            'searchColumns' => array(),
         );
 
         // Traverse through the fields and process them
         foreach ($meta[$model]['fields'] as $field => $schema) {
+            $searchDefinition = $handler->searchColumnDefinition($schema, $meta[$model]['fields']);
+            if ($searchDefinition !== null) {
+                $tableDescription['searchColumns'][$schema['name']] = $searchDefinition;
+                continue;
+            }
+
             $fieldOptions = array();
             $fieldOptions['type'] = $handler->normalizeColumnType(
                 $schema['type'],
@@ -248,6 +272,10 @@ class Migration extends PhalconMigration
         // Traverse through the indexes and process them
         foreach ($meta[$model]['indexes'] as $field => $type) {
             if ($type === 'primary' && !$handler->shouldEmitPrimaryIndex()) {
+                continue;
+            }
+            // gin/gin_trgm/hnsw_cosine indexes are created by the handler's syncSearchSchema
+            if ($handler->isSearchIndexKind($type)) {
                 continue;
             }
             // Multi-column index: 'name' => ['type' => 'unique'|'index', 'columns' => [...]]

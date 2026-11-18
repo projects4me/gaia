@@ -62,14 +62,16 @@ class Postgres
      * - adds missing columns
      * - drops columns that are no longer present in metadata
      * - changes the length of varchar columns whose metadata length differs
+     * - adds or recreates vector and generated tsvector columns
      * - adds missing non-primary indexes from metadata
      *
      * @param \Phalcon\Db\AdapterInterface $connection Active database connection
      * @param string $tableName Table name from model metadata
      * @param Column[] $columns Expected column definitions from metadata
      * @param array $indexes Optional metadata indexes map (field => type)
+     * @param array $searchColumns Column name => definition from searchColumnDefinition()
      */
-    public function syncExistingTable($connection, $tableName, array $columns, array $indexes = [])
+    public function syncExistingTable($connection, $tableName, array $columns, array $indexes = [], array $searchColumns = [])
     {
         $existingColumns = $connection->describeColumns($tableName);
         $existingByName = array();
@@ -95,7 +97,7 @@ class Postgres
         }
 
         foreach ($existingNames as $existingName) {
-            if (!in_array($existingName, $expectedNames, true)) {
+            if (!in_array($existingName, $expectedNames, true) && !isset($searchColumns[$existingName])) {
                 // CASCADE clears dependent views/indexes that still reference legacy columns.
                 $quotedTable = $connection->escapeIdentifier($tableName);
                 $quotedColumn = $connection->escapeIdentifier($existingName);
@@ -105,7 +107,164 @@ class Postgres
             }
         }
 
+        $this->syncSearchSchema($connection, $tableName, $searchColumns, $indexes);
+    }
+
+    /**
+     * This function creates the configured PostgreSQL extensions (e.g. vector, pg_trgm).
+     * An extension the server does not ship is skipped, so a database without it still
+     * migrates until a model needs it; the names of the skipped ones are returned.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param array $extensions Extension names from the database config
+     * @return array Names of the extensions the server does not have
+     */
+    public function createExtensions($connection, array $extensions)
+    {
+        $skipped = array();
+        foreach ($extensions as $extension) {
+            if ($this->hasExtension($connection, $extension)) {
+                continue;
+            }
+            $available = $connection->fetchOne(
+                'SELECT COUNT(*) AS total FROM pg_available_extensions WHERE name = ?',
+                \PDO::FETCH_ASSOC,
+                array($extension)
+            );
+            if ((int) $available['total'] === 0) {
+                $skipped[] = $extension;
+                continue;
+            }
+            try {
+                $connection->execute('CREATE EXTENSION IF NOT EXISTS ' . $connection->escapeIdentifier($extension));
+            } catch (\PDOException $e) {
+                // e.g. the database user may not create extensions; models that need it fail with a clear message
+                $skipped[] = $extension;
+            }
+        }
+
+        return $skipped;
+    }
+
+    /**
+     * This function returns the column definition of a vector or tsvector field, or null
+     * for a field Phalcon's Column handles.
+     *
+     * @param array $schema Field schema from model metadata
+     * @param array $fields All field schemas of the model, keyed by field name
+     * @return string|null
+     */
+    public function searchColumnDefinition(array $schema, array $fields)
+    {
+        if (!PostgresSearchDdl::isSearchType($schema['type'])) {
+            return null;
+        }
+
+        return (new PostgresSearchDdl())->columnDefinition($schema, $fields);
+    }
+
+    /**
+     * This function tells whether a metadata index type is a search index kind
+     * (gin, gin_trgm, hnsw_cosine), which Phalcon's Index cannot create.
+     *
+     * @param mixed $type Index type from model metadata
+     * @return bool
+     */
+    public function isSearchIndexKind($type)
+    {
+        return PostgresSearchDdl::isSearchIndexKind($type);
+    }
+
+    /**
+     * This function brings the vector/tsvector columns and the metadata indexes of a table
+     * in line with metadata. It runs after the table is created or synced.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param string $tableName Table name from model metadata
+     * @param array $searchColumns Column name => definition from searchColumnDefinition()
+     * @param array $indexes Metadata indexes map (field => type)
+     * @return void
+     */
+    public function syncSearchSchema($connection, $tableName, array $searchColumns, array $indexes)
+    {
+        $ddl = new PostgresSearchDdl();
+        $this->assertExtensions($connection, $tableName, array_merge(array_values($searchColumns), array_values($indexes)));
+        foreach ($searchColumns as $columnName => $definition) {
+            $this->syncSearchColumn($connection, $ddl, $tableName, $columnName, $definition);
+        }
+
         $this->syncIndexes($connection, $tableName, $indexes);
+    }
+
+    /**
+     * This function adds a vector/tsvector column, or drops and re-adds it when its
+     * definition changed. The definition's signature is kept in the column comment.
+     * Re-adding drops the column's indexes too; syncIndexes recreates them.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param PostgresSearchDdl $ddl
+     * @param string $tableName
+     * @param string $columnName
+     * @param string $definition Column definition from searchColumnDefinition()
+     * @return void
+     */
+    private function syncSearchColumn($connection, PostgresSearchDdl $ddl, $tableName, $columnName, $definition)
+    {
+        $signature = $ddl->signature($definition);
+        $current = $connection->fetchOne(
+            "SELECT col_description(table_class.oid, attribute.attnum) AS signature,
+                    format_type(attribute.atttypid, attribute.atttypmod) AS type
+             FROM pg_class table_class
+             JOIN pg_namespace table_schema ON table_schema.oid = table_class.relnamespace
+             JOIN pg_attribute attribute ON attribute.attrelid = table_class.oid
+             WHERE table_schema.nspname = ?
+             AND table_class.relname = ?
+             AND attribute.attname = ?
+             AND NOT attribute.attisdropped",
+            \PDO::FETCH_ASSOC,
+            array($this->getDefaultSchema(), $tableName, $columnName)
+        );
+        if (!empty($current) && $current['signature'] === $signature) {
+            return;
+        }
+
+        $quotedTable = $connection->escapeIdentifier($tableName);
+        $quotedColumn = $connection->escapeIdentifier($columnName);
+        if (!empty($current) && PostgresSearchDdl::isVectorDefinition($definition)) {
+            // Embeddings cannot be rebuilt by the database: adopt a column of the right type,
+            // and never drop one that still holds values.
+            if ($current['type'] === $definition) {
+                $connection->execute(
+                    "COMMENT ON COLUMN {$quotedTable}.{$quotedColumn} IS " . $connection->escapeString($signature)
+                );
+                return;
+            }
+            $filled = $connection->fetchOne(
+                "SELECT COUNT(*) AS total FROM {$quotedTable} WHERE {$quotedColumn} IS NOT NULL",
+                \PDO::FETCH_ASSOC
+            );
+            if ((int) $filled['total'] > 0) {
+                throw new \Gaia\Exception\MigrationDriver(
+                    "Vector column {$tableName}.{$columnName} is {$current['type']} but metadata wants {$definition}; "
+                    . "it holds {$filled['total']} values. Clear them (SET {$columnName} = NULL) and migrate again."
+                );
+            }
+        }
+        $connection->begin();
+        try {
+            if (!empty($current)) {
+                $this->dropDependentViews($connection, $tableName, $columnName);
+                $connection->execute("ALTER TABLE {$quotedTable} DROP COLUMN {$quotedColumn}");
+            }
+            $connection->execute("ALTER TABLE {$quotedTable} ADD COLUMN {$quotedColumn} {$definition}");
+            $connection->execute(
+                "COMMENT ON COLUMN {$quotedTable}.{$quotedColumn} IS " . $connection->escapeString($signature)
+            );
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollback();
+            throw $e;
+        }
     }
 
     /**
@@ -233,6 +392,10 @@ class Postgres
                 $this->syncMultiColumnIndex($connection, $tableName, $field, $type, $existingNames);
                 continue;
             }
+            if (PostgresSearchDdl::isSearchIndexKind($type)) {
+                $this->syncSearchIndex($connection, $tableName, $field, $type);
+                continue;
+            }
             if ($type === 'primary' || isset($existing[$field])) {
                 continue;
             }
@@ -244,6 +407,79 @@ class Postgres
                 "CREATE {$unique}INDEX IF NOT EXISTS {$indexName} ON {$quotedTable} ({$quotedField})"
             );
         }
+    }
+
+    /**
+     * This function makes sure a search index ({table}_{field}) exists with the access
+     * method and operator class of its kind. It is matched by name, not by column, because
+     * the column may carry other indexes; an index of another kind is dropped and rebuilt.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param string $tableName
+     * @param string $field Indexed column
+     * @param string $kind Index kind (gin, gin_trgm or hnsw_cosine)
+     * @return void
+     */
+    private function syncSearchIndex($connection, $tableName, $field, $kind)
+    {
+        $ddl = new PostgresSearchDdl();
+        $indexName = $tableName . '_' . $field;
+        $current = $connection->fetchOne(
+            'SELECT indexdef FROM pg_indexes WHERE schemaname = ? AND tablename = ? AND indexname = ?',
+            \PDO::FETCH_ASSOC,
+            array($this->getDefaultSchema(), $tableName, $indexName)
+        );
+        if (!empty($current)) {
+            if ($ddl->indexMatchesKind($current['indexdef'], $kind)) {
+                return;
+            }
+            $connection->execute('DROP INDEX IF EXISTS ' . $connection->escapeIdentifier($indexName));
+        }
+        $connection->execute($ddl->createIndexSql($tableName, $field, $kind));
+    }
+
+    /**
+     * This function checks that the extensions a table's search columns and indexes need
+     * are installed, so a missing one fails before any DDL with a message naming it.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param string $tableName
+     * @param array $definitions Column definitions and index kinds of the table
+     * @return void
+     * @throws \Gaia\Exception\MigrationDriver
+     */
+    private function assertExtensions($connection, $tableName, array $definitions)
+    {
+        foreach ($definitions as $definition) {
+            if (!is_string($definition)) {
+                continue;
+            }
+            $extension = PostgresSearchDdl::requiredExtension($definition);
+            if ($extension !== null && !$this->hasExtension($connection, $extension)) {
+                throw new \Gaia\Exception\MigrationDriver(
+                    "Table {$tableName} needs the PostgreSQL extension {$extension}, which is not installed. "
+                    . "Install it on the server and list it under the database config 'extensions'."
+                );
+            }
+        }
+    }
+
+    /**
+     * This function tells whether an extension is installed in the current database.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param string $extension
+     * @return bool
+     */
+    private function hasExtension($connection, $extension)
+    {
+        $installed = $connection->fetchOne(
+            'SELECT COUNT(*) AS total FROM pg_extension WHERE extname = ?',
+            \PDO::FETCH_ASSOC,
+            array($extension)
+        );
+
+        return (int) $installed['total'] > 0;
     }
 
     /**

@@ -1,0 +1,283 @@
+<?php
+
+/**
+ * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ */
+
+namespace Gaia\Tests\Libraries\Utils;
+
+use Gaia\Db\Migration\Postgres;
+use Gaia\Libraries\Meta\Manager;
+use Gaia\Libraries\Meta\Migration;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * Migrates a fixture model with a vector field, a generated tsvector field and
+ * gin / gin_trgm / hnsw_cosine indexes against the test database, then
+ * re-migrates it (agaia-4654). The fixture table is dropped afterwards.
+ *
+ * @author Rana Nouman <ranamnouman@gmail.com>
+ * @package Gaia\Tests
+ * @category Tests
+ * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ */
+class PostgresSearchMigrationTest extends TestCase
+{
+    private const TABLE = 'test_search_fixtures';
+
+    /**
+     * @var \Phalcon\Db\Adapter\Pdo\Postgresql
+     */
+    private $db;
+
+    protected function setUp(): void
+    {
+        if (!class_exists(\Phalcon\Di\FactoryDefault::class) || !class_exists(Migration::class)) {
+            $this->markTestSkipped('Phalcon migrations are not available in this PHP runtime');
+        }
+        $this->db = \Phalcon\Di::getDefault()->getShared('db');
+        $this->dropFixture();
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->db !== null) {
+            $this->dropFixture();
+        }
+    }
+
+    public function testExtensionsAreCreatedIdempotentlyAndMissingOnesSkipped()
+    {
+        $handler = new Postgres();
+
+        $this->assertSame(array(), $handler->createExtensions($this->db, array('pg_trgm')));
+        $this->assertSame(array(), $handler->createExtensions($this->db, array('pg_trgm')));
+        $this->assertSame(
+            array('gaia_no_such_extension'),
+            $handler->createExtensions($this->db, array('gaia_no_such_extension'))
+        );
+        $this->assertTrue($this->extensionInstalled('pg_trgm'));
+    }
+
+    public function testTsvectorAndTrigramIndexMigrateAndReMigrateCleanly()
+    {
+        (new Postgres())->createExtensions($this->db, array('pg_trgm'));
+        $meta = $this->fixtureMeta(false);
+
+        $this->migrate($meta);
+
+        $this->assertSame('tsvector', $this->columnType('searchVector'));
+        $this->assertSame('s', $this->column('searchVector')['attgenerated']);
+        $this->assertStringContainsString('USING gin ("searchVector")', $this->indexDefinition('searchVector'));
+        $this->assertStringContainsString('gin_trgm_ops', $this->indexDefinition('subject'));
+        $this->assertSame('character varying(255)', $this->columnType('subject'));
+
+        $this->db->execute(
+            'INSERT INTO "' . self::TABLE . '" ("id", "subject", "description") VALUES (?, ?, ?)',
+            array('fixture-1', 'Search planning', 'vectors and trigrams')
+        );
+        $row = $this->db->fetchOne(
+            'SELECT "searchVector"::text AS v FROM "' . self::TABLE . '" WHERE "id" = ?',
+            \PDO::FETCH_ASSOC,
+            array('fixture-1')
+        );
+        $this->assertStringContainsString("'search':1A", $row['v']);
+        $this->assertStringContainsString("'trigram':5B", $row['v']);
+
+        // Re-migrating leaves the generated column itself in place.
+        $before = $this->column('searchVector')['attnum'];
+        $this->migrate($meta);
+        $this->assertSame($before, $this->column('searchVector')['attnum']);
+        $this->assertNotEmpty($this->indexDefinition('searchVector'));
+
+        // Changing the sources recreates the column and its index.
+        $meta['TestSearchFixture']['fields']['searchVector']['generated']['sources'] = array('subject' => 'B');
+        $this->migrate($meta);
+        $this->assertNotSame($before, $this->column('searchVector')['attnum']);
+        $this->assertStringContainsString('USING gin ("searchVector")', $this->indexDefinition('searchVector'));
+        $row = $this->db->fetchOne(
+            'SELECT "searchVector"::text AS v FROM "' . self::TABLE . '" WHERE "id" = ?',
+            \PDO::FETCH_ASSOC,
+            array('fixture-1')
+        );
+        $this->assertSame("'plan':2B 'search':1B", $row['v']);
+    }
+
+    /**
+     * Runs against a server with pgvector (image pgvector/pgvector:pg16). On a server
+     * without it, only the skip report of createExtensions can be checked.
+     */
+    public function testVectorFieldWithHnswIndexMigratesAndReMigratesCleanly()
+    {
+        $skipped = (new Postgres())->createExtensions($this->db, array('vector', 'pg_trgm'));
+        $meta = $this->fixtureMeta(true);
+        if (!empty($skipped)) {
+            // Without pgvector the table fails before any DDL, naming the extension.
+            $this->assertSame(array('vector'), $skipped);
+            try {
+                $this->migrate($meta);
+                $this->fail('A vector field migrated without the vector extension');
+            } catch (\Gaia\Exception\MigrationDriver $e) {
+                $this->assertStringContainsString('extension vector', $e->getMessage());
+            }
+            return;
+        }
+
+        $this->migrate($meta);
+        $before = $this->column('embedding')['attnum'];
+        $this->migrate($meta);
+
+        $this->assertSame('vector(3)', $this->columnType('embedding'));
+        $this->assertSame($before, $this->column('embedding')['attnum']);
+        $this->assertStringContainsString('USING hnsw (embedding vector_cosine_ops)', $this->indexDefinition('embedding'));
+
+        // A dimension change never drops stored embeddings.
+        $this->db->execute(
+            'INSERT INTO "' . self::TABLE . '" ("id", "embedding") VALUES (?, ?)',
+            array('fixture-1', '[1,2,3]')
+        );
+        $meta['TestSearchFixture']['fields']['embedding']['dimensions'] = 4;
+        try {
+            $this->migrate($meta);
+            $this->fail('A filled vector column was recreated');
+        } catch (\Gaia\Exception\MigrationDriver $e) {
+            $this->assertSame('vector(3)', $this->columnType('embedding'));
+        }
+
+        // Once cleared, it is recreated with the new dimensions.
+        $this->db->execute('UPDATE "' . self::TABLE . '" SET "embedding" = NULL');
+        $this->migrate($meta);
+        $this->assertSame('vector(4)', $this->columnType('embedding'));
+    }
+
+    public function testSearchIndexReplacesAnIndexOfAnotherKind()
+    {
+        (new Postgres())->createExtensions($this->db, array('pg_trgm'));
+        $meta = $this->fixtureMeta(false);
+        $meta['TestSearchFixture']['indexes']['subject'] = 'index';
+        $this->migrate($meta);
+        $this->assertStringContainsString('USING btree (subject)', $this->indexDefinition('subject'));
+
+        $meta['TestSearchFixture']['indexes']['subject'] = 'gin_trgm';
+        $this->migrate($meta);
+
+        $this->assertStringContainsString('USING gin (subject gin_trgm_ops)', $this->indexDefinition('subject'));
+    }
+
+    /**
+     * Fixture model metadata, shaped like a file in app/metadata/model.
+     *
+     * @param bool $withVector
+     * @return array
+     */
+    private function fixtureMeta($withVector)
+    {
+        $fields = array(
+            'id' => array('name' => 'id', 'type' => 'char', 'length' => 36, 'null' => false),
+            'subject' => array('name' => 'subject', 'type' => 'varchar', 'length' => 255, 'null' => true),
+            'description' => array('name' => 'description', 'type' => 'text', 'null' => true),
+            'searchVector' => array(
+                'name' => 'searchVector',
+                'type' => 'tsvector',
+                'null' => true,
+                'generated' => array('sources' => array('subject' => 'A', 'description' => 'B')),
+            ),
+        );
+        $indexes = array('id' => 'primary', 'searchVector' => 'gin', 'subject' => 'gin_trgm');
+        if ($withVector) {
+            $fields['embedding'] = array('name' => 'embedding', 'type' => 'vector', 'dimensions' => 3, 'null' => true);
+            $indexes['embedding'] = 'hnsw_cosine';
+        }
+
+        return array('TestSearchFixture' => array(
+            'tableName' => self::TABLE,
+            'fields' => $fields,
+            'indexes' => $indexes,
+        ));
+    }
+
+    /**
+     * Runs the Postgres migration steps for the fixture: create the table when it
+     * is missing (as morphTable does), otherwise sync it.
+     *
+     * @param array $meta
+     * @return void
+     */
+    private function migrate(array $meta)
+    {
+        $handler = new Postgres();
+        $di = new \Phalcon\Di\FactoryDefault();
+        $di->set('migrationHandler', $handler);
+        $di->set('metaManager', new Manager($di));
+        $prepare = new \ReflectionMethod(Migration::class, 'prepareTableDefinition');
+        $prepare->setAccessible(true);
+        $definition = $prepare->invoke(new Migration($di), 'TestSearchFixture', $meta);
+        $indexes = $meta['TestSearchFixture']['indexes'];
+
+        if ($handler->shouldSyncExistingTableOnly($this->db, self::TABLE)) {
+            $handler->syncExistingTable(
+                $this->db,
+                self::TABLE,
+                $definition['columns'],
+                $indexes,
+                $definition['searchColumns']
+            );
+            return;
+        }
+
+        $this->db->createTable(self::TABLE, 'public', array(
+            'columns' => $definition['columns'],
+            'indexes' => $definition['indexes'],
+        ));
+        $handler->syncSearchSchema($this->db, self::TABLE, $definition['searchColumns'], $indexes);
+    }
+
+    private function column($name)
+    {
+        return $this->db->fetchOne(
+            "SELECT attnum, attgenerated FROM pg_attribute
+             WHERE attrelid = 'public." . self::TABLE . "'::regclass AND attname = ? AND NOT attisdropped",
+            \PDO::FETCH_ASSOC,
+            array($name)
+        );
+    }
+
+    private function columnType($name)
+    {
+        $row = $this->db->fetchOne(
+            "SELECT format_type(atttypid, atttypmod) AS type FROM pg_attribute
+             WHERE attrelid = 'public." . self::TABLE . "'::regclass AND attname = ? AND NOT attisdropped",
+            \PDO::FETCH_ASSOC,
+            array($name)
+        );
+
+        return $row['type'];
+    }
+
+    private function indexDefinition($column)
+    {
+        $row = $this->db->fetchOne(
+            'SELECT indexdef FROM pg_indexes WHERE schemaname = ? AND tablename = ? AND indexname = ?',
+            \PDO::FETCH_ASSOC,
+            array('public', self::TABLE, self::TABLE . '_' . $column)
+        );
+
+        return empty($row) ? '' : $row['indexdef'];
+    }
+
+    private function extensionInstalled($name)
+    {
+        $row = $this->db->fetchOne(
+            'SELECT COUNT(*) AS total FROM pg_extension WHERE extname = ?',
+            \PDO::FETCH_ASSOC,
+            array($name)
+        );
+
+        return (int) $row['total'] === 1;
+    }
+
+    private function dropFixture()
+    {
+        $this->db->execute('DROP TABLE IF EXISTS "' . self::TABLE . '"');
+    }
+}

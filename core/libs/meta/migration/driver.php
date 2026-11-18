@@ -63,6 +63,14 @@ class Driver
             );
             metaMigration::setup($migrationDb);
 
+            // Extensions first: vector and tsvector columns and their indexes need them.
+            $database = $GLOBALS['settings']->database;
+            $extensions = isset($database->extensions) ? $database->extensions->toArray() : array();
+            foreach ($this->di->get('metaMigration')->migrateExtensions($extensions) as $skipped) {
+                $result['extension:' . $skipped] = "Extension $skipped is not available on this server; skipped";
+                error_log("Migration: PostgreSQL extension $skipped is not available on this server; skipped");
+            }
+
             // iterate through all the model metadata defined in the system
             $iterator = new \DirectoryIterator($migrationsDir);
             foreach ($iterator as $fileinfo) {

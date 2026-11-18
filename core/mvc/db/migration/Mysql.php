@@ -68,9 +68,73 @@ class Mysql
      * @param string $tableName Table name from model metadata
      * @param Column[] $columns Expected column definitions from metadata
      * @param array $indexes Optional metadata indexes map (field => type)
+     * @param array $searchColumns Unused: MySQL has no search columns
      */
-    public function syncExistingTable($connection, $tableName, array $columns, array $indexes = [])
+    public function syncExistingTable($connection, $tableName, array $columns, array $indexes = [], array $searchColumns = [])
     {
+    }
+
+    /**
+     * This function ignores the extension list: MySQL has no extensions to create.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param array $extensions Extension names from the database config
+     * @return array Always empty
+     */
+    public function createExtensions($connection, array $extensions)
+    {
+        return array();
+    }
+
+    /**
+     * This function rejects vector and tsvector fields, which only PostgreSQL supports.
+     *
+     * @param array $schema Field schema from model metadata
+     * @param array $fields All field schemas of the model, keyed by field name
+     * @return null
+     * @throws \Gaia\Exception\MigrationDriver
+     */
+    public function searchColumnDefinition(array $schema, array $fields)
+    {
+        if (PostgresSearchDdl::isSearchType($schema['type'])) {
+            throw new \Gaia\Exception\MigrationDriver(
+                "Field {$schema['name']} of type {$schema['type']} needs PostgreSQL."
+            );
+        }
+
+        return null;
+    }
+
+    /**
+     * This function tells whether a metadata index type is a search index kind.
+     *
+     * @param mixed $type Index type from model metadata
+     * @return bool
+     */
+    public function isSearchIndexKind($type)
+    {
+        return PostgresSearchDdl::isSearchIndexKind($type);
+    }
+
+    /**
+     * This function rejects search indexes, which only PostgreSQL supports.
+     *
+     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param string $tableName Table name from model metadata
+     * @param array $searchColumns Column name => definition (always empty on MySQL)
+     * @param array $indexes Metadata indexes map (field => type)
+     * @return void
+     * @throws \Gaia\Exception\MigrationDriver
+     */
+    public function syncSearchSchema($connection, $tableName, array $searchColumns, array $indexes)
+    {
+        foreach ($indexes as $field => $type) {
+            if ($this->isSearchIndexKind($type)) {
+                throw new \Gaia\Exception\MigrationDriver(
+                    "Index {$tableName}.{$field} of kind {$type} needs PostgreSQL."
+                );
+            }
+        }
     }
 
     /**
