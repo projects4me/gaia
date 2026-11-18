@@ -40,6 +40,13 @@ class Mailer
     protected $timeout;
 
     /**
+     * Error reported when no SMTP host is saved.
+     *
+     * @var string
+     */
+    public const NO_HOST_ERROR = 'No SMTP host is configured.';
+
+    /**
      * Error from the last failed send.
      *
      * @var string
@@ -69,6 +76,17 @@ class Mailer
     public function send($toEmail, $toName, $subject, $htmlBody, $altBody)
     {
         $this->error = '';
+
+        // No server saved in Settings > Email: nothing to send through. Fail open, no attempt.
+        if (empty($this->smtp()['host'])) {
+            global $logger;
+            $this->error = self::NO_HOST_ERROR;
+            if (isset($logger)) {
+                $logger->warning('Email not sent: no SMTP host is saved in Settings > Email');
+            }
+
+            return false;
+        }
 
         // PHPMailer runs with exceptions on: without them every connect, TLS or
         // auth failure is reported as the same "SMTP connect() failed." text.
@@ -103,16 +121,27 @@ class Mailer
     }
 
     /**
+     * The resolved SMTP settings, loaded once per Mailer.
+     *
+     * @return array
+     */
+    protected function smtp()
+    {
+        if ($this->smtp === null) {
+            $this->smtp = SmtpSettings::load();
+        }
+
+        return $this->smtp;
+    }
+
+    /**
      * Build the PHPMailer instance for one message from the SMTP configuration.
      *
      * @return PHPMailer
      */
     protected function createTransport()
     {
-        if ($this->smtp === null) {
-            $this->smtp = SmtpSettings::load();
-        }
-        $smtp = $this->smtp;
+        $smtp = $this->smtp();
 
         $mail = new PHPMailer(true);
         $mail->isSMTP();

@@ -179,9 +179,10 @@ Proves a message is really sent through the settings-configured SMTP. The sink i
 network): it captures messages and delivers nothing. The suite uses only public flows (settings API,
 `POST /api/v1/user`, `POST /api/v1/forgetpassword`) and the sink's HTTP API; Gaia has no test-only code for it.
 
-`gaia-test` and `gaia-test-hermes-down` have no real SMTP credentials: their `smtp` config points at an
-unreachable host (`SMTP_HOST=127.0.0.1`, `SMTP_PORT=9`), so default runs never reach a real mail server (a
-send fails open and is logged). Only this suite redirects mail, by saving the sink host in Settings > Email.
+SMTP is configured only in Settings > Email; no environment variables or tracked files carry a host or credentials.
+With no host saved (the default in `gaia-test` and `gaia-test-hermes-down`), Mailer sends nothing and logs a warning,
+so default runs never reach a mail server and the user's write still succeeds. Only this suite sets a host, by saving
+the sink host in Settings > Email.
 
 ```bash
 docker compose up -d mailpit gaia-test        # saving the SMTP password needs SETTINGS_ENCRYPTION_KEY in the environment
@@ -198,8 +199,7 @@ Cases may declare a `mail` block (`to`, `subject`, `fromEmail`, `fromName`, `bod
 expects exactly one matching message for `to` + `subject` and asserts the rest. A case body can be form-encoded
 with `"form": {...}` instead of `"body"` (used by `forgetpassword`).
 
-The suite restores Settings > Email by blanking the values it set (blank means unset, so the `smtp` config applies
-again). It does not run in CI: CI has no sink; enable it by adding the `mailpit` service there and a `--mode mail` step.
+The suite restores Settings > Email by blanking the values it set (blank means unset, so mail is off again). It does not run in CI: CI has no sink; enable it by adding the `mailpit` service there and a `--mode mail` step.
 
 ## Sources
 
