@@ -82,6 +82,13 @@ class SearchBlock
     private const WEIGHTS = array('A', 'B', 'C', 'D');
 
     /**
+     * Field types a gin_trgm index takes as they are: binary-coercible to text, which char is not.
+     *
+     * @var array
+     */
+    private const FUZZY_TYPES = array('varchar', 'text', 'tinytext', 'mediumtext', 'longtext');
+
+    /**
      * A search type: lower case, as it appears in /search?types= and in search events.
      *
      * @var string
@@ -104,6 +111,9 @@ class SearchBlock
         }
 
         $block = self::normalize($model, $metadata);
+        if (isset($metadata['isView'])) {
+            self::fail($model, 'is a view, which cannot hold the search columns and indexes');
+        }
         $metadata[self::KEY] = $block;
         $fields = isset($metadata['fields']) ? $metadata['fields'] : array();
         $indexes = isset($metadata['indexes']) ? $metadata['indexes'] : array();
@@ -115,9 +125,15 @@ class SearchBlock
             $fields[$name] = $schema;
         }
 
-        $indexes[self::VECTOR] = 'gin';
+        $searchIndexes = array(self::VECTOR => 'gin');
         if ($block['semantic'] !== array()) {
-            $indexes[self::EMBEDDING] = 'hnsw_cosine';
+            $searchIndexes[self::EMBEDDING] = 'hnsw_cosine';
+        }
+        foreach ($searchIndexes as $name => $kind) {
+            if (isset($indexes[$name])) {
+                self::fail($model, "declares index '{$name}', which its search block adds");
+            }
+            $indexes[$name] = $kind;
         }
         foreach ($block['fuzzy'] as $field) {
             if (isset($indexes[$field]) && $indexes[$field] !== 'gin_trgm') {
@@ -151,9 +167,14 @@ class SearchBlock
         if ($block['semantic'] !== array()) {
             $columns[self::SEMANTIC_TEXT] = array('type' => 'text');
             $columns[self::SEMANTIC_HASH] = array('type' => 'varchar', 'length' => '64');
-            $columns[self::EMBEDDING] = array('type' => 'vector', 'dimensions' => self::EMBEDDING_DIMENSIONS);
-            $columns[self::EMBEDDING_HASH] = array('type' => 'varchar', 'length' => '64');
-            $columns[self::EMBEDDED_AT] = array('type' => 'datetime');
+            // The embedding is written by the indexer alone: a record save must not write back a stale copy.
+            $columns[self::EMBEDDING] = array(
+                'type' => 'vector',
+                'dimensions' => self::EMBEDDING_DIMENSIONS,
+                'ormWrite' => false,
+            );
+            $columns[self::EMBEDDING_HASH] = array('type' => 'varchar', 'length' => '64', 'ormWrite' => false);
+            $columns[self::EMBEDDED_AT] = array('type' => 'datetime', 'ormWrite' => false);
         }
 
         foreach ($columns as $name => $schema) {
@@ -194,20 +215,20 @@ class SearchBlock
             self::fail($model, "needs 'fts' => [field => weight]");
         }
         foreach ($fts as $field => $weight) {
-            self::assertField($model, 'fts', $field, $fields, true);
+            self::assertField($model, 'fts', $field, $fields, PostgresSearchDdl::TEXT_SOURCE_TYPES);
             if (!in_array($weight, self::WEIGHTS, true)) {
                 self::fail($model, "gives fts field '{$field}' weight '" . self::describe($weight) . "'; use A, B, C or D");
             }
         }
 
         $normalized = array('type' => $type, 'fts' => $fts);
-        foreach (array('fuzzy' => true, 'semantic' => false, 'exact' => false) as $key => $textOnly) {
+        foreach (array('fuzzy' => self::FUZZY_TYPES, 'semantic' => null, 'exact' => null) as $key => $types) {
             $list = isset($block[$key]) ? $block[$key] : array();
             if (!is_array($list) || !self::isList($list)) {
                 self::fail($model, "needs '{$key}' as a list of fields");
             }
             foreach ($list as $field) {
-                self::assertField($model, $key, $field, $fields, $textOnly);
+                self::assertField($model, $key, $field, $fields, $types);
             }
             if (count(array_unique($list)) !== count($list)) {
                 self::fail($model, "lists a field twice in '{$key}'");
@@ -228,7 +249,7 @@ class SearchBlock
             if ($key === 'snippet' && $field === null) {
                 continue;
             }
-            self::assertField($model, "display {$key}", $field, $fields, false);
+            self::assertField($model, "display {$key}", $field, $fields, null);
         }
         $normalized['display'] = array(
             'title' => $display['title'],
@@ -246,11 +267,11 @@ class SearchBlock
      * @param string $entry The block entry, for the message
      * @param mixed $field
      * @param array $fields The model's declared fields
-     * @param bool $textOnly
+     * @param array|null $types The field types the entry takes, or null for any
      * @return void
      * @throws \Gaia\Exception\Exception
      */
-    private static function assertField($model, $entry, $field, array $fields, $textOnly)
+    private static function assertField($model, $entry, $field, array $fields, $types)
     {
         if (!is_string($field) || !isset($fields[$field])) {
             self::fail($model, "names unknown field '" . self::describe($field) . "' in {$entry}");
@@ -259,8 +280,9 @@ class SearchBlock
             self::fail($model, "names system field '{$field}' in {$entry}");
         }
         $type = isset($fields[$field]['type']) ? $fields[$field]['type'] : '';
-        if ($textOnly && !in_array($type, PostgresSearchDdl::TEXT_SOURCE_TYPES, true)) {
-            self::fail($model, "names '{$field}' of type '{$type}' in {$entry}; only text fields can be used there");
+        if ($types !== null && !in_array($type, $types, true)) {
+            self::fail($model, "names '{$field}' of type '{$type}' in {$entry}; use a field of type "
+                . implode(', ', $types));
         }
     }
 

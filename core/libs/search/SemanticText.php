@@ -11,6 +11,7 @@ namespace Gaia\Libraries\Search;
  * implementation of the rule, so Gaia, Ares, the stale-write check and the reindex all agree on it:
  *
  * - the search block's semantic fields, in their order; null and empty fields are left out;
+ * - each value as text (floats with up to 14 decimals, whatever the locale), each invalid UTF-8 sequence as U+FFFD;
  * - each value with its HTML removed (tags, comments, script and style blocks) and its entities decoded;
  * - whitespace (Unicode spaces too) collapsed to one space and trimmed in each value;
  * - the values joined with a newline;
@@ -152,15 +153,59 @@ class SemanticText
             $value = $value ? '1' : '0';
         }
 
-        $text = (string) $value;
-        // Drop the content of blocks that are not text, then let every tag separate words.
-        $text = preg_replace('#<(script|style)\b[^>]*>.*?</\1\s*>#is', ' ', $text);
-        $text = preg_replace('#<!--.*?-->#s', ' ', $text);
-        $text = strip_tags(preg_replace('#<(?=[a-zA-Z/!?])#', ' <', $text));
+        // A float reads the same in every locale (PHP 7 casts it by the numeric locale)
+        $text = is_float($value) ? self::formatFloat($value) : (string) $value;
+        // Invalid UTF-8 would make the /u patterns fail: keep what is valid and mark each bad sequence with U+FFFD,
+        // whatever the process's mbstring substitute character is.
+        $substitute = mb_substitute_character();
+        mb_substitute_character(0xFFFD);
+        try {
+            $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+        } finally {
+            mb_substitute_character($substitute);
+        }
+        // Drop comments and the content of blocks that are not text, whichever starts first (a script opener inside
+        // a comment is part of the comment), then let every tag separate words.
+        $text = self::replace('#<!--.*?-->|<(script|style)\b[^>]*>.*?</\1\s*>#is', ' ', $text);
+        $text = strip_tags(self::replace('#<(?=[a-zA-Z/!?])#', ' <', $text));
         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        // Invalid UTF-8 would make the /u patterns fail: keep what is valid.
-        $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
 
-        return trim(preg_replace('/[\s\p{Z}]+/u', ' ', $text));
+        return trim(self::replace('/[\s\p{Z}]+/u', ' ', $text));
+    }
+
+    /**
+     * This function formats a float without the locale: up to 14 decimals, trailing zeros dropped.
+     *
+     * @param float $value
+     * @return string
+     */
+    private static function formatFloat($value)
+    {
+        if (!is_finite($value)) {
+            return is_nan($value) ? 'NAN' : ($value > 0 ? 'INF' : '-INF');
+        }
+        $text = rtrim(rtrim(sprintf('%.14F', $value), '0'), '.');
+
+        return $text === '-0' ? '0' : $text;
+    }
+
+    /**
+     * This function runs preg_replace and fails when PCRE does (e.g. the backtrack limit on a very large value),
+     * so a field is never indexed as empty text by mistake.
+     *
+     * @param string $pattern
+     * @param string $replacement
+     * @param string $text
+     * @return string
+     * @throws \Gaia\Exception\Exception
+     */
+    private static function replace($pattern, $replacement, $text)
+    {
+        $result = preg_replace($pattern, $replacement, $text);
+        if ($result === null) {
+            throw new \Gaia\Exception\Exception('Semantic text could not be built: PCRE error ' . preg_last_error() . '.');
+        }
+
+        return $result;
     }
 }

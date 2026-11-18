@@ -9,7 +9,6 @@ namespace Gaia\Tests\Libraries\Utils;
 use Gaia\Db\Migration\Postgres;
 use Gaia\Libraries\Meta\Manager;
 use Gaia\Libraries\Meta\Migration;
-use Gaia\Libraries\Search\SearchBlock;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -278,7 +277,7 @@ class PostgresSearchMigrationTest extends TestCase
         if (!$withVector) {
             unset($model['search']['semantic']);
         }
-        $meta = array('TestSearchFixture' => SearchBlock::apply('TestSearchFixture', $model));
+        $meta = $this->migrationMetaData('TestSearchFixture', $model);
 
         $this->migrate($meta);
         $this->migrate($meta);
@@ -370,6 +369,36 @@ class PostgresSearchMigrationTest extends TestCase
             'indexes' => $definition['indexes'],
         ));
         $handler->syncSearchSchema($this->db, self::TABLE, $definition['searchColumns'], $indexes);
+    }
+
+    /**
+     * The metadata Migration reads for a model whose file holds the given raw metadata: the production path that
+     * applies the search block.
+     *
+     * @param string $model
+     * @param array $raw
+     * @return array
+     */
+    private function migrationMetaData($model, array $raw)
+    {
+        $di = new \Phalcon\Di\FactoryDefault();
+        $di->set('fileHandler', new class (array($model => $raw)) {
+            private $meta;
+
+            public function __construct(array $meta)
+            {
+                $this->meta = $meta;
+            }
+
+            public function readFile($path)
+            {
+                return $this->meta;
+            }
+        });
+        $read = new \ReflectionMethod(Migration::class, 'getMetaData');
+        $read->setAccessible(true);
+
+        return $read->invoke(new Migration($di), $model);
     }
 
     private function tableExists()

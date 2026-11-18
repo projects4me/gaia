@@ -116,11 +116,11 @@ class Manager
             // How every column must be bound/casted
             MetaData::MODELS_DATA_TYPES_BIND => $fields['bind'],
 
-            // Fields that must be ignored from INSERT SQL statements: generated columns, which the database computes
-            MetaData::MODELS_AUTOMATIC_DEFAULT_INSERT => $fields['generated'],
+            // Fields that must be ignored from INSERT SQL statements: columns the ORM never writes
+            MetaData::MODELS_AUTOMATIC_DEFAULT_INSERT => $fields['skipWrite'],
 
             // Fields that must be ignored from UPDATE SQL statements
-            MetaData::MODELS_AUTOMATIC_DEFAULT_UPDATE => $fields['generated'],
+            MetaData::MODELS_AUTOMATIC_DEFAULT_UPDATE => $fields['skipWrite'],
 
             // Default values for columns
             MetaData::MODELS_DEFAULT_VALUES => array(),//$fields['default'],
@@ -204,7 +204,7 @@ class Manager
             'notNull' => array(),
             'type' => array(),
             'bind' => array(),
-            'generated' => array(),
+            'skipWrite' => array(),
             'id' => false,
         );
         // Routes without model metadata (e.g. Issueplanning) have no table and no fields
@@ -233,9 +233,11 @@ class Manager
             // set the field data bind type
             $data['bind'][$field] = $this->getBindType($properties['type']);
 
-            // A generated column (e.g. a search tsvector) is never written
-            if (isset($properties['generated'])) {
-                $data['generated'][$field] = true;
+            // The ORM never writes a generated column (e.g. a search tsvector), which the database computes, nor a
+            // column flagged 'ormWrite' => false, which has its own writer (e.g. a search embedding)
+            if (isset($properties['generated'])
+                || (isset($properties['ormWrite']) && $properties['ormWrite'] === false)) {
+                $data['skipWrite'][$field] = true;
             }
 
             // if default value is set in metadata then set it

@@ -236,10 +236,22 @@ class SearchBlockTest extends TestCase
             }, "gives fts field 'subject' weight 'a'"],
             'fts non-text field' => [function (&$m) {
                 $m['search']['fts']['number'] = 'C';
-            }, "names 'number' of type 'int' in fts; only text fields"],
+            }, "names 'number' of type 'int' in fts; use a field of type varchar, char, text"],
             'fts system field' => [function (&$m) {
                 $m['search']['fts']['internal'] = 'C';
             }, "names system field 'internal' in fts"],
+            'fuzzy char field' => [function (&$m) {
+                $m['search']['fuzzy'] = ['id'];
+            }, "names 'id' of type 'char' in fuzzy; use a field of type varchar, text"],
+            'a view' => [function (&$m) {
+                $m['isView'] = true;
+            }, 'is a view, which cannot hold the search columns and indexes'],
+            'an index keyed searchVector' => [function (&$m) {
+                $m['indexes']['searchVector'] = ['unique' => ['subject', 'number']];
+            }, "declares index 'searchVector', which its search block adds"],
+            'an index keyed searchEmbedding' => [function (&$m) {
+                $m['indexes']['searchEmbedding'] = 'index';
+            }, "declares index 'searchEmbedding', which its search block adds"],
             'fuzzy unknown field' => [function (&$m) {
                 $m['search']['fuzzy'] = ['title'];
             }, "names unknown field 'title' in fuzzy"],
@@ -299,9 +311,16 @@ class SearchBlockTest extends TestCase
             $this->assertContains($column, $meta[MetaData::MODELS_ATTRIBUTES]);
         }
         $this->assertSame('widget', $meta['search']['type']);
-        // The generated tsvector is never written by an INSERT or UPDATE.
-        $this->assertSame(['searchVector' => true], $meta[MetaData::MODELS_AUTOMATIC_DEFAULT_INSERT]);
-        $this->assertSame(['searchVector' => true], $meta[MetaData::MODELS_AUTOMATIC_DEFAULT_UPDATE]);
+        // A record INSERT or UPDATE never writes the generated tsvector, nor the embedding, which only the indexer
+        // writes: a save must not put back a stale copy.
+        $skipped = [
+            'searchVector' => true,
+            'searchEmbedding' => true,
+            'searchEmbeddingHash' => true,
+            'searchEmbeddedAt' => true,
+        ];
+        $this->assertSame($skipped, $meta[MetaData::MODELS_AUTOMATIC_DEFAULT_INSERT]);
+        $this->assertSame($skipped, $meta[MetaData::MODELS_AUTOMATIC_DEFAULT_UPDATE]);
     }
 
     public function testAModelWithoutABlockHasNoSearchEntry()

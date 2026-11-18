@@ -64,15 +64,6 @@ class Driver
             );
             metaMigration::setup($migrationDb);
 
-            // Extensions first: vector and tsvector columns and their indexes need them.
-            $database = $GLOBALS['settings']->database;
-            $extensions = isset($database->extensions) ? $database->extensions->toArray() : array();
-            foreach ($this->di->get('metaMigration')->migrateExtensions($extensions) as $skipped) {
-                $message = "Extension $skipped could not be created (not available on this server, or the database user may not create it); skipped";
-                $result['extension:' . $skipped] = $message;
-                error_log("Migration: PostgreSQL $message");
-            }
-
             // iterate through all the model metadata defined in the system
             $iterator = new \DirectoryIterator($migrationsDir);
             foreach ($iterator as $fileinfo) {
@@ -83,8 +74,17 @@ class Driver
                 }
             }
 
-            // Before any DDL: every search block is valid and no two models share a search type.
+            // Before any DDL, extensions included: every search block is valid and no two models share a search type.
             (new SearchableRegistry($this->di->get('metaManager'), $models))->types();
+
+            // Extensions before any model DDL: vector and tsvector columns and their indexes need them.
+            $database = $GLOBALS['settings']->database;
+            $extensions = isset($database->extensions) ? $database->extensions->toArray() : array();
+            foreach ($this->di->get('metaMigration')->migrateExtensions($extensions) as $skipped) {
+                $message = "Extension $skipped could not be created (not available on this server, or the database user may not create it); skipped";
+                $result['extension:' . $skipped] = $message;
+                error_log("Migration: PostgreSQL $message");
+            }
 
             // before migrating table or views, let's migrate functions. Because table or views use
             // functions. So migrating functions is required first.

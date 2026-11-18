@@ -142,12 +142,60 @@ class SemanticTextTest extends TestCase
         $this->assertSame("B\nA", $text->text(['subject' => 'A', 'description' => 'B']));
     }
 
-    public function testInvalidUtf8DoesNotBreakTheText()
+    public function testInvalidUtf8BecomesTheReplacementCharacterWhateverTheSetting()
+    {
+        $text = new SemanticText(['subject']);
+        $original = mb_substitute_character();
+        try {
+            foreach (['none', 0x3F] as $setting) {
+                mb_substitute_character($setting);
+                $this->assertSame("ok \u{FFFD} done", $text->text(['subject' => "ok \xC3 done"]));
+                $this->assertSame($setting, mb_substitute_character());
+            }
+        } finally {
+            mb_substitute_character($original);
+        }
+    }
+
+    public function testAScriptOpenerInsideACommentDoesNotHideText()
     {
         $text = new SemanticText(['subject']);
 
-        $this->assertSame($text->text(['subject' => "ok \xC3 done"]), $text->text(['subject' => "ok \xC3 done"]));
-        $this->assertStringStartsWith('ok', $text->text(['subject' => "ok \xC3 done"]));
+        $this->assertSame(
+            'Visible a &lt; b',
+            $text->text(['subject' => '<!-- <script> -->Visible<script>ignored</script> a &amp;lt; b'])
+        );
+    }
+
+    public function testFloatsReadTheSameInEveryLocale()
+    {
+        $text = new SemanticText(['subject']);
+        $locale = setlocale(LC_NUMERIC, '0');
+        try {
+            setlocale(LC_NUMERIC, 'de_DE.UTF-8', 'de_DE', 'fr_FR.UTF-8', 'fr_FR');
+            $this->assertSame('1.5', $text->text(['subject' => 1.5]));
+            $this->assertSame('0.3', $text->text(['subject' => 0.1 + 0.2]));
+            $this->assertSame('2', $text->text(['subject' => 2.0]));
+        } finally {
+            setlocale(LC_NUMERIC, $locale);
+        }
+    }
+
+    public function testAPcreFailureFailsInsteadOfDroppingTheField()
+    {
+        $text = new SemanticText(['subject']);
+        $limit = ini_get('pcre.backtrack_limit');
+        $jit = ini_get('pcre.jit');
+        ini_set('pcre.jit', '0');
+        ini_set('pcre.backtrack_limit', '10');
+        try {
+            $this->expectException(\Gaia\Exception\Exception::class);
+            $this->expectExceptionMessage('Semantic text could not be built');
+            $text->text(['subject' => '<script>' . str_repeat('x', 1000) . '</script> visible']);
+        } finally {
+            ini_set('pcre.backtrack_limit', $limit);
+            ini_set('pcre.jit', $jit);
+        }
     }
 
     public function testAMaximumBelowOneIsRejected()
