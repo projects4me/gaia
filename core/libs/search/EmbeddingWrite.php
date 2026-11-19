@@ -44,6 +44,13 @@ class EmbeddingWrite
     private const HASH_PATTERN = '/^[0-9a-f]{64}\z/';
 
     /**
+     * The largest single-precision float, the bound of a pgvector component.
+     *
+     * @var float
+     */
+    private const FLOAT4_MAX = 3.4028234663852886e38;
+
+    /**
      * @var string
      */
     private $id;
@@ -132,7 +139,7 @@ class EmbeddingWrite
     }
 
     /**
-     * This function checks the embedding: a list of EMBEDDING_DIMENSIONS finite numbers.
+     * This function checks the embedding: a list of EMBEDDING_DIMENSIONS finite numbers within the single-precision range.
      *
      * @param mixed $value
      * @return float[]
@@ -149,7 +156,8 @@ class EmbeddingWrite
 
         $numbers = array();
         foreach ($value as $number) {
-            if ((!is_int($number) && !is_float($number)) || !is_finite((float) $number)) {
+            // pgvector stores single-precision floats and rejects larger magnitudes.
+            if ((!is_int($number) && !is_float($number)) || !(abs((float) $number) <= self::FLOAT4_MAX)) {
                 throw new \Gaia\Exception\BadRequest(self::EMBEDDING_ERROR);
             }
             $numbers[] = (float) $number;

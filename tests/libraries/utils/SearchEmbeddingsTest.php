@@ -117,6 +117,11 @@ class SearchEmbeddingsTest extends TestCase
         $this->assertSame(self::ID, $write->id());
         $this->assertSame($this->hash, $write->hash());
         $this->assertSame(array_fill(0, 768, 0.25), $write->embedding());
+
+        $attributes = $this->attributes();
+        $attributes['searchEmbedding'][0] = 3.4028234663852886e38;
+        $attributes['searchEmbedding'][1] = -3.4028234663852886e38;
+        $this->assertSame(3.4028234663852886e38, EmbeddingWrite::fromAttributes($attributes, self::ID)->embedding()[0]);
         $this->assertSame(self::ID, EmbeddingWrite::fromAttributes($this->attributes() + ['id' => self::ID])->id());
         $this->assertSame(self::ID, EmbeddingWrite::fromAttributes($this->attributes(), self::ID)->id());
     }
@@ -163,6 +168,15 @@ class SearchEmbeddingsTest extends TestCase
             }, EmbeddingWrite::EMBEDDING_ERROR],
             'a string number' => [function (&$a) {
                 $a['searchEmbedding'][3] = '0.5';
+            }, EmbeddingWrite::EMBEDDING_ERROR],
+            'beyond the single-precision range' => [function (&$a) {
+                $a['searchEmbedding'][3] = 1e100;
+            }, EmbeddingWrite::EMBEDDING_ERROR],
+            'below the single-precision range' => [function (&$a) {
+                $a['searchEmbedding'][3] = -3.5e38;
+            }, EmbeddingWrite::EMBEDDING_ERROR],
+            'not a number' => [function (&$a) {
+                $a['searchEmbedding'][3] = NAN;
             }, EmbeddingWrite::EMBEDDING_ERROR],
             'not a hash' => [function (&$a) {
                 $a['searchEmbeddingHash'] = 'abc';
