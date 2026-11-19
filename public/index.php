@@ -3,6 +3,7 @@
 use Phalcon\DI\FactoryDefault;
 use Phalcon\Logger;
 use Phalcon\Logger\Adapter\Stream as StreamAdapter;
+use Gaia\Libraries\Utils\BindValueFormatter;
 use Gaia\Libraries\Utils\executiontime;
 use Phalcon\Events\Event;
 use Phalcon\Events\Manager as EventsManager;
@@ -127,7 +128,7 @@ try {
                     }
                     $sqlVariables = $connection->getSQLVariables();
                     if (isset($sqlVariables)) {
-                        $dblogger->debug(print_r($connection->getSQLBindTypes(), 1) . ' ' . join(', ', $sqlVariables));
+                        $dblogger->debug(print_r($connection->getSQLBindTypes(), 1) . ' ' . BindValueFormatter::join($sqlVariables));
                     } else {
                         $dblogger->debug(print_r($connection->getSQLBindTypes(), 1));
                     }

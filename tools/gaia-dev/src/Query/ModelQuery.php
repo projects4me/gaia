@@ -110,7 +110,8 @@ class ModelQuery implements Query
         $type = isset($attributes['type']) ? $attributes['type'] : '?';
         $flags = [];
         if (isset($attributes['length'])) {
-            $type .= '(' . $attributes['length'] . ')';
+            $length = $attributes['length'];
+            $type .= '(' . (is_array($length) ? implode(',', array_map('strval', $length)) : $length) . ')';
         }
         if (isset($attributes['null']) && $attributes['null'] === false) {
             $flags[] = 'required';
