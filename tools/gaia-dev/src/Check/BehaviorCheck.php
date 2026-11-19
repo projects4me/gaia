@@ -24,7 +24,7 @@ class BehaviorCheck
      */
     public const LEGACY_UNTESTED = [
         'auditBehavior', 'createdUserBehavior', 'currentUserBehavior', 'dateCreatedBehavior',
-        'dateModifiedBehavior', 'encryptPasswordBehavior', 'modelIdentifierBehavior', 'modifiedUserBehavior',
+        'dateModifiedBehavior', 'encryptPasswordBehavior', 'modelIdentifierBehavior',
         'settingBehavior', 'softDeleteBehavior',
     ];
 
