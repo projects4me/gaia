@@ -11,7 +11,8 @@ namespace ApiTester;
  * runs of the same stack without the API having changed.
  *
  * - Keys whose value is ignored (types are still compared): tokens.
- * - Patterns masked inside every string value and object key: GUIDs and
+ * - Patterns masked inside every string value and object key: GUIDs, Gaia
+ *   record ids (create_guid() makes 12-4-4-12 hex, not 8-4-4-4-12) and
  *   date-times. A masked string compares equal to any string with the same
  *   shape, so `/api/v1/issue/<guid>` still differs from `/api/v1/issues/<guid>`.
  * - The report's own runId (the fixture value `{runId}` that makes unique
@@ -37,6 +38,7 @@ class IgnoreList
      * Placeholder => regex masked inside strings and object keys.
      */
     const DEFAULT_MASKS = [
+        '{gaiaId}' => '/(?<![0-9a-f])[0-9a-f]{12}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?![0-9a-f])/i',
         '{guid}' => '/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i',
         '{datetime}' => '/\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?/',
     ];

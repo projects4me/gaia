@@ -91,6 +91,26 @@ class ReportComparerTest extends TestCase
         $this->assertSame(1, $comparison->casesCompared());
     }
 
+    public function testGaiaGeneratedIdsAreIgnoredButOtherDifferencesAreReported()
+    {
+        $a = $this->recordedCase('issue delete', ['data' => [
+            'id' => '73094b556ae8-11b0-bd37-4da81643c41f',
+            'attributes' => ['ownerId' => '72e3d4a86ae8-11b0-bd37-a3bd55a4171b', 'name' => 'same'],
+            'links' => ['self' => '/api/v1/issue/73094b556ae8-11b0-bd37-4da81643c41f'],
+        ]]);
+        $b = $this->recordedCase('issue delete', ['data' => [
+            'id' => '8a1b2c3d4e5f-22aa-33bb-0123456789ab',
+            'attributes' => ['ownerId' => '9f8e7d6c5b4a-44cc-55dd-ba9876543210', 'name' => 'changed'],
+            'links' => ['self' => '/api/v1/issues/8a1b2c3d4e5f-22aa-33bb-0123456789ab'],
+        ]]);
+
+        $differences = $this->diff([$a], [$b]);
+
+        $paths = array_column($differences, 'path');
+        sort($paths);
+        $this->assertSame(['$.data.attributes.name', '$.data.links.self'], $paths);
+    }
+
     public function testEmptyBodyInOneReportIsReported()
     {
         $differences = $this->diff(
