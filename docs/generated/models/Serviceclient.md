@@ -23,7 +23,7 @@
 ## Summary
 
 - behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, serviceClientBehavior, softDeleteBehavior
-- acl: service={"actions":["update"],"kinds":["runtime","hermes"],"filter":"Serviceclient.clientId = :serviceClientId:","fields":["rotateSecret"],"scopes":{"update":"serviceclient.rotate"}}
+- acl: service={"actions":["update"],"kinds":["runtime","hermes","ares"],"filter":"Serviceclient.clientId = :serviceClientId:","fields":["rotateSecret"],"scopes":{"update":"serviceclient.rotate"}}
 - controller: Gaia\MVC\REST\Controllers\ServiceclientController
 - routes: GET /api/v1/serviceclient, GET /api/v1/serviceclient/{id}, GET /api/v1/serviceclient/{id}/{relation}, OPTIONS /api/v1/serviceclient, PATCH /api/v1/serviceclient, PATCH /api/v1/serviceclient/{id}
 - components: -

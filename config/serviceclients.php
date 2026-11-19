@@ -9,7 +9,7 @@
  * client_credentials, and the scopes each kind's client gets when it is
  * created without its own list. Every kind gets serviceclient.rotate, so
  * each service can rotate its own secret. See docs/architecture/rbac/decisions.md
- * (D-062, D-063, D-068).
+ * (D-062, D-063, D-068, D-072).
  */
 $config['serviceClients'] = array(
     'kinds' => array(
@@ -24,6 +24,11 @@ $config['serviceClients'] = array(
         // The Hermes relay: checks the tokens of the sockets it serves.
         'hermes' => array(
             'scopes' => array('token.introspect', 'serviceclient.rotate'),
+        ),
+        // The Ares AI service: reads the semantic text of searchable records
+        // and stores their embeddings (D-072). Searchable today: issues.
+        'ares' => array(
+            'scopes' => array('issue.get', 'issue.update', 'serviceclient.rotate'),
         ),
     ),
     // Enrollment (Serviceenrollment, D-066): how long a request waits for an

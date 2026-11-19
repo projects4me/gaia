@@ -22,6 +22,9 @@ use Gaia\Libraries\Security\AclLockoutGuard;
 use Gaia\Libraries\Security\ServiceAcl;
 use Gaia\Libraries\Security\ServiceClientGuard;
 use Gaia\Libraries\Authorization\ServiceClients;
+use Gaia\Libraries\Search\EmbeddingWrite;
+use Gaia\Libraries\Search\SearchBlock;
+use Gaia\Libraries\Search\SearchEmbeddings;
 
 use function Gaia\Libraries\Utils\create_guid;
 
@@ -867,11 +870,72 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     }
 
     /**
+     * Whether this write is the Ares service storing an embedding: a service token (no current user) on a model
+     * with semantic search fields, which opens update to that service alone (D-072).
+     *
+     * @return bool
+     */
+    protected function isSearchEmbeddingWrite()
+    {
+        global $currentUser;
+
+        if (isset($currentUser->id) || !$this->getDI()->has('acl') || !($this->getDI()->get('acl') instanceof ServiceAcl)) {
+            return false;
+        }
+
+        $modelAlias = Util::extractClassFromNamespace($this->modelName);
+        return SearchBlock::isSemantic($this->getDI()->get('metaManager')->getModelMeta($modelAlias));
+    }
+
+    /**
+     * Store the embedding the Ares service made for one record, if it was made from the record's current semantic
+     * text (409 otherwise). The body carries the embedding and its hash alone, and the service ACL must open both.
+     *
+     * @return \Phalcon\Http\Response
+     * @throws \Gaia\Exception\BadRequest
+     * @throws \Gaia\Exception\UnAuthorized
+     * @throws \Gaia\Exception\ResourceNotFound
+     * @throws \Gaia\Exception\Conflict
+     */
+    protected function patchSearchEmbedding()
+    {
+        $modelAlias = Util::extractClassFromNamespace($this->modelName);
+        // A kind the model does not open is denied before its body is looked at.
+        $acl = $this->getDI()->get('acl');
+        foreach (SearchBlock::SERVICE_WRITES as $field) {
+            if (!$acl->isFieldActionAllowed($modelAlias, $field, 'update')) {
+                throw new \Gaia\Exception\UnAuthorized(ServiceAcl::ACCESS_DENIED_ERROR);
+            }
+        }
+
+        $write = EmbeddingWrite::fromAttributes($this->extractRequestAttributes(), isset($this->id) ? $this->id : null);
+
+        $modelName = $this->modelName;
+        $embeddedAt = (new SearchEmbeddings())->store((new $modelName())->getSource(), $write);
+
+        $this->response->setStatusCode(200, 'OK');
+        return $this->returnResponse($this->buildHAL([
+            'data' => [
+                'type' => lcfirst($modelAlias),
+                'id' => $write->id(),
+                'attributes' => [
+                    SearchBlock::EMBEDDING_HASH => $write->hash(),
+                    SearchBlock::EMBEDDED_AT => $embeddedAt,
+                ],
+            ],
+        ]));
+    }
+
+    /**
      * Method Http accept: PATCH (update only the given fields)
      * Save/update data
      */
     public function patchAction()
     {
+        if ($this->isSearchEmbeddingWrite()) {
+            return $this->patchSearchEmbedding();
+        }
+
         $modelName = $this->modelName;
         $model = new $modelName();
 
@@ -945,6 +1009,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      */
     public function patchCollectionAction()
     {
+        // A service writes a searchable record's embedding one record at a time, never through a save (D-072).
+        if ($this->isSearchEmbeddingWrite()) {
+            throw new \Gaia\Exception\BadRequest(SearchEmbeddings::ONE_RECORD_ERROR);
+        }
+
         $modelName = $this->modelName;
         //$model = new $modelName();
 

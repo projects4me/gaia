@@ -25,7 +25,8 @@ use Gaia\Libraries\Meta\Manager;
  * their indexes to the metadata, every column flagged `'system' => true` (D-071): the API never reads, writes or
  * audits them. searchVector is a stored generated tsvector built from fts. With semantic fields the model also gets
  * the canonical semantic text and its hash (SemanticText), the embedding and the hash of the text it was made from,
- * and searchIndexBehavior, which keeps the text and hash current on every save.
+ * and searchIndexBehavior, which keeps the text and hash current on every save. It is also opened to the Ares service
+ * (acl.service, D-072): Ares reads the stored text and hashes, and writes the embedding for the current hash.
  *
  * Type uniqueness across models is checked by SearchableRegistry, which sees every model.
  *
@@ -67,6 +68,21 @@ class SearchBlock
      * @var string
      */
     public const BEHAVIOR = 'searchIndexBehavior';
+
+    /**
+     * The service kind that reads the semantic text and writes the embedding (config/serviceclients.php).
+     *
+     * @var string
+     */
+    public const SERVICE_KIND = 'ares';
+
+    /**
+     * The system fields the service reads, and the ones it writes.
+     *
+     * @var array
+     */
+    public const SERVICE_READS = array(self::SEMANTIC_TEXT, self::SEMANTIC_HASH, self::EMBEDDING_HASH, self::EMBEDDED_AT);
+    public const SERVICE_WRITES = array(self::EMBEDDING, self::EMBEDDING_HASH);
 
     /**
      * Keys a search block may have.
@@ -160,7 +176,52 @@ class SearchBlock
                 $behaviors[] = self::BEHAVIOR;
             }
             $metadata['behaviors'] = $behaviors;
+            $metadata = self::openToService($model, $metadata);
         }
+
+        return $metadata;
+    }
+
+    /**
+     * This function returns whether model metadata (as SearchBlock::apply() returns it) has semantic fields.
+     *
+     * @param array $metadata
+     * @return bool
+     */
+    public static function isSemantic(array $metadata)
+    {
+        return !empty($metadata[self::KEY]['semantic']);
+    }
+
+    /**
+     * This function opens a semantic model to the Ares service (D-072): get, with the stored text and hashes readable
+     * through fields=, and update of the embedding alone, on every record that is not deleted, whatever its
+     * authorization groups. The service's write is performed by SearchEmbeddings, never by a model save.
+     *
+     * @param string $model
+     * @param array $metadata
+     * @return array
+     * @throws \Gaia\Exception\Exception When the model declares its own service access
+     */
+    private static function openToService($model, array $metadata)
+    {
+        $acl = isset($metadata['acl']) && is_array($metadata['acl']) ? $metadata['acl'] : array();
+        if (isset($acl['service'])) {
+            self::fail($model, "has semantic fields, which open acl.service to the " . self::SERVICE_KIND
+                . " service; the model cannot declare its own");
+        }
+
+        // deleted is smallint on some tables and boolean on others, hence the cast.
+        $acl['service'] = array(
+            'actions' => array('get', 'update'),
+            'kinds' => array(self::SERVICE_KIND),
+            'filter' => "CAST({$model}.deleted AS INTEGER) = 0",
+            'fields' => self::SERVICE_WRITES,
+            'systemFields' => self::SERVICE_READS,
+            // Ares indexes the issues of every project; it is no project member.
+            'ignoreGroups' => true,
+        );
+        $metadata['acl'] = $acl;
 
         return $metadata;
     }

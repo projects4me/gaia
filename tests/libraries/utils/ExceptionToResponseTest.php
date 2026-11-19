@@ -43,6 +43,10 @@ class ExceptionToResponseTest extends TestCase
                 'Access levels not allowed',
                 ['error' => 'levels', 'suggestion' => 'use read'],
             ],
+            'Conflict' => [new Exception\Conflict('stale'), 409, 'Conflict', [
+                'error' => 'conflict',
+                'error_description' => 'stale',
+            ]],
             'ResourceLocked' => [new Exception\ResourceLocked('locked'), 423, 'Locked', [
                 'error' => 'resourceLocked',
                 'error_description' => 'locked',

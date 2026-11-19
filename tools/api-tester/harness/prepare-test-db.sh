@@ -1159,12 +1159,15 @@ ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, kind = EXCLUDED.kind, statu
 -- Token introspection (D-065): the serviceHermes profile signs in as a hermes service client with the
 -- token.introspect scope, and a second runtime client (no case disables it) holds a delegated and a
 -- service token. Fixed tokens of each actor type are seeded so client cases can introspect them.
--- Both clients have the serviceRuntime profile's secret.
+-- The serviceAres profile signs in as an ares service client, which stores embeddings (D-072).
+-- These clients have the serviceRuntime profile's secret.
 INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id, kind)
 VALUES
   ('api-test-oauth-client-hermes', 'service-api-tester-hermes',
    '$2y$10$W3vHdhjl0OjQmePY7V9.4OJ9Z2zrGUGSEE5.GoKvYHsbjxann90Fu', '', 'client_credentials', NULL, NULL, 'service'),
   ('api-test-oauth-client-delegator', 'service-api-tester-delegator',
+   '$2y$10$W3vHdhjl0OjQmePY7V9.4OJ9Z2zrGUGSEE5.GoKvYHsbjxann90Fu', '', 'client_credentials', NULL, NULL, 'service'),
+  ('api-test-oauth-client-ares', 'service-api-tester-ares',
    '$2y$10$W3vHdhjl0OjQmePY7V9.4OJ9Z2zrGUGSEE5.GoKvYHsbjxann90Fu', '', 'client_credentials', NULL, NULL, 'service')
 ON CONFLICT (client_id) DO UPDATE SET
   client_secret = EXCLUDED.client_secret,
@@ -1178,7 +1181,8 @@ INSERT INTO serviceclients (
   id, name, kind, status, scopes, "clientId", "lastUsedAt", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
 ) VALUES
   ('api-test-serviceclient-000002', 'API Tester Hermes', 'hermes', 'active', '["token.introspect"]', 'service-api-tester-hermes', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
-  ('api-test-serviceclient-000003', 'API Tester Delegator', 'runtime', 'active', '["agent.delegate","agent.read"]', 'service-api-tester-delegator', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+  ('api-test-serviceclient-000003', 'API Tester Delegator', 'runtime', 'active', '["agent.delegate","agent.read"]', 'service-api-tester-delegator', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-serviceclient-000004', 'API Tester Ares', 'ares', 'active', '["issue.get","issue.update","serviceclient.rotate"]', 'service-api-tester-ares', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, kind = EXCLUDED.kind, status = 'active', scopes = EXCLUDED.scopes, "clientId" = EXCLUDED."clientId", deleted = FALSE;
 
 INSERT INTO oauth_access_tokens (access_token, client_id, user_id, expires, scope)
@@ -1453,6 +1457,11 @@ data = {
     "serviceHermes": {
       "grantType": "client_credentials",
       "clientId": "service-api-tester-hermes",
+      "clientSecret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
+    },
+    "serviceAres": {
+      "grantType": "client_credentials",
+      "clientId": "service-api-tester-ares",
       "clientSecret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
     },
     "aclScopedToken": {

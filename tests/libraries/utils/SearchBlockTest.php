@@ -160,6 +160,36 @@ class SearchBlockTest extends TestCase
         );
     }
 
+    public function testSemanticFieldsOpenTheModelToTheAresService()
+    {
+        $metadata = self::metadata();
+        $metadata['acl'] = ['groups' => ['Project']];
+
+        $acl = SearchBlock::apply(self::MODEL, $metadata)['acl'];
+
+        $this->assertSame(['Project'], $acl['groups']);
+        $this->assertSame([
+            'actions' => ['get', 'update'],
+            'kinds' => ['ares'],
+            'filter' => 'CAST(' . self::MODEL . '.deleted AS INTEGER) = 0',
+            'fields' => ['searchEmbedding', 'searchEmbeddingHash'],
+            'systemFields' => ['searchSemanticText', 'searchSemanticHash', 'searchEmbeddingHash', 'searchEmbeddedAt'],
+            'ignoreGroups' => true,
+        ], $acl['service']);
+    }
+
+    public function testASemanticModelCannotDeclareItsOwnServiceAccess()
+    {
+        $metadata = self::metadata();
+        $metadata['acl'] = ['service' => ['actions' => ['get'], 'kinds' => ['runtime']]];
+
+        $this->expectException(\Gaia\Exception\Exception::class);
+        $this->expectExceptionMessage('Search block of model ' . self::MODEL
+            . ' has semantic fields, which open acl.service to the ares service; the model cannot declare its own.');
+
+        SearchBlock::apply(self::MODEL, $metadata);
+    }
+
     public function testWithoutSemanticFieldsOnlyTheTsvectorIsAdded()
     {
         $metadata = self::metadata();
@@ -176,6 +206,7 @@ class SearchBlockTest extends TestCase
         $this->assertSame([], $metadata['search']['fuzzy']);
         $this->assertSame(['number'], $metadata['search']['exact']);
         $this->assertArrayNotHasKey('behaviors', $metadata);
+        $this->assertArrayNotHasKey('acl', $metadata);
     }
 
     public function testTheBlockIsNormalized()
