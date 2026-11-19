@@ -55,7 +55,7 @@ class AclLockoutGuardTest extends TestCase
 
     public static function tearDownAfterClass(): void
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute("DELETE FROM user_roles WHERE \"userId\" = 'test-user-acl-lockout'");
         $db->execute("DELETE FROM users WHERE id = 'test-user-acl-lockout' OR email = 'acl-lockout-test@gaia.test'");
         $db->execute("DELETE FROM users WHERE email LIKE 'acl-lockout-%@gaia.test'");
@@ -68,7 +68,7 @@ class AclLockoutGuardTest extends TestCase
      */
     private static function ensureSharedLockoutUser(): void
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $existing = $db->fetchOne(
             "SELECT id FROM users WHERE id = 'test-user-acl-lockout' OR email = 'acl-lockout-test@gaia.test' LIMIT 1"
         );
@@ -126,7 +126,7 @@ class AclLockoutGuardTest extends TestCase
      */
     private function purgeLockoutTestArtifacts(): void
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute(
             "DELETE FROM permissions WHERE \"roleId\" IN (SELECT id FROM roles WHERE name LIKE 'Lockout%')"
         );

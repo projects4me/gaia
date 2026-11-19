@@ -56,7 +56,7 @@ class BulkRequestValidator
     /**
      * The validator for the configured limits and routes (config/bulk.php).
      *
-     * @param \Phalcon\Config $settings the application settings
+     * @param \Phalcon\Config\Config $settings the application settings
      * @return self
      */
     public static function fromSettings($settings): self

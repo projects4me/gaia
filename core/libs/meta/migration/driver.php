@@ -32,14 +32,14 @@ class Driver
     /**
      * The dependency injector used by this class
      *
-     * @var \Phalcon\DiInterface $di
+     * @var \Phalcon\Di\DiInterface $di
      */
     protected $di;
 
     /**
      * Driver constructor.
      *
-     * @param \Phalcon\DiInterface $di
+     * @param \Phalcon\Di\DiInterface $di
      */
     public function __construct(\Phalcon\Di\FactoryDefault $di)
     {

@@ -65,7 +65,7 @@ class AresCallerGuard
      */
     private static function configuredSecret()
     {
-        $config = \Phalcon\Di::getDefault()->get('config')->get('ares');
+        $config = \Phalcon\Di\Di::getDefault()->get('config')->get('ares');
 
         return $config && isset($config->introspectionSecret) ? (string) $config->introspectionSecret : '';
     }

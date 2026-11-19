@@ -127,7 +127,7 @@ class AgentCredentialsTest extends TestCase
 
     public function testATakenClientIdGetsASuffix(): void
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute(
             "INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id)
              VALUES ('unit-cred-taken', ?, 'x', '', 'client_credentials', NULL, NULL)",
@@ -202,7 +202,7 @@ class AgentCredentialsTest extends TestCase
 
     public function testPlainClientSecretsStillCheck(): void
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute(
             "INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id)
              VALUES ('unit-cred-taken', ?, 'plain-secret', '', 'password', NULL, NULL)",
@@ -228,7 +228,7 @@ class AgentCredentialsTest extends TestCase
     {
         $agent = $this->createAgent('Unit Cred Disabled', 'unit-agent-cred-disabled@gaia.test');
         $clientId = (new AgentCredentials())->issue($agent->id)['credential']->clientId;
-        \Phalcon\Di::getDefault()->get('db')->execute(
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
             'UPDATE users SET "accountStatus" = \'Inactive\' WHERE id = ?',
             [$agent->userId]
         );
@@ -241,7 +241,7 @@ class AgentCredentialsTest extends TestCase
 
     public function testClientCredentialsRefusedForAClientWithoutAnAgent(): void
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute(
             "INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id)
              VALUES ('unit-cred-taken', ?, 'x', '', 'client_credentials', NULL, ?)",
@@ -300,12 +300,12 @@ class AgentCredentialsTest extends TestCase
      */
     private function storage()
     {
-        return new Pdo(\Phalcon\Di::getDefault()->get('db')->getInternalHandler(), ['user_table' => 'users']);
+        return new Pdo(\Phalcon\Di\Di::getDefault()->get('db')->getInternalHandler(), ['user_table' => 'users']);
     }
 
     private static function deleteTakenClient()
     {
-        \Phalcon\Di::getDefault()->get('db')->execute(
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
             "DELETE FROM oauth_clients WHERE id = 'unit-cred-taken'"
         );
     }

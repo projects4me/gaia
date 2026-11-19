@@ -29,7 +29,7 @@ class EmailNotificationTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (!class_exists(\Phalcon\Di::class)) {
+        if (!class_exists(\Phalcon\Di\Di::class)) {
             $this->markTestSkipped('Phalcon is not available in this PHP runtime');
         }
     }

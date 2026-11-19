@@ -1,7 +1,7 @@
 <?php
 
 use Phalcon\DI\FactoryDefault;
-use Phalcon\Logger;
+use Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Stream as StreamAdapter;
 use Gaia\Libraries\Utils\BindValueFormatter;
 use Gaia\Libraries\Utils\executiontime;

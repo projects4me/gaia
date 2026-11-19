@@ -191,7 +191,7 @@ class TokenIntrospectionTest extends TestCase
     public function testATokenOfADisabledUserIsInactive(): void
     {
         $token = $this->token(self::APP_CLIENT, self::USER_EMAIL);
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute('UPDATE users SET "accountStatus" = \'Inactive\' WHERE id = ?', [self::USER_ID]);
 
         try {
@@ -299,7 +299,7 @@ class TokenIntrospectionTest extends TestCase
      */
     private function insertOauthClient($clientId, $kind)
     {
-        \Phalcon\Di::getDefault()->get('db')->execute(
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
             'INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id, kind)
              VALUES (?, ?, \'unit-not-a-secret\', \'\', \'client_credentials\', NULL, NULL, ?)',
             [$clientId, $clientId, $kind]
@@ -333,7 +333,7 @@ class TokenIntrospectionTest extends TestCase
      */
     private function disable($clientId)
     {
-        \Phalcon\Di::getDefault()->get('db')->execute(
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
             'UPDATE serviceclients SET status = ? WHERE "clientId" = ?',
             [ServiceClients::STATUS_DISABLED, $clientId]
         );
@@ -345,7 +345,7 @@ class TokenIntrospectionTest extends TestCase
      */
     private function addMembership($projectId)
     {
-        \Phalcon\Di::getDefault()->get('db')->execute(
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
             'INSERT INTO memberships (id, "projectId", "userId", "createdUser", "modifiedUser", "createdUserName", "modifiedUserName")
              VALUES (?, ?, ?, ?, ?, \'testUser\', \'testUser\')',
             [$projectId, $projectId, self::USER_ID, self::USER_ID, self::USER_ID]
@@ -357,12 +357,12 @@ class TokenIntrospectionTest extends TestCase
      */
     private function storage()
     {
-        return new Pdo(\Phalcon\Di::getDefault()->get('db')->getInternalHandler(), ['user_table' => 'users']);
+        return new Pdo(\Phalcon\Di\Di::getDefault()->get('db')->getInternalHandler(), ['user_table' => 'users']);
     }
 
     private static function purge()
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute("DELETE FROM oauth_access_tokens WHERE access_token LIKE 'unit-tintro-%'");
         $db->execute("DELETE FROM memberships WHERE id LIKE 'unit-tintro-%'");
         $db->execute("DELETE FROM serviceclients WHERE \"clientId\" LIKE 'unit-tintro-%'");

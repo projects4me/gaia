@@ -17,7 +17,7 @@ class Handler
     /**
      * This is the dependency injector used by this class
      *
-     * @var \Phalcon\DiInterface
+     * @var \Phalcon\Di\DiInterface
      */
     protected $di;
 

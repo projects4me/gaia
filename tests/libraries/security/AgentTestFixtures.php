@@ -26,7 +26,7 @@ class AgentTestFixtures
      */
     public static function ensureHumanUser($id, $email)
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute('DELETE FROM users WHERE id = ? OR email = ?', [$id, $email]);
         $db->execute(
             "INSERT INTO users (
@@ -46,7 +46,7 @@ class AgentTestFixtures
      */
     public static function deleteUser($id)
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute('DELETE FROM user_roles WHERE "userId" = ?', [$id]);
         $db->execute('DELETE FROM users WHERE id = ?', [$id]);
     }
@@ -58,7 +58,7 @@ class AgentTestFixtures
      */
     public static function purge()
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $agentUsers = "SELECT id FROM users WHERE email LIKE 'unit-agent-%@gaia.test'";
         $db->execute("DELETE FROM user_roles WHERE \"userId\" IN ({$agentUsers})");
         $db->execute(

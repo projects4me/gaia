@@ -35,7 +35,7 @@ class PostgresSearchMigrationTest extends TestCase
         if (!class_exists(\Phalcon\Di\FactoryDefault::class) || !class_exists(Migration::class)) {
             $this->markTestSkipped('Phalcon is not available in this PHP runtime');
         }
-        $db = \Phalcon\Di::getDefault()->getShared('db');
+        $db = \Phalcon\Di\Di::getDefault()->getShared('db');
         if ($db->getType() !== 'pgsql') {
             $this->markTestSkipped('PostgreSQL search columns need a PostgreSQL database');
         }

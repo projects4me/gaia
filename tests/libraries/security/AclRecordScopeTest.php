@@ -18,7 +18,7 @@ class AclRecordScopeTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (!class_exists(\Phalcon\Di::class)) {
+        if (!class_exists(\Phalcon\Di\Di::class)) {
             $this->markTestSkipped('Phalcon is not available in this PHP runtime');
         }
     }
@@ -57,6 +57,6 @@ class AclRecordScopeTest extends TestCase
             $settings['system']['acl']['scopedResources'] = ['project.get'];
         }
 
-        return new Acl(\Phalcon\Di::getDefault(), Acl::RESOLUTION_PERMISSIVE);
+        return new Acl(\Phalcon\Di\Di::getDefault(), Acl::RESOLUTION_PERMISSIVE);
     }
 }

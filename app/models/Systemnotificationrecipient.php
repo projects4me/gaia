@@ -54,7 +54,7 @@ class Systemnotificationrecipient extends Model
      */
     public static function updateAllAsRead($userId)
     {
-        $di = \Phalcon\Di::getDefault();
+        $di = \Phalcon\Di\Di::getDefault();
         $query = $di->get('modelsManager')->createQuery("UPDATE \Gaia\MVC\Models\Systemnotificationrecipient SET isRead = 1 WHERE userId = :userId:");
         return $query->execute(['userId' => $userId]);
     }
@@ -70,7 +70,7 @@ class Systemnotificationrecipient extends Model
      */
     public static function markRelatedAsRead($userId, $relatedTo, $relatedId)
     {
-        $di = \Phalcon\Di::getDefault();
+        $di = \Phalcon\Di\Di::getDefault();
         $recipients = $di->get('modelsManager')->createBuilder()
             ->from(['recipient' => self::class])
             ->innerJoin(Systemnotification::class, 'sn.id = recipient.systemNotificationId', 'sn')

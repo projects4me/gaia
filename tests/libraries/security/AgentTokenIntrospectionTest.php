@@ -260,12 +260,12 @@ class AgentTokenIntrospectionTest extends TestCase
      */
     private function storage()
     {
-        return new Pdo(\Phalcon\Di::getDefault()->get('db')->getInternalHandler(), ['user_table' => 'users']);
+        return new Pdo(\Phalcon\Di\Di::getDefault()->get('db')->getInternalHandler(), ['user_table' => 'users']);
     }
 
     private static function purge()
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute("DELETE FROM oauth_access_tokens WHERE access_token LIKE 'unit-introspect-%'");
         $db->execute("DELETE FROM agent_tools WHERE id LIKE 'unit-introspect-%'");
         $db->execute("DELETE FROM tools WHERE id LIKE 'unit-introspect-%'");

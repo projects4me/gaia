@@ -288,7 +288,7 @@ class ServiceEnrollments
      */
     protected function transactional(callable $work)
     {
-        $db = \Phalcon\Di::getDefault()->getShared('db');
+        $db = \Phalcon\Di\Di::getDefault()->getShared('db');
         $db->begin();
 
         try {
@@ -344,8 +344,8 @@ class ServiceEnrollments
      */
     private static function loadConfig()
     {
-        $config = \Phalcon\Di::getDefault()->get('config')->get('serviceClients');
-        if ($config instanceof \Phalcon\Config) {
+        $config = \Phalcon\Di\Di::getDefault()->get('config')->get('serviceClients');
+        if ($config instanceof \Phalcon\Config\Config) {
             $config = $config->toArray();
         }
 

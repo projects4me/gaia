@@ -3,7 +3,7 @@
 use Phalcon\Di\FactoryDefault\Cli as CliDI;
 use Phalcon\Cli\Console as ConsoleApp;
 use Phalcon\Loader;
-use Phalcon\Logger;
+use Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Stream as StreamAdapter;
 use Gaia\Libraries\Utils\executiontime;
 

@@ -51,7 +51,7 @@ class Query
     /**
      * The dependency injector used by this class
      *
-     * @var \Phalcon\DiInterface $di
+     * @var \Phalcon\Di\DiInterface $di
      */
     protected $di;
 
@@ -70,7 +70,7 @@ class Query
     /**
      * Query constructor.
      *
-     * @param \Phalcon\DiInterface $di
+     * @param \Phalcon\Di\DiInterface $di
      * @param string               $modelAlias Alias of Model.
      * @param string               $id         Model identifier.
      */

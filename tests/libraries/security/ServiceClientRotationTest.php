@@ -182,7 +182,7 @@ class ServiceClientRotationTest extends TestCase
      */
     private function serviceAcl($clientId, $scope)
     {
-        $acl = new ServiceAcl(\Phalcon\Di::getDefault(), 'runtime', null, $clientId);
+        $acl = new ServiceAcl(\Phalcon\Di\Di::getDefault(), 'runtime', null, $clientId);
         $acl->setTokenScope(new TokenScope($scope));
 
         return $acl;
@@ -245,12 +245,12 @@ class ServiceClientRotationTest extends TestCase
      */
     private function db()
     {
-        return \Phalcon\Di::getDefault()->get('db');
+        return \Phalcon\Di\Di::getDefault()->get('db');
     }
 
     private static function purge()
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute("DELETE FROM oauth_access_tokens WHERE client_id LIKE 'unit-rot-%'");
         $db->execute("DELETE FROM serviceclients WHERE \"clientId\" LIKE 'unit-rot-%'");
         $db->execute("DELETE FROM oauth_clients WHERE client_id LIKE 'unit-rot-%'");

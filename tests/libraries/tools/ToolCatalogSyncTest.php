@@ -127,7 +127,7 @@ class ToolCatalogSyncTest extends TestCase
 
     private static function purge()
     {
-        \Phalcon\Di::getDefault()->getShared('db')->execute(
+        \Phalcon\Di\Di::getDefault()->getShared('db')->execute(
             'DELETE FROM tools WHERE "toolServerId" = ?',
             [self::SERVER_ID]
         );

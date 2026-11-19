@@ -36,7 +36,7 @@ class Downloadtoken extends Model
             return null;
         }
 
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute('DELETE FROM download_tokens WHERE "downloadToken" = ?', [(string) $token]);
         if ($db->affectedRows() < 1) {
             return null;

@@ -133,7 +133,7 @@ class Email
      */
     protected function resetTokenTimeout()
     {
-        $config = \Phalcon\Di::getDefault()->get('config')->get('smtp');
+        $config = \Phalcon\Di\Di::getDefault()->get('config')->get('smtp');
         return isset($config['resetTokenTimeout'])
             ? (int) $config['resetTokenTimeout']
             : self::DEFAULT_RESET_TOKEN_TIMEOUT;

@@ -21,7 +21,7 @@ class HasOne extends HasOneAndManyBase
     /**
      * HasOne constructor.
      *
-     * @param \Phalcon\DiInterface  $di
+     * @param \Phalcon\Di\DiInterface  $di
      */
     function __construct(\Phalcon\Di\FactoryDefault $di)
     {

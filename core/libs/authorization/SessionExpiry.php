@@ -26,12 +26,12 @@ class SessionExpiry
     /**
      * The `oauth` configuration (`sessionTimeout`, `sessionTimeoutForRememberMe`, in days).
      *
-     * @var \Phalcon\Config|array
+     * @var \Phalcon\Config\Config|array
      */
     private $oauthConfig;
 
     /**
-     * @param \Phalcon\Config|array $oauthConfig
+     * @param \Phalcon\Config\Config|array $oauthConfig
      */
     public function __construct($oauthConfig)
     {

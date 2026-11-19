@@ -48,7 +48,7 @@ class User extends Model
      */
     public static function getSystemUser()
     {
-        $di = \Phalcon\Di::getDefault();
+        $di = \Phalcon\Di\Di::getDefault();
         $builder = $di->get('modelsManager')->createBuilder();
         $builder->from(['User' => 'Gaia\MVC\Models\User'])
             ->columns(['User.id','User.name'])

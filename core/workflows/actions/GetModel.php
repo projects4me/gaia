@@ -23,7 +23,7 @@ class GetModel
     {
         $modelName = ucfirst($modelName);
         $modelNamespace = "\\Gaia\\MVC\\Models\\$modelName";
-        $relationship = new \Gaia\Core\MVC\Models\Relationship(\Phalcon\Di::getDefault());
+        $relationship = new \Gaia\Core\MVC\Models\Relationship(\Phalcon\Di\Di::getDefault());
         $params = [
             'where' => $where
         ];

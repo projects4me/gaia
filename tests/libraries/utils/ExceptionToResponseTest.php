@@ -143,21 +143,21 @@ class ExceptionToResponseTest extends TestCase
      */
     public function testHandleSendsTheSharedDiResponse()
     {
-        $previous = \Phalcon\Di::getDefault();
+        $previous = \Phalcon\Di\Di::getDefault();
         $shared = $this->getMockBuilder(Response::class)->onlyMethods(['send'])->getMock();
         $shared->expects($this->once())->method('send')->willReturnSelf();
         $shared->setHeader('Cache-Control', 'no-store');
 
-        $di = new \Phalcon\Di();
+        $di = new \Phalcon\Di\Di();
         $di->setShared('response', $shared);
-        \Phalcon\Di::setDefault($di);
+        \Phalcon\Di\Di::setDefault($di);
         try {
             $returned = (new Exception\ResourceNotFound('gone'))->handle();
         } finally {
             if ($previous !== null) {
-                \Phalcon\Di::setDefault($previous);
+                \Phalcon\Di\Di::setDefault($previous);
             } else {
-                \Phalcon\Di::reset();
+                \Phalcon\Di\Di::reset();
             }
         }
 

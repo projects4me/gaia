@@ -310,7 +310,7 @@ class AclLockoutGuard
      */
     private static function findLockoutPermissionRows($roleId)
     {
-        $di = \Phalcon\Di::getDefault();
+        $di = \Phalcon\Di\Di::getDefault();
         $builder = $di->get('modelsManager')->createBuilder()
             ->columns([
                 'Permission.resourceName as resourceName',

@@ -27,7 +27,7 @@ class ActiveTriggerNodes
      */
     public function ofKind($kind)
     {
-        $rows = \Phalcon\Di::getDefault()->get('modelsManager')->createBuilder()
+        $rows = \Phalcon\Di\Di::getDefault()->get('modelsManager')->createBuilder()
             ->columns([
                 'Node.id as nodeId',
                 'Node.workflowId as workflowId',

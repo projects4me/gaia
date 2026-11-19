@@ -25,7 +25,7 @@ class AclTokenScopeTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (!class_exists(\Phalcon\Di::class)) {
+        if (!class_exists(\Phalcon\Di\Di::class)) {
             $this->markTestSkipped('Phalcon is not available in this PHP runtime');
         }
     }
@@ -110,7 +110,7 @@ class AclTokenScopeTest extends TestCase
      */
     private function newAcl($scope)
     {
-        $acl = new class(\Phalcon\Di::getDefault(), Acl::RESOLUTION_PERMISSIVE) extends Acl {
+        $acl = new class(\Phalcon\Di\Di::getDefault(), Acl::RESOLUTION_PERMISSIVE) extends Acl {
             protected function isResourceAllowed($resourceName)
             {
                 return true;

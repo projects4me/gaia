@@ -187,7 +187,7 @@ class AgentCredentials
      */
     protected function db()
     {
-        return \Phalcon\Di::getDefault()->getShared('db');
+        return \Phalcon\Di\Di::getDefault()->getShared('db');
     }
 
     /**
@@ -254,7 +254,7 @@ class AgentCredentials
      */
     private function deleteAccessTokens($clientId)
     {
-        \Phalcon\Di::getDefault()->get('modelsManager')->executeQuery(
+        \Phalcon\Di\Di::getDefault()->get('modelsManager')->executeQuery(
             'DELETE FROM [Gaia\MVC\Models\Oauthaccesstoken] WHERE client_id = :clientId:',
             ['clientId' => (string) $clientId]
         );

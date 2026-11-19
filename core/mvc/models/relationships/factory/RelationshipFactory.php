@@ -22,7 +22,7 @@ class RelationshipFactory
     /**
      * The dependency injector used by this class
      *
-     * @var \Phalcon\DiInterface $di
+     * @var \Phalcon\Di\DiInterface $di
      */
     protected $di;
 
