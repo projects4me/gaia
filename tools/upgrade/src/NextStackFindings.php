@@ -119,6 +119,27 @@ class NextStackFindings
     }
 
     /**
+     * Failed cases of the next stack's api-tester report that did not fail on the current stack.
+     * Cases failing on both stacks are known noise and are left out.
+     *
+     * @param string|null $nextJson
+     * @param string|null $currentJson
+     * @return array finding
+     */
+    public function newApiTesterFailures($nextJson, $currentJson)
+    {
+        $current = $this->apiTesterFailures($currentJson);
+        if ($current['count'] === null) {
+            return self::missing('current stack: ' . $current['note']);
+        }
+        $next = $this->apiTesterFailures($nextJson);
+        if ($next['count'] === null) {
+            return $next;
+        }
+        return self::found(array_values(array_diff($next['lines'], $current['lines'])));
+    }
+
+    /**
      * Response differences from `compare-reports.php --details`.
      *
      * @param string|null $output

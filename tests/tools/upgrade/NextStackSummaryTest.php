@@ -76,6 +76,21 @@ class NextStackSummaryTest extends TestCase
         $this->assertSame(['bulk-create (POST http://x/api/v1/bulk)'], $f['lines']);
     }
 
+    public function testNewApiTesterFailuresLeavesOutThoseFailingOnBothStacks()
+    {
+        $report = function (array $failed) {
+            return json_encode(['results' => array_map(function ($id) {
+                return ['id' => $id, 'status' => 'failed'];
+            }, $failed)]);
+        };
+        $findings = new NextStackFindings();
+        $f = $findings->newApiTesterFailures($report(['both', 'only-next']), $report(['both', 'only-current']));
+        $this->assertSame(['only-next'], $f['lines']);
+        $this->assertSame(1, $f['count']);
+        $this->assertNull($findings->newApiTesterFailures($report(['a']), null)['count']);
+        $this->assertNull($findings->newApiTesterFailures(null, $report([]))['count']);
+    }
+
     public function testResponseDifferences()
     {
         $findings = new NextStackFindings();
