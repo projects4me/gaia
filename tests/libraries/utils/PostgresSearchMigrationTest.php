@@ -63,6 +63,15 @@ class PostgresSearchMigrationTest extends TestCase
         $this->assertTrue($this->extensionInstalled('pg_trgm'));
     }
 
+    public function testConfiguredExtensionsIncludeUuidOssp()
+    {
+        $config = require __DIR__ . '/../../../config/database/Postgres.php';
+
+        $this->assertContains('uuid-ossp', $config['extensions']);
+        $this->assertSame(array(), (new Postgres())->createExtensions($this->db, array('uuid-ossp')));
+        $this->assertTrue($this->extensionInstalled('uuid-ossp'));
+    }
+
     public function testTsvectorAndTrigramIndexMigrateAndReMigrateCleanly()
     {
         (new Postgres())->createExtensions($this->db, array('pg_trgm'));
