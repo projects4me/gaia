@@ -76,7 +76,7 @@ class ProjectActivitiesComponentTest extends TestCase
     public function testAfterUpdateSkipsControllersWithoutAfterUpdateConfig()
     {
         global $logger;
-        $logger = $logger ?: new \Phalcon\Logger('test');
+        $logger = $logger ?: new \Phalcon\Logger\Logger('test');
         $component = $this->getMockBuilder(ProjectActivitiesComponent::class)
             ->onlyMethods(['logActivity'])
             ->getMock();
@@ -108,7 +108,7 @@ class ProjectActivitiesComponentTest extends TestCase
     public function testAfterCreateSkipsControllersWithoutAfterCreateConfig()
     {
         global $logger;
-        $logger = $logger ?: new \Phalcon\Logger('test');
+        $logger = $logger ?: new \Phalcon\Logger\Logger('test');
         $component = $this->getMockBuilder(ProjectActivitiesComponent::class)
             ->onlyMethods(['logActivity'])
             ->getMock();

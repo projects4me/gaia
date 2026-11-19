@@ -3,7 +3,7 @@
 namespace Gaia\Tests\Foundation\Mvc;
 
 use PHPUnit\Framework\TestCase;
-use Phalcon\Config;
+use Phalcon\Config\Config;
 use Phalcon\Di\FactoryDefault;
 use Gaia\MVC\Router;
 

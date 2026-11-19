@@ -136,7 +136,7 @@ class RunJournal
             return false;
         }
         $started = json_decode((string) $step->outputs, true);
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         // The step and its run change together, or a failed run write would
         // leave a completed step that no retry finds.
         $db->begin();

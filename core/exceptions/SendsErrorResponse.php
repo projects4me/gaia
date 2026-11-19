@@ -36,7 +36,7 @@ trait SendsErrorResponse
      */
     public function handle()
     {
-        $response = $this->toResponse(\Phalcon\Di::getDefault()->get('response'));
+        $response = $this->toResponse(\Phalcon\Di\Di::getDefault()->get('response'));
         $response->send();
         return $response;
     }

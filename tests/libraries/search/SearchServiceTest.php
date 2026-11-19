@@ -63,12 +63,12 @@ class SearchServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $db = \Phalcon\Di::getDefault()->getShared('db');
+        $db = \Phalcon\Di\Di::getDefault()->getShared('db');
         if ($db->getType() !== 'pgsql') {
             $this->markTestSkipped('Search needs a PostgreSQL database');
         }
         $this->db = $db;
-        $this->acl = new SearchTestAcl(\Phalcon\Di::getDefault(), Acl::RESOLUTION_PERMISSIVE);
+        $this->acl = new SearchTestAcl(\Phalcon\Di\Di::getDefault(), Acl::RESOLUTION_PERMISSIVE);
         $this->embeddings = new SearchTestEmbeddings();
         $this->db->begin();
     }
@@ -444,7 +444,7 @@ class SearchServiceTest extends TestCase
      */
     private function service($maxDistance = SemanticSearcher::DEFAULT_MAX_DISTANCE, ?CandidateQuery $candidates = null)
     {
-        $di = \Phalcon\Di::getDefault();
+        $di = \Phalcon\Di\Di::getDefault();
         $metaManager = $di->get('metaManager');
         $candidates = $candidates ?? new CandidateQuery($this->db);
         $tsquery = new TextSearchQuery();

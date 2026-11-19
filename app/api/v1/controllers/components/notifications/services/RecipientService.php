@@ -34,7 +34,7 @@ class RecipientService
     public function notifyIssueRecipients($notification, $issueModel, $excludeIds = [], $recipients = ['assignee', 'owner', 'watchers'])
     {
         global $currentUser;
-        $di = \Phalcon\Di::getDefault();
+        $di = \Phalcon\Di\Di::getDefault();
         $recipientIds = array_merge([$currentUser->id], $excludeIds);
         try {
             foreach ($recipients as $recipient) {

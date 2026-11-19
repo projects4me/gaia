@@ -262,7 +262,7 @@ class Permission extends Model
      */
     private function buildPermissionsQuery()
     {
-        $di = \Phalcon\Di::getDefault();
+        $di = \Phalcon\Di\Di::getDefault();
 
         $queryBuilder = $di->get('modelsManager')->createBuilder();
         $queryBuilder->columns([

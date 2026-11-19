@@ -26,7 +26,7 @@ class PreviewControllerTest extends TestCase
         global $logger, $currentUser;
         $currentUser = (object) ['id' => '00000000-0000-0000-0000-000000000000', 'name' => 'phpunit'];
         if (!isset($logger)) {
-            $logger = new \Phalcon\Logger('test', ['main' => new \Phalcon\Logger\Adapter\Noop()]);
+            $logger = new \Phalcon\Logger\Logger('test', ['main' => new \Phalcon\Logger\Adapter\Noop()]);
         }
     }
 

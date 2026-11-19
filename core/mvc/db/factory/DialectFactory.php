@@ -20,7 +20,7 @@ class DialectFactory
     /**
      * The dependency injector used by this class
      *
-     * @var \Phalcon\DiInterface $di
+     * @var \Phalcon\Di\DiInterface $di
      */
     protected $di;
 
@@ -34,7 +34,7 @@ class DialectFactory
     /**
      * DialectFactory constructor.
      *
-     * @param \Phalcon\DiInterface $di
+     * @param \Phalcon\Di\DiInterface $di
      * @param string $dialectType
      */
     public function __construct(\Phalcon\Di\FactoryDefault $di, $dialectType)

@@ -6,7 +6,7 @@
 /**
  * Services are globally registered in this file
  *
- * @var \Phalcon\Config $config
+ * @var \Phalcon\Config\Config $config
  */
 
 use Phalcon\Di\FactoryDefault;

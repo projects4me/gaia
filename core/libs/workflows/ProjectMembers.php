@@ -46,7 +46,7 @@ class ProjectMembers
      */
     public function firstWithRole($projectId, $role)
     {
-        $row = \Phalcon\Di::getDefault()->get('modelsManager')->createBuilder()
+        $row = \Phalcon\Di\Di::getDefault()->get('modelsManager')->createBuilder()
             ->columns(['Membership.userId as userId'])
             ->from(['Membership' => Membership::class])
             ->innerJoin(Userrole::class, 'Userrole.userId = Membership.userId AND Userrole.deleted = false', 'Userrole')

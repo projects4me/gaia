@@ -143,7 +143,7 @@ class ClientCredentialsGrantTest extends TestCase
         $this->createServiceClient('token-disabled', 'runtime');
         $token = $this->requestToken(self::SERVICE_PREFIX . 'token-disabled', self::SERVICE_SECRET);
         // Disable without the behaviour, which would also delete the token.
-        \Phalcon\Di::getDefault()->get('db')->execute(
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
             'UPDATE serviceclients SET status = ? WHERE "clientId" = ?',
             [ServiceClients::STATUS_DISABLED, self::SERVICE_PREFIX . 'token-disabled']
         );
@@ -292,7 +292,7 @@ class ClientCredentialsGrantTest extends TestCase
      */
     private function insertOauthClient($clientId, $kind, $userId)
     {
-        \Phalcon\Di::getDefault()->get('db')->execute(
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
             'INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id, kind)
              VALUES (?, ?, ?, \'\', \'client_credentials\', NULL, ?, ?)',
             [$clientId, $clientId, password_hash(self::SERVICE_SECRET, PASSWORD_DEFAULT), $userId, $kind]
@@ -348,7 +348,7 @@ class ClientCredentialsGrantTest extends TestCase
      */
     private function tokenResponse($clientId, $secret, $scope = null)
     {
-        $storage = new Pdo(\Phalcon\Di::getDefault()->get('db')->getInternalHandler(), ['user_table' => 'users']);
+        $storage = new Pdo(\Phalcon\Di\Di::getDefault()->get('db')->getInternalHandler(), ['user_table' => 'users']);
         $server = new \OAuth2\Server($storage, ['access_lifetime' => 3600]);
         $server->addGrantType(new ClientCredentialsGrant($storage));
 
@@ -378,7 +378,7 @@ class ClientCredentialsGrantTest extends TestCase
 
     private static function purgeServiceClients()
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute("DELETE FROM oauth_access_tokens WHERE client_id LIKE 'unit-svc-%' OR client_id LIKE 'agent-unit-grant%'");
         $db->execute("DELETE FROM serviceclients WHERE \"clientId\" LIKE 'unit-svc-%' OR \"clientId\" LIKE 'agent-unit-grant%'");
         $db->execute("DELETE FROM oauth_clients WHERE client_id LIKE 'unit-svc-%'");

@@ -172,7 +172,7 @@ class AgentTokenIntrospection
     {
         if ($this->storage === null) {
             $this->storage = new Pdo(
-                \Phalcon\Di::getDefault()->get('db')->getInternalHandler(),
+                \Phalcon\Di\Di::getDefault()->get('db')->getInternalHandler(),
                 ['user_table' => 'users']
             );
         }

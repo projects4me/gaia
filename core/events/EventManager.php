@@ -54,7 +54,7 @@ class EventManager
         }
 
         // Set phalcon's event manager on the dependency injector.
-        $di = \Phalcon\Di::getDefault();
+        $di = \Phalcon\Di\Di::getDefault();
         $di->set('eventsManager', self::getPhalconEventManager());
     }
 

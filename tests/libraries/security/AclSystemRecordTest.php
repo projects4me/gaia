@@ -41,11 +41,11 @@ class AclSystemRecordTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        if (!class_exists(\Phalcon\Di::class)) {
+        if (!class_exists(\Phalcon\Di\Di::class)) {
             return;
         }
 
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $status = $db->fetchOne('SELECT id FROM issue_statuses WHERE system = 1 AND deleted = 0 LIMIT 1');
         $type = $db->fetchOne('SELECT id FROM issue_types WHERE system = 1 AND deleted = 0 LIMIT 1');
         self::$systemStatusId = $status ? $status['id'] : null;
@@ -61,17 +61,17 @@ class AclSystemRecordTest extends TestCase
 
     public static function tearDownAfterClass(): void
     {
-        if (!class_exists(\Phalcon\Di::class)) {
+        if (!class_exists(\Phalcon\Di\Di::class)) {
             return;
         }
 
-        \Phalcon\Di::getDefault()->get('db')->execute('DELETE FROM issue_types WHERE id = ?', [self::PROJECT_TYPE_ID]);
+        \Phalcon\Di\Di::getDefault()->get('db')->execute('DELETE FROM issue_types WHERE id = ?', [self::PROJECT_TYPE_ID]);
         Permission::clearEffectivePermissions();
     }
 
     protected function setUp(): void
     {
-        if (!class_exists(\Phalcon\Di::class)) {
+        if (!class_exists(\Phalcon\Di\Di::class)) {
             $this->markTestSkipped('Phalcon is not available in this PHP runtime');
         }
         if (self::$systemStatusId === null || self::$systemTypeId === null) {
@@ -174,6 +174,6 @@ class AclSystemRecordTest extends TestCase
             'setting.update' => [['allowed' => $settingUpdate, 'roleId' => 'test-role']],
         ]);
 
-        return new Acl(\Phalcon\Di::getDefault(), Acl::RESOLUTION_PERMISSIVE);
+        return new Acl(\Phalcon\Di\Di::getDefault(), Acl::RESOLUTION_PERMISSIVE);
     }
 }

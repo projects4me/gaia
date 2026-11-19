@@ -3,7 +3,7 @@
 namespace Gaia\Libraries\Authorization;
 
 use OAuth2;
-use Phalcon\Di;
+use Phalcon\Di\Di;
 use Gaia\MVC\Models\Oauthrefreshtoken;
 use Gaia\MVC\Models\User;
 use Gaia\Exception\UnAuthorized;
@@ -61,7 +61,7 @@ class OAuthServer
      */
     public function __construct($request, $config = [])
     {
-        $pdo = \Phalcon\Di::getDefault()->get('db')->getInternalHandler();
+        $pdo = \Phalcon\Di\Di::getDefault()->get('db')->getInternalHandler();
         $config = array_merge(
             [
             'access_lifetime' => 3600,

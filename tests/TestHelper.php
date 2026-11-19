@@ -6,7 +6,7 @@
 
 use Phalcon\DI;
 use Phalcon\DI\FactoryDefault;
-use Phalcon\Logger;
+use Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Stream as StreamAdapter;
 use Gaia\Libraries\Meta\Manager as metaManager;
 use Gaia\Db\Factory\ConnectionFactory;

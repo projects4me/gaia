@@ -85,7 +85,7 @@ class ActorSteps
         $states = implode(', ', array_fill(0, count($from), '?'));
         $bind = array_merge($bind, array_values($from));
 
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute(
             'UPDATE workflow_actor_steps SET ' . implode(', ', $set)
             . " WHERE id = ? AND deleted = false AND \"status\" IN ({$states})",

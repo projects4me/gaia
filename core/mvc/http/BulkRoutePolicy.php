@@ -78,7 +78,7 @@ class BulkRoutePolicy
     /**
      * The policy for the configured v1 REST routes and their controllers.
      *
-     * @param \Phalcon\Config $settings the application settings
+     * @param \Phalcon\Config\Config $settings the application settings
      * @return self
      */
     public static function fromSettings($settings): self

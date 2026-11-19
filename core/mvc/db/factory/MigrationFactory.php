@@ -27,7 +27,7 @@ class MigrationFactory
     /**
      * MigrationFactory constructor.
      *
-     * @param \Phalcon\DiInterface $di Dependency injector
+     * @param \Phalcon\Di\DiInterface $di Dependency injector
      * @param string $adapterType Configured database adapter name
      */
     public function __construct(\Phalcon\Di\FactoryDefault $di, $adapterType)

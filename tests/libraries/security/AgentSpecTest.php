@@ -133,7 +133,7 @@ class AgentSpecTest extends TestCase
         $kept = $this->grantSkill($agent, 'kept', '# Kept', null);
         $deletedSkill = $this->grantSkill($agent, 'deleted-skill', '# Gone', null);
         $revoked = $this->grantSkill($agent, 'revoked-grant', '# Revoked', null);
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute('UPDATE skills SET deleted = TRUE WHERE id = ?', [$deletedSkill]);
         $db->execute('UPDATE agent_skills SET deleted = TRUE WHERE "skillId" = ?', [$revoked]);
 
@@ -158,7 +158,7 @@ class AgentSpecTest extends TestCase
     public function testThereIsNoSpecForAMissingOrDeletedAgent(): void
     {
         $agent = $this->createAgent('unit-agent-spec-gone@gaia.test', []);
-        \Phalcon\Di::getDefault()->get('db')->execute('UPDATE agents SET deleted = TRUE WHERE id = ?', [$agent->id]);
+        \Phalcon\Di\Di::getDefault()->get('db')->execute('UPDATE agents SET deleted = TRUE WHERE id = ?', [$agent->id]);
 
         $this->assertNull((new AgentSpec())->forAgent($agent->id));
         $this->assertNull((new AgentSpec())->forAgent('unit-spec-no-such-agent'));
@@ -267,7 +267,7 @@ class AgentSpecTest extends TestCase
 
     private static function purge()
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute("DELETE FROM agent_skills WHERE id LIKE 'unit-spec-%'");
         $db->execute("DELETE FROM skills WHERE id LIKE 'unit-spec-%'");
         $db->execute("DELETE FROM agent_tools WHERE id LIKE 'unit-spec-%'");

@@ -21,7 +21,7 @@ class FilethumbComponentTest extends TestCase
     {
         global $logger;
         if (!isset($logger)) {
-            $logger = new \Phalcon\Logger('test', ['main' => new \Phalcon\Logger\Adapter\Noop()]);
+            $logger = new \Phalcon\Logger\Logger('test', ['main' => new \Phalcon\Logger\Adapter\Noop()]);
         }
     }
 

@@ -512,7 +512,7 @@ class TokenControllerTest extends TestCase
      */
     protected function getRefreshTokenRow($refreshToken)
     {
-        $row = \Phalcon\Di::getDefault()->get('db')->fetchOne(
+        $row = \Phalcon\Di\Di::getDefault()->get('db')->fetchOne(
             'SELECT "rememberMe", "sessionExpires" FROM oauth_refresh_tokens WHERE refresh_token = ?',
             \Phalcon\Db\Enum::FETCH_ASSOC,
             [$refreshToken]
@@ -531,7 +531,7 @@ class TokenControllerTest extends TestCase
      */
     protected function setSessionExpires($refreshToken, $sessionExpires)
     {
-        \Phalcon\Di::getDefault()->get('db')->execute(
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
             'UPDATE oauth_refresh_tokens SET "sessionExpires" = ? WHERE refresh_token = ?',
             [$sessionExpires, $refreshToken]
         );
@@ -545,7 +545,7 @@ class TokenControllerTest extends TestCase
      */
     protected function setUserSessionExpires($sessionExpires)
     {
-        \Phalcon\Di::getDefault()->get('db')->execute(
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
             'UPDATE users SET "sessionExpires" = ? WHERE email = ?',
             [$sessionExpires, 'test@gmail.com']
         );
@@ -723,7 +723,7 @@ class TokenControllerTest extends TestCase
     {
         global $currentUser;
 
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $passwordHash = password_hash('unit-testing', PASSWORD_DEFAULT);
         $existing = $db->fetchOne(
             "SELECT id FROM users WHERE id = 'test-user-oauth1' OR email = 'test@gmail.com' LIMIT 1"

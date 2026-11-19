@@ -55,7 +55,7 @@ class RolePermissionSeederTest extends TestCase
         $this->purgeSeededRoles();
 
         // Restore default mode for other suites (constructor sets it).
-        new Acl(\Phalcon\Di::getDefault(), Acl::RESOLUTION_PERMISSIVE);
+        new Acl(\Phalcon\Di\Di::getDefault(), Acl::RESOLUTION_PERMISSIVE);
     }
 
     /**
@@ -78,7 +78,7 @@ class RolePermissionSeederTest extends TestCase
      */
     private function ensureSharedLockoutUser(): void
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $existing = $db->fetchOne(
             "SELECT id FROM users WHERE id = 'test-user-acl-lockout' OR email = 'acl-lockout-test@gaia.test' LIMIT 1"
         );
@@ -113,7 +113,7 @@ class RolePermissionSeederTest extends TestCase
 
     private function purgeSeededRoles(): void
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute(
             "DELETE FROM permissions WHERE \"roleId\" IN (
                 SELECT id FROM roles WHERE name LIKE 'SeedTest%'
@@ -176,7 +176,7 @@ class RolePermissionSeederTest extends TestCase
     {
         Permission::clearEffectivePermissions();
         Permission::loadEffectivePermissions($userId);
-        $acl = new Acl(\Phalcon\Di::getDefault(), $mode);
+        $acl = new Acl(\Phalcon\Di\Di::getDefault(), $mode);
         $method = new \ReflectionMethod(Acl::class, 'isResourceAllowed');
         return $method->invoke($acl, $resourceName);
     }
@@ -393,7 +393,7 @@ class RolePermissionSeederTest extends TestCase
     private function makePermissionController($id = null)
     {
         $controller = new PermissionController();
-        $controller->setDI(\Phalcon\Di::getDefault());
+        $controller->setDI(\Phalcon\Di\Di::getDefault());
         $controller->setEventsManager(new \Phalcon\Events\Manager());
 
         $reflection = new \ReflectionClass($controller);

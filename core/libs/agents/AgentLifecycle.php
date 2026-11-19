@@ -197,7 +197,7 @@ class AgentLifecycle
      */
     public function transactional(callable $work)
     {
-        $db = \Phalcon\Di::getDefault()->getShared('db');
+        $db = \Phalcon\Di\Di::getDefault()->getShared('db');
         $db->begin();
 
         try {

@@ -261,7 +261,7 @@ class AgentDelegationGrantTest extends TestCase
     public function testTheStorageLetsAKindUseTheGrantsConfiguredForIt(): void
     {
         $storage = new \Gaia\Libraries\Oauth\Storage\Pdo(
-            \Phalcon\Di::getDefault()->get('db')->getInternalHandler(),
+            \Phalcon\Di\Di::getDefault()->get('db')->getInternalHandler(),
             ['user_table' => 'users', 'kind_grant_types' => [ClientKind::SERVICE => [AgentDelegationGrant::GRANT_TYPE]]]
         );
         $this->insertOauthClient(self::CLIENT_PREFIX . 'app-1', ClientKind::APP);
@@ -329,7 +329,7 @@ class AgentDelegationGrantTest extends TestCase
      */
     private function insertOauthClient($clientId, $kind)
     {
-        \Phalcon\Di::getDefault()->get('db')->execute(
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
             'INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id, kind)
              VALUES (?, ?, ?, \'\', \'client_credentials\', NULL, NULL, ?)',
             [$clientId, $clientId, password_hash(self::SECRET, PASSWORD_DEFAULT), $kind]
@@ -404,7 +404,7 @@ class AgentDelegationGrantTest extends TestCase
 
     private static function purgeClients()
     {
-        $db = \Phalcon\Di::getDefault()->get('db');
+        $db = \Phalcon\Di\Di::getDefault()->get('db');
         $db->execute("DELETE FROM oauth_access_tokens WHERE client_id LIKE 'unit-dlg-%' OR client_id LIKE 'agent-unit-delegation%'");
         $db->execute("DELETE FROM serviceclients WHERE \"clientId\" LIKE 'unit-dlg-%'");
         $db->execute("DELETE FROM oauth_clients WHERE client_id LIKE 'unit-dlg-%'");

@@ -30,7 +30,7 @@ class ServiceAclTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (!class_exists(\Phalcon\Di::class)) {
+        if (!class_exists(\Phalcon\Di\Di::class)) {
             $this->markTestSkipped('Phalcon is not available in this PHP runtime');
         }
     }
@@ -205,7 +205,7 @@ class ServiceAclTest extends TestCase
             }
         });
 
-        $acl = new class(\Phalcon\Di::getDefault(), $kind, $access, $groups) extends ServiceAcl {
+        $acl = new class(\Phalcon\Di\Di::getDefault(), $kind, $access, $groups) extends ServiceAcl {
             private $groups;
 
             public function __construct($di, $kind, $access, array $groups)

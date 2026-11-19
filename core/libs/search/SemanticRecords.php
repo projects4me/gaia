@@ -104,7 +104,7 @@ class SemanticRecords
     private function db()
     {
         if ($this->db === null) {
-            $this->db = \Phalcon\Di::getDefault()->getShared('db');
+            $this->db = \Phalcon\Di\Di::getDefault()->getShared('db');
         }
 
         return $this->db;

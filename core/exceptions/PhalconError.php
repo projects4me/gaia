@@ -108,7 +108,7 @@ class PhalconError
      */
     public function handle($response = null)
     {
-        $response = $response ?? \Phalcon\Di::getDefault()->get('response');
+        $response = $response ?? \Phalcon\Di\Di::getDefault()->get('response');
         $response->setStatusCode($this->statusCode(), $this->isNotFound() ? 'Not Found' : 'Internal Server Error');
         $response->setJsonContent($this->body());
         $response->send();

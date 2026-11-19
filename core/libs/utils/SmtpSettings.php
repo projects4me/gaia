@@ -56,7 +56,7 @@ class SmtpSettings
      */
     public static function loadWith(array $submitted, array $secureNames)
     {
-        $config = \Phalcon\Di::getDefault()->get('config')->get('smtp');
+        $config = \Phalcon\Di\Di::getDefault()->get('config')->get('smtp');
         if (is_object($config) && method_exists($config, 'toArray')) {
             $config = $config->toArray();
         }

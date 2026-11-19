@@ -6,7 +6,7 @@
 
 namespace Gaia\MVC\Models\Behaviors;
 
-use Phalcon\Di;
+use Phalcon\Di\Di;
 use Phalcon\Messages\Message;
 use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\BehaviorInterface;

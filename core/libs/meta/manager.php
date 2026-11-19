@@ -30,7 +30,7 @@ class Manager
     /**
      * This is the dependency injector used for this class
      *
-     * @var \Phalcon\DiInterface $di
+     * @var \Phalcon\Di\DiInterface $di
      */
     protected $di;
 
@@ -58,7 +58,7 @@ class Manager
     /**
      * Manager constructor.
      *
-     * @param \Phalcon\DiInterface $di
+     * @param \Phalcon\Di\DiInterface $di
      */
     public function __construct(\Phalcon\Di\FactoryDefault $di)
     {

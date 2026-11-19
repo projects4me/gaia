@@ -189,7 +189,7 @@ class RolePermissionSeeder
      */
     private static function insertRows(array $rows)
     {
-        $di = \Phalcon\Di::getDefault();
+        $di = \Phalcon\Di\Di::getDefault();
         if (!$di || !$di->has('db')) {
             throw new \RuntimeException('Database service is not available for permission seeding');
         }

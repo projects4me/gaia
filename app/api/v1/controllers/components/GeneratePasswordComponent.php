@@ -35,7 +35,7 @@ class GeneratePasswordComponent
         $logger->debug('Gaia.Controller.Component.GeneratePassword::beforeCreate()');
 
         $model->password = bin2hex(random_bytes(8));
-        $di = \Phalcon\Di::getDefault();
+        $di = \Phalcon\Di\Di::getDefault();
         $this->generatedPassword = $model->password;
 
         $logger->debug('-Gaia.Controller.Component.GeneratePassword::beforeCreate()');
@@ -55,7 +55,7 @@ class GeneratePasswordComponent
         global $logger;
         $logger->debug('Gaia.Controller.Component.GeneratePassword::afterCreate()');
 
-        $di = \Phalcon\Di::getDefault();
+        $di = \Phalcon\Di\Di::getDefault();
         $eventManager = $di->get('eventsManager');
         $eventManager->fire('notifications:emailPassword', $model, $this->generatedPassword);
     }

@@ -80,7 +80,7 @@ class EnrollmentRequestLimit
      */
     protected function requestsSince($ip, $since)
     {
-        $row = \Phalcon\Di::getDefault()->getShared('db')->fetchOne(
+        $row = \Phalcon\Di\Di::getDefault()->getShared('db')->fetchOne(
             'SELECT COUNT(*) AS requests FROM serviceenrollments WHERE "requesterIp" = ? AND "dateCreated" > ?',
             \Phalcon\Db\Enum::FETCH_ASSOC,
             [$ip, $since]

@@ -142,6 +142,6 @@ class ServiceClientSecrets
      */
     protected function db()
     {
-        return \Phalcon\Di::getDefault()->getShared('db');
+        return \Phalcon\Di\Di::getDefault()->getShared('db');
     }
 }

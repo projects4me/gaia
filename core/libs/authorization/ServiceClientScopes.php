@@ -110,8 +110,8 @@ class ServiceClientScopes
      */
     private static function loadConfig()
     {
-        $config = \Phalcon\Di::getDefault()->get('config')->get('serviceClients');
-        if ($config instanceof \Phalcon\Config) {
+        $config = \Phalcon\Di\Di::getDefault()->get('config')->get('serviceClients');
+        if ($config instanceof \Phalcon\Config\Config) {
             return $config->toArray();
         }
 

@@ -31,7 +31,7 @@ class IssueSearchColumnsTest extends TestCase
 
     protected function setUp(): void
     {
-        $db = \Phalcon\Di::getDefault()->getShared('db');
+        $db = \Phalcon\Di\Di::getDefault()->getShared('db');
         if ($db->getType() !== 'pgsql') {
             $this->markTestSkipped('Search columns need a PostgreSQL database');
         }

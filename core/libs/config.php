@@ -6,11 +6,11 @@
 
 namespace Gaia\Libraries;
 
-use Phalcon\Config as PhalconConfig;
+use Phalcon\Config\Config as PhalconConfig;
 
 /**
  * This is the config class in the foundation package. The class manages the
- * configurations in the application. It uses Phalcon\Config and is responsible
+ * configurations in the application. It uses Phalcon\Config\Config and is responsible
  * for reading all the default and custom configurations and exposing them
  * through a global variable.
  *
@@ -26,14 +26,14 @@ class Config
     /**
      * This is the dependency injector used by this class
      *
-     * @var \Phalcon\DiInterface $di
+     * @var \Phalcon\Di\DiInterface $di
      */
     protected $di;
 
     /**
      * Config constructor.
      *
-     * @param \Phalcon\DiInterface $di
+     * @param \Phalcon\Di\DiInterface $di
      */
     public function __construct(\Phalcon\Di\FactoryDefault $di)
     {
@@ -104,7 +104,7 @@ class Config
      * This function is used to get the configuration against the given key.
      *
      * @method get
-     * @return \Phalcon\Config|null
+     * @return \Phalcon\Config\Config|null
      */
     public function get($key)
     {

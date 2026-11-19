@@ -37,7 +37,7 @@ class IssueSemanticTextTest extends TestCase
 
     protected function setUp(): void
     {
-        $db = \Phalcon\Di::getDefault()->getShared('db');
+        $db = \Phalcon\Di\Di::getDefault()->getShared('db');
         if ($db->getType() !== 'pgsql') {
             $this->markTestSkipped('Search columns need a PostgreSQL database');
         }
@@ -100,7 +100,7 @@ class IssueSemanticTextTest extends TestCase
             );
 
             $posted = array();
-            $metaManager = \Phalcon\Di::getDefault()->get('metaManager');
+            $metaManager = \Phalcon\Di\Di::getDefault()->get('metaManager');
             $counts = (new SemanticReindexer(
                 new SearchableRegistry($metaManager, array('Issue')),
                 $metaManager,

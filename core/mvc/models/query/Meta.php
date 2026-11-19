@@ -129,7 +129,7 @@ class Meta
     /**
      * Metadata constructor.
      *
-     * @param \Phalcon\DiInterface $di
+     * @param \Phalcon\Di\DiInterface $di
      */
     public function __construct(\Phalcon\Di\FactoryDefault $di)
     {
