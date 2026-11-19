@@ -320,6 +320,25 @@ class SearchServiceTest extends TestCase
         $this->assertSame(array($own), array_column($this->search('zebracorn'), 'id'));
     }
 
+    public function testScansTheEmbeddingIndexIterativelyAndPutsTheSettingBack()
+    {
+        // Without an iterative scan, nearer records out of scope crowd the ones in it out of the HNSW candidates
+        $this->db->execute("SELECT set_config('hnsw.iterative_scan', 'off', false)");
+        $this->embeddings->vectors['zebracorn'] = $this->vector(1);
+        $this->embed($this->addIssue('Alpha', null), $this->vector(1));
+        $candidates = new SearchTestSettingSpy($this->db);
+
+        $this->service(SemanticSearcher::DEFAULT_MAX_DISTANCE, $candidates)
+            ->search(new SearchRequest(array('issue'), 'zebracorn'));
+
+        $this->assertSame('strict_order', $candidates->settings['semantic']);
+        $row = $this->db->fetchOne(
+            "SELECT current_setting('hnsw.iterative_scan') AS s",
+            \Phalcon\Db\Enum::FETCH_ASSOC
+        );
+        $this->assertSame('off', $row['s']);
+    }
+
     public function testLeavesOutEmbeddingsPastTheMaxDistance()
     {
         $this->embeddings->vectors['zebracorn'] = $this->vector(1);
@@ -420,13 +439,14 @@ class SearchServiceTest extends TestCase
 
     /**
      * @param float $maxDistance
+     * @param CandidateQuery|null $candidates
      * @return SearchService
      */
-    private function service($maxDistance = SemanticSearcher::DEFAULT_MAX_DISTANCE)
+    private function service($maxDistance = SemanticSearcher::DEFAULT_MAX_DISTANCE, CandidateQuery $candidates = null)
     {
         $di = \Phalcon\Di::getDefault();
         $metaManager = $di->get('metaManager');
-        $candidates = new CandidateQuery($this->db);
+        $candidates = $candidates ?? new CandidateQuery($this->db);
         $tsquery = new TextSearchQuery();
 
         return new SearchService(
@@ -553,5 +573,40 @@ class SearchTestEmbeddings extends Embeddings
         $vector[Embeddings::DIMENSIONS - 1] = 1.0;
 
         return $vector;
+    }
+}
+
+/**
+ * A candidate query that records the hnsw.iterative_scan setting the semantic candidate query runs under.
+ */
+class SearchTestSettingSpy extends CandidateQuery
+{
+    /**
+     * @var array
+     */
+    public $settings = array();
+
+    /**
+     * @var \Phalcon\Db\Adapter\AdapterInterface
+     */
+    private $connection;
+
+    public function __construct($db)
+    {
+        parent::__construct($db);
+        $this->connection = $db;
+    }
+
+    public function ids(\Gaia\Libraries\Search\SearchTarget $target, $condition, $order, array $bind, $limit)
+    {
+        $row = $this->connection->fetchOne(
+            "SELECT current_setting('hnsw.iterative_scan', true) AS s",
+            \Phalcon\Db\Enum::FETCH_ASSOC
+        );
+        if (isset($bind['search_semantic'])) {
+            $this->settings['semantic'] = $row['s'];
+        }
+
+        return parent::ids($target, $condition, $order, $bind, $limit);
     }
 }

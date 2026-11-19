@@ -38,6 +38,13 @@ class SemanticSearcher implements Searcher
     public const DEFAULT_MAX_DISTANCE = 0.5;
 
     /**
+     * The hnsw.iterative_scan mode: strict_order keeps the records in exact distance order.
+     *
+     * @var string
+     */
+    private const ITERATIVE_SCAN = 'strict_order';
+
+    /**
      * @var CandidateQuery
      */
     private $candidates;
@@ -102,13 +109,23 @@ class SemanticSearcher implements Searcher
 
         $column = $this->candidates->column(SearchBlock::EMBEDDING);
         $distance = $column . ' <=> CAST(:search_semantic AS vector)';
+        $bind = array('search_semantic' => $this->vector($query), 'search_semantic_max' => $this->maxDistance);
 
-        return $this->candidates->ids(
-            $target,
-            $column . ' IS NOT NULL AND ' . $distance . ' <= :search_semantic_max',
-            $distance,
-            array('search_semantic' => $this->vector($query), 'search_semantic_max' => $this->maxDistance),
-            $limit
+        // The scope and the maximum distance filter the HNSW scan's candidates, which stop at hnsw.ef_search;
+        // an iterative scan (pgvector 0.8) keeps scanning, nearest first, until the limit has records that pass,
+        // so nearer records out of scope do not crowd out the ones in it (up to hnsw.max_scan_tuples)
+        return $this->candidates->withSetting(
+            'hnsw.iterative_scan',
+            self::ITERATIVE_SCAN,
+            function () use ($target, $column, $distance, $bind, $limit) {
+                return $this->candidates->ids(
+                    $target,
+                    $column . ' IS NOT NULL AND ' . $distance . ' <= :search_semantic_max',
+                    $distance,
+                    $bind,
+                    $limit
+                );
+            }
         );
     }
 

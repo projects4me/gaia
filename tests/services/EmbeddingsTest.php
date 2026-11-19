@@ -80,6 +80,7 @@ class EmbeddingsTest extends TestCase
             'wrong dimensions' => [[new Response(200, [], json_encode(['embeddings' => [[0.1, 0.2]]]))], '2 dimensions'],
             'empty vector' => [[new Response(200, [], json_encode(['embeddings' => [[]]]))], '0 dimensions'],
             'non numeric' => [[new Response(200, [], json_encode(['embeddings' => [array_fill(0, 768, 'a')]]))], 'non-numeric'],
+            'out of range' => [[new Response(200, [], '{"embeddings":[[1e39' . str_repeat(',0', 767) . ']]}')], 'out of range'],
         ];
     }
 }
