@@ -25,6 +25,9 @@ define('DS', DIRECTORY_SEPARATOR);
 
 require APP_PATH . '/autoload.php';
 
+// A fatal error is not a Throwable: log it and answer a JSON 500 instead of an empty 200.
+\Gaia\Exception\FatalErrorHandler::register();
+
 /**
  * @todo Need a more appropriate place for this
  */

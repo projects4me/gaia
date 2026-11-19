@@ -12,6 +12,9 @@ define('DS', DIRECTORY_SEPARATOR);
 
 require APP_PATH . '/autoload.php';
 
+// A fatal error is not a Throwable: write it to stderr and exit non-zero.
+\Gaia\Exception\CliFatalErrorHandler::register();
+
 global $logger,$timer;
 $loggerAdapter = new StreamAdapter(APP_PATH . '/logs/application.log');
 $logger = new Logger(
