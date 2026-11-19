@@ -158,6 +158,42 @@ class MigrationDryRunTest extends TestCase
         $connection->execute('DELETE FROM "users" WHERE "id" = ?', array(1));
     }
 
+    public function testPlannedExtensionCountsAsInstalledInADryRun()
+    {
+        $plan = new Plan();
+        $handler = new Postgres();
+
+        // pg_available_extensions has vector (fetchOne total 1), pg_extension has not (total 0, so only the plan can say it is there)
+        $adapter = $this->createMock(AdapterInterface::class);
+        $adapter->method('fetchOne')->willReturnCallback(function ($sql) {
+            if (strpos($sql, 'pg_extension') === false && strpos($sql, 'pg_available_extensions') === false) {
+                return array();
+            }
+            return array('total' => strpos($sql, 'pg_available_extensions') !== false ? 1 : 0);
+        });
+        $adapter->method('escapeIdentifier')->willReturnCallback(function ($identifier) {
+            return '"' . $identifier . '"';
+        });
+        $connection = new PlanningConnection($adapter, $plan);
+
+        $handler->createExtensions($connection, array('vector'));
+        $this->assertContains('CREATE EXTENSION IF NOT EXISTS "vector"', $this->sqlOf($plan));
+
+        // does not throw "needs the PostgreSQL extension vector"
+        $handler->checkSearchSchema($connection, 'issues', array('embedding' => 'vector(3)'), array());
+        $this->addToAssertionCount(1);
+    }
+
+    public function testExtensionNotPlannedStillFailsTheCheck()
+    {
+        $adapter = $this->createMock(AdapterInterface::class);
+        $adapter->method('fetchOne')->willReturn(array('total' => 0));
+        $connection = new PlanningConnection($adapter, new Plan());
+
+        $this->expectException(\Gaia\Exception\MigrationDriver::class);
+        (new Postgres())->checkSearchSchema($connection, 'issues', array('embedding' => 'vector(3)'), array());
+    }
+
     public function testReadsGoToTheDatabase()
     {
         $adapter = $this->createMock(AdapterInterface::class);
