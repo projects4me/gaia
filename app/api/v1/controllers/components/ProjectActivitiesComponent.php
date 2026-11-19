@@ -62,7 +62,7 @@ class ProjectActivitiesComponent
         ],
         'membership' => [
             'type' => 'rel',
-            'relatedKey' => 'relatedId',
+            'relatedKey' => 'projectId',
             'afterCreate' => [
                 'messageHandler' => 'membershipCreatedActivity'
             ]
@@ -215,20 +215,30 @@ class ProjectActivitiesComponent
     }
 
     /**
-     * Generate the activity description for a created membership.
+     * Generate the activity description for a created membership. A membership
+     * has no role (roles are global, see Userrole), so the message names none.
      *
      * @param \Gaia\MVC\Models\Membership $model The model object.
      * @return string The membership created activity description.
      */
     protected function membershipCreatedActivity($model)
     {
-        $user = \Gaia\MVC\Models\User::findFirstById($model->userId);
-        $role = \Gaia\MVC\Models\Role::findFirstById($model->roleId);
+        $userName = $this->findUserName($model->userId);
 
-        $userName = $user ? $user->name : "#$model->userId";
-        $roleName = $role ? $role->name : "#$model->roleId";
+        return "New member <b>$userName</b> has been added to the project";
+    }
 
-        return "New member <b>$userName</b> has been added to the project as <b>$roleName</b>";
+    /**
+     * The name of a user, or "#<id>" when the user is not found.
+     *
+     * @param string $userId
+     * @return string
+     */
+    protected function findUserName($userId)
+    {
+        $user = \Gaia\MVC\Models\User::findFirstById($userId);
+
+        return $user ? $user->name : "#$userId";
     }
 
     /**

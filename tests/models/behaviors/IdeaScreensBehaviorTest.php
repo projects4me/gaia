@@ -153,6 +153,24 @@ class IdeaScreensBehaviorTest extends TestCase
     }
 
     /**
+     * screens is optional: a message without it is accepted on create and on
+     * update without reading the unset attribute.
+     *
+     * @return void
+     */
+    public function testMessageWithoutScreensIsAccepted()
+    {
+        $behavior = $this->behaviorFinding([]);
+        $model = $this->getMockBuilder(UnsetAttributeModelStub::class)->getMockForAbstractClass();
+        $model->ideaId = 'idea-1';
+
+        $this->assertTrue($behavior->notify('beforeValidationOnCreate', $model));
+
+        $model->snapshot = ['ideaId' => 'idea-1', 'screens' => null];
+        $this->assertTrue($behavior->notify('beforeValidationOnUpdate', $model));
+    }
+
+    /**
      * An idea message with the given screens.
      *
      * @param  string $ideaId
