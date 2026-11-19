@@ -144,6 +144,20 @@ class SearchBlockTest extends TestCase
             ],
             $metadata['indexes']
         );
+        $this->assertSame(['searchIndexBehavior'], $metadata['behaviors']);
+    }
+
+    public function testTheSemanticBehaviorIsAddedOnceAfterTheModelsOwn()
+    {
+        $metadata = self::metadata();
+        $metadata['behaviors'] = ['auditBehavior', 'searchIndexBehavior'];
+        $this->assertSame($metadata['behaviors'], SearchBlock::apply(self::MODEL, $metadata)['behaviors']);
+
+        $metadata['behaviors'] = ['auditBehavior'];
+        $this->assertSame(
+            ['auditBehavior', 'searchIndexBehavior'],
+            SearchBlock::apply(self::MODEL, $metadata)['behaviors']
+        );
     }
 
     public function testWithoutSemanticFieldsOnlyTheTsvectorIsAdded()
@@ -161,6 +175,7 @@ class SearchBlockTest extends TestCase
         $this->assertSame([], $metadata['search']['semantic']);
         $this->assertSame([], $metadata['search']['fuzzy']);
         $this->assertSame(['number'], $metadata['search']['exact']);
+        $this->assertArrayNotHasKey('behaviors', $metadata);
     }
 
     public function testTheBlockIsNormalized()
@@ -311,6 +326,7 @@ class SearchBlockTest extends TestCase
             $this->assertContains($column, $meta[MetaData::MODELS_ATTRIBUTES]);
         }
         $this->assertSame('widget', $meta['search']['type']);
+        $this->assertSame(['searchIndexBehavior'], $meta['behaviors']);
         // A record INSERT or UPDATE never writes the generated tsvector, nor the embedding, which only the indexer
         // writes: a save must not put back a stale copy.
         $skipped = [

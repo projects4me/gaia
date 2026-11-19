@@ -4005,6 +4005,18 @@
       }
     },
     {
+      "id": "behaviour:searchIndexBehavior",
+      "type": "behaviour",
+      "key": "searchIndexBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\searchIndexBehavior",
+        "file": "core/mvc/models/behaviors/searchIndexBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:serviceClientBehavior",
       "type": "behaviour",
       "key": "serviceClientBehavior",
@@ -21750,6 +21762,21 @@
       }
     },
     {
+      "id": "component:Events\\SearchLiveEvents",
+      "type": "component",
+      "key": "Events\\SearchLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\SearchLiveEvents",
+        "file": "app/api/v1/controllers/components/events/SearchLiveEvents.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "publishSemanticChanged"
+        ]
+      }
+    },
+    {
       "id": "component:Events\\Support\\EventNames",
       "type": "component",
       "key": "Events\\Support\\EventNames",
@@ -21773,7 +21800,8 @@
         "extends": null,
         "implements": [],
         "hooks": [
-          "publishDomainEvent"
+          "publishDomainEvent",
+          "wasDelivered"
         ]
       }
     },

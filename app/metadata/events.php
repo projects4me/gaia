@@ -302,13 +302,12 @@ return [
         'planned' => true,
     ],
     'search.semantic.changed' => [
-        'description' => 'A record\'s semantic search text changed; scoped to service:ares; planned, Gaia '
-            . 'does not publish it yet (agaia-4658).',
+        'description' => "A searchable record's semantic text changed; scoped to service:ares; the search type, "
+            . 'resource and record id only.',
         'scopes' => ['service'],
         'serviceKind' => 'ares',
         'channels' => ['hermes'],
         'consumers' => ['ares'],
         'enabled' => true,
-        'planned' => true,
     ],
 ];
