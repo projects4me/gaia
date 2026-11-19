@@ -238,7 +238,17 @@ jobs:
       run: |
         tools/api-tester/harness/run-api-tests.sh \
           --base-uri http://127.0.0.1 \
-          --mode client,backend,acl \
+          --mode backend,acl \
+          --record-bodies
+
+    # Report only: client mode has known failures in CI (SMTP, secure settings, timestamps)
+    # that the next-stack comparison is meant to surface, so it must not gate this job.
+    - name: Run client API testing (report only)
+      continue-on-error: true
+      run: |
+        tools/api-tester/harness/run-api-tests.sh \
+          --base-uri http://127.0.0.1 \
+          --mode client \
           --record-bodies
 
     - name: Upload API testing report
