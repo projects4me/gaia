@@ -26,6 +26,8 @@ require_once APP_PATH . '/core/libs/file/handler.php';
 
 require_once APP_PATH . '/core/libs/meta/manager.php';
 require_once APP_PATH . '/core/libs/meta/migration.php';
+require_once APP_PATH . '/core/libs/meta/migration/plan.php';
+require_once APP_PATH . '/core/libs/meta/migration/planningconnection.php';
 require_once(APP_PATH . '/core/libs/meta/migration/driver.php');
 
 require_once APP_PATH . '/core/libs/config.php';
