@@ -59,7 +59,7 @@ class TriggerPayload
     /**
      * @param ModelFieldTypes|null $fieldTypes
      */
-    public function __construct(ModelFieldTypes $fieldTypes = null)
+    public function __construct(?ModelFieldTypes $fieldTypes = null)
     {
         $this->fieldTypes = $fieldTypes ?: new ModelFieldTypes();
     }

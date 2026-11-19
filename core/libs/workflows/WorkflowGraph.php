@@ -31,7 +31,7 @@ class WorkflowGraph
     /**
      * @param NodeKindCatalog|null $catalog
      */
-    public function __construct(NodeKindCatalog $catalog = null)
+    public function __construct(?NodeKindCatalog $catalog = null)
     {
         $this->catalog = $catalog ?: new NodeKindCatalog();
     }

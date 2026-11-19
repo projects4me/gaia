@@ -56,10 +56,10 @@ class TestRunPayload
      */
     public function __construct(
         RecordEventEnvelopes $envelopes,
-        Acl $acl = null,
-        TriggerEventCatalog $events = null,
-        TriggerPayload $payloads = null,
-        WorkflowRecords $records = null
+        ?Acl $acl = null,
+        ?TriggerEventCatalog $events = null,
+        ?TriggerPayload $payloads = null,
+        ?WorkflowRecords $records = null
     ) {
         $this->envelopes = $envelopes;
         $this->acl = $acl;

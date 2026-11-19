@@ -31,7 +31,7 @@ class WorkflowWalk
     /**
      * @param WorkflowGraphReader|null $graph
      */
-    public function __construct(WorkflowGraphReader $graph = null)
+    public function __construct(?WorkflowGraphReader $graph = null)
     {
         $this->graph = $graph ?: new WorkflowGraphReader();
     }

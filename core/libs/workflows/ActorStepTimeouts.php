@@ -44,7 +44,7 @@ class ActorStepTimeouts
      * @param WaitingStepResumer $resumer
      * @param RunJournal|null    $journal
      */
-    public function __construct(ActorSteps $steps, WaitingStepResumer $resumer, RunJournal $journal = null)
+    public function __construct(ActorSteps $steps, WaitingStepResumer $resumer, ?RunJournal $journal = null)
     {
         $this->steps = $steps;
         $this->resumer = $resumer;

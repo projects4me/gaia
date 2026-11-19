@@ -40,9 +40,9 @@ class ScheduleTriggerRunner
      * @param TriggerPayload|null     $payloads
      */
     public function __construct(
-        ActiveTriggerNodes $nodes = null,
-        WorkflowEngine $engine = null,
-        TriggerPayload $payloads = null
+        ?ActiveTriggerNodes $nodes = null,
+        ?WorkflowEngine $engine = null,
+        ?TriggerPayload $payloads = null
     ) {
         $this->nodes = $nodes ?: new ActiveTriggerNodes();
         $this->engine = $engine ?: new WorkflowRunner();

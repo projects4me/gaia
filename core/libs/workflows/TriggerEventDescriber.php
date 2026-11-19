@@ -31,7 +31,7 @@ class TriggerEventDescriber
      * @param TriggerEventCatalog|null $catalog
      * @param ModelFieldTypes|null     $fieldTypes
      */
-    public function __construct(TriggerEventCatalog $catalog = null, ModelFieldTypes $fieldTypes = null)
+    public function __construct(?TriggerEventCatalog $catalog = null, ?ModelFieldTypes $fieldTypes = null)
     {
         $this->catalog = $catalog ?: new TriggerEventCatalog();
         $this->fieldTypes = $fieldTypes ?: new ModelFieldTypes();
