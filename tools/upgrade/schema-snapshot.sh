@@ -5,7 +5,8 @@
 # Prints a schema-only snapshot of a Postgres database that can be diffed against
 # another one: pg_dump --schema-only without owners, privileges, the "-- Name: ...;
 # Owner: ..." comment headers, the SET/set_config preamble and the \restrict lines
-# (whose key changes on every dump). COMMENT ON statements stay: Gaia stores the
+# (whose key changes on every dump) and the
+# ALTER TABLE ONLY ... SET (pg_attver=...) lines that an older pg_dump adds. COMMENT ON statements stay: Gaia stores the
 # search column signatures in them.
 #
 # Usage: tools/upgrade/schema-snapshot.sh <db> [output-file]
@@ -37,6 +38,7 @@ snapshot() {
         | grep -v -E '^SET [a-z_]+ = ' \
         | grep -v -E '^SELECT pg_catalog\.set_config\(' \
         | grep -v -E '^\\(un)?restrict ' \
+        | grep -v -E '^ALTER TABLE ONLY .* SET \(pg_attver=' \
         | cat -s
 }
 

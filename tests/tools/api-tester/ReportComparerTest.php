@@ -91,6 +91,16 @@ class ReportComparerTest extends TestCase
         $this->assertSame(1, $comparison->casesCompared());
     }
 
+    public function testDurationMsDifferencesAreIgnored()
+    {
+        $a = $this->recordedCase('bulk', ['responses' => [['status' => 200, 'durationMs' => 12]]]);
+        $b = $this->recordedCase('bulk', ['responses' => [['status' => 200, 'durationMs' => 345]]]);
+
+        $comparison = (new ReportComparer())->compare($this->report([$a], 'aaaa1111'), $this->report([$b], 'bbbb2222'));
+
+        $this->assertTrue($comparison->isClean(), json_encode($comparison->differences()));
+    }
+
     public function testGaiaGeneratedIdsAreIgnoredButOtherDifferencesAreReported()
     {
         $a = $this->recordedCase('issue delete', ['data' => [

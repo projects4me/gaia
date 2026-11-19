@@ -10,7 +10,7 @@ namespace ApiTester;
  * What compare-reports treats as runtime noise: values that differ between two
  * runs of the same stack without the API having changed.
  *
- * - Keys whose value is ignored (types are still compared): tokens.
+ * - Keys whose value is ignored (types are still compared): tokens and durationMs.
  * - Patterns masked inside every string value and object key: GUIDs, Gaia
  *   record ids (create_guid() makes 12-4-4-12 hex, not 8-4-4-4-12) and
  *   date-times. A masked string compares equal to any string with the same
@@ -32,6 +32,7 @@ class IgnoreList
      */
     const DEFAULT_KEYS = [
         '/token/i',
+        '/^durationMs$/',
     ];
 
     /**
