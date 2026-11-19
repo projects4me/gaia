@@ -7973,7 +7973,7 @@
           "data.attributes.likeCount": 2,
           "data.attributes.agreeCount": 2,
           "data.attributes.disagreeCount": 1,
-          "data.attributes.lastCommentDate": "2026-01-02 12:00:00+00",
+          "data.attributes.lastCommentDate": "2026-01-02 12:00:00",
           "data.attributes.projectId": "{projectId}"
         }
       }
