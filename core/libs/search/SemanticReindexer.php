@@ -153,15 +153,15 @@ class SemanticReindexer
                     continue;
                 }
                 $hash = SemanticText::hashOf($text);
-                if ($row[SearchBlock::SEMANTIC_HASH] !== $hash) {
-                    if (!$this->records->store($table, $row['id'], $text, $hash, $row[SearchBlock::SEMANTIC_HASH])) {
+                if ($row[SearchBlock::DESIRED_HASH] !== $hash) {
+                    if (!$this->records->store($table, $row['id'], $text, $hash, $row[SearchBlock::DESIRED_HASH])) {
                         // Saved since the page was read: the save stored its text and announced it
                         $counts['skipped']++;
                         continue;
                     }
                     $counts['updated']++;
                 }
-                if ($row[SearchBlock::EMBEDDING_HASH] !== $hash) {
+                if ($row[SearchBlock::ACTUAL_HASH] !== $hash) {
                     $published = $this->events->publishSemanticChanged($block['type'], $resource, $row['id']) !== null;
                     $counts[$published ? 'published' : 'failed']++;
                     ($this->pause)();

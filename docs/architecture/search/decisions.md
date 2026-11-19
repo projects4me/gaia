@@ -71,7 +71,7 @@ stored search columns, semantic embedding and ranking.
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | When a record's semantic text changes Gaia announces `search.semantic.changed`; Ares computes the embedding and stores it only if the hash it embedded still equals the stored hash. The reindex re-announces every record whose embedding is missing or was made from another text. |
+| Decision | When a record's semantic text changes Gaia announces `search.semantic.changed`; Ares computes the embedding and stores it only if the hash it embedded still equals the stored hash. Each record keeps two hashes: `searchDesiredHash`, of its current semantic text, and `searchActualHash`, of the text its stored embedding was made from; a record needs embedding when `searchActualHash` is null or differs from `searchDesiredHash`. The reindex re-announces every record whose embedding is missing or was made from another text. |
 | Why | Embedding is slow and belongs to Ares. Hermes keeps no history, so events missed while Ares was down are recovered by the reindex. A late embedding of old text must not overwrite a newer one. |
 | Consequences | Semantic matching is eventually consistent: a record whose embedding is not stored yet is not a semantic candidate. Search uses the embeddings as D-008 describes. |
 

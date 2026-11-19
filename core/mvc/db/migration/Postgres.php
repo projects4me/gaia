@@ -43,6 +43,7 @@ class Postgres
 
     /**
      * This function syncs existing tables without recreating them:
+     * - renames a column whose metadata names its previous name, keeping its values
      * - adds missing columns
      * - drops columns that are no longer present in metadata
      * - changes the length of varchar columns whose metadata length differs
@@ -54,18 +55,25 @@ class Postgres
      * @param Column[] $columns Expected column definitions from metadata
      * @param array $indexes Optional metadata indexes map (field => type)
      * @param array $searchColumns Column name => definition from searchColumnDefinition()
+     * @param array $renames Column name => its previous name, from the field's renamedFrom
      */
-    public function syncExistingTable($connection, $tableName, array $columns, array $indexes = [], array $searchColumns = [])
-    {
+    public function syncExistingTable(
+        $connection,
+        $tableName,
+        array $columns,
+        array $indexes = [],
+        array $searchColumns = [],
+        array $renames = []
+    ) {
         $existingColumns = $connection->describeColumns($tableName);
         $existingByName = array();
-        $existingNames = array();
         $expectedNames = array();
 
         foreach ($existingColumns as $column) {
-            $existingNames[] = $column->getName();
             $existingByName[$column->getName()] = $column;
         }
+        $existingByName = $this->renameColumns($connection, $tableName, $existingByName, $renames);
+        $existingNames = array_keys($existingByName);
 
         foreach ($columns as $column) {
             $expectedNames[] = $column->getName();
@@ -92,6 +100,35 @@ class Postgres
         }
 
         $this->syncSearchSchema($connection, $tableName, $searchColumns, $indexes);
+    }
+
+    /**
+     * This function renames each column still under its previous name, so its values are kept rather than dropped
+     * with the old column and re-added empty. A table that already has the new name is left alone: the old column,
+     * if it is still there, is then dropped with the other columns metadata no longer names.
+     *
+     * @param SchemaConnection $connection
+     * @param string $tableName
+     * @param Column[] $existingByName Column name => existing column
+     * @param array $renames Column name => its previous name
+     * @return Column[] The existing columns keyed by their names after the renames
+     */
+    private function renameColumns($connection, $tableName, array $existingByName, array $renames)
+    {
+        foreach ($renames as $name => $previous) {
+            if (!isset($existingByName[$previous]) || isset($existingByName[$name])) {
+                continue;
+            }
+            $connection->execute(
+                'ALTER TABLE ' . $connection->escapeIdentifier($tableName)
+                . ' RENAME COLUMN ' . $connection->escapeIdentifier($previous)
+                . ' TO ' . $connection->escapeIdentifier($name)
+            );
+            $existingByName[$name] = $existingByName[$previous];
+            unset($existingByName[$previous]);
+        }
+
+        return $existingByName;
     }
 
     /**

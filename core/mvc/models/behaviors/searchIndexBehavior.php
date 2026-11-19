@@ -20,7 +20,7 @@ use Phalcon\Mvc\Model\Behavior;
  * semantic fields, so every save path (REST, MCP, workflows, CLI) is covered.
  *
  * Before a create, and before an update that changed a semantic field, it
- * sets searchSemanticText and searchSemanticHash. After the save it publishes
+ * sets searchSemanticText and searchDesiredHash. After the save it publishes
  * search.semantic.changed when the hash changed. The embedding columns are not
  * written by the ORM, so the indexer's write never triggers it.
  *
@@ -102,7 +102,7 @@ class searchIndexBehavior extends Behavior implements BehaviorInterface
         try {
             $text = SemanticText::forBlock($block)->text($model);
             $model->{SearchBlock::SEMANTIC_TEXT} = $text;
-            $model->{SearchBlock::SEMANTIC_HASH} = SemanticText::hashOf($text);
+            $model->{SearchBlock::DESIRED_HASH} = SemanticText::hashOf($text);
         } catch (\Throwable $e) {
             $this->clear($model);
             if ($logger) {
@@ -120,7 +120,7 @@ class searchIndexBehavior extends Behavior implements BehaviorInterface
     private function clear($model)
     {
         $model->{SearchBlock::SEMANTIC_TEXT} = null;
-        $model->{SearchBlock::SEMANTIC_HASH} = null;
+        $model->{SearchBlock::DESIRED_HASH} = null;
     }
 
     /**
@@ -191,7 +191,7 @@ class searchIndexBehavior extends Behavior implements BehaviorInterface
     }
 
     /**
-     * Whether the update changed the semantic hash. Saving refreshes the
+     * Whether the update changed the desired hash. Saving refreshes the
      * snapshot before afterUpdate, so the stored hash is in the old one;
      * without it the hash counts as changed (Ares skips a text it embedded).
      *
@@ -204,8 +204,8 @@ class searchIndexBehavior extends Behavior implements BehaviorInterface
         if (!is_array($old) || empty($old)) {
             return true;
         }
-        $before = isset($old[SearchBlock::SEMANTIC_HASH]) ? $old[SearchBlock::SEMANTIC_HASH] : null;
-        $after = isset($model->{SearchBlock::SEMANTIC_HASH}) ? $model->{SearchBlock::SEMANTIC_HASH} : null;
+        $before = isset($old[SearchBlock::DESIRED_HASH]) ? $old[SearchBlock::DESIRED_HASH] : null;
+        $after = isset($model->{SearchBlock::DESIRED_HASH}) ? $model->{SearchBlock::DESIRED_HASH} : null;
 
         return !self::sameValue($before, $after);
     }
@@ -222,7 +222,7 @@ class searchIndexBehavior extends Behavior implements BehaviorInterface
         global $logger;
 
         try {
-            if (empty($model->{SearchBlock::SEMANTIC_HASH})) {
+            if (empty($model->{SearchBlock::DESIRED_HASH})) {
                 return;
             }
             $this->getEvents()->publishSemanticChanged(

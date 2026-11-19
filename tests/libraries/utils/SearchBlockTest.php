@@ -37,9 +37,9 @@ class SearchBlockTest extends TestCase
     const SEARCH_COLUMNS = [
         'searchVector',
         'searchSemanticText',
-        'searchSemanticHash',
+        'searchDesiredHash',
         'searchEmbedding',
-        'searchEmbeddingHash',
+        'searchActualHash',
         'searchEmbeddedAt',
     ];
 
@@ -125,14 +125,14 @@ class SearchBlockTest extends TestCase
         );
         $this->assertSame('text', $metadata['fields']['searchSemanticText']['type']);
         $this->assertSame(['varchar', '64'], [
-            $metadata['fields']['searchSemanticHash']['type'],
-            $metadata['fields']['searchSemanticHash']['length'],
+            $metadata['fields']['searchDesiredHash']['type'],
+            $metadata['fields']['searchDesiredHash']['length'],
         ]);
         $this->assertSame(['vector', 768], [
             $metadata['fields']['searchEmbedding']['type'],
             $metadata['fields']['searchEmbedding']['dimensions'],
         ]);
-        $this->assertSame('64', $metadata['fields']['searchEmbeddingHash']['length']);
+        $this->assertSame('64', $metadata['fields']['searchActualHash']['length']);
         $this->assertSame('datetime', $metadata['fields']['searchEmbeddedAt']['type']);
         $this->assertSame(
             [
@@ -172,8 +172,8 @@ class SearchBlockTest extends TestCase
             'actions' => ['get', 'update'],
             'kinds' => ['ares'],
             'filter' => 'CAST(' . self::MODEL . '.deleted AS INTEGER) = 0',
-            'fields' => ['searchEmbedding', 'searchEmbeddingHash'],
-            'systemFields' => ['searchSemanticText', 'searchSemanticHash', 'searchEmbeddingHash', 'searchEmbeddedAt'],
+            'fields' => ['searchEmbedding', 'searchActualHash'],
+            'systemFields' => ['searchSemanticText', 'searchDesiredHash', 'searchActualHash', 'searchEmbeddedAt'],
             'ignoreGroups' => true,
         ], $acl['service']);
     }
@@ -366,7 +366,7 @@ class SearchBlockTest extends TestCase
         $skipped = [
             'searchVector' => true,
             'searchEmbedding' => true,
-            'searchEmbeddingHash' => true,
+            'searchActualHash' => true,
             'searchEmbeddedAt' => true,
         ];
         $this->assertSame($skipped, $meta[MetaData::MODELS_AUTOMATIC_DEFAULT_INSERT]);
@@ -437,9 +437,9 @@ class Agaia4655Widget
     public $audit;
     public $searchVector = 'New';
     public $searchSemanticText = 'New';
-    public $searchSemanticHash = 'New';
+    public $searchDesiredHash = 'New';
     public $searchEmbedding = 'New';
-    public $searchEmbeddingHash = 'New';
+    public $searchActualHash = 'New';
     public $searchEmbeddedAt = 'New';
     private $di;
     private $changedFields;

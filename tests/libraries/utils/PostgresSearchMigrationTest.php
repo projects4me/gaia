@@ -267,22 +267,7 @@ class PostgresSearchMigrationTest extends TestCase
         $skipped = (new Postgres())->createExtensions($this->db, array('vector', 'pg_trgm'));
         $this->assertNotContains('pg_trgm', $skipped);
         $withVector = !in_array('vector', $skipped, true);
-        $model = array(
-            'tableName' => self::TABLE,
-            'fields' => array(
-                'id' => array('name' => 'id', 'type' => 'char', 'length' => 36, 'null' => false),
-                'subject' => array('name' => 'subject', 'type' => 'varchar', 'length' => 255, 'null' => true),
-                'description' => array('name' => 'description', 'type' => 'text', 'null' => true),
-            ),
-            'indexes' => array('id' => 'primary'),
-            'search' => array(
-                'type' => 'fixture',
-                'fts' => array('subject' => 'A', 'description' => 'B'),
-                'fuzzy' => array('subject'),
-                'semantic' => array('subject', 'description'),
-                'display' => array('title' => 'subject'),
-            ),
-        );
+        $model = $this->searchBlockModel();
         if (!$withVector) {
             unset($model['search']['semantic']);
         }
@@ -300,13 +285,78 @@ class PostgresSearchMigrationTest extends TestCase
             return;
         }
         $this->assertSame('text', $this->columnType('searchSemanticText'));
-        $this->assertSame('character varying(64)', $this->columnType('searchSemanticHash'));
+        $this->assertSame('character varying(64)', $this->columnType('searchDesiredHash'));
         $this->assertSame('vector(768)', $this->columnType('searchEmbedding'));
-        $this->assertSame('character varying(64)', $this->columnType('searchEmbeddingHash'));
+        $this->assertSame('character varying(64)', $this->columnType('searchActualHash'));
         $this->assertStringStartsWith('timestamp', $this->columnType('searchEmbeddedAt'));
         $this->assertStringContainsString(
             'USING hnsw ("searchEmbedding" vector_cosine_ops)',
             $this->indexDefinition('searchEmbedding')
+        );
+    }
+
+    public function testAnExistingTableRenamesTheHashColumnsInPlace()
+    {
+        $skipped = (new Postgres())->createExtensions($this->db, array('vector', 'pg_trgm'));
+        if (in_array('vector', $skipped, true)) {
+            $this->markTestSkipped('The vector extension is not available');
+        }
+        $meta = $this->migrationMetaData('TestSearchFixture', $this->searchBlockModel());
+        $this->migrate($meta);
+        // The table as it was before agaia-4747, holding an embedding and both hashes.
+        $this->db->execute(
+            'ALTER TABLE "' . self::TABLE . '" RENAME COLUMN "searchDesiredHash" TO "searchSemanticHash"'
+        );
+        $this->db->execute(
+            'ALTER TABLE "' . self::TABLE . '" RENAME COLUMN "searchActualHash" TO "searchEmbeddingHash"'
+        );
+        $embedding = '[' . implode(',', array_fill(0, 768, 0.25)) . ']';
+        $this->db->execute(
+            'INSERT INTO "' . self::TABLE . '" ("id", "subject", "searchSemanticHash", "searchEmbedding", '
+            . '"searchEmbeddingHash") VALUES (?, ?, ?, CAST(? AS vector), ?)',
+            array('a', 'Subject', 'desired', $embedding, 'actual')
+        );
+
+        $this->migrate($meta);
+        $this->migrate($meta);
+
+        $this->assertFalse($this->column('searchSemanticHash'));
+        $this->assertFalse($this->column('searchEmbeddingHash'));
+        $this->assertSame('character varying(64)', $this->columnType('searchDesiredHash'));
+        $this->assertSame('character varying(64)', $this->columnType('searchActualHash'));
+        $row = $this->db->fetchOne(
+            'SELECT "searchDesiredHash", "searchActualHash", "searchEmbedding"::text AS "embedding" FROM "'
+            . self::TABLE . '" WHERE "id" = ?',
+            \PDO::FETCH_ASSOC,
+            array('a')
+        );
+        $this->assertSame('desired', $row['searchDesiredHash']);
+        $this->assertSame('actual', $row['searchActualHash']);
+        $this->assertSame(768, count(explode(',', $row['embedding'])));
+    }
+
+    /**
+     * Raw metadata of a fixture model with a search block that has semantic fields.
+     *
+     * @return array
+     */
+    private function searchBlockModel()
+    {
+        return array(
+            'tableName' => self::TABLE,
+            'fields' => array(
+                'id' => array('name' => 'id', 'type' => 'char', 'length' => 36, 'null' => false),
+                'subject' => array('name' => 'subject', 'type' => 'varchar', 'length' => 255, 'null' => true),
+                'description' => array('name' => 'description', 'type' => 'text', 'null' => true),
+            ),
+            'indexes' => array('id' => 'primary'),
+            'search' => array(
+                'type' => 'fixture',
+                'fts' => array('subject' => 'A', 'description' => 'B'),
+                'fuzzy' => array('subject'),
+                'semantic' => array('subject', 'description'),
+                'display' => array('title' => 'subject'),
+            ),
         );
     }
 
@@ -368,7 +418,8 @@ class PostgresSearchMigrationTest extends TestCase
                 self::TABLE,
                 $definition['columns'],
                 $indexes,
-                $definition['searchColumns']
+                $definition['searchColumns'],
+                $definition['renames']
             );
             return;
         }

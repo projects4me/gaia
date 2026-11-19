@@ -17,7 +17,7 @@ namespace Gaia\Libraries\Security;
  *         'kinds' => array('runtime'),        // service kinds (config/serviceclients.php)
  *         'filter' => 'Agent.delegable = 1',  // optional PHQL condition on the rows
  *         'fields' => array('rotateSecret'),  // fields services may write
- *         'systemFields' => array('searchSemanticHash'), // system fields services may read
+ *         'systemFields' => array('searchDesiredHash'), // system fields services may read
  *         'ignoreGroups' => true,             // its authorization groups need not be open to services
  *         'scopes' => array('update' => 'serviceclient.rotate'), // dedicated scope per action
  *     ),

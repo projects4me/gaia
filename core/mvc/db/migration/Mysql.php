@@ -55,9 +55,16 @@ class Mysql
      * @param Column[] $columns Expected column definitions from metadata
      * @param array $indexes Optional metadata indexes map (field => type)
      * @param array $searchColumns Unused: MySQL has no search columns
+     * @param array $renames Unused: the table is left as it is
      */
-    public function syncExistingTable($connection, $tableName, array $columns, array $indexes = [], array $searchColumns = [])
-    {
+    public function syncExistingTable(
+        $connection,
+        $tableName,
+        array $columns,
+        array $indexes = [],
+        array $searchColumns = [],
+        array $renames = []
+    ) {
     }
 
     /**

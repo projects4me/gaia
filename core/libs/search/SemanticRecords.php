@@ -49,7 +49,7 @@ class SemanticRecords
      */
     public function page($table, array $fields, $afterId, $limit)
     {
-        $columns = array_merge(array('id'), $fields, array(SearchBlock::SEMANTIC_HASH, SearchBlock::EMBEDDING_HASH));
+        $columns = array_merge(array('id'), $fields, array(SearchBlock::DESIRED_HASH, SearchBlock::ACTUAL_HASH));
 
         return $this->db()->fetchAll(
             'SELECT ' . implode(', ', array_map(array($this, 'quote'), array_unique($columns)))
@@ -76,8 +76,8 @@ class SemanticRecords
         $db = $this->db();
         $db->execute(
             'UPDATE ' . $this->quote($table) . ' SET ' . $this->quote(SearchBlock::SEMANTIC_TEXT) . ' = ?, '
-            . $this->quote(SearchBlock::SEMANTIC_HASH) . ' = ? WHERE "id" = ? AND '
-            . $this->quote(SearchBlock::SEMANTIC_HASH) . ' IS NOT DISTINCT FROM ?',
+            . $this->quote(SearchBlock::DESIRED_HASH) . ' = ? WHERE "id" = ? AND '
+            . $this->quote(SearchBlock::DESIRED_HASH) . ' IS NOT DISTINCT FROM ?',
             array((string) $text, (string) $hash, (string) $id, $readHash === null ? null : (string) $readHash)
         );
 
