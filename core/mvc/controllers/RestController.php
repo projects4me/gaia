@@ -15,6 +15,9 @@ use Phalcon\Events\ManagerInterface as EventsManagerInterface;
 use Gaia\Libraries\Utils\Csv;
 use Gaia\Libraries\Utils\Zip;
 use Gaia\Core\MVC\Models\ResultStream;
+use Gaia\Core\MVC\Models\Query\CountParam;
+use Gaia\Core\MVC\Models\Query\RelationshipValidator;
+use Gaia\Core\MVC\Models\Query\WhereFieldValidator;
 use Gaia\Libraries\Security\AclLockoutGuard;
 use Gaia\Libraries\Security\ServiceAcl;
 use Gaia\Libraries\Security\ServiceClientGuard;
@@ -37,6 +40,11 @@ use function Gaia\Libraries\Utils\create_guid;
  */
 class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\EventsAwareInterface
 {
+    /**
+     * The `rels` value that asks for no relationships; it reads as an empty list.
+     */
+    const RELS_NONE = 'none';
+
     /**
      * Model's name is registered from controller via parameter
      *
@@ -496,11 +504,38 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         }
 
         $rels = array_map('trim', $rels);
+        // `rels=none` asks for no relationships, which is what an empty list gives.
         $rels = array_filter($rels, function ($rel) {
-            return $rel !== '';
+            return $rel !== '' && $rel !== self::RELS_NONE;
         });
+        $rels = array_values(array_unique($rels));
 
-        return array_values(array_unique($rels));
+        if (!empty($this->modelName)) {
+            (new RelationshipValidator($this->getDI()))
+                ->assertKnown($rels, Util::extractClassFromNamespace($this->modelName));
+        }
+
+        return $rels;
+    }
+
+    /**
+     * Reject a `count` list parameter the query cannot use (see CountParam).
+     *
+     * @param  mixed  $count      The `count` request parameter; empty when not given.
+     * @param  mixed  $groupBy    The `group` request parameter.
+     * @param  string $modelAlias Alias of the listed model.
+     * @return void
+     * @throws \Gaia\Exception\BadRequest
+     */
+    protected function assertCountParam($count, $groupBy, $modelAlias)
+    {
+        if ($count === '' || $count === null) {
+            return;
+        }
+
+        $countParam = CountParam::parse($count);
+        $countParam->assertGroupedBy($groupBy, $modelAlias);
+        (new WhereFieldValidator($this->getDI()))->assertValid($countParam->getField(), $modelAlias);
     }
 
     /**
@@ -736,9 +771,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             'addRelFields' => $addRelFields
         );
 
+        $modelAlias = Util::extractClassFromNamespace($modelName);
+        $this->assertCountParam($count, $groupBy, $modelAlias);
+
         $params = $export ? $this->updateParamsForExport($params) : $params;
 
-        $modelAlias = Util::extractClassFromNamespace($modelName);
         if ($this->getDI()->has('acl')) {
             $this->getDI()->get('acl')->applyRecordScope($modelAlias, $params);
         }

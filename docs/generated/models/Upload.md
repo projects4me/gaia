@@ -31,4 +31,4 @@
 - controller: Gaia\MVC\REST\Controllers\UploadController
 - routes: DELETE /api/v1/upload, DELETE /api/v1/upload/{id}, GET /api/v1/upload, GET /api/v1/upload/{id}, GET /api/v1/upload/{id}/{relation}, OPTIONS /api/v1/upload, PATCH /api/v1/upload, PATCH /api/v1/upload/{id}, POST /api/v1/upload, PUT /api/v1/upload, PUT /api/v1/upload/{id}
 - components: Fileattachment, Filethumb
-- cases: 9 (acl 8, backend 1); gaia-dev cases upload
+- cases: 10 (acl 8, backend 1, client 1); gaia-dev cases upload
