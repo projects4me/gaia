@@ -11,6 +11,12 @@ Both stacks are built and published from `projects4me/docker-images` (`gaia/env`
 
 CI pulls them and tags them locally as `gaia-env:current` and `gaia-env:next`. The recipe and build script live in `projects4me/docker-images/gaia/env`.
 
+### Deploys
+
+The deploy image (`docker/dev/Dockerfile`, `ARG ENV_IMAGE`) and the local compose image (root `Dockerfile`) are built on `ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2` (still PHP 7.4), no longer on `rananoman/gaia:env-dev`. The image is public, so `cd-ovh.yml` needs no GHCR login. The switch-over to PHP 8.5 now only changes this tag (to `8.5.12-phalcon5.23.0`).
+
+Rollback: revert the PR, so the next deploy builds on `rananoman/gaia:env-dev` again. For an immediate fix, run `helm upgrade` with `--set image.tag=<previous branch tag>`.
+
 ## Schema snapshots
 
 `tools/upgrade/schema-snapshot.sh <db> [output-file]` prints `pg_dump --schema-only` without owners, privileges,
