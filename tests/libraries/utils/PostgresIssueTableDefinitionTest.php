@@ -27,7 +27,7 @@ class PostgresIssueTableDefinitionTest extends TestCase
     protected function setUp(): void
     {
         if (!class_exists(\Phalcon\Di\FactoryDefault::class) || !class_exists(Migration::class)) {
-            $this->markTestSkipped('Phalcon migrations are not available in this PHP runtime');
+            $this->markTestSkipped('Phalcon is not available in this PHP runtime');
         }
     }
 

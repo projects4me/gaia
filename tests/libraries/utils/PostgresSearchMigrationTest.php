@@ -33,7 +33,7 @@ class PostgresSearchMigrationTest extends TestCase
     protected function setUp(): void
     {
         if (!class_exists(\Phalcon\Di\FactoryDefault::class) || !class_exists(Migration::class)) {
-            $this->markTestSkipped('Phalcon migrations are not available in this PHP runtime');
+            $this->markTestSkipped('Phalcon is not available in this PHP runtime');
         }
         $db = \Phalcon\Di::getDefault()->getShared('db');
         if ($db->getType() !== 'pgsql') {
@@ -335,7 +335,7 @@ class PostgresSearchMigrationTest extends TestCase
 
     /**
      * Runs the Postgres migration steps for the fixture: create the table when it
-     * is missing (as morphTable does), otherwise sync it.
+     * is missing (as Migration::migrateTable does), otherwise sync it.
      *
      * @param array $meta
      * @return void

@@ -6,7 +6,6 @@
 
 namespace Gaia\Db\Migration;
 
-use Gaia\Db\Factory\AdapterConfig;
 use Phalcon\Db\Column;
 
 /**
@@ -20,21 +19,7 @@ use Phalcon\Db\Column;
 class Mysql
 {
     /**
-     * This function prepares the application database config for Phalcon migrations.
-     *
-     * @param array $config Merged application database configuration
-     * @return array Configuration accepted by Phalcon migration setup
-     */
-    public function prepareMigrationConfig(array $config)
-    {
-        $config = AdapterConfig::withoutConnectionMeta($config);
-        $config['adapter'] = 'mysql';
-
-        return $config;
-    }
-
-    /**
-     * This function returns table options passed to Phalcon morphTable.
+     * This function returns table options passed to the adapter's createTable().
      *
      * @return array
      */
@@ -50,7 +35,7 @@ class Mysql
 
     /**
      * This function determines whether an existing table should be synced incrementally
-     * instead of using morphTable.
+     * instead of being created.
      *
      * @param \Phalcon\Db\AdapterInterface $connection Active database connection
      * @param string $tableName Table name from model metadata
@@ -58,11 +43,12 @@ class Mysql
      */
     public function shouldSyncExistingTableOnly($connection, $tableName)
     {
-        return false;
+        return $connection->tableExists($tableName);
     }
 
     /**
-     * This function syncs schema changes on an existing table without morphTable.
+     * This function leaves an existing MySQL table as it is: since phalcon/migrations was
+     * removed, migrate only creates missing MySQL tables and no longer alters existing ones.
      *
      * @param \Phalcon\Db\AdapterInterface $connection Active database connection
      * @param string $tableName Table name from model metadata
