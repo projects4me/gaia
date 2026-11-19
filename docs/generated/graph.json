@@ -18618,6 +18618,24 @@
       }
     },
     {
+      "id": "case:client/search-without-ares-reports-semantic-unavailable",
+      "type": "case",
+      "key": "client/search-without-ares-reports-semantic-unavailable",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/serviceclient-patch-bad-status-rejected",
       "type": "case",
       "key": "client/serviceclient-patch-bad-status-rejected",
@@ -75541,6 +75559,46 @@
       "from": "case:client/search-unknown-type-rejected",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/search-without-ares-reports-semantic-unavailable",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/search-without-ares-reports-semantic-unavailable",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/search-without-ares-reports-semantic-unavailable",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/search-without-ares-reports-semantic-unavailable",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/search-without-ares-reports-semantic-unavailable",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:client/search-without-ares-reports-semantic-unavailable",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:client/search-without-ares-reports-semantic-unavailable",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/search-without-ares-reports-semantic-unavailable",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
     },
     {
       "from": "case:client/serviceclient-patch-bad-status-rejected",

@@ -16,7 +16,8 @@ use Gaia\Libraries\Security\Acl;
  * Each type needs <module>.get (a denied type denies the whole request, as unauthorized query criteria do, D-027).
  * Every candidate query stays inside the module's record scope and deleted = 0 before ranking and LIMIT (D-022).
  * A searcher is skipped for a type when the user may not read a field it matches, and a display field the user may
- * not read is left out of the results.
+ * not read is left out of the results. A searcher whose service is down (semantic without Ares) is left out of the
+ * search, logged and reported unavailable in the results, so they are never a silent partial answer.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -98,7 +99,7 @@ class SearchService
      * This function searches the requested types and returns the results, best first.
      *
      * @param SearchRequest $request
-     * @return array Each ['type', 'id', 'title' (when readable), 'snippet' (when readable), 'score', 'matchedBy']
+     * @return SearchResults
      * @throws \Gaia\Exception\BadRequest When a type is not searchable
      * @throws \Gaia\Exception\Access When the user may not get a type
      */
@@ -117,14 +118,21 @@ class SearchService
 
         $targets = array();
         $rankings = array();
+        $unavailable = array();
         $depth = $request->limit() * self::CANDIDATE_FACTOR;
         foreach ($entries as $type => $entry) {
             $targets[$type] = $this->target($entry);
             foreach ($this->searchers as $searcher) {
-                if (!$this->mayMatch($targets[$type], $searcher)) {
+                if (in_array($searcher->kind(), $unavailable, true) || !$this->mayMatch($targets[$type], $searcher)) {
                     continue;
                 }
-                $ids = $searcher->rank($targets[$type], $request->query(), $depth);
+                try {
+                    $ids = $searcher->rank($targets[$type], $request->query(), $depth);
+                } catch (SearcherUnavailableException $e) {
+                    $this->logUnavailable($searcher->kind(), $e);
+                    $unavailable[] = $searcher->kind();
+                    continue;
+                }
                 $rankings[] = array(
                     'kind' => $searcher->kind(),
                     'keys' => array_map(function ($id) use ($type) {
@@ -136,7 +144,20 @@ class SearchService
 
         $fused = array_slice($this->fusion->fuse($rankings), 0, $request->limit());
 
-        return $this->results($fused, $targets, $request->query());
+        return new SearchResults($this->results($fused, $targets, $request->query()), $unavailable);
+    }
+
+    /**
+     * @param string $kind
+     * @param SearcherUnavailableException $e
+     * @return void
+     */
+    private function logUnavailable($kind, SearcherUnavailableException $e)
+    {
+        global $logger;
+        if ($logger) {
+            $logger->error("Gaia.Search.SearchService: {$kind} matching is unavailable: " . $e->getMessage());
+        }
     }
 
     /**
