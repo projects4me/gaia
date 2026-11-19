@@ -31,6 +31,8 @@ class ServiceFactory
         switch ($serviceName) {
             case 'llm':
                 return new LLM();
+            case 'embeddings':
+                return new Embeddings();
             default:
                 throw new \Exception("Invalid service name: " . $serviceName);
         }
