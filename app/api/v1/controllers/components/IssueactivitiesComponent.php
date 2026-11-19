@@ -57,7 +57,7 @@ class IssueactivitiesComponent
         global $logger;
         $logger->debug('Gaia.Controller.Component.Issueactivities::afterCreate()');
 
-        $logger->debug($model->id);
+        $logger->debug((string) $model->id);
         if (isset($model->id)){
             $activity = new Activity();
             $activity->id = create_guid();

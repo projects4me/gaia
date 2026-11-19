@@ -60,7 +60,7 @@ class modifiedUserBehavior extends Behavior implements BehaviorInterface
         $model->modifiedUser = $currentUser->id;
         $model->modifiedUserName = $currentUser->name;
 
-        $logger->debug($model->modifiedUserName);
+        $logger->debug((string) $model->modifiedUserName);
     }
 
     /**
