@@ -98,14 +98,14 @@ class WorkflowRunner implements WorkflowEngine, WaitingStepResumer
      * @param WorkflowRunEvents|null    $runEvents Told when a run completes or fails; none when null.
      */
     public function __construct(
-        WorkflowChangeEvents $events = null,
-        WorkflowGraphReader $graph = null,
-        RunJournal $journal = null,
-        ActionCatalog $actions = null,
-        UserSelector $users = null,
-        ActorCatalog $actors = null,
-        AgentRunRequests $requests = null,
-        WorkflowRunEvents $runEvents = null
+        ?WorkflowChangeEvents $events = null,
+        ?WorkflowGraphReader $graph = null,
+        ?RunJournal $journal = null,
+        ?ActionCatalog $actions = null,
+        ?UserSelector $users = null,
+        ?ActorCatalog $actors = null,
+        ?AgentRunRequests $requests = null,
+        ?WorkflowRunEvents $runEvents = null
     ) {
         $users = $users ?: new UserSelector();
         $this->expressions = new ExpressionResolver($users->functions());

@@ -61,10 +61,10 @@ class WorkflowTestRun
      * @param ConditionEvaluator|null  $conditions
      */
     public function __construct(
-        WorkflowGraphReader $graph = null,
-        NodeKindCatalog $kinds = null,
-        ExpressionResolver $expressions = null,
-        ConditionEvaluator $conditions = null
+        ?WorkflowGraphReader $graph = null,
+        ?NodeKindCatalog $kinds = null,
+        ?ExpressionResolver $expressions = null,
+        ?ConditionEvaluator $conditions = null
     ) {
         $this->graph = $graph ?: new WorkflowGraphReader();
         $this->walk = new WorkflowWalk($this->graph);

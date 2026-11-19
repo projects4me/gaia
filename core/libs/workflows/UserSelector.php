@@ -29,7 +29,7 @@ class UserSelector
     /**
      * @param ProjectMembers|null $members
      */
-    public function __construct(ProjectMembers $members = null)
+    public function __construct(?ProjectMembers $members = null)
     {
         $this->members = $members ?: new ProjectMembers();
     }
