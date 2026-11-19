@@ -6,7 +6,7 @@ Notes for the move from PHP 7.4 / Phalcon 4.1 to PHP 8.5 / Phalcon 5.23. Later i
 
 Both stacks are built from one recipe, `docker/env/Dockerfile` (see `docker/env/README.md`):
 
-- `gaia-env:current`: PHP 7.4.21, Phalcon 4.1.2 (with psr), Debian 10. Same stack as `rananoman/gaia:env-dev`.
+- `gaia-env:current`: PHP 7.4.21, Phalcon 4.1.2 (with psr), Debian 10. Same stack as `rananoman/gaia:env-dev`; CI builds it from the repo (see below).
 - `gaia-env:next`: PHP 8.5.12, Phalcon 5.23.0 (no psr), xdebug 3.5.3, xhprof 2.3.10.
 
 Build with `docker/env/build.sh`. Switching Dockerfiles, compose and CI to these images is a separate step.
@@ -106,6 +106,10 @@ check step has `continue-on-error`, so the job stays green when something fails 
 shows in the summary instead; the job only fails when the image or container can't be set up. It records each
 check step's outcome in `upgrade/steps.txt` and uploads everything as the `upgrade-next` artifact. `api-testing`
 uploads its schema snapshot and api-tester reports (with bodies) as `upgrade-current`.
+
+The blocking `graph-drift` and `api-testing` jobs build `gaia-env:current` the same way (the `build_current` args, layer cache scope
+`gaia-env-current`), start it as the `gaia-current` container and run their steps inside it, so a stack change only
+changes build args. `upgrade-report` and `cache-dependencies.yml` still use `rananoman/gaia:env-dev` (php only).
 
 Both stacks must use the same Postgres image, `pgvector/pgvector:pg16`: the `issues` table needs the `vector`
 extension (Issue search), and plain `postgres` images don't have it, so `migrate` would fail on the next stack.

@@ -4,12 +4,6 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
-# The image both jobs run in. It is part of the vendor cache key, so a new image
-# (e.g. the PHP 8.5 one) never reuses vendor built for another PHP. Keep each
-# job's container.image equal to it: container.image cannot read env.
-env:
-  GAIA_IMAGE: rananoman/gaia:env-dev
-
 jobs:
 
   graph-drift:
@@ -17,26 +11,57 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        shell: bash
-
-    container:
-      image: rananoman/gaia:env-dev
+        # Runs each step's script in the gaia-current container (RUNNER_TEMP is mounted at the same path).
+        shell: >-
+          docker exec -e GITHUB_WORKSPACE
+          gaia-current bash --noprofile --norc -eo pipefail {0}
 
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # Keep the build args equal to build_current in docker/env/build.sh.
+    - name: Build gaia-env:current
+      uses: docker/build-push-action@v6
+      with:
+        context: docker/env
+        load: true
+        tags: gaia-env:current
+        cache-from: type=gha,scope=gaia-env-current
+        cache-to: type=gha,scope=gaia-env-current,mode=max
+        build-args: |
+          BASE_IMAGE=php:7.4.21-apache-buster
+          DEBIAN_ARCHIVE=1
+          PHALCON_VERSION=4.1.2
+          PSR_VERSION=1.1.0
+          XDEBUG_VERSION=3.1.5
+          XHPROF_VERSION=2.3.7
+          MONGODB_VERSION=1.15.3
+          PHPUNIT_VERSION=9.6.21
+
+    # Host network: the container reaches the postgres service on 127.0.0.1:5432, and the
+    # api-tester reaches Apache on 127.0.0.1.
+    - name: Start the gaia-current container
+      shell: bash
+      run: |
+        mkdir -p upgrade logs output
+        docker run -d --name gaia-current --network host           -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -v "$RUNNER_TEMP:$RUNNER_TEMP"           -w "$GITHUB_WORKSPACE"           gaia-env:current sleep infinity
+        docker exec gaia-current php -v
 
     - name: Cache Composer packages
       id: composer-packages
       uses: actions/cache@v5
       with:
         path: vendor
-        key: vendor-cache-${{ env.GAIA_IMAGE }}-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-${{ env.GAIA_IMAGE }}-
+        key: vendor-cache-gaia-env-current-${{ hashFiles('docker/env/**') }}-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-gaia-env-current-${{ hashFiles('docker/env/**') }}-
 
     - name: Install dependencies
       if: steps.composer-packages.outputs.cache-hit != 'true'
-      run: composer install
+      run: COMPOSER_ALLOW_SUPERUSER=1 composer install --no-interaction
 
     - name: Check docs/generated/graph.json is up to date
       run: php tools/gaia-dev/bin/gaia-dev graph export --check
@@ -50,19 +75,23 @@ jobs:
   api-testing:
     name: API + PHPUnit
     runs-on: ubuntu-latest
+    env:
+      DB_ADAPTER: Postgres
+      DB_HOST: 127.0.0.1
+      DB_PORT: "5432"
+      DB_USERNAME: nouman
+      DB_PASSWORD: nouman
+      DB_NAME: pr4m_test
     defaults:
       run:
-        shell: bash
-
-    container:
-      image: rananoman/gaia:env-dev
-      env:
-        DB_ADAPTER: Postgres
-        DB_HOST: postgres
-        DB_PORT: "5432"
-        DB_USERNAME: nouman
-        DB_PASSWORD: nouman
-        DB_NAME: pr4m_test
+        # Runs each step's script in the gaia-current container (RUNNER_TEMP is mounted at the same path);
+        # -e NAME forwards the variable from the step's environment when it is set.
+        shell: >-
+          docker exec
+          -e DB_ADAPTER -e DB_HOST -e DB_PORT -e DB_USERNAME -e DB_PASSWORD -e DB_NAME
+          -e PGHOST -e PGPORT -e PGUSER -e PGPASSWORD -e PG_USER
+          -e GITHUB_WORKSPACE
+          gaia-current bash --noprofile --norc -eo pipefail {0}
 
     services:
       postgres:
@@ -71,6 +100,8 @@ jobs:
           POSTGRES_DB: pr4m
           POSTGRES_USER: nouman
           POSTGRES_PASSWORD: nouman
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd "pg_isready -U nouman -d pr4m"
           --health-interval 5s
@@ -81,17 +112,48 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
 
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # Keep the build args equal to build_current in docker/env/build.sh.
+    - name: Build gaia-env:current
+      uses: docker/build-push-action@v6
+      with:
+        context: docker/env
+        load: true
+        tags: gaia-env:current
+        cache-from: type=gha,scope=gaia-env-current
+        cache-to: type=gha,scope=gaia-env-current,mode=max
+        build-args: |
+          BASE_IMAGE=php:7.4.21-apache-buster
+          DEBIAN_ARCHIVE=1
+          PHALCON_VERSION=4.1.2
+          PSR_VERSION=1.1.0
+          XDEBUG_VERSION=3.1.5
+          XHPROF_VERSION=2.3.7
+          MONGODB_VERSION=1.15.3
+          PHPUNIT_VERSION=9.6.21
+
+    # Host network: the container reaches the postgres service on 127.0.0.1:5432, and the
+    # api-tester reaches Apache on 127.0.0.1.
+    - name: Start the gaia-current container
+      shell: bash
+      run: |
+        mkdir -p upgrade logs output
+        docker run -d --name gaia-current --network host           -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -v "$RUNNER_TEMP:$RUNNER_TEMP"           -w "$GITHUB_WORKSPACE"           gaia-env:current sleep infinity
+        docker exec gaia-current php -v
+
     - name: Cache Composer packages
       id: composer-packages
       uses: actions/cache@v5
       with:
         path: vendor
-        key: vendor-cache-${{ env.GAIA_IMAGE }}-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-${{ env.GAIA_IMAGE }}-
+        key: vendor-cache-gaia-env-current-${{ hashFiles('docker/env/**') }}-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-gaia-env-current-${{ hashFiles('docker/env/**') }}-
 
     - name: Install dependencies
       if: steps.composer-packages.outputs.cache-hit != 'true'
-      run: composer install
+      run: COMPOSER_ALLOW_SUPERUSER=1 composer install --no-interaction
 
     - name: Install PostgreSQL 16 client
       run: |
@@ -104,13 +166,14 @@ jobs:
           > /etc/apt/sources.list.d/pgdg.list
         apt-get update
         apt-get install -y --no-install-recommends postgresql-client-16
-        echo "/usr/lib/postgresql/16/bin" >> "$GITHUB_PATH"
+        ln -sf /usr/lib/postgresql/16/bin/psql /usr/local/bin/psql
+        ln -sf /usr/lib/postgresql/16/bin/pg_dump /usr/local/bin/pg_dump
 
     - name: Load baseline into pr4m
       env:
         PGPASSWORD: nouman
       run: |
-        psql -h postgres -U nouman -d pr4m -v ON_ERROR_STOP=1 \
+        psql -h 127.0.0.1 -U nouman -d pr4m -v ON_ERROR_STOP=1 \
           -f db/Dump20261118.sql
 
     - name: Migrate pr4m schema from metadata
@@ -122,7 +185,7 @@ jobs:
       # Feeds the non-blocking next-stack report only, so a failure here must not fail this job.
       continue-on-error: true
       env:
-        PGHOST: postgres
+        PGHOST: 127.0.0.1
         PGUSER: nouman
         PGPASSWORD: nouman
       run: |
@@ -131,7 +194,7 @@ jobs:
 
     - name: Prepare pr4m_test + fixtures
       env:
-        PGHOST: postgres
+        PGHOST: 127.0.0.1
         PGPASSWORD: nouman
       run: bash tools/api-tester/harness/prepare-test-db.sh
 
@@ -152,7 +215,7 @@ jobs:
 
     - name: Reset pr4m_test + fixtures for the API tests
       env:
-        PGHOST: postgres
+        PGHOST: 127.0.0.1
         PGPASSWORD: nouman
       run: bash tools/api-tester/harness/prepare-test-db.sh
 
@@ -161,7 +224,8 @@ jobs:
         rm -rf /var/www/html
         ln -s "$GITHUB_WORKSPACE" /var/www/html
         chown -R www-data:www-data "$GITHUB_WORKSPACE"
-        apache2-foreground > /tmp/apache.log 2>&1 &
+        # setsid: Apache must outlive this docker exec session.
+        setsid apache2-foreground > /tmp/apache.log 2>&1 < /dev/null &
         for i in $(seq 1 30); do
           curl -s -o /dev/null "http://127.0.0.1/" && echo "Apache is up" && exit 0
           sleep 1
