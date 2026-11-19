@@ -1035,7 +1035,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 foreach ($model->getMessages() as $message) {
                     $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
                 }
-                $logger->error($errors);
+                $logger->error(implode("; ", $errors));
                 $this->response->setStatusCode(422, "Unprocessable Entity");
                 $this->response->setJsonContent(
                     array(
@@ -1069,8 +1069,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $model = $modelName::findFirst('id = "' . $this->id . '"');
 
         $GLOBALS['logger']->debug('Deleting a record');
-        $GLOBALS['logger']->debug($model->id);
-        $GLOBALS['logger']->debug($model->deleted);
+        $GLOBALS['logger']->debug((string) $model->id);
+        $GLOBALS['logger']->debug((string) $model->deleted);
 
         //delete if exists the object
         if ($model != false) {

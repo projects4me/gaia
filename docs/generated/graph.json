@@ -17689,6 +17689,22 @@
       }
     },
     {
+      "id": "case:client/project-create-validation-fails-422",
+      "type": "case",
+      "key": "client/project-create-validation-fails-422",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/put-systemnotification-api-v1-systemnotification-id",
       "type": "case",
       "key": "client/put-systemnotification-api-v1-systemnotification-id",
@@ -73495,6 +73511,26 @@
       "from": "case:client/post-vote-api-v1-vote",
       "type": "uses_fixture",
       "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/project-create-validation-fails-422",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-create-validation-fails-422",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-create-validation-fails-422",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/project-create-validation-fails-422",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/put-systemnotification-api-v1-systemnotification-id",

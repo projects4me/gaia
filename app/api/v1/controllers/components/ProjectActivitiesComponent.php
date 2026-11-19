@@ -106,7 +106,7 @@ class ProjectActivitiesComponent
     {
         global $logger;
         $logger->debug('Gaia.Controller.Component.ProjectActivities::afterCreate()');
-        $logger->debug($model->id);
+        $logger->debug((string) $model->id);
         $controllerName = $controller->getControllerName();
 
         $fields = $this->activityMeta[$controllerName]['afterCreate'];

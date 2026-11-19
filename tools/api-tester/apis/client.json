@@ -8770,6 +8770,22 @@
         "status": 200,
         "shape": "json"
       }
+    },
+    {
+      "id": "project-create-validation-fails-422",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {}
+        }
+      },
+      "expects": {
+        "status": 422
+      }
     }
   ]
 }
