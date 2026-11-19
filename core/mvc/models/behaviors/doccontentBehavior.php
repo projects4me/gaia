@@ -98,10 +98,12 @@ class doccontentBehavior extends Behavior implements BehaviorInterface
      */
     protected function setByteSize($model)
     {
-        if ($model->state !== null && !is_string($model->state)) {
+        // state is optional: a request may leave it out.
+        $state = $model->state ?? null;
+        if ($state !== null && !is_string($state)) {
             return $this->reject($model, 'state', 'state must be a string.');
         }
-        $model->byteSize = strlen((string) $model->state);
+        $model->byteSize = strlen((string) $state);
         return true;
     }
 

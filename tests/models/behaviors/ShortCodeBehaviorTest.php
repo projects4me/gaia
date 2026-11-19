@@ -37,6 +37,23 @@ class ShortCodeBehaviorTest extends TestCase
     }
 
     /**
+     * A project created without a name gets no short code: the behaviour does
+     * not read the unset name, and the model's own validation rejects the
+     * missing name.
+     *
+     * @return void
+     */
+    public function testCreateWithoutNameLeavesTheShortCodeUnset()
+    {
+        $model = $this->getMockBuilder(UnsetAttributeModelStub::class)->getMockForAbstractClass();
+
+        $this->shortCodeBehaviorMock->expects($this->never())->method('getProjectsByShortCode');
+        $this->shortCodeBehaviorMock->notify('beforeValidationOnCreate', $model);
+
+        $this->assertFalse(property_exists($model, 'shortCode'));
+    }
+
+    /**
      * This test verifies that the short code is generated correctly from a single word if there is no short code.
      *
      * @return void

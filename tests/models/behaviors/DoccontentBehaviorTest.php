@@ -23,6 +23,22 @@ use Phalcon\Mvc\ModelInterface;
 class DoccontentBehaviorTest extends TestCase
 {
     /**
+     * state is optional: a request without it creates an empty content row
+     * (byteSize 0) without reading the unset attribute.
+     *
+     * @return void
+     */
+    public function testCreateWithoutStateSetsAZeroByteSize()
+    {
+        $model = $this->getMockBuilder(UnsetAttributeModelStub::class)->getMockForAbstractClass();
+        $model->docId = 'doc-1';
+        $model->projectId = 'project-1';
+
+        $this->assertTrue($this->behavior(true, true)->notify('beforeValidationOnCreate', $model));
+        $this->assertSame(0, $model->byteSize);
+    }
+
+    /**
      * A valid new content row is accepted and its byteSize is the state length,
      * whatever the request sent.
      *

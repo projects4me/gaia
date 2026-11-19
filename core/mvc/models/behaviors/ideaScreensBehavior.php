@@ -65,7 +65,7 @@ class ideaScreensBehavior extends Behavior implements BehaviorInterface
         $snapshot = $model->getSnapshotData();
         $this->encodeScreens($model);
         if (is_array($snapshot) && array_key_exists('screens', $snapshot)
-            && (string) $snapshot['screens'] === (string) $model->screens
+            && (string) $snapshot['screens'] === (string) ($model->screens ?? null)
             && (string) ($snapshot['ideaId'] ?? '') === (string) $model->ideaId
         ) {
             return true;
@@ -82,7 +82,8 @@ class ideaScreensBehavior extends Behavior implements BehaviorInterface
      */
     protected function encodeScreens($model)
     {
-        if (is_array($model->screens)) {
+        // screens is optional: a message may have none.
+        if (is_array($model->screens ?? null)) {
             $model->screens = json_encode($model->screens);
         }
     }
@@ -96,11 +97,12 @@ class ideaScreensBehavior extends Behavior implements BehaviorInterface
     protected function checkScreens($model)
     {
         $this->encodeScreens($model);
-        if ($model->screens === null || $model->screens === '') {
+        $screens = $model->screens ?? null;
+        if ($screens === null || $screens === '') {
             return true;
         }
 
-        $uploadIds = $this->uploadIds($model->screens);
+        $uploadIds = $this->uploadIds($screens);
         if ($uploadIds === null) {
             return $this->reject($model, 'screens must be a JSON array of objects with an uploadId.');
         }

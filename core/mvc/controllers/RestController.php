@@ -1068,12 +1068,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         $model = $modelName::findFirst('id = "' . $this->id . '"');
 
-        $GLOBALS['logger']->debug('Deleting a record');
-        $GLOBALS['logger']->debug((string) $model->id);
-        $GLOBALS['logger']->debug((string) $model->deleted);
-
         //delete if exists the object
         if ($model != false) {
+            // Only the id is logged: deleted is not a field of every model
+            // (Membership, Tagged and Vote are hard-deleted).
+            $GLOBALS['logger']->debug('Deleting a record ' . $model->id);
             if ($model->delete() == true) {
                 $this->eventsManager->fire('rest:afterDelete', $this, $model);
                 $this->response->setJsonContent(array('data' => array('type' => Util::extractClassFromNamespace($modelName), "id" => $this->id)));

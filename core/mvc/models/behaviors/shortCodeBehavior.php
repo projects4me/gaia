@@ -40,7 +40,13 @@ class shortCodeBehavior extends Behavior implements BehaviorInterface
      */
     protected function beforeValidationOnCreate(&$model)
     {
-        $model->shortCode = $this->generateShortCode($model->name);
+        // Without a name there is nothing to derive a short code from; the
+        // model's validation then rejects the missing name.
+        $name = $model->name ?? null;
+        if ($name === null || $name === '') {
+            return;
+        }
+        $model->shortCode = $this->generateShortCode($name);
     }
 
     /**
