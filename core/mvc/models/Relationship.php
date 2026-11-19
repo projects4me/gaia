@@ -148,7 +148,7 @@ class Relationship
      */
     public function setRelationshipFields($relationships)
     {
-        foreach ($relationships as $relationshipName) {
+        foreach ($relationships ?? [] as $relationshipName) {
             $this->relationshipFields[] = $relationshipName . '.*';
         }
     }
@@ -163,7 +163,7 @@ class Relationship
      */
     public function prepareJoinsForQuery($requestedRels, $modelAlias, $queryBuilder)
     {
-        foreach ($requestedRels as $relationshipName) {
+        foreach ($requestedRels ?? [] as $relationshipName) {
 
             /**
              * If the relationtype is defined in the meta data then use that.
@@ -193,7 +193,7 @@ class Relationship
      */
     public function loadRequestedRelationships($relationships)
     {
-        foreach ($relationships as $relName) {
+        foreach ($relationships ?? [] as $relName) {
             $relType = $this->modelRelationships[$relName]['type'];
             $this->{ $relType}[] = $relName;
         }

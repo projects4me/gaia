@@ -865,7 +865,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 } else {
                     $errors = array();
                     foreach ($model->getMessages() as $message) {
-                        $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
+                        $errors[] = !empty($this->language[$message->getMessage()]) ? $this->language[$message->getMessage()] : $message->getMessage();
                     }
                     $this->response->setStatusCode(422, "Unprocessable Entity");
                     $this->response->setJsonContent(
@@ -1033,7 +1033,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             } else {
                 $errors = array();
                 foreach ($model->getMessages() as $message) {
-                    $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
+                    $errors[] = !empty($this->language[$message->getMessage()]) ? $this->language[$message->getMessage()] : $message->getMessage();
                 }
                 $logger->error(implode("; ", $errors));
                 $this->response->setStatusCode(422, "Unprocessable Entity");
@@ -1083,7 +1083,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
                 $errors = array();
                 foreach ($model->getMessages() as $message) {
-                    $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
+                    $errors[] = !empty($this->language[$message->getMessage()]) ? $this->language[$message->getMessage()] : $message->getMessage();
                 }
 
                 $this->response->setJsonContent(array('status' => "ERROR", 'messages' => $errors));

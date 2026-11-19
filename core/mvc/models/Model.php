@@ -12,6 +12,7 @@ use Gaia\Libraries\Utils\Util;
 use Gaia\Core\MVC\Models\Query;
 use Gaia\Core\MVC\Models\DataExtractor;
 use Gaia\Core\MVC\Models\Query\Meta as QueryMeta;
+use Gaia\Core\MVC\Models\Query\Params as QueryParams;
 use Gaia\Core\MVC\Models\Relationships\HasMany;
 use Gaia\Core\MVC\Models\Relationships\HasManyToMany;
 use Gaia\Core\MVC\Models\ResultStream;
@@ -188,6 +189,7 @@ class Model extends PhalconModel
     public function read(array $params)
     {
         $this->action = 'read';
+        $params = QueryParams::withDefaults($params);
         $this->query = $this->instantiateQuery($this->modelAlias, $params);
         $this->query->prepareClauses($params, $this->query);
 
@@ -220,6 +222,7 @@ class Model extends PhalconModel
     public function readAll(array $params)
     {
         $this->action = 'readAll';
+        $params = QueryParams::withDefaults($params);
         $this->fireEvent("beforeRead");
 
         $this->query = $this->instantiateQuery($this->modelAlias, $params);
@@ -253,6 +256,7 @@ class Model extends PhalconModel
     public function readRelated(array $params)
     {
         $this->action = 'readRelated';
+        $params = QueryParams::withDefaults($params);
         $related = $params['related'];
         $params['rels'] = array($related);
 

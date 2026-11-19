@@ -29,7 +29,7 @@ trait WorkflowModelStub
     private function model(array $values, array $snapshot = [])
     {
         /** @var TestCase $this */
-        $model = $this->getMockBuilder(ModelInterface::class)
+        $model = $this->getMockBuilder(DynamicModelStub::class)
             ->addMethods(['getSnapshotData', 'readAttribute', 'writeAttribute'])
             ->getMockForAbstractClass();
         $model->messages = [];

@@ -225,7 +225,10 @@ class ProjectActivitiesComponent
         $user = \Gaia\MVC\Models\User::findFirstById($model->userId);
         $role = \Gaia\MVC\Models\Role::findFirstById($model->roleId);
 
-        return "New member <b>$user->name</b> has been added to the project as <b>$role->name</b>";
+        $userName = $user ? $user->name : "#$model->userId";
+        $roleName = $role ? $role->name : "#$model->roleId";
+
+        return "New member <b>$userName</b> has been added to the project as <b>$roleName</b>";
     }
 
     /**
