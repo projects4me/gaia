@@ -64,7 +64,7 @@ class MailerErrorMapper
     /**
      * @param array|null $messages PHPMailer translations; null uses the default language
      */
-    public function __construct(array $messages = null)
+    public function __construct(?array $messages = null)
     {
         $this->messages = $messages === null ? (new PHPMailer())->getTranslations() : $messages;
     }

@@ -57,7 +57,7 @@ class Mailer
      * @param int|null   $timeout SMTP timeout in seconds (null keeps PHPMailer's default)
      * @param array|null $smtp    Resolved SMTP configuration; null reads the current settings
      */
-    public function __construct($timeout = null, array $smtp = null)
+    public function __construct($timeout = null, ?array $smtp = null)
     {
         $this->timeout = $timeout;
         $this->smtp = $smtp;
