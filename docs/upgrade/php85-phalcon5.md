@@ -43,9 +43,11 @@ Until the switch-over the same code boots on both images. `core/libs/compat/phal
 
 `tests/libraries/utils/Phalcon5ShimTest.php` checks the names on both stacks.
 
-`Gaia\Libraries\Meta\Migration\PlanningConnection` (`migrate --dry-run`) implements Phalcon 4's
-`AdapterInterface`, whose signatures don't compile on Phalcon 5. The loader's class map loads it on use, so Gaia
-boots and `migration migrate` runs on next; `--dry-run` still fails there.
+The migration layer (`Migration`, its driver and the migration handlers) runs on Gaia's own
+`Gaia\Db\Migration\SchemaConnection`, not Phalcon's `AdapterInterface`, whose signatures differ between Phalcon 4
+and 5. `AdapterConnection` runs the calls on the Phalcon adapter, passing only arguments both versions accept, and
+`PlanningConnection` (`migrate --dry-run`) plans the writes; so `migration migrate` and `--dry-run` run on both
+stacks (agaia-4705).
 
 **At the switch-over:** replace the old names in the code with the Phalcon 5 ones (`use Phalcon\Di\Di;`,
 `Phalcon\Autoload\Loader` with `set*`, `Phalcon\Support\Helper\Str\*`, a Gaia exception for `Phalcon\Exception`),

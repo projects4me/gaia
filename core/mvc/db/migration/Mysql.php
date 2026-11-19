@@ -37,7 +37,7 @@ class Mysql
      * This function determines whether an existing table should be synced incrementally
      * instead of being created.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param SchemaConnection $connection Active database connection
      * @param string $tableName Table name from model metadata
      * @return bool
      */
@@ -50,7 +50,7 @@ class Mysql
      * This function leaves an existing MySQL table as it is: since phalcon/migrations was
      * removed, migrate only creates missing MySQL tables and no longer alters existing ones.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param SchemaConnection $connection Active database connection
      * @param string $tableName Table name from model metadata
      * @param Column[] $columns Expected column definitions from metadata
      * @param array $indexes Optional metadata indexes map (field => type)
@@ -63,7 +63,7 @@ class Mysql
     /**
      * This function ignores the extension list: MySQL has no extensions to create.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param SchemaConnection $connection Active database connection
      * @param array $extensions Extension names from the database config
      * @return array Always empty
      */
@@ -106,7 +106,7 @@ class Mysql
      * This function rejects search indexes, which only PostgreSQL supports. It runs
      * before the table is created or changed.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param SchemaConnection $connection Active database connection
      * @param string $tableName Table name from model metadata
      * @param array $searchColumns Column name => definition (always empty on MySQL)
      * @param array $indexes Metadata indexes map (field => type)
@@ -127,7 +127,7 @@ class Mysql
     /**
      * This function has nothing to sync on MySQL; it repeats the search index check.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param SchemaConnection $connection Active database connection
      * @param string $tableName Table name from model metadata
      * @param array $searchColumns Column name => definition (always empty on MySQL)
      * @param array $indexes Metadata indexes map (field => type)

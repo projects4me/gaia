@@ -7,7 +7,7 @@
 namespace Gaia\Tests\Libraries\Utils;
 
 use Gaia\Libraries\Meta\Migration\Driver;
-use Phalcon\Db\Adapter\AdapterInterface;
+use Gaia\Db\Migration\SchemaConnection;
 use Phalcon\Db\Exception as DbException;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Mvc\Model\Exception as ModelException;
@@ -59,6 +59,6 @@ class MigrationDriverErrorTest extends TestCase
 
         $this->expectException(\Gaia\Exception\MigrationDriver::class);
         $this->expectExceptionMessage($thrown->getMessage());
-        $run->invoke(new Driver($di), $this->createMock(AdapterInterface::class));
+        $run->invoke(new Driver($di), $this->createMock(SchemaConnection::class));
     }
 }

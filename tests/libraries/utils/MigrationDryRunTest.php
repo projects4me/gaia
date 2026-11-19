@@ -7,6 +7,7 @@
 namespace Gaia\Tests\Libraries\Utils;
 
 use Gaia\Db\Migration\Postgres;
+use Gaia\Db\Migration\SchemaConnection;
 use Gaia\Libraries\Meta\Manager;
 use Gaia\Libraries\Meta\Migration;
 use Gaia\Libraries\Meta\Migration\Plan;
@@ -89,28 +90,72 @@ class MigrationDryRunTest extends TestCase
         $this->assertSame(array('a_view'), array_column($plan->routine(), 'table'));
     }
 
-    public function testTransactionsAreNotOpenedAndDataWritesAreRejected()
+    public function testTransactionsAreNotOpened()
     {
         $adapter = $this->createMock(AdapterInterface::class);
         $adapter->expects($this->never())->method('begin');
         $adapter->expects($this->never())->method('commit');
-        $adapter->expects($this->never())->method('insert');
+        $adapter->expects($this->never())->method('rollback');
         $connection = new PlanningConnection($adapter, new Plan());
 
         $this->assertTrue($connection->begin());
         $this->assertTrue($connection->commit());
-        $this->expectException(\LogicException::class);
-        $connection->insert('t', array(1));
+        $this->assertTrue($connection->rollback());
     }
 
-    public function testAWriteThroughQueryIsRejected()
+    /**
+     * agaia-4705: the planning connection is Gaia's SchemaConnection, not Phalcon's
+     * AdapterInterface, whose signatures differ between Phalcon 4 and 5; so it has no
+     * data writes or raw handle to guard either.
+     */
+    public function testThePlanningConnectionDoesNotImplementPhalconsAdapter()
+    {
+        $connection = new PlanningConnection($this->createMock(AdapterInterface::class), new Plan());
+
+        $this->assertInstanceOf(SchemaConnection::class, $connection);
+        $this->assertNotInstanceOf(AdapterInterface::class, $connection);
+        $this->assertFalse(method_exists($connection, 'insert'));
+        $this->assertFalse(method_exists($connection, 'getInternalHandler'));
+    }
+
+    public function testDdlHelpersArePlannedWithTheAdaptersDialect()
     {
         $adapter = $this->createMock(AdapterInterface::class);
-        $adapter->expects($this->never())->method('query');
+        $adapter->method('getDialect')->willReturn(new Postgresql());
+        $adapter->expects($this->never())->method('addColumn');
+        $plan = new Plan();
+        $plan->forTable(self::TABLE);
+        $connection = new PlanningConnection($adapter, $plan);
+
+        $column = new Column('extra', array('type' => Column::TYPE_VARCHAR, 'size' => 10));
+
+        $connection->addColumn(self::TABLE, null, $column);
+
+        // The dialect's exact text differs between Phalcon versions; the plan holds what it renders.
+        $this->assertSame(array((new Postgresql())->addColumn(self::TABLE, '', $column)), $this->sqlOf($plan));
+        $this->assertStringStartsWith(
+            'ALTER TABLE "' . self::TABLE . '" ADD COLUMN "extra" CHARACTER VARYING(10)',
+            $this->sqlOf($plan)[0]
+        );
+    }
+
+    public function testAWriteThroughAReadIsRejected()
+    {
+        $adapter = $this->createMock(AdapterInterface::class);
+        $adapter->expects($this->never())->method('fetchAll');
         $connection = new PlanningConnection($adapter, new Plan());
 
         $this->expectException(\LogicException::class);
-        $connection->query('UPDATE "users" SET "name" = \'x\'');
+        $connection->fetchAll('UPDATE "users" SET "name" = \'x\'');
+    }
+
+    public function testAPlannedStatementCannotCarryPlaceholders()
+    {
+        $adapter = $this->createMock(AdapterInterface::class);
+        $connection = new PlanningConnection($adapter, new Plan());
+
+        $this->expectException(\LogicException::class);
+        $connection->execute('DELETE FROM "users" WHERE "id" = ?', array(1));
     }
 
     public function testReadsGoToTheDatabase()
@@ -120,14 +165,6 @@ class MigrationDryRunTest extends TestCase
         $connection = new PlanningConnection($adapter, new Plan());
 
         $this->assertSame(array(array('a' => 1)), $connection->fetchAll('  select 1'));
-    }
-
-    public function testTheRawHandleIsNotHandedOut()
-    {
-        $connection = new PlanningConnection($this->createMock(AdapterInterface::class), new Plan());
-
-        $this->expectException(\LogicException::class);
-        $connection->getInternalHandler();
     }
 
     /**
