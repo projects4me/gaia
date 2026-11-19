@@ -1,5 +1,11 @@
 # Upgrade to PHP 8.5 and Phalcon 5.23
 
+> **History (agaia-4748, 2026-11-20).** Gaia runs on PHP 8.5 / Phalcon 5.23 and the rollback window is closed.
+> The `next-stack` job (PHP 7.4 / Phalcon 4.1), the 7.4 entry of the `deployed-image-config` matrix and the
+> `upgrade-report` job were removed from `ci.yml`; CI runs 8.5 only, with the image tag in one place (`GAIA_ENV_TAG`).
+> The CI sections below (`gaia-env:current`/`next`, `gaia-current`, "CI next-stack report", the switch-over CI notes)
+> describe that earlier setup and are kept as history. `tools/upgrade/` stays for now: PHPUnit tests still load it.
+
 Notes for the move from PHP 7.4 / Phalcon 4.1 to PHP 8.5 / Phalcon 5.23. Later issues add their findings here.
 
 ## Runtime images
