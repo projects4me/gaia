@@ -139,7 +139,7 @@ class DocBehaviorTest extends TestCase
      */
     private function model($storedLocked, $locked)
     {
-        $model = $this->getMockBuilder(ModelInterface::class)
+        $model = $this->getMockBuilder(DynamicModelStub::class)
             ->addMethods(['getSnapshotData'])
             ->getMockForAbstractClass();
         $model->ownerId = 'owner-1';

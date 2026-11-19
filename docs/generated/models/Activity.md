@@ -27,7 +27,7 @@
 ## Summary
 
 - behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, softDeleteBehavior
-- acl: group Project via Array
+- acl: group Project via {"paths":[{"when":{"relatedTo":"project"},"relatedModel":"Project","localKey":"relatedId","relatedKey":"id","projectField":"id"},{"when":{"relatedTo":"issue"},"relatedModel":"Issue","localKey":"relatedId","relatedKey":"id","projectField":"projectId"},{"when":{"relatedTo":"conversationroom"},"relatedModel":"Conversationroom","localKey":"relatedId","relatedKey":"id","projectField":"projectId"}]}
 - controller: Gaia\MVC\REST\Controllers\ActivityController
 - routes: DELETE /api/v1/activity, DELETE /api/v1/activity/{id}, GET /api/v1/activity, GET /api/v1/activity/{id}, GET /api/v1/activity/{id}/{relation}, OPTIONS /api/v1/activity, PATCH /api/v1/activity, PATCH /api/v1/activity/{id}, POST /api/v1/activity, PUT /api/v1/activity, PUT /api/v1/activity/{id}
 - components: -

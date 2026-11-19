@@ -24,7 +24,7 @@
 ## Summary
 
 - behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, mentionsBehavior, modifiedUserBehavior, softDeleteBehavior
-- acl: group Project via Array; group Conversationroom via ?
+- acl: group Project via {"paths":[{"when":{"relatedTo":"issues"},"relatedModel":"Issue","localKey":"relatedId","relatedKey":"id","projectField":"projectId"},{"when":{"relatedTo":"conversationrooms"},"relatedModel":"Conversationroom","localKey":"relatedId","relatedKey":"id","projectField":"projectId"}]}; group Conversationroom via ?
 - controller: Gaia\MVC\REST\Controllers\CommentController
 - routes: DELETE /api/v1/comment, DELETE /api/v1/comment/{id}, GET /api/v1/comment, GET /api/v1/comment/{id}, GET /api/v1/comment/{id}/{relation}, OPTIONS /api/v1/comment, PATCH /api/v1/comment, PATCH /api/v1/comment/{id}, POST /api/v1/comment, PUT /api/v1/comment, PUT /api/v1/comment/{id}
 - components: Events\ConversationCommentLiveEvents, Events\WorkflowReplies, Events\WorkflowTriggers, Issuemention, Notification

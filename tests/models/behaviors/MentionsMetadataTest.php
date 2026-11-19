@@ -60,7 +60,7 @@ class MentionsMetadataTest extends TestCase
         global $currentUser;
         $currentUser = (object) ['id' => 'actor'];
 
-        $model = $this->getMockBuilder(ModelInterface::class)
+        $model = $this->getMockBuilder(DynamicModelStub::class)
             ->addMethods(['getMetaData', 'getOldSnapshotData'])
             ->getMockForAbstractClass();
         $model->method('getMetaData')->willReturn($this->metadata('Issue'));

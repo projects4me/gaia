@@ -27,7 +27,7 @@
 ## Summary
 
 - behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior
-- acl: group Project via Array
+- acl: group Project via {"paths":[{"when":{"relatedTo":"idea"},"relatedModel":"Idea","localKey":"relatedId","relatedKey":"id","projectField":"projectId"},{"when":{"relatedTo":"issue"},"relatedModel":"Issue","localKey":"relatedId","relatedKey":"id","projectField":"projectId"},{"when":{"relatedTo":"wiki"},"relatedModel":"Wiki","localKey":"relatedId","relatedKey":"id","projectField":"projectId"}]}
 - controller: Gaia\MVC\REST\Controllers\UploadController
 - routes: DELETE /api/v1/upload, DELETE /api/v1/upload/{id}, GET /api/v1/upload, GET /api/v1/upload/{id}, GET /api/v1/upload/{id}/{relation}, OPTIONS /api/v1/upload, PATCH /api/v1/upload, PATCH /api/v1/upload/{id}, POST /api/v1/upload, PUT /api/v1/upload, PUT /api/v1/upload/{id}
 - components: Fileattachment, Filethumb
