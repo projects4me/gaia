@@ -135,3 +135,113 @@ Or from local runs: put each stack's outputs in `<folder>/current` and `<folder>
 of `compare-stacks.sh`): `schema-snapshot.sh` after `migrate`, `migrate --dry-run > dry-run.txt`,
 `phpunit --log-junit phpunit-junit.xml`, the api-tester reports from `output/` run with `--record-bodies`, and
 the logs from `logs/`. Run the script with PHP 7.4 or later.
+
+## Remaining work
+
+This section triages the next-stack report from CI run 44518423955 (agaia-4706). That run tested PR #322 (agaia-4705,
+`migrate --dry-run` on Phalcon 5) merged into `dev`, after next-ci-pgvector, compare-noise, phpunit-strict and
+validation-422 had merged. Every entry in the report belongs to one group below, and the group counts add up to
+the report's totals. "Both stacks" means the fix also runs on PHP 7.4 / Phalcon 4, so it can merge before the
+switch-over.
+
+| Report section | Total | Groups |
+|---|---|---|
+| PHPUnit (1436 tests, 147 skipped) | 62 errors, 0 failures | P1 (60), P2 (1), P3 (1) |
+| api-tester `backend` / `acl` | 0 failures (220 and 248 passed, as on current) | none |
+| Response differences | 4 | R1 (4) |
+| Dry run | 1 error | D1 |
+| Schema diff | 867 lines differ, 0 real differences | S1 |
+| Deprecations and warnings | 12323 (all Gaia code, 0 vendor) | W1 to W10 |
+| Failed next-stack steps | `dry-run`, `phpunit` | D1, P1 to P3 |
+
+### PHPUnit
+
+- **P1. `logs/tests/` is missing in the next-stack job: 60 errors.** `tests/TestHelper.php:93` logs every query
+  to `logs/tests/db.log`. `api-testing` creates the folder (`mkdir -p logs/tests`), but `next-stack` only creates
+  `logs` (`.github/workflows/ci.yml:340`), so the first query of each test fails. 47 fail as a `fopen()` warning
+  (a failure since phpunit-strict) and 13 as Phalcon's `Logger\Adapter\Exceptions\FileOpenFailed`. They span 19
+  classes, for example `SearchServiceTest` (15), `PostgresSearchMigrationTest` (10),
+  `RolePermissionSeederTest` (11), `PreviewControllerTest` (6), `TokenControllerTest` and `AgentLifecycleTest`.
+  Fix: create `logs/tests` in that step. Size: one line, CI only. **These errors hide the real results of the 60
+  tests.** After the fix, run the report again and triage what those tests show. The fix also removes the 13
+  matching `fopen()` warnings in the deprecations report (W10).
+- **P2. `RouterTest::testAppRouteRegistersConfiguredControllerAndAction`: 1 error.** In Phalcon 5,
+  `Router::handle()` reads the `request` service and throws `RequestServiceUnavailable` when the router has no DI
+  container. Phalcon 4 didn't need a container here. The app's router always has one, so only the test is
+  affected. Fix: give the router a DI container before `handle()`. File: `tests/foundation/mvc/RouterTest.php:52`.
+  Both stacks. Size: small.
+- **P3. `IssuestatusTest::testMissingTextColorDefaultsToLight`: 1 error.** The test builds `Issuestatus` with
+  `newInstanceWithoutConstructor()` and sets `textColor = null`. In Phalcon 5, `Model::__set()` treats a `null`
+  value as a possible relation reset and calls `getRelationByAlias()` on the models manager. A model built without
+  its constructor has no manager, so the call fails. Fix: build the model through its constructor with the test
+  DI. File: `tests/models/IssuestatusTest.php:128`. Both stacks. Size: small. Real models take the same
+  `__set(null)` path, but they have a manager, so it doesn't fail there.
+
+### api-tester and response differences
+
+- The api-tester `backend` and `acl` modes have no failures on the next stack. The next-stack job doesn't run
+  `client` mode, so those endpoints (user, password and assignment flows, agent creation) aren't covered yet.
+- **R1. Timing noise: 4 differences.** In `POST /api/v1/bulk` (`acl-bulk-item-denied-others-allowed`),
+  `$.responses[*].durationMs` changes on every run, on both stacks. Fix: make the comparison ignore `durationMs`,
+  as it ignores the runtime-generated IDs (agaia-4704). File: `tools/api-tester/src/IgnoreList.php`. Size: small.
+  There are no type changes, missing keys, status changes or empty bodies, so **nothing in this report changes
+  what Prometheus receives**.
+
+### Dry run and schema
+
+- **D1. `migrate --dry-run` fails on a database without `vector`.** In a dry run, `Postgres::createExtensions()`
+  only plans `CREATE EXTENSION vector`. `checkSearchSchema()` then queries the real database (`pg_extension`) and
+  throws "Table issues needs the PostgreSQL extension vector, which is not installed". The baseline dump
+  (`db/Dump20261118.sql`) has `pg_trgm` and `uuid-ossp` but not `vector`. The bug is in planning and affects both
+  stacks. Only next-stack shows it because the current-stack job doesn't run a dry run. The real `migrate`
+  succeeds. Fix: in planning mode, treat the extensions that `createExtensions()` planned as installed, for example
+  by having the planning connection remember them. Files: `core/mvc/db/migration/Postgres.php`
+  (`createExtensions`, `checkSearchSchema`, `hasExtension`) and
+  `core/libs/meta/migration/planningconnection.php`. Both stacks. Size: small to medium.
+- **S1. Schema snapshot noise: 867 lines, no real difference.** The current-stack snapshot has an
+  `ALTER TABLE ONLY ... ALTER COLUMN ... SET (pg_attver=...)` line for every column. The next-stack snapshot has
+  none. With those lines removed, the two snapshots are identical. The two jobs install `postgresql-client-16`
+  from different apt sources: current uses the buster archive (`apt-archive.postgresql.org`), next uses
+  `apt.postgresql.org` for its own release. The lines come from the archive's `pg_dump`. Fix: drop the `pg_attver`
+  lines in `tools/upgrade/schema-snapshot.sh`, or use the same client in both jobs. Both stacks. Size: one line.
+
+### Deprecations and warnings (Gaia code)
+
+Counts are log entries, one per occurrence. On PHP 8.5 these are only logged; most become errors in PHP 9. None is
+in vendor code. Source: the Apache log of the api-tester run (HTTP), the PHPUnit log, and `php -l` (lint).
+
+| Group | Count | Where (top locations) | Both stacks | Size |
+|---|---|---|---|---|
+| W1. `null` passed to a typed internal or Phalcon parameter | 5499 | `uniqid(NULL, TRUE)` in `create_guid()`, `core/libs/utils/utility_functions.php:22` (4965); **`Phalcon\Mvc\Model\Query\Builder::having(null)`**, `core/mvc/models/Query.php:143` (262); `explode(null)`, `core/mvc/models/query/Meta.php:325` (241); `str_replace(null)`, `core/mvc/db/dialect/Postgres.php:398` (8), `tools/gaia-dev/src/Docs/Markdown.php:86` and `tests/models/behaviors/IdeaReferencesBehaviorTest.php:196` (22); `\Exception` code `null`, `core/exceptions/Permission.php:37` (1) | yes | small (5 sites) |
+| W2. `null` as an array offset | 3888 | `core/mvc/router.php:62,66,103` (3880: `$moduleRoutes->identifier` is null for modules that don't set one); `tests/libraries/tools/ToolCatalogRulesTest.php:143` (8) | yes | small |
+| W3. Missing array keys, and `null` read as an array or object (notices on 7.4) | 1087 | `Undefined array key "where"` and other query params, in `core/mvc/models/Query.php:194,195,293`, `core/mvc/models/Model.php:195,196,199` and `query/Meta.php:241,262` (695); `foreach` over `null` in `Relationship.php:151,166,196`, `query/Meta.php:241,301`, `relationships/HasManyToMany.php:77` and `IssuementionComponent.php:42` (385); array offset on `null` in `RestController.php:868,1036,1086` and `IssuementionComponent.php:39` (6); property of `null` in `ProjectActivitiesComponent.php:228` (1) | yes | medium (default the query params once in `Model` or `Query`) |
+| W4. Dynamic properties | 1162 | core: `query/Meta.php:124,150` (484), `Relationship.php:91` (263), `relationships/HasMany.php:28` (5), `relationships/HasManyToMany.php:35` (2); tests: PHPUnit mocks of `ModelInterface` (332, e.g. `tests/models/behaviors/WorkflowModelStub.php`), `FakeTokenModel` (45), stubs in `WorkflowTriggersComponentTest`, `WorkflowRepliesComponentTest` and `MentionsBehaviorTest` (31) | yes: declare the properties, or `#[\AllowDynamicProperties]` on test stubs | medium |
+| W5. `curl_close()` is deprecated | 480 | `tools/api-tester/src/HttpClient.php:60` (test tooling, not the API) | yes: call it only below PHP 8 | small |
+| W6. Implicitly nullable parameters (`Type $x = null`) | 145 | 53 parameters in 25 files (lint), mostly constructors in `core/libs/workflows/` (`WorkflowRunner`, `WorkflowTestRun`, `TestRunPayload`, `TriggerDispatcher`, ...), `core/libs/mentions/MentionRecorder.php`, `core/libs/authorization/ServiceEnrollments.php`, the `mentions`, `searchIndex`, `setting` and `translationCache` behaviours, and `query/Clause.php` | yes: `?Type` works on PHP 7.1+ | medium (mechanical) |
+| W7. Array to string conversion | 31 | `public/index.php:130` (24: the debug DB logger joins bind values, some of them arrays); `tools/gaia-dev/src/Query/ModelQuery.php:139` (7) | yes | small |
+| W8. Undefined model property read through `Model::__get()` | 11 | `RestController.php:1073` reads `deleted` on `Membership`, `Tagged` and `Vote` (3); `ProjectActivitiesComponent.php:147,226` (`Membership::relatedId`, `roleId`); `doccontentBehavior.php:101,104`, `planVersionBehavior.php:53` and `PlanVersionBehaviorTest` (`Doccontent::state`); `ideaScreensBehavior.php:85,99` (`Ideamessage::screens`). Phalcon 4 raises the same notice; `error_reporting(E_ERROR)` hid it. | yes | small |
+| W9. `ReflectionMethod::setAccessible()` is deprecated | 7 | tests: `SystemFieldTest`, `MigrationDriverErrorTest`, `PostgresIssueTableDefinitionTest`, `SearchBlockTest`, `TranslationCacheBehaviorTest` | yes: call it only below PHP 8.1 | small |
+| W10. `fopen(logs/tests/db.log)` fails | 13 | `tests/TestHelper.php:93`; same cause as P1 | yes | fixed by P1 |
+
+**Typed Phalcon 5 APIs passed the wrong type.** The report shows one call. `Query.php:143` passes
+`$this->clause->having` to `Builder::having(string $conditions)`, and that value is `null` when the request has no
+`having`. Today it is a deprecation; in PHP 9 it becomes a `TypeError`. Fix: call `having()` only when the value is
+set. No other Phalcon call logged a type deprecation, and no `TypeError` reached the api-tester or PHPUnit results.
+The 60 tests hidden by P1 haven't run on next yet, so check for this again when the report is rerun.
+
+### For Prometheus
+
+Nothing in this report changes a response: apart from R1, the `backend` and `acl` bodies are identical. Still to
+check on the UI side:
+
+- the `client` endpoints, which don't run on next yet;
+- bulk body decoding (agaia-4694): a call without a body decodes as `null` on Phalcon 4 and `{}` on Phalcon 5;
+- that `public/index.php` keeps `display_errors` off in production, so the W1 to W8 messages can't end up in JSON
+  bodies.
+
+### Next steps
+
+1. Fix P1 (which also clears W10), run the report again, and triage the 60 tests it hides.
+2. Fix D1, R1 and S1, so the report shows only real problems.
+3. Fix W1 and W2 (most entries, few sites, and the typed `having()` call), then W3, W4, W6 to W9, and W5.
+4. Fix P2 and P3 (test-only).
