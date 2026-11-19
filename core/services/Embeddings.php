@@ -26,6 +26,11 @@ class Embeddings
     const DIMENSIONS = 768;
 
     /**
+     * Largest magnitude of a vector element: the single-precision maximum pgvector stores
+     */
+    const MAX_ELEMENT = 3.4028234663852886e38;
+
+    /**
      * HTTP client instance for making API requests
      *
      * @var Client
@@ -119,6 +124,10 @@ class Embeddings
         foreach ($vector as $value) {
             if (!is_int($value) && !is_float($value)) {
                 throw new EmbeddingsUnavailableException('Embeddings service returned a non-numeric vector');
+            }
+            // pgvector stores single-precision elements and rejects the rest when the vector is bound
+            if (!is_finite((float) $value) || abs((float) $value) > self::MAX_ELEMENT) {
+                throw new EmbeddingsUnavailableException('Embeddings service returned a vector element out of range');
             }
         }
 

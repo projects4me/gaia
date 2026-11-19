@@ -75,7 +75,7 @@ class SearchTarget
     }
 
     /**
-     * This function returns an entry of the search block: fts, fuzzy, exact or display.
+     * This function returns an entry of the search block: fts, fuzzy, semantic, exact or display.
      *
      * @param string $key
      * @return array

@@ -9,6 +9,7 @@ namespace Gaia\MVC\REST\Controllers;
 use Gaia\Core\MVC\REST\Controllers\RestController;
 use Gaia\Libraries\Search\SearchRequest;
 use Gaia\Libraries\Search\SearchServiceFactory;
+use Gaia\Libraries\Search\SemanticSearcher;
 
 /**
  * Search Controller
@@ -92,7 +93,7 @@ class SearchController extends RestController
         $results = SearchServiceFactory::create($this->getDI())->search($request);
 
         $data = array();
-        foreach ($results as $result) {
+        foreach ($results->items() as $result) {
             $data[] = array(
                 'type' => 'searchresult',
                 'id' => $result['type'] . ':' . $result['id'],
@@ -111,7 +112,11 @@ class SearchController extends RestController
         $this->response->setStatusCode(200, 'OK');
         $this->response->setJsonContent(array(
             'data' => $data,
-            'meta' => array('query' => $request->query(), 'types' => $request->types()),
+            'meta' => array(
+                'query' => $request->query(),
+                'types' => $request->types(),
+                'semantic' => $results->isUnavailable(SemanticSearcher::KIND) ? 'unavailable' : 'ok',
+            ),
         ));
 
         return $this->response;

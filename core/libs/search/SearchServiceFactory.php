@@ -7,8 +7,9 @@
 namespace Gaia\Libraries\Search;
 
 /**
- * Builds the SearchService of the user the DI's acl belongs to: exact, FTS and fuzzy matching, the fuzzy threshold
- * from system.search.fuzzyThreshold. A new kind of matching (semantic) is added here.
+ * Builds the SearchService of the user the DI's acl belongs to: exact, FTS, fuzzy and semantic matching, the fuzzy
+ * threshold from system.search.fuzzyThreshold and the semantic maximum distance from
+ * system.search.semanticMaxDistance. A new kind of matching is added here.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -26,6 +27,9 @@ class SearchServiceFactory
         $threshold = isset($settings['system']['search']['fuzzyThreshold'])
             ? $settings['system']['search']['fuzzyThreshold']
             : FuzzySearcher::DEFAULT_THRESHOLD;
+        $maxDistance = isset($settings['system']['search']['semanticMaxDistance'])
+            ? $settings['system']['search']['semanticMaxDistance']
+            : SemanticSearcher::DEFAULT_MAX_DISTANCE;
 
         $metaManager = $di->get('metaManager');
         $acl = $di->get('acl');
@@ -41,6 +45,7 @@ class SearchServiceFactory
                 new ExactMatcher($candidates),
                 new FtsSearcher($candidates, $tsquery),
                 new FuzzySearcher($candidates, $threshold),
+                new SemanticSearcher($candidates, new \Gaia\Services\Embeddings(), $maxDistance),
             ),
             new RankFusion(),
             new DisplayLoader($candidates, new Snippet($tsquery))
