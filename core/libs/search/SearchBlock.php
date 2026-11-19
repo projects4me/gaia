@@ -242,21 +242,14 @@ class SearchBlock
         );
         if ($block['semantic'] !== array()) {
             $columns[self::SEMANTIC_TEXT] = array('type' => 'text');
-            // The hash columns had other names until agaia-4747; an existing table renames them in place. Drop the
-            // renamedFrom entries once every deployed database has migrated.
-            $columns[self::DESIRED_HASH] = array('type' => 'varchar', 'length' => '64', 'renamedFrom' => 'searchSemanticHash');
+            $columns[self::DESIRED_HASH] = array('type' => 'varchar', 'length' => '64');
             // The embedding is written by the indexer alone: a record save must not write back a stale copy.
             $columns[self::EMBEDDING] = array(
                 'type' => 'vector',
                 'dimensions' => self::EMBEDDING_DIMENSIONS,
                 'ormWrite' => false,
             );
-            $columns[self::ACTUAL_HASH] = array(
-                'type' => 'varchar',
-                'length' => '64',
-                'ormWrite' => false,
-                'renamedFrom' => 'searchEmbeddingHash',
-            );
+            $columns[self::ACTUAL_HASH] = array('type' => 'varchar', 'length' => '64', 'ormWrite' => false);
             $columns[self::EMBEDDED_AT] = array('type' => 'datetime', 'ormWrite' => false);
         }
 

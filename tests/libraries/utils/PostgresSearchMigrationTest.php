@@ -295,7 +295,7 @@ class PostgresSearchMigrationTest extends TestCase
         );
     }
 
-    public function testAnExistingTableRenamesTheHashColumnsInPlace()
+    public function testAnExistingTableWithTheOldHashColumnsEndsWithOnlyTheNewOnes()
     {
         $skipped = (new Postgres())->createExtensions($this->db, array('vector', 'pg_trgm'));
         if (in_array('vector', $skipped, true)) {
@@ -303,18 +303,12 @@ class PostgresSearchMigrationTest extends TestCase
         }
         $meta = $this->migrationMetaData('TestSearchFixture', $this->searchBlockModel());
         $this->migrate($meta);
-        // The table as it was before agaia-4747, holding an embedding and both hashes.
+        // The table as it was before agaia-4747, with both hashes under their old names.
         $this->db->execute(
             'ALTER TABLE "' . self::TABLE . '" RENAME COLUMN "searchDesiredHash" TO "searchSemanticHash"'
         );
         $this->db->execute(
             'ALTER TABLE "' . self::TABLE . '" RENAME COLUMN "searchActualHash" TO "searchEmbeddingHash"'
-        );
-        $embedding = '[' . implode(',', array_fill(0, 768, 0.25)) . ']';
-        $this->db->execute(
-            'INSERT INTO "' . self::TABLE . '" ("id", "subject", "searchSemanticHash", "searchEmbedding", '
-            . '"searchEmbeddingHash") VALUES (?, ?, ?, CAST(? AS vector), ?)',
-            array('a', 'Subject', 'desired', $embedding, 'actual')
         );
 
         $this->migrate($meta);
@@ -324,15 +318,6 @@ class PostgresSearchMigrationTest extends TestCase
         $this->assertFalse($this->column('searchEmbeddingHash'));
         $this->assertSame('character varying(64)', $this->columnType('searchDesiredHash'));
         $this->assertSame('character varying(64)', $this->columnType('searchActualHash'));
-        $row = $this->db->fetchOne(
-            'SELECT "searchDesiredHash", "searchActualHash", "searchEmbedding"::text AS "embedding" FROM "'
-            . self::TABLE . '" WHERE "id" = ?',
-            \PDO::FETCH_ASSOC,
-            array('a')
-        );
-        $this->assertSame('desired', $row['searchDesiredHash']);
-        $this->assertSame('actual', $row['searchActualHash']);
-        $this->assertSame(768, count(explode(',', $row['embedding'])));
     }
 
     /**
@@ -418,8 +403,7 @@ class PostgresSearchMigrationTest extends TestCase
                 self::TABLE,
                 $definition['columns'],
                 $indexes,
-                $definition['searchColumns'],
-                $definition['renames']
+                $definition['searchColumns']
             );
             return;
         }

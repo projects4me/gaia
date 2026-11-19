@@ -138,8 +138,7 @@ class Migration
                 $tableName,
                 $tableDefinition['columns'],
                 $indexes,
-                $tableDefinition['searchColumns'],
-                $tableDefinition['renames']
+                $tableDefinition['searchColumns']
             );
             $this->migrateTriggers($model, $meta);
             return;
@@ -251,16 +250,10 @@ class Migration
             'indexes' => array(),
             // vector/tsvector columns, which Phalcon's Column cannot express: name => definition
             'searchColumns' => array(),
-            // columns an existing table renames in place: name => previous name
-            'renames' => array(),
         );
 
         // Traverse through the fields and process them
         foreach ($meta[$model]['fields'] as $field => $schema) {
-            $previous = $schema['renamedFrom'] ?? null;
-            if (is_string($previous) && $previous !== '' && $previous !== $schema['name']) {
-                $tableDescription['renames'][$schema['name']] = $previous;
-            }
             $searchDefinition = $handler->searchColumnDefinition($schema, $meta[$model]['fields']);
             if ($searchDefinition !== null) {
                 $tableDescription['searchColumns'][$schema['name']] = $searchDefinition;
