@@ -78,4 +78,37 @@ class IssueSearchColumnsTest extends TestCase
             $this->db->rollback();
         }
     }
+
+    /**
+     * The indexer writes the embedding columns on its own: an ORM update of a model loaded before that write keeps it.
+     *
+     * @return void
+     */
+    public function testUpdateKeepsANewerIndexerWrite()
+    {
+        $issue = Issue::findFirst(array('conditions' => 'deleted = 0'));
+        $this->assertNotFalse($issue, 'The test database has no issue to update');
+
+        $this->db->begin();
+        try {
+            // The indexer writes after the model was loaded
+            $this->db->execute(
+                'UPDATE "issues" SET "searchEmbeddingHash" = ? WHERE "id" = ?',
+                array('indexer-hash-4656', $issue->id)
+            );
+
+            $issue->subject = 'Stale model update';
+            $this->assertTrue($issue->update(), implode('; ', array_map('strval', $issue->getMessages())));
+
+            $row = $this->db->fetchOne(
+                'SELECT "searchEmbeddingHash" AS h FROM "issues" WHERE "id" = ?',
+                \Phalcon\Db\Enum::FETCH_ASSOC,
+                array($issue->id)
+            );
+            $this->assertSame('indexer-hash-4656', $row['h']);
+        } finally {
+            // Undo the update and anything its behaviours wrote
+            $this->db->rollback();
+        }
+    }
 }
