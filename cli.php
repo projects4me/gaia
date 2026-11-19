@@ -133,15 +133,9 @@ foreach ($argv as $k => $arg) {
 try {
     // Handle incoming arguments
     $console->handle($arguments);
-} catch (\Phalcon\Exception $e) {
-    // Do Phalcon related stuff here
-    // ..
-    fwrite(STDERR, $e->getMessage() . PHP_EOL);
-    exit(1);
 } catch (\Throwable $throwable) {
+    // Every error, Phalcon 4 or 5 (whose own exceptions no longer extend
+    // Phalcon\Exception), goes to stderr with a failing exit code.
     fwrite(STDERR, $throwable->getMessage() . PHP_EOL);
-    exit(1);
-} catch (\Exception $exception) {
-    fwrite(STDERR, $exception->getMessage() . PHP_EOL);
     exit(1);
 }

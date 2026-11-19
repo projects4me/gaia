@@ -7,12 +7,15 @@
 namespace Gaia\Exception;
 
 /**
- * This class is responsible for turning a framework (Phalcon) exception into a
- * JSON error response.
+ * This class is responsible for turning an uncaught framework (Phalcon) error
+ * into a JSON error response.
  *
- * Dispatcher not-found errors become 404, everything else 500. The raw Phalcon
- * message can name tables, columns or PHQL, so it is only returned when debug
- * is on.
+ * It takes any Throwable: in Phalcon 5 the framework's own exceptions
+ * (Mvc\Dispatcher\Exception, Mvc\Model\Exception, ...) no longer extend
+ * Phalcon\Exception, and PHP errors (TypeError, ...) are not exceptions at all.
+ *
+ * Dispatcher not-found errors become 404, everything else 500. The raw message
+ * can name tables, columns or PHQL, so it is only returned when debug is on.
  *
  * @package Gaia
  * @category Exception
@@ -31,7 +34,7 @@ class PhalconError
     ];
 
     /**
-     * @var \Phalcon\Exception
+     * @var \Throwable
      */
     private $exception;
 
@@ -41,10 +44,10 @@ class PhalconError
     private $debug;
 
     /**
-     * @param \Phalcon\Exception $exception
-     * @param bool $debug whether the raw Phalcon message may be returned
+     * @param \Throwable $exception
+     * @param bool $debug whether the raw message may be returned
      */
-    public function __construct(\Phalcon\Exception $exception, bool $debug = false)
+    public function __construct(\Throwable $exception, bool $debug = false)
     {
         $this->exception = $exception;
         $this->debug = $debug;
