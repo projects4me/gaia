@@ -33,7 +33,7 @@ $models['Conversationroomcount'] = array(
                         WHERE "Room"."roomType" = \'vote\'
                         AND "Comment"."relatedTo" = \'conversationrooms\' AND "Comment"."relatedId" = "Room".id
                         AND "Comment".deleted = \'0\' AND "Comment".comment = \'I disagree\') AS "disagreeCount",
-                    (SELECT MAX("Comment"."dateCreated") FROM comments AS "Comment"
+                    (SELECT MAX("Comment"."dateCreated")::timestamp(0) FROM comments AS "Comment"
                         WHERE "Comment"."relatedTo" = \'conversationrooms\' AND "Comment"."relatedId" = "Room".id
                         AND "Comment".deleted = \'0\') AS "lastCommentDate"
                   FROM conversation_rooms AS "Room"
