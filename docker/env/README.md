@@ -31,4 +31,6 @@ docker run --rm gaia-env:next php --ri phalcon    # Version => 5.23.0
 ## Publishing
 
 The images are built locally. The reviewer publishes the tags to the registry; nothing here pushes.
-Dockerfiles, compose files and CI still use env-dev until a later issue switches them.
+CI builds `gaia-env:current` and `gaia-env:next` from this recipe (`.github/workflows/ci.yml`, layers in the GitHub Actions cache),
+so keep the build args there equal to `build.sh`. The local Dockerfile, `docker/dev/Dockerfile`, `upgrade-report` and
+`cache-dependencies.yml` still use env-dev until a published tag exists.
