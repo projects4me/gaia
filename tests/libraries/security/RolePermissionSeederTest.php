@@ -178,7 +178,7 @@ class RolePermissionSeederTest extends TestCase
         Permission::loadEffectivePermissions($userId);
         $acl = new Acl(\Phalcon\Di::getDefault(), $mode);
         $method = new \ReflectionMethod(Acl::class, 'isResourceAllowed');
-        $method->setAccessible(true);
+        gaiaTestMakeAccessible($method);
         return $method->invoke($acl, $resourceName);
     }
 
@@ -299,7 +299,7 @@ class RolePermissionSeederTest extends TestCase
         $role = $this->createRole('SeedTest Field Unset');
         $controller = $this->makePermissionController();
         $method = new \ReflectionMethod(PermissionController::class, 'saveFieldModePermission');
-        $method->setAccessible(true);
+        gaiaTestMakeAccessible($method);
 
         $method->invoke($controller, [
             'resourceName' => 'issue.subject',
@@ -401,16 +401,16 @@ class RolePermissionSeederTest extends TestCase
         $reflection = new \ReflectionClass($controller);
 
         $modelNameProperty = $reflection->getProperty('modelName');
-        $modelNameProperty->setAccessible(true);
+        gaiaTestMakeAccessible($modelNameProperty);
         $modelNameProperty->setValue($controller, Permission::class);
 
         $responseProperty = $reflection->getProperty('response');
-        $responseProperty->setAccessible(true);
+        gaiaTestMakeAccessible($responseProperty);
         $responseProperty->setValue($controller, new \Phalcon\Http\Response());
 
         if ($id !== null) {
             $idProperty = $reflection->getProperty('id');
-            $idProperty->setAccessible(true);
+            gaiaTestMakeAccessible($idProperty);
             $idProperty->setValue($controller, $id);
         }
 

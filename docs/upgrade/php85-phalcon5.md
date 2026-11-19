@@ -301,3 +301,9 @@ Apart from A1 and A2, no response changes for a reason other than R2 and R3. Sti
    deprecations complete.
 3. Fix C1 and C2 (CI and test data, both stacks) and A2.
 4. Fix W3 and W4 (most entries), then W1, W6 to W9, and W5.
+
+## Guards that go away at the switch-over
+
+- `curl_close()` in `tools/api-tester/src/HttpClient.php` and `HermesObserver.php` runs only when `PHP_VERSION_ID < 80000` (it is a no-op since PHP 8.0 and deprecated in 8.5).
+- `setAccessible()` in the tests goes through `gaiaTestMakeAccessible()` in `tests/TestHelper.php`, which calls it only when `PHP_VERSION_ID < 80100`.
+- Both guards, and the helper, go away when PHP 7.4 is dropped.

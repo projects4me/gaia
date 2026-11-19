@@ -170,7 +170,7 @@ class AclSystemRecordTest extends TestCase
     private function newAcl($settingUpdate)
     {
         $property = new \ReflectionProperty(Permission::class, 'effectivePermissions');
-        $property->setAccessible(true);
+        gaiaTestMakeAccessible($property);
         $property->setValue(null, [
             'setting.update' => [['allowed' => $settingUpdate, 'roleId' => 'test-role']],
         ]);
