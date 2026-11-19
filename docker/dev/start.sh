@@ -20,6 +20,6 @@ else
     exit 1
 fi
 
-# Start Apache2 in foreground
+# Start Apache2 in foreground, with the scheduler for docker/cron/crontab beside it
 echo "Starting Apache2..."
-exec apache2-foreground
+exec /bin/bash /var/www/html/docker/cron/scheduler.sh apache2-foreground

@@ -21,6 +21,9 @@ RUN chmod -R 755 /var/www/html
 # install dependencies
 RUN composer install
 
+# Scheduler for the daily tasks in docker/cron/crontab; -test fails the build on a crontab line that does not parse
+RUN /var/www/html/docker/cron/install-supercronic.sh && supercronic -test /var/www/html/docker/cron/crontab
+
 # Make the start script executable
 RUN chmod +x /var/www/html/docker/dev/start.sh
 

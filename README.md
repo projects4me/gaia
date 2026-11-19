@@ -17,6 +17,24 @@ design, more so than most of the other frameworks, it was the best choice to bui
 
 # Installation
 
+## Scheduled tasks
+The Gaia containers run the CLI tasks in [`docker/cron/crontab`](docker/cron/crontab) with
+[supercronic](https://github.com/aptible/supercronic), started beside Apache by `docker/cron/scheduler.sh` (the deployed
+image through `docker/dev/start.sh`, the local `gaia` service as its command). Times are UTC, the jobs run as
+`www-data` with the container's environment, their output goes to the container log (`docker logs gaia-dev`), and a
+job never starts while its previous run is still going in that container. Every container that runs the scheduler runs
+the jobs, so when the deployed image runs as more than one replica, set `GAIA_SCHEDULER=off` on all but one. If
+the scheduler exits, the container stops with a failure, so it is restarted rather than left serving without its daily
+tasks.
+
+| Schedule (UTC) | Command | Why |
+|---|---|---|
+| 03:00 daily | `php cli.php search reindex` | Backfill the semantic text and re-publish records whose embedding is missing or stale |
+
+Set `GAIA_SCHEDULER=off` to skip the scheduler (the test containers do). The image build runs `supercronic -test` on
+the crontab, and `tests/tools/docker/CrontabTest.php` checks that every job runs a task and action that exist. After a
+change to the crontab, rebuild the local image (`docker compose build gaia`) or restart the container.
+
 # Contributions
 
 # License

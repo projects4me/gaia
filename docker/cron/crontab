@@ -1,0 +1,7 @@
+# Gaia scheduled tasks, run by supercronic (docker/cron/scheduler.sh). Times are UTC.
+# Job output goes to the container log. supercronic never starts a job while its previous run is still going.
+#
+# minute hour day-of-month month day-of-week command
+
+# Backfill the semantic text and re-publish records whose embedding is missing or stale (agaia-4658).
+0 3 * * * php /var/www/html/cli.php search reindex
