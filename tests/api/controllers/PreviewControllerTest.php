@@ -73,7 +73,7 @@ class PreviewControllerTest extends TestCase
     {
         $token = new Downloadtoken();
         $token->id = $this->guid();
-        $token->downloadToken = \Phalcon\Text::random(\Phalcon\Text::RANDOM_ALNUM, 36);
+        $token->downloadToken = (new \Phalcon\Support\Helper\Str\Random())(\Phalcon\Support\Helper\Str\Random::RANDOM_ALNUM, 36);
         $token->uploadId = $upload->id;
         $token->relatedId = $upload->relatedId;
         $token->relatedTo = $upload->relatedTo;

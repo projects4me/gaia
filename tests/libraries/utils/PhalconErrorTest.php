@@ -45,7 +45,7 @@ class PhalconErrorTest extends TestCase
 
     public function testOtherPhalconErrorIs500()
     {
-        $error = new PhalconError(new \Phalcon\Exception('Column "secret" does not belong to table "agents"'));
+        $error = new PhalconError(new \Phalcon\Mvc\Model\Exception('Column "secret" does not belong to table "agents"'));
 
         $this->assertSame(500, $error->statusCode());
         $this->assertSame('internalServerError', $error->body()['error']);
@@ -53,30 +53,45 @@ class PhalconErrorTest extends TestCase
 
     public function testRawMessageIsHiddenWithoutDebug()
     {
-        $error = new PhalconError(new \Phalcon\Exception('Column "secret" does not belong to table "agents"'));
+        $error = new PhalconError(new \Phalcon\Mvc\Model\Exception('Column "secret" does not belong to table "agents"'));
 
         $this->assertStringNotContainsString('secret', json_encode($error->body()));
     }
 
     public function testRawMessageIsReturnedInDebug()
     {
-        $error = new PhalconError(new \Phalcon\Exception('Column "secret" does not belong to table "agents"'), true);
+        $error = new PhalconError(new \Phalcon\Mvc\Model\Exception('Column "secret" does not belong to table "agents"'), true);
 
         $this->assertSame('Column "secret" does not belong to table "agents"', $error->body()['error_description']);
     }
 
     /**
-     * In Phalcon 5 the framework's exceptions (Mvc\Model\Exception, ...) no
-     * longer extend Phalcon\Exception; they must still become a JSON 500.
+     * Any other exception must still become a JSON 500.
      */
     public function testExceptionOutsidePhalconExceptionIs500()
     {
         $exception = new \RuntimeException('Column "secret" does not belong to table "agents"');
-        $this->assertNotInstanceOf(\Phalcon\Exception::class, $exception);
 
         $error = new PhalconError($exception);
 
         $this->assertFalse($error->isNotFound());
+        $this->assertSame(500, $error->statusCode());
+        $this->assertSame('internalServerError', $error->body()['error']);
+        $this->assertStringNotContainsString('secret', json_encode($error->body()));
+    }
+
+    /**
+     * Gaia's InternalError (which replaced Phalcon 4's base exception) is
+     * no Gaia\Exception\Exception, so it reaches PhalconError: a 500 that hides
+     * its message unless debug is on.
+     */
+    public function testInternalErrorIs500AndHidesItsMessage()
+    {
+        $exception = new \Gaia\Exception\InternalError('Relationship secret not found.');
+        $this->assertNotInstanceOf(\Gaia\Exception\Exception::class, $exception);
+
+        $error = new PhalconError($exception);
+
         $this->assertSame(500, $error->statusCode());
         $this->assertSame('internalServerError', $error->body()['error']);
         $this->assertStringNotContainsString('secret', json_encode($error->body()));

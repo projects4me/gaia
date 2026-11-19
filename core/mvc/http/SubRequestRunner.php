@@ -138,7 +138,7 @@ class SubRequestRunner
     /**
      * The response a separate HTTP call would have got for the exception:
      * Gaia exceptions build their own, anything else (Phalcon's exceptions,
-     * which in Phalcon 5 no longer extend Phalcon\Exception, and PHP errors)
+     * Gaia's InternalError and PHP errors)
      * goes through PhalconError: 404 for a dispatcher not-found, 500 otherwise.
      * No stack trace reaches the body.
      *

@@ -172,7 +172,7 @@ class Clause
      * @todo Allow : without spaces
      * @param string $statement
      * @param \Gaia\Core\MVC\Models\Query $query
-     * @throws \Phalcon\Exception
+     * @throws \Gaia\Exception\InternalError
      */
     public function prepareWhere($statement, $query)
     {

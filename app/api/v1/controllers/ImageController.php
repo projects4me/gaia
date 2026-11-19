@@ -25,13 +25,13 @@ class ImageController extends \Phalcon\Mvc\Controller
      *
      * @method getAction
      * @param string $id
-     * @throws \Phalcon\Exception
+     * @throws \Gaia\Exception\InternalError
      */
     public function getAction($id)
     {
 
         if (!(isset($id) && !empty($id))) {
-            throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+            throw new \Gaia\Exception\InternalError('Id must be set, please refer to guides.');
         }
 
         $filePath = APP_PATH . DS . 'filesystem' . DS . 'img' . DS . $id;

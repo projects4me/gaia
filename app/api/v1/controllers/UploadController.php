@@ -37,7 +37,7 @@ class UploadController extends RestController
         $logger->debug("Gaia.Controllers.Upload->getAction");
 
         if (!(isset($this->id) && !empty($this->id))) {
-            throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+            throw new \Gaia\Exception\InternalError('Id must be set, please refer to guides.');
         }
 
         $this->assertUploadInScope($this->id);

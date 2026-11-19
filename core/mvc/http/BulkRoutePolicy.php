@@ -100,7 +100,7 @@ class BulkRoutePolicy
      */
     public static function controllerIsAnonymous(string $resource): bool
     {
-        $class = 'Gaia\\MVC\\REST\\Controllers\\' . \Phalcon\Text::camelize($resource) . 'Controller';
+        $class = 'Gaia\\MVC\\REST\\Controllers\\' . (new \Phalcon\Support\Helper\Str\Camelize())($resource) . 'Controller';
         if (!class_exists($class)) {
             return true;
         }

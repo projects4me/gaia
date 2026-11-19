@@ -25,7 +25,7 @@ class DownloadController extends \Phalcon\Mvc\Controller
      * @param string $id
      * @todo Handle validation
      * @todo Generate Image
-     * @throws \Phalcon\Exception
+     * @throws \Gaia\Exception\InternalError
      */
     public function getAction($id)
     {
@@ -34,7 +34,7 @@ class DownloadController extends \Phalcon\Mvc\Controller
 
         if (!(isset($id) && !empty($id))) {
             $logger->error("No id was provided");
-            throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+            throw new \Gaia\Exception\InternalError('Id must be set, please refer to guides.');
         }
 
         $params = array(

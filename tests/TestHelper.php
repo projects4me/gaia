@@ -4,8 +4,8 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-use Phalcon\DI;
-use Phalcon\DI\FactoryDefault;
+use Phalcon\Di\Di;
+use Phalcon\Di\FactoryDefault;
 use Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Stream as StreamAdapter;
 use Gaia\Libraries\Meta\Manager as metaManager;
@@ -37,7 +37,7 @@ $logger->setLogLevel(Logger::DEBUG);
 
 
 $di = new FactoryDefault();
-DI::reset();
+Di::reset();
 
 $di->set(
     'fileHandler',
@@ -108,4 +108,4 @@ $di->set(
     }
 );
 
-DI::setDefault($di);
+Di::setDefault($di);

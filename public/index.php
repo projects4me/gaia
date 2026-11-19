@@ -264,8 +264,8 @@ try {
 } catch (\Gaia\Exception\Exception $e) {
     return $e->handle();
 } catch (\Throwable $e) {
-    // Anything else: Phalcon's own exceptions (which no longer extend
-    // Phalcon\Exception in Phalcon 5) and PHP errors still answer in JSON.
+    // Anything else: Phalcon's own exceptions, Gaia's InternalError
+    // and PHP errors still answer in JSON.
     $debug = ($GLOBALS['settings']['application']['debug'] ?? false) === true;
     $error = new \Gaia\Exception\PhalconError($e, $debug);
     if (isset($logger)) {

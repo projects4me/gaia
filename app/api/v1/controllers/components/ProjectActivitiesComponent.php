@@ -8,7 +8,7 @@ namespace Gaia\MVC\REST\Controllers\Components;
 
 use Phalcon\Events\Event as Event;
 use Gaia\MVC\Models\Activity;
-use Phalcon\Text;
+use Phalcon\Support\Helper\Str\Humanize;
 
 use function Gaia\Libraries\Utils\create_guid as create_guid;
 
@@ -136,7 +136,7 @@ class ProjectActivitiesComponent
      * @param string $activityDescription A description of the activity being logged.
      * @param string $activityType The type of activity being logged (default is 'updated').
      *
-     * @throws \Phalcon\Exception If there is an error while saving the activity.
+     * @throws \Gaia\Exception\InternalError If there is an error while saving the activity.
      */
     protected function logActivity($model, $activityConfig, $controllerName, $activityDescription, $activityType = 'updated')
     {
@@ -157,7 +157,7 @@ class ProjectActivitiesComponent
             }
             $activity->save();
         } catch (\Exception $e) {
-            throw new \Phalcon\Exception($e->getMessage());
+            throw new \Gaia\Exception\InternalError($e->getMessage());
         }
     }
 
@@ -176,8 +176,8 @@ class ProjectActivitiesComponent
         $message = '';
 
         if ($messageTemplate && $field) {
-            $oldValue = ucwords(Text::humanize($model->audit[$field]['old']));
-            $newValue = ucwords(Text::humanize($model->audit[$field]['new']));
+            $oldValue = ucwords((new Humanize())($model->audit[$field]['old']));
+            $newValue = ucwords((new Humanize())($model->audit[$field]['new']));
             $message = sprintf($messageTemplate, $oldValue, $newValue);
         } elseif ($messageHandler &&  method_exists($this, $messageHandler)) {
             $message = $this->{$messageHandler}($model);

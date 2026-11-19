@@ -9,7 +9,6 @@ namespace Gaia\MVC\REST\Controllers\Components;
 use \Phalcon\Events\Event as Event;
 use function Gaia\Libraries\Utils\create_guid as create_guid;
 use \Gaia\MVC\Models\Activity;
-use Phalcon\Text;
 /**
  * Class TimeloggedComponent
  *

@@ -1,8 +1,8 @@
 <?php
 
-$loader = new \Phalcon\Loader();
+$loader = new \Phalcon\Autoload\Loader();
 
-$loader->registerNamespaces(
+$loader->setNamespaces(
     [
     "Gaia\\Tests\\Controller" => APP_PATH . '/tests/api/controllers',
     "Gaia\\Tests\\Controller\\Components\\Events" => APP_PATH . '/tests/api/controllers/components/events',
