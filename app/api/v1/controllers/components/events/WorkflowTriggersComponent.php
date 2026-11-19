@@ -57,10 +57,10 @@ class WorkflowTriggersComponent implements WorkflowChangeEvents
      * @param ProjectIdResolver|null   $resolver
      */
     public function __construct(
-        TriggerEventCatalog $catalog = null,
-        TriggerPayload $payloads = null,
-        TriggerDispatcher $dispatcher = null,
-        ProjectIdResolver $resolver = null
+        ?TriggerEventCatalog $catalog = null,
+        ?TriggerPayload $payloads = null,
+        ?TriggerDispatcher $dispatcher = null,
+        ?ProjectIdResolver $resolver = null
     ) {
         $this->catalog = $catalog ?: new TriggerEventCatalog();
         $this->payloads = $payloads ?: new TriggerPayload();

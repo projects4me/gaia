@@ -103,7 +103,7 @@ class DownloadController extends \Phalcon\Mvc\Controller
      *
      * @return void
      */
-    final private function deleteUploadAndToken($upload, $downloadToken)
+    private function deleteUploadAndToken($upload, $downloadToken)
     {
         $deleteUploadType = [
             'export' => [
