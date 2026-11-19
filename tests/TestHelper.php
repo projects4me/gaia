@@ -25,17 +25,6 @@ require APP_PATH . '/autoload.php';
 
 require APP_PATH . '/tests/autoload.php';
 
-/**
- * ReflectionMethod and ReflectionProperty::setAccessible() is a no-op since PHP 8.1 and deprecated in 8.5, but PHP 7.4
- * still needs it. Remove the guard at the switch-over (docs/upgrade/php85-phalcon5.md).
- */
-function gaiaTestMakeAccessible($reflector)
-{
-    if (PHP_VERSION_ID < 80100) {
-        $reflector->setAccessible(true);
-    }
-}
-
 global $logger;
 $loggerAdapter = new StreamAdapter(APP_PATH . '/logs/application.log');
 $logger = new Logger(

@@ -77,7 +77,6 @@ class ModifiedUserBehaviorTest extends TestCase
     private function getCurrentUser()
     {
         $method = new \ReflectionMethod(modifiedUserBehavior::class, 'getCurrentUser');
-        gaiaTestMakeAccessible($method);
 
         return $method->invoke(new modifiedUserBehavior());
     }

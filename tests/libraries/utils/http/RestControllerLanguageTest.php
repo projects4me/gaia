@@ -24,7 +24,6 @@ class RestControllerLanguageTest extends TestCase
         $class = new \ReflectionClass(RestController::class);
         $controller = $class->newInstanceWithoutConstructor();
         $method = $class->getMethod('loadMessages');
-        gaiaTestMakeAccessible($method);
         return $method->invoke($controller, $codes);
     }
 

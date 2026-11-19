@@ -39,7 +39,6 @@ class PostgresIssueTableDefinitionTest extends TestCase
         $meta = include APP_PATH . '/app/metadata/model/Issue.php';
 
         $prepare = new \ReflectionMethod(Migration::class, 'prepareTableDefinition');
-        gaiaTestMakeAccessible($prepare);
         $definition = $prepare->invoke(new Migration($di), 'Issue', $meta);
 
         $sql = (new Postgresql())->createTable($definition['tableName'], 'public', array(

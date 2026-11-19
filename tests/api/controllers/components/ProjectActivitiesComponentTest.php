@@ -31,7 +31,6 @@ class ProjectActivitiesComponentTest extends TestCase
     public function testRelatedKeysAreFieldsOfTheirModels()
     {
         $property = new \ReflectionProperty(ProjectActivitiesComponent::class, 'activityMeta');
-        gaiaTestMakeAccessible($property);
         $activityMeta = $property->getValue(new ProjectActivitiesComponent());
 
         $checked = 0;
@@ -64,7 +63,6 @@ class ProjectActivitiesComponentTest extends TestCase
         $model->projectId = 'project-1';
 
         $method = new \ReflectionMethod(ProjectActivitiesComponent::class, 'membershipCreatedActivity');
-        gaiaTestMakeAccessible($method);
 
         $this->assertSame('New member <b>Jane</b> has been added to the project', $method->invoke($component, $model));
     }

@@ -106,11 +106,9 @@ class TokenControllerTest extends TestCase
         $userMock->method('getOAuthRequest')->willReturn($request);
 
         $actionName = $userControllerReflection->getProperty('actionName');
-        gaiaTestMakeAccessible($actionName);
         $actionName->setValue($userMock, 'get');
 
         $authorize = $userControllerReflection->getMethod('authorize');
-        gaiaTestMakeAccessible($authorize);
         $this->expectException(\Gaia\Exception\UnAuthorized::class);
         $this->expectExceptionMessage('Invalid Token');
         $authorize->invoke($userMock);
@@ -479,7 +477,6 @@ class TokenControllerTest extends TestCase
             $this->assertNotFalse($tokenRow, 'The issued access token is stored');
 
             $setUser = $userControllerReflection->getMethod('setUser');
-            gaiaTestMakeAccessible($setUser);
             $this->expectException(\Gaia\Exception\UnAuthorized::class);
             $this->expectExceptionMessage(\Gaia\Libraries\Security\AclLockoutGuard::ACCOUNT_INACTIVE_ERROR);
             $setUser->invoke($userMock, $tokenRow);
@@ -614,7 +611,6 @@ class TokenControllerTest extends TestCase
 
         // Set response property
         $response = $userControllerReflection->getProperty('response');
-        gaiaTestMakeAccessible($response);
         $response->setValue($userMock, new \Phalcon\Http\Response());
 
         return [$userControllerReflection, $userMock];
@@ -714,7 +710,6 @@ class TokenControllerTest extends TestCase
             ->onlyMethods(['getOAuthRequest', 'getOAuthServer'])->getMock();
         $tokenControllerReflection = new \ReflectionClass($tokenMock);
         $response = $tokenControllerReflection->getProperty('response');
-        gaiaTestMakeAccessible($response);
         $response->setValue($tokenMock, new \Phalcon\Http\Response());
         return $tokenMock;
     }
