@@ -13,8 +13,13 @@ namespace Gaia\Core\MVC\Http;
  * Authorization header. Phalcon's getMethod(), getURI() and getHeader() are
  * final and read $_SERVER, so the runner overlays the superglobals with
  * superglobals() while the call runs; the body cannot come from php://input
- * (that is the outer request's body), so getRawBody() and getJsonRawBody()
- * return the given body.
+ * (that is the outer request's body), so getRawBody() returns the given body
+ * and Phalcon's getJsonRawBody() decodes it. getJsonRawBody() is not
+ * overridden: Phalcon 5 declares a union return type that PHP 7.4 cannot
+ * parse, and a mismatched override is a fatal error when the class loads,
+ * which left POST /bulk with an empty 200 on Phalcon 5 (agaia-4694).
+ * Without an override an empty body decodes as it does for a separate HTTP
+ * call on the running stack.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia
@@ -216,22 +221,6 @@ class SubRequest extends \Phalcon\Http\Request implements OAuthRequestSource
     public function getRawBody(): string
     {
         return $this->body === null ? '' : (string) json_encode($this->body);
-    }
-
-    /**
-     * The decoded body, like Phalcon's: false when there is no body.
-     *
-     * @param bool $associative arrays instead of stdClass objects
-     * @return \stdClass|array|bool
-     */
-    public function getJsonRawBody(bool $associative = false)
-    {
-        $raw = $this->getRawBody();
-        if ($raw === '') {
-            return false;
-        }
-
-        return json_decode($raw, $associative);
     }
 
     /**

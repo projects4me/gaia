@@ -68,6 +68,13 @@ PHPMailer 6.12.0, nikic/php-parser 4.19.5). Dropped: `ext-psr` (Phalcon 5 doesn'
   MySQL tables but leaves existing ones as they are. Checked with the snapshot script: the baseline dump
   (`db/Dump20261118.sql`) and an empty database (with `uuid-ossp`, which the views need) give identical snapshots
   after `migration migrate` before and after the change.
+- **Overrides of Phalcon methods with union return types** (agaia-4694). Phalcon 5 declares return types such
+  as `Request::getJsonRawBody(): \stdClass|array|bool` that PHP 7.4 cannot parse, so a Gaia override can't match
+  both stacks; a mismatched one is a fatal error when the class loads. `SubRequest` overrode `getJsonRawBody()`,
+  which made `POST /bulk` die silently with an empty 200 on next. It now overrides only `getRawBody(): string`
+  and inherits Phalcon's decoding. Side effect: a call without a body decodes as `null` on Phalcon 4 and `{}`
+  on Phalcon 5, inside a bulk batch exactly as for a separate HTTP call. Until the switch-over, don't override
+  Phalcon methods whose Phalcon 5 return type is a union.
 
 ## Deprecations and warnings report
 
