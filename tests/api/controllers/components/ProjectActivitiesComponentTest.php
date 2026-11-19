@@ -70,6 +70,71 @@ class ProjectActivitiesComponentTest extends TestCase
     }
 
     /**
+     * A controller whose activity config has no afterUpdate (membership), or
+     * no config at all, is skipped without a warning or a logged activity.
+     *
+     * @return void
+     */
+    public function testAfterUpdateSkipsControllersWithoutAfterUpdateConfig()
+    {
+        global $logger;
+        $logger = $logger ?: new \Phalcon\Logger('test');
+        $component = $this->getMockBuilder(ProjectActivitiesComponent::class)
+            ->onlyMethods(['logActivity'])
+            ->getMock();
+        $component->expects($this->never())->method('logActivity');
+
+        $warnings = [];
+        set_error_handler(function ($no, $str) use (&$warnings) {
+            $warnings[] = $str;
+            return true;
+        });
+        try {
+            foreach (['membership', 'unknown'] as $name) {
+                $controller = $this->getMockBuilder(\stdClass::class)->addMethods(['getControllerName'])->getMock();
+                $controller->method('getControllerName')->willReturn($name);
+                $component->afterUpdate(new \Phalcon\Events\Event('t', $controller), $controller, new \stdClass());
+            }
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame([], $warnings);
+    }
+
+    /**
+     * A controller without any activity config is skipped without a warning or a logged activity.
+     *
+     * @return void
+     */
+    public function testAfterCreateSkipsControllersWithoutAfterCreateConfig()
+    {
+        global $logger;
+        $logger = $logger ?: new \Phalcon\Logger('test');
+        $component = $this->getMockBuilder(ProjectActivitiesComponent::class)
+            ->onlyMethods(['logActivity'])
+            ->getMock();
+        $component->expects($this->never())->method('logActivity');
+
+        $warnings = [];
+        set_error_handler(function ($no, $str) use (&$warnings) {
+            $warnings[] = $str;
+            return true;
+        });
+        try {
+            foreach (['unknown'] as $name) {
+                $controller = $this->getMockBuilder(\stdClass::class)->addMethods(['getControllerName'])->getMock();
+                $controller->method('getControllerName')->willReturn($name);
+                $component->afterCreate(new \Phalcon\Events\Event('t', $controller), $controller, (object) ['id' => 'model-1']);
+            }
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame([], $warnings);
+    }
+
+    /**
      * The fields of a model, from its metadata.
      *
      * @param  string $modelName

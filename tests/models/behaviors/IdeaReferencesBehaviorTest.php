@@ -187,7 +187,7 @@ class IdeaReferencesBehaviorTest extends TestCase
      */
     private function model(array $values, array $snapshot = [], array $fields = [])
     {
-        $model = $this->getMockBuilder(ModelInterface::class)
+        $model = $this->getMockBuilder(DynamicModelStub::class)
             ->addMethods(['getSnapshotData', 'getMetaData'])
             ->getMockForAbstractClass();
         $model->method('getSnapshotData')->willReturn($snapshot);

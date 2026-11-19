@@ -8,6 +8,7 @@ namespace Gaia\Tests\Libraries\Utils;
 
 use Gaia\Libraries\Utils\TranslationCache;
 use Gaia\MVC\Models\Behaviors\translationCacheBehavior;
+use Gaia\Tests\Models\Behaviors\DynamicModelStub;
 use Phalcon\Mvc\ModelInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -89,7 +90,7 @@ class TranslationCacheBehaviorTest extends TestCase
      */
     private function model($locale, array $oldSnapshot)
     {
-        $model = $this->getMockBuilder(ModelInterface::class)
+        $model = $this->getMockBuilder(DynamicModelStub::class)
             ->addMethods(['getSnapshotData', 'getOldSnapshotData'])
             ->getMockForAbstractClass();
         $model->method('getSnapshotData')->willReturn(['locale' => $locale]);

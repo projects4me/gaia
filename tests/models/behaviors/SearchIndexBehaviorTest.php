@@ -237,7 +237,7 @@ class SearchIndexBehaviorTest extends TestCase
      */
     private function model(array $values, ?array $block = null)
     {
-        $model = $this->getMockBuilder(ModelInterface::class)
+        $model = $this->getMockBuilder(DynamicModelStub::class)
             ->addMethods(['getMetaData', 'getSnapshotData', 'getOldSnapshotData', 'getModelName'])
             ->getMockForAbstractClass();
         $model->method('getMetaData')->willReturn([

@@ -57,7 +57,7 @@ class PlanVersionBehaviorTest extends TestCase
             ->getMock();
         $behavior->method('getLatestVersion')->willReturn('2');
 
-        $model = $this->createMock(ModelInterface::class);
+        $model = $this->createMock(DynamicModelStub::class);
         $model->version = 99;
 
         $behavior->notify('beforeValidationOnCreate', $model);
@@ -87,7 +87,7 @@ class PlanVersionBehaviorTest extends TestCase
                 return '1';
             });
 
-        $model = $this->createMock(ModelInterface::class);
+        $model = $this->createMock(DynamicModelStub::class);
         $model->ideaId = 'idea-1';
 
         $behavior->notify('beforeValidationOnCreate', $model);
