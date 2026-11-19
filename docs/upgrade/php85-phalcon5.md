@@ -88,20 +88,23 @@ it leaves the ini settings alone instead.
 
 ## CI next-stack report
 
-Every PR runs a non-blocking `next-stack` job in `.github/workflows/ci.yml` on `rananoman/gaia:env-next` (the
-published `gaia-env:next`), with `continue-on-error: true` and its own vendor cache key. Only `api-testing` (the
-current stack) blocks the PR. The job loads the baseline dump, runs `migration migrate --dry-run` and then
-`migrate`, takes a schema snapshot, prepares `pr4m_test`, runs PHPUnit (JUnit), runs `tools/upgrade/lint-next.sh`
-in place (`IMAGE=none`), and runs the api-tester `backend` and `acl` modes with `--record-bodies` against Apache
-with `diagnostics.ini` loaded. Each step after the database load runs even when an earlier one failed. It uploads
-everything as the `upgrade-next` artifact. `api-testing` uploads its schema snapshot and api-tester reports (with
-bodies) as `upgrade-current`.
+Every PR runs a non-blocking `next-stack` job in `.github/workflows/ci.yml`. `gaia-env:next` is not published,
+so the job builds it from `docker/env/Dockerfile` with the `build_next` args of `docker/env/build.sh` (layers
+cached in the GitHub Actions cache), starts it as the `gaia-next` container on the host network and runs each
+step inside it. It has its own vendor cache key. Only `api-testing` (the current stack) blocks the PR. The job
+loads the baseline dump, runs `migration migrate --dry-run` and then `migrate`, takes a schema snapshot, prepares
+`pr4m_test`, runs PHPUnit (JUnit), runs `tools/upgrade/lint-next.sh` in place (`IMAGE=none`), and runs the
+api-tester `backend` and `acl` modes with `--record-bodies` against Apache with `diagnostics.ini` loaded. Every
+check step has `continue-on-error`, so the job stays green when something fails on the next stack and the failure
+shows in the summary instead; the job only fails when the image or container can't be set up. It records each
+check step's outcome in `upgrade/steps.txt` and uploads everything as the `upgrade-next` artifact. `api-testing`
+uploads its schema snapshot and api-tester reports (with bodies) as `upgrade-current`.
 
 The `upgrade-report` job runs `tools/upgrade/compare-stacks.sh`: it diffs the two schema snapshots, compares the
 api-tester reports with `compare-reports.php --details`, runs `deprecations-report.php` on the diagnostics, lint
 and PHPUnit logs, and writes the summary (`tools/upgrade/next-stack-summary.php`) to the job summary: PHPUnit
 failures, dry-run statements, schema differences, api-tester failures, response differences and deprecations,
-each with a count and its artifact. `n/a` means the step that writes the input failed or didn't run. The
+each with a count and its artifact, then the next-stack steps that failed. `n/a` means the step that writes the input failed or didn't run. The
 comparison files are uploaded as `upgrade-report`.
 
 To reproduce the summary locally from a CI run:

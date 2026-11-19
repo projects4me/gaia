@@ -8,7 +8,8 @@
 #
 #   current: schema.sql, api-tester-{backend,acl}-report.json
 #   next:    schema.sql, dry-run.txt, phpunit-junit.xml, api-tester-{backend,acl}-report.json,
-#            php-diagnostics.log, php-diagnostics-phpunit.log, php-lint-next.log
+#            php-diagnostics.log, php-diagnostics-phpunit.log, php-lint-next.log,
+#            steps.txt (one "<step> <outcome>" line per check step)
 #
 # It writes schema.diff, compare-{backend,acl}.txt and deprecations.md into <folder>. Missing
 # inputs show as n/a in the summary; the script only fails on a bad folder.
@@ -59,3 +60,18 @@ if [ ${#logs[@]} -gt 0 ]; then
 fi
 
 php "$tools/upgrade/next-stack-summary.php" .
+
+# The next-stack check steps don't fail the job, so list the ones that failed here
+if [ -f next/steps.txt ]; then
+    failed="$(awk '$2 != "success" && $2 != "skipped"' next/steps.txt)"
+    echo
+    echo "### Next-stack steps"
+    echo
+    if [ -z "$failed" ]; then
+        echo "All check steps succeeded."
+    else
+        echo "| Step | Outcome |"
+        echo "| --- | --- |"
+        echo "$failed" | awk '{ printf "| %s | %s |\n", $1, $2 }'
+    fi
+fi
