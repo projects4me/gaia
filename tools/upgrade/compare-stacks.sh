@@ -6,8 +6,8 @@
 # summary (tools/upgrade/next-stack-summary.php). <folder> holds current/ and next/, each either
 # flat or laid out as in the repo (upgrade/, output/, logs/, as the CI artifacts unpack):
 #
-#   current: schema.sql, api-tester-{backend,acl}-report.json
-#   next:    schema.sql, dry-run.txt, phpunit-junit.xml, api-tester-{backend,acl}-report.json,
+#   current: schema.sql, api-tester-{client,backend,acl}-report.json
+#   next:    schema.sql, dry-run.txt, phpunit-junit.xml, api-tester-{client,backend,acl}-report.json,
 #            php-diagnostics.log, php-diagnostics-phpunit.log, php-lint-next.log,
 #            steps.txt (one "<step> <outcome>" line per check step)
 #
@@ -43,7 +43,7 @@ if [ -f current/schema.sql ] && [ -f next/schema.sql ]; then
     diff -u current/schema.sql next/schema.sql > schema.diff
 fi
 
-for mode in backend acl; do
+for mode in client backend acl; do
     php "$tools/api-tester/bin/compare-reports.php" \
         "current/api-tester-$mode-report.json" "next/api-tester-$mode-report.json" \
         --details > "compare-$mode.txt" 2>&1

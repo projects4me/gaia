@@ -10,7 +10,7 @@
  *
  *   current/schema.sql, next/schema.sql, schema.diff
  *   next/phpunit-junit.xml, next/dry-run.txt
- *   next/api-tester-{backend,acl}-report.json, compare-{backend,acl}.txt
+ *   next/api-tester-{client,backend,acl}-report.json, compare-{client,backend,acl}.txt
  *   deprecations.md
  *
  * Usage: php tools/upgrade/next-stack-summary.php <folder>
@@ -43,14 +43,14 @@ $summary->add('PHPUnit failures', 'upgrade-next/phpunit-junit.xml', $findings->p
             $read('current/schema.sql') !== null && $read('next/schema.sql') !== null
         )
     );
-foreach (['backend', 'acl'] as $mode) {
+foreach (['client', 'backend', 'acl'] as $mode) {
     $summary->add(
         "api-tester {$mode} failures",
         "upgrade-next/api-tester-{$mode}-report.json",
         $findings->apiTesterFailures($read("next/api-tester-{$mode}-report.json"))
     );
 }
-foreach (['backend', 'acl'] as $mode) {
+foreach (['client', 'backend', 'acl'] as $mode) {
     $summary->add(
         "Response differences ({$mode})",
         "upgrade-report/compare-{$mode}.txt",

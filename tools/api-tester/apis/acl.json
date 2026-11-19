@@ -399,7 +399,7 @@
       "resource": "issue",
       "auth": "aclFields",
       "query": {
-        "limit": 5,
+        "limit": 100,
         "page": 1,
         "query": "(projectId CONTAINS api-test-project-001)"
       },

@@ -241,6 +241,16 @@ jobs:
           --mode backend,acl \
           --record-bodies
 
+    # Report only: client mode has known failures in CI (SMTP, secure settings, timestamps)
+    # that the next-stack comparison is meant to surface, so it must not gate this job.
+    - name: Run client API testing (report only)
+      continue-on-error: true
+      run: |
+        tools/api-tester/harness/run-api-tests.sh \
+          --base-uri http://127.0.0.1 \
+          --mode client \
+          --record-bodies
+
     - name: Upload API testing report
       if: always()
       uses: actions/upload-artifact@v4
@@ -256,6 +266,7 @@ jobs:
         name: upgrade-current
         path: |
           upgrade/schema.sql
+          output/api-tester-client-report.json
           output/api-tester-backend-report.json
           output/api-tester-acl-report.json
         if-no-files-found: warn
@@ -337,7 +348,7 @@ jobs:
     - name: Start the gaia-next container
       shell: bash
       run: |
-        mkdir -p upgrade logs
+        mkdir -p upgrade logs logs/tests
         docker run -d --name gaia-next --network host \
           -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -v "$RUNNER_TEMP:$RUNNER_TEMP" \
           -w "$GITHUB_WORKSPACE" \
@@ -471,7 +482,7 @@ jobs:
       run: |
         tools/api-tester/harness/run-api-tests.sh \
           --base-uri http://127.0.0.1 \
-          --mode backend,acl \
+          --mode client,backend,acl \
           --record-bodies
 
     - name: Collect the Apache log
@@ -502,6 +513,7 @@ jobs:
         name: upgrade-next
         path: |
           upgrade/
+          output/api-tester-client-report.json
           output/api-tester-backend-report.json
           output/api-tester-acl-report.json
           logs/php-diagnostics.log

@@ -103,7 +103,7 @@ cached in the GitHub Actions cache), starts it as the `gaia-next` container on t
 step inside it. It has its own vendor cache key. Only `api-testing` (the current stack) blocks the PR. The job
 loads the baseline dump, runs `migration migrate --dry-run` and then `migrate`, takes a schema snapshot, prepares
 `pr4m_test`, runs PHPUnit (JUnit), runs `tools/upgrade/lint-next.sh` in place (`IMAGE=none`), and runs the
-api-tester `backend` and `acl` modes with `--record-bodies` against Apache with `diagnostics.ini` loaded. Every
+api-tester `client`, `backend` and `acl` modes with `--record-bodies` against Apache with `diagnostics.ini` loaded. Every
 check step has `continue-on-error`, so the job stays green when something fails on the next stack and the failure
 shows in the summary instead; the job only fails when the image or container can't be set up. It records each
 check step's outcome in `upgrade/steps.txt` and uploads everything as the `upgrade-next` artifact. `api-testing`
