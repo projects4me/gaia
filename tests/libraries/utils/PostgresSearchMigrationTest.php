@@ -356,7 +356,6 @@ class PostgresSearchMigrationTest extends TestCase
         $di->set('migrationHandler', $handler);
         $di->set('metaManager', new Manager($di));
         $prepare = new \ReflectionMethod(Migration::class, 'prepareTableDefinition');
-        gaiaTestMakeAccessible($prepare);
         $definition = $prepare->invoke(new Migration($di), 'TestSearchFixture', $meta);
         $indexes = $meta['TestSearchFixture']['indexes'];
         // Same order as Migration::migrateTable: the preflight runs before any DDL.
@@ -405,7 +404,6 @@ class PostgresSearchMigrationTest extends TestCase
             }
         });
         $read = new \ReflectionMethod(Migration::class, 'getMetaData');
-        gaiaTestMakeAccessible($read);
 
         return $read->invoke(new Migration($di), $model);
     }

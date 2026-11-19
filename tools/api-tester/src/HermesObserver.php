@@ -35,9 +35,6 @@ class HermesObserver
         $body = curl_exec($ch);
         $status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $error = curl_error($ch);
-        if (PHP_VERSION_ID < 80000) {
-            curl_close($ch);
-        }
 
         if ($body === false || $status < 200 || $status >= 300) {
             throw new \RuntimeException(

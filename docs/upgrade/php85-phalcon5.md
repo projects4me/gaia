@@ -4,7 +4,8 @@
 > The `next-stack` job (PHP 7.4 / Phalcon 4.1), the 7.4 entry of the `deployed-image-config` matrix and the
 > `upgrade-report` job were removed from `ci.yml`; CI runs 8.5 only, with the image tag in one place (`GAIA_ENV_TAG`).
 > The CI sections below (`gaia-env:current`/`next`, `gaia-current`, "CI next-stack report", the switch-over CI notes)
-> describe that earlier setup and are kept as history. `tools/upgrade/` stays for now: PHPUnit tests still load it.
+> describe that earlier setup and are kept as history.
+> PHP 7.4 support was dropped in the code (agaia-4749): `composer.json` requires `~8.5.0`, the `PHP_VERSION_ID` guards are gone. `tools/upgrade/` stays for now: PHPUnit tests still load it.
 
 Notes for the move from PHP 7.4 / Phalcon 4.1 to PHP 8.5 / Phalcon 5.23. Later issues add their findings here.
 
@@ -311,12 +312,6 @@ Apart from A1 and A2, no response changes for a reason other than R2 and R3. Sti
    deprecations complete.
 3. Fix C1 and C2 (CI and test data, both stacks) and A2.
 4. Fix W3 and W4 (most entries), then W1, W6 to W9, and W5.
-
-## Guards that go away at the switch-over
-
-- `curl_close()` in `tools/api-tester/src/HttpClient.php` and `HermesObserver.php` runs only when `PHP_VERSION_ID < 80000` (it is a no-op since PHP 8.0 and deprecated in 8.5).
-- `setAccessible()` in the tests goes through `gaiaTestMakeAccessible()` in `tests/TestHelper.php`, which calls it only when `PHP_VERSION_ID < 80100`.
-- Both guards, and the helper, go away when PHP 7.4 is dropped.
 
 ## Switch-over
 

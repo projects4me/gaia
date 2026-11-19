@@ -55,7 +55,6 @@ class MigrationDriverErrorTest extends TestCase
         $di->set('metaMigration', $migration);
 
         $run = new \ReflectionMethod(Driver::class, 'run');
-        gaiaTestMakeAccessible($run);
 
         $this->expectException(\Gaia\Exception\MigrationDriver::class);
         $this->expectExceptionMessage($thrown->getMessage());

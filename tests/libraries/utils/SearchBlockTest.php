@@ -396,7 +396,6 @@ class SearchBlockTest extends TestCase
         $model = new Agaia4655Widget($this->di, self::SEARCH_COLUMNS);
 
         $method = new \ReflectionMethod(auditBehavior::class, 'beforeUpdate');
-        gaiaTestMakeAccessible($method);
         $method->invokeArgs(new auditBehavior(), [&$model]);
 
         $this->assertNull($model->isChanged);
