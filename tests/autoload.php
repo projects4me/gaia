@@ -14,6 +14,8 @@ $loader->registerNamespaces(
     "GaiaDev" => APP_PATH . '/tools/gaia-dev/src',
     "Gaia\\Tests\\Tools\\ApiTester" => APP_PATH . '/tests/tools/api-tester',
     "ApiTester" => APP_PATH . '/tools/api-tester/src',
+    "Gaia\\Tests\\Tools\\Upgrade" =>APP_PATH . "/tests/tools/upgrade",
+    "Upgrade" => APP_PATH . "/tools/upgrade/src",
     ]
 );
 

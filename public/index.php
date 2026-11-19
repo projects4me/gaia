@@ -12,8 +12,12 @@ use Phalcon\Events\Manager as EventsManager;
  *
  * @todo Remove before publishing
  */
-error_reporting(E_ERROR);
-ini_set('display_errors', true);
+// docker/php/conf.d/diagnostics.ini (gaia-test services) sets gaia.diagnostics=1: keep its
+// E_ALL and log-only settings so deprecations and warnings reach the PHP log.
+if (!get_cfg_var('gaia.diagnostics')) {
+    error_reporting(E_ERROR);
+    ini_set('display_errors', true);
+}
 
 // Setup the application constants
 define('APP_PATH', realpath('..'));

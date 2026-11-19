@@ -36,3 +36,20 @@ diff before.sql after.sql
   MySQL tables but leaves existing ones as they are. Checked with the snapshot script: the baseline dump
   (`db/Dump20261118.sql`) and an empty database (with `uuid-ossp`, which the views need) give identical snapshots
   after `migration migrate` before and after the change.
+
+## Deprecations and warnings report
+
+PHP 8.x reports many upgrade problems only as `E_DEPRECATED` or `E_WARNING`. `public/index.php` normally
+lowers `error_reporting` to `E_ERROR`; when `docker/php/conf.d/diagnostics.ini` is loaded (`gaia.diagnostics = 1`)
+it leaves the ini settings alone instead.
+
+- **HTTP (api-tester):** the `gaia-test` and `gaia-test-hermes-down` services mount `diagnostics.ini`
+  (`E_ALL`, `log_errors=On`, `display_errors=Off`) and log to `logs/php-diagnostics.log`.
+- **PHPUnit:** `tests/phpunit.xml` and `tests/TestHelper.php` write warnings and deprecations to
+  `logs/php-diagnostics-phpunit.log` without failing tests.
+- **Lint on the next image:** `tools/upgrade/lint-next.sh [log]` runs `php -l` with `E_ALL` on every PHP file
+  (outside `vendor` and the gaia-dev fixtures) in `gaia-env:next` and writes `logs/php-lint-next.log` in the
+  same format.
+- **Report:** `php tools/upgrade/deprecations-report.php logs/php-diagnostics.log logs/php-diagnostics-phpunit.log logs/php-lint-next.log`
+  groups entries by message pattern and file:line, separates Gaia code from vendor, counts them and prints
+  markdown for a CI job summary.
