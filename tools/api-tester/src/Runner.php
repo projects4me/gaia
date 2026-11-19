@@ -18,9 +18,12 @@ class Runner
     private $token;
     private $tokens = [];
     private $hermesHealthyChecked = false;
+    private $recordBodies;
+    private $runId;
 
-    public function __construct($baseUri, $apisPath, $fixturesPath, $reportPath, $filter = null, $hermesUrl = null, $mailUrl = null)
+    public function __construct($baseUri, $apisPath, $fixturesPath, $reportPath, $filter = null, $hermesUrl = null, $mailUrl = null, $recordBodies = false)
     {
+        $this->recordBodies = (bool) $recordBodies;
         $this->baseUri = $baseUri;
         $this->apisPath = $apisPath;
         $this->fixturesPath = $fixturesPath;
@@ -48,7 +51,8 @@ class Runner
 
         // Unique per suite run so unique-constrained fields (e.g. tags.tag) survive
         // soft-deleted leftovers from prior runs without requiring DB re-seed.
-        $this->fixtures->setValue('runId', bin2hex(random_bytes(4)));
+        $this->runId = bin2hex(random_bytes(4));
+        $this->fixtures->setValue('runId', $this->runId);
 
         $results = [];
         $passed = 0;
@@ -118,6 +122,8 @@ class Runner
             'apisFile' => $this->apisPath,
             'fixturesFile' => $this->fixturesPath,
             'hermesUrl' => $this->hermesUrl,
+            'runId' => $this->runId,
+            'recordBodies' => $this->recordBodies,
             'summary' => [
                 'passed' => $passed,
                 'failed' => $failed,
@@ -268,7 +274,7 @@ class Runner
             throw $e;
         }
 
-        return [
+        $result = [
             'id' => $id,
             'status' => empty($failures) ? 'passed' : 'failed',
             'request' => [
@@ -282,6 +288,12 @@ class Runner
             'expects' => $expects,
             'failures' => $failures,
         ];
+        if ($this->recordBodies) {
+            // The catalog path (before placeholders are resolved) groups cases per endpoint.
+            $result['endpoint'] = $method . ' ' . $api['path'];
+            $result['response'] = array_merge($result['response'], ResponseRecord::fromResponse($response));
+        }
+        return $result;
     }
 
     /**

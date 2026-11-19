@@ -34,6 +34,7 @@ class Cli
         $filter = isset($options['filter']) ? $options['filter'] : null;
         $hermesUrl = isset($options['hermes-url']) ? rtrim($options['hermes-url'], '/') : null;
         $mailUrl = isset($options['mail-url']) ? rtrim($options['mail-url'], '/') : null;
+        $recordBodies = isset($options['record-bodies']);
 
         if (!$baseUri) {
             fwrite(STDERR, "Missing required --base-uri\n");
@@ -50,7 +51,7 @@ class Cli
             return 1;
         }
 
-        $runner = new Runner($baseUri, $apisPath, $fixturesPath, $reportPath, $filter, $hermesUrl, $mailUrl);
+        $runner = new Runner($baseUri, $apisPath, $fixturesPath, $reportPath, $filter, $hermesUrl, $mailUrl, $recordBodies);
         return $runner->run();
     }
 
@@ -107,6 +108,8 @@ Options:
   --filter <substring>     Only run API ids/paths containing this substring
   --hermes-url <url>       Live Hermes base URL (required for cases with hermes.expect)
   --mail-url <url>         SMTP sink HTTP API base URL (required for cases with a mail block)
+  --record-bodies          Write each case's status, content type and body into the report
+                           (compare two reports with bin/compare-reports.php)
   --help                   Show this help
 
 Auth env vars (optional; can also come from fixtures.auth):
