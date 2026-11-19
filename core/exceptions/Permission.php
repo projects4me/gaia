@@ -31,7 +31,7 @@ class Permission extends \Exception
      *
      * @method __construct
      */
-    public function __construct($message = "", $code = 0, Throwable $previous = null, $additionalData = null)
+    public function __construct($message = "", $code = 0, ?Throwable $previous = null, $additionalData = null)
     {
         // Call the parent constructor
         parent::__construct($message, $code, $previous);

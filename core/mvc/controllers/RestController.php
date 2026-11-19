@@ -264,7 +264,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      *
      * @return void
      */
-    final private function loadComponents()
+    private function loadComponents()
     {
         global $logger;
 
@@ -1592,7 +1592,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * @param  array $array
      * @return void
      */
-    final private function removeDuplicates(array &$array)
+    private function removeDuplicates(array &$array)
     {
         foreach ($array as $id => &$obj) {
             foreach ($obj as $attr => &$data) {
@@ -1624,7 +1624,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      *                               If not required then that field will be added into the object.
      * @return array
      */
-    final private function updateFields($values, $params, $requireScalarFields)
+    private function updateFields($values, $params, $requireScalarFields)
     {
         $updatedValues = [];
         $aliasRegex = '/\b\w+\sAS\s\w+\b/';
@@ -1854,7 +1854,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      *
      * @return void
      */
-    final private function removeSecureFields(&$values, $modelAlias)
+    private function removeSecureFields(&$values, $modelAlias)
     {
         foreach ($values as $key => $value) {
             if (!is_array($value)) {
@@ -1889,7 +1889,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * @param  string $fieldName The name of the field to check
      * @return bool Returns true if the field is marked as secure, false otherwise
      */
-    final private function isSecureField($modelName, $fieldName)
+    private function isSecureField($modelName, $fieldName)
     {
         $modelMetadata = $this->di->get('metaManager')->getModelMeta($modelName);
         return isset($modelMetadata['fields'][$fieldName]['secure']) && $modelMetadata['fields'][$fieldName]['secure'];
@@ -1902,7 +1902,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * @param  array  &$value Reference to array containing the field value to mask
      * @return void
      */
-    final private function maskSecureField($key, &$value)
+    private function maskSecureField($key, &$value)
     {
         $value[$key] = "********";
     }

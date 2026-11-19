@@ -25,6 +25,13 @@ class DialectFactory
     protected $di;
 
     /**
+     * The dialect object
+     *
+     * @var object
+     */
+    protected $dialect;
+
+    /**
      * DialectFactory constructor.
      *
      * @param \Phalcon\DiInterface $di

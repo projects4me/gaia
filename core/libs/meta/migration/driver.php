@@ -89,7 +89,7 @@ class Driver
      * @param Plan|null $plan
      * @return array Success or Error
      */
-    private function run(AdapterInterface $connection, Plan $plan = null)
+    private function run(AdapterInterface $connection, ?Plan $plan = null)
     {
         $result = array();
         $models = array();

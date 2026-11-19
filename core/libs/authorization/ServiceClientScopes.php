@@ -31,7 +31,7 @@ class ServiceClientScopes
      * @param array|null $config The `serviceClients` configuration; read from
      *                           the application config when omitted.
      */
-    public function __construct(array $config = null)
+    public function __construct(?array $config = null)
     {
         $this->config = $config === null ? self::loadConfig() : $config;
     }

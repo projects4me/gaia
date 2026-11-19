@@ -59,7 +59,7 @@ class TestEmailSender
     /**
      * @param MailerErrorMapper|null $errorMapper
      */
-    public function __construct(MailerErrorMapper $errorMapper = null)
+    public function __construct(?MailerErrorMapper $errorMapper = null)
     {
         $this->errorMapper = $errorMapper ?: new MailerErrorMapper();
     }

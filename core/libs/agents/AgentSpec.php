@@ -44,7 +44,7 @@ class AgentSpec
      * @param AgentToolGrants|null  $toolGrants
      * @param AgentSkillGrants|null $skillGrants
      */
-    public function __construct(AgentToolGrants $toolGrants = null, AgentSkillGrants $skillGrants = null)
+    public function __construct(?AgentToolGrants $toolGrants = null, ?AgentSkillGrants $skillGrants = null)
     {
         $this->toolGrants = $toolGrants ?: new AgentToolGrants();
         $this->skillGrants = $skillGrants ?: new AgentSkillGrants();
