@@ -221,6 +221,8 @@ jobs:
         ln -s "$GITHUB_WORKSPACE" /var/www/html
         chown -R www-data:www-data "$GITHUB_WORKSPACE"
         # setsid: Apache must outlive this docker exec session.
+        # Throwaway key so the settings API can store secure values (SMTP password) in CI.
+        export SETTINGS_ENCRYPTION_KEY="$(openssl rand -base64 32)"
         setsid apache2-foreground > /tmp/apache.log 2>&1 < /dev/null &
         for i in $(seq 1 30); do
           curl -s -o /dev/null "http://127.0.0.1/" && echo "Apache is up" && exit 0
@@ -435,6 +437,8 @@ jobs:
         ln -s "$GITHUB_WORKSPACE" /var/www/html
         chown -R www-data:www-data "$GITHUB_WORKSPACE"
         # setsid: Apache must outlive this docker exec session.
+        # Throwaway key so the settings API can store secure values (SMTP password) in CI.
+        export SETTINGS_ENCRYPTION_KEY="$(openssl rand -base64 32)"
         setsid apache2-foreground > /tmp/apache.log 2>&1 < /dev/null &
         for i in $(seq 1 30); do
           curl -s -o /dev/null "http://127.0.0.1/" && echo "Apache is up" && exit 0
