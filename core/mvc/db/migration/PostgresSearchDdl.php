@@ -70,6 +70,13 @@ class PostgresSearchDdl
     public const TEXT_SOURCE_TYPES = array('varchar', 'char', 'text', 'tinytext', 'mediumtext', 'longtext');
 
     /**
+     * The text search config of a tsvector that names none; queries against it must use the same one.
+     *
+     * @var string
+     */
+    public const DEFAULT_TEXT_SEARCH_CONFIG = 'english';
+
+    /**
      * This function tells whether a metadata field type is built by this class.
      *
      * @param string $type Field type from model metadata
@@ -249,7 +256,7 @@ class PostgresSearchDdl
             );
         }
 
-        $config = isset($generated['config']) ? $generated['config'] : 'english';
+        $config = isset($generated['config']) ? $generated['config'] : self::DEFAULT_TEXT_SEARCH_CONFIG;
         if (!preg_match('/^[a-z_][a-z0-9_]*$/', $config)) {
             throw new \Gaia\Exception\MigrationDriver(
                 "Tsvector field {$schema['name']} has an invalid text search config '{$config}'."

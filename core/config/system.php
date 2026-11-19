@@ -36,7 +36,11 @@ $config['system'] = [
         'moduleFields' => \Gaia\Libraries\Security\AclMapCatalog::buildModuleFields(
             $this->di->get('metaManager')
         ),
-    ]
+    ],
+    'search' => [
+        // pg_trgm word_similarity a fuzzy search match needs, from 0 to 1.
+        'fuzzyThreshold' => \Gaia\Libraries\Search\FuzzySearcher::DEFAULT_THRESHOLD,
+    ],
 ];
 
 return $config;

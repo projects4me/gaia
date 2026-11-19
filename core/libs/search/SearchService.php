@@ -1,0 +1,230 @@
+<?php
+
+/**
+ * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
+ */
+
+namespace Gaia\Libraries\Search;
+
+use Gaia\Libraries\Meta\Manager;
+use Gaia\Libraries\Security\Acl;
+
+/**
+ * Module-agnostic search: runs every searcher over each requested type, inside what the user may see, and fuses
+ * their rankings into one list.
+ *
+ * Each type needs <module>.get (a denied type denies the whole request, as unauthorized query criteria do, D-027).
+ * Every candidate query stays inside the module's record scope and deleted = 0 before ranking and LIMIT (D-022).
+ * A searcher is skipped for a type when the user may not read a field it matches, and a display field the user may
+ * not read is left out of the results.
+ *
+ * @author Agent Odysseus <agent.odysseus@projects4.me>
+ * @package Gaia\Libraries\Search
+ * @license http://www.gnu.org/licenses/agpl.html AGPLv3
+ */
+class SearchService
+{
+    /**
+     * How many candidates each searcher gives per type, as a multiple of the limit: fusion needs more than the
+     * limit to reorder.
+     *
+     * @var int
+     */
+    private const CANDIDATE_FACTOR = 2;
+
+    /**
+     * @var SearchableRegistry
+     */
+    private $registry;
+
+    /**
+     * @var Manager
+     */
+    private $metaManager;
+
+    /**
+     * @var Acl
+     */
+    private $acl;
+
+    /**
+     * @var SearchScope
+     */
+    private $scope;
+
+    /**
+     * @var Searcher[]
+     */
+    private $searchers;
+
+    /**
+     * @var RankFusion
+     */
+    private $fusion;
+
+    /**
+     * @var DisplayLoader
+     */
+    private $display;
+
+    /**
+     * @param SearchableRegistry $registry
+     * @param Manager $metaManager
+     * @param Acl $acl The ACL of the user searching
+     * @param SearchScope $scope
+     * @param Searcher[] $searchers
+     * @param RankFusion $fusion
+     * @param DisplayLoader $display
+     */
+    public function __construct(
+        SearchableRegistry $registry,
+        Manager $metaManager,
+        Acl $acl,
+        SearchScope $scope,
+        array $searchers,
+        RankFusion $fusion,
+        DisplayLoader $display
+    ) {
+        $this->registry = $registry;
+        $this->metaManager = $metaManager;
+        $this->acl = $acl;
+        $this->scope = $scope;
+        $this->searchers = $searchers;
+        $this->fusion = $fusion;
+        $this->display = $display;
+    }
+
+    /**
+     * This function searches the requested types and returns the results, best first.
+     *
+     * @param SearchRequest $request
+     * @return array Each ['type', 'id', 'title' (when readable), 'snippet' (when readable), 'score', 'matchedBy']
+     * @throws \Gaia\Exception\BadRequest When a type is not searchable
+     * @throws \Gaia\Exception\Access When the user may not get a type
+     */
+    public function search(SearchRequest $request)
+    {
+        // Authorize every type before searching any
+        $entries = array();
+        foreach ($request->types() as $type) {
+            $entry = $this->registry->forType($type);
+            if ($entry === null) {
+                throw new \Gaia\Exception\BadRequest("'{$type}' is not a search type.");
+            }
+            $this->acl->checkModelAccess($entry['model'], 'get');
+            $entries[$type] = $entry;
+        }
+
+        $targets = array();
+        $rankings = array();
+        $depth = $request->limit() * self::CANDIDATE_FACTOR;
+        foreach ($entries as $type => $entry) {
+            $targets[$type] = $this->target($entry);
+            foreach ($this->searchers as $searcher) {
+                if (!$this->mayMatch($targets[$type], $searcher)) {
+                    continue;
+                }
+                $ids = $searcher->rank($targets[$type], $request->query(), $depth);
+                $rankings[] = array(
+                    'kind' => $searcher->kind(),
+                    'keys' => array_map(function ($id) use ($type) {
+                        return $type . ':' . $id;
+                    }, $ids),
+                );
+            }
+        }
+
+        $fused = array_slice($this->fusion->fuse($rankings), 0, $request->limit());
+
+        return $this->results($fused, $targets, $request->query());
+    }
+
+    /**
+     * This function builds a type's target: its block, table, fields and the user's scope over it.
+     *
+     * @param array $entry The registry entry
+     * @return SearchTarget
+     */
+    private function target(array $entry)
+    {
+        $meta = $this->metaManager->getModelMeta($entry['model']);
+        $fields = isset($meta['fields']) ? $meta['fields'] : array();
+        $scope = $this->scope->forModel($entry['model'], $fields);
+
+        return new SearchTarget($entry, $meta['tableName'], $fields, $scope['sql'], $scope['bind']);
+    }
+
+    /**
+     * Whether a searcher may run for a type: it has fields there and the user may read every one of them.
+     *
+     * @param SearchTarget $target
+     * @param Searcher $searcher
+     * @return bool
+     */
+    private function mayMatch(SearchTarget $target, Searcher $searcher)
+    {
+        $fields = $searcher->fields($target);
+        foreach ($fields as $field) {
+            if (!$this->acl->isFieldActionAllowed($target->model(), $field, 'get')) {
+                return false;
+            }
+        }
+
+        return $fields !== array();
+    }
+
+    /**
+     * This function turns the fused items into results with their display values.
+     *
+     * @param array $fused Items from RankFusion, keys "type:id"
+     * @param SearchTarget[] $targets Keyed by type
+     * @param string $query
+     * @return array
+     */
+    private function results(array $fused, array $targets, $query)
+    {
+        $idsByType = array();
+        foreach ($fused as $item) {
+            list($type, $id) = explode(':', $item['key'], 2);
+            $idsByType[$type][] = $id;
+        }
+
+        $values = array();
+        foreach ($idsByType as $type => $ids) {
+            $target = $targets[$type];
+            $values[$type] = $this->display->load($target, $ids, $query, $this->readableDisplay($target));
+        }
+
+        $results = array();
+        foreach ($fused as $item) {
+            list($type, $id) = explode(':', $item['key'], 2);
+            if (!isset($values[$type][$id])) {
+                continue;
+            }
+            $results[] = array('type' => $type, 'id' => $id) + $values[$type][$id] + array(
+                'score' => $item['score'],
+                'matchedBy' => $item['matchedBy'],
+            );
+        }
+
+        return $results;
+    }
+
+    /**
+     * This function returns the display entries of a type whose fields the user may read.
+     *
+     * @param SearchTarget $target
+     * @return array
+     */
+    private function readableDisplay(SearchTarget $target)
+    {
+        $display = array();
+        foreach ($target->block('display') as $key => $field) {
+            if ($field !== null && $this->acl->isFieldActionAllowed($target->model(), $field, 'get')) {
+                $display[$key] = $field;
+            }
+        }
+
+        return $display;
+    }
+}
