@@ -311,3 +311,46 @@ Apart from A1 and A2, no response changes for a reason other than R2 and R3. Sti
 - `curl_close()` in `tools/api-tester/src/HttpClient.php` and `HermesObserver.php` runs only when `PHP_VERSION_ID < 80000` (it is a no-op since PHP 8.0 and deprecated in 8.5).
 - `setAccessible()` in the tests goes through `gaiaTestMakeAccessible()` in `tests/TestHelper.php`, which calls it only when `PHP_VERSION_ID < 80100`.
 - Both guards, and the helper, go away when PHP 7.4 is dropped.
+
+## Switch-over
+
+Deploy and CI move from `gaia-env:7.4.21-phalcon4.1.2` to `gaia-env:8.5.12-phalcon5.23.0`. The code still boots on
+7.4 (`composer.json` keeps `~7.4.0 || ~8.5.0`, the Phalcon 4 shim in `core/libs/compat/` and the `PHP_VERSION_ID`
+guards stay), so during the rollback window a rollback is only an image swap.
+
+CI: `graph-drift`, `api-testing` and `deployed-image-config` run on 8.5; the `next-stack` job now runs the same checks on
+the 7.4 image and also blocks, so new code can't break 7.4. `deployed-image-config` checks both stacks.
+
+### Runbook (dev first, qa later)
+
+1. Freeze merges to dev and pause Agamemnon.
+2. Back up the dev database (`pg_dump`). Note the last 7.4 deploy image: `rananoman/gaia:<branch>` of the last PR merged
+   before the switch, as shown in its cd-ovh run.
+3. Merge. cd-ovh builds on the 8.5 image and runs `helm upgrade`.
+4. Check the pod: it reaches Running; the logs show "Database migrations completed"; `php -v` shows 8.5.12; no fatal
+   errors in the Apache error log.
+5. Smoke test: log in, list and search issues, create and edit an issue, comment, @mention, upload, role/permission
+   screens, ideas/plans, forgot password, service enrollment token, a Hermes live update, and one cron/workflow run.
+6. Watch the logs for a day, then resume merges and Agamemnon. Repeat for qa by merging dev into qa.
+
+### Rollback
+
+- **Fast (minutes):** run the `Rollback Gaia | OVH` workflow (`.github/workflows/rollback-ovh.yml`) with the last 7.4
+  deploy tag, or run `helm upgrade gaia-dev . -f values-dev.yaml --set image.tag=<last 7.4 tag>` on the host.
+  `helm rollback` does not work, because `values-dev.yaml` uses the moving `dev-latest` tag with `pullPolicy: Always`.
+  Keep merges frozen, because any merge redeploys 8.5.
+- **Lasting:** revert the switch PR on dev. CI and cd-ovh then rebuild `dev-latest` on `gaia-env:7.4.21-phalcon4.1.2`,
+  the image that has run since agaia-4745. Then run `helm upgrade` without `--set` to return to `dev-latest`, and
+  resume merges.
+- **Database:** no restore expected. The switch changes no metadata, every mock found 0 schema differences, and data
+  written by 8.5 (bcrypt hashes, JSON, serialize, OAuth tokens) reads the same on 7.4. Restore the backup only if data
+  is damaged; that loses anything written after the switch.
+
+### `rollback-ovh.yml` inputs
+
+| Input | Meaning |
+|---|---|
+| `image_tag` | The `rananoman/gaia` tag to deploy: the last 7.4 deploy tag. Added as `--set image.tag=<image_tag>`. |
+| `environment` | `dev` or `qa` (default `dev`): the `gaia-<env>` release and `values-<env>.yaml`. |
+
+It uses the same secrets as `cd-ovh.yml`.

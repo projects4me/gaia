@@ -1,4 +1,4 @@
-FROM ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
+FROM ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0
 
 COPY ./ /var/www/html
 COPY ./docker/php/conf.d/custom.ini /usr/local/etc/php/conf.d/zz-custom.ini

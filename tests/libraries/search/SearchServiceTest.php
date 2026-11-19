@@ -442,7 +442,7 @@ class SearchServiceTest extends TestCase
      * @param CandidateQuery|null $candidates
      * @return SearchService
      */
-    private function service($maxDistance = SemanticSearcher::DEFAULT_MAX_DISTANCE, CandidateQuery $candidates = null)
+    private function service($maxDistance = SemanticSearcher::DEFAULT_MAX_DISTANCE, ?CandidateQuery $candidates = null)
     {
         $di = \Phalcon\Di::getDefault();
         $metaManager = $di->get('metaManager');
