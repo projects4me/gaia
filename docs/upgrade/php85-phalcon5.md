@@ -26,6 +26,38 @@ PG_DUMP="docker exec postgres-dev pg_dump -U <user>" tools/upgrade/schema-snapsh
 diff before.sql after.sql
 ```
 
+## Phalcon 4 names on Phalcon 5 (shim)
+
+Until the switch-over the same code boots on both images. `core/libs/compat/phalcon5.php`, required first in
+`autoload.php`, defines the Phalcon 4 class names Gaia still uses when it runs on Phalcon 5 (it detects
+`Phalcon\Autoload\Loader`) and does nothing on Phalcon 4:
+
+| Phalcon 4 name | On Phalcon 5 |
+|---|---|
+| `Phalcon\Di`, `Phalcon\DiInterface` | `class_alias` of `Phalcon\Di\Di`, `Phalcon\Di\DiInterface` |
+| `Phalcon\Config` | `class_alias` of `Phalcon\Config\Config` |
+| `Phalcon\Logger` | `class_alias` of `Phalcon\Logger\Logger` (same constants and `setLogLevel`) |
+| `Phalcon\Exception` | `compat/phalcon5/Exception.php`: extends `\Exception`. Phalcon 5's own exceptions don't extend it. |
+| `Phalcon\Loader` | `compat/phalcon5/Loader.php`: `Phalcon\Autoload\Loader` with `registerNamespaces`, `registerClasses`, `registerDirs` calling the `set*` methods |
+| `Phalcon\Text` | `compat/phalcon5/Text.php`: `camelize`, `humanize`, `lower`, `random` and the `RANDOM_*` constants, on `Phalcon\Support\Helper\Str` |
+
+`tests/libraries/utils/Phalcon5ShimTest.php` checks the names on both stacks.
+
+`Gaia\Libraries\Meta\Migration\PlanningConnection` (`migrate --dry-run`) implements Phalcon 4's
+`AdapterInterface`, whose signatures don't compile on Phalcon 5. The loader's class map loads it on use, so Gaia
+boots and `migration migrate` runs on next; `--dry-run` still fails there.
+
+**At the switch-over:** replace the old names in the code with the Phalcon 5 ones (`use Phalcon\Di\Di;`,
+`Phalcon\Autoload\Loader` with `set*`, `Phalcon\Support\Helper\Str\*`, a Gaia exception for `Phalcon\Exception`),
+then delete `core/libs/compat/` with its require in `autoload.php` and `Phalcon5ShimTest.php`.
+
+## Dependencies
+
+`composer.json` accepts `php ~7.4.0 || ~8.5.0`. There is no lock file, so each image resolves its own versions;
+both resolve to the same current releases (`bshaffer/oauth2-server-php` 1.14.2, PHPUnit 9.6.39, Guzzle 7.16.3,
+PHPMailer 6.12.0, nikic/php-parser 4.19.5). Dropped: `ext-psr` (Phalcon 5 doesn't need it) and the six
+`phalcon/incubator*` packages, which nothing used.
+
 ## Findings
 
 - **phalcon/migrations (via phalcon/devtools) removed** (agaia-4687). It blocked PHP 8.5: 3.x only installs with

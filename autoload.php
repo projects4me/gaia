@@ -20,6 +20,9 @@
  * * Custom Routes
  */
 
+// Phalcon 4 class names on Phalcon 5, until the switch-over (docs/upgrade/php85-phalcon5.md)
+require_once APP_PATH . '/core/libs/compat/phalcon5.php';
+
 require APP_PATH . '/vendor/autoload.php';
 
 require_once APP_PATH . '/core/libs/file/handler.php';
@@ -27,7 +30,6 @@ require_once APP_PATH . '/core/libs/file/handler.php';
 require_once APP_PATH . '/core/libs/meta/manager.php';
 require_once APP_PATH . '/core/libs/meta/migration.php';
 require_once APP_PATH . '/core/libs/meta/migration/plan.php';
-require_once APP_PATH . '/core/libs/meta/migration/planningconnection.php';
 require_once(APP_PATH . '/core/libs/meta/migration/driver.php');
 
 require_once APP_PATH . '/core/libs/config.php';
@@ -100,6 +102,9 @@ $loader->registerNamespaces(
 $loader->registerClasses(
     [
         'Gaia\\MVC\\Router' => APP_PATH . '/core/mvc/router.php',
+        // Loaded on use (migrate --dry-run): it implements Phalcon 4's AdapterInterface, which doesn't compile
+        // on Phalcon 5, and must not stop Gaia from booting there.
+        'Gaia\\Libraries\\Meta\\Migration\\PlanningConnection' => APP_PATH . '/core/libs/meta/migration/planningconnection.php',
     ]
 );
 
