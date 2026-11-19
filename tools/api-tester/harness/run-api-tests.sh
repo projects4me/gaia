@@ -10,6 +10,7 @@ FILTER="${FILTER:-}"
 BASE_URI="${BASE_URI:-}"
 HERMES_URL="${HERMES_URL:-}"
 MAIL_URL="${MAIL_URL:-}"
+RECORD_BODIES=""
 FIXTURES="${FIXTURES:-$ROOT_DIR/tools/api-tester/fixtures/default.json}"
 REPORT=""
 
@@ -28,6 +29,7 @@ Options:
   --mail-url <url>                    SMTP sink (Mailpit) HTTP API URL (required for --mode mail)
   --filter <text|a|b>                 Optional filter (supports OR with |)
   --report <file>                     Report output path (single --mode only)
+  --record-bodies                     Record each case's status, content type and body in the report
   --fixtures <file>                   Fixtures file path
   --help                              Show this help
 
@@ -114,6 +116,10 @@ while [[ $# -gt 0 ]]; do
     --report)
       REPORT="${2:-}"
       shift 2
+      ;;
+    --record-bodies)
+      RECORD_BODIES=1
+      shift
       ;;
     --base-uri)
       BASE_URI="${2:-}"
@@ -211,6 +217,9 @@ for mode in "${MODES[@]}"; do
   fi
   if [[ -n "$MAIL_URL" ]]; then
     ARGS+=(--mail-url "$MAIL_URL")
+  fi
+  if [[ -n "$RECORD_BODIES" ]]; then
+    ARGS+=(--record-bodies)
   fi
 
   set +e

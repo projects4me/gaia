@@ -162,7 +162,7 @@ class MentionRecorder
     {
         $rows = User::find([
             'columns' => 'id',
-            'conditions' => 'id IN ({userIds:array}) AND deleted = false',
+            'conditions' => 'id IN ({userIds:array}) AND deleted = 0',
             'bind' => ['userIds' => $userIds],
         ]);
 
@@ -189,7 +189,7 @@ class MentionRecorder
         $mention->relatedId = $relatedId;
         $mention->projectId = $projectId;
         $mention->userId = $userId;
-        $mention->notified = false;
+        $mention->isNotified = false;
         if ($mention->save()) {
             return true;
         }

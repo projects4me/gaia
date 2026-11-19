@@ -141,6 +141,9 @@ class Manager
 
             'acl' => (isset($metadata['acl']) ? $metadata['acl'] : array()),
 
+            // The text fields whose user mentions are recorded (see mentionsBehavior)
+            'mentions' => (isset($metadata['mentions']) ? $metadata['mentions'] : array()),
+
             // The validated search block, or null when the model is not searchable
             SearchBlock::KEY => (isset($metadata[SearchBlock::KEY]) ? $metadata[SearchBlock::KEY] : null),
         );

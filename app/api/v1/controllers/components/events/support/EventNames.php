@@ -193,39 +193,11 @@ class EventNames
     const USER_ACCESS_CHANGED = 'user.access.changed';
 
     /**
-     * Every name this class declares. It is not the allowlist: what
-     * HermesPublisher posts is allowed() (the registry). gaia-dev's
-     * live-events scaffold and check still read this list.
+     * A user was mentioned in a record's text.
      *
-     * @var   array
-     * @type  array
+     * @var string
      */
-    const ALL = array(
-        self::ISSUE_STATUS_CHANGED,
-        self::ISSUE_ASSIGNEE_CHANGED,
-        self::MILESTONE_CREATED,
-        self::MILESTONE_COMPLETED,
-        self::ISSUE_CREATED,
-        self::ISSUE_DATES_CHANGED,
-        self::ISSUE_DEPENDENCY_CREATED,
-        self::ISSUE_DEPENDENCY_DELETED,
-        self::CONVERSATION_COMMENT_CREATED,
-        self::CONVERSATION_COMMENT_UPDATED,
-        self::CONVERSATION_COMMENT_DELETED,
-        self::CONVERSATION_VOTE_ADDED,
-        self::CONVERSATION_VOTE_REMOVED,
-        self::CONVERSATION_CREATED,
-        self::NOTIFICATION_CREATED,
-        self::IDEA_CREATED,
-        self::IDEA_UPDATED,
-        self::IDEA_MESSAGE_CREATED,
-        self::IDEA_PLAN_CREATED,
-        self::IDEA_PLAN_STATUS_CHANGED,
-        self::IDEA_PLANISSUE_CREATED,
-        self::WORKFLOW_AGENT_RUN_REQUESTED,
-        self::WORKFLOW_RUN_FINISHED,
-        self::USER_ACCESS_CHANGED,
-    );
+    const USER_MENTIONED = 'user.mentioned';
 
     /**
      * The names HermesPublisher may post: the registry's enabled events on

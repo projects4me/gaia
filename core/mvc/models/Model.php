@@ -25,6 +25,7 @@ use Gaia\Core\MVC\Models\ResultStream;
  * @category Model
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
+#[\AllowDynamicProperties]
 class Model extends PhalconModel
 {
     /**

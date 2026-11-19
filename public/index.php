@@ -12,8 +12,12 @@ use Phalcon\Events\Manager as EventsManager;
  *
  * @todo Remove before publishing
  */
-error_reporting(E_ERROR);
-ini_set('display_errors', true);
+// docker/php/conf.d/diagnostics.ini (gaia-test services) sets gaia.diagnostics=1: keep its
+// E_ALL and log-only settings so deprecations and warnings reach the PHP log.
+if (!get_cfg_var('gaia.diagnostics')) {
+    error_reporting(E_ERROR);
+    ini_set('display_errors', true);
+}
 
 // Setup the application constants
 define('APP_PATH', realpath('..'));
@@ -251,15 +255,19 @@ try {
     return $e->handle();
 } catch (\Gaia\Exception\TooManyRequests $e) {
     return $e->handle();
-} catch (\Phalcon\Exception $e) {
-    $debug = ($GLOBALS['settings']['application']['debug'] ?? false) === true;
-    $error = new \Gaia\Exception\PhalconError($e, $debug);
-    if ($error->isNotFound()) {
-        $logger->notice('PhalconException: ' . $e->getMessage());
-    } else {
-        $logger->error('PhalconException: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
-    }
-    return $error->handle();
 } catch (\Gaia\Exception\Exception $e) {
     return $e->handle();
+} catch (\Throwable $e) {
+    // Anything else: Phalcon's own exceptions (which no longer extend
+    // Phalcon\Exception in Phalcon 5) and PHP errors still answer in JSON.
+    $debug = ($GLOBALS['settings']['application']['debug'] ?? false) === true;
+    $error = new \Gaia\Exception\PhalconError($e, $debug);
+    if (isset($logger)) {
+        if ($error->isNotFound()) {
+            $logger->notice(get_class($e) . ': ' . $e->getMessage());
+        } else {
+            $logger->error(get_class($e) . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+        }
+    }
+    return $error->handle();
 }

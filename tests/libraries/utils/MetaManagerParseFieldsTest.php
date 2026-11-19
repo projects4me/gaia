@@ -41,6 +41,26 @@ class MetaManagerParseFieldsTest extends TestCase
         $this->assertNull($data['tableName']);
     }
 
+    public function testModelMetaPassesTheMentionsBlockThrough()
+    {
+        $di = new \Phalcon\Di\FactoryDefault();
+        $di->set('fileHandler', new class {
+            public function readFile($path)
+            {
+                return array('Agaia4680Model' => array(
+                    'table' => 'agaia4680',
+                    'fields' => array(),
+                    'mentions' => array('fields' => array('comment')),
+                ));
+            }
+        });
+        $manager = new Manager($di);
+
+        $meta = $manager->getModelMeta('Agaia4680Model');
+
+        $this->assertSame(array('fields' => array('comment')), $meta['mentions']);
+    }
+
     public function testModelMetaForMissingMetadataFileHasNoFields()
     {
         $di = new \Phalcon\Di\FactoryDefault();

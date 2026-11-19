@@ -27,21 +27,22 @@ class EventRegistryTest extends TestCase
         EventNames::NOTIFICATION_CREATED,
         EventNames::WORKFLOW_AGENT_RUN_REQUESTED,
         EventNames::USER_ACCESS_CHANGED,
+        EventNames::USER_MENTIONED,
     ];
 
     private function registry()
     {
         return new EventRegistry([
             'thing.created' => [
-                'description' => 'Thing created.', 'scope' => 'project',
+                'description' => 'Thing created.', 'scopes' => ['project'],
                 'channels' => ['hermes', 'workflow'], 'enabled' => true,
             ],
             'thing.watched' => [
-                'description' => 'Thing watched.', 'scope' => 'user',
+                'description' => 'Thing watched.', 'scopes' => ['user'],
                 'channels' => ['workflow'], 'enabled' => true,
             ],
             'thing.deleted' => [
-                'description' => 'Thing deleted.', 'scope' => 'project',
+                'description' => 'Thing deleted.', 'scopes' => ['project'],
                 'channels' => ['hermes'], 'enabled' => false,
             ],
         ]);
@@ -55,8 +56,64 @@ class EventRegistryTest extends TestCase
         $this->assertFalse($registry->has('thing.unknown'));
         $this->assertSame('Thing created.', $registry->definition('thing.created')['description']);
         $this->assertNull($registry->definition('thing.unknown'));
-        $this->assertSame('user', $registry->scope('thing.watched'));
-        $this->assertNull($registry->scope('thing.unknown'));
+        $this->assertSame(['user'], $registry->scopes('thing.watched'));
+        $this->assertSame([], $registry->scopes('thing.unknown'));
+        $this->assertNull($registry->serviceKind('thing.watched'));
+        $this->assertFalse($registry->planned('thing.created'));
+    }
+
+    public function testItKeepsSeveralScopesAndTheServiceKind()
+    {
+        $registry = new EventRegistry([
+            'thing.requested' => ['scopes' => ['user', 'runtimes'], 'channels' => ['hermes'], 'enabled' => true],
+            'thing.indexed' => [
+                'scopes' => ['service'], 'serviceKind' => 'ares', 'channels' => ['hermes'], 'enabled' => true,
+            ],
+        ]);
+
+        $this->assertSame(['user', 'runtimes'], $registry->scopes('thing.requested'));
+        $this->assertSame(['service'], $registry->scopes('thing.indexed'));
+        $this->assertSame('ares', $registry->serviceKind('thing.indexed'));
+    }
+
+    public function testAPlannedEventIsOnNoChannel()
+    {
+        $registry = new EventRegistry([
+            'thing.created' => ['scopes' => ['project'], 'channels' => ['hermes', 'workflow'], 'enabled' => true],
+            'thing.planned' => [
+                'scopes' => ['project'], 'channels' => ['hermes', 'workflow'], 'enabled' => true, 'planned' => true,
+            ],
+        ]);
+
+        $this->assertTrue($registry->planned('thing.planned'));
+        $this->assertTrue($registry->has('thing.planned'));
+        $this->assertFalse($registry->publishes('thing.planned', EventRegistry::CHANNEL_HERMES));
+        $this->assertSame(['thing.created'], $registry->names(EventRegistry::CHANNEL_HERMES));
+        $this->assertSame(['thing.created'], $registry->names(EventRegistry::CHANNEL_WORKFLOW));
+    }
+
+    /**
+     * @dataProvider invalidDefinitions
+     */
+    public function testItRejectsAnInvalidDefinition(array $definition, $message)
+    {
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage($message);
+
+        new EventRegistry(['thing.bad' => $definition + ['channels' => ['hermes'], 'enabled' => true]]);
+    }
+
+    public function invalidDefinitions()
+    {
+        return [
+            'no scopes' => [[], 'Event thing.bad lists no scopes'],
+            'the old single scope' => [['scope' => 'project'], 'Event thing.bad lists no scopes'],
+            'unknown scope' => [['scopes' => ['project', 'galaxy']], "Event thing.bad has the unknown scope 'galaxy'"],
+            'service without kind' => [['scopes' => ['service']], 'Event thing.bad has the service scope but no serviceKind'],
+            'kind without service' => [
+                ['scopes' => ['user'], 'serviceKind' => 'ares'], 'Event thing.bad has a serviceKind but no service scope',
+            ],
+        ];
     }
 
     public function testADisabledEventIsOnNoChannel()
@@ -81,13 +138,13 @@ class EventRegistryTest extends TestCase
     public function testTheFileSendsEveryEventNamesConstantToHermes()
     {
         $hermes = (new EventRegistry())->names(EventRegistry::CHANNEL_HERMES);
-        $declared = EventNames::ALL;
+        $declared = array_values((new \ReflectionClass(EventNames::class))->getConstants());
         sort($hermes);
         sort($declared);
 
         $this->assertSame($declared, $hermes);
         $this->assertSame((new EventRegistry())->names(EventRegistry::CHANNEL_HERMES), EventNames::allowed());
-        $this->assertCount(23, $declared);
+        $this->assertCount(25, $declared);
     }
 
     public function testTheFileRaisesEveryWorkflowTriggerWithTheCatalogsSource()
@@ -113,14 +170,35 @@ class EventRegistryTest extends TestCase
             $registry->names(EventRegistry::CHANNEL_WORKFLOW)
         ));
 
-        $this->assertCount(28, $everyName);
+        $this->assertCount(30, $everyName);
         foreach ($everyName as $name) {
             $definition = $registry->definition($name);
             $this->assertNotEmpty($definition['description'], $name);
             $this->assertIsArray($definition['consumers'], $name);
-            $expected = in_array($name, self::USER_SCOPED, true) ? 'user' : 'project';
-            $this->assertSame($expected, $registry->scope($name), $name);
+            $expected = in_array($name, self::USER_SCOPED, true) ? ['user'] : ['project'];
+            if ($name === EventNames::WORKFLOW_AGENT_RUN_REQUESTED) {
+                $expected = ['user', 'runtimes'];
+            }
+            $this->assertSame($expected, $registry->scopes($name), $name);
+            $this->assertFalse($registry->planned($name), $name);
         }
+    }
+
+    public function testTheFilePlansTheDocAndSemanticSearchEventsWithoutRaisingThem()
+    {
+        $registry = new EventRegistry();
+        $hermes = $registry->names(EventRegistry::CHANNEL_HERMES);
+
+        foreach (['doc.created', 'doc.updated', 'doc.deleted'] as $name) {
+            $this->assertTrue($registry->planned($name), $name);
+            $this->assertSame(['project'], $registry->scopes($name), $name);
+            $this->assertNotContains($name, $hermes);
+        }
+        $this->assertTrue($registry->planned('search.semantic.changed'));
+        $this->assertSame(['service'], $registry->scopes('search.semantic.changed'));
+        $this->assertSame('ares', $registry->serviceKind('search.semantic.changed'));
+        $this->assertNotContains('search.semantic.changed', $hermes);
+        $this->assertNull($registry->serviceKind(EventNames::ISSUE_CREATED));
     }
 
     public function testOnlyTheWorkflowEventsHermesAlsoKnowsAreOnBothChannels()

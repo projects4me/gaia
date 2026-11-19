@@ -3599,7 +3599,7 @@
       "key": "hermes.absent",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 203,
+        "line": 209,
         "messages": [],
         "values": [],
         "example": "live/live-agent-run-non-delegable-agent-request-skips-runtimes"
@@ -3611,7 +3611,7 @@
       "key": "hermes.expect",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 200,
+        "line": 206,
         "messages": [],
         "values": [],
         "example": "live/live-issue-create-publishes-issue-created"
@@ -3707,7 +3707,7 @@
       "key": "mail.bodyContains",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 321,
+        "line": 333,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -3719,7 +3719,7 @@
       "key": "mail.fromEmail",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 309,
+        "line": 321,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -3731,7 +3731,7 @@
       "key": "mail.fromName",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 309,
+        "line": 321,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -3743,7 +3743,7 @@
       "key": "mail.subject",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 296,
+        "line": 308,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -3755,7 +3755,7 @@
       "key": "mail.to",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 296,
+        "line": 308,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -20732,6 +20732,26 @@
       }
     },
     {
+      "id": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "case",
+      "key": "live/live-comment-mention-publishes-user-mentioned",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/comment",
+        "resource": "comment",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.liveConversationroomId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:live/live-conversation-comment-create-publishes-comment-created",
       "type": "case",
       "key": "live/live-conversation-comment-create-publishes-comment-created",
@@ -21684,6 +21704,21 @@
       }
     },
     {
+      "id": "component:Events\\MentionLiveEvents",
+      "type": "component",
+      "key": "Events\\MentionLiveEvents",
+      "attributes": {
+        "kind": "event",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Events\\MentionLiveEvents",
+        "file": "app/api/v1/controllers/components/events/MentionLiveEvents.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "publishMentioned"
+        ]
+      }
+    },
+    {
       "id": "component:Events\\MilestoneLiveEvents",
       "type": "component",
       "key": "Events\\MilestoneLiveEvents",
@@ -22063,6 +22098,21 @@
           "onCreate",
           "onUpdate",
           "onDelete"
+        ]
+      }
+    },
+    {
+      "id": "component:Notifications\\Modules\\MentionNotification",
+      "type": "component",
+      "key": "Notifications\\Modules\\MentionNotification",
+      "attributes": {
+        "kind": "notification",
+        "class": "Gaia\\MVC\\REST\\Controllers\\Components\\Notifications\\Modules\\MentionNotification",
+        "file": "app/api/v1/controllers/components/notifications/modules/MentionNotification.php",
+        "extends": null,
+        "implements": [],
+        "hooks": [
+          "notify"
         ]
       }
     },
@@ -26591,13 +26641,14 @@
       }
     },
     {
-      "id": "field:Mention.notified",
+      "id": "field:Mention.isNotified",
       "type": "field",
-      "key": "Mention.notified",
+      "key": "Mention.isNotified",
       "attributes": {
         "label": "LBL_MENTIONS_NOTIFIED",
         "type": "bool",
-        "null": false
+        "null": false,
+        "default": false
       }
     },
     {
@@ -79171,6 +79222,46 @@
       "to": "fixture:projectId"
     },
     {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "asserts",
+      "to": "assertion:hermes.expect"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "covers",
+      "to": "controller:comment"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "depends_on",
+      "to": "case:live/live-conversationroom-create-publishes-conversation-created"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "exercises",
+      "to": "route:POST /api/v1/comment"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-comment-mention-publishes-user-mentioned",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
       "from": "case:live/live-conversation-comment-create-publishes-comment-created",
       "type": "asserts",
       "to": "assertion:hermes.expect"
@@ -87193,7 +87284,7 @@
     {
       "from": "model:Mention",
       "type": "has_field",
-      "to": "field:Mention.notified"
+      "to": "field:Mention.isNotified"
     },
     {
       "from": "model:Mention",

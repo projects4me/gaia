@@ -169,6 +169,36 @@
       }
     },
     {
+      "id": "live-comment-mention-publishes-user-mentioned",
+      "method": "POST",
+      "path": "/api/v1/comment",
+      "resource": "comment",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "comment",
+          "attributes": {
+            "comment": "<p><a href=\"/app/user/{userId}\">@Api Tester</a> live mention {runId}</p>",
+            "relatedTo": "conversationrooms",
+            "relatedId": "{runtime.liveConversationroomId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "expect": [
+          {
+            "eventName": "user.mentioned",
+            "projectId": "user:{userId}"
+          }
+        ],
+        "timeoutMs": 5000
+      }
+    },
+    {
       "id": "live-fail-open-setup-issuestatus",
       "method": "POST",
       "path": "/api/v1/issuestatus",

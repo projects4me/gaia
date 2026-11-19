@@ -43,7 +43,7 @@ class ServiceEnrollmentTokens
     /**
      * @param EnrollmentCodes|null $codes
      */
-    public function __construct(EnrollmentCodes $codes = null)
+    public function __construct(?EnrollmentCodes $codes = null)
     {
         $this->codes = $codes ?: new EnrollmentCodes();
     }

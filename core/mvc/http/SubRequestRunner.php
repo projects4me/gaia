@@ -137,8 +137,10 @@ class SubRequestRunner
 
     /**
      * The response a separate HTTP call would have got for the exception:
-     * Gaia exceptions build their own, Phalcon ones go through PhalconError,
-     * anything else is a generic 500. No stack trace reaches the body.
+     * Gaia exceptions build their own, anything else (Phalcon's exceptions,
+     * which in Phalcon 5 no longer extend Phalcon\Exception, and PHP errors)
+     * goes through PhalconError: 404 for a dispatcher not-found, 500 otherwise.
+     * No stack trace reaches the body.
      *
      * @param \Throwable $e
      * @param Response $response the call's response to build on
@@ -152,26 +154,14 @@ class SubRequestRunner
             return $e->toResponse($response);
         }
 
-        if ($e instanceof \Phalcon\Exception) {
-            $error = new PhalconError($e, ($GLOBALS['settings']['application']['debug'] ?? false) === true);
-            if (isset($logger)) {
-                $error->isNotFound()
-                    ? $logger->notice('SubRequest PhalconException: ' . $e->getMessage())
-                    : $logger->error('SubRequest PhalconException: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
-            }
-            $response->setStatusCode($error->statusCode(), $error->isNotFound() ? 'Not Found' : 'Internal Server Error');
-            $response->setJsonContent($error->body());
-            return $response;
-        }
-
+        $error = new PhalconError($e, ($GLOBALS['settings']['application']['debug'] ?? false) === true);
         if (isset($logger)) {
-            $logger->error('SubRequest ' . get_class($e) . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            $error->isNotFound()
+                ? $logger->notice('SubRequest ' . get_class($e) . ': ' . $e->getMessage())
+                : $logger->error('SubRequest ' . get_class($e) . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
-        $response->setStatusCode(500, 'Internal Server Error');
-        $response->setJsonContent([
-            'error' => 'internalServerError',
-            'error_description' => 'An internal server error occurred',
-        ]);
+        $response->setStatusCode($error->statusCode(), $error->isNotFound() ? 'Not Found' : 'Internal Server Error');
+        $response->setJsonContent($error->body());
 
         return $response;
     }

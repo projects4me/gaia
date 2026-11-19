@@ -29,7 +29,7 @@ class WorkflowRepliesComponent
     /**
      * @param UserReplies|null $replies Built on first use when null.
      */
-    public function __construct(UserReplies $replies = null)
+    public function __construct(?UserReplies $replies = null)
     {
         $this->replies = $replies;
     }

@@ -70,11 +70,12 @@ $models['Mention'] = array(
             'null' => true,
             'relatedIdentifier' => true
         ),
-        'notified' => array(
-            'name' => 'notified',
+        'isNotified' => array(
+            'name' => 'isNotified',
             'label' => 'LBL_MENTIONS_NOTIFIED',
             'type' => 'bool',
-            'null' => false
+            'null' => false,
+            'default' => false
         ),
         'userId' => array(
             'name' => 'userId',

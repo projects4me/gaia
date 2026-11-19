@@ -106,6 +106,7 @@ class TriggerEventCatalogTest extends TestCase
             return [
                 'channels' => $channels,
                 'enabled' => $enabled,
+                'scopes' => ['project'],
                 'source' => ['model' => 'Issue', 'on' => 'create', 'label' => 'X', 'fields' => []],
             ];
         };

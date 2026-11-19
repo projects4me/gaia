@@ -18,7 +18,9 @@ existing component's payload.
 
 1. `app/api/v1/controllers/components/events/<X>LiveEventsComponent.php`, extending `LiveEventsComponent`.
 2. `app/api/v1/controllers/<X>Controller.php`: `public $uses = array('Events\\<X>LiveEvents');`.
-3. [`app/api/v1/controllers/components/events/support/EventNames.php`](../../../app/api/v1/controllers/components/events/support/EventNames.php): the event-name constants.
+3. [`app/api/v1/controllers/components/events/support/EventNames.php`](../../../app/api/v1/controllers/components/events/support/EventNames.php): the event-name constants, and
+   [`app/metadata/events.php`](../../../app/metadata/events.php): one registry entry per event (`scopes`, `hermes` channel, enabled). The registry
+   decides what Gaia sends; the scaffold writes both.
 4. [`app/api/v1/controllers/components/events/support/ProjectIdResolver.php`](../../../app/api/v1/controllers/components/events/support/ProjectIdResolver.php): how to find the project for the
    resource (also needed by bundle U).
 5. [`tests/api/controllers/components/events/LiveEventsComponentsTest.php`](../../../tests/api/controllers/components/events/LiveEventsComponentsTest.php).
@@ -34,6 +36,9 @@ existing component's payload.
 <a id="checks"></a>
 ## Checks
 
+- `gaia-dev check live-events` ties the two: every constant is enabled on the hermes channel and every hermes
+  registry entry has a constant. `docs generate` exports the registry to [`docs/generated/events.json`](../../../docs/generated/events.json), which
+  Hermes reads to check its allowlist.
 - Event names in `EventNames.php` must match `hermes/src/contract/names.js`. The payload is a contract with Hermes
   and Prometheus, so a new name or payload change ships as linked PRs in both repos.
 - Publishing is fire-and-forget. Keep the short fractional `connect_timeout` so a down Hermes doesn't block the API

@@ -19,6 +19,8 @@ class LiveEventsScaffold
 {
     public const NAMES_PATH = 'app/api/v1/controllers/components/events/support/EventNames.php';
 
+    public const REGISTRY_PATH = 'app/metadata/events.php';
+
     public const RESOLVER_PATH = 'app/api/v1/controllers/components/events/support/ProjectIdResolver.php';
 
     /**
@@ -47,6 +49,7 @@ class LiveEventsScaffold
         $changes = [
             $spec->componentPath() => (new LiveEventsRenderer($this->root))->component($spec),
             self::NAMES_PATH => $this->names($spec),
+            self::REGISTRY_PATH => $this->registry($spec),
             $spec->controllerPath() => $this->controller($spec),
             LiveEventsSpec::TEST_PATH => $this->tests($spec),
         ];
@@ -71,14 +74,13 @@ class LiveEventsScaffold
 
     /**
      * @param LiveEventsSpec $spec
-     * @return string EventNames with the constants and their ALL entries added
+     * @return string EventNames with the constants added
      * @throws ScaffoldException
      */
     private function names(LiveEventsSpec $spec): string
     {
         $text = $this->read(self::NAMES_PATH);
         $constants = '';
-        $all = '';
         foreach ($spec->events as $event) {
             $constant = $spec->constant($event);
             if (strpos($text, "const {$constant} ") !== false) {
@@ -86,15 +88,43 @@ class LiveEventsScaffold
             }
             $constants .= "    /**\n     * {$spec->model} {$event}.\n     *\n     * @var string\n     */\n"
                 . "    const {$constant} = '{$spec->eventName($event)}';\n\n";
-            $all .= "        self::{$constant},\n";
         }
-        $marker = "    /**\n     * Every name this class declares.";
-        if (strpos($text, $marker) === false || !preg_match('/(const ALL = array\(\n.*?\n)(    \);)/s', $text, $match, PREG_OFFSET_CAPTURE)) {
-            throw new ScaffoldException(self::NAMES_PATH . ' no longer has the ALL list the scaffold extends');
+        $marker = "    /**\n     * The names HermesPublisher may post";
+        if (strpos($text, $marker) === false) {
+            throw new ScaffoldException(self::NAMES_PATH . ' no longer has the allowed() docblock the scaffold inserts before');
         }
-        $text = substr_replace($text, $all, $match[2][1], 0);
 
         return str_replace($marker, $constants . $marker, $text);
+    }
+
+    /**
+     * @param LiveEventsSpec $spec
+     * @return string the event registry with one enabled hermes entry added per event
+     * @throws ScaffoldException
+     */
+    private function registry(LiveEventsSpec $spec): string
+    {
+        $text = $this->read(self::REGISTRY_PATH);
+        $entries = '';
+        foreach ($spec->events as $event) {
+            $name = $spec->eventName($event);
+            if (strpos($text, "    '{$name}' => [") !== false) {
+                throw new ScaffoldException("The event registry already has {$name}");
+            }
+            $entries .= "    '{$name}' => [\n"
+                . "        'description' => '{$spec->model} {$event}.',\n"
+                . "        'scopes' => ['{$spec->scope}'],\n"
+                . "        'channels' => ['hermes'],\n"
+                . "        'consumers' => ['prometheus'],\n"
+                . "        'enabled' => true,\n"
+                . "    ],\n";
+        }
+        $end = strrpos($text, "\n];");
+        if ($end === false) {
+            throw new ScaffoldException(self::REGISTRY_PATH . ' no longer ends with the registry array the scaffold extends');
+        }
+
+        return substr_replace($text, "\n" . rtrim($entries, "\n"), $end, 0);
     }
 
     /**

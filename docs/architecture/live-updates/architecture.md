@@ -55,7 +55,7 @@ unchanged.
 
 `projectId` is a project id for work events. User-scoped notifications put
 `user:<userId>` in that field so Hermes can route with the existing composite
-key. `actorId` may be `null`. Names outside `EventNames::ALL` are rejected
+key. `actorId` may be `null`. Names the registry does not enable on the hermes channel are rejected
 before HTTP.
 
 ## What publishes what

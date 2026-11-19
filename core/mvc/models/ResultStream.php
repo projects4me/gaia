@@ -102,6 +102,7 @@ class ResultStream implements \Iterator
      *
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function rewind(): void
     {
         if (!$this->started) {
@@ -115,6 +116,7 @@ class ResultStream implements \Iterator
      *
      * @return array|null
      */
+    #[\ReturnTypeWillChange]
     public function current(): ?array
     {
         return $this->current;
@@ -125,6 +127,7 @@ class ResultStream implements \Iterator
      *
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function key(): int
     {
         return $this->position;
@@ -135,6 +138,7 @@ class ResultStream implements \Iterator
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function valid(): bool
     {
         return $this->current !== null;
@@ -145,6 +149,7 @@ class ResultStream implements \Iterator
      *
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function next(): void
     {
         $this->fetchNext();
