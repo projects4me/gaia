@@ -586,7 +586,8 @@ $config['routes'] = array(
                     'PUT',
                     'DELETE',
                     'PATCH'
-                )
+                ),
+                'identifier' => 'id'
             ),
             'scoreboard' => array(
                 'path' => '/api/:version/scoreboard',
@@ -596,7 +597,8 @@ $config['routes'] = array(
                     'PUT',
                     'DELETE',
                     'PATCH'
-                )
+                ),
+                'identifier' => 'id'
             ),
             'issuestatus' => array(
                 'path' => '/api/:version/issuestatus',
