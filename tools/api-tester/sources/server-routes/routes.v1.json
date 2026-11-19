@@ -658,6 +658,13 @@
                 "POST"
             ],
             "identifier": null
+        },
+        "search": {
+            "path": "/api/:version/search",
+            "allowedMethods": [
+                "GET"
+            ],
+            "identifier": null
         }
     }
 }

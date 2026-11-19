@@ -680,6 +680,12 @@ $config['routes'] = array(
                 'allowedMethods' => [
                     'POST',
                 ],
+            ],
+            'search' => [
+                'path' => '/api/:version/search',
+                'allowedMethods' => [
+                    'GET',
+                ],
             ]
         )
     ),

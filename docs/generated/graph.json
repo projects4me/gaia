@@ -2013,6 +2013,30 @@
       "attributes": {}
     },
     {
+      "id": "action:search.get",
+      "type": "action",
+      "key": "search.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:search.list",
+      "type": "action",
+      "key": "search.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:search.options",
+      "type": "action",
+      "key": "search.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:search.related",
+      "type": "action",
+      "key": "search.related",
+      "attributes": {}
+    },
+    {
       "id": "action:serviceclient.get",
       "type": "action",
       "key": "serviceclient.get",
@@ -7123,6 +7147,41 @@
       }
     },
     {
+      "id": "case:acl/acl-search-issue-denied-without-project-group",
+      "type": "case",
+      "key": "acl/acl-search-issue-denied-without-project-group",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-search-members-hides-other-project-issues",
+      "type": "case",
+      "key": "acl/acl-search-members-hides-other-project-issues",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "issueId",
+          "otherProjectIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-service-token-agent-detail-delegable-allowed",
       "type": "case",
       "key": "acl/acl-service-token-agent-detail-delegable-allowed",
@@ -10317,6 +10376,22 @@
         "method": "GET",
         "path": "/api/v1/scoreboard",
         "resource": "scoreboard",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-search-api-v1-search",
+      "type": "case",
+      "key": "backend/get-search-api-v1-search",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
         "enabled": false,
         "source": "backend-metadata",
         "placeholders": [],
@@ -18443,6 +18518,106 @@
       }
     },
     {
+      "id": "case:client/search-by-id-not-found",
+      "type": "case",
+      "key": "client/search-by-id-not-found",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/search/x",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/search-issue-number-pins-issue",
+      "type": "case",
+      "key": "client/search-issue-number-pins-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/search-missing-q-rejected",
+      "type": "case",
+      "key": "client/search-missing-q-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/search-short-q-rejected",
+      "type": "case",
+      "key": "client/search-short-q-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/search-typo-in-subject-finds-issue",
+      "type": "case",
+      "key": "client/search-typo-in-subject-finds-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/search-unknown-type-rejected",
+      "type": "case",
+      "key": "client/search-unknown-type-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/serviceclient-patch-bad-status-rejected",
       "type": "case",
       "key": "client/serviceclient-patch-bad-status-rejected",
@@ -22915,6 +23090,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\ScoreboardController",
         "file": "app/api/v1/controllers/ScoreboardController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:search",
+      "type": "controller",
+      "key": "search",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\SearchController",
+        "file": "app/api/v1/controllers/SearchController.php",
         "extends": "RestController"
       }
     },
@@ -36401,6 +36587,15 @@
       }
     },
     {
+      "id": "permission:search.get",
+      "type": "permission",
+      "key": "search.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
       "id": "permission:serviceclient.create",
       "type": "permission",
       "key": "serviceclient.create",
@@ -42134,6 +42329,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/search",
+      "type": "route",
+      "key": "GET /api/v1/search",
+      "attributes": {
+        "type": "rest",
+        "name": "search",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/search"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/search/{id}",
+      "type": "route",
+      "key": "GET /api/v1/search/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "search",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/search/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/search/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/search/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "search",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/search/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:GET /api/v1/serviceclient",
       "type": "route",
       "key": "GET /api/v1/serviceclient",
@@ -43607,6 +43838,18 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/scoreboard"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/search",
+      "type": "route",
+      "key": "OPTIONS /api/v1/search",
+      "attributes": {
+        "type": "rest",
+        "name": "search",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/search"
       }
     },
     {
@@ -48098,6 +48341,21 @@
       "from": "action:scoreboard.related",
       "type": "requires",
       "to": "permission:scoreboard.get"
+    },
+    {
+      "from": "action:search.get",
+      "type": "requires",
+      "to": "permission:search.get"
+    },
+    {
+      "from": "action:search.list",
+      "type": "requires",
+      "to": "permission:search.get"
+    },
+    {
+      "from": "action:search.related",
+      "type": "requires",
+      "to": "permission:search.get"
     },
     {
       "from": "action:serviceclient.get",
@@ -54770,6 +55028,81 @@
       "to": "profile:aclScopedToken"
     },
     {
+      "from": "case:acl/acl-search-issue-denied-without-project-group",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-search-issue-denied-without-project-group",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-search-issue-denied-without-project-group",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-search-issue-denied-without-project-group",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:acl/acl-search-issue-denied-without-project-group",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:acl/acl-search-issue-denied-without-project-group",
+      "type": "runs_as",
+      "to": "profile:aclNoProject"
+    },
+    {
+      "from": "case:acl/acl-search-members-hides-other-project-issues",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-search-members-hides-other-project-issues",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-search-members-hides-other-project-issues",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-search-members-hides-other-project-issues",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-search-members-hides-other-project-issues",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:acl/acl-search-members-hides-other-project-issues",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:acl/acl-search-members-hides-other-project-issues",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-search-members-hides-other-project-issues",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-search-members-hides-other-project-issues",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectIssueId"
+    },
+    {
       "from": "case:acl/acl-service-token-agent-detail-delegable-allowed",
       "type": "asserts",
       "to": "assertion:idsIncludes"
@@ -60506,6 +60839,31 @@
     },
     {
       "from": "case:backend/get-scoreboard-api-v1-scoreboard",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-search-api-v1-search",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-search-api-v1-search",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-search-api-v1-search",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:backend/get-search-api-v1-search",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:backend/get-search-api-v1-search",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -75020,6 +75378,176 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/search-by-id-not-found",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/search-by-id-not-found",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/search-by-id-not-found",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:client/search-by-id-not-found",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search/{id}"
+    },
+    {
+      "from": "case:client/search-by-id-not-found",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/search-issue-number-pins-issue",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/search-issue-number-pins-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/search-issue-number-pins-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/search-issue-number-pins-issue",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:client/search-issue-number-pins-issue",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:client/search-issue-number-pins-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/search-issue-number-pins-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/search-missing-q-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/search-missing-q-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/search-missing-q-rejected",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:client/search-missing-q-rejected",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:client/search-missing-q-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/search-short-q-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/search-short-q-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/search-short-q-rejected",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:client/search-short-q-rejected",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:client/search-short-q-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/search-typo-in-subject-finds-issue",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/search-typo-in-subject-finds-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/search-typo-in-subject-finds-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/search-typo-in-subject-finds-issue",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:client/search-typo-in-subject-finds-issue",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:client/search-typo-in-subject-finds-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/search-typo-in-subject-finds-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/search-unknown-type-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/search-unknown-type-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/search-unknown-type-rejected",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:client/search-unknown-type-rejected",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:client/search-unknown-type-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/serviceclient-patch-bad-status-rejected",
       "type": "asserts",
       "to": "assertion:shape"
@@ -83038,6 +83566,26 @@
       "from": "controller:scoreboard",
       "type": "serves",
       "to": "model:Scoreboard"
+    },
+    {
+      "from": "controller:search",
+      "type": "has_action",
+      "to": "action:search.get"
+    },
+    {
+      "from": "controller:search",
+      "type": "has_action",
+      "to": "action:search.list"
+    },
+    {
+      "from": "controller:search",
+      "type": "has_action",
+      "to": "action:search.options"
+    },
+    {
+      "from": "controller:search",
+      "type": "has_action",
+      "to": "action:search.related"
     },
     {
       "from": "controller:serviceclient",
@@ -96215,6 +96763,21 @@
       "to": "action:scoreboard.related"
     },
     {
+      "from": "route:GET /api/v1/search",
+      "type": "handled_by",
+      "to": "action:search.list"
+    },
+    {
+      "from": "route:GET /api/v1/search/{id}",
+      "type": "handled_by",
+      "to": "action:search.get"
+    },
+    {
+      "from": "route:GET /api/v1/search/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:search.related"
+    },
+    {
       "from": "route:GET /api/v1/serviceclient",
       "type": "handled_by",
       "to": "action:serviceclient.list"
@@ -96828,6 +97391,11 @@
       "from": "route:OPTIONS /api/v1/scoreboard",
       "type": "handled_by",
       "to": "action:scoreboard.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/search",
+      "type": "handled_by",
+      "to": "action:search.options"
     },
     {
       "from": "route:OPTIONS /api/v1/serviceclient",

@@ -577,6 +577,16 @@
 | PUT | /api/v1/scoreboard | rest | scoreboard.putCollection |
 | PUT | /api/v1/scoreboard/{id} | rest | scoreboard.put |
 
+<a id="search"></a>
+## search
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/search | rest | search.list |
+| GET | /api/v1/search/{id} | rest | search.get |
+| GET | /api/v1/search/{id}/{relation} | rest | search.related |
+| OPTIONS | /api/v1/search | rest | search.options |
+
 <a id="serviceclient"></a>
 ## serviceclient
 
