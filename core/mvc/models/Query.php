@@ -140,7 +140,9 @@ class Query
         $this->queryBuilder->groupBy($this->clause->groupBy);
         $this->queryBuilder->orderBy($this->clause->orderBy);
         $this->queryBuilder->where($this->clause->where, $this->clause->getBindParams());
-        $this->queryBuilder->having($this->clause->having);
+        if ($this->clause->having !== null && $this->clause->having !== '') {
+            $this->queryBuilder->having($this->clause->having);
+        }
 
         if (!empty($params['aclWhere'])) {
             // A service filter may bind the calling client (ServiceAcl, D-068).

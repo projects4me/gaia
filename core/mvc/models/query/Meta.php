@@ -322,7 +322,7 @@ class Meta
      */
     private function extractModelName($field)
     {
-        $modelName = explode('.', $field);
+        $modelName = explode('.', (string) $field);
         return $modelName[0];
     }
 

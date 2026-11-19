@@ -395,6 +395,6 @@ class Postgres
      */
     private function quoteValue($value)
     {
-        return "'" . str_replace("'", "''", $value) . "'";
+        return "'" . str_replace("'", "''", (string) $value) . "'";
     }
 }

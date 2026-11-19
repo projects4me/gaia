@@ -627,6 +627,10 @@ class Postgres
      */
     private function hasAccessMethod($connection, $method)
     {
+        // hnsw comes with vector, so a dry run that plans vector gets it too
+        if ($method === 'hnsw' && $this->isPlannedExtension($connection, 'vector')) {
+            return true;
+        }
         $found = $connection->fetchOne(
             'SELECT COUNT(*) AS total FROM pg_am WHERE amname = ?',
             \PDO::FETCH_ASSOC,
@@ -634,6 +638,18 @@ class Postgres
         );
 
         return (int) $found['total'] > 0;
+    }
+
+    /**
+     * This function tells whether a dry run's plan creates the extension (a real connection never does).
+     *
+     * @param SchemaConnection $connection
+     * @param string $extension
+     * @return bool
+     */
+    private function isPlannedExtension($connection, $extension)
+    {
+        return method_exists($connection, 'hasPlannedExtension') && $connection->hasPlannedExtension($extension);
     }
 
     /**
@@ -645,6 +661,9 @@ class Postgres
      */
     private function hasExtension($connection, $extension)
     {
+        if ($this->isPlannedExtension($connection, $extension)) {
+            return true;
+        }
         $installed = $connection->fetchOne(
             'SELECT COUNT(*) AS total FROM pg_extension WHERE extname = ?',
             \PDO::FETCH_ASSOC,
