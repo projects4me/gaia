@@ -19,6 +19,13 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false">
+    <!--
+      The whole suite loads docs/generated/graph.json (several MB once decoded) in more than one test;
+      the CLI default of 128M is too tight for one process running all of it.
+    -->
+    <php>
+        <ini name="memory_limit" value="512M"/>
+    </php>
     <testsuites>
         <testsuite name="Gaia">
             <directory>.</directory>
