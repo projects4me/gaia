@@ -140,7 +140,7 @@ class ToolCatalogRulesTest extends TestCase
 
             protected function storedGrant($grantId)
             {
-                return isset($this->grants[$grantId]) ? $this->grants[$grantId] : [];
+                return isset($this->grants[(string) $grantId]) ? $this->grants[(string) $grantId] : [];
             }
 
             protected function exists($modelClass, $id)

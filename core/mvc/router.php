@@ -59,11 +59,11 @@ class Router extends PhalconRouter\Router
                                 case 'GET':
                                 // Allow retrieval of entity
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
-                                $this->addGet($path,array('controller'=> $module,'action' => 'get', $moduleRoutes->identifier => '1'));
+                                $this->addGet($path,array('controller'=> $module,'action' => 'get', (string) $moduleRoutes->identifier => '1'));
 
                                 // Allow retrieval of realted records for an entity
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)';
-                                $this->addGet($path,array('controller'=> $module,'action' => 'related', $moduleRoutes->identifier => '1', 'relation' => '2'));
+                                $this->addGet($path,array('controller'=> $module,'action' => 'related', (string) $moduleRoutes->identifier => '1', 'relation' => '2'));
 
                                 // Allow retrieval of Collection
                                 $path = (($basepath[0] === '/')?'':'/').$basepath;
@@ -100,7 +100,7 @@ class Router extends PhalconRouter\Router
                                 case 'DELETE':
                                 // Allow deletion of an entity
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
-                                $this->addDelete($path,array('controller'=> $module,'action' => 'delete', $moduleRoutes->identifier => '1'));
+                                $this->addDelete($path,array('controller'=> $module,'action' => 'delete', (string) $moduleRoutes->identifier => '1'));
 
                                 // Allow deletion of a collection of resource
                                 $path = (($basepath[0] === '/')?'':'/').$basepath;
