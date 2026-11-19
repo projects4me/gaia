@@ -1,0 +1,50 @@
+name: Rollback Gaia | OVH
+
+# Redeploys an earlier image: the same helm upgrade as cd-ovh.yml, pinned to image_tag.
+# values-<env>.yaml uses the moving <env>-latest tag, so `helm rollback` does not work.
+# Keep merges frozen after a rollback: any merge to the branch redeploys the new image.
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "rananoman/gaia tag to deploy (the branch name of the last PR merged before the switch, as shown in its cd-ovh run)"
+        required: true
+        type: string
+      environment:
+        description: "Environment to roll back"
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
+        default: dev
+
+jobs:
+  Rollback:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate image tag
+        env:
+          IMAGE_TAG: ${{ inputs.image_tag }}
+        run: |
+          if ! printf '%s' "$IMAGE_TAG" | grep -Eq '^[A-Za-z0-9._-]+$'; then
+            echo "image_tag may only contain letters, digits, '.', '_' and '-'" >&2
+            exit 1
+          fi
+
+      - name: Roll back
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          TARGET_ENV: ${{ inputs.environment }}
+        with:
+          host: ${{ secrets.OVH_HOST }}
+          username: ${{ secrets.OVH_USERNAME }}
+          key: ${{ secrets.OVH_KEY }}
+          port: ${{ secrets.OVH_PORT }}
+          envs: IMAGE_TAG,TARGET_ENV
+          script: |
+            cd ${{ secrets.OVH_GAIA_HELM_PATH }}
+            helm --kubeconfig ${{ secrets.KUBECONFIG_PATH }} upgrade "gaia-${TARGET_ENV}" . -f "values-${TARGET_ENV}.yaml" --set "image.tag=${IMAGE_TAG}"

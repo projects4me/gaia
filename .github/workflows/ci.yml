@@ -23,8 +23,8 @@ jobs:
     - name: Pull gaia-env:current
       shell: bash
       run: |
-        docker pull ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
-        docker tag ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2 gaia-env:current
+        docker pull ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0
+        docker tag ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0 gaia-env:current
 
     # Host network: the container reaches the postgres service on 127.0.0.1:5432, and the
     # api-tester reaches Apache on 127.0.0.1.
@@ -40,8 +40,8 @@ jobs:
       uses: actions/cache@v5
       with:
         path: vendor
-        key: vendor-cache-gaia-env-current-7.4.21-phalcon4.1.2-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-gaia-env-current-7.4.21-phalcon4.1.2-
+        key: vendor-cache-gaia-env-current-8.5.12-phalcon5.23.0-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-gaia-env-current-8.5.12-phalcon5.23.0-
 
     - name: Install dependencies
       if: steps.composer-packages.outputs.cache-hit != 'true'
@@ -59,15 +59,14 @@ jobs:
   deployed-image-config:
     name: Deployed image never displays PHP errors (${{ matrix.stack }})
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.stack == 'next' }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - stack: current
-            env-tag: 7.4.21-phalcon4.1.2
-          - stack: next
+          - stack: php85
             env-tag: 8.5.12-phalcon5.23.0
+          - stack: php74
+            env-tag: 7.4.21-phalcon4.1.2
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -127,8 +126,8 @@ jobs:
     - name: Pull gaia-env:current
       shell: bash
       run: |
-        docker pull ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
-        docker tag ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2 gaia-env:current
+        docker pull ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0
+        docker tag ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0 gaia-env:current
 
     # Host network: the container reaches the postgres service on 127.0.0.1:5432, and the
     # api-tester reaches Apache on 127.0.0.1.
@@ -144,8 +143,8 @@ jobs:
       uses: actions/cache@v5
       with:
         path: vendor
-        key: vendor-cache-gaia-env-current-7.4.21-phalcon4.1.2-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-gaia-env-current-7.4.21-phalcon4.1.2-
+        key: vendor-cache-gaia-env-current-8.5.12-phalcon5.23.0-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-gaia-env-current-8.5.12-phalcon5.23.0-
 
     - name: Install dependencies
       if: steps.composer-packages.outputs.cache-hit != 'true'
@@ -158,7 +157,8 @@ jobs:
         install -d /usr/share/postgresql-common/pgdg
         curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
           https://www.postgresql.org/media/keys/ACCC4CF8.asc
-        echo 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt-archive.postgresql.org/pub/repos/apt buster-pgdg main' \
+        . /etc/os-release
+        echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt ${VERSION_CODENAME}-pgdg main" \
           > /etc/apt/sources.list.d/pgdg.list
         apt-get update
         apt-get install -y --no-install-recommends postgresql-client-16
@@ -221,6 +221,8 @@ jobs:
         ln -s "$GITHUB_WORKSPACE" /var/www/html
         chown -R www-data:www-data "$GITHUB_WORKSPACE"
         # setsid: Apache must outlive this docker exec session.
+        # Throwaway key so the settings API can store secure values (SMTP password) in CI.
+        export SETTINGS_ENCRYPTION_KEY="$(openssl rand -base64 32)"
         setsid apache2-foreground > /tmp/apache.log 2>&1 < /dev/null &
         for i in $(seq 1 30); do
           curl -s -o /dev/null "http://127.0.0.1/" && echo "Apache is up" && exit 0
@@ -267,17 +269,15 @@ jobs:
           output/api-tester-acl-report.json
         if-no-files-found: warn
 
-  # Non-blocking: the same checks on PHP 8.5 / Phalcon 5.23, keeping every output for the
+  # Blocking for the rollback window: the same checks on PHP 7.4 / Phalcon 4.1, so new code cannot break 7.4, keeping every output for the
   # upgrade-report job. gaia-env:next is pulled from ghcr.io/projects4me/gaia-env
   # (built in projects4me/docker-images) and every check runs
-  # inside it through the docker exec shell below. Each check step has continue-on-error: a
-  # failure on the next stack is reported in the summary (and in the step outcomes) instead
-  # of turning the job red. The job itself only fails when the image or container can't be
-  # set up. Only api-testing is a required check.
+  # inside it through the docker exec shell below. Every check step blocks the job, so new code
+  # cannot break 7.4 while a rollback is still an image swap. The upgrade-report job reads the
+  # outputs of both stacks. Both this job and api-testing are required checks.
   next-stack:
-    name: Next stack (PHP 8.5 / Phalcon 5.23, non-blocking)
+    name: Rollback stack (PHP 7.4 / Phalcon 4.1, blocking)
     runs-on: ubuntu-latest
-    continue-on-error: true
     env:
       DB_ADAPTER: Postgres
       DB_HOST: 127.0.0.1
@@ -319,8 +319,8 @@ jobs:
     - name: Pull gaia-env:next
       shell: bash
       run: |
-        docker pull ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0
-        docker tag ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0 gaia-env:next
+        docker pull ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
+        docker tag ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2 gaia-env:next
 
     # Host network: the container reaches the postgres service on 127.0.0.1:5432, and the
     # api-tester reaches Apache on 127.0.0.1. upgrade/ and logs/ are created on the host so
@@ -340,8 +340,8 @@ jobs:
       uses: actions/cache@v5
       with:
         path: vendor
-        key: vendor-cache-gaia-env-next-8.5.12-phalcon5.23.0-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-gaia-env-next-8.5.12-phalcon5.23.0-
+        key: vendor-cache-gaia-env-next-7.4.21-phalcon4.1.2-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-gaia-env-next-7.4.21-phalcon4.1.2-
 
     - name: Install dependencies
       if: steps.composer-packages.outputs.cache-hit != 'true'
@@ -354,8 +354,7 @@ jobs:
         install -d /usr/share/postgresql-common/pgdg
         curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
           https://www.postgresql.org/media/keys/ACCC4CF8.asc
-        . /etc/os-release
-        echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt ${VERSION_CODENAME}-pgdg main" \
+        echo 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt-archive.postgresql.org/pub/repos/apt buster-pgdg main' \
           > /etc/apt/sources.list.d/pgdg.list
         apt-get update
         apt-get install -y --no-install-recommends postgresql-client-16
@@ -373,7 +372,6 @@ jobs:
     - name: Migration dry run on pr4m
       id: dry-run
       if: ${{ !cancelled() }}
-      continue-on-error: true
       env:
         DB_NAME: pr4m
       run: |
@@ -387,7 +385,6 @@ jobs:
     - name: Migrate pr4m schema from metadata
       id: migrate
       if: ${{ !cancelled() }}
-      continue-on-error: true
       env:
         DB_NAME: pr4m
       run: php cli.php migration migrate
@@ -395,7 +392,6 @@ jobs:
     - name: Schema snapshot of pr4m
       id: schema
       if: ${{ !cancelled() }}
-      continue-on-error: true
       env:
         PGHOST: 127.0.0.1
         PGUSER: nouman
@@ -405,7 +401,6 @@ jobs:
     - name: Prepare pr4m_test + fixtures
       id: prepare
       if: ${{ !cancelled() }}
-      continue-on-error: true
       env:
         PGHOST: 127.0.0.1
         PGPASSWORD: nouman
@@ -414,7 +409,6 @@ jobs:
     - name: Run PHPUnit (whole suite, quarantine excluded)
       id: phpunit
       if: ${{ !cancelled() }}
-      continue-on-error: true
       run: |
         ./vendor/bin/phpunit -c tests/phpunit.xml \
           --exclude-group quarantine \
@@ -424,13 +418,11 @@ jobs:
     - name: Lint every PHP file on the next stack
       id: lint
       if: ${{ !cancelled() }}
-      continue-on-error: true
       run: IMAGE=none bash tools/upgrade/lint-next.sh upgrade/php-lint-next.log
 
     - name: Reset pr4m_test + fixtures for the API tests
       id: reset
       if: ${{ !cancelled() }}
-      continue-on-error: true
       env:
         PGHOST: 127.0.0.1
         PGPASSWORD: nouman
@@ -439,13 +431,14 @@ jobs:
     - name: Start Apache with the diagnostics log
       id: apache
       if: ${{ !cancelled() }}
-      continue-on-error: true
       run: |
         cp docker/php/conf.d/diagnostics.ini "$PHP_INI_DIR/conf.d/zz-diagnostics.ini"
         rm -rf /var/www/html
         ln -s "$GITHUB_WORKSPACE" /var/www/html
         chown -R www-data:www-data "$GITHUB_WORKSPACE"
         # setsid: Apache must outlive this docker exec session.
+        # Throwaway key so the settings API can store secure values (SMTP password) in CI.
+        export SETTINGS_ENCRYPTION_KEY="$(openssl rand -base64 32)"
         setsid apache2-foreground > /tmp/apache.log 2>&1 < /dev/null &
         for i in $(seq 1 30); do
           curl -s -o /dev/null "http://127.0.0.1/" && echo "Apache is up" && exit 0
@@ -460,7 +453,6 @@ jobs:
     - name: Run backend API testing
       id: api-tester
       if: ${{ !cancelled() }}
-      continue-on-error: true
       run: |
         tools/api-tester/harness/run-api-tests.sh \
           --base-uri http://127.0.0.1 \
@@ -470,7 +462,6 @@ jobs:
     - name: Run client API testing
       id: api-tester-client
       if: ${{ !cancelled() }}
-      continue-on-error: true
       run: |
         tools/api-tester/harness/run-api-tests.sh \
           --base-uri http://127.0.0.1 \
@@ -525,7 +516,7 @@ jobs:
         shell: bash
 
     container:
-      image: ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
+      image: ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0
 
     steps:
     - name: Checkout

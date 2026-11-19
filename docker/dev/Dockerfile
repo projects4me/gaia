@@ -1,5 +1,5 @@
 # CI builds this on gaia-env:current / gaia-env:next to check the effective PHP config
-ARG ENV_IMAGE=ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
+ARG ENV_IMAGE=ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0
 FROM ${ENV_IMAGE}
 
 COPY ./ /var/www/html
