@@ -248,7 +248,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         $logger->debug('Gaia.core.controllers.rest->initialize()');
         //set the language
-        //$this->setLanguage();
+        $this->setLanguage();
 
         $this->response = new Response();
 
@@ -539,48 +539,51 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
     }
 
     /**
-     * set language of errors responses
+     * Load the validation messages of the best language the client accepts.
+     * Falls back to English, and to no translation at all if no file exists.
      */
     public function setLanguage()
     {
-        //get the best language and all languages
-        $bestLanguage = $this->request->getBestLanguage();
+        $codes = [];
         $languages = $this->request->getLanguages();
-        print_r($languages);
-
-        //sort the languages for quality desc
-        foreach ($languages as $key => $row) {
-            $language[$key] = $row['language'];
-            $quality[$key] = $row['quality'];
-        }
-        array_multisort($quality, SORT_DESC, $language, SORT_ASC, $languages);
-
-        //veriry if exists the best language
-        if (file_exists("../app/languages/" . $bestLanguage . ".php")) {
-            include "../app/languages/" . $bestLanguage . ".php";
-
-            //if not exist best language find the first language existing
-        } else {
-            //search for the first existing language
-            $cont = 0;
-            foreach ($languages as $value) {
-                if (file_exists("../app/languages/" . $value['language'] . ".php")) {
-                    include "../app/languages/" . $value['language'] . ".php";
-                } else {
-                    $cont++;
-                }
-            }
-
-            //if not find any language set the desfault
-            if ($cont == count($languages)) {
-                include "../app/languages/en.php";
+        if (is_array($languages)) {
+            usort($languages, function ($a, $b) {
+                return ($b['quality'] ?? 0) <=> ($a['quality'] ?? 0);
+            });
+            foreach ($languages as $row) {
+                $codes[] = $row['language'] ?? '';
             }
         }
-
-        //set the messages language
-        $this->language = $messages;
+        $this->language = $this->loadMessages($codes);
     }
 
+    /**
+     * Read the messages of the first existing language file in $codes, else English.
+     *
+     * @param array $codes Language codes in order of preference (e.g. "en", "pt_BR")
+     * @return array The messages, empty when no language file exists
+     */
+    protected function loadMessages(array $codes)
+    {
+        $dir = dirname(__DIR__, 3) . '/app/languages/';
+        $codes[] = 'en';
+        foreach ($codes as $code) {
+            // The code comes from a request header: only plain locale names reach the filesystem
+            if (!is_string($code) || !preg_match('/^[A-Za-z]{2,3}([_-][A-Za-z0-9]{2,8})*$/', $code)) {
+                continue;
+            }
+            $base = strtolower(preg_split('/[_-]/', $code)[0]);
+            foreach ([$code, $base] as $name) {
+                $file = $dir . $name . '.php';
+                if (is_file($file)) {
+                    $messages = [];
+                    include $file;
+                    return is_array($messages) ? $messages : [];
+                }
+            }
+        }
+        return [];
+    }
 
     /**
      * Method Http accept: OPTIONS
