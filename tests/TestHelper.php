@@ -13,7 +13,7 @@ use Gaia\Db\Factory\ConnectionFactory;
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-// Deprecations and warnings are logged (see phpunit.xml) for tools/upgrade/deprecations-report.php
+// Deprecations are logged, warnings and notices fail tests (see phpunit.xml) for tools/upgrade/deprecations-report.php
 ini_set('error_log', realpath(__DIR__ . '/..') . '/logs/php-diagnostics-phpunit.log');
 
 define('APP_PATH', realpath(__DIR__ . '/..'));
