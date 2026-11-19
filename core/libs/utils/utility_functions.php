@@ -19,7 +19,7 @@ namespace Gaia\Libraries\Utils;
  */
 function create_guid(){
     // Time based PHP Unique ID
-    $uid = uniqid(NULL, TRUE);
+    $uid = uniqid('', true);
     // Random SHA1 hash
     $rawid = strtoupper(sha1(uniqid(rand(), true)));
     // Produce the results

@@ -83,7 +83,7 @@ class Markdown
         $lines = ['| ' . implode(' | ', $headers) . ' |', '|' . str_repeat('---|', count($headers))];
         foreach ($rows as $row) {
             $lines[] = '| ' . implode(' | ', array_map(function ($cell) {
-                return str_replace(['|', "\n"], ['\\|', ' '], $cell);
+                return str_replace(['|', "\n"], ['\\|', ' '], (string) $cell);
             }, $row)) . ' |';
         }
 
