@@ -216,7 +216,7 @@ class DoccontentBehaviorTest extends TestCase
      */
     private function model($state)
     {
-        $model = $this->getMockBuilder(ModelInterface::class)
+        $model = $this->getMockBuilder(DynamicModelStub::class)
             ->addMethods(['getSnapshotData'])
             ->getMockForAbstractClass();
         $model->docId = 'doc-1';

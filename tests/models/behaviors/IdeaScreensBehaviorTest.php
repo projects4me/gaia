@@ -179,7 +179,7 @@ class IdeaScreensBehaviorTest extends TestCase
      */
     private function model($ideaId, $screens)
     {
-        $model = $this->getMockBuilder(ModelInterface::class)
+        $model = $this->getMockBuilder(DynamicModelStub::class)
             ->addMethods(['getSnapshotData'])
             ->getMockForAbstractClass();
         $model->ideaId = $ideaId;

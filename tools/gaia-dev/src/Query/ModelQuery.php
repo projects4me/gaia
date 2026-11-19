@@ -137,6 +137,9 @@ class ModelQuery implements Query
         $parts = [];
         foreach (isset($acl['groups']) ? $acl['groups'] : [] as $group) {
             $key = isset($acl['groupKeys'][$group]) ? $acl['groupKeys'][$group] : '?';
+            if (is_array($key)) {
+                $key = json_encode($key, JSON_UNESCAPED_SLASHES);
+            }
             $parts[] = "group {$group} via {$key}";
         }
         foreach ($acl as $name => $value) {
