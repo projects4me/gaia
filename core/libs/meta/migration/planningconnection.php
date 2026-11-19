@@ -41,6 +41,13 @@ class PlanningConnection implements SchemaConnection
     private $plan;
 
     /**
+     * The extensions the plan creates, so a later check counts them as installed
+     *
+     * @var array
+     */
+    private $plannedExtensions = array();
+
+    /**
      * PlanningConnection constructor.
      *
      * @param AdapterInterface $adapter The real adapter
@@ -90,8 +97,22 @@ class PlanningConnection implements SchemaConnection
         if (!empty($placeholders)) {
             throw new \LogicException('A dry-run migration cannot plan a statement with placeholders');
         }
+        if (preg_match('/^\s*CREATE\s+EXTENSION\s+(?:IF\s+NOT\s+EXISTS\s+)?"?([\w-]+)"?/i', $sql, $matches)) {
+            $this->plannedExtensions[strtolower($matches[1])] = true;
+        }
         $this->plan->add($sql);
         return true;
+    }
+
+    /**
+     * This function tells whether the plan creates an extension, which a dry run treats as installed.
+     *
+     * @param string $extension
+     * @return bool
+     */
+    public function hasPlannedExtension(string $extension): bool
+    {
+        return isset($this->plannedExtensions[strtolower($extension)]);
     }
 
     public function createTable(string $tableName, $schemaName, array $definition): bool
