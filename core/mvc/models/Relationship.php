@@ -82,6 +82,13 @@ class Relationship
     protected $relConditions = [];
 
     /**
+     * The dependency injector (also used by the HasOne, HasMany and BelongsTo subclasses).
+     *
+     * @var \Phalcon\Di\FactoryDefault
+     */
+    protected $di;
+
+    /**
      * Relationship constructor.
      *
      * @param \Phalcon\DiInterface $di

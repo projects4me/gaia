@@ -26,6 +26,13 @@ class HasManyToMany
     protected $fields = [];
 
     /**
+     * The dependency injector.
+     *
+     * @var \Phalcon\Di\FactoryDefault
+     */
+    protected $di;
+
+    /**
      * HasManyToMany constructor.
      *
      * @param \Phalcon\DiInterface $di
