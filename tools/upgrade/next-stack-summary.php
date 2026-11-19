@@ -49,6 +49,16 @@ foreach (['client', 'backend', 'acl'] as $mode) {
         "upgrade-next/api-tester-{$mode}-report.json",
         $findings->apiTesterFailures($read("next/api-tester-{$mode}-report.json"))
     );
+    if ($mode === 'client') {
+        $summary->add(
+            'api-tester client failures new on next (not failing on current)',
+            'upgrade-next/api-tester-client-report.json',
+            $findings->newApiTesterFailures(
+                $read('next/api-tester-client-report.json'),
+                $read('current/api-tester-client-report.json')
+            )
+        );
+    }
 }
 foreach (['client', 'backend', 'acl'] as $mode) {
     $summary->add(

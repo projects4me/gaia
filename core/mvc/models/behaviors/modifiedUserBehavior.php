@@ -74,6 +74,9 @@ class modifiedUserBehavior extends Behavior implements BehaviorInterface
     {
         global $currentUser;
         if (!isset($currentUser->id)) {
+            if (!is_object($currentUser)) {
+                $currentUser = new \stdClass();
+            }
             $currentUser->id = 'system';
             $currentUser->name = 'system_user';
         }

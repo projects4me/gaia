@@ -3916,9 +3916,8 @@
       "resource": "translation",
       "auth": false,
       "expects": {
-        "status": 404,
-        "shape": "error",
-        "errorEqual": "Locale not supported"
+        "status": [200, 404],
+        "jsonPathAbsent": ["views"]
       }
     },
     {

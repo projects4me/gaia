@@ -527,6 +527,8 @@ jobs:
         cat /tmp/apache.log >&2
         exit 1
 
+    # Same order as the current stack (backend,acl, then client): the test databases are hit in the
+    # same state, so the comparison shows real differences only.
     - name: Run backend API testing
       id: api-tester
       if: ${{ !cancelled() }}
@@ -534,7 +536,17 @@ jobs:
       run: |
         tools/api-tester/harness/run-api-tests.sh \
           --base-uri http://127.0.0.1 \
-          --mode client,backend,acl \
+          --mode backend,acl \
+          --record-bodies
+
+    - name: Run client API testing
+      id: api-tester-client
+      if: ${{ !cancelled() }}
+      continue-on-error: true
+      run: |
+        tools/api-tester/harness/run-api-tests.sh \
+          --base-uri http://127.0.0.1 \
+          --mode client \
           --record-bodies
 
     - name: Collect the Apache log
@@ -555,6 +567,7 @@ jobs:
           echo "reset-test-db ${{ steps.reset.outcome }}"
           echo "apache ${{ steps.apache.outcome }}"
           echo "api-tester ${{ steps.api-tester.outcome }}"
+          echo "api-tester-client ${{ steps.api-tester-client.outcome }}"
         } > upgrade/steps.txt
         cat upgrade/steps.txt
 

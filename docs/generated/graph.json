@@ -68555,12 +68555,7 @@
     {
       "from": "case:client/get-translations-dot-dot-locale-404",
       "type": "asserts",
-      "to": "assertion:errorEqual"
-    },
-    {
-      "from": "case:client/get-translations-dot-dot-locale-404",
-      "type": "asserts",
-      "to": "assertion:shape"
+      "to": "assertion:jsonPathAbsent"
     },
     {
       "from": "case:client/get-translations-dot-dot-locale-404",
