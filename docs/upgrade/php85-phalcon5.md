@@ -84,8 +84,8 @@ it leaves the ini settings alone instead.
 
 - **HTTP (api-tester):** the `gaia-test` and `gaia-test-hermes-down` services mount `diagnostics.ini`
   (`E_ALL`, `log_errors=On`, `display_errors=Off`) and log to `logs/php-diagnostics.log`.
-- **PHPUnit:** `tests/phpunit.xml` and `tests/TestHelper.php` write warnings and deprecations to
-  `logs/php-diagnostics-phpunit.log` without failing tests.
+- **PHPUnit:** `tests/phpunit.xml` and `tests/TestHelper.php` log deprecations to
+  `logs/php-diagnostics-phpunit.log` without failing tests; warnings and notices fail the test.
 - **Lint on the next image:** `tools/upgrade/lint-next.sh [log]` runs `php -l` with `E_ALL` on every PHP file
   (outside `vendor` and the gaia-dev fixtures) in `gaia-env:next` and writes `logs/php-lint-next.log` in the
   same format.
