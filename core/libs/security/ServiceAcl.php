@@ -59,7 +59,7 @@ class ServiceAcl extends Acl
      * @param ServiceAccess|null         $serviceAccess Read from the metadata manager when omitted.
      * @param string                     $clientId      The service client's id (oauth client_id).
      */
-    public function __construct(\Phalcon\Di\FactoryDefault $di, $kind, ServiceAccess $serviceAccess = null, $clientId = '')
+    public function __construct(\Phalcon\Di\FactoryDefault $di, $kind, ?ServiceAccess $serviceAccess = null, $clientId = '')
     {
         // The resolution mode governs role permissions, which never apply here:
         // keep whatever mode is current instead of resolving or changing it.

@@ -165,6 +165,29 @@ class NextStackFindings
     }
 
     /**
+     * Implicitly nullable parameters (PHP 8.4 deprecation) in Gaia code, from the markdown of deprecations-report.php.
+     * Counted apart from the other deprecations so a new one stands out; vendor entries are not ours to fix.
+     *
+     * @param string|null $markdown
+     * @return array finding; lines are the pattern headings
+     */
+    public function implicitlyNullable($markdown)
+    {
+        if ($markdown === null || !preg_match('/^(\d+) entries: /m', $markdown)) {
+            return self::missing('no deprecations report');
+        }
+        $gaia = preg_split('/^## Vendor$/m', $markdown)[0];
+        $count = 0;
+        $lines = [];
+        preg_match_all('/^### (?:Deprecated|Warning|Notice) x(\d+): (.*Implicitly marking parameter.*)$/m', $gaia, $m, PREG_SET_ORDER);
+        foreach ($m as $heading) {
+            $count += (int) $heading[1];
+            $lines[] = substr($heading[0], 4);
+        }
+        return ['count' => $count, 'lines' => $lines, 'note' => ''];
+    }
+
+    /**
      * @param string[] $lines
      * @return array
      */

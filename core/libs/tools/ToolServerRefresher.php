@@ -36,7 +36,7 @@ class ToolServerRefresher
      * @param McpToolLister|null   $lister
      * @param ToolCatalogSync|null $sync
      */
-    public function __construct(McpToolLister $lister = null, ToolCatalogSync $sync = null)
+    public function __construct(?McpToolLister $lister = null, ?ToolCatalogSync $sync = null)
     {
         $this->lister = $lister ?: new McpToolLister();
         $this->sync = $sync ?: new ToolCatalogSync();

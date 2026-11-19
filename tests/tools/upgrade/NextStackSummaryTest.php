@@ -98,6 +98,18 @@ class NextStackSummaryTest extends TestCase
         $this->assertSame('5 in Gaia code, 2 in vendor.', $f['note']);
     }
 
+    public function testImplicitlyNullableCountsGaiaCodeOnly()
+    {
+        $deprecation = "Implicitly marking parameter \$X as nullable is deprecated, the explicit nullable type must be used instead";
+        $md = "# PHP deprecations and warnings\n\n9 entries: 5 in Gaia code, 4 in vendor.\n\n## Gaia code\n\n"
+            . "### Deprecated x3: {$deprecation}\n\n### Deprecated x2: Other\n\n## Vendor\n\n"
+            . "### Deprecated x4: {$deprecation}\n";
+        $f = (new NextStackFindings())->implicitlyNullable($md);
+        $this->assertSame(3, $f['count']);
+        $this->assertCount(1, $f['lines']);
+        $this->assertNull((new NextStackFindings())->implicitlyNullable(null)['count']);
+    }
+
     public function testRenderTableAndDetails()
     {
         $md = (new NextStackSummary())

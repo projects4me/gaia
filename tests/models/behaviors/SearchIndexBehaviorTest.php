@@ -235,7 +235,7 @@ class SearchIndexBehaviorTest extends TestCase
      * @param  array|null $block
      * @return ModelInterface
      */
-    private function model(array $values, array $block = null)
+    private function model(array $values, ?array $block = null)
     {
         $model = $this->getMockBuilder(ModelInterface::class)
             ->addMethods(['getMetaData', 'getSnapshotData', 'getOldSnapshotData', 'getModelName'])

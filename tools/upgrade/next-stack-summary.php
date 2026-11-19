@@ -58,5 +58,6 @@ foreach (['client', 'backend', 'acl'] as $mode) {
     );
 }
 $summary->add('PHP deprecations and warnings', 'upgrade-report/deprecations.md', $findings->deprecations($read('deprecations.md')));
+$summary->add('Implicitly nullable parameters (Gaia code)', 'upgrade-report/deprecations.md', $findings->implicitlyNullable($read('deprecations.md')));
 
 echo $summary->render();

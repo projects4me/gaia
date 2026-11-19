@@ -43,7 +43,7 @@ class settingBehavior extends Behavior implements BehaviorInterface
     /**
      * @param SettingsCipher|null $cipher Injected in tests; defaults to the configured key.
      */
-    public function __construct(SettingsCipher $cipher = null)
+    public function __construct(?SettingsCipher $cipher = null)
     {
         $this->cipher = $cipher;
     }

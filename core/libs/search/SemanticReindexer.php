@@ -72,7 +72,7 @@ class SemanticReindexer
         Manager $metaManager,
         SemanticRecords $records,
         SearchLiveEvents $events,
-        callable $pause = null
+        ?callable $pause = null
     ) {
         $this->registry = $registry;
         $this->metaManager = $metaManager;

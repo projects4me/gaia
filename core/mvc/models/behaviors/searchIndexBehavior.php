@@ -41,7 +41,7 @@ class searchIndexBehavior extends Behavior implements BehaviorInterface
     /**
      * @param SearchLiveEvents|null $events Injected in tests.
      */
-    public function __construct(SearchLiveEvents $events = null)
+    public function __construct(?SearchLiveEvents $events = null)
     {
         $this->events = $events;
     }

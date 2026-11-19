@@ -27,8 +27,8 @@ class Clause
      */
     function __construct(
         \Phalcon\Di\FactoryDefault $di,
-        WhereFieldValidator $fieldValidator = null,
-        WhereTokenizer $tokenizer = null
+        ?WhereFieldValidator $fieldValidator = null,
+        ?WhereTokenizer $tokenizer = null
     ) {
         $this->di = $di;
         $this->fieldValidator = $fieldValidator ?? new WhereFieldValidator($di);
