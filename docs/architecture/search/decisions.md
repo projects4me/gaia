@@ -35,7 +35,7 @@ stored search columns, semantic embedding and ranking.
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | `data` holds `{type: "searchresult", id: "<type>:<recordId>", attributes: {module, recordId, title, snippet, score, matchedBy, pinned}}` and `meta` holds `{query, types}`. `pinned` is true when the exact searcher found the record. `title` and `snippet` are null when the user may not read the field. |
+| Decision | `data` holds `{type: "searchresult", id: "<type>:<recordId>", attributes: {module, recordId, title, snippet, score, matchedBy, pinned}}` and `meta` holds `{query, types, semantic}`, where `semantic` is `unavailable` when semantic matching could not run (D-008) and `ok` otherwise. `pinned` is true when the exact searcher found the record. `title` and `snippet` are null when the user may not read the field. |
 | Why | The composite id keeps ids unique across modules; the client opens the record from `module` and `recordId`. |
 | Consequences | The shape is the same for every searchable module, so a new module needs only its search metadata. |
 
@@ -53,7 +53,7 @@ stored search columns, semantic embedding and ranking.
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | Each type is searched by an exact, a full-text and a fuzzy searcher. A searcher is skipped for a type when the user may not read one of its fields. Every candidate query stays inside the module's record scope and `deleted = 0` before ranking and `LIMIT`. |
+| Decision | Each type is searched by an exact, a full-text, a fuzzy and a semantic searcher. A searcher is skipped for a type when the user may not read one of its fields. Every candidate query stays inside the module's record scope and `deleted = 0` before ranking and `LIMIT`. |
 | Why | A match on a hidden field would leak its content through the ranking. |
 | Consequences | A user with field restrictions may get fewer matches than an admin for the same query. |
 
@@ -73,7 +73,7 @@ stored search columns, semantic embedding and ranking.
 | Status | Accepted |
 | Decision | When a record's semantic text changes Gaia announces `search.semantic.changed`; Ares computes the embedding and stores it only if the hash it embedded still equals the stored hash. The reindex re-announces every record whose embedding is missing or was made from another text. |
 | Why | Embedding is slow and belongs to Ares. Hermes keeps no history, so events missed while Ares was down are recovered by the reindex. A late embedding of old text must not overwrite a newer one. |
-| Consequences | Semantic matching is eventually consistent. It is exposed over HTTP in a later issue. |
+| Consequences | Semantic matching is eventually consistent: a record whose embedding is not stored yet is not a semantic candidate. Search uses the embeddings as D-008 describes. |
 
 ### D-007 — Rankings are fused by reciprocal rank, with exact matches first
 
@@ -83,3 +83,12 @@ stored search columns, semantic embedding and ranking.
 | Decision | `RankFusion` combines the searchers' rankings with reciprocal rank fusion (`RankFusion::K` = 60), so scores of different searchers need not be comparable. Records the exact searcher found (such as an issue number) stay on top, in fused order. Each searcher gives twice the limit in candidates so fusion can reorder. |
 | Why | Full-text ranks and trigram similarities are on different scales; ranks are not. A user who types an issue number expects that issue first. |
 | Consequences | `score` orders results within one response only; it is not a probability and not comparable between queries. |
+
+### D-008 — Semantic matching embeds the query and degrades when Ares is down
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | `SemanticSearcher` embeds the query once per search through `Embeddings::embedQuery` (Ares) and ranks the records whose `searchEmbedding` is within `system.search.semanticMaxDistance` cosine distance (default 0.5), nearest first, inside the record scope and `deleted = 0` before `LIMIT` like the other searchers. The query runs with `hnsw.iterative_scan = strict_order` (pgvector 0.8), so when the plan reads the HNSW index, nearer records out of scope or past the cut-off do not crowd the eligible ones out of its `hnsw.ef_search` candidates (it gives up at `hnsw.max_scan_tuples`). It runs for every type with semantic fields the user may read. When Ares cannot embed the query the searcher throws `SearcherUnavailableException`; `SearchService` logs it, searches on without semantic matching and reports it in `SearchResults`, which the response shows as `meta.semantic: "unavailable"`. |
+| Why | A paraphrase shares no words with the record, so only meaning finds it. Ares being down must not fail a search the other searchers can answer, and a failed Ares call is reported, never passed off as a complete answer. |
+| Consequences | Ares adds one call per search; a search without Ares has no semantic matches and says so. The distance is a cut-off, not a ranking score: fusion (D-007) still orders by rank. |
