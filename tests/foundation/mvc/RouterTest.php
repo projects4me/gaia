@@ -4,6 +4,7 @@ namespace Gaia\Tests\Foundation\Mvc;
 
 use PHPUnit\Framework\TestCase;
 use Phalcon\Config;
+use Phalcon\Di\FactoryDefault;
 use Gaia\MVC\Router;
 
 /**
@@ -48,6 +49,7 @@ class RouterTest extends TestCase
         ]);
 
         $router = new Router(false);
+        $router->setDI(new FactoryDefault());
         $router->init();
         $router->handle('/download');
 

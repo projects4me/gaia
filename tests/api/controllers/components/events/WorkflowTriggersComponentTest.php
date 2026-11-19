@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * A record named like the Issue model, which is what the component reads.
  */
+#[\AllowDynamicProperties]
 class Issue
 {
 }
@@ -21,6 +22,7 @@ class Issue
 /**
  * A milestone record: only its update to completed raises a trigger event.
  */
+#[\AllowDynamicProperties]
 class Milestone
 {
 }
