@@ -10,6 +10,9 @@ use Gaia\Libraries\Meta\Manager as metaManager;
 use Gaia\Db\Factory\ConnectionFactory;
 use Gaia\Libraries\Search\SearchableRegistry;
 use Phalcon\Db\Adapter\AdapterInterface;
+use Phalcon\Db\Exception as DbException;
+use Phalcon\Mvc\Model\Exception as ModelException;
+use PDOException;
 
 /**
  * This class is responsible for synchronizing the database by using the
@@ -162,7 +165,7 @@ class Driver
                 $migration->migrateModel($model);
                 $result[$model] = "$model migrated successfully";
             }
-        } catch (PhalconException $e) {
+        } catch (DbException | ModelException | PDOException $e) {
             throw new \Gaia\Exception\MigrationDriver($e->getMessage());
         }
         return $result;
