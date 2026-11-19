@@ -1,4 +1,6 @@
-FROM rananoman/gaia:env-dev
+# CI builds this on gaia-env:current / gaia-env:next to check the effective PHP config
+ARG ENV_IMAGE=rananoman/gaia:env-dev
+FROM ${ENV_IMAGE}
 
 COPY ./ /var/www/html
 
@@ -6,6 +8,8 @@ COPY ./ /var/www/html
 RUN docker-php-ext-enable opcache     && rm -f /usr/local/etc/php/conf.d/*xdebug*.ini /usr/local/etc/php/conf.d/*xhprof*.ini
 COPY ./docker/dev/opcache.ini /usr/local/etc/php/conf.d/zz-opcache.ini
 COPY ./docker/php/conf.d/custom.ini /usr/local/etc/php/conf.d/zz-custom.ini
+# display_errors Off and log_errors On, set explicitly so the base image cannot turn them on
+COPY ./docker/php/conf.d/production.ini /usr/local/etc/php/conf.d/zzz-production.ini
 
 ENV HERMES_URL=http://hermes.projects4.me
 

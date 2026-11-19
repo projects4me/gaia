@@ -72,6 +72,58 @@ jobs:
     - name: Check the api-tester catalogs are consistent
       run: php tools/gaia-dev/bin/gaia-dev check api-cases
 
+  deployed-image-config:
+    name: Deployed image never displays PHP errors (${{ matrix.stack }})
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.stack == 'next' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - stack: current
+            build-args: |
+              BASE_IMAGE=php:7.4.21-apache-buster
+              DEBIAN_ARCHIVE=1
+              PHALCON_VERSION=4.1.2
+              PSR_VERSION=1.1.0
+              XDEBUG_VERSION=3.1.5
+              XHPROF_VERSION=2.3.7
+              MONGODB_VERSION=1.15.3
+              PHPUNIT_VERSION=9.6.21
+          - stack: next
+            build-args: |
+              BASE_IMAGE=php:8.5.12-apache
+              DEBIAN_ARCHIVE=0
+              PHALCON_VERSION=5.23.0
+              PSR_VERSION=
+              XDEBUG_VERSION=3.5.3
+              XHPROF_VERSION=2.3.10
+              MONGODB_VERSION=
+              PHPUNIT_VERSION=11.5.0
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v5
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # Keep the build args equal to build_current / build_next in docker/env/build.sh.
+    - name: Build gaia-env:${{ matrix.stack }}
+      uses: docker/build-push-action@v6
+      with:
+        context: docker/env
+        load: true
+        tags: gaia-env:${{ matrix.stack }}
+        cache-from: type=gha,scope=gaia-env-${{ matrix.stack }}
+        cache-to: type=gha,scope=gaia-env-${{ matrix.stack }},mode=max
+        build-args: ${{ matrix.build-args }}
+
+    - name: Build the deployed image (docker/dev/Dockerfile)
+      run: docker build -f docker/dev/Dockerfile --build-arg ENV_IMAGE=gaia-env:${{ matrix.stack }} -t gaia-deployed:${{ matrix.stack }} .
+
+    - name: Check display_errors is off in the deployed image
+      run: tools/ci/check-php-display-errors.sh gaia-deployed:${{ matrix.stack }}
+
   api-testing:
     name: API + PHPUnit
     runs-on: ubuntu-latest
