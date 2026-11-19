@@ -21,6 +21,7 @@ jobs:
       uses: actions/checkout@v5
 
     - name: Pull gaia-env:current
+      shell: bash
       run: |
         docker pull ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
         docker tag ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2 gaia-env:current
@@ -72,6 +73,7 @@ jobs:
       uses: actions/checkout@v5
 
     - name: Pull gaia-env:${{ matrix.stack }}
+      shell: bash
       run: |
         docker pull ghcr.io/projects4me/gaia-env:${{ matrix.env-tag }}
         docker tag ghcr.io/projects4me/gaia-env:${{ matrix.env-tag }} gaia-env:${{ matrix.stack }}
@@ -123,6 +125,7 @@ jobs:
       uses: actions/checkout@v5
 
     - name: Pull gaia-env:current
+      shell: bash
       run: |
         docker pull ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
         docker tag ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2 gaia-env:current
@@ -314,6 +317,7 @@ jobs:
       uses: actions/checkout@v5
 
     - name: Pull gaia-env:next
+      shell: bash
       run: |
         docker pull ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0
         docker tag ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0 gaia-env:next
