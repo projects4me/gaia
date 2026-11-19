@@ -16,14 +16,18 @@ use Gaia\Libraries\Search\SearchableRegistry;
 use Gaia\Libraries\Search\SearchRequest;
 use Gaia\Libraries\Search\SearchScope;
 use Gaia\Libraries\Search\SearchService;
+use Gaia\Libraries\Search\SemanticSearcher;
 use Gaia\Libraries\Search\Snippet;
 use Gaia\Libraries\Search\TextSearchQuery;
 use Gaia\Libraries\Security\Acl;
+use Gaia\Exception\EmbeddingsUnavailableException;
+use Gaia\Services\Embeddings;
 use PHPUnit\Framework\TestCase;
 
 /**
- * SearchService over Issue (agaia-4666): exact, FTS and fuzzy matching fused into one ranking, inside the user's
- * project scope and field ACL. Each test adds its issues in a transaction it rolls back.
+ * SearchService over Issue (agaia-4666, agaia-4668): exact, FTS, fuzzy and semantic matching fused into one ranking,
+ * inside the user's project scope and field ACL. Semantic matching runs on a fake Embeddings and embeddings the test
+ * writes. Each test adds its issues in a transaction it rolls back.
  *
  * @author   Agent Odysseus <agent.odysseus@projects4.me>
  * @package  Gaia\Tests
@@ -52,6 +56,11 @@ class SearchServiceTest extends TestCase
      */
     private $acl;
 
+    /**
+     * @var SearchTestEmbeddings
+     */
+    private $embeddings;
+
     protected function setUp(): void
     {
         $db = \Phalcon\Di::getDefault()->getShared('db');
@@ -60,6 +69,7 @@ class SearchServiceTest extends TestCase
         }
         $this->db = $db;
         $this->acl = new SearchTestAcl(\Phalcon\Di::getDefault(), Acl::RESOLUTION_PERMISSIVE);
+        $this->embeddings = new SearchTestEmbeddings();
         $this->db->begin();
     }
 
@@ -269,6 +279,128 @@ class SearchServiceTest extends TestCase
         $this->service()->search(new SearchRequest(array('nosuchtype'), 'zebracorn'));
     }
 
+    public function testFindsAParaphraseByMeaning()
+    {
+        $this->embeddings->vectors['login fails after password reset'] = $this->vector(0.9, 0.436);
+        $match = $this->addIssue('Reset password link broken', 'The link in the email opens an error page.');
+        $this->embed($match, $this->vector(1));
+        $this->embed($this->addIssue('Dark mode colours', null), $this->vector(0, 0, 1));
+        $this->addIssue('Login page slow', null);
+
+        $results = $this->service()->search(new SearchRequest(array('issue'), 'login fails after password reset'));
+
+        $this->assertSame(array($match), array_column($results->items(), 'id'));
+        $this->assertContains('semantic', $results->items()[0]['matchedBy']);
+        $this->assertFalse($results->isUnavailable(SemanticSearcher::KIND));
+    }
+
+    public function testRanksTheNearestEmbeddingFirst()
+    {
+        $this->embeddings->vectors['zebracorn'] = $this->vector(1);
+        $far = $this->addIssue('Alpha', null);
+        $this->embed($far, $this->vector(0.7, 0.714));
+        $near = $this->addIssue('Beta', null);
+        $this->embed($near, $this->vector(0.95, 0.312));
+
+        $this->assertSame(array($near, $far), array_column($this->search('zebracorn'), 'id'));
+    }
+
+    public function testSemanticMatchesStayInTheScope()
+    {
+        $this->embeddings->vectors['zebracorn'] = $this->vector(1);
+        $own = $this->addIssue('Alpha', null, null, self::PROJECT_A);
+        $other = $this->addIssue('Beta', null, null, self::PROJECT_B);
+        $removed = $this->addIssue('Gamma', null, null, self::PROJECT_A, 1);
+        foreach (array($own, $other, $removed) as $id) {
+            $this->embed($id, $this->vector(1));
+        }
+        $this->acl->scope = Acl::SCOPE_MEMBERS;
+        $this->acl->projectIds = array(self::PROJECT_A);
+
+        $this->assertSame(array($own), array_column($this->search('zebracorn'), 'id'));
+    }
+
+    public function testScansTheEmbeddingIndexIterativelyAndPutsTheSettingBack()
+    {
+        // Without an iterative scan, nearer records out of scope crowd the ones in it out of the HNSW candidates
+        $this->db->execute("SELECT set_config('hnsw.iterative_scan', 'off', false)");
+        $this->embeddings->vectors['zebracorn'] = $this->vector(1);
+        $this->embed($this->addIssue('Alpha', null), $this->vector(1));
+        $candidates = new SearchTestSettingSpy($this->db);
+
+        $this->service(SemanticSearcher::DEFAULT_MAX_DISTANCE, $candidates)
+            ->search(new SearchRequest(array('issue'), 'zebracorn'));
+
+        $this->assertSame('strict_order', $candidates->settings['semantic']);
+        $row = $this->db->fetchOne(
+            "SELECT current_setting('hnsw.iterative_scan') AS s",
+            \Phalcon\Db\Enum::FETCH_ASSOC
+        );
+        $this->assertSame('off', $row['s']);
+    }
+
+    public function testLeavesOutEmbeddingsPastTheMaxDistance()
+    {
+        $this->embeddings->vectors['zebracorn'] = $this->vector(1);
+        $near = $this->addIssue('Alpha', null);
+        $this->embed($near, $this->vector(0.95, 0.312));
+        $this->embed($this->addIssue('Beta', null), $this->vector(0.8, 0.6));
+
+        $results = $this->service(0.1)->search(new SearchRequest(array('issue'), 'zebracorn'));
+
+        $this->assertSame(array($near), array_column($results->items(), 'id'));
+    }
+
+    public function testAresDownStillGivesTheOtherMatchesAndSaysSemanticIsUnavailable()
+    {
+        $this->embeddings->down = true;
+        $issue = $this->addIssue('Zebracorn import fails', null);
+        $this->embed($issue, $this->vector(1));
+
+        $results = $this->service()->search(new SearchRequest(array('issue'), 'zebracorn'));
+
+        $this->assertSame(array($issue), array_column($results->items(), 'id'));
+        $this->assertNotContains('semantic', $results->items()[0]['matchedBy']);
+        $this->assertTrue($results->isUnavailable(SemanticSearcher::KIND));
+        $this->assertSame(1, $this->embeddings->calls);
+    }
+
+    public function testSkipsSemanticMatchingOverAFieldTheUserMayNotRead()
+    {
+        $this->embeddings->vectors['zebracorn'] = $this->vector(1);
+        $this->embed($this->addIssue('Alpha', 'Hidden zebracorn notes.'), $this->vector(1));
+        $this->acl->deniedFields = array('description');
+
+        $results = $this->service()->search(new SearchRequest(array('issue'), 'zebracorn'));
+
+        $this->assertSame(array(), $results->items());
+        $this->assertSame(0, $this->embeddings->calls);
+        $this->assertFalse($results->isUnavailable(SemanticSearcher::KIND));
+    }
+
+    /**
+     * @dataProvider badMaxDistances
+     */
+    public function testRejectsAMaxDistanceOutOfBounds($maxDistance)
+    {
+        $this->expectException(\Gaia\Exception\Exception::class);
+        new SemanticSearcher(new CandidateQuery($this->db), $this->embeddings, $maxDistance);
+    }
+
+    /**
+     * @return array
+     */
+    public function badMaxDistances()
+    {
+        return array(
+            'negative' => array(-0.1),
+            'past 2' => array(2.1),
+            'not a number' => array('near'),
+            'not finite' => array(NAN),
+            'infinite' => array('1e999'),
+        );
+    }
+
     /**
      * @param string $query
      * @param int|null $limit
@@ -276,17 +408,45 @@ class SearchServiceTest extends TestCase
      */
     private function search($query, $limit = null)
     {
-        return $this->service()->search(new SearchRequest(array('issue'), $query, $limit));
+        return $this->service()->search(new SearchRequest(array('issue'), $query, $limit))->items();
     }
 
     /**
+     * This function returns an embedding with the given leading values and zeros after them.
+     *
+     * @param float ...$values
+     * @return array
+     */
+    private function vector(...$values)
+    {
+        return array_pad(array_map('floatval', $values), Embeddings::DIMENSIONS, 0.0);
+    }
+
+    /**
+     * This function stores an issue's embedding, as Ares does.
+     *
+     * @param string $id
+     * @param array $vector
+     * @return void
+     */
+    private function embed($id, array $vector)
+    {
+        $this->db->execute(
+            'UPDATE "issues" SET "searchEmbedding" = CAST(? AS vector) WHERE "id" = ?',
+            array(json_encode($vector), $id)
+        );
+    }
+
+    /**
+     * @param float $maxDistance
+     * @param CandidateQuery|null $candidates
      * @return SearchService
      */
-    private function service()
+    private function service($maxDistance = SemanticSearcher::DEFAULT_MAX_DISTANCE, CandidateQuery $candidates = null)
     {
         $di = \Phalcon\Di::getDefault();
         $metaManager = $di->get('metaManager');
-        $candidates = new CandidateQuery($this->db);
+        $candidates = $candidates ?? new CandidateQuery($this->db);
         $tsquery = new TextSearchQuery();
 
         return new SearchService(
@@ -298,6 +458,7 @@ class SearchServiceTest extends TestCase
                 new ExactMatcher($candidates),
                 new FtsSearcher($candidates, $tsquery),
                 new FuzzySearcher($candidates, 0.3),
+                new SemanticSearcher($candidates, $this->embeddings, $maxDistance),
             ),
             new RankFusion(),
             new DisplayLoader($candidates, new Snippet($tsquery))
@@ -375,5 +536,77 @@ class SearchTestAcl extends Acl
     public function isFieldActionAllowed($modelName, $field, $action)
     {
         return !in_array($field, $this->deniedFields, true);
+    }
+}
+
+/**
+ * Embeddings that answer from a map of query to vector, without Ares. An unknown query gets a vector no test issue is
+ * near; down makes every call fail as when Ares is unreachable.
+ */
+class SearchTestEmbeddings extends Embeddings
+{
+    /**
+     * @var array
+     */
+    public $vectors = array();
+
+    /**
+     * @var bool
+     */
+    public $down = false;
+
+    /**
+     * @var int
+     */
+    public $calls = 0;
+
+    public function embedQuery(string $text): array
+    {
+        $this->calls++;
+        if ($this->down) {
+            throw new EmbeddingsUnavailableException('Embeddings service request failed: no response');
+        }
+        if (isset($this->vectors[$text])) {
+            return $this->vectors[$text];
+        }
+        $vector = array_fill(0, Embeddings::DIMENSIONS, 0.0);
+        $vector[Embeddings::DIMENSIONS - 1] = 1.0;
+
+        return $vector;
+    }
+}
+
+/**
+ * A candidate query that records the hnsw.iterative_scan setting the semantic candidate query runs under.
+ */
+class SearchTestSettingSpy extends CandidateQuery
+{
+    /**
+     * @var array
+     */
+    public $settings = array();
+
+    /**
+     * @var \Phalcon\Db\Adapter\AdapterInterface
+     */
+    private $connection;
+
+    public function __construct($db)
+    {
+        parent::__construct($db);
+        $this->connection = $db;
+    }
+
+    public function ids(\Gaia\Libraries\Search\SearchTarget $target, $condition, $order, array $bind, $limit)
+    {
+        $row = $this->connection->fetchOne(
+            "SELECT current_setting('hnsw.iterative_scan', true) AS s",
+            \Phalcon\Db\Enum::FETCH_ASSOC
+        );
+        if (isset($bind['search_semantic'])) {
+            $this->settings['semantic'] = $row['s'];
+        }
+
+        return parent::ids($target, $condition, $order, $bind, $limit);
     }
 }

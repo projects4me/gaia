@@ -40,6 +40,8 @@ $config['system'] = [
     'search' => [
         // pg_trgm word_similarity a fuzzy search match needs, from 0 to 1.
         'fuzzyThreshold' => \Gaia\Libraries\Search\FuzzySearcher::DEFAULT_THRESHOLD,
+        // Cosine distance a semantic search match may have at most, from 0 to 2.
+        'semanticMaxDistance' => \Gaia\Libraries\Search\SemanticSearcher::DEFAULT_MAX_DISTANCE,
     ],
 ];
 

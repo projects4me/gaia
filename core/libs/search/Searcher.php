@@ -7,7 +7,7 @@
 namespace Gaia\Libraries\Search;
 
 /**
- * One kind of matching (exact, fts, fuzzy, later semantic): ranks the records of a searchable type against the query.
+ * One kind of matching (exact, fts, fuzzy, semantic): ranks the records of a searchable type against the query.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -38,6 +38,7 @@ interface Searcher
      * @param string $query The query text
      * @param int $limit The most ids to return
      * @return array
+     * @throws SearcherUnavailableException When a service it needs is down; the search goes on without it
      */
     public function rank(SearchTarget $target, $query, $limit);
 }

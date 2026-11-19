@@ -9067,6 +9067,27 @@
       }
     },
     {
+      "id": "search-without-ares-reports-semantic-unavailable",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "Tsster"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsIncludes": [
+          "issue:{issueId}"
+        ],
+        "jsonEqual": {
+          "meta.semantic": "unavailable"
+        }
+      }
+    },
+    {
       "id": "search-missing-q-rejected",
       "method": "GET",
       "path": "/api/v1/search",
