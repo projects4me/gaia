@@ -43,6 +43,16 @@ class ResponseRecordTest extends TestCase
         $this->assertNull($empty['contentType']);
     }
 
+    public function testNonUtf8BodyIsKeptAsBase64SoTheReportStaysEncodable()
+    {
+        $binary = "\x89PNG\r\n\x1a\n\xff\xfe";
+        $record = ResponseRecord::fromResponse(['status' => 200, 'headers' => '', 'body' => $binary]);
+
+        $this->assertSame('base64', $record['bodyFormat']);
+        $this->assertSame($binary, base64_decode($record['body']));
+        $this->assertNotFalse(json_encode($record));
+    }
+
     public function testContentTypeComesFromTheLastHeaderBlock()
     {
         $headers = "HTTP/1.1 100 Continue\r\nContent-Type: text/plain\r\n\r\n"

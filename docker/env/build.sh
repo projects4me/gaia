@@ -17,6 +17,7 @@ build_current() {
         .
 }
 
+# CI builds the same image in the next-stack job of .github/workflows/ci.yml: keep its build args equal.
 build_next() {
     docker build -t gaia-env:next \
         --build-arg BASE_IMAGE=php:8.5.12-apache \

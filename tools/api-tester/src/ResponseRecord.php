@@ -8,8 +8,8 @@ namespace ApiTester;
 
 /**
  * Turns an HTTP response into the record --record-bodies writes into the report:
- * status, content type and body (parsed JSON, or the raw text when the body is
- * not JSON).
+ * status, content type and body (parsed JSON, the raw text when the body is
+ * not JSON, or base64 when it is not valid UTF-8).
  *
  * JSON is decoded to objects (not associative arrays) so that `{}` and `[]`
  * stay distinct when the report is written and compared.
@@ -35,6 +35,11 @@ class ResponseRecord
                 $format = 'json';
                 $parsed = $decoded;
             }
+        }
+        // A binary (non-UTF-8) body would make json_encode fail on the whole report
+        if ($format === 'text' && !preg_match('//u', $body)) {
+            $format = 'base64';
+            $parsed = base64_encode($body);
         }
 
         return [
