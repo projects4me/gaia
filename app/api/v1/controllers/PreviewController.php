@@ -30,7 +30,7 @@ class PreviewController extends \Phalcon\Mvc\Controller
      *
      * @param string $id
      * @return mixed
-     * @throws \Phalcon\Exception
+     * @throws \Gaia\Exception\InternalError
      */
     public function getAction($id)
     {
@@ -39,7 +39,7 @@ class PreviewController extends \Phalcon\Mvc\Controller
 
         if (!(isset($id) && !empty($id))) {
             $logger->error("No id was provided");
-            throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+            throw new \Gaia\Exception\InternalError('Id must be set, please refer to guides.');
         }
 
         // The token is consumed up front, so a second request (or a failure below) cannot reuse it

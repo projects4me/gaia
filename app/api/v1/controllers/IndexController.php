@@ -18,7 +18,7 @@ class IndexController extends \Phalcon\Mvc\Controller
     /**
      * This function is used to load the prometheus application
      *
-     * @throws \Phalcon\Exception
+     * @throws \Gaia\Exception\InternalError
      */
     public function indexAction()
     {

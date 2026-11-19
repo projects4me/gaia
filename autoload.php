@@ -20,9 +20,6 @@
  * * Custom Routes
  */
 
-// Phalcon 4 class names on Phalcon 5, until the switch-over (docs/upgrade/php85-phalcon5.md)
-require_once APP_PATH . '/core/libs/compat/phalcon5.php';
-
 require APP_PATH . '/vendor/autoload.php';
 
 require_once APP_PATH . '/core/libs/file/handler.php';
@@ -55,9 +52,9 @@ if (preg_match('@api/?(v[^/]+)@', $request->getURI(), $matches)) {
 }
 
 //Register an autoloader
-$loader = new \Phalcon\Loader();
+$loader = new \Phalcon\Autoload\Loader();
 
-$loader->registerNamespaces(
+$loader->setNamespaces(
     [
         "Gaia\\MVC\\REST\\Controllers" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/',
         "Gaia\\MVC\\REST\\Controllers\\Common" => APP_PATH . '/app/api/' . $apiVersion . '/controllers/common/',
@@ -99,7 +96,7 @@ $loader->registerNamespaces(
     ]
 );
 
-$loader->registerClasses(
+$loader->setClasses(
     [
         'Gaia\\MVC\\Router' => APP_PATH . '/core/mvc/router.php',
         // Loaded on use (migrate --dry-run): it implements Phalcon 4's AdapterInterface, which doesn't compile
@@ -108,7 +105,7 @@ $loader->registerClasses(
     ]
 );
 
-$loader->registerDirs(
+$loader->setDirectories(
     [
         __DIR__ . '/core/tasks',
     ]

@@ -39,32 +39,27 @@ PG_DUMP="docker exec postgres-dev pg_dump -U <user>" tools/upgrade/schema-snapsh
 diff before.sql after.sql
 ```
 
-## Phalcon 4 names on Phalcon 5 (shim)
+## Phalcon 4 names on Phalcon 5 (shim removed)
 
-Until the switch-over the same code boots on both images. `core/libs/compat/phalcon5.php`, required first in
-`autoload.php`, defines the Phalcon 4 class names Gaia still uses when it runs on Phalcon 5 (it detects
-`Phalcon\Autoload\Loader`) and does nothing on Phalcon 4:
+The shim that defined Phalcon 4 class names on Phalcon 5 (`core/libs/compat/`) is gone: Gaia now uses the Phalcon 5
+classes directly (agaia-4750, agaia-4751).
 
-| Phalcon 4 name | On Phalcon 5 |
+| Phalcon 4 name | Now |
 |---|---|
-| `Phalcon\Di`, `Phalcon\DiInterface` | `class_alias` of `Phalcon\Di\Di`, `Phalcon\Di\DiInterface` |
-| `Phalcon\Config` | `class_alias` of `Phalcon\Config\Config` |
-| `Phalcon\Logger` | `class_alias` of `Phalcon\Logger\Logger` (same constants and `setLogLevel`) |
-| `Phalcon\Exception` | `compat/phalcon5/Exception.php`: extends `\Exception`. Phalcon 5's own exceptions don't extend it. |
-| `Phalcon\Loader` | `compat/phalcon5/Loader.php`: `Phalcon\Autoload\Loader` with `registerNamespaces`, `registerClasses`, `registerDirs` calling the `set*` methods |
-| `Phalcon\Text` | `compat/phalcon5/Text.php`: `camelize`, `humanize`, `lower`, `random` and the `RANDOM_*` constants, on `Phalcon\Support\Helper\Str` |
+| `Phalcon\Di`, `Phalcon\DiInterface` | `Phalcon\Di\Di`, `Phalcon\Di\DiInterface` |
+| `Phalcon\Config` | `Phalcon\Config\Config` |
+| `Phalcon\Logger` | `Phalcon\Logger\Logger` |
+| `Phalcon\Loader` | `Phalcon\Autoload\Loader`: `setNamespaces`, `setClasses`, `setDirectories` replace the `register*` methods |
+| `Phalcon\Text` | `Phalcon\Support\Helper\Str\Camelize`, `Humanize`, `Lower`, `Random` (invokable) |
+| `Phalcon\Exception` | `Gaia\Exception\InternalError` (extends `\Exception`; answered by `PhalconError` like any other non-Gaia exception) |
 
-`tests/libraries/utils/Phalcon5ShimTest.php` checks the names on both stacks.
+`tests/libraries/utils/Phalcon5HelpersTest.php` pins the helper results for the inputs Gaia passes them.
 
 The migration layer (`Migration`, its driver and the migration handlers) runs on Gaia's own
 `Gaia\Db\Migration\SchemaConnection`, not Phalcon's `AdapterInterface`, whose signatures differ between Phalcon 4
 and 5. `AdapterConnection` runs the calls on the Phalcon adapter, passing only arguments both versions accept, and
 `PlanningConnection` (`migrate --dry-run`) plans the writes; so `migration migrate` and `--dry-run` run on both
 stacks (agaia-4705).
-
-**At the switch-over:** replace the old names in the code with the Phalcon 5 ones (`use Phalcon\Di\Di;`,
-`Phalcon\Autoload\Loader` with `set*`, `Phalcon\Support\Helper\Str\*`, a Gaia exception for `Phalcon\Exception`),
-then delete `core/libs/compat/` with its require in `autoload.php` and `Phalcon5ShimTest.php`.
 
 ## Dependencies
 
@@ -315,12 +310,13 @@ Apart from A1 and A2, no response changes for a reason other than R2 and R3. Sti
 
 ## Switch-over
 
-Deploy and CI move from `gaia-env:7.4.21-phalcon4.1.2` to `gaia-env:8.5.12-phalcon5.23.0`. The code still boots on
-7.4 (`composer.json` keeps `~7.4.0 || ~8.5.0`, the Phalcon 4 shim in `core/libs/compat/` and the `PHP_VERSION_ID`
-guards stay), so during the rollback window a rollback is only an image swap.
+Deploy and CI move from `gaia-env:7.4.21-phalcon4.1.2` to `gaia-env:8.5.12-phalcon5.23.0`. During the rollback
+window the code still booted on 7.4 (`composer.json` kept `~7.4.0 || ~8.5.0` and the Phalcon 4 shim in
+`core/libs/compat/`), so a rollback was only an image swap. That window is closed: `composer.json` requires `~8.5.0`
+and the shim is removed (see "Shim removed" above), so the code no longer boots on 7.4 and a rollback now means
+reverting code as well as the image.
 
-CI: `graph-drift`, `api-testing` and `deployed-image-config` run on 8.5; the `next-stack` job now runs the same checks on
-the 7.4 image and also blocks, so new code can't break 7.4. `deployed-image-config` checks both stacks.
+CI: `graph-drift`, `api-testing` and `deployed-image-config` run on 8.5 only; the 7.4 `next-stack` job is gone.
 
 ### Runbook (dev first, qa later)
 

@@ -258,7 +258,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         //print_r($this->dispatcher->getParams());exit;
         $this->controllerName = $this->dispatcher->getControllerName(); //controller
         $this->actionName = $this->dispatcher->getActionName(); //controller
-        $modelName = \Phalcon\Text::camelize($this->controllerName);
+        $modelName = (new \Phalcon\Support\Helper\Str\Camelize())($this->controllerName);
         $namespace = 'Gaia\\MVC\\Models\\';
         $this->modelName = $namespace . $modelName; //model
 
@@ -614,7 +614,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * Method Http accept: GET
      *
      * @return \Phalcon\http\Response Retrive data by id
-     * @throws \Phalcon\Exception
+     * @throws \Gaia\Exception\InternalError
      */
     public function getAction()
     {
@@ -623,7 +623,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         $modelName = $this->modelName;
 
         if (!(isset($this->id) && !empty($this->id))) {
-            throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+            throw new \Gaia\Exception\InternalError('Id must be set, please refer to guides.');
         }
 
         $query = $this->request->get('query', null, '');
@@ -690,14 +690,14 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
      * Method Http accept: GET
      *
      * @return JSON Retrive all data, with and without relationship
-     * @throws \Phalcon\Exception
+     * @throws \Gaia\Exception\InternalError
      */
     public function relatedAction()
     {
         $modelName = $this->modelName;
 
         if (!(isset($this->id) && !empty($this->id))) {
-            throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+            throw new \Gaia\Exception\InternalError('Id must be set, please refer to guides.');
         }
 
         /**

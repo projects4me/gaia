@@ -36,7 +36,7 @@ class UserimageController extends \Phalcon\Mvc\Controller
     public function getAction($id)
     {
         if (!(isset($id) && !empty($id))) {
-            throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+            throw new \Gaia\Exception\InternalError('Id must be set, please refer to guides.');
         }
 
         $user = \Gaia\MVC\Models\User::findFirstById($id);

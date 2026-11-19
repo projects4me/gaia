@@ -183,7 +183,7 @@ class Model extends PhalconModel
      *
      * @param  array $params
      * @return array
-     * @throws \Phalcon\Exception
+     * @throws \Gaia\Exception\InternalError
      * @todo   remove the relationship preload to all
      */
     public function read(array $params)
@@ -217,7 +217,7 @@ class Model extends PhalconModel
      *
      * @param  array $params
      * @return array
-     * @throws \Phalcon\Exception
+     * @throws \Gaia\Exception\InternalError
      */
     public function readAll(array $params)
     {
@@ -251,7 +251,7 @@ class Model extends PhalconModel
      *
      * @param  array $params
      * @return array
-     * @throws \Phalcon\Exception
+     * @throws \Gaia\Exception\InternalError
      */
     public function readRelated(array $params)
     {

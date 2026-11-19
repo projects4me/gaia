@@ -140,7 +140,7 @@ class Relationship
     {
         foreach ($relationships as $relationshipName) {
             if (!isset($this->modelRelationships[$relationshipName]) || empty($this->modelRelationships[$relationshipName])) {
-                throw new \Phalcon\Exception('Relationship ' . $relationshipName . " not found. Please check spellings or refer to the guides.");
+                throw new \Gaia\Exception\InternalError('Relationship ' . $relationshipName . " not found. Please check spellings or refer to the guides.");
             }
         }
     }
@@ -177,7 +177,7 @@ class Relationship
              * Otherwise use the leftJoin as the default
              */
             if (isset($this->modelRelationships[$relationshipName]['relType'])) {
-                $joinType = \Phalcon\Text::lower($this->modelRelationships[$relationshipName]['relType']);
+                $joinType = (new \Phalcon\Support\Helper\Str\Lower())($this->modelRelationships[$relationshipName]['relType']);
             }
             else {
                 $joinType = 'left';

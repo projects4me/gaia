@@ -2,7 +2,6 @@
 
 use Phalcon\Di\FactoryDefault\Cli as CliDI;
 use Phalcon\Cli\Console as ConsoleApp;
-use Phalcon\Loader;
 use Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Stream as StreamAdapter;
 use Gaia\Libraries\Utils\executiontime;
@@ -137,8 +136,8 @@ try {
     // Handle incoming arguments
     $console->handle($arguments);
 } catch (\Throwable $throwable) {
-    // Every error, Phalcon 4 or 5 (whose own exceptions no longer extend
-    // Phalcon\Exception), goes to stderr with a failing exit code.
+    // Every error (Gaia's, Phalcon's or PHP's) goes to stderr with a failing
+    // exit code.
     fwrite(STDERR, $throwable->getMessage() . PHP_EOL);
     exit(1);
 }
