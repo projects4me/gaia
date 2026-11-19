@@ -10,6 +10,7 @@ use Phalcon\Mvc\Model\MetaData;
 use Gaia\Libraries\Meta\Manager;
 use Gaia\Libraries\Utils\Util;
 use Gaia\Core\MVC\Models\Query\Clause;
+use Gaia\Core\MVC\Models\Query\CountParam;
 
 /**
  * This class prepares phalcon supported queries (PHQL) by the given metadata.
@@ -131,9 +132,7 @@ class Query
         $this->queryBuilder->from([$this->modelAlias => $modelNamespace]);
         // prepare count statement
         if (isset($params['count']) && !empty($params['count'])) {
-            $countStatement = explode("as", $params['count']);
-            $count = 'COUNT(' . $countStatement[0] . ') as' . $countStatement[1];
-            array_push($params['fields'], $count);
+            $params['fields'][] = CountParam::parse($params['count'])->toColumn();
         }
 
         $this->queryBuilder->columns($params['fields']);

@@ -14311,6 +14311,56 @@
       }
     },
     {
+      "id": "case:client/get-issue-list-no-match-stays-200",
+      "type": "case",
+      "key": "client/get-issue-list-no-match-stays-200",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/get-issue-missing-id-404",
+      "type": "case",
+      "key": "client/get-issue-missing-id-404",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue/doesnotexist",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/get-issue-soft-deleted-id-404",
+      "type": "case",
+      "key": "client/get-issue-soft-deleted-id-404",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{runtime.issueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/get-issuestatus-api-v1-issuestatus",
       "type": "case",
       "key": "client/get-issuestatus-api-v1-issuestatus",
@@ -14559,6 +14609,22 @@
       }
     },
     {
+      "id": "case:client/get-milestone-missing-id-404",
+      "type": "case",
+      "key": "client/get-milestone-missing-id-404",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/milestone/doesnotexist",
+        "resource": "milestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/get-permission-api-v1-permission",
       "type": "case",
       "key": "client/get-permission-api-v1-permission",
@@ -14623,6 +14689,22 @@
         "placeholders": [
           "runtime.projectId"
         ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/get-project-missing-id-404",
+      "type": "case",
+      "key": "client/get-project-missing-id-404",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/project/00000000-0000-0000-0000-000000000000",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
         "stores": []
       }
     },
@@ -15107,6 +15189,22 @@
       }
     },
     {
+      "id": "case:client/get-user-missing-id-404",
+      "type": "case",
+      "key": "client/get-user-missing-id-404",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/user/doesnotexist",
+        "resource": "user",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/get-userqualification-api-v1-userqualification",
       "type": "case",
       "key": "client/get-userqualification-api-v1-userqualification",
@@ -15344,6 +15442,134 @@
         "stores": [
           "runtime.longNameIssueId"
         ]
+      }
+    },
+    {
+      "id": "case:client/issue-list-count-by-group",
+      "type": "case",
+      "key": "client/issue-list-count-by-group",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-list-count-by-group-with-alias",
+      "type": "case",
+      "key": "client/issue-list-count-by-group-with-alias",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-list-count-group-without-id-bad-request",
+      "type": "case",
+      "key": "client/issue-list-count-group-without-id-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-list-count-malformed-bad-request",
+      "type": "case",
+      "key": "client/issue-list-count-malformed-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-list-count-unknown-field-bad-request",
+      "type": "case",
+      "key": "client/issue-list-count-unknown-field-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-list-count-without-group-bad-request",
+      "type": "case",
+      "key": "client/issue-list-count-without-group-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-list-rels-none",
+      "type": "case",
+      "key": "client/issue-list-rels-none",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-list-unknown-rel-bad-request",
+      "type": "case",
+      "key": "client/issue-list-unknown-rel-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
       }
     },
     {
@@ -19813,6 +20039,22 @@
         "placeholders": [
           "runtime.createdToolserverId"
         ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/upload-list-without-id-bad-request",
+      "type": "case",
+      "key": "client/upload-list-without-id-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/upload",
+        "resource": "upload",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
         "stores": []
       }
     },
@@ -67736,6 +67978,96 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/get-issue-list-no-match-stays-200",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-issue-list-no-match-stays-200",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-issue-list-no-match-stays-200",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/get-issue-list-no-match-stays-200",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/get-issue-list-no-match-stays-200",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/get-issue-missing-id-404",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/get-issue-missing-id-404",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-issue-missing-id-404",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-issue-missing-id-404",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/get-issue-missing-id-404",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/get-issue-missing-id-404",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/get-issue-soft-deleted-id-404",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/get-issue-soft-deleted-id-404",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-issue-soft-deleted-id-404",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-issue-soft-deleted-id-404",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/get-issue-soft-deleted-id-404",
+      "type": "depends_on",
+      "to": "case:client/post-issue-api-v1-issue"
+    },
+    {
+      "from": "case:client/get-issue-soft-deleted-id-404",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/get-issue-soft-deleted-id-404",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/get-issuestatus-api-v1-issuestatus",
       "type": "asserts",
       "to": "assertion:shape"
@@ -68191,6 +68523,36 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/get-milestone-missing-id-404",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/get-milestone-missing-id-404",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-milestone-missing-id-404",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-milestone-missing-id-404",
+      "type": "covers",
+      "to": "controller:milestone"
+    },
+    {
+      "from": "case:client/get-milestone-missing-id-404",
+      "type": "exercises",
+      "to": "route:GET /api/v1/milestone/{id}"
+    },
+    {
+      "from": "case:client/get-milestone-missing-id-404",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/get-permission-api-v1-permission",
       "type": "asserts",
       "to": "assertion:shape"
@@ -68302,6 +68664,36 @@
     },
     {
       "from": "case:client/get-project-api-v1-project-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/get-project-missing-id-404",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/get-project-missing-id-404",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-project-missing-id-404",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-project-missing-id-404",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/get-project-missing-id-404",
+      "type": "exercises",
+      "to": "route:GET /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/get-project-missing-id-404",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -69151,6 +69543,36 @@
       "to": "profile:anonymous"
     },
     {
+      "from": "case:client/get-user-missing-id-404",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/get-user-missing-id-404",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/get-user-missing-id-404",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/get-user-missing-id-404",
+      "type": "covers",
+      "to": "controller:user"
+    },
+    {
+      "from": "case:client/get-user-missing-id-404",
+      "type": "exercises",
+      "to": "route:GET /api/v1/user/{id}"
+    },
+    {
+      "from": "case:client/get-user-missing-id-404",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/get-userqualification-api-v1-userqualification",
       "type": "asserts",
       "to": "assertion:shape"
@@ -69599,6 +70021,231 @@
       "from": "case:client/issue-create-on-30-char-status-name",
       "type": "uses_fixture",
       "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/issue-list-count-by-group",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-list-count-by-group",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-list-count-by-group",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-list-count-by-group",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-list-count-by-group",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-list-count-by-group-with-alias",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-list-count-by-group-with-alias",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-list-count-by-group-with-alias",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-list-count-by-group-with-alias",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-list-count-by-group-with-alias",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-list-count-group-without-id-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/issue-list-count-group-without-id-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-list-count-group-without-id-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-list-count-group-without-id-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-list-count-group-without-id-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-list-count-group-without-id-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-list-count-malformed-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/issue-list-count-malformed-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-list-count-malformed-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-list-count-malformed-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-list-count-malformed-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-list-count-malformed-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-list-count-unknown-field-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/issue-list-count-unknown-field-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-list-count-unknown-field-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-list-count-unknown-field-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-list-count-unknown-field-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-list-count-unknown-field-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-list-count-without-group-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/issue-list-count-without-group-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-list-count-without-group-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-list-count-without-group-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-list-count-without-group-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-list-count-without-group-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-list-rels-none",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-list-rels-none",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-list-rels-none",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-list-rels-none",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-list-rels-none",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-list-unknown-rel-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/issue-list-unknown-rel-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-list-unknown-rel-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-list-unknown-rel-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-list-unknown-rel-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-list-unknown-rel-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/issue-on-30-char-status-name-has-status",
@@ -77797,6 +78444,36 @@
     },
     {
       "from": "case:client/toolserver-refresh-unreachable-server-is-502",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/upload-list-without-id-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/upload-list-without-id-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/upload-list-without-id-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/upload-list-without-id-bad-request",
+      "type": "covers",
+      "to": "controller:upload"
+    },
+    {
+      "from": "case:client/upload-list-without-id-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/upload"
+    },
+    {
+      "from": "case:client/upload-list-without-id-bad-request",
       "type": "runs_as",
       "to": "profile:default"
     },

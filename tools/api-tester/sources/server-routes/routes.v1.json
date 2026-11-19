@@ -560,7 +560,7 @@
                 "DELETE",
                 "PATCH"
             ],
-            "identifier": null
+            "identifier": "id"
         },
         "scoreboard": {
             "path": "/api/:version/scoreboard",
@@ -571,7 +571,7 @@
                 "DELETE",
                 "PATCH"
             ],
-            "identifier": null
+            "identifier": "id"
         },
         "issuestatus": {
             "path": "/api/:version/issuestatus",
