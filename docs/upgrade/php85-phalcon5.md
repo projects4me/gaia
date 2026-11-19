@@ -85,3 +85,34 @@ it leaves the ini settings alone instead.
 - **Report:** `php tools/upgrade/deprecations-report.php logs/php-diagnostics.log logs/php-diagnostics-phpunit.log logs/php-lint-next.log`
   groups entries by message pattern and file:line, separates Gaia code from vendor, counts them and prints
   markdown for a CI job summary.
+
+## CI next-stack report
+
+Every PR runs a non-blocking `next-stack` job in `.github/workflows/ci.yml` on `rananoman/gaia:env-next` (the
+published `gaia-env:next`), with `continue-on-error: true` and its own vendor cache key. Only `api-testing` (the
+current stack) blocks the PR. The job loads the baseline dump, runs `migration migrate --dry-run` and then
+`migrate`, takes a schema snapshot, prepares `pr4m_test`, runs PHPUnit (JUnit), runs `tools/upgrade/lint-next.sh`
+in place (`IMAGE=none`), and runs the api-tester `backend` and `acl` modes with `--record-bodies` against Apache
+with `diagnostics.ini` loaded. Each step after the database load runs even when an earlier one failed. It uploads
+everything as the `upgrade-next` artifact. `api-testing` uploads its schema snapshot and api-tester reports (with
+bodies) as `upgrade-current`.
+
+The `upgrade-report` job runs `tools/upgrade/compare-stacks.sh`: it diffs the two schema snapshots, compares the
+api-tester reports with `compare-reports.php --details`, runs `deprecations-report.php` on the diagnostics, lint
+and PHPUnit logs, and writes the summary (`tools/upgrade/next-stack-summary.php`) to the job summary: PHPUnit
+failures, dry-run statements, schema differences, api-tester failures, response differences and deprecations,
+each with a count and its artifact. `n/a` means the step that writes the input failed or didn't run. The
+comparison files are uploaded as `upgrade-report`.
+
+To reproduce the summary locally from a CI run:
+
+```sh
+gh run download <run-id> -n upgrade-current -D /tmp/upgrade/current
+gh run download <run-id> -n upgrade-next -D /tmp/upgrade/next
+tools/upgrade/compare-stacks.sh /tmp/upgrade
+```
+
+Or from local runs: put each stack's outputs in `<folder>/current` and `<folder>/next` (file names in the header
+of `compare-stacks.sh`): `schema-snapshot.sh` after `migrate`, `migrate --dry-run > dry-run.txt`,
+`phpunit --log-junit phpunit-junit.xml`, the api-tester reports from `output/` run with `--record-bodies`, and
+the logs from `logs/`. Run the script with PHP 7.4 or later.
