@@ -107,6 +107,9 @@ shows in the summary instead; the job only fails when the image or container can
 check step's outcome in `upgrade/steps.txt` and uploads everything as the `upgrade-next` artifact. `api-testing`
 uploads its schema snapshot and api-tester reports (with bodies) as `upgrade-current`.
 
+Both stacks must use the same Postgres image, `pgvector/pgvector:pg16`: the `issues` table needs the `vector`
+extension (Issue search), and plain `postgres` images don't have it, so `migrate` would fail on the next stack.
+
 The `upgrade-report` job runs `tools/upgrade/compare-stacks.sh`: it diffs the two schema snapshots, compares the
 api-tester reports with `compare-reports.php --details`, runs `deprecations-report.php` on the diagnostics, lint
 and PHPUnit logs, and writes the summary (`tools/upgrade/next-stack-summary.php`) to the job summary: PHPUnit
