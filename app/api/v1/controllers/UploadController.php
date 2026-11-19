@@ -74,7 +74,10 @@ class UploadController extends RestController
      * This is the list action for uploads, it is used to either get the preview
      * of the uploads or download them.
      *
+     * Uploads are not listed: the action reads one upload, named by the `id` parameter.
+     *
      * @method listAction
+     * @throws \Gaia\Exception\BadRequest When the `id` parameter is missing
      */
     public function listAction()
     {
@@ -83,7 +86,7 @@ class UploadController extends RestController
 
         $id = $this->request->get('id', null, null);
         if (!(isset($id) && !empty($id))) {
-            throw new \Phalcon\Exception('Id must be set, please refer to guides.');
+            throw new \Gaia\Exception\BadRequest('The id of an upload is required.');
         }
 
         $this->assertUploadInScope($id);
