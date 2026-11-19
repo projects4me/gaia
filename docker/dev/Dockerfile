@@ -4,8 +4,9 @@ FROM ${ENV_IMAGE}
 
 COPY ./ /var/www/html
 
-# Deployed image only: OPcache on, Xdebug and xhprof not loaded (the env-dev base loads them)
-RUN docker-php-ext-enable opcache     && rm -f /usr/local/etc/php/conf.d/*xdebug*.ini /usr/local/etc/php/conf.d/*xhprof*.ini
+# Deployed image only: OPcache on (built into PHP 8.5, so only enabled when not already loaded), Xdebug and xhprof not loaded (the env-dev base loads them)
+RUN (php -m | grep -qi 'zend opcache' || docker-php-ext-enable opcache) \
+    && rm -f /usr/local/etc/php/conf.d/*xdebug*.ini /usr/local/etc/php/conf.d/*xhprof*.ini
 COPY ./docker/dev/opcache.ini /usr/local/etc/php/conf.d/zz-opcache.ini
 COPY ./docker/php/conf.d/custom.ini /usr/local/etc/php/conf.d/zz-custom.ini
 # display_errors Off and log_errors On, set explicitly so the base image cannot turn them on
