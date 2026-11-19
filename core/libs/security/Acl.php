@@ -312,7 +312,7 @@ class Acl
             }
 
             // System fields are not part of the API: a clause naming one fails like an unknown field (D-071).
-            if ($this->isSystemField($targetModel, $field)) {
+            if ($this->isSystemField($targetModel, $field, 'get')) {
                 throw new \Gaia\Exception\BadRequest('Invalid query: unknown field "' . $alias . '.' . $field . '".');
             }
 
@@ -337,7 +337,7 @@ class Acl
     public function isFieldActionAllowed($modelName, $field, $action)
     {
         // No grant reaches a system field through the API (D-071).
-        if ($this->isSystemField($modelName, $field)) {
+        if ($this->isSystemField($modelName, $field, $action)) {
             return false;
         }
 
@@ -442,7 +442,7 @@ class Acl
 
         foreach ($payload as $field => $value) {
             // System fields are written by the system only; a user body cannot set them (D-071).
-            if ($this->isSystemField($modelName, $field)) {
+            if ($this->isSystemField($modelName, $field, $action)) {
                 continue;
             }
 
@@ -1406,12 +1406,14 @@ class Acl
 
     /**
      * Whether a field is flagged `system` in the model metadata: hidden from the API, never user-written (D-071).
+     * The action lets `ServiceAcl` open a system field to the service a resource names (D-072); users never get one.
      *
      * @param  string $modelName
      * @param  string $field
+     * @param  string $action get|create|update
      * @return bool
      */
-    protected function isSystemField($modelName, $field)
+    protected function isSystemField($modelName, $field, $action = 'get')
     {
         // A deny rule fails closed: if the metadata cannot be read, treat the field as hidden.
         try {

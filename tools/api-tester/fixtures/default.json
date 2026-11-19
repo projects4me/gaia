@@ -48,6 +48,11 @@
       "clientId": "service-api-tester-hermes",
       "clientSecret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
     },
+    "serviceAres": {
+      "grantType": "client_credentials",
+      "clientId": "service-api-tester-ares",
+      "clientSecret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
+    },
     "aclScopedToken": {
       "email": "api-tester-acl-agent@example.com",
       "grantType": "client_credentials",

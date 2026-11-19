@@ -7344,6 +7344,40 @@
       }
     },
     {
+      "id": "case:acl/acl-service-token-ares-issue-list-allowed",
+      "type": "case",
+      "key": "acl/acl-service-token-ares-issue-list-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-ares-project-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-ares-project-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-service-token-hermes-agent-list-denied",
       "type": "case",
       "key": "acl/acl-service-token-hermes-agent-list-denied",
@@ -7360,6 +7394,24 @@
       }
     },
     {
+      "id": "case:acl/acl-service-token-hermes-issue-embedding-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-hermes-issue-embedding-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{issueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-service-token-issue-list-denied",
       "type": "case",
       "key": "acl/acl-service-token-issue-list-denied",
@@ -7372,6 +7424,24 @@
         "enabled": true,
         "source": "acl-service-token",
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-runtime-issue-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-runtime-issue-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{issueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "issueId"
+        ],
         "stores": []
       }
     },
@@ -13184,6 +13254,215 @@
       }
     },
     {
+      "id": "case:client/ares-embedding-collection-refused",
+      "type": "case",
+      "key": "client/ares-embedding-collection-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-embedding-leaves-record-unchanged",
+      "type": "case",
+      "key": "client/ares-embedding-leaves-record-unchanged",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticIssueDateModified",
+          "runtime.semanticIssueId",
+          "runtime.semanticIssueModifiedUser"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-embedding-missing-record",
+      "type": "case",
+      "key": "client/ares-embedding-missing-record",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/api-test-issue-missing",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticHash"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-embedding-needs-the-body-id",
+      "type": "case",
+      "key": "client/ares-embedding-needs-the-body-id",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticHash",
+          "runtime.semanticIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-embedding-rejects-other-fields",
+      "type": "case",
+      "key": "client/ares-embedding-rejects-other-fields",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticHash",
+          "runtime.semanticIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-embedding-rejects-subject-alone",
+      "type": "case",
+      "key": "client/ares-embedding-rejects-subject-alone",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-embedding-rejects-wrong-length",
+      "type": "case",
+      "key": "client/ares-embedding-rejects-wrong-length",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticHash",
+          "runtime.semanticIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-reads-semantic-text",
+      "type": "case",
+      "key": "client/ares-reads-semantic-text",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticIssueId"
+        ],
+        "stores": [
+          "runtime.semanticHash"
+        ]
+      }
+    },
+    {
+      "id": "case:client/ares-stale-embedding-conflict",
+      "type": "case",
+      "key": "client/ares-stale-embedding-conflict",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticHash",
+          "runtime.semanticIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-stale-embedding-left-unchanged",
+      "type": "case",
+      "key": "client/ares-stale-embedding-left-unchanged",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticEmbeddedAt",
+          "runtime.semanticHash",
+          "runtime.semanticIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-stores-embedding-for-current-hash",
+      "type": "case",
+      "key": "client/ares-stores-embedding-for-current-hash",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticHash",
+          "runtime.semanticIssueId"
+        ],
+        "stores": [
+          "runtime.semanticEmbeddedAt"
+        ]
+      }
+    },
+    {
       "id": "case:client/bulk-nested-bulk-rejected",
       "type": "case",
       "key": "client/bulk-nested-bulk-rejected",
@@ -18618,6 +18897,69 @@
       }
     },
     {
+      "id": "case:client/semantic-issue-before-embedding",
+      "type": "case",
+      "key": "client/semantic-issue-before-embedding",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticIssueId"
+        ],
+        "stores": [
+          "runtime.semanticIssueDateModified",
+          "runtime.semanticIssueModifiedUser"
+        ]
+      }
+    },
+    {
+      "id": "case:client/semantic-issue-create",
+      "type": "case",
+      "key": "client/semantic-issue-create",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectId",
+          "projectShortcode",
+          "userId"
+        ],
+        "stores": [
+          "runtime.semanticIssueId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/semantic-issue-subject-changed",
+      "type": "case",
+      "key": "client/semantic-issue-subject-changed",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/serviceclient-patch-bad-status-rejected",
       "type": "case",
       "key": "client/serviceclient-patch-bad-status-rejected",
@@ -19794,6 +20136,42 @@
         "source": null,
         "placeholders": [
           "runtime.createdToolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/user-cannot-read-search-fields",
+      "type": "case",
+      "key": "client/user-cannot-read-search-fields",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/user-cannot-write-search-fields",
+      "type": "case",
+      "key": "client/user-cannot-write-search-fields",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.semanticIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.semanticIssueId"
         ],
         "stores": []
       }
@@ -34772,7 +35150,8 @@
             ],
             "kinds": [
               "runtime",
-              "hermes"
+              "hermes",
+              "ares"
             ],
             "filter": "Serviceclient.clientId = :serviceClientId:",
             "fields": [
@@ -37742,6 +38121,14 @@
         "roleId": "1",
         "role": "Admin",
         "roleDescription": "Admin role of the seeded main user"
+      }
+    },
+    {
+      "id": "profile:serviceAres",
+      "type": "profile",
+      "key": "serviceAres",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
       }
     },
     {
@@ -55418,6 +55805,71 @@
       "to": "fixture:agenttoolId"
     },
     {
+      "from": "case:acl/acl-service-token-ares-issue-list-allowed",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-ares-issue-list-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-ares-issue-list-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-ares-issue-list-allowed",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:acl/acl-service-token-ares-issue-list-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:acl/acl-service-token-ares-issue-list-allowed",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:acl/acl-service-token-ares-issue-list-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-service-token-ares-project-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-ares-project-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-ares-project-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-ares-project-denied",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:acl/acl-service-token-ares-project-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/project"
+    },
+    {
+      "from": "case:acl/acl-service-token-ares-project-denied",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
       "from": "case:acl/acl-service-token-hermes-agent-list-denied",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -55448,6 +55900,41 @@
       "to": "profile:serviceHermes"
     },
     {
+      "from": "case:acl/acl-service-token-hermes-issue-embedding-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-hermes-issue-embedding-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-hermes-issue-embedding-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-hermes-issue-embedding-denied",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:acl/acl-service-token-hermes-issue-embedding-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:acl/acl-service-token-hermes-issue-embedding-denied",
+      "type": "runs_as",
+      "to": "profile:serviceHermes"
+    },
+    {
+      "from": "case:acl/acl-service-token-hermes-issue-embedding-denied",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
       "from": "case:acl/acl-service-token-issue-list-denied",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -55476,6 +55963,41 @@
       "from": "case:acl/acl-service-token-issue-list-denied",
       "type": "runs_as",
       "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-runtime-issue-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-runtime-issue-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-runtime-issue-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-runtime-issue-denied",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:acl/acl-service-token-runtime-issue-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:acl/acl-service-token-runtime-issue-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-runtime-issue-denied",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
     },
     {
       "from": "case:acl/acl-service-token-serviceclient-list-denied",
@@ -65713,6 +66235,436 @@
       "to": "fixture:otherAgentId"
     },
     {
+      "from": "case:client/ares-embedding-collection-refused",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/ares-embedding-collection-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-embedding-collection-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-embedding-collection-refused",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-embedding-collection-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue"
+    },
+    {
+      "from": "case:client/ares-embedding-collection-refused",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-embedding-leaves-record-unchanged",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/ares-embedding-leaves-record-unchanged",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-embedding-leaves-record-unchanged",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-embedding-leaves-record-unchanged",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-embedding-leaves-record-unchanged",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-before-embedding"
+    },
+    {
+      "from": "case:client/ares-embedding-leaves-record-unchanged",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/ares-embedding-leaves-record-unchanged",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/ares-embedding-leaves-record-unchanged",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/ares-embedding-missing-record",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/ares-embedding-missing-record",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-embedding-missing-record",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-embedding-missing-record",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-embedding-missing-record",
+      "type": "depends_on",
+      "to": "case:client/ares-reads-semantic-text"
+    },
+    {
+      "from": "case:client/ares-embedding-missing-record",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/ares-embedding-missing-record",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-embedding-needs-the-body-id",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/ares-embedding-needs-the-body-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-embedding-needs-the-body-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-embedding-needs-the-body-id",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-embedding-needs-the-body-id",
+      "type": "depends_on",
+      "to": "case:client/ares-reads-semantic-text"
+    },
+    {
+      "from": "case:client/ares-embedding-needs-the-body-id",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/ares-embedding-needs-the-body-id",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/ares-embedding-needs-the-body-id",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-other-fields",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-other-fields",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-other-fields",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-other-fields",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-other-fields",
+      "type": "depends_on",
+      "to": "case:client/ares-reads-semantic-text"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-other-fields",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-other-fields",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-other-fields",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-subject-alone",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-subject-alone",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-subject-alone",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-subject-alone",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-subject-alone",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-subject-alone",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-subject-alone",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-wrong-length",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-wrong-length",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-wrong-length",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-wrong-length",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-wrong-length",
+      "type": "depends_on",
+      "to": "case:client/ares-reads-semantic-text"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-wrong-length",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-wrong-length",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/ares-embedding-rejects-wrong-length",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-reads-semantic-text",
+      "type": "asserts",
+      "to": "assertion:attributesAbsent"
+    },
+    {
+      "from": "case:client/ares-reads-semantic-text",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/ares-reads-semantic-text",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-reads-semantic-text",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-reads-semantic-text",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-reads-semantic-text",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/ares-reads-semantic-text",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/ares-reads-semantic-text",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-conflict",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-conflict",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-conflict",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-conflict",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-conflict",
+      "type": "depends_on",
+      "to": "case:client/ares-reads-semantic-text"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-conflict",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-conflict",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-conflict",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-left-unchanged",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-left-unchanged",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-left-unchanged",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-left-unchanged",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-left-unchanged",
+      "type": "depends_on",
+      "to": "case:client/ares-reads-semantic-text"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-left-unchanged",
+      "type": "depends_on",
+      "to": "case:client/ares-stores-embedding-for-current-hash"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-left-unchanged",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-left-unchanged",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/ares-stale-embedding-left-unchanged",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-stores-embedding-for-current-hash",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/ares-stores-embedding-for-current-hash",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/ares-stores-embedding-for-current-hash",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-stores-embedding-for-current-hash",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-stores-embedding-for-current-hash",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-stores-embedding-for-current-hash",
+      "type": "depends_on",
+      "to": "case:client/ares-reads-semantic-text"
+    },
+    {
+      "from": "case:client/ares-stores-embedding-for-current-hash",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/ares-stores-embedding-for-current-hash",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/ares-stores-embedding-for-current-hash",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
       "from": "case:client/bulk-nested-bulk-rejected",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -75543,6 +76495,121 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/semantic-issue-before-embedding",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/semantic-issue-before-embedding",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/semantic-issue-before-embedding",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/semantic-issue-before-embedding",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/semantic-issue-before-embedding",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/semantic-issue-before-embedding",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/semantic-issue-before-embedding",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/semantic-issue-create",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/semantic-issue-create",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/semantic-issue-create",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/semantic-issue-create",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/semantic-issue-create",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/semantic-issue-create",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/semantic-issue-create",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/semantic-issue-create",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/semantic-issue-create",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/semantic-issue-create",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/semantic-issue-create",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/semantic-issue-subject-changed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/semantic-issue-subject-changed",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/semantic-issue-subject-changed",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/semantic-issue-subject-changed",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/semantic-issue-subject-changed",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/serviceclient-patch-bad-status-rejected",
       "type": "asserts",
       "to": "assertion:shape"
@@ -77739,6 +78806,71 @@
     },
     {
       "from": "case:client/toolserver-refresh-unreachable-server-is-502",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/user-cannot-read-search-fields",
+      "type": "asserts",
+      "to": "assertion:attributesAbsent"
+    },
+    {
+      "from": "case:client/user-cannot-read-search-fields",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/user-cannot-read-search-fields",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/user-cannot-read-search-fields",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/user-cannot-read-search-fields",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/user-cannot-read-search-fields",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/user-cannot-read-search-fields",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/user-cannot-read-search-fields",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/user-cannot-write-search-fields",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/user-cannot-write-search-fields",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/user-cannot-write-search-fields",
+      "type": "depends_on",
+      "to": "case:client/semantic-issue-create"
+    },
+    {
+      "from": "case:client/user-cannot-write-search-fields",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/user-cannot-write-search-fields",
       "type": "runs_as",
       "to": "profile:default"
     },

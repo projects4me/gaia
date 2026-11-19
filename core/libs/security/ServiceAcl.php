@@ -136,6 +136,21 @@ class ServiceAcl extends Acl
     }
 
     /**
+     * A system field stays hidden from a service unless the resource opens it
+     * to the service's kind for the action (D-072).
+     *
+     * @param  string $modelName
+     * @param  string $field
+     * @param  string $action
+     * @return bool
+     */
+    protected function isSystemField($modelName, $field, $action = 'get')
+    {
+        return parent::isSystemField($modelName, $field, $action)
+            && !$this->serviceAccess->opensSystemField($modelName, $field, $action, $this->kind);
+    }
+
+    /**
      * Only stored role grants count as explicit field writes; a service has none.
      *
      * @param  string $modelName
@@ -156,6 +171,18 @@ class ServiceAcl extends Acl
     public function isScopedResource($resourceName)
     {
         return false;
+    }
+
+    /**
+     * Authorization groups must be open to the service too (D-066), unless
+     * the resource's `acl.service` sets `ignoreGroups` (D-072).
+     *
+     * @param  string $modelName
+     * @return array
+     */
+    protected function getAuthorizationGroups($modelName)
+    {
+        return $this->serviceAccess->ignoresGroups($modelName) ? [] : parent::getAuthorizationGroups($modelName);
     }
 
     /**

@@ -255,6 +255,8 @@ try {
     return $e->handle();
 } catch (\Gaia\Exception\ResourceLocked $e) {
     return $e->handle();
+} catch (\Gaia\Exception\Conflict $e) {
+    return $e->handle();
 } catch (\Gaia\Exception\BadRequest $e) {
     return $e->handle();
 } catch (\Gaia\Exception\TooManyRequests $e) {

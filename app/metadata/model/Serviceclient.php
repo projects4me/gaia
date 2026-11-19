@@ -124,7 +124,7 @@ $models['Serviceclient'] = array(
     'acl' => array(
         'service' => array(
             'actions' => array('update'),
-            'kinds' => array('runtime', 'hermes'),
+            'kinds' => array('runtime', 'hermes', 'ares'),
             'filter' => 'Serviceclient.clientId = :serviceClientId:',
             'fields' => array('rotateSecret'),
             'scopes' => array('update' => 'serviceclient.rotate'),

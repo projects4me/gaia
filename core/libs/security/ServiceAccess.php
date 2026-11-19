@@ -17,6 +17,8 @@ namespace Gaia\Libraries\Security;
  *         'kinds' => array('runtime'),        // service kinds (config/serviceclients.php)
  *         'filter' => 'Agent.delegable = 1',  // optional PHQL condition on the rows
  *         'fields' => array('rotateSecret'),  // fields services may write
+ *         'systemFields' => array('searchSemanticHash'), // system fields services may read
+ *         'ignoreGroups' => true,             // its authorization groups need not be open to services
  *         'scopes' => array('update' => 'serviceclient.rotate'), // dedicated scope per action
  *     ),
  * ),
@@ -30,6 +32,10 @@ namespace Gaia\Libraries\Security;
  * action is open only with a filter, and only the listed `fields` may be
  * written (D-068). An action listed in `scopes` is granted only by a token
  * carrying exactly that scope word, not by a pattern of the action resource.
+ *
+ * System fields (D-071) stay hidden from services too, except those the
+ * resource opens: `systemFields` for get, `fields` for update (a search
+ * block opens its search columns to the ares service this way, D-072).
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Security
@@ -117,6 +123,40 @@ class ServiceAccess
     public function allowsFieldWrite($modelName, $field)
     {
         return in_array((string) $field, $this->stringList($this->serviceMeta($modelName), 'fields'), true);
+    }
+
+    /**
+     * Whether a service of the kind may perform the action on a system field
+     * of the model: get on one listed in `systemFields`, update on one listed
+     * in `fields`. Every other system field stays hidden (D-071, D-072).
+     *
+     * @param  string $modelName
+     * @param  string $field
+     * @param  string $action get|update
+     * @param  string $kind
+     * @return bool
+     */
+    public function opensSystemField($modelName, $field, $action, $kind)
+    {
+        $key = ['get' => 'systemFields', 'update' => 'fields'][$action] ?? null;
+        if ($key === null || !$this->allows($modelName, $action, $kind)) {
+            return false;
+        }
+
+        return in_array((string) $field, $this->stringList($this->serviceMeta($modelName), $key), true);
+    }
+
+    /**
+     * Whether the resource opens its rows to services whatever its
+     * authorization groups (an issue's project): the row filter alone limits
+     * them (D-072). Otherwise every group must be open to the service (D-066).
+     *
+     * @param  string $modelName
+     * @return bool
+     */
+    public function ignoresGroups($modelName)
+    {
+        return ($this->serviceMeta($modelName)['ignoreGroups'] ?? false) === true;
     }
 
     /**

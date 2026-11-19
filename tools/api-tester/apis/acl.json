@@ -3261,6 +3261,53 @@
       "query": { "types": "issue", "q": "API Tester", "limit": 50 },
       "expects": { "status": 200, "shape": "json", "idsIncludes": ["issue:{issueId}"], "idsExcludes": ["issue:{otherProjectIssueId}"] },
       "source": "acl-group"
+    },
+    {
+      "id": "acl-service-token-ares-issue-list-allowed",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": "serviceAres",
+      "query": { "limit": 50, "page": 1, "query": "((Issue.id : {issueId}))" },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{issueId}"] },
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-ares-project-denied",
+      "method": "GET",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": "serviceAres",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 401, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-runtime-issue-denied",
+      "method": "GET",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": "serviceRuntime",
+      "expects": { "status": 401, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-hermes-issue-embedding-denied",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": "serviceHermes",
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{issueId}",
+          "attributes": {
+            "searchEmbeddingHash": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        }
+      },
+      "expects": { "status": 401, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-service-token"
     }
   ]
 }
