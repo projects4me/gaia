@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+env:
+  # The gaia-env image tag every job pulls (built in projects4me/docker-images).
+  GAIA_ENV_TAG: 8.5.12-phalcon5.23.0
+
 jobs:
 
   graph-drift:
@@ -11,37 +15,37 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        # Runs each step's script in the gaia-current container (RUNNER_TEMP is mounted at the same path).
+        # Runs each step's script in the gaia-ci container (RUNNER_TEMP is mounted at the same path).
         shell: >-
           docker exec -e GITHUB_WORKSPACE
-          gaia-current bash --noprofile --norc -eo pipefail {0}
+          gaia-ci bash --noprofile --norc -eo pipefail {0}
 
     steps:
     - name: Checkout
       uses: actions/checkout@v5
 
-    - name: Pull gaia-env:current
+    - name: Pull gaia-env
       shell: bash
       run: |
-        docker pull ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0
-        docker tag ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0 gaia-env:current
+        docker pull ghcr.io/projects4me/gaia-env:${{ env.GAIA_ENV_TAG }}
+        docker tag ghcr.io/projects4me/gaia-env:${{ env.GAIA_ENV_TAG }} gaia-env:ci
 
     # Host network: the container reaches the postgres service on 127.0.0.1:5432, and the
     # api-tester reaches Apache on 127.0.0.1.
-    - name: Start the gaia-current container
+    - name: Start the gaia-ci container
       shell: bash
       run: |
-        mkdir -p upgrade logs output
-        docker run -d --name gaia-current --network host           -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -v "$RUNNER_TEMP:$RUNNER_TEMP"           -w "$GITHUB_WORKSPACE"           gaia-env:current sleep infinity
-        docker exec gaia-current php -v
+        mkdir -p logs output
+        docker run -d --name gaia-ci --network host           -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -v "$RUNNER_TEMP:$RUNNER_TEMP"           -w "$GITHUB_WORKSPACE"           gaia-env:ci sleep infinity
+        docker exec gaia-ci php -v
 
     - name: Cache Composer packages
       id: composer-packages
       uses: actions/cache@v5
       with:
         path: vendor
-        key: vendor-cache-gaia-env-current-8.5.12-phalcon5.23.0-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-gaia-env-current-8.5.12-phalcon5.23.0-
+        key: vendor-cache-gaia-env-${{ env.GAIA_ENV_TAG }}-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-gaia-env-${{ env.GAIA_ENV_TAG }}-
 
     - name: Install dependencies
       if: steps.composer-packages.outputs.cache-hit != 'true'
@@ -57,31 +61,23 @@ jobs:
       run: php tools/gaia-dev/bin/gaia-dev check api-cases
 
   deployed-image-config:
-    name: Deployed image never displays PHP errors (${{ matrix.stack }})
+    name: Deployed image never displays PHP errors
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - stack: php85
-            env-tag: 8.5.12-phalcon5.23.0
-          - stack: php74
-            env-tag: 7.4.21-phalcon4.1.2
     steps:
     - name: Checkout
       uses: actions/checkout@v5
 
-    - name: Pull gaia-env:${{ matrix.stack }}
+    - name: Pull gaia-env
       shell: bash
       run: |
-        docker pull ghcr.io/projects4me/gaia-env:${{ matrix.env-tag }}
-        docker tag ghcr.io/projects4me/gaia-env:${{ matrix.env-tag }} gaia-env:${{ matrix.stack }}
+        docker pull ghcr.io/projects4me/gaia-env:${{ env.GAIA_ENV_TAG }}
+        docker tag ghcr.io/projects4me/gaia-env:${{ env.GAIA_ENV_TAG }} gaia-env:ci
 
     - name: Build the deployed image (docker/dev/Dockerfile)
-      run: docker build -f docker/dev/Dockerfile --build-arg ENV_IMAGE=gaia-env:${{ matrix.stack }} -t gaia-deployed:${{ matrix.stack }} .
+      run: docker build -f docker/dev/Dockerfile --build-arg ENV_IMAGE=gaia-env:ci -t gaia-deployed:ci .
 
     - name: Check display_errors is off in the deployed image
-      run: tools/ci/check-php-display-errors.sh gaia-deployed:${{ matrix.stack }}
+      run: tools/ci/check-php-display-errors.sh gaia-deployed:ci
 
   api-testing:
     name: API + PHPUnit
@@ -95,14 +91,14 @@ jobs:
       DB_NAME: pr4m_test
     defaults:
       run:
-        # Runs each step's script in the gaia-current container (RUNNER_TEMP is mounted at the same path);
+        # Runs each step's script in the gaia-ci container (RUNNER_TEMP is mounted at the same path);
         # -e NAME forwards the variable from the step's environment when it is set.
         shell: >-
           docker exec
           -e DB_ADAPTER -e DB_HOST -e DB_PORT -e DB_USERNAME -e DB_PASSWORD -e DB_NAME
           -e PGHOST -e PGPORT -e PGUSER -e PGPASSWORD -e PG_USER
           -e GITHUB_WORKSPACE
-          gaia-current bash --noprofile --norc -eo pipefail {0}
+          gaia-ci bash --noprofile --norc -eo pipefail {0}
 
     services:
       postgres:
@@ -123,28 +119,28 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
 
-    - name: Pull gaia-env:current
+    - name: Pull gaia-env
       shell: bash
       run: |
-        docker pull ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0
-        docker tag ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0 gaia-env:current
+        docker pull ghcr.io/projects4me/gaia-env:${{ env.GAIA_ENV_TAG }}
+        docker tag ghcr.io/projects4me/gaia-env:${{ env.GAIA_ENV_TAG }} gaia-env:ci
 
     # Host network: the container reaches the postgres service on 127.0.0.1:5432, and the
     # api-tester reaches Apache on 127.0.0.1.
-    - name: Start the gaia-current container
+    - name: Start the gaia-ci container
       shell: bash
       run: |
-        mkdir -p upgrade logs output
-        docker run -d --name gaia-current --network host           -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -v "$RUNNER_TEMP:$RUNNER_TEMP"           -w "$GITHUB_WORKSPACE"           gaia-env:current sleep infinity
-        docker exec gaia-current php -v
+        mkdir -p logs output
+        docker run -d --name gaia-ci --network host           -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -v "$RUNNER_TEMP:$RUNNER_TEMP"           -w "$GITHUB_WORKSPACE"           gaia-env:ci sleep infinity
+        docker exec gaia-ci php -v
 
     - name: Cache Composer packages
       id: composer-packages
       uses: actions/cache@v5
       with:
         path: vendor
-        key: vendor-cache-gaia-env-current-8.5.12-phalcon5.23.0-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-gaia-env-current-8.5.12-phalcon5.23.0-
+        key: vendor-cache-gaia-env-${{ env.GAIA_ENV_TAG }}-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-gaia-env-${{ env.GAIA_ENV_TAG }}-
 
     - name: Install dependencies
       if: steps.composer-packages.outputs.cache-hit != 'true'
@@ -176,17 +172,6 @@ jobs:
       env:
         DB_NAME: pr4m
       run: php cli.php migration migrate
-
-    - name: Schema snapshot of pr4m (for the next-stack comparison)
-      # Feeds the non-blocking next-stack report only, so a failure here must not fail this job.
-      continue-on-error: true
-      env:
-        PGHOST: 127.0.0.1
-        PGUSER: nouman
-        PGPASSWORD: nouman
-      run: |
-        mkdir -p upgrade
-        bash tools/upgrade/schema-snapshot.sh pr4m upgrade/schema.sql
 
     - name: Prepare pr4m_test + fixtures
       env:
@@ -239,8 +224,8 @@ jobs:
           --mode backend,acl \
           --record-bodies
 
-    # Report only: client mode has known failures in CI (SMTP, secure settings, timestamps)
-    # that the next-stack comparison is meant to surface, so it must not gate this job.
+    # Report only: client mode has known failures in CI (SMTP, secure settings, timestamps),
+    # so it must not gate this job.
     - name: Run client API testing (report only)
       continue-on-error: true
       run: |
@@ -255,297 +240,4 @@ jobs:
       with:
         name: api-tester-backend-report
         path: output/api-tester-backend-report.json
-        if-no-files-found: warn
-
-    - name: Upload the current-stack outputs for the next-stack comparison
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: upgrade-current
-        path: |
-          upgrade/schema.sql
-          output/api-tester-client-report.json
-          output/api-tester-backend-report.json
-          output/api-tester-acl-report.json
-        if-no-files-found: warn
-
-  # Blocking for the rollback window: the same checks on PHP 7.4 / Phalcon 4.1, so new code cannot break 7.4, keeping every output for the
-  # upgrade-report job. gaia-env:next is pulled from ghcr.io/projects4me/gaia-env
-  # (built in projects4me/docker-images) and every check runs
-  # inside it through the docker exec shell below. Every check step blocks the job, so new code
-  # cannot break 7.4 while a rollback is still an image swap. The upgrade-report job reads the
-  # outputs of both stacks. Both this job and api-testing are required checks.
-  next-stack:
-    name: Rollback stack (PHP 7.4 / Phalcon 4.1, blocking)
-    runs-on: ubuntu-latest
-    env:
-      DB_ADAPTER: Postgres
-      DB_HOST: 127.0.0.1
-      DB_PORT: "5432"
-      DB_USERNAME: nouman
-      DB_PASSWORD: nouman
-      DB_NAME: pr4m_test
-    defaults:
-      run:
-        # Runs each step's script in the gaia-next container. The script file lives in
-        # RUNNER_TEMP, which is mounted at the same path; -e NAME forwards the variable from
-        # the step's environment when it is set.
-        shell: >-
-          docker exec
-          -e DB_ADAPTER -e DB_HOST -e DB_PORT -e DB_USERNAME -e DB_PASSWORD -e DB_NAME
-          -e PGHOST -e PGPORT -e PGUSER -e PGPASSWORD -e PG_USER
-          -e GITHUB_WORKSPACE
-          gaia-next bash --noprofile --norc -eo pipefail {0}
-
-    services:
-      postgres:
-        image: pgvector/pgvector:pg16
-        env:
-          POSTGRES_DB: pr4m
-          POSTGRES_USER: nouman
-          POSTGRES_PASSWORD: nouman
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U nouman -d pr4m"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 20
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v5
-
-    - name: Pull gaia-env:next
-      shell: bash
-      run: |
-        docker pull ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
-        docker tag ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2 gaia-env:next
-
-    # Host network: the container reaches the postgres service on 127.0.0.1:5432, and the
-    # api-tester reaches Apache on 127.0.0.1. upgrade/ and logs/ are created on the host so
-    # the host-side steps below can write into them.
-    - name: Start the gaia-next container
-      shell: bash
-      run: |
-        mkdir -p upgrade logs logs/tests
-        docker run -d --name gaia-next --network host \
-          -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -v "$RUNNER_TEMP:$RUNNER_TEMP" \
-          -w "$GITHUB_WORKSPACE" \
-          gaia-env:next sleep infinity
-        docker exec gaia-next php -v
-
-    - name: Cache Composer packages
-      id: composer-packages
-      uses: actions/cache@v5
-      with:
-        path: vendor
-        key: vendor-cache-gaia-env-next-7.4.21-phalcon4.1.2-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-gaia-env-next-7.4.21-phalcon4.1.2-
-
-    - name: Install dependencies
-      if: steps.composer-packages.outputs.cache-hit != 'true'
-      run: COMPOSER_ALLOW_SUPERUSER=1 composer install --no-interaction
-
-    - name: Install PostgreSQL 16 client
-      run: |
-        apt-get update
-        apt-get install -y --no-install-recommends curl ca-certificates gnupg
-        install -d /usr/share/postgresql-common/pgdg
-        curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
-          https://www.postgresql.org/media/keys/ACCC4CF8.asc
-        echo 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt-archive.postgresql.org/pub/repos/apt buster-pgdg main' \
-          > /etc/apt/sources.list.d/pgdg.list
-        apt-get update
-        apt-get install -y --no-install-recommends postgresql-client-16
-        ln -sf /usr/lib/postgresql/16/bin/psql /usr/local/bin/psql
-        ln -sf /usr/lib/postgresql/16/bin/pg_dump /usr/local/bin/pg_dump
-        psql --version
-
-    - name: Load baseline into pr4m
-      env:
-        PGPASSWORD: nouman
-      run: |
-        psql -h 127.0.0.1 -U nouman -d pr4m -v ON_ERROR_STOP=1 \
-          -f db/Dump20261118.sql
-
-    - name: Migration dry run on pr4m
-      id: dry-run
-      if: ${{ !cancelled() }}
-      env:
-        DB_NAME: pr4m
-      run: |
-        set +e
-        php cli.php migration migrate --dry-run > upgrade/dry-run.txt 2>&1
-        status=$?
-        cat upgrade/dry-run.txt
-        # 0: nothing planned, 2: changes planned, anything else: the dry run failed
-        [ "$status" -eq 0 ] || [ "$status" -eq 2 ]
-
-    - name: Migrate pr4m schema from metadata
-      id: migrate
-      if: ${{ !cancelled() }}
-      env:
-        DB_NAME: pr4m
-      run: php cli.php migration migrate
-
-    - name: Schema snapshot of pr4m
-      id: schema
-      if: ${{ !cancelled() }}
-      env:
-        PGHOST: 127.0.0.1
-        PGUSER: nouman
-        PGPASSWORD: nouman
-      run: bash tools/upgrade/schema-snapshot.sh pr4m upgrade/schema.sql
-
-    - name: Prepare pr4m_test + fixtures
-      id: prepare
-      if: ${{ !cancelled() }}
-      env:
-        PGHOST: 127.0.0.1
-        PGPASSWORD: nouman
-      run: bash tools/api-tester/harness/prepare-test-db.sh
-
-    - name: Run PHPUnit (whole suite, quarantine excluded)
-      id: phpunit
-      if: ${{ !cancelled() }}
-      run: |
-        ./vendor/bin/phpunit -c tests/phpunit.xml \
-          --exclude-group quarantine \
-          --log-junit upgrade/phpunit-junit.xml
-
-    # Before Apache: the diagnostics ini loaded for Apache also applies to the CLI.
-    - name: Lint every PHP file on the next stack
-      id: lint
-      if: ${{ !cancelled() }}
-      run: IMAGE=none bash tools/upgrade/lint-next.sh upgrade/php-lint-next.log
-
-    - name: Reset pr4m_test + fixtures for the API tests
-      id: reset
-      if: ${{ !cancelled() }}
-      env:
-        PGHOST: 127.0.0.1
-        PGPASSWORD: nouman
-      run: bash tools/api-tester/harness/prepare-test-db.sh
-
-    - name: Start Apache with the diagnostics log
-      id: apache
-      if: ${{ !cancelled() }}
-      run: |
-        cp docker/php/conf.d/diagnostics.ini "$PHP_INI_DIR/conf.d/zz-diagnostics.ini"
-        rm -rf /var/www/html
-        ln -s "$GITHUB_WORKSPACE" /var/www/html
-        chown -R www-data:www-data "$GITHUB_WORKSPACE"
-        # setsid: Apache must outlive this docker exec session.
-        # Throwaway key so the settings API can store secure values (SMTP password) in CI.
-        export SETTINGS_ENCRYPTION_KEY="$(openssl rand -base64 32)"
-        setsid apache2-foreground > /tmp/apache.log 2>&1 < /dev/null &
-        for i in $(seq 1 30); do
-          curl -s -o /dev/null "http://127.0.0.1/" && echo "Apache is up" && exit 0
-          sleep 1
-        done
-        echo "Apache did not come up in time" >&2
-        cat /tmp/apache.log >&2
-        exit 1
-
-    # Same order as the current stack (backend,acl, then client): the test databases are hit in the
-    # same state, so the comparison shows real differences only.
-    - name: Run backend API testing
-      id: api-tester
-      if: ${{ !cancelled() }}
-      run: |
-        tools/api-tester/harness/run-api-tests.sh \
-          --base-uri http://127.0.0.1 \
-          --mode backend,acl \
-          --record-bodies
-
-    - name: Run client API testing
-      id: api-tester-client
-      if: ${{ !cancelled() }}
-      run: |
-        tools/api-tester/harness/run-api-tests.sh \
-          --base-uri http://127.0.0.1 \
-          --mode client \
-          --record-bodies
-
-    - name: Collect the Apache log
-      if: ${{ !cancelled() }}
-      run: cp /tmp/apache.log upgrade/apache.log || true
-
-    # The summary lists these, so a failed step shows there even though the job stays green.
-    - name: Record the step outcomes
-      if: ${{ !cancelled() }}
-      run: |
-        {
-          echo "dry-run ${{ steps.dry-run.outcome }}"
-          echo "migrate ${{ steps.migrate.outcome }}"
-          echo "schema-snapshot ${{ steps.schema.outcome }}"
-          echo "prepare-test-db ${{ steps.prepare.outcome }}"
-          echo "phpunit ${{ steps.phpunit.outcome }}"
-          echo "lint ${{ steps.lint.outcome }}"
-          echo "reset-test-db ${{ steps.reset.outcome }}"
-          echo "apache ${{ steps.apache.outcome }}"
-          echo "api-tester ${{ steps.api-tester.outcome }}"
-          echo "api-tester-client ${{ steps.api-tester-client.outcome }}"
-        } > upgrade/steps.txt
-        cat upgrade/steps.txt
-
-    - name: Upload the next-stack outputs
-      if: ${{ !cancelled() }}
-      uses: actions/upload-artifact@v4
-      with:
-        name: upgrade-next
-        path: |
-          upgrade/
-          output/api-tester-client-report.json
-          output/api-tester-backend-report.json
-          output/api-tester-acl-report.json
-          logs/php-diagnostics.log
-          logs/php-diagnostics-phpunit.log
-        if-no-files-found: warn
-
-  # Compares the two stacks and writes the job summary. Runs on the current image: the report
-  # scripts only need PHP, and the comparison must not depend on what fails on the next stack.
-  upgrade-report:
-    name: Next-stack report
-    needs: [api-testing, next-stack]
-    if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-
-    container:
-      image: ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v5
-
-    - name: Download the current-stack outputs
-      continue-on-error: true
-      uses: actions/download-artifact@v4
-      with:
-        name: upgrade-current
-        path: upgrade/current
-
-    - name: Download the next-stack outputs
-      continue-on-error: true
-      uses: actions/download-artifact@v4
-      with:
-        name: upgrade-next
-        path: upgrade/next
-
-    - name: Compare the stacks and write the summary
-      run: bash tools/upgrade/compare-stacks.sh upgrade | tee -a "$GITHUB_STEP_SUMMARY"
-
-    - name: Upload the comparison
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: upgrade-report
-        path: |
-          upgrade/schema.diff
-          upgrade/compare-*.txt
-          upgrade/deprecations.md
         if-no-files-found: warn
