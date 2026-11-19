@@ -24,8 +24,9 @@ image through `docker/dev/start.sh`, the local `gaia` service as its command). T
 `www-data` with the container's environment, their output goes to the container log (`docker logs gaia-dev`), and a
 job never starts while its previous run is still going in that container. Every container that runs the scheduler runs
 the jobs, so when the deployed image runs as more than one replica, set `GAIA_SCHEDULER=off` on all but one. If
-the scheduler exits, the container stops with a failure, so it is restarted rather than left serving without its daily
-tasks.
+the scheduler exits, the container stops with a failure rather than serving without its daily tasks: a deployment with
+a restart policy (the default in Kubernetes) restarts it, while the local Compose `gaia` service has none and stays
+stopped until you start it again.
 
 | Schedule (UTC) | Command | Why |
 |---|---|---|
@@ -33,7 +34,8 @@ tasks.
 
 Set `GAIA_SCHEDULER=off` to skip the scheduler (the test containers do). The image build runs `supercronic -test` on
 the crontab, and `tests/tools/docker/CrontabTest.php` checks that every job runs a task and action that exist. After a
-change to the crontab, rebuild the local image (`docker compose build gaia`) or restart the container.
+change to the crontab, restart the local container (`docker compose restart gaia`): the `./` bind mount supplies the
+edited file, so no rebuild is needed.
 
 # Contributions
 

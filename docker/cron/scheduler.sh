@@ -20,8 +20,10 @@ scheduler=$!
 app=$!
 
 # The php:apache image stops with SIGWINCH (Apache's graceful stop); pass each signal on to Apache as it came.
+# A requested stop is not a scheduler failure, and Apache is left to finish the stop it was sent.
+stopping=0
 for signal in TERM INT WINCH; do
-    trap "kill -${signal} ${app} 2> /dev/null; kill -TERM ${scheduler} 2> /dev/null" "${signal}"
+    trap "stopping=1; kill -${signal} ${app} 2> /dev/null; kill -TERM ${scheduler} 2> /dev/null" "${signal}"
 done
 
 # wait returns early when a trapped signal arrives; keep waiting until one of the two has really exited.
@@ -30,11 +32,14 @@ while kill -0 "${app}" 2> /dev/null && kill -0 "${scheduler}" 2> /dev/null; do
 done
 
 scheduler_died=0
-if ! kill -0 "${scheduler}" 2> /dev/null; then
+if [ "${stopping}" = 0 ] && ! kill -0 "${scheduler}" 2> /dev/null; then
     echo "The scheduler exited; stopping the container" >&2
     scheduler_died=1
 fi
-kill -TERM "${app}" "${scheduler}" 2> /dev/null
+if [ "${stopping}" = 0 ]; then
+    kill -TERM "${app}" 2> /dev/null
+fi
+kill -TERM "${scheduler}" 2> /dev/null
 wait "${app}"
 status=$?
 wait "${scheduler}"
