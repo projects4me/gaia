@@ -36,9 +36,17 @@ class IssuementionComponent
             global $logger;
             $util = new Util();
             $requestData = $util->objectToArray($controller->request->getJsonRawBody());
-            $mentionedIssues = $requestData['meta']['mentionedIssues'];
-            $conversationId = $requestData['data']['attributes']['relatedId'];
+            $mentionedIssues = $requestData['meta']['mentionedIssues'] ?? [];
+            $conversationId = $requestData['data']['attributes']['relatedId'] ?? null;
+            if (empty($mentionedIssues) || !is_array($mentionedIssues) || $conversationId === null) {
+                return;
+            }
+
             $conversation  = Conversationroom::findFirstById($conversationId);
+            if (!$conversation) {
+                $logger->warning("Gaia.Controller.Component.Issuemention: conversation $conversationId not found, mentions skipped");
+                return;
+            }
             foreach ($mentionedIssues as $issueNumber) {
                 if ($issueNumber == $conversation->issueNumber) {
                     continue;
