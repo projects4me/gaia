@@ -7,6 +7,7 @@
 namespace Gaia\Core\MVC\Models;
 
 use Phalcon\Mvc\Model as PhalconModel;
+use Phalcon\Mvc\Model\MetaData;
 use Gaia\Libraries\Utils\Util;
 use Gaia\Core\MVC\Models\Query;
 use Gaia\Core\MVC\Models\DataExtractor;
@@ -123,7 +124,20 @@ class Model extends PhalconModel
      */
     public function initialize()
     {
-        $this->setRequiredBehaviors($this->getMetaData());
+        $metadata = $this->getMetaData();
+
+        // The ORM introspects the table, so name the columns it never writes (generated or 'ormWrite' => false).
+        // initialize() runs before onConstruct(), so set the table first or the introspection reads the wrong one.
+        $this->setSource($metadata['tableName']);
+        $skipWrite = array_keys(array_merge(
+            $metadata[MetaData::MODELS_AUTOMATIC_DEFAULT_INSERT] ?? array(),
+            $metadata[MetaData::MODELS_AUTOMATIC_DEFAULT_UPDATE] ?? array()
+        ));
+        if (!empty($skipWrite)) {
+            $this->skipAttributes($skipWrite);
+        }
+
+        $this->setRequiredBehaviors($metadata);
         $this->loadBehaviors($this->getRequiredBehaviors());
     }
 
