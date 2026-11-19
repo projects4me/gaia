@@ -123,7 +123,7 @@ class MentionsBehaviorTest extends TestCase
      */
     private function model(array $values, array $oldSnapshot = [], $fields = ['description'])
     {
-        $model = $this->getMockBuilder(ModelInterface::class)
+        $model = $this->getMockBuilder(DynamicModelStub::class)
             ->addMethods(['getMetaData', 'getOldSnapshotData'])
             ->getMockForAbstractClass();
         $model->method('getMetaData')->willReturn($fields === null ? ['tableName' => 'x'] : ['mentions' => ['fields' => $fields]]);

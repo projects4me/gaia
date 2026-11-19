@@ -166,6 +166,7 @@ class ServiceEnrollmentTokensTest extends TestCase
 /**
  * A token model that records its saves.
  */
+#[\AllowDynamicProperties]
 class FakeTokenModel
 {
     public $saves = 0;

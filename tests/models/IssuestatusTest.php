@@ -8,6 +8,7 @@ namespace Gaia\Tests\Models;
 
 use PHPUnit\Framework\TestCase;
 use Gaia\MVC\Models\Issuestatus;
+use Phalcon\Di\FactoryDefault;
 
 /**
  * Unit tests for the Issuestatus colour rule: any `#rrggbb` hex colour or
@@ -20,6 +21,25 @@ use Gaia\MVC\Models\Issuestatus;
  */
 class IssuestatusTest extends TestCase
 {
+    /**
+     * Phalcon 5 models need a DI container with the models manager, and the model
+     * reads its table name from the metadata manager when it is built.
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $di = new FactoryDefault();
+        $di->setShared('metaManager', new class {
+            public function getModelMeta($model)
+            {
+                return ['tableName' => 'issue_statuses'];
+            }
+        });
+        FactoryDefault::setDefault($di);
+    }
+
     /**
      * Any 6-digit hex colour, in either case, and null are valid.
      *
@@ -53,7 +73,7 @@ class IssuestatusTest extends TestCase
      */
     public function testColorIsSavedLowercase()
     {
-        $status = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $status = new Issuestatus();
         $status->color = '#1A2B3C';
 
         $this->assertTrue($status->beforeValidation());
@@ -67,7 +87,7 @@ class IssuestatusTest extends TestCase
      */
     public function testInvalidColorIsNotSaved()
     {
-        $status = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $status = new Issuestatus();
         $status->color = 'red';
 
         $this->assertFalse($status->beforeValidation());
@@ -107,7 +127,7 @@ class IssuestatusTest extends TestCase
      */
     public function testTextColorIsSavedLowercase()
     {
-        $status = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $status = new Issuestatus();
         $status->textColor = 'Dark';
 
         $this->assertTrue($status->beforeValidation());
@@ -122,9 +142,9 @@ class IssuestatusTest extends TestCase
      */
     public function testMissingTextColorDefaultsToLight()
     {
-        $unset = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $unset = new Issuestatus();
         $unset->color = '#80B5D3';
-        $empty = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $empty = new Issuestatus();
         $empty->textColor = null;
 
         $this->assertTrue($unset->beforeValidation());
@@ -141,7 +161,7 @@ class IssuestatusTest extends TestCase
      */
     public function testInvalidTextColorIsNotSaved()
     {
-        $status = (new \ReflectionClass(Issuestatus::class))->newInstanceWithoutConstructor();
+        $status = new Issuestatus();
         $status->color = '#1a2b3c';
         $status->textColor = 'black';
 
