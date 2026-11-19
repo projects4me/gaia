@@ -711,6 +711,80 @@
       }
     },
     {
+      "id": "get-issue-soft-deleted-id-404",
+      "method": "GET",
+      "path": "/api/v1/issue/{runtime.issueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "Issue not found"
+      }
+    },
+    {
+      "id": "get-issue-missing-id-404",
+      "method": "GET",
+      "path": "/api/v1/issue/doesnotexist",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "Issue not found"
+      }
+    },
+    {
+      "id": "get-project-missing-id-404",
+      "method": "GET",
+      "path": "/api/v1/project/00000000-0000-0000-0000-000000000000",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "Project not found"
+      }
+    },
+    {
+      "id": "get-milestone-missing-id-404",
+      "method": "GET",
+      "path": "/api/v1/milestone/doesnotexist",
+      "resource": "milestone",
+      "auth": true,
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "Milestone not found"
+      }
+    },
+    {
+      "id": "get-user-missing-id-404",
+      "method": "GET",
+      "path": "/api/v1/user/doesnotexist",
+      "resource": "user",
+      "auth": true,
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "User not found"
+      }
+    },
+    {
+      "id": "get-issue-list-no-match-stays-200",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.id : doesnotexist))"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      }
+    },
+    {
       "id": "post-issueplanning-api-v1-issueplanning",
       "method": "POST",
       "path": "/api/v1/issueplanning",
@@ -9397,6 +9471,162 @@
         "status": 400,
         "shape": "error",
         "errorEqual": "Embeddings are written one record at a time."
+      }
+    },
+    {
+      "id": "upload-list-without-id-bad-request",
+      "method": "GET",
+      "path": "/api/v1/upload",
+      "resource": "upload",
+      "auth": true,
+      "query": {
+        "limit": 20,
+        "sort": "Upload.id",
+        "order": "ASC"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "The id of an upload is required."
+      }
+    },
+    {
+      "id": "issue-list-unknown-rel-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 1,
+        "rels": "assignedTo,milestone,project"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Unknown relationship \"milestone\" in rels."
+      }
+    },
+    {
+      "id": "issue-list-rels-none",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 1,
+        "rels": "none"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      }
+    },
+    {
+      "id": "issue-list-count-without-group-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 1,
+        "count": "Issue.id",
+        "sort": "Issue.id",
+        "order": "ASC"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid count: count needs a group that includes Issue.id, e.g. group=Issue.id."
+      }
+    },
+    {
+      "id": "issue-list-count-group-without-id-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "group": "Issue.priority",
+        "fields": "Issue.priority",
+        "count": "Issue.id"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid count: count needs a group that includes Issue.id, e.g. group=Issue.id."
+      }
+    },
+    {
+      "id": "issue-list-count-malformed-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 1,
+        "group": "Issue.priority, Issue.id",
+        "fields": "Issue.priority",
+        "count": "Issue.id) FROM Issue"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid count: \"Issue.id) FROM Issue\" is not a field name, optionally followed by AS and an alias."
+      }
+    },
+    {
+      "id": "issue-list-count-unknown-field-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 1,
+        "group": "Issue.priority, Issue.id",
+        "fields": "Issue.priority",
+        "count": "Issue.nosuchfield"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid query: unknown field \"Issue.nosuchfield\"."
+      }
+    },
+    {
+      "id": "issue-list-count-by-group",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "group": "Issue.priority, Issue.id",
+        "fields": "Issue.priority",
+        "count": "Issue.id",
+        "rels": "none"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      }
+    },
+    {
+      "id": "issue-list-count-by-group-with-alias",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "limit": 5,
+        "group": "Issue.priority, Issue.id",
+        "fields": "Issue.priority",
+        "count": "Issue.id as issues",
+        "rels": "none"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
       }
     }
   ]

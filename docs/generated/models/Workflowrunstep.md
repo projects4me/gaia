@@ -30,7 +30,7 @@
 ## Summary
 
 - behaviours: dateCreatedBehavior, dateModifiedBehavior, softDeleteBehavior
-- acl: group Project via Array
+- acl: group Project via {"paths":[{"relatedModel":"Workflowrun","localKey":"runId","relatedKey":"id","projectField":"projectId"}]}
 - controller: Gaia\MVC\REST\Controllers\WorkflowrunstepController
 - routes: GET /api/v1/workflowrunstep, GET /api/v1/workflowrunstep/{id}, GET /api/v1/workflowrunstep/{id}/{relation}, OPTIONS /api/v1/workflowrunstep
 - components: -

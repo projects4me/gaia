@@ -57,4 +57,4 @@
 - controller: Gaia\MVC\REST\Controllers\IssueController
 - routes: DELETE /api/v1/issue, DELETE /api/v1/issue/{id}, GET /api/v1/issue, GET /api/v1/issue/{id}, GET /api/v1/issue/{id}/{relation}, OPTIONS /api/v1/issue, PATCH /api/v1/issue, PATCH /api/v1/issue/{id}, POST /api/v1/issue, PUT /api/v1/issue, PUT /api/v1/issue/{id}
 - components: Events\IssueLiveEvents, Events\WorkflowReplies, Events\WorkflowTriggers, Filethumb, Issueactivities, Notification
-- cases: 102 (acl 38, backend 6, client 52, live 6); gaia-dev cases issue
+- cases: 113 (acl 38, backend 6, client 63, live 6); gaia-dev cases issue

@@ -15,6 +15,9 @@ use Phalcon\Events\ManagerInterface as EventsManagerInterface;
 use Gaia\Libraries\Utils\Csv;
 use Gaia\Libraries\Utils\Zip;
 use Gaia\Core\MVC\Models\ResultStream;
+use Gaia\Core\MVC\Models\Query\CountParam;
+use Gaia\Core\MVC\Models\Query\RelationshipValidator;
+use Gaia\Core\MVC\Models\Query\WhereFieldValidator;
 use Gaia\Libraries\Security\AclLockoutGuard;
 use Gaia\Libraries\Security\ServiceAcl;
 use Gaia\Libraries\Security\ServiceClientGuard;
@@ -40,6 +43,11 @@ use function Gaia\Libraries\Utils\create_guid;
  */
 class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\EventsAwareInterface
 {
+    /**
+     * The `rels` value that asks for no relationships; it reads as an empty list.
+     */
+    const RELS_NONE = 'none';
+
     /**
      * Model's name is registered from controller via parameter
      *
@@ -243,7 +251,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         $logger->debug('Gaia.core.controllers.rest->initialize()');
         //set the language
-        //$this->setLanguage();
+        $this->setLanguage();
 
         $this->response = new Response();
 
@@ -499,56 +507,86 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         }
 
         $rels = array_map('trim', $rels);
+        // `rels=none` asks for no relationships, which is what an empty list gives.
         $rels = array_filter($rels, function ($rel) {
-            return $rel !== '';
+            return $rel !== '' && $rel !== self::RELS_NONE;
         });
+        $rels = array_values(array_unique($rels));
 
-        return array_values(array_unique($rels));
+        if (!empty($this->modelName)) {
+            (new RelationshipValidator($this->getDI()))
+                ->assertKnown($rels, Util::extractClassFromNamespace($this->modelName));
+        }
+
+        return $rels;
     }
 
     /**
-     * set language of errors responses
+     * Reject a `count` list parameter the query cannot use (see CountParam).
+     *
+     * @param  mixed  $count      The `count` request parameter; empty when not given.
+     * @param  mixed  $groupBy    The `group` request parameter.
+     * @param  string $modelAlias Alias of the listed model.
+     * @return void
+     * @throws \Gaia\Exception\BadRequest
+     */
+    protected function assertCountParam($count, $groupBy, $modelAlias)
+    {
+        if ($count === '' || $count === null) {
+            return;
+        }
+
+        $countParam = CountParam::parse($count);
+        $countParam->assertGroupedBy($groupBy, $modelAlias);
+        (new WhereFieldValidator($this->getDI()))->assertValid($countParam->getField(), $modelAlias);
+    }
+
+    /**
+     * Load the validation messages of the best language the client accepts.
+     * Falls back to English, and to no translation at all if no file exists.
      */
     public function setLanguage()
     {
-        //get the best language and all languages
-        $bestLanguage = $this->request->getBestLanguage();
+        $codes = [];
         $languages = $this->request->getLanguages();
-        print_r($languages);
-
-        //sort the languages for quality desc
-        foreach ($languages as $key => $row) {
-            $language[$key] = $row['language'];
-            $quality[$key] = $row['quality'];
-        }
-        array_multisort($quality, SORT_DESC, $language, SORT_ASC, $languages);
-
-        //veriry if exists the best language
-        if (file_exists("../app/languages/" . $bestLanguage . ".php")) {
-            include "../app/languages/" . $bestLanguage . ".php";
-
-            //if not exist best language find the first language existing
-        } else {
-            //search for the first existing language
-            $cont = 0;
-            foreach ($languages as $value) {
-                if (file_exists("../app/languages/" . $value['language'] . ".php")) {
-                    include "../app/languages/" . $value['language'] . ".php";
-                } else {
-                    $cont++;
-                }
-            }
-
-            //if not find any language set the desfault
-            if ($cont == count($languages)) {
-                include "../app/languages/en.php";
+        if (is_array($languages)) {
+            usort($languages, function ($a, $b) {
+                return ($b['quality'] ?? 0) <=> ($a['quality'] ?? 0);
+            });
+            foreach ($languages as $row) {
+                $codes[] = $row['language'] ?? '';
             }
         }
-
-        //set the messages language
-        $this->language = $messages;
+        $this->language = $this->loadMessages($codes);
     }
 
+    /**
+     * Read the messages of the first existing language file in $codes, else English.
+     *
+     * @param array $codes Language codes in order of preference (e.g. "en", "pt_BR")
+     * @return array The messages, empty when no language file exists
+     */
+    protected function loadMessages(array $codes)
+    {
+        $dir = dirname(__DIR__, 3) . '/app/languages/';
+        $codes[] = 'en';
+        foreach ($codes as $code) {
+            // The code comes from a request header: only plain locale names reach the filesystem
+            if (!is_string($code) || !preg_match('/^[A-Za-z]{2,3}([_-][A-Za-z0-9]{2,8})*$/', $code)) {
+                continue;
+            }
+            $base = strtolower(preg_split('/[_-]/', $code)[0]);
+            foreach ([$code, $base] as $name) {
+                $file = $dir . $name . '.php';
+                if (is_file($file)) {
+                    $messages = [];
+                    include $file;
+                    return is_array($messages) ? $messages : [];
+                }
+            }
+        }
+        return [];
+    }
 
     /**
      * Method Http accept: OPTIONS
@@ -620,6 +658,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         $data = $model->read($params);
         $dataArray = $this->extractData($data, $params, false, 'one');
+        $this->assertRecordFound($dataArray, $modelAlias);
         $this->finalData = $this->buildHAL($dataArray);
 
         $logger->debug('Firing afterRead event');
@@ -629,6 +668,23 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         return $this->returnResponse($this->finalData);
     }
 
+
+    /**
+     * A read by id that matched no record is a 404: the id doesn't exist, the
+     * record is soft-deleted, or the caller's record scope hides it. Lists
+     * answer an empty 200 instead and never come through here.
+     *
+     * @param array  $dataArray  The JSON:API document built from the read
+     * @param string $modelAlias The model the id was read from
+     * @return void
+     * @throws \Gaia\Exception\ResourceNotFound When the document holds no record
+     */
+    protected function assertRecordFound(array $dataArray, string $modelAlias)
+    {
+        if (empty($dataArray['data'])) {
+            throw new \Gaia\Exception\ResourceNotFound(ucfirst($modelAlias) . ' not found');
+        }
+    }
 
     /**
      * Method Http accept: GET
@@ -739,9 +795,11 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
             'addRelFields' => $addRelFields
         );
 
+        $modelAlias = Util::extractClassFromNamespace($modelName);
+        $this->assertCountParam($count, $groupBy, $modelAlias);
+
         $params = $export ? $this->updateParamsForExport($params) : $params;
 
-        $modelAlias = Util::extractClassFromNamespace($modelName);
         if ($this->getDI()->has('acl')) {
             $this->getDI()->get('acl')->applyRecordScope($modelAlias, $params);
         }

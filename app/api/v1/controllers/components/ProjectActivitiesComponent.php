@@ -82,8 +82,12 @@ class ProjectActivitiesComponent
         $logger->debug('Gaia.Controller.Component.ProjectActivities::afterUpdate()');
         $controllerName = $controller->getControllerName();
 
-        $fields = $this->activityMeta[$controllerName]['afterUpdate'];
-        $activityConfig = $this->activityMeta[$controllerName];
+        $activityConfig = $this->activityMeta[$controllerName] ?? [];
+        $fields = $activityConfig['afterUpdate'] ?? null;
+        if (!is_array($fields)) {
+            $logger->debug('-Gaia.Controller.Component.ProjectActivities::afterUpdate()');
+            return;
+        }
 
         foreach ($fields as $field => $config) {
             if (isset($model->audit[$field]) && $model->audit[$field]['old'] !== $model->audit[$field]['new']) {
@@ -109,8 +113,11 @@ class ProjectActivitiesComponent
         $logger->debug((string) $model->id);
         $controllerName = $controller->getControllerName();
 
-        $fields = $this->activityMeta[$controllerName]['afterCreate'];
-        $activityConfig = $this->activityMeta[$controllerName];
+        $activityConfig = $this->activityMeta[$controllerName] ?? [];
+        if (!isset($activityConfig['afterCreate'])) {
+            $logger->debug('-Gaia.Controller.Component.ProjectActivities::afterCreate()');
+            return;
+        }
 
         if (isset($model->id)) {
             $activityDescription = $this->getActivityDescription($model, $activityConfig['afterCreate']);

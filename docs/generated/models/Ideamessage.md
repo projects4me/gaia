@@ -23,7 +23,7 @@
 ## Summary
 
 - behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, ideaReferencesBehavior, ideaScreensBehavior, mentionsBehavior, softDeleteBehavior
-- acl: group Project via Array
+- acl: group Project via {"paths":[{"relatedModel":"Idea","localKey":"ideaId","relatedKey":"id","projectField":"projectId"}]}
 - controller: Gaia\MVC\REST\Controllers\IdeamessageController
 - routes: DELETE /api/v1/ideamessage, DELETE /api/v1/ideamessage/{id}, GET /api/v1/ideamessage, GET /api/v1/ideamessage/{id}, GET /api/v1/ideamessage/{id}/{relation}, OPTIONS /api/v1/ideamessage, PATCH /api/v1/ideamessage, PATCH /api/v1/ideamessage/{id}, POST /api/v1/ideamessage, PUT /api/v1/ideamessage, PUT /api/v1/ideamessage/{id}
 - components: Events\IdeamessageLiveEvents

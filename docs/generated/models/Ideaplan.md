@@ -22,7 +22,7 @@
 ## Summary
 
 - behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, planVersionBehavior, softDeleteBehavior
-- acl: group Project via Array
+- acl: group Project via {"paths":[{"relatedModel":"Idea","localKey":"ideaId","relatedKey":"id","projectField":"projectId"}]}
 - controller: Gaia\MVC\REST\Controllers\IdeaplanController
 - routes: DELETE /api/v1/ideaplan, DELETE /api/v1/ideaplan/{id}, GET /api/v1/ideaplan, GET /api/v1/ideaplan/{id}, GET /api/v1/ideaplan/{id}/{relation}, OPTIONS /api/v1/ideaplan, PATCH /api/v1/ideaplan, PATCH /api/v1/ideaplan/{id}, POST /api/v1/ideaplan, PUT /api/v1/ideaplan, PUT /api/v1/ideaplan/{id}
 - components: Events\IdeaplanLiveEvents

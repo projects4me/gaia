@@ -20,7 +20,7 @@
 ## Summary
 
 - behaviours: auditBehavior, dateCreatedBehavior, ideaReferencesBehavior, softDeleteBehavior
-- acl: group Project via Array; references={"issueId":{"relatedModel":"Issue","relatedKey":"id","projectField":"projectId"}}
+- acl: group Project via {"paths":[{"relatedModel":"Idea","localKey":"ideaId","relatedKey":"id","projectField":"projectId"}]}; references={"issueId":{"relatedModel":"Issue","relatedKey":"id","projectField":"projectId"}}
 - controller: Gaia\MVC\REST\Controllers\IdeaplanissueController
 - routes: DELETE /api/v1/ideaplanissue, DELETE /api/v1/ideaplanissue/{id}, GET /api/v1/ideaplanissue, GET /api/v1/ideaplanissue/{id}, GET /api/v1/ideaplanissue/{id}/{relation}, OPTIONS /api/v1/ideaplanissue, PATCH /api/v1/ideaplanissue, PATCH /api/v1/ideaplanissue/{id}, POST /api/v1/ideaplanissue, PUT /api/v1/ideaplanissue, PUT /api/v1/ideaplanissue/{id}
 - components: Events\IdeaplanissueLiveEvents
