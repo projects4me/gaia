@@ -4,12 +4,12 @@ Notes for the move from PHP 7.4 / Phalcon 4.1 to PHP 8.5 / Phalcon 5.23. Later i
 
 ## Runtime images
 
-Both stacks are built from one recipe, `docker/env/Dockerfile` (see `docker/env/README.md`):
+Both stacks are built and published from `projects4me/docker-images` (`gaia/env`, workflow `gaia-env.yml`) as public images on `ghcr.io/projects4me/gaia-env`:
 
-- `gaia-env:current`: PHP 7.4.21, Phalcon 4.1.2 (with psr), Debian 10. Same stack as `rananoman/gaia:env-dev`; CI builds it from the repo (see below).
-- `gaia-env:next`: PHP 8.5.12, Phalcon 5.23.0 (no psr), xdebug 3.5.3, xhprof 2.3.10.
+- `gaia-env:7.4.21-phalcon4.1.2` (also tagged `current`): PHP 7.4.21, Phalcon 4.1.2 (with psr), Debian 10. Same stack as `rananoman/gaia:env-dev`.
+- `gaia-env:8.5.12-phalcon5.23.0` (also tagged `next`): PHP 8.5.12, Phalcon 5.23.0 (no psr), xdebug 3.5.3, xhprof 2.3.10.
 
-Build with `docker/env/build.sh`. Switching Dockerfiles, compose and CI to these images is a separate step.
+CI pulls them and tags them locally as `gaia-env:current` and `gaia-env:next`. The recipe and build script live in `projects4me/docker-images/gaia/env`.
 
 ## Schema snapshots
 
@@ -108,9 +108,8 @@ it leaves the ini settings alone instead.
 
 ## CI next-stack report
 
-Every PR runs a non-blocking `next-stack` job in `.github/workflows/ci.yml`. `gaia-env:next` is not published,
-so the job builds it from `docker/env/Dockerfile` with the `build_next` args of `docker/env/build.sh` (layers
-cached in the GitHub Actions cache), starts it as the `gaia-next` container on the host network and runs each
+Every PR runs a non-blocking `next-stack` job in `.github/workflows/ci.yml`. The job pulls
+`ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0` as `gaia-env:next`, starts it as the `gaia-next` container on the host network and runs each
 step inside it. It has its own vendor cache key. Only `api-testing` (the current stack) blocks the PR. The job
 loads the baseline dump, runs `migration migrate --dry-run` and then `migrate`, takes a schema snapshot, prepares
 `pr4m_test`, runs PHPUnit (JUnit), runs `tools/upgrade/lint-next.sh` in place (`IMAGE=none`), and runs the
@@ -120,9 +119,8 @@ shows in the summary instead; the job only fails when the image or container can
 check step's outcome in `upgrade/steps.txt` and uploads everything as the `upgrade-next` artifact. `api-testing`
 uploads its schema snapshot and api-tester reports (with bodies) as `upgrade-current`.
 
-The blocking `graph-drift` and `api-testing` jobs build `gaia-env:current` the same way (the `build_current` args, layer cache scope
-`gaia-env-current`), start it as the `gaia-current` container and run their steps inside it, so a stack change only
-changes build args. `upgrade-report` and `cache-dependencies.yml` still use `rananoman/gaia:env-dev` (php only).
+The blocking `graph-drift` and `api-testing` jobs pull `gaia-env:current` (`7.4.21-phalcon4.1.2`) the same way, start it as the `gaia-current` container and run their steps inside it, so a stack change only
+changes the image tag. `upgrade-report` and `cache-dependencies.yml` use the same `7.4.21-phalcon4.1.2` image. The vendor cache keys use the image tag.
 
 Both stacks must use the same Postgres image, `pgvector/pgvector:pg16`: the `issues` table needs the `vector`
 extension (Issue search), and plain `postgres` images don't have it, so `migrate` would fail on the next stack.
