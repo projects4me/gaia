@@ -25,4 +25,4 @@
 - controller: Gaia\MVC\REST\Controllers\SettingController
 - routes: GET /api/v1/setting, GET /api/v1/setting/{id}, GET /api/v1/setting/{id}/{relation}, OPTIONS /api/v1/setting, PATCH /api/v1/setting, PATCH /api/v1/setting/{id}
 - components: -
-- cases: 48 (acl 5, backend 2, client 24, mail 17); gaia-dev cases setting
+- cases: 51 (acl 5, backend 2, client 27, mail 17); gaia-dev cases setting
