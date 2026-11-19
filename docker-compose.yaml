@@ -55,6 +55,7 @@ services:
       - ./:/var/www/html
       - vendor:/var/www/html/vendor
       - ./docker/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/zz-custom.ini:ro
+      - ./docker/php/conf.d/diagnostics.ini:/usr/local/etc/php/conf.d/zz-diagnostics.ini:ro
       - xhgui:/usr/local/src
     ports:
       - '8081:80'
@@ -90,6 +91,7 @@ services:
       - ./:/var/www/html
       - vendor:/var/www/html/vendor
       - ./docker/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/zz-custom.ini:ro
+      - ./docker/php/conf.d/diagnostics.ini:/usr/local/etc/php/conf.d/zz-diagnostics.ini:ro
       - xhgui:/usr/local/src
     ports:
       - '8082:80'
