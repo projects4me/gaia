@@ -6,7 +6,6 @@
 
 namespace Gaia\Db\Migration;
 
-use Gaia\Db\Factory\AdapterConfig;
 use Phalcon\Db\Column;
 
 /**
@@ -20,22 +19,7 @@ use Phalcon\Db\Column;
 class Postgres
 {
     /**
-     * This function prepares the application database config for Phalcon migrations.
-     *
-     * @param array $config Merged application database configuration
-     * @return array Configuration accepted by Phalcon migration setup
-     */
-    public function prepareMigrationConfig(array $config)
-    {
-        $config = AdapterConfig::withoutConnectionMeta($config);
-        $config['adapter'] = 'postgresql';
-        unset($config['charset']);
-
-        return $config;
-    }
-
-    /**
-     * This function returns table options passed to Phalcon morphTable.
+     * This function returns table options passed to the adapter's createTable().
      *
      * @return array
      */
@@ -46,7 +30,7 @@ class Postgres
 
     /**
      * This function determines whether an existing table should be synced incrementally
-     * instead of using morphTable.
+     * instead of being created.
      *
      * @param \Phalcon\Db\AdapterInterface $connection Active database connection
      * @param string $tableName Table name from model metadata
@@ -58,7 +42,7 @@ class Postgres
     }
 
     /**
-     * This function syncs existing tables without morphTable:
+     * This function syncs existing tables without recreating them:
      * - adds missing columns
      * - drops columns that are no longer present in metadata
      * - changes the length of varchar columns whose metadata length differs

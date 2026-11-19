@@ -7,14 +7,14 @@
 namespace Gaia\Libraries\Meta\Migration;
 
 use Gaia\Libraries\Meta\Manager as metaManager;
-use Gaia\Libraries\Meta\Migration as metaMigration;
+use Gaia\Db\Factory\ConnectionFactory;
 use Gaia\Libraries\Search\SearchableRegistry;
 
 /**
  * This class is responsible for synchronizing the database by using the
  * metadata defined for all the models in app\metadata\model.
  *
- * This class is dependant on Phalcon Dev Tools.
+ * Tables and views are created and synced by Gaia\Libraries\Meta\Migration.
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Foundation\Mvc\Model\Migration
@@ -57,12 +57,10 @@ class Driver
             // Set the metadata directory
             $migrationsDir = APP_PATH . metaManager::basePath . '/model';
 
-            // setup the database using global settings
-            $handler = $this->di->get('migrationHandler');
-            $migrationDb = new \Phalcon\Config(
-                $handler->prepareMigrationConfig($GLOBALS['settings']->database->toArray())
+            // The migration runs on its own connection, built from the global database settings
+            $this->di->get('metaMigration')->setConnection(
+                ConnectionFactory::create($GLOBALS['settings']->database->toArray())
             );
-            metaMigration::setup($migrationDb);
 
             // iterate through all the model metadata defined in the system
             $iterator = new \DirectoryIterator($migrationsDir);

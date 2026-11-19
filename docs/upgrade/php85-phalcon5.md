@@ -11,6 +11,28 @@ Both stacks are built from one recipe, `docker/env/Dockerfile` (see `docker/env/
 
 Build with `docker/env/build.sh`. Switching Dockerfiles, compose and CI to these images is a separate step.
 
+## Schema snapshots
+
+`tools/upgrade/schema-snapshot.sh <db> [output-file]` prints `pg_dump --schema-only` without owners, privileges,
+the `-- Name: ...; Owner: ...` comment headers, the `SET` preamble and the `\restrict` lines, so two snapshots
+can be diffed. `COMMENT ON` statements stay (the search column signatures live in them). It connects with the
+libpq variables (`PGHOST`, `PGUSER`, ...); `PG_DUMP` overrides the command, for example to run it in the
+Postgres container:
+
+```sh
+PG_DUMP="docker exec postgres-dev pg_dump -U <user>" tools/upgrade/schema-snapshot.sh <db> before.sql
+# change the code, migrate the same starting database again into another <db>
+PG_DUMP="docker exec postgres-dev pg_dump -U <user>" tools/upgrade/schema-snapshot.sh <db2> after.sql
+diff before.sql after.sql
+```
+
 ## Findings
 
-_None yet._
+- **phalcon/migrations (via phalcon/devtools) removed** (agaia-4687). It blocked PHP 8.5: 3.x only installs with
+  2021 nette versions, and v4 is a rewrite without the static connection. `Gaia\Libraries\Meta\Migration` now
+  creates missing tables with the DB adapter's `createTable()` (same columns, indexes and options as
+  `morphTable` passed it) on a connection from `ConnectionFactory`. Existing Postgres tables were already synced
+  by `Gaia\Db\Migration\Postgres`. MySQL loses the alteration of existing tables: migrate still creates missing
+  MySQL tables but leaves existing ones as they are. Checked with the snapshot script: the baseline dump
+  (`db/Dump20261118.sql`) and an empty database (with `uuid-ossp`, which the views need) give identical snapshots
+  after `migration migrate` before and after the change.
