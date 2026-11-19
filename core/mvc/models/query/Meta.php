@@ -238,7 +238,7 @@ class Meta
     {
         $aggregateFunctions = ["COUNT", "AVG", "SUM", "MAX", "MIN"];
 
-        foreach ($params['fields'] as $field) {
+        foreach ($params['fields'] ?? [] as $field) {
             if (preg_match_all("/[A-z]+(?=[(])/", $field, $matches)) {
                 $aggregateFunction = strtoupper($matches[0][0]);
                 if (in_array($aggregateFunction, $aggregateFunctions)) {
@@ -259,7 +259,7 @@ class Meta
     {
         $this->loadRequestedRelationships($relationship);
         $this->loadJoinsMeta($params, $query);
-        $this->loadConditionExclusiveOfRels($params['rels'], $relationship);
+        $this->loadConditionExclusiveOfRels($params['rels'] ?? [], $relationship);
     }
 
     /**
@@ -298,7 +298,7 @@ class Meta
      */
     protected function loadConditionExclusiveOfRels($relationships, $relationship)
     {
-        foreach ($relationships as $rel) {
+        foreach ($relationships ?? [] as $rel) {
             $relMeta = $relationship->getRelationship($rel);
             if (isset($relMeta['conditionExclusive'])) {
                 $this->conditionExclusives[$rel] = $relMeta['conditionExclusive'];

@@ -74,7 +74,7 @@ class HasManyToMany
             $relatedQuery .= ' AND (' . $relationshipMeta['condition'] . ')';
         }
 
-        foreach ($relConditions as $relCondition) {
+        foreach ($relConditions ?? [] as $relCondition) {
             $relatedQuery .= ' AND ' . $relCondition;
         }
         
