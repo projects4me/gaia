@@ -30,7 +30,7 @@ class RestControllerRecordFoundTest extends TestCase
         $class = new \ReflectionClass(RestController::class);
         $controller = $class->newInstanceWithoutConstructor();
         $method = $class->getMethod('assertRecordFound');
-        $method->setAccessible(true);
+        gaiaTestMakeAccessible($method);
         $method->invoke($controller, $dataArray, 'issue');
     }
 

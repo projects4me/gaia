@@ -20,27 +20,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    # Keep the build args equal to build_current in docker/env/build.sh.
-    - name: Build gaia-env:current
-      uses: docker/build-push-action@v6
-      with:
-        context: docker/env
-        load: true
-        tags: gaia-env:current
-        cache-from: type=gha,scope=gaia-env-current
-        cache-to: type=gha,scope=gaia-env-current,mode=max
-        build-args: |
-          BASE_IMAGE=php:7.4.21-apache-buster
-          DEBIAN_ARCHIVE=1
-          PHALCON_VERSION=4.1.2
-          PSR_VERSION=1.1.0
-          XDEBUG_VERSION=3.1.5
-          XHPROF_VERSION=2.3.7
-          MONGODB_VERSION=1.15.3
-          PHPUNIT_VERSION=9.6.21
+    - name: Pull gaia-env:current
+      shell: bash
+      run: |
+        docker pull ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
+        docker tag ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2 gaia-env:current
 
     # Host network: the container reaches the postgres service on 127.0.0.1:5432, and the
     # api-tester reaches Apache on 127.0.0.1.
@@ -56,8 +40,8 @@ jobs:
       uses: actions/cache@v5
       with:
         path: vendor
-        key: vendor-cache-gaia-env-current-${{ hashFiles('docker/env/**') }}-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-gaia-env-current-${{ hashFiles('docker/env/**') }}-
+        key: vendor-cache-gaia-env-current-7.4.21-phalcon4.1.2-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-gaia-env-current-7.4.21-phalcon4.1.2-
 
     - name: Install dependencies
       if: steps.composer-packages.outputs.cache-hit != 'true'
@@ -81,42 +65,18 @@ jobs:
       matrix:
         include:
           - stack: current
-            build-args: |
-              BASE_IMAGE=php:7.4.21-apache-buster
-              DEBIAN_ARCHIVE=1
-              PHALCON_VERSION=4.1.2
-              PSR_VERSION=1.1.0
-              XDEBUG_VERSION=3.1.5
-              XHPROF_VERSION=2.3.7
-              MONGODB_VERSION=1.15.3
-              PHPUNIT_VERSION=9.6.21
+            env-tag: 7.4.21-phalcon4.1.2
           - stack: next
-            build-args: |
-              BASE_IMAGE=php:8.5.12-apache
-              DEBIAN_ARCHIVE=0
-              PHALCON_VERSION=5.23.0
-              PSR_VERSION=
-              XDEBUG_VERSION=3.5.3
-              XHPROF_VERSION=2.3.10
-              MONGODB_VERSION=
-              PHPUNIT_VERSION=11.5.0
+            env-tag: 8.5.12-phalcon5.23.0
     steps:
     - name: Checkout
       uses: actions/checkout@v5
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    # Keep the build args equal to build_current / build_next in docker/env/build.sh.
-    - name: Build gaia-env:${{ matrix.stack }}
-      uses: docker/build-push-action@v6
-      with:
-        context: docker/env
-        load: true
-        tags: gaia-env:${{ matrix.stack }}
-        cache-from: type=gha,scope=gaia-env-${{ matrix.stack }}
-        cache-to: type=gha,scope=gaia-env-${{ matrix.stack }},mode=max
-        build-args: ${{ matrix.build-args }}
+    - name: Pull gaia-env:${{ matrix.stack }}
+      shell: bash
+      run: |
+        docker pull ghcr.io/projects4me/gaia-env:${{ matrix.env-tag }}
+        docker tag ghcr.io/projects4me/gaia-env:${{ matrix.env-tag }} gaia-env:${{ matrix.stack }}
 
     - name: Build the deployed image (docker/dev/Dockerfile)
       run: docker build -f docker/dev/Dockerfile --build-arg ENV_IMAGE=gaia-env:${{ matrix.stack }} -t gaia-deployed:${{ matrix.stack }} .
@@ -164,27 +124,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    # Keep the build args equal to build_current in docker/env/build.sh.
-    - name: Build gaia-env:current
-      uses: docker/build-push-action@v6
-      with:
-        context: docker/env
-        load: true
-        tags: gaia-env:current
-        cache-from: type=gha,scope=gaia-env-current
-        cache-to: type=gha,scope=gaia-env-current,mode=max
-        build-args: |
-          BASE_IMAGE=php:7.4.21-apache-buster
-          DEBIAN_ARCHIVE=1
-          PHALCON_VERSION=4.1.2
-          PSR_VERSION=1.1.0
-          XDEBUG_VERSION=3.1.5
-          XHPROF_VERSION=2.3.7
-          MONGODB_VERSION=1.15.3
-          PHPUNIT_VERSION=9.6.21
+    - name: Pull gaia-env:current
+      shell: bash
+      run: |
+        docker pull ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
+        docker tag ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2 gaia-env:current
 
     # Host network: the container reaches the postgres service on 127.0.0.1:5432, and the
     # api-tester reaches Apache on 127.0.0.1.
@@ -200,8 +144,8 @@ jobs:
       uses: actions/cache@v5
       with:
         path: vendor
-        key: vendor-cache-gaia-env-current-${{ hashFiles('docker/env/**') }}-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-gaia-env-current-${{ hashFiles('docker/env/**') }}-
+        key: vendor-cache-gaia-env-current-7.4.21-phalcon4.1.2-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-gaia-env-current-7.4.21-phalcon4.1.2-
 
     - name: Install dependencies
       if: steps.composer-packages.outputs.cache-hit != 'true'
@@ -324,8 +268,8 @@ jobs:
         if-no-files-found: warn
 
   # Non-blocking: the same checks on PHP 8.5 / Phalcon 5.23, keeping every output for the
-  # upgrade-report job. gaia-env:next is not published, so the job builds it from
-  # docker/env/Dockerfile (layers cached in the GitHub Actions cache) and runs every check
+  # upgrade-report job. gaia-env:next is pulled from ghcr.io/projects4me/gaia-env
+  # (built in projects4me/docker-images) and every check runs
   # inside it through the docker exec shell below. Each check step has continue-on-error: a
   # failure on the next stack is reported in the summary (and in the step outcomes) instead
   # of turning the job red. The job itself only fails when the image or container can't be
@@ -372,27 +316,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    # Keep the build args equal to build_next in docker/env/build.sh.
-    - name: Build gaia-env:next
-      uses: docker/build-push-action@v6
-      with:
-        context: docker/env
-        load: true
-        tags: gaia-env:next
-        cache-from: type=gha,scope=gaia-env-next
-        cache-to: type=gha,scope=gaia-env-next,mode=max
-        build-args: |
-          BASE_IMAGE=php:8.5.12-apache
-          DEBIAN_ARCHIVE=0
-          PHALCON_VERSION=5.23.0
-          PSR_VERSION=
-          XDEBUG_VERSION=3.5.3
-          XHPROF_VERSION=2.3.10
-          MONGODB_VERSION=
-          PHPUNIT_VERSION=11.5.0
+    - name: Pull gaia-env:next
+      shell: bash
+      run: |
+        docker pull ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0
+        docker tag ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0 gaia-env:next
 
     # Host network: the container reaches the postgres service on 127.0.0.1:5432, and the
     # api-tester reaches Apache on 127.0.0.1. upgrade/ and logs/ are created on the host so
@@ -412,8 +340,8 @@ jobs:
       uses: actions/cache@v5
       with:
         path: vendor
-        key: vendor-cache-gaia-env-next-${{ hashFiles('docker/env/**') }}-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-gaia-env-next-${{ hashFiles('docker/env/**') }}-
+        key: vendor-cache-gaia-env-next-8.5.12-phalcon5.23.0-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-gaia-env-next-8.5.12-phalcon5.23.0-
 
     - name: Install dependencies
       if: steps.composer-packages.outputs.cache-hit != 'true'
@@ -597,7 +525,7 @@ jobs:
         shell: bash
 
     container:
-      image: rananoman/gaia:env-dev
+      image: ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
 
     steps:
     - name: Checkout

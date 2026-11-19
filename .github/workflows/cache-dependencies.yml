@@ -10,7 +10,7 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: rananoman/gaia:env-dev
+      image: ghcr.io/projects4me/gaia-env:7.4.21-phalcon4.1.2
     steps:
     - name: Checkout to Repository
       uses: actions/checkout@v5
