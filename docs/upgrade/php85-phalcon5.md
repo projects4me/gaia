@@ -78,6 +78,17 @@ PHPMailer 6.12.0, nikic/php-parser 4.19.5). Dropped: `ext-psr` (Phalcon 5 doesn'
   on Phalcon 5, inside a bulk batch exactly as for a separate HTTP call. Until the switch-over, don't override
   Phalcon methods whose Phalcon 5 return type is a union.
 
+## Deployed image never displays PHP errors
+
+The next stack logs thousands of warnings and deprecations. If `display_errors` were on in the deployed image they
+would land inside JSON responses and break Prometheus. `docker/dev/Dockerfile` therefore copies
+`docker/php/conf.d/production.ini` (`display_errors=Off`, `display_startup_errors=Off`, `log_errors=On`) last, so no
+base image can override it. The `deployed-image-config` CI job builds the deployed image on `gaia-env:current` and
+`gaia-env:next` (the Dockerfile takes `ENV_IMAGE`) and runs `tools/ci/check-php-display-errors.sh <image>`, which
+reads the effective config with `php -i` and fails if `display_errors` or `display_startup_errors` is on or
+`log_errors` is off. To see it fail, set `display_errors = On` in `production.ini`. The check on `next` does not
+block the PR, like the rest of the next-stack work.
+
 ## Deprecations and warnings report
 
 PHP 8.x reports many upgrade problems only as `E_DEPRECATED` or `E_WARNING`. `public/index.php` normally
