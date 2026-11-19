@@ -8956,6 +8956,97 @@
           "settingValue": "smtp.api-tester.local"
         }
       }
+    },
+    {
+      "id": "search-issue-number-pins-issue",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "#1"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsIncludes": [
+          "issue:{issueId}"
+        ]
+      }
+    },
+    {
+      "id": "search-typo-in-subject-finds-issue",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "Tsster"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsIncludes": [
+          "issue:{issueId}"
+        ]
+      }
+    },
+    {
+      "id": "search-missing-q-rejected",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "search-short-q-rejected",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "a"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "search-unknown-type-rejected",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "nosuchtype",
+        "q": "seed"
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "search-by-id-not-found",
+      "method": "GET",
+      "path": "/api/v1/search/x",
+      "resource": "search",
+      "auth": true,
+      "expects": {
+        "status": 404,
+        "shape": "error"
+      }
     }
   ]
 }

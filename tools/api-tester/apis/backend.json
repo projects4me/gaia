@@ -8,12 +8,12 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 242,
+        "total": 243,
         "enabled": 221,
-        "disabled": 21,
-        "routeResources": 67,
+        "disabled": 22,
+        "routeResources": 68,
         "withMetadata": 51,
-        "skippedResources": 14
+        "skippedResources": 15
     },
     "apis": [
         {
@@ -4337,6 +4337,24 @@
             },
             "enabled": false,
             "skipReason": "Custom endpoint; no model metadata",
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-search-api-v1-search",
+            "method": "GET",
+            "path": "/api/v1/search",
+            "resource": "search",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "json"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "enabled": false,
+            "skipReason": "No app/metadata/model for resource",
             "source": "backend-metadata"
         },
         {
