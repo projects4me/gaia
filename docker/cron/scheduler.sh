@@ -42,7 +42,16 @@ fi
 kill -TERM "${scheduler}" 2> /dev/null
 wait "${app}"
 status=$?
-wait "${scheduler}"
+# supercronic lets a running job finish on TERM. After a requested stop the container's stop timeout bounds that; when
+# Apache died on its own, give the job 10 seconds, so a long reindex does not keep the container up without a web server.
+if [ "${stopping}" = 0 ]; then
+    ( sleep 10; kill -KILL "${scheduler}" 2> /dev/null ) &
+    watchdog=$!
+    wait "${scheduler}"
+    kill "${watchdog}" 2> /dev/null
+else
+    wait "${scheduler}"
+fi
 # Apache stopped by TERM exits 0; fail instead, so an on-failure restart policy still restarts the container.
 if [ "${scheduler_died}" = 1 ]; then
     exit 1
