@@ -153,8 +153,20 @@ class SubRequestRunnerTest extends TestCase
         $result = $this->runner()->run('GET', '/api/v1/probe', null, 'Bearer inner');
 
         $this->assertSame(200, $result->status());
-        $this->assertFalse($result->body()['body']);
+        // No body decodes as Phalcon does for a separate HTTP call: null on
+        // Phalcon 4, {} on Phalcon 5. Either way it is empty.
+        $this->assertEmpty($result->body()['body']);
         $this->assertNull($result->body()['query']);
+    }
+
+    public function testSubRequestKeepsPhalconsJsonDecodingSoItLoadsOnBothStacks(): void
+    {
+        // Phalcon 5 declares getJsonRawBody(): \stdClass|array|bool, which PHP 7.4
+        // cannot parse; an override without it is a fatal error when SubRequest
+        // loads on Phalcon 5, and POST /bulk then returned an empty 200 (agaia-4694).
+        $method = new \ReflectionMethod(\Gaia\Core\MVC\Http\SubRequest::class, 'getJsonRawBody');
+
+        $this->assertSame(Request::class, $method->getDeclaringClass()->getName());
     }
 
     public function testUnknownRouteIsNotFound(): void
