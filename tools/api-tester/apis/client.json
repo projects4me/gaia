@@ -711,6 +711,80 @@
       }
     },
     {
+      "id": "get-issue-soft-deleted-id-404",
+      "method": "GET",
+      "path": "/api/v1/issue/{runtime.issueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "Issue not found"
+      }
+    },
+    {
+      "id": "get-issue-missing-id-404",
+      "method": "GET",
+      "path": "/api/v1/issue/doesnotexist",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "Issue not found"
+      }
+    },
+    {
+      "id": "get-project-missing-id-404",
+      "method": "GET",
+      "path": "/api/v1/project/00000000-0000-0000-0000-000000000000",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "Project not found"
+      }
+    },
+    {
+      "id": "get-milestone-missing-id-404",
+      "method": "GET",
+      "path": "/api/v1/milestone/doesnotexist",
+      "resource": "milestone",
+      "auth": true,
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "Milestone not found"
+      }
+    },
+    {
+      "id": "get-user-missing-id-404",
+      "method": "GET",
+      "path": "/api/v1/user/doesnotexist",
+      "resource": "user",
+      "auth": true,
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "errorEqual": "User not found"
+      }
+    },
+    {
+      "id": "get-issue-list-no-match-stays-200",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.id : doesnotexist))"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
+      }
+    },
+    {
       "id": "post-issueplanning-api-v1-issueplanning",
       "method": "POST",
       "path": "/api/v1/issueplanning",

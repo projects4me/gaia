@@ -652,6 +652,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         $data = $model->read($params);
         $dataArray = $this->extractData($data, $params, false, 'one');
+        $this->assertRecordFound($dataArray, $modelAlias);
         $this->finalData = $this->buildHAL($dataArray);
 
         $logger->debug('Firing afterRead event');
@@ -661,6 +662,23 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
         return $this->returnResponse($this->finalData);
     }
 
+
+    /**
+     * A read by id that matched no record is a 404: the id doesn't exist, the
+     * record is soft-deleted, or the caller's record scope hides it. Lists
+     * answer an empty 200 instead and never come through here.
+     *
+     * @param array  $dataArray  The JSON:API document built from the read
+     * @param string $modelAlias The model the id was read from
+     * @return void
+     * @throws \Gaia\Exception\ResourceNotFound When the document holds no record
+     */
+    protected function assertRecordFound(array $dataArray, string $modelAlias)
+    {
+        if (empty($dataArray['data'])) {
+            throw new \Gaia\Exception\ResourceNotFound(ucfirst($modelAlias) . ' not found');
+        }
+    }
 
     /**
      * Method Http accept: GET
