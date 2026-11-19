@@ -7,14 +7,15 @@
 namespace Gaia\Libraries\Meta\Migration;
 
 use Gaia\Libraries\Meta\Manager as metaManager;
-use Gaia\Libraries\Meta\Migration as metaMigration;
+use Gaia\Db\Factory\ConnectionFactory;
 use Gaia\Libraries\Search\SearchableRegistry;
+use Phalcon\Db\Adapter\AdapterInterface;
 
 /**
  * This class is responsible for synchronizing the database by using the
  * metadata defined for all the models in app\metadata\model.
  *
- * This class is dependant on Phalcon Dev Tools.
+ * Tables and views are created and synced by Gaia\Libraries\Meta\Migration.
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Foundation\Mvc\Model\Migration
@@ -42,13 +43,53 @@ class Driver
 
 
     /**
-     * This function traverses model metadata directory and attempts to run
-     * migration for all the models defined
+     * This function traverses model metadata directory and migrates every model
+     * defined: it creates or syncs their tables, functions, triggers and views.
      *
      * @todo   Allow migration for a single model
      * @return array Success or Error
      */
     public function migrate()
+    {
+        return $this->run($this->openConnection());
+    }
+
+    /**
+     * This function works out what migrate() would run, without running it: the
+     * migration runs on a PlanningConnection, which reads from the database and adds
+     * every write to the returned plan, each with its table.
+     *
+     * @return Plan
+     */
+    public function plan()
+    {
+        $plan = new Plan();
+        $this->run(new PlanningConnection($this->openConnection(), $plan), $plan);
+        return $plan;
+    }
+
+    /**
+     * This function returns a connection built from the global database settings,
+     * the one the migration runs on.
+     *
+     * @return AdapterInterface
+     */
+    private function openConnection()
+    {
+        return ConnectionFactory::create($GLOBALS['settings']->database->toArray());
+    }
+
+    /**
+     * This function migrates every model on the given connection. When a plan is
+     * given (a dry run), it names the table on the plan before each step, so the
+     * statements the planning connection adds are attributed to it; a real migrate
+     * passes none and does no plan work.
+     *
+     * @param AdapterInterface $connection
+     * @param Plan|null $plan
+     * @return array Success or Error
+     */
+    private function run(AdapterInterface $connection, ?Plan $plan = null)
     {
         $result = array();
         $models = array();
@@ -57,12 +98,8 @@ class Driver
             // Set the metadata directory
             $migrationsDir = APP_PATH . metaManager::basePath . '/model';
 
-            // setup the database using global settings
-            $handler = $this->di->get('migrationHandler');
-            $migrationDb = new \Phalcon\Config(
-                $handler->prepareMigrationConfig($GLOBALS['settings']->database->toArray())
-            );
-            metaMigration::setup($migrationDb);
+            $migration = $this->di->get('metaMigration');
+            $migration->setConnection($connection);
 
             // iterate through all the model metadata defined in the system
             $iterator = new \DirectoryIterator($migrationsDir);
@@ -80,7 +117,10 @@ class Driver
             // Extensions before any model DDL: vector and tsvector columns and their indexes need them.
             $database = $GLOBALS['settings']->database;
             $extensions = isset($database->extensions) ? $database->extensions->toArray() : array();
-            foreach ($this->di->get('metaMigration')->migrateExtensions($extensions) as $skipped) {
+            if ($plan !== null) {
+                $plan->forTable('(extensions)');
+            }
+            foreach ($migration->migrateExtensions($extensions) as $skipped) {
                 $message = "Extension $skipped could not be created (not available on this server, or the database user may not create it); skipped";
                 $result['extension:' . $skipped] = $message;
                 error_log("Migration: PostgreSQL $message");
@@ -89,7 +129,8 @@ class Driver
             // before migrating table or views, let's migrate functions. Because table or views use
             // functions. So migrating functions is required first.
             foreach ($models as $model) {
-                $this->di->get('metaMigration')->migrateFunctions($model);
+                $this->planFor($plan, $connection, $model);
+                $migration->migrateFunctions($model);
             }
 
             $views = [];
@@ -109,19 +150,44 @@ class Driver
             // columns can be dropped (CASCADE may remove dependent views temporarily).
             foreach ($tables as $model) {
                 $result[$model] = "Failed to migrate $model";
-                $this->di->get('metaMigration')->migrateModel($model);
-                $this->di->get('metaMigration')->migrateColumnCollation($model);
+                $this->planFor($plan, $connection, $model);
+                $migration->migrateModel($model);
+                $migration->migrateColumnCollation($model);
                 $result[$model] = "$model migrated successfully";
             }
 
             foreach ($views as $model) {
                 $result[$model] = "Failed to migrate $model";
-                $this->di->get('metaMigration')->migrateModel($model);
+                $this->planFor($plan, $connection, $model, true);
+                $migration->migrateModel($model);
                 $result[$model] = "$model migrated successfully";
             }
         } catch (PhalconException $e) {
             throw new \Gaia\Exception\MigrationDriver($e->getMessage());
         }
         return $result;
+    }
+
+    /**
+     * This function names a model's table on the plan, before the step that migrates
+     * it. Every pass drops and recreates the views, so rebuilding a view that exists
+     * is routine, not a change. Without a plan (a real migrate) it does nothing.
+     *
+     * @param Plan|null $plan
+     * @param AdapterInterface $connection
+     * @param string $model
+     * @param bool $isView
+     * @return void
+     */
+    private function planFor($plan, AdapterInterface $connection, string $model, bool $isView = false)
+    {
+        if ($plan === null) {
+            return;
+        }
+        $meta = $this->di->get('fileHandler')->readFile(
+            APP_PATH . metaManager::basePath . '/model/' . $model . '.php'
+        );
+        $table = isset($meta[$model]['tableName']) ? $meta[$model]['tableName'] : $model;
+        $plan->forTable($table, $isView && $connection->viewExists($table));
     }
 }

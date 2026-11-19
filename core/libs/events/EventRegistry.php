@@ -8,10 +8,11 @@ namespace Gaia\Libraries\Events;
 
 /**
  * The registry of the domain events Gaia raises, read from
- * app/metadata/events.php: what each event is, its scope, the write that
- * raises it, the channels it goes out on and whether it is enabled
- * (live-updates D-013). The file is loaded once per request and shared;
- * tests pass their own definitions.
+ * app/metadata/events.php: what each event is, its scopes, the write that
+ * raises it, the channels it goes out on, whether it is enabled and whether
+ * it is only planned (live-updates D-013). The file is loaded once per
+ * request and shared; tests pass their own definitions. Definitions are
+ * validated when the registry is built.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Events
@@ -24,6 +25,13 @@ class EventRegistry
 
     public const SCOPE_PROJECT = 'project';
     public const SCOPE_USER = 'user';
+    public const SCOPE_RUNTIMES = 'runtimes';
+    public const SCOPE_SERVICE = 'service';
+
+    /**
+     * The scopes an event may go to.
+     */
+    public const SCOPES = [self::SCOPE_PROJECT, self::SCOPE_USER, self::SCOPE_RUNTIMES, self::SCOPE_SERVICE];
 
     /**
      * The registry file, relative to APP_PATH.
@@ -45,11 +53,15 @@ class EventRegistry
     private $events;
 
     /**
-     * @param array|null $events definitions by name; null reads the registry file
+     * @param  array|null $events definitions by name; null reads the registry file
+     * @throws \UnexpectedValueException when a definition has an unknown scope or a misplaced serviceKind
      */
     public function __construct(?array $events = null)
     {
         $this->events = $events === null ? self::load() : $events;
+        foreach ($this->events as $name => $definition) {
+            self::validate($name, (array) $definition);
+        }
     }
 
     /**
@@ -75,6 +87,18 @@ class EventRegistry
     }
 
     /**
+     * Whether the event is only planned: Hermes may already allow it, but
+     * Gaia does not raise it yet, so it is on no channel.
+     *
+     * @param  string $name
+     * @return bool
+     */
+    public function planned($name)
+    {
+        return $this->has($name) && !empty($this->events[$name]['planned']);
+    }
+
+    /**
      * Whether the event is recorded and enabled.
      *
      * @param  string $name
@@ -86,7 +110,7 @@ class EventRegistry
     }
 
     /**
-     * Whether the event is enabled and goes out on the channel.
+     * Whether the event is enabled, not planned and goes out on the channel.
      *
      * @param  string $name
      * @param  string $channel one of the CHANNEL_* constants
@@ -95,11 +119,12 @@ class EventRegistry
     public function publishes($name, $channel)
     {
         return $this->enabled($name)
+            && !$this->planned($name)
             && in_array($channel, (array) ($this->events[$name]['channels'] ?? []), true);
     }
 
     /**
-     * The enabled events on the channel, in registry order.
+     * The enabled, non-planned events on the channel, in registry order.
      *
      * @param  string $channel one of the CHANNEL_* constants
      * @return string[]
@@ -117,14 +142,26 @@ class EventRegistry
     }
 
     /**
-     * The event's scope (SCOPE_PROJECT or SCOPE_USER), or null when unknown.
+     * The scopes the event goes to (SCOPE_* constants), empty when unknown.
+     *
+     * @param  string $name
+     * @return string[]
+     */
+    public function scopes($name)
+    {
+        return $this->has($name) ? array_values((array) ($this->events[$name]['scopes'] ?? [])) : [];
+    }
+
+    /**
+     * The kind of service a service-scoped event goes to (e.g. ares), or
+     * null when the event has no service scope or is unknown.
      *
      * @param  string $name
      * @return string|null
      */
-    public function scope($name)
+    public function serviceKind($name)
     {
-        return $this->has($name) ? ($this->events[$name]['scope'] ?? self::SCOPE_PROJECT) : null;
+        return $this->has($name) ? ($this->events[$name]['serviceKind'] ?? null) : null;
     }
 
     /**
@@ -139,5 +176,35 @@ class EventRegistry
         }
 
         return self::$loaded;
+    }
+
+    /**
+     * Checks one definition: at least one scope, every scope known, and a
+     * serviceKind exactly when the service scope is listed.
+     *
+     * @param  string $name
+     * @param  array  $definition
+     * @throws \UnexpectedValueException
+     */
+    private static function validate($name, array $definition)
+    {
+        $scopes = $definition['scopes'] ?? null;
+        if (!is_array($scopes) || $scopes === []) {
+            throw new \UnexpectedValueException("Event {$name} lists no scopes");
+        }
+        foreach ($scopes as $scope) {
+            if (!in_array($scope, self::SCOPES, true)) {
+                $scope = is_scalar($scope) ? $scope : gettype($scope);
+                throw new \UnexpectedValueException("Event {$name} has the unknown scope '{$scope}'");
+            }
+        }
+        $service = in_array(self::SCOPE_SERVICE, $scopes, true);
+        $kind = $definition['serviceKind'] ?? null;
+        if ($service && (!is_string($kind) || $kind === '')) {
+            throw new \UnexpectedValueException("Event {$name} has the service scope but no serviceKind");
+        }
+        if (!$service && $kind !== null) {
+            throw new \UnexpectedValueException("Event {$name} has a serviceKind but no service scope");
+        }
     }
 }

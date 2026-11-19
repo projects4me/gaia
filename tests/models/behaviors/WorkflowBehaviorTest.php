@@ -106,7 +106,7 @@ class WorkflowBehaviorTest extends TestCase
      * @param  array      $edges
      * @return workflowBehavior
      */
-    private function behavior(array $nodes = null, array $edges = [])
+    private function behavior(?array $nodes = null, array $edges = [])
     {
         if ($nodes === null) {
             $nodes = [

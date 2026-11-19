@@ -35,6 +35,55 @@ Works the same for local, CI, staging, or production — only `--base-uri` and f
 
 Optional: `--filter project` (OR terms with `|`, e.g. `milestone|timelog`)
 
+## Recording bodies and comparing two runs
+
+A case can still pass while its response has changed (for example `POST /bulk` returning an empty 200 on a new stack). To catch that, record the responses of the same catalog on two stacks and compare them.
+
+`--record-bodies` (opt-in, also accepted by `harness/run-api-tests.sh`) adds to each case in the report:
+
+- `endpoint`: method and catalog path (`GET /api/v1/issue/{issueId}`), used to group differences
+- `response.status`, `response.contentType`
+- `response.bodyFormat`: `json` when the body parses as JSON, else `text`
+- `response.body`: the parsed JSON, or the raw text (an empty body is `""` with format `text`)
+
+The report also records the run's `runId` (the `{runId}` fixture value).
+
+```bash
+php tools/api-tester/bin/api-tester run --base-uri http://old-stack --apis tools/api-tester/apis/client.json \
+  --record-bodies --report output/old.json
+php tools/api-tester/bin/api-tester run --base-uri http://new-stack --apis tools/api-tester/apis/client.json \
+  --record-bodies --report output/new.json
+php tools/api-tester/bin/compare-reports.php output/old.json output/new.json [--details]
+```
+
+`compare-reports.php` matches cases by `id` and prints the number of differences per kind and per endpoint (`--details` lists each one with its JSON path, e.g. `$.data[0].count`). It exits `0` when the reports match, `1` when they differ and `2` on bad arguments or an unreadable report.
+
+Kinds of difference:
+
+| Kind | Meaning |
+|---|---|
+| `missing case` | the case is in one report only |
+| `outcome` | passed in one run, failed or skipped in the other |
+| `not recorded` | one report has no body for the case (run without `--record-bodies`) |
+| `status` | HTTP status differs |
+| `content type` | `Content-Type` differs (case and spaces ignored) |
+| `empty body` | one body is empty, the other is not |
+| `body format` | JSON in one, text in the other |
+| `key` | an object key is in one body only |
+| `list length` | a JSON list has a different length (common items are still compared) |
+| `value type` | same key, different JSON type: `1` vs `"1"`, `{}` vs `[]`, `null` vs `"x"` |
+| `value` | same type, different value |
+
+Ignore list (`src/IgnoreList.php`): values that change between two runs of the same stack.
+
+- GUIDs and date-times (`2026-11-19 04:44:10`, `2026-11-19T04:44:10+00:00`) are masked inside every string and object key, so `/api/v1/issue/<guid>` still compares as a path. Date-only values are not masked: fixtures set them.
+- Each report's own `runId` is masked in strings and keys.
+- Values under keys matching `/token/i` are not compared; their type still is.
+
+A report recorded with `--record-bodies` holds every response body as returned, including access and refresh tokens from login responses. Treat it as sensitive: don't commit it or publish it as a CI artifact.
+
+Both runs should start from a freshly prepared database (`harness/prepare-test-db.sh`), as the harness does, so list lengths and counters match. The comparison logic is `src/ReportComparer.php` (unit tests in `tests/tools/api-tester/`); the bin script only parses arguments and prints.
+
 ## Mode helper (catalog picker)
 
 `--base-uri` is required:
@@ -179,9 +228,10 @@ Proves a message is really sent through the settings-configured SMTP. The sink i
 network): it captures messages and delivers nothing. The suite uses only public flows (settings API,
 `POST /api/v1/user`, `POST /api/v1/forgetpassword`) and the sink's HTTP API; Gaia has no test-only code for it.
 
-`gaia-test` and `gaia-test-hermes-down` have no real SMTP credentials: their `smtp` config points at an
-unreachable host (`SMTP_HOST=127.0.0.1`, `SMTP_PORT=9`), so default runs never reach a real mail server (a
-send fails open and is logged). Only this suite redirects mail, by saving the sink host in Settings > Email.
+SMTP is configured only in Settings > Email; no environment variables or tracked files carry a host or credentials.
+With no host saved (the default in `gaia-test` and `gaia-test-hermes-down`), Mailer sends nothing and logs a warning,
+so default runs never reach a mail server and the user's write still succeeds. Only this suite sets a host, by saving
+the sink host in Settings > Email.
 
 ```bash
 docker compose up -d mailpit gaia-test        # saving the SMTP password needs SETTINGS_ENCRYPTION_KEY in the environment
@@ -198,8 +248,7 @@ Cases may declare a `mail` block (`to`, `subject`, `fromEmail`, `fromName`, `bod
 expects exactly one matching message for `to` + `subject` and asserts the rest. A case body can be form-encoded
 with `"form": {...}` instead of `"body"` (used by `forgetpassword`).
 
-The suite restores Settings > Email by blanking the values it set (blank means unset, so the `smtp` config applies
-again). It does not run in CI: CI has no sink; enable it by adding the `mailpit` service there and a `--mode mail` step.
+The suite restores Settings > Email by blanking the values it set (blank means unset, so mail is off again). It does not run in CI: CI has no sink; enable it by adding the `mailpit` service there and a `--mode mail` step.
 
 ## Sources
 
@@ -211,6 +260,7 @@ again). It does not run in CI: CI has no sink; enable it by adding the `mailpit`
 Copy/move `tools/api-tester/` and keep:
 
 - `bin/api-tester`
+- `bin/compare-reports.php`
 - `src/*`
 - `apis/` examples
 - this README

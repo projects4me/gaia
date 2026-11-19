@@ -26,7 +26,7 @@ class LiveRecordEventEnvelopes implements RecordEventEnvelopes
     /**
      * @param ProjectIdResolver|null $resolver
      */
-    public function __construct(ProjectIdResolver $resolver = null)
+    public function __construct(?ProjectIdResolver $resolver = null)
     {
         $this->resolver = $resolver ?: new ProjectIdResolver();
     }

@@ -65,6 +65,46 @@ class PhalconErrorTest extends TestCase
         $this->assertSame('Column "secret" does not belong to table "agents"', $error->body()['error_description']);
     }
 
+    /**
+     * In Phalcon 5 the framework's exceptions (Mvc\Model\Exception, ...) no
+     * longer extend Phalcon\Exception; they must still become a JSON 500.
+     */
+    public function testExceptionOutsidePhalconExceptionIs500()
+    {
+        $exception = new \RuntimeException('Column "secret" does not belong to table "agents"');
+        $this->assertNotInstanceOf(\Phalcon\Exception::class, $exception);
+
+        $error = new PhalconError($exception);
+
+        $this->assertFalse($error->isNotFound());
+        $this->assertSame(500, $error->statusCode());
+        $this->assertSame('internalServerError', $error->body()['error']);
+        $this->assertStringNotContainsString('secret', json_encode($error->body()));
+    }
+
+    public function testPhpErrorIs500()
+    {
+        $error = new PhalconError(new \TypeError('Argument 1 passed to secret() must be of the type int'));
+
+        $this->assertSame(500, $error->statusCode());
+        $this->assertSame('internalServerError', $error->body()['error']);
+        $this->assertStringNotContainsString('secret', json_encode($error->body()));
+    }
+
+    public function testHandleSendsJsonForExceptionOutsidePhalconException()
+    {
+        $error = new PhalconError(new \RuntimeException('Syntax error, unexpected token IDENTIFIER'));
+
+        $this->expectOutputString(json_encode($error->body()));
+        $response = $error->handle(new \Phalcon\Http\Response());
+
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame(
+            ['error' => 'internalServerError', 'error_description' => 'An internal server error occurred'],
+            json_decode($response->getContent(), true)
+        );
+    }
+
     public function testHandleSendsJsonWithStatus()
     {
         $error = new PhalconError(

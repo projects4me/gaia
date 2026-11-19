@@ -62,7 +62,7 @@ class TokenIntrospection
      * @param \OAuth2\Storage\AccessTokenInterface|null $storage Token storage; null uses Gaia's
      * @param AgentToolGrants|null                      $grants
      */
-    public function __construct($storage = null, AgentToolGrants $grants = null)
+    public function __construct($storage = null, ?AgentToolGrants $grants = null)
     {
         $this->tokens = new LiveAccessTokens($storage);
         $this->grants = $grants ?: new AgentToolGrants();

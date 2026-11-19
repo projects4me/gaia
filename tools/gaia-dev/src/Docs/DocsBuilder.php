@@ -42,7 +42,8 @@ class DocsBuilder
             (new RoutePage())->build($graph),
             (new AclMatrixPage())->build($graph),
             (new VocabularyPages())->build($graph),
-            (new BundleGuides($this->root))->build()
+            (new BundleGuides($this->root))->build(),
+            (new EventsExport($this->root))->build()
         );
         $pages['README.md'] = $this->index(array_keys($pages));
         ksort($pages);
@@ -66,6 +67,7 @@ class DocsBuilder
             '- [Assertion vocabulary](assertions.md): the `expects` keys with one real case each',
             '- [Auth profiles](profiles.md): role, grants and case counts',
             '- [Change bundles](bundles/README.md): the touchpoints, exemplar PRs and golden files per kind of change',
+            '- [Event registry](events.json): every domain event with its scope, channels and enabled flag, for the Hermes CI check',
             '- Models: `models/<Model>.md`, ' . count($models) . ' pages (`gaia-dev model <Name>` prints the same)',
         ]));
         $lines = array_merge($lines, Markdown::section('Rules', [

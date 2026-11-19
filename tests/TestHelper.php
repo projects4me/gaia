@@ -13,6 +13,8 @@ use Gaia\Db\Factory\ConnectionFactory;
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+// Deprecations and warnings are logged (see phpunit.xml) for tools/upgrade/deprecations-report.php
+ini_set('error_log', realpath(__DIR__ . '/..') . '/logs/php-diagnostics-phpunit.log');
 
 define('APP_PATH', realpath(__DIR__ . '/..'));
 if (!defined('DS')) {
@@ -22,8 +24,6 @@ if (!defined('DS')) {
 require APP_PATH . '/autoload.php';
 
 require APP_PATH . '/tests/autoload.php';
-
-require APP_PATH . '/tests/UnitTestCase.php';
 
 global $logger;
 $loggerAdapter = new StreamAdapter(APP_PATH . '/logs/application.log');

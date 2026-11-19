@@ -44,7 +44,7 @@ class ShortCodeBehaviorTest extends TestCase
     public function testGenerateShortCodeFromSingleWordIfNoShortCodeExists()
     {
         $name = "Project";
-        $expectedShortCode = "PROJE";
+        $expectedShortCode = "proje";
 
         $this->shortCodeBehaviorMock->method('getProjectsByShortCode')->willReturn([]);
         $shortCode = $this->shortCodeBehaviorMock->generateShortCode($name);
@@ -60,11 +60,11 @@ class ShortCodeBehaviorTest extends TestCase
     public function testGenerateShortCodeFromSingleWordIfOneShortCodeExists()
     {
         $name = "Project";
-        $expectedShortCode = "PROJE1";
+        $expectedShortCode = "proje1";
 
         $this->shortCodeBehaviorMock->method('getProjectsByShortCode')->willReturn(
             [
-            (object)['shortCode' => 'PROJE']
+            (object)['shortCode' => 'proje']
             ]
         );
         $shortCode = $this->shortCodeBehaviorMock->generateShortCode($name);
@@ -80,15 +80,15 @@ class ShortCodeBehaviorTest extends TestCase
     public function testGenerateShortCodeFromSingleWordIfMultipleShortCodeExists()
     {
         $name = "Project";
-        $expectedShortCode = "PROJE6";
+        $expectedShortCode = "proje6";
 
         $this->shortCodeBehaviorMock->method('getProjectsByShortCode')->willReturn(
             [
-            (object)['shortCode' => 'PROJE1'],
-            (object)['shortCode' => 'PROJE2'],
-            (object)['shortCode' => 'PROJE3'],
-            (object)['shortCode' => 'PROJE4'],
-            (object)['shortCode' => 'PROJE5'],
+            (object)['shortCode' => 'proje1'],
+            (object)['shortCode' => 'proje2'],
+            (object)['shortCode' => 'proje3'],
+            (object)['shortCode' => 'proje4'],
+            (object)['shortCode' => 'proje5'],
             ]
         );
 
@@ -105,7 +105,7 @@ class ShortCodeBehaviorTest extends TestCase
     public function testGenerateShortCodeFromMultipleWordsIfNoShortCodeExists()
     {
         $name = "Project Management";
-        $expectedShortCode = "PM";
+        $expectedShortCode = "pm";
 
         $this->shortCodeBehaviorMock->method('getProjectsByShortCode')->willReturn([]);
         $shortCode = $this->shortCodeBehaviorMock->generateShortCode($name);
@@ -122,11 +122,11 @@ class ShortCodeBehaviorTest extends TestCase
     public function testGenerateShortCodeFromMultipleWordsIfOneShortCodeExists()
     {
         $name = "Project Management";
-        $expectedShortCode = "PM1";
+        $expectedShortCode = "pm1";
 
         $this->shortCodeBehaviorMock->method('getProjectsByShortCode')->willReturn(
             [
-            (object)['shortCode' => 'PM']
+            (object)['shortCode' => 'pm']
             ]
         );
         $shortCode = $this->shortCodeBehaviorMock->generateShortCode($name);
@@ -142,14 +142,14 @@ class ShortCodeBehaviorTest extends TestCase
     public function testGenerateShortCodeFromMultipleWordsIfMultipleShortCodeExists()
     {
         $name = "Project Management";
-        $expectedShortCode = "PM5";
+        $expectedShortCode = "pm5";
 
         $this->shortCodeBehaviorMock->method('getProjectsByShortCode')->willReturn(
             [
-            (object)['shortCode' => 'PM1'],
-            (object)['shortCode' => 'PM2'],
-            (object)['shortCode' => 'PM3'],
-            (object)['shortCode' => 'PM4']
+            (object)['shortCode' => 'pm1'],
+            (object)['shortCode' => 'pm2'],
+            (object)['shortCode' => 'pm3'],
+            (object)['shortCode' => 'pm4']
             ]
         );
         $shortCode = $this->shortCodeBehaviorMock->generateShortCode($name);

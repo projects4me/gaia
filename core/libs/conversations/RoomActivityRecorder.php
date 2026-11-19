@@ -32,7 +32,7 @@ class RoomActivityRecorder
     /**
      * @param RoomActivities|null $activities The activity policy; defaults to one that reads issue numbers from Issue.
      */
-    public function __construct(RoomActivities $activities = null)
+    public function __construct(?RoomActivities $activities = null)
     {
         $this->activities = $activities ?: new RoomActivities(array(self::class, 'issueNumberOf'));
     }

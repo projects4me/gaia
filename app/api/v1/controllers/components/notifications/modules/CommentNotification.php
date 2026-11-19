@@ -84,7 +84,11 @@ class CommentNotification implements NotificationModuleInterface
             ];
 
             $notification = CreateModel::execute('systemnotification', $notificationData);
-            $this->recipientService->notifyIssueRecipients($notification, $issue);
+            $this->recipientService->notifyIssueRecipients(
+                $notification,
+                $issue,
+                MentionNotification::mentionedUserIds('comment', (string) $model->id)
+            );
 
             $logger->debug('-CommentNotification::onCreate()');
             return $notification;

@@ -4,8 +4,6 @@ services:
     container_name: gaia-dev
     environment:
       FRONTEND_HOST: localhost:4200
-      SMTP_USERNAME: 'projectsfourme@gmail.com'
-      SMTP_PASSWORD: 'acgl zdcf txkc oixp'
       DB_ADAPTER: Postgres
       DB_HOST: postgres
       DB_PORT: "5432"
@@ -40,13 +38,8 @@ services:
     container_name: gaia-test
     environment:
       FRONTEND_HOST: localhost:4200
-      # Never the real mail server: default runs fail open against a dead port; the
+      # Never the real mail server: no SMTP host is saved, so Mailer sends nothing; the
       # mail-sink suite saves the mailpit host in Settings > Email instead.
-      SMTP_HOST: 127.0.0.1
-      SMTP_PORT: "9"
-      SMTP_ENCRYPTION: none
-      SMTP_USERNAME: api-tester
-      SMTP_PASSWORD: api-tester
       DB_ADAPTER: Postgres
       DB_HOST: postgres
       DB_PORT: "5432"
@@ -62,6 +55,7 @@ services:
       - ./:/var/www/html
       - vendor:/var/www/html/vendor
       - ./docker/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/zz-custom.ini:ro
+      - ./docker/php/conf.d/diagnostics.ini:/usr/local/etc/php/conf.d/zz-diagnostics.ini:ro
       - xhgui:/usr/local/src
     ports:
       - '8081:80'
@@ -80,13 +74,8 @@ services:
     container_name: gaia-test-hermes-down
     environment:
       FRONTEND_HOST: localhost:4200
-      # Never the real mail server: default runs fail open against a dead port; the
+      # Never the real mail server: no SMTP host is saved, so Mailer sends nothing; the
       # mail-sink suite saves the mailpit host in Settings > Email instead.
-      SMTP_HOST: 127.0.0.1
-      SMTP_PORT: "9"
-      SMTP_ENCRYPTION: none
-      SMTP_USERNAME: api-tester
-      SMTP_PASSWORD: api-tester
       DB_ADAPTER: Postgres
       DB_HOST: postgres
       DB_PORT: "5432"
@@ -102,6 +91,7 @@ services:
       - ./:/var/www/html
       - vendor:/var/www/html/vendor
       - ./docker/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/zz-custom.ini:ro
+      - ./docker/php/conf.d/diagnostics.ini:/usr/local/etc/php/conf.d/zz-diagnostics.ini:ro
       - xhgui:/usr/local/src
     ports:
       - '8082:80'
@@ -154,7 +144,7 @@ services:
       - '5432:5432'
     volumes:
       - postgres_db:/var/lib/postgresql/data
-      - ./db/Dump20260810.sql:/docker-entrypoint-initdb.d/Dump20260810.sql:ro
+      - ./db/Dump20261118.sql:/docker-entrypoint-initdb.d/Dump20261118.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U nouman -d pr4m"]
       interval: 5s

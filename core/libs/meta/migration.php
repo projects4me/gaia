@@ -6,17 +6,9 @@
 
 namespace Gaia\Libraries\Meta;
 
-/**
- * In the project we do not need to use the phalcon-dev anywhere other than this file
- * therefore we are not including the phalcon-devtool in the application bootstrap using
- * dependency injector to help avoid extra load
- */
-// require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Mvc/Model/Migration.php';
-// require_once APP_PATH.'/vendor/phalcon/phalcon-devtools/scripts/Phalcon/Migrations.php';
-
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
-use Phalcon\Migrations\Mvc\Model\Migration as PhalconMigration;
+use Phalcon\Db\Adapter\AdapterInterface;
 use Gaia\Libraries\Meta\Manager as metaManager;
 use Gaia\Libraries\Search\SearchBlock;
 
@@ -24,14 +16,15 @@ use Gaia\Libraries\Search\SearchBlock;
  * This class is responsible for synchronizing the database by using the
  * metadata defined for all the models in app\metadata\model.
  *
- * This calss is dependant on Phalcon Dev Tools.
+ * New tables are created with the database adapter's createTable(); existing tables
+ * are synced by the adapter's migration handler (migrationHandler).
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Foundation\Mvc\Model
  * @category Migration
  * @license  http://www.gnu.org/licenses/agpl.html AGPLv3
  */
-class Migration extends PhalconMigration
+class Migration
 {
 
     /**
@@ -40,6 +33,13 @@ class Migration extends PhalconMigration
      * @var \Phalcon\DiInterface $di
      */
     protected $di;
+
+    /**
+     * The database connection the migration runs on, set by setConnection()
+     *
+     * @var AdapterInterface $connection
+     */
+    private $connection;
 
     /**
      * Migration constructor.
@@ -52,12 +52,34 @@ class Migration extends PhalconMigration
     }
 
     /**
+     * This function sets the database connection the migration runs on.
+     *
+     * @param AdapterInterface $connection
+     * @return void
+     */
+    public function setConnection(AdapterInterface $connection)
+    {
+        $this->connection = $connection;
+    }
+
+    /**
+     * This function returns the database connection the migration runs on.
+     *
+     * @return AdapterInterface
+     * @throws \LogicException When setConnection() has not been called
+     */
+    private function getConnection()
+    {
+        if ($this->connection === null) {
+            throw new \LogicException('Migration has no database connection: call setConnection() first');
+        }
+        return $this->connection;
+    }
+
+    /**
      * This function is responsible for synchronizing the database using the
-     * metadata. As per the Phalcon Dev Tools this function is to be implemented
-     * in the individual files in app\migrations. However, since in this
-     * application we are relying on model metadata defined through files in
-     * app\metadata\model it would be redundant to have the columns defined
-     * again so this function get the metadata from the files and sets them up
+     * metadata defined through files in app\metadata\model: it reads the
+     * metadata of the model and creates or syncs its table, or rebuilds its view
      *
      * @todo  get table engines and collation from the model meta and system config
      * @param $model
@@ -86,16 +108,16 @@ class Migration extends PhalconMigration
         $tableName = $meta[$model]['tableName'];
 
         // Column shape changes need a full recreate; CREATE OR REPLACE cannot rename/drop view columns.
-        $this::$connection->execute('DROP VIEW IF EXISTS "' . $tableName . '" CASCADE');
-        $this::$connection->execute($this->di->get('dialect')->createView($tableName, $meta[$model]['viewSql']));
+        $this->getConnection()->execute('DROP VIEW IF EXISTS "' . $tableName . '" CASCADE');
+        $this->getConnection()->execute($this->di->get('dialect')->createView($tableName, $meta[$model]['viewSql']));
     }
 
     /**
      * This function is responsible for migrating sql tables according to the 
      * meta data of model. It first call migrateTrigger function in order to migrate
      * the triggers associated with that table. After that it call prepareTableDefinition
-     * function in order to get Table definition that Phalcon's morphTable want to migrate
-     * a table.
+     * function in order to get the table definition. A missing table is created with the
+     * adapter's createTable(); an existing one is synced by the migration handler.
      * 
      * @param $model
      * @param $meta 
@@ -108,11 +130,11 @@ class Migration extends PhalconMigration
 
         $indexes = isset($meta[$model]['indexes']) ? $meta[$model]['indexes'] : [];
         // Before any DDL: an unsupported index kind or a missing extension leaves the table untouched.
-        $handler->checkSearchSchema(self::$connection, $tableName, $tableDefinition['searchColumns'], $indexes);
+        $handler->checkSearchSchema($this->getConnection(), $tableName, $tableDefinition['searchColumns'], $indexes);
 
-        if ($handler->shouldSyncExistingTableOnly(self::$connection, $tableName)) {
+        if ($handler->shouldSyncExistingTableOnly($this->getConnection(), $tableName)) {
             $handler->syncExistingTable(
-                self::$connection,
+                $this->getConnection(),
                 $tableName,
                 $tableDefinition['columns'],
                 $indexes,
@@ -122,15 +144,16 @@ class Migration extends PhalconMigration
             return;
         }
 
-        $this->morphTable(
+        $this->getConnection()->createTable(
             $tableName,
+            (string) $handler->getDefaultSchema(),
             array(
                 'columns' => $tableDefinition['columns'],
                 'indexes' => $tableDefinition['indexes'],
                 'options' => $handler->getTableOptions(),
             )
         );
-        $handler->syncSearchSchema(self::$connection, $tableName, $tableDefinition['searchColumns'], $indexes);
+        $handler->syncSearchSchema($this->getConnection(), $tableName, $tableDefinition['searchColumns'], $indexes);
 
         $this->migrateTriggers($model, $meta);
     }
@@ -151,7 +174,7 @@ class Migration extends PhalconMigration
 
         foreach ($meta[$model]['triggers'] as $schema) {
             $triggerExistsQuery = $this->di->get('dialect')->showTrigger($meta[$model]['tableName']);
-            $triggers = $this::$connection->query($triggerExistsQuery)->fetchAll();
+            $triggers = $this->getConnection()->query($triggerExistsQuery)->fetchAll();
             $triggerExists = false;
 
             foreach($triggers as $trigger) {
@@ -163,7 +186,7 @@ class Migration extends PhalconMigration
             //if trigger doesn't exists, then create.
             if (!$triggerExists) {
                 $query = $this->di->get('dialect')->createTrigger($meta[$model]['tableName'], $schema);
-                $this::$connection->execute($query);
+                $this->getConnection()->execute($query);
             }
         }
     }
@@ -184,12 +207,12 @@ class Migration extends PhalconMigration
 
         foreach ($meta[$model]['functions'] as $schema) {
             $functionExistsQuery = $this->di->get('dialect')->showFunction($schema['functionName']);
-            $result = $this::$connection->query($functionExistsQuery)->fetch();
+            $result = $this->getConnection()->query($functionExistsQuery)->fetch();
 
             //if function doesn't exists, then create.
             if (empty($result) || empty($result['Name'])) {
                 $query = $this->di->get('dialect')->createFunction($schema['functionName'], $schema['parameters'], $schema['returnType'], $schema['statement']);
-                $this::$connection->execute($query);
+                $this->getConnection()->execute($query);
             }
         }
     }
@@ -204,7 +227,7 @@ class Migration extends PhalconMigration
      */
     public function migrateExtensions(array $extensions)
     {
-        return $this->di->get('migrationHandler')->createExtensions(self::$connection, $extensions);
+        return $this->di->get('migrationHandler')->createExtensions($this->getConnection(), $extensions);
     }
 
     /**
@@ -343,15 +366,13 @@ class Migration extends PhalconMigration
     }
 
     /**
-     * This function initiate a new instance on Migration class and use it to
-     * perform the migration
+     * This function migrates the table or view of a model
      *
      * @param string $model model name to be migrated
      */
     public function migrateModel($model)
     {
-        $migration = new Migration($this->di);
-        $migration->up($model);
+        $this->up($model);
     }
 
     /**
@@ -395,7 +416,7 @@ class Migration extends PhalconMigration
             $expectedCollation = $schema['collation'];
 
             $collationQuery = $dialect->getColumnCollation($tableName, $columnName);
-            $result = $this::$connection->query($collationQuery)->fetch();
+            $result = $this->getConnection()->query($collationQuery)->fetch();
 
             if (empty($result) || empty($result['COLLATION_NAME'])) {
                 continue;
@@ -422,7 +443,7 @@ class Migration extends PhalconMigration
                     $expectedCollation
                 );
 
-                $this::$connection->execute($alterQuery);
+                $this->getConnection()->execute($alterQuery);
             }
         }
     }

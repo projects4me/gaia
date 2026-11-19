@@ -12,6 +12,7 @@ use Gaia\MVC\REST\Controllers\Components\Events\ConversationLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\AgentRunLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\WorkflowRunLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\NotificationLiveEvents;
+use Gaia\MVC\REST\Controllers\Components\Events\MentionLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeamessageLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanLiveEventsComponent;
@@ -543,6 +544,44 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertStringNotContainsString('Secret plan', json_encode($posted[1]));
     }
 
+    public function testMentionPublishesUserScopedEventWithIdsOnly()
+    {
+        $posted = array();
+        $events = new MentionLiveEvents(new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        }));
+
+        $events->publishMentioned((object) array(
+            'id' => 'm-1', 'userId' => 'user-42', 'relatedTo' => 'comment', 'relatedId' => 'c-1',
+            'projectId' => 'project-1', 'createdUser' => 'user-1',
+        ));
+        $events->publishMentioned((object) array(
+            'id' => 'm-2', 'userId' => 'user-43', 'relatedTo' => 'comment', 'relatedId' => 'c-1',
+            'projectId' => 'project-1', 'createdUser' => 'user-1',
+        ));
+        $this->assertNull($events->publishMentioned((object) array('id' => 'm-3')));
+
+        $this->assertCount(2, $posted);
+        $this->assertEquals(EventNames::USER_MENTIONED, $posted[0]['eventName']);
+        $this->assertEquals('user:user-42', $posted[0]['projectId']);
+        $this->assertEquals('user:user-43', $posted[1]['projectId']);
+        $this->assertEquals('m-1', $posted[0]['meta']['mentionId']);
+        $this->assertEquals('user-1', $posted[0]['meta']['actorId']);
+        $this->assertEquals('project-1', $posted[0]['meta']['projectId']);
+    }
+
+    public function testMentionPublishFailsOpenWhenHermesIsDown()
+    {
+        $events = new MentionLiveEvents(new HermesPublisher(function () {
+            throw new \RuntimeException('Hermes down');
+        }));
+
+        $row = (object) array('id' => 'm-1', 'userId' => 'user-42', 'relatedTo' => 'comment', 'relatedId' => 'c-1');
+        $envelope = $events->publishMentioned($row);
+
+        $this->assertEquals(EventNames::USER_MENTIONED, $envelope['eventName']);
+    }
+
     public function testNotificationLiveEventsIncludesRelatedToAndRelatedIdWhenSet()
     {
         $posted = array();
@@ -749,8 +788,8 @@ class LiveEventsComponentsTest extends TestCase
     {
         $posted = array();
         $registry = new EventRegistry(array(
-            EventNames::ISSUE_CREATED => array('scope' => 'project', 'channels' => array('hermes'), 'enabled' => false),
-            EventNames::MILESTONE_CREATED => array('scope' => 'project', 'channels' => array('hermes'), 'enabled' => true),
+            EventNames::ISSUE_CREATED => array('scopes' => array('project'), 'channels' => array('hermes'), 'enabled' => false),
+            EventNames::MILESTONE_CREATED => array('scopes' => array('project'), 'channels' => array('hermes'), 'enabled' => true),
         ));
         $publisher = new HermesPublisher(function ($envelope) use (&$posted) {
             $posted[] = $envelope;
@@ -760,6 +799,24 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertNotNull($publisher->publishDomainEvent(EventNames::MILESTONE_CREATED, 'project-1', 'milestone', 'm-1'));
         $this->assertCount(1, $posted);
         $this->assertEquals(EventNames::MILESTONE_CREATED, $posted[0]['eventName']);
+    }
+
+    public function testPublisherDropsAPlannedEvent()
+    {
+        $posted = array();
+        $registry = new EventRegistry(array(
+            'doc.created' => array(
+                'scopes' => array('project'), 'channels' => array('hermes'), 'enabled' => true, 'planned' => true,
+            ),
+        ));
+        $publisher = new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        }, $registry);
+
+        $this->assertNull($publisher->publishDomainEvent('doc.created', 'project-1', 'doc', 'doc-1'));
+        $this->assertSame(array(), $posted);
+        $this->assertFalse(EventNames::isAllowed('doc.created'));
+        $this->assertNotContains('doc.created', EventNames::allowed());
     }
 
     public function testPublisherDropsAWorkflowOnlyEvent()

@@ -4,6 +4,12 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+# The image both jobs run in. It is part of the vendor cache key, so a new image
+# (e.g. the PHP 8.5 one) never reuses vendor built for another PHP. Keep each
+# job's container.image equal to it: container.image cannot read env.
+env:
+  GAIA_IMAGE: rananoman/gaia:env-dev
+
 jobs:
 
   graph-drift:
@@ -25,8 +31,8 @@ jobs:
       uses: actions/cache@v5
       with:
         path: vendor
-        key: vendor-cache-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-
+        key: vendor-cache-${{ env.GAIA_IMAGE }}-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-${{ env.GAIA_IMAGE }}-
 
     - name: Install dependencies
       if: steps.composer-packages.outputs.cache-hit != 'true'
@@ -80,8 +86,8 @@ jobs:
       uses: actions/cache@v5
       with:
         path: vendor
-        key: vendor-cache-${{ hashFiles('composer.json') }}
-        restore-keys: vendor-cache-
+        key: vendor-cache-${{ env.GAIA_IMAGE }}-${{ hashFiles('composer.json') }}
+        restore-keys: vendor-cache-${{ env.GAIA_IMAGE }}-
 
     - name: Install dependencies
       if: steps.composer-packages.outputs.cache-hit != 'true'
@@ -105,7 +111,7 @@ jobs:
         PGPASSWORD: nouman
       run: |
         psql -h postgres -U nouman -d pr4m -v ON_ERROR_STOP=1 \
-          -f db/Dump20260810.sql
+          -f db/Dump20261118.sql
 
     - name: Migrate pr4m schema from metadata
       env:
@@ -118,13 +124,26 @@ jobs:
         PGPASSWORD: nouman
       run: bash tools/api-tester/harness/prepare-test-db.sh
 
-    - name: Run PHPUnit (ACL)
+    - name: Run PHPUnit (whole suite, quarantine excluded)
       run: |
         mkdir -p logs/tests
-        ./vendor/bin/phpunit -c tests/phpunit.xml tests/libraries/security
-        ./vendor/bin/phpunit -c tests/phpunit.xml tests/libraries/utils
-        ./vendor/bin/phpunit -c tests/phpunit.xml tests/libraries/tools
-        ./vendor/bin/phpunit -c tests/phpunit.xml tests/tools
+        ./vendor/bin/phpunit -c tests/phpunit.xml \
+          --exclude-group quarantine \
+          --log-junit logs/tests/phpunit-junit.xml
+
+    - name: Upload PHPUnit report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: phpunit-junit-report
+        path: logs/tests/phpunit-junit.xml
+        if-no-files-found: warn
+
+    - name: Reset pr4m_test + fixtures for the API tests
+      env:
+        PGHOST: postgres
+        PGPASSWORD: nouman
+      run: bash tools/api-tester/harness/prepare-test-db.sh
 
     - name: Start Apache
       run: |

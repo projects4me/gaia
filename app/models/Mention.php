@@ -7,6 +7,8 @@
 namespace Gaia\MVC\Models;
 
 use Gaia\Core\MVC\Models\Model;
+use Gaia\MVC\REST\Controllers\Components\Events\MentionLiveEvents;
+use Gaia\MVC\REST\Controllers\Components\Notifications\Modules\MentionNotification;
 
 /**
  * Mention Model
@@ -18,5 +20,31 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Mention extends Model
 {
-    
+    /**
+     * Tell the mentioned user as a domain event. Fails open: a publish
+     * error never fails the save.
+     *
+     * @method afterCreate
+     * @return void
+     */
+    public function afterCreate()
+    {
+        global $logger;
+
+        try {
+            (new MentionLiveEvents())->publishMentioned($this);
+        } catch (\Throwable $e) {
+            if ($logger) {
+                $logger->error('Mention publish failed: ' . $e->getMessage());
+            }
+        }
+
+        try {
+            (new MentionNotification())->notify($this);
+        } catch (\Throwable $e) {
+            if ($logger) {
+                $logger->error('Mention notification failed: ' . $e->getMessage());
+            }
+        }
+    }
 }

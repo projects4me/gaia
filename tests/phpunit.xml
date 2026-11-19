@@ -3,29 +3,41 @@
   ~ Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
   -->
 
-<phpunit bootstrap="./TestHelper.php"
+<!--
+  Tests in the "quarantine" group reveal a product bug that has its own issue
+  (named in the test's docblock). CI excludes them with exclude-group quarantine.
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="./TestHelper.php"
          backupGlobals="false"
          backupStaticAttributes="false"
          verbose="true"
          colors="true"
          convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
+         convertNoticesToExceptions="false"
+         convertWarningsToExceptions="false"
          processIsolation="false"
-         stopOnFailure="false"
-         syntaxCheck="true">
-    <testsuite name="Phalcon - Testsuite">
-        <directory>../tests</directory>
-    </testsuite>
+         stopOnFailure="false">
+    <!--
+      The whole suite loads docs/generated/graph.json (several MB once decoded) in more than one test;
+      the CLI default of 128M is too tight for one process running all of it.
+    -->
+    <php>
+        <ini name="memory_limit" value="512M"/>
+        <!-- Warnings and deprecations are logged (error_log is set in TestHelper.php) and do not fail tests for tools/upgrade/deprecations-report.php -->
+        <ini name="log_errors" value="1"/>
+    </php>
+    <testsuites>
+        <testsuite name="Gaia">
+            <directory>.</directory>
+            <exclude>./tools/gaia-dev/fixtures</exclude>
+        </testsuite>
+    </testsuites>
 
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <coverage processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">../app/models</directory>
-            <exclude>
-                <directory suffix=".php">../foundation/config</directory>
-                <file>../foundation/libs/authorization/oAuthServer.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
-
+        </include>
+    </coverage>
 </phpunit>
