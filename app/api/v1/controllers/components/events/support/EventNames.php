@@ -200,6 +200,15 @@ class EventNames
     const USER_MENTIONED = 'user.mentioned';
 
     /**
+     * A searchable record's semantic text changed, so Ares re-embeds it.
+     * Scoped to service:ares; carries the search type, the resource and the
+     * record id only.
+     *
+     * @var string
+     */
+    const SEARCH_SEMANTIC_CHANGED = 'search.semantic.changed';
+
+    /**
      * The names HermesPublisher may post: the registry's enabled events on
      * the hermes channel.
      *

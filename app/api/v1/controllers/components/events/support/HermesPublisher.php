@@ -34,6 +34,14 @@ class HermesPublisher
     protected $registry;
 
     /**
+     * Whether the last envelope reached Hermes.
+     *
+     * @var  bool
+     * @type bool
+     */
+    protected $delivered = false;
+
+    /**
      * Creates a publisher, optionally with a test HTTP client and registry.
      *
      * @param  mixed              $httpClient Guzzle client or callable that receives the envelope.
@@ -95,8 +103,20 @@ class HermesPublisher
             $changes,
             $meta
         );
-        $this->postEnvelope($envelope);
+        $this->delivered = $this->postEnvelope($envelope);
         return $envelope;
+    }
+
+    /**
+     * Whether the last envelope publishDomainEvent built reached Hermes. The
+     * publish fails open, so callers that must count lost events ask here.
+     *
+     * @method wasDelivered
+     * @return bool
+     */
+    public function wasDelivered()
+    {
+        return $this->delivered;
     }
 
     /**
@@ -104,7 +124,7 @@ class HermesPublisher
      *
      * @param  array $envelope The envelope built by LiveEventEnvelope.
      * @method postEnvelope
-     * @return void
+     * @return bool Whether the POST went through.
      */
     protected function postEnvelope(array $envelope)
     {
@@ -113,7 +133,7 @@ class HermesPublisher
         try {
             if (is_callable($this->httpClient)) {
                 ($this->httpClient)($envelope);
-                return;
+                return true;
             }
 
             $client = $this->httpClient ?: new \GuzzleHttp\Client(array(
@@ -127,10 +147,12 @@ class HermesPublisher
                 ),
                 'json' => $envelope,
             ));
+            return true;
         } catch (\Throwable $e) {
             if ($logger) {
                 $logger->error('Hermes ingest failed: ' . $e->getMessage() . $this->responseDetail($e));
             }
+            return false;
         }
     }
 

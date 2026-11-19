@@ -57,7 +57,7 @@ class EventsExportTest extends TestCase
             $this->assertSame(['project'], $events[$name]['scopes'], $name);
             $this->assertSame(['hermes'], $events[$name]['channels'], $name);
         }
-        $this->assertTrue($events['search.semantic.changed']['planned']);
+        $this->assertFalse($events['search.semantic.changed']['planned']);
         $this->assertSame(['service'], $events['search.semantic.changed']['scopes']);
         $this->assertSame('ares', $events['search.semantic.changed']['serviceKind']);
         $this->assertSame(['user', 'runtimes'], $events['workflow.agent.run.requested']['scopes']);

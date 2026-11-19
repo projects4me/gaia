@@ -24,7 +24,8 @@ use Gaia\Libraries\Meta\Manager;
  * The search data lives on the model's own table, so apply() validates the block and adds the search columns and
  * their indexes to the metadata, every column flagged `'system' => true` (D-071): the API never reads, writes or
  * audits them. searchVector is a stored generated tsvector built from fts. With semantic fields the model also gets
- * the canonical semantic text and its hash (SemanticText), the embedding and the hash of the text it was made from.
+ * the canonical semantic text and its hash (SemanticText), the embedding and the hash of the text it was made from,
+ * and searchIndexBehavior, which keeps the text and hash current on every save.
  *
  * Type uniqueness across models is checked by SearchableRegistry, which sees every model.
  *
@@ -59,6 +60,13 @@ class SearchBlock
     public const EMBEDDING = 'searchEmbedding';
     public const EMBEDDING_HASH = 'searchEmbeddingHash';
     public const EMBEDDED_AT = 'searchEmbeddedAt';
+
+    /**
+     * The behavior that keeps the semantic text current, attached to every model with semantic fields.
+     *
+     * @var string
+     */
+    public const BEHAVIOR = 'searchIndexBehavior';
 
     /**
      * Keys a search block may have.
@@ -146,6 +154,13 @@ class SearchBlock
 
         $metadata['fields'] = $fields;
         $metadata['indexes'] = $indexes;
+        if ($block['semantic'] !== array()) {
+            $behaviors = isset($metadata['behaviors']) ? $metadata['behaviors'] : array();
+            if (!in_array(self::BEHAVIOR, $behaviors, true)) {
+                $behaviors[] = self::BEHAVIOR;
+            }
+            $metadata['behaviors'] = $behaviors;
+        }
 
         return $metadata;
     }

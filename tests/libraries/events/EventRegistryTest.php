@@ -144,7 +144,7 @@ class EventRegistryTest extends TestCase
 
         $this->assertSame($declared, $hermes);
         $this->assertSame((new EventRegistry())->names(EventRegistry::CHANNEL_HERMES), EventNames::allowed());
-        $this->assertCount(25, $declared);
+        $this->assertCount(26, $declared);
     }
 
     public function testTheFileRaisesEveryWorkflowTriggerWithTheCatalogsSource()
@@ -170,7 +170,7 @@ class EventRegistryTest extends TestCase
             $registry->names(EventRegistry::CHANNEL_WORKFLOW)
         ));
 
-        $this->assertCount(30, $everyName);
+        $this->assertCount(31, $everyName);
         foreach ($everyName as $name) {
             $definition = $registry->definition($name);
             $this->assertNotEmpty($definition['description'], $name);
@@ -179,12 +179,15 @@ class EventRegistryTest extends TestCase
             if ($name === EventNames::WORKFLOW_AGENT_RUN_REQUESTED) {
                 $expected = ['user', 'runtimes'];
             }
+            if ($name === EventNames::SEARCH_SEMANTIC_CHANGED) {
+                $expected = ['service'];
+            }
             $this->assertSame($expected, $registry->scopes($name), $name);
             $this->assertFalse($registry->planned($name), $name);
         }
     }
 
-    public function testTheFilePlansTheDocAndSemanticSearchEventsWithoutRaisingThem()
+    public function testTheFilePlansTheDocEventsAndRaisesTheSemanticSearchEvent()
     {
         $registry = new EventRegistry();
         $hermes = $registry->names(EventRegistry::CHANNEL_HERMES);
@@ -194,10 +197,10 @@ class EventRegistryTest extends TestCase
             $this->assertSame(['project'], $registry->scopes($name), $name);
             $this->assertNotContains($name, $hermes);
         }
-        $this->assertTrue($registry->planned('search.semantic.changed'));
+        $this->assertFalse($registry->planned('search.semantic.changed'));
         $this->assertSame(['service'], $registry->scopes('search.semantic.changed'));
         $this->assertSame('ares', $registry->serviceKind('search.semantic.changed'));
-        $this->assertNotContains('search.semantic.changed', $hermes);
+        $this->assertContains('search.semantic.changed', $hermes);
         $this->assertNull($registry->serviceKind(EventNames::ISSUE_CREATED));
     }
 

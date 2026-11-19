@@ -13,6 +13,7 @@ use Gaia\MVC\REST\Controllers\Components\Events\AgentRunLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\WorkflowRunLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\NotificationLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\MentionLiveEvents;
+use Gaia\MVC\REST\Controllers\Components\Events\SearchLiveEvents;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeamessageLiveEventsComponent;
 use Gaia\MVC\REST\Controllers\Components\Events\IdeaplanLiveEventsComponent;
@@ -580,6 +581,35 @@ class LiveEventsComponentsTest extends TestCase
         $envelope = $events->publishMentioned($row);
 
         $this->assertEquals(EventNames::USER_MENTIONED, $envelope['eventName']);
+    }
+
+    public function testSearchSemanticChangedGoesToAresWithTypeResourceAndRecordIdOnly()
+    {
+        $posted = array();
+        $events = new SearchLiveEvents(new HermesPublisher(function ($envelope) use (&$posted) {
+            $posted[] = $envelope;
+        }));
+
+        $events->publishSemanticChanged('issue', 'issue', 'i-1');
+        $this->assertNull($events->publishSemanticChanged('issue', 'issue', ''));
+
+        $this->assertCount(1, $posted);
+        $this->assertEquals(EventNames::SEARCH_SEMANTIC_CHANGED, $posted[0]['eventName']);
+        $this->assertEquals('service:ares', $posted[0]['projectId']);
+        $this->assertEquals(array('type' => 'issue', 'id' => 'i-1'), $posted[0]['resource']);
+        $this->assertEquals(array('type' => 'issue', 'resource' => 'issue', 'recordId' => 'i-1'), $posted[0]['changes']);
+    }
+
+    public function testSearchSemanticChangedFailsOpenWhenHermesIsDown()
+    {
+        $events = new SearchLiveEvents(new HermesPublisher(function () {
+            throw new \RuntimeException('Hermes down');
+        }));
+
+        $envelope = $events->publishSemanticChanged('issue', 'issue', 'i-1');
+
+        // Fails open, but reports the lost event so the reindex counts it as failed
+        $this->assertNull($envelope);
     }
 
     public function testNotificationLiveEventsIncludesRelatedToAndRelatedIdWhenSet()
