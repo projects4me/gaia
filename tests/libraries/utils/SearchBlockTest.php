@@ -292,6 +292,9 @@ class SearchBlockTest extends TestCase
             'display unknown field' => [function (&$m) {
                 $m['search']['display']['snippet'] = 'body';
             }, "names unknown field 'body' in display snippet"],
+            'display snippet not text' => [function (&$m) {
+                $m['search']['display']['snippet'] = 'number';
+            }, "names 'number' of type 'int' in display snippet"],
             'declared search column' => [function (&$m) {
                 $m['fields']['searchVector'] = ['name' => 'searchVector', 'type' => 'text', 'null' => true];
             }, "declares field 'searchVector', which its search block adds"],

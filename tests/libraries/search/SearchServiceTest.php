@@ -172,6 +172,29 @@ class SearchServiceTest extends TestCase
         $this->assertSame(2, substr_count($results[0]['snippet'], '<'), 'only <mark> and </mark>');
     }
 
+    public function testChangesASettingTheBackendHasNotDefinedYet()
+    {
+        // Like pg_trgm's threshold before the library loads on a new connection
+        $name = 'p4m_search_test.threshold';
+        $candidates = new CandidateQuery($this->db);
+
+        $inside = $candidates->withSetting($name, '0.4', function () use ($name) {
+            return $this->db->fetchOne(
+                'SELECT current_setting(:name) AS v',
+                \Phalcon\Db\Enum::FETCH_ASSOC,
+                array('name' => $name)
+            )['v'];
+        });
+
+        $this->assertSame('0.4', $inside);
+        $after = $this->db->fetchOne(
+            'SELECT current_setting(:name, true) AS v',
+            \Phalcon\Db\Enum::FETCH_ASSOC,
+            array('name' => $name)
+        )['v'];
+        $this->assertContains($after, array(null, ''));
+    }
+
     public function testARecordCannotForgeASnippetMark()
     {
         $this->addIssue('Zebracorn page', "The zebracorn and \x02forged\x03 text.");

@@ -249,7 +249,9 @@ class SearchBlock
             if ($key === 'snippet' && $field === null) {
                 continue;
             }
-            self::assertField($model, "display {$key}", $field, $fields, null);
+            // The snippet is a ts_headline over the text, so it needs a text field like fts
+            $types = $key === 'snippet' ? PostgresSearchDdl::TEXT_SOURCE_TYPES : null;
+            self::assertField($model, "display {$key}", $field, $fields, $types);
         }
         $normalized['display'] = array(
             'title' => $display['title'],

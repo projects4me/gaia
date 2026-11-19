@@ -62,18 +62,22 @@ class CandidateQuery
 
     /**
      * @param string $name
-     * @param string $value
-     * @return string The value before the change
+     * @param string|null $value Null resets the setting to its default
+     * @return string|null The value before the change, null when the setting was not defined
      */
     private function setting($name, $value)
     {
+        // missing_ok: a setting of an extension library the backend has not loaded yet (pg_trgm on a new
+        // connection) reads as NULL instead of failing; set_config then keeps it as a placeholder the library
+        // adopts when it loads, and restoring NULL resets it to the default
         $row = $this->db->fetchOne(
-            'SELECT current_setting(:search_current) AS "previous", set_config(:search_setting, :search_value, false)',
+            'SELECT current_setting(:search_current, true) AS "previous",'
+                . ' set_config(:search_setting, :search_value, false)',
             \Phalcon\Db\Enum::FETCH_ASSOC,
             array('search_current' => $name, 'search_setting' => $name, 'search_value' => $value)
         );
 
-        return (string) $row['previous'];
+        return $row['previous'];
     }
 
     /**
