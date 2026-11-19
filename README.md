@@ -23,7 +23,9 @@ The Gaia containers run the CLI tasks in [`docker/cron/crontab`](docker/cron/cro
 image through `docker/dev/start.sh`, the local `gaia` service as its command). Times are UTC, the jobs run as
 `www-data` with the container's environment, their output goes to the container log (`docker logs gaia-dev`), and a
 job never starts while its previous run is still going in that container. Every container that runs the scheduler runs
-the jobs, so when the deployed image runs as more than one replica, set `GAIA_SCHEDULER=off` on all but one. If
+the jobs: the Helm chart deploys one replica (`replicaCount: 1`), and with more replicas every one of them would run
+the 03:00 reindex, since the chart sets the same environment on all pods. Running more replicas needs a separate
+single-replica scheduler workload first. If
 the scheduler exits, the container stops with a failure rather than serving without its daily tasks: a deployment with
 a restart policy (the default in Kubernetes) restarts it, while the local Compose `gaia` service has none and stays
 stopped until you start it again.
