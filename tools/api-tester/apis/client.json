@@ -8770,6 +8770,87 @@
         "status": 200,
         "shape": "json"
       }
+    },
+    {
+      "id": "mention-notified-create",
+      "method": "POST",
+      "path": "/api/v1/mention",
+      "resource": "mention",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "mention",
+          "attributes": {
+            "relatedTo": "issue",
+            "relatedId": "api-test-issue-000001",
+            "notified": 0,
+            "userId": "{userId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.notifiedMentionId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "mention-list-filtered-and-sorted-by-notified",
+      "method": "GET",
+      "path": "/api/v1/mention",
+      "resource": "mention",
+      "auth": true,
+      "query": {
+        "query": "((Mention.id : {runtime.notifiedMentionId}) AND (Mention.notified : 0))",
+        "sort": "Mention.notified",
+        "order": "ASC",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{runtime.notifiedMentionId}"
+        ],
+        "attributesPresent": [
+          "notified"
+        ]
+      }
+    },
+    {
+      "id": "mention-list-sorted-by-bare-notified",
+      "method": "GET",
+      "path": "/api/v1/mention",
+      "resource": "mention",
+      "auth": true,
+      "query": {
+        "query": "((Mention.id : {runtime.notifiedMentionId}))",
+        "sort": "notified",
+        "order": "DESC",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{runtime.notifiedMentionId}"
+        ]
+      }
+    },
+    {
+      "id": "mention-notified-delete",
+      "method": "DELETE",
+      "path": "/api/v1/mention/{runtime.notifiedMentionId}",
+      "resource": "mention",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
     }
   ]
 }

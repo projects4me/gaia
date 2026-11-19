@@ -52,7 +52,6 @@ $skipResources = [
     'userimage' => 'Multipart image upload endpoint',
     'milestoneoverview' => 'Custom endpoint; no model metadata',
     'issueplanning' => 'LLM/external dependency',
-    'mention' => 'Backend SQL error on list (Mention.ified); blocked until fixed',
     'systemnotification' => 'GET-list only custom notifications feed',
     'badge' => 'No route identifier; nonstandard ACL resource',
     'scoreboard' => 'No route identifier; nonstandard ACL resource',

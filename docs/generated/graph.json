@@ -8738,6 +8738,24 @@
       }
     },
     {
+      "id": "case:backend/delete-mention-api-v1-mention-runtime-id",
+      "type": "case",
+      "key": "backend/delete-mention-api-v1-mention-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "DELETE",
+        "path": "/api/v1/mention/{runtime.mentionId}",
+        "resource": "mention",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.mentionId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-milestone-api-v1-milestone-runtime-id",
       "type": "case",
       "key": "backend/delete-milestone-api-v1-milestone-runtime-id",
@@ -10033,9 +10051,27 @@
         "method": "GET",
         "path": "/api/v1/mention",
         "resource": "mention",
-        "enabled": false,
+        "enabled": true,
         "source": "backend-metadata",
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-mention-api-v1-mention-runtime-id",
+      "type": "case",
+      "key": "backend/get-mention-api-v1-mention-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/mention/{runtime.mentionId}",
+        "resource": "mention",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.mentionId"
+        ],
         "stores": []
       }
     },
@@ -12269,6 +12305,26 @@
         ],
         "stores": [
           "runtime.membershipId"
+        ]
+      }
+    },
+    {
+      "id": "case:backend/post-mention-api-v1-mention",
+      "type": "case",
+      "key": "backend/post-mention-api-v1-mention",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/mention",
+        "resource": "mention",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "userId"
+        ],
+        "stores": [
+          "runtime.mentionId"
         ]
       }
     },
@@ -16170,6 +16226,80 @@
         "enabled": true,
         "source": null,
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/mention-list-filtered-and-sorted-by-notified",
+      "type": "case",
+      "key": "client/mention-list-filtered-and-sorted-by-notified",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/mention",
+        "resource": "mention",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.notifiedMentionId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/mention-list-sorted-by-bare-notified",
+      "type": "case",
+      "key": "client/mention-list-sorted-by-bare-notified",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/mention",
+        "resource": "mention",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.notifiedMentionId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/mention-notified-create",
+      "type": "case",
+      "key": "client/mention-notified-create",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/mention",
+        "resource": "mention",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "userId"
+        ],
+        "stores": [
+          "runtime.notifiedMentionId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/mention-notified-delete",
+      "type": "case",
+      "key": "client/mention-notified-delete",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/mention/{runtime.notifiedMentionId}",
+        "resource": "mention",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.notifiedMentionId"
+        ],
         "stores": []
       }
     },
@@ -57552,6 +57682,36 @@
       "to": "fixture:userId"
     },
     {
+      "from": "case:backend/delete-mention-api-v1-mention-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/delete-mention-api-v1-mention-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/delete-mention-api-v1-mention-runtime-id",
+      "type": "covers",
+      "to": "controller:mention"
+    },
+    {
+      "from": "case:backend/delete-mention-api-v1-mention-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-mention-api-v1-mention"
+    },
+    {
+      "from": "case:backend/delete-mention-api-v1-mention-runtime-id",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/mention/{id}"
+    },
+    {
+      "from": "case:backend/delete-mention-api-v1-mention-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/delete-milestone-api-v1-milestone-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -59838,6 +59998,41 @@
     },
     {
       "from": "case:backend/get-mention-api-v1-mention",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-mention-api-v1-mention-runtime-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-mention-api-v1-mention-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-mention-api-v1-mention-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-mention-api-v1-mention-runtime-id",
+      "type": "covers",
+      "to": "controller:mention"
+    },
+    {
+      "from": "case:backend/get-mention-api-v1-mention-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-mention-api-v1-mention"
+    },
+    {
+      "from": "case:backend/get-mention-api-v1-mention-runtime-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/mention/{id}"
+    },
+    {
+      "from": "case:backend/get-mention-api-v1-mention-runtime-id",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -63790,6 +63985,36 @@
       "from": "case:backend/post-membership-api-v1-membership",
       "type": "uses_fixture",
       "to": "fixture:projectId"
+    },
+    {
+      "from": "case:backend/post-mention-api-v1-mention",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-mention-api-v1-mention",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-mention-api-v1-mention",
+      "type": "covers",
+      "to": "controller:mention"
+    },
+    {
+      "from": "case:backend/post-mention-api-v1-mention",
+      "type": "exercises",
+      "to": "route:POST /api/v1/mention"
+    },
+    {
+      "from": "case:backend/post-mention-api-v1-mention",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-mention-api-v1-mention",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
     },
     {
       "from": "case:backend/post-milestone-api-v1-milestone",
@@ -70663,6 +70888,141 @@
     },
     {
       "from": "case:client/list-issuetype-with-project-count-returns-labels",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/mention-list-filtered-and-sorted-by-notified",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/mention-list-filtered-and-sorted-by-notified",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/mention-list-filtered-and-sorted-by-notified",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/mention-list-filtered-and-sorted-by-notified",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/mention-list-filtered-and-sorted-by-notified",
+      "type": "covers",
+      "to": "controller:mention"
+    },
+    {
+      "from": "case:client/mention-list-filtered-and-sorted-by-notified",
+      "type": "depends_on",
+      "to": "case:client/mention-notified-create"
+    },
+    {
+      "from": "case:client/mention-list-filtered-and-sorted-by-notified",
+      "type": "exercises",
+      "to": "route:GET /api/v1/mention"
+    },
+    {
+      "from": "case:client/mention-list-filtered-and-sorted-by-notified",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/mention-list-sorted-by-bare-notified",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/mention-list-sorted-by-bare-notified",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/mention-list-sorted-by-bare-notified",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/mention-list-sorted-by-bare-notified",
+      "type": "covers",
+      "to": "controller:mention"
+    },
+    {
+      "from": "case:client/mention-list-sorted-by-bare-notified",
+      "type": "depends_on",
+      "to": "case:client/mention-notified-create"
+    },
+    {
+      "from": "case:client/mention-list-sorted-by-bare-notified",
+      "type": "exercises",
+      "to": "route:GET /api/v1/mention"
+    },
+    {
+      "from": "case:client/mention-list-sorted-by-bare-notified",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/mention-notified-create",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/mention-notified-create",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/mention-notified-create",
+      "type": "covers",
+      "to": "controller:mention"
+    },
+    {
+      "from": "case:client/mention-notified-create",
+      "type": "exercises",
+      "to": "route:POST /api/v1/mention"
+    },
+    {
+      "from": "case:client/mention-notified-create",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/mention-notified-create",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/mention-notified-delete",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/mention-notified-delete",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/mention-notified-delete",
+      "type": "covers",
+      "to": "controller:mention"
+    },
+    {
+      "from": "case:client/mention-notified-delete",
+      "type": "depends_on",
+      "to": "case:client/mention-notified-create"
+    },
+    {
+      "from": "case:client/mention-notified-delete",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/mention/{id}"
+    },
+    {
+      "from": "case:client/mention-notified-delete",
       "type": "runs_as",
       "to": "profile:default"
     },
