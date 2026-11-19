@@ -115,6 +115,18 @@ class Meta
     protected $whereConditions;
 
     /**
+     * Name of the model or relationship used in the orderBy clause.
+     */
+    protected $orderByClauseModel;
+
+    /**
+     * The dependency injector.
+     *
+     * @var \Phalcon\Di\FactoryDefault
+     */
+    protected $di;
+
+    /**
      * Metadata constructor.
      *
      * @param \Phalcon\DiInterface $di
