@@ -678,7 +678,7 @@ class AclLockoutGuardTest extends TestCase
 
         $reflection = new \ReflectionClass(UserController::class);
         $method = $reflection->getMethod('revokeSessionsIfDeactivated');
-        $method->setAccessible(true);
+        gaiaTestMakeAccessible($method);
         $method->invoke(new UserController(), [
             'id' => $target->id,
             'accountStatus' => 'inactive',
@@ -724,7 +724,7 @@ class AclLockoutGuardTest extends TestCase
     {
         $reflection = new \ReflectionClass(PermissionController::class);
         $method = $reflection->getMethod('assertAclLockoutSafe');
-        $method->setAccessible(true);
+        gaiaTestMakeAccessible($method);
         return $method;
     }
 
@@ -735,7 +735,7 @@ class AclLockoutGuardTest extends TestCase
     {
         $reflection = new \ReflectionClass(UserController::class);
         $method = $reflection->getMethod('assertUserRemainsAdministrable');
-        $method->setAccessible(true);
+        gaiaTestMakeAccessible($method);
         return $method;
     }
 
@@ -845,15 +845,15 @@ class AclLockoutGuardTest extends TestCase
         $reflection = new \ReflectionClass($controller);
 
         $modelNameProperty = $reflection->getProperty('modelName');
-        $modelNameProperty->setAccessible(true);
+        gaiaTestMakeAccessible($modelNameProperty);
         $modelNameProperty->setValue($controller, $modelClass);
 
         $idProperty = $reflection->getProperty('id');
-        $idProperty->setAccessible(true);
+        gaiaTestMakeAccessible($idProperty);
         $idProperty->setValue($controller, $id);
 
         $responseProperty = $reflection->getProperty('response');
-        $responseProperty->setAccessible(true);
+        gaiaTestMakeAccessible($responseProperty);
         $responseProperty->setValue($controller, new \Phalcon\Http\Response());
 
         return $controller;

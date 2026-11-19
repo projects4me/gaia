@@ -258,7 +258,7 @@ class SystemFieldTest extends TestCase
     private function audit($model)
     {
         $method = new \ReflectionMethod(auditBehavior::class, 'beforeUpdate');
-        $method->setAccessible(true);
+        gaiaTestMakeAccessible($method);
         $method->invokeArgs(new auditBehavior(), [&$model]);
     }
 

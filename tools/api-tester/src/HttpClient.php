@@ -51,13 +51,17 @@ class HttpClient
         $raw = curl_exec($ch);
         if ($raw === false) {
             $error = curl_error($ch);
-            curl_close($ch);
+            if (PHP_VERSION_ID < 80000) {
+                curl_close($ch);
+            }
             throw new \RuntimeException('HTTP request failed: ' . $error . ' (' . $url . ')');
         }
 
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        curl_close($ch);
+        if (PHP_VERSION_ID < 80000) {
+            curl_close($ch);
+        }
 
         $rawHeaders = substr($raw, 0, $headerSize);
         $body = substr($raw, $headerSize);
