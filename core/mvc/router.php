@@ -48,6 +48,9 @@ class Router extends PhalconRouter\Router
                     // Traverse the routes for all the versions registered
                     foreach($versionRoutes as $module => $moduleRoutes)
                     {
+                        // Routes without an identifier (bulk, search) get no id parameter, never a null array key
+                        $idParam = empty($moduleRoutes->identifier) ? array() : array((string) $moduleRoutes->identifier => '1');
+
                         // Setup the base path considering the version
                         $basepath = preg_replace('/\:version/i',$version,$moduleRoutes->path);
 
@@ -59,11 +62,11 @@ class Router extends PhalconRouter\Router
                                 case 'GET':
                                 // Allow retrieval of entity
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
-                                $this->addGet($path,array('controller'=> $module,'action' => 'get', (string) $moduleRoutes->identifier => '1'));
+                                $this->addGet($path,array('controller'=> $module,'action' => 'get') + $idParam);
 
                                 // Allow retrieval of realted records for an entity
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)';
-                                $this->addGet($path,array('controller'=> $module,'action' => 'related', (string) $moduleRoutes->identifier => '1', 'relation' => '2'));
+                                $this->addGet($path,array('controller'=> $module,'action' => 'related', 'relation' => '2') + $idParam);
 
                                 // Allow retrieval of Collection
                                 $path = (($basepath[0] === '/')?'':'/').$basepath;
@@ -100,7 +103,7 @@ class Router extends PhalconRouter\Router
                                 case 'DELETE':
                                 // Allow deletion of an entity
                                 $path = (($basepath[0] === '/')?'':'/').$basepath.'/([a-zA-Z0-9_-]+)';
-                                $this->addDelete($path,array('controller'=> $module,'action' => 'delete', (string) $moduleRoutes->identifier => '1'));
+                                $this->addDelete($path,array('controller'=> $module,'action' => 'delete') + $idParam);
 
                                 // Allow deletion of a collection of resource
                                 $path = (($basepath[0] === '/')?'':'/').$basepath;
