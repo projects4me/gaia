@@ -43,8 +43,8 @@ A case can still pass while its response has changed (for example `POST /bulk` r
 
 - `endpoint`: method and catalog path (`GET /api/v1/issue/{issueId}`), used to group differences
 - `response.status`, `response.contentType`
-- `response.bodyFormat`: `json` when the body parses as JSON, else `text`
-- `response.body`: the parsed JSON, or the raw text (an empty body is `""` with format `text`)
+- `response.bodyFormat`: `json` when the body parses as JSON, `base64` when it is not valid UTF-8 (binary), else `text`
+- `response.body`: the parsed JSON, the base64 of a binary body, or the raw text (an empty body is `""` with format `text`)
 
 The report also records the run's `runId` (the `{runId}` fixture value).
 

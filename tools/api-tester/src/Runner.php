@@ -137,7 +137,14 @@ class Runner
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
-        file_put_contents($this->reportPath, json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
+        // Case data and messages can carry bytes from binary responses: substitute them
+        // rather than lose the whole report
+        $json = json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+        if ($json === false) {
+            fwrite(STDERR, "Could not encode the report: " . json_last_error_msg() . "\n");
+            return 1;
+        }
+        file_put_contents($this->reportPath, $json . "\n");
 
         echo "\nSummary: {$passed} passed, {$failed} failed, {$skipped} skipped\n";
         echo "Report: {$this->reportPath}\n";
