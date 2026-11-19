@@ -78,7 +78,7 @@ class ValueLabels
      * @param string                $noun       What the value names in messages.
      * @param TranslationCache|null $cache      Defaults to the configured directory.
      */
-    public function __construct($pathPrefix, $modelClass, $noun, TranslationCache $cache = null)
+    public function __construct($pathPrefix, $modelClass, $noun, ?TranslationCache $cache = null)
     {
         $this->pathPrefix = (string) $pathPrefix;
         $this->modelClass = (string) $modelClass;
@@ -90,7 +90,7 @@ class ValueLabels
      * @param  TranslationCache|null $cache
      * @return self The labels of issue status values.
      */
-    public static function forIssueStatuses(TranslationCache $cache = null)
+    public static function forIssueStatuses(?TranslationCache $cache = null)
     {
         return new self(self::STATUS_PATH_PREFIX, Issuestatus::class, 'status', $cache);
     }
@@ -99,7 +99,7 @@ class ValueLabels
      * @param  TranslationCache|null $cache
      * @return self The labels of issue type values.
      */
-    public static function forIssueTypes(TranslationCache $cache = null)
+    public static function forIssueTypes(?TranslationCache $cache = null)
     {
         return new self(self::TYPE_PATH_PREFIX, Issuetype::class, 'type', $cache);
     }

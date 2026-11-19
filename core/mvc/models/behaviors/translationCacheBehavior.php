@@ -31,7 +31,7 @@ class translationCacheBehavior extends Behavior implements BehaviorInterface
     /**
      * @param TranslationCache|null $cache Injected in tests; defaults to the configured directory.
      */
-    public function __construct(TranslationCache $cache = null)
+    public function __construct(?TranslationCache $cache = null)
     {
         $this->cache = $cache;
     }

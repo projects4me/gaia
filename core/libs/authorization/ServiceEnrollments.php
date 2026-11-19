@@ -79,12 +79,12 @@ class ServiceEnrollments
      * @param ServiceEnrollmentTokens|null  $tokens
      */
     public function __construct(
-        array $config = null,
-        EnrollmentCodes $codes = null,
-        ServiceClientCredentials $credentials = null,
-        EnrollmentRequestLimit $limit = null,
-        ActingUser $actingUser = null,
-        ServiceEnrollmentTokens $tokens = null
+        ?array $config = null,
+        ?EnrollmentCodes $codes = null,
+        ?ServiceClientCredentials $credentials = null,
+        ?EnrollmentRequestLimit $limit = null,
+        ?ActingUser $actingUser = null,
+        ?ServiceEnrollmentTokens $tokens = null
     ) {
         $this->config = $config === null ? self::loadConfig() : $config;
         $this->codes = $codes ?: new EnrollmentCodes();

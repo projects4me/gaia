@@ -35,7 +35,7 @@ class mentionsBehavior extends Behavior implements BehaviorInterface
     /**
      * @param MentionRecorder|null $recorder Injected in tests.
      */
-    public function __construct(MentionRecorder $recorder = null)
+    public function __construct(?MentionRecorder $recorder = null)
     {
         $this->recorder = $recorder;
     }

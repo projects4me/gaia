@@ -48,9 +48,9 @@ class MentionRecorder
      * @param ProjectMembers|null    $members
      */
     public function __construct(
-        MentionParser $parser = null,
-        ProjectIdResolver $projects = null,
-        ProjectMembers $members = null
+        ?MentionParser $parser = null,
+        ?ProjectIdResolver $projects = null,
+        ?ProjectMembers $members = null
     ) {
         $this->parser = $parser ?: new MentionParser();
         $this->projects = $projects ?: new ProjectIdResolver();
