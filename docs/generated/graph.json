@@ -16320,6 +16320,155 @@
       }
     },
     {
+      "id": "case:client/nosmtp-blank-host",
+      "type": "case",
+      "key": "client/nosmtp-blank-host",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+        "resource": "setting",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/nosmtp-forgot-password-succeeds",
+      "type": "case",
+      "key": "client/nosmtp-forgot-password-succeeds",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/forgetpassword",
+        "resource": "forgetpassword",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/nosmtp-issue-assign-succeeds",
+      "type": "case",
+      "key": "client/nosmtp-issue-assign-succeeds",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectId",
+          "projectShortcode",
+          "runtime.noSmtpUserId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.noSmtpIssueId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/nosmtp-issue-cleanup",
+      "type": "case",
+      "key": "client/nosmtp-issue-cleanup",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/issue/{runtime.noSmtpIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.noSmtpIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/nosmtp-restore-host",
+      "type": "case",
+      "key": "client/nosmtp-restore-host",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/setting/d3ed81e7-bfc2-5382-8032-b2b17c450039",
+        "resource": "setting",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/nosmtp-settings-test-email-no-host",
+      "type": "case",
+      "key": "client/nosmtp-settings-test-email-no-host",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/setting",
+        "resource": "setting",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/nosmtp-user-cleanup",
+      "type": "case",
+      "key": "client/nosmtp-user-cleanup",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/user/{runtime.noSmtpUserId}",
+        "resource": "user",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.noSmtpUserId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/nosmtp-user-create-succeeds",
+      "type": "case",
+      "key": "client/nosmtp-user-create-succeeds",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/user",
+        "resource": "user",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId"
+        ],
+        "stores": [
+          "runtime.noSmtpUserId"
+        ]
+      }
+    },
+    {
       "id": "case:client/notification-mark-all-read-ignores-body-user",
       "type": "case",
       "key": "client/notification-mark-all-read-ignores-body-user",
@@ -70974,6 +71123,261 @@
       "from": "case:client/mentions-issue-update-description-with-mention",
       "type": "uses_fixture",
       "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/nosmtp-blank-host",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/nosmtp-blank-host",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/nosmtp-blank-host",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/nosmtp-blank-host",
+      "type": "covers",
+      "to": "controller:setting"
+    },
+    {
+      "from": "case:client/nosmtp-blank-host",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/setting/{id}"
+    },
+    {
+      "from": "case:client/nosmtp-blank-host",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/nosmtp-forgot-password-succeeds",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/nosmtp-forgot-password-succeeds",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/nosmtp-forgot-password-succeeds",
+      "type": "covers",
+      "to": "controller:forgetpassword"
+    },
+    {
+      "from": "case:client/nosmtp-forgot-password-succeeds",
+      "type": "exercises",
+      "to": "route:POST /api/v1/forgetpassword"
+    },
+    {
+      "from": "case:client/nosmtp-forgot-password-succeeds",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/nosmtp-issue-assign-succeeds",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/nosmtp-issue-assign-succeeds",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/nosmtp-issue-assign-succeeds",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/nosmtp-issue-assign-succeeds",
+      "type": "depends_on",
+      "to": "case:client/nosmtp-user-create-succeeds"
+    },
+    {
+      "from": "case:client/nosmtp-issue-assign-succeeds",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/nosmtp-issue-assign-succeeds",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/nosmtp-issue-assign-succeeds",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/nosmtp-issue-assign-succeeds",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/nosmtp-issue-assign-succeeds",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/nosmtp-issue-assign-succeeds",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/nosmtp-issue-assign-succeeds",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/nosmtp-issue-cleanup",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/nosmtp-issue-cleanup",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/nosmtp-issue-cleanup",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/nosmtp-issue-cleanup",
+      "type": "depends_on",
+      "to": "case:client/nosmtp-issue-assign-succeeds"
+    },
+    {
+      "from": "case:client/nosmtp-issue-cleanup",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/nosmtp-issue-cleanup",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/nosmtp-restore-host",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/nosmtp-restore-host",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/nosmtp-restore-host",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/nosmtp-restore-host",
+      "type": "covers",
+      "to": "controller:setting"
+    },
+    {
+      "from": "case:client/nosmtp-restore-host",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/setting/{id}"
+    },
+    {
+      "from": "case:client/nosmtp-restore-host",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/nosmtp-settings-test-email-no-host",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/nosmtp-settings-test-email-no-host",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/nosmtp-settings-test-email-no-host",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/nosmtp-settings-test-email-no-host",
+      "type": "covers",
+      "to": "controller:setting"
+    },
+    {
+      "from": "case:client/nosmtp-settings-test-email-no-host",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/setting"
+    },
+    {
+      "from": "case:client/nosmtp-settings-test-email-no-host",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/nosmtp-user-cleanup",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/nosmtp-user-cleanup",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/nosmtp-user-cleanup",
+      "type": "covers",
+      "to": "controller:user"
+    },
+    {
+      "from": "case:client/nosmtp-user-cleanup",
+      "type": "depends_on",
+      "to": "case:client/nosmtp-user-create-succeeds"
+    },
+    {
+      "from": "case:client/nosmtp-user-cleanup",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/user/{id}"
+    },
+    {
+      "from": "case:client/nosmtp-user-cleanup",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/nosmtp-user-create-succeeds",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/nosmtp-user-create-succeeds",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/nosmtp-user-create-succeeds",
+      "type": "covers",
+      "to": "controller:user"
+    },
+    {
+      "from": "case:client/nosmtp-user-create-succeeds",
+      "type": "exercises",
+      "to": "route:POST /api/v1/user"
+    },
+    {
+      "from": "case:client/nosmtp-user-create-succeeds",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/notification-mark-all-read-ignores-body-user",
