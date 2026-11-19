@@ -9,6 +9,8 @@ namespace Gaia\Libraries\Meta\Migration;
 use Gaia\Libraries\Meta\Manager as metaManager;
 use Gaia\Db\Factory\ConnectionFactory;
 use Gaia\Libraries\Search\SearchableRegistry;
+use Gaia\Db\Migration\AdapterConnection;
+use Gaia\Db\Migration\SchemaConnection;
 use Phalcon\Db\Adapter\AdapterInterface;
 use Phalcon\Db\Exception as DbException;
 use Phalcon\Mvc\Model\Exception as ModelException;
@@ -54,7 +56,7 @@ class Driver
      */
     public function migrate()
     {
-        return $this->run($this->openConnection());
+        return $this->run(new AdapterConnection($this->openConnection()));
     }
 
     /**
@@ -88,11 +90,11 @@ class Driver
      * statements the planning connection adds are attributed to it; a real migrate
      * passes none and does no plan work.
      *
-     * @param AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @param Plan|null $plan
      * @return array Success or Error
      */
-    private function run(AdapterInterface $connection, ?Plan $plan = null)
+    private function run(SchemaConnection $connection, ?Plan $plan = null)
     {
         $result = array();
         $models = array();
@@ -177,12 +179,12 @@ class Driver
      * is routine, not a change. Without a plan (a real migrate) it does nothing.
      *
      * @param Plan|null $plan
-     * @param AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @param string $model
      * @param bool $isView
      * @return void
      */
-    private function planFor($plan, AdapterInterface $connection, string $model, bool $isView = false)
+    private function planFor($plan, SchemaConnection $connection, string $model, bool $isView = false)
     {
         if ($plan === null) {
             return;

@@ -8,7 +8,7 @@ namespace Gaia\Libraries\Meta;
 
 use Phalcon\Db\Column;
 use Phalcon\Db\Index;
-use Phalcon\Db\Adapter\AdapterInterface;
+use Gaia\Db\Migration\SchemaConnection;
 use Gaia\Libraries\Meta\Manager as metaManager;
 use Gaia\Libraries\Search\SearchBlock;
 
@@ -37,7 +37,7 @@ class Migration
     /**
      * The database connection the migration runs on, set by setConnection()
      *
-     * @var AdapterInterface $connection
+     * @var SchemaConnection $connection
      */
     private $connection;
 
@@ -54,10 +54,10 @@ class Migration
     /**
      * This function sets the database connection the migration runs on.
      *
-     * @param AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @return void
      */
-    public function setConnection(AdapterInterface $connection)
+    public function setConnection(SchemaConnection $connection)
     {
         $this->connection = $connection;
     }
@@ -65,7 +65,7 @@ class Migration
     /**
      * This function returns the database connection the migration runs on.
      *
-     * @return AdapterInterface
+     * @return SchemaConnection
      * @throws \LogicException When setConnection() has not been called
      */
     private function getConnection()

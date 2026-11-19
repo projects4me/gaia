@@ -32,7 +32,7 @@ class Postgres
      * This function determines whether an existing table should be synced incrementally
      * instead of being created.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param SchemaConnection $connection Active database connection
      * @param string $tableName Table name from model metadata
      * @return bool
      */
@@ -49,7 +49,7 @@ class Postgres
      * - adds or recreates vector and generated tsvector columns
      * - adds missing non-primary indexes from metadata
      *
-     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param SchemaConnection $connection Active database connection
      * @param string $tableName Table name from model metadata
      * @param Column[] $columns Expected column definitions from metadata
      * @param array $indexes Optional metadata indexes map (field => type)
@@ -99,7 +99,7 @@ class Postgres
      * An extension the server does not ship is skipped, so a database without it still
      * migrates until a model needs it; the names of the skipped ones are returned.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param SchemaConnection $connection Active database connection
      * @param array $extensions Extension names from the database config
      * @return array Names of the extensions the server does not have
      */
@@ -163,7 +163,7 @@ class Postgres
      * This function brings the vector/tsvector columns and the metadata indexes of a table
      * in line with metadata. It runs after the table is created or synced.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param SchemaConnection $connection Active database connection
      * @param string $tableName Table name from model metadata
      * @param array $searchColumns Column name => definition from searchColumnDefinition()
      * @param array $indexes Metadata indexes map (field => type)
@@ -184,7 +184,7 @@ class Postgres
      * definition changed. The definition's signature is kept in the column comment.
      * Re-adding drops the column's indexes too; syncIndexes recreates them.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param SchemaConnection $connection Active database connection
      * @param PostgresSearchDdl $ddl
      * @param string $tableName
      * @param string $columnName
@@ -237,7 +237,7 @@ class Postgres
      * This function reads a column's signature comment and type, or returns null when the
      * table or the column does not exist.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @param string $tableName
      * @param string $columnName
      * @return array|null ['signature' => string|null, 'type' => string]
@@ -265,7 +265,7 @@ class Postgres
      * This function stops the migration when a vector column that is about to be replaced
      * still holds embeddings, which the database cannot rebuild.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @param string $tableName
      * @param string $columnName
      * @param string $currentType Column type as format_type() reports it
@@ -312,7 +312,7 @@ class Postgres
      * is dropped, when existing values are longer than the new length; values are never
      * truncated. The drop and the alter run in one transaction.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param SchemaConnection $connection Active database connection
      * @param string $tableName Table name from model metadata
      * @param Column $column Column as defined in metadata
      * @return void
@@ -353,7 +353,7 @@ class Postgres
      * This function drops the views that read a column. Without CASCADE, so a view built on
      * one of them (which the migration driver may not recreate) makes the drop fail instead.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection Active database connection
+     * @param SchemaConnection $connection Active database connection
      * @param string $tableName Table that owns the column
      * @param string $columnName Column the views read
      * @return void
@@ -387,7 +387,7 @@ class Postgres
     /**
      * Ensure non-primary indexes from metadata exist.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @param string $tableName
      * @param array $indexes
      * @return void
@@ -445,7 +445,7 @@ class Postgres
      * method and operator class of its kind. It is matched by name, not by column, because
      * the column may carry other indexes; an index of another kind is dropped and rebuilt.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @param string $tableName
      * @param string $field Indexed column
      * @param string $kind Index kind (gin, gin_trgm or hnsw_cosine)
@@ -474,7 +474,7 @@ class Postgres
      * constraint that owns it. It returns null when no index has that name, and stops when
      * the name belongs to another table's index (a {table}_{field} collision).
      *
-     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @param string $tableName Table the index should belong to
      * @param string $indexName
      * @return array|null
@@ -536,7 +536,7 @@ class Postgres
      *
      * An index that backs a constraint (e.g. UNIQUE) is removed by dropping the constraint.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @param string $tableName Table the index belongs to
      * @param array $current Index to drop, from describeNamedIndex()
      * @param string $createSql CREATE INDEX statement of the replacement
@@ -567,7 +567,7 @@ class Postgres
      * its search columns and indexes need are installed, so a missing one fails with a
      * message naming it and leaves the table untouched.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @param string $tableName
      * @param array $searchColumns Column name => definition from searchColumnDefinition()
      * @param array $indexes Metadata indexes map (field => type)
@@ -621,7 +621,7 @@ class Postgres
     /**
      * This function tells whether the server has an index access method (e.g. hnsw).
      *
-     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @param string $method
      * @return bool
      */
@@ -639,7 +639,7 @@ class Postgres
     /**
      * This function tells whether an extension is installed in the current database.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @param string $extension
      * @return bool
      */
@@ -658,7 +658,7 @@ class Postgres
      * Ensure a multi-column index from metadata exists, matched by its name
      * (`{table}_{key}`) because its columns may also appear in other indexes.
      *
-     * @param \Phalcon\Db\AdapterInterface $connection
+     * @param SchemaConnection $connection
      * @param string $tableName
      * @param string $key Index key in metadata
      * @param array  $definition ['type' => 'unique'|'index', 'columns' => [...]]

@@ -6,6 +6,7 @@
 
 namespace Gaia\Tests\Libraries\Utils;
 
+use Gaia\Db\Migration\AdapterConnection;
 use Gaia\Db\Migration\Postgres;
 use Gaia\Libraries\Meta\Manager;
 use Gaia\Libraries\Meta\Migration;
@@ -128,7 +129,7 @@ class MigrationCreateTableTest extends TestCase
         });
 
         $migration = new Migration($di);
-        $migration->setConnection($connection);
+        $migration->setConnection(new AdapterConnection($connection));
         $migration->up(self::MODEL);
     }
 
