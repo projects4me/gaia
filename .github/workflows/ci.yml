@@ -97,7 +97,7 @@ jobs:
           docker exec
           -e DB_ADAPTER -e DB_HOST -e DB_PORT -e DB_USERNAME -e DB_PASSWORD -e DB_NAME
           -e PGHOST -e PGPORT -e PGUSER -e PGPASSWORD -e PG_USER
-          -e GITHUB_WORKSPACE
+          -e GITHUB_WORKSPACE -e GITHUB_STEP_SUMMARY
           gaia-ci bash --noprofile --norc -eo pipefail {0}
 
     services:
