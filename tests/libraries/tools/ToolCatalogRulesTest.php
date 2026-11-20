@@ -48,7 +48,7 @@ class ToolCatalogRulesTest extends TestCase
         $this->rules()->assertServer($attributes);
     }
 
-    public function invalidServers()
+    public static function invalidServers()
     {
         return [
             'kind' => [['kind' => 'grpc'], 'Kind must be one of: mcp, openapi, builtin.'],
@@ -100,7 +100,7 @@ class ToolCatalogRulesTest extends TestCase
         $this->rules()->assertGrant($attributes);
     }
 
-    public function invalidGrants()
+    public static function invalidGrants()
     {
         return [
             'no agent' => [['toolServerId' => 'server-1'], 'A tool grant needs an existing agent.'],

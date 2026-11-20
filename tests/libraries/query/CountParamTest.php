@@ -58,7 +58,7 @@ class CountParamTest extends TestCase
         CountParam::parse('Issue.id')->assertGroupedBy($groupBy, 'Issue');
     }
 
-    public function groupsWithoutTheId()
+    public static function groupsWithoutTheId()
     {
         return [
             'no group' => [null],
@@ -77,7 +77,7 @@ class CountParamTest extends TestCase
         CountParam::parse($raw);
     }
 
-    public function invalidValues()
+    public static function invalidValues()
     {
         return [
             'phql after the field' => ['Issue.id) FROM Issue'],

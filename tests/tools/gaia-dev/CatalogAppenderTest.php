@@ -110,7 +110,7 @@ JSON;
     /**
      * @return array[] catalog names
      */
-    public function committedCatalogs(): array
+    public static function committedCatalogs(): array
     {
         return [['acl'], ['client'], ['mail'], ['live']];
     }

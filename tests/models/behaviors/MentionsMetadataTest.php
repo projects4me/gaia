@@ -26,7 +26,7 @@ class MentionsMetadataTest extends TestCase
     /**
      * @return array
      */
-    public function mentionModels()
+    public static function mentionModels()
     {
         return [
             'issue description' => ['Issue', 'description'],

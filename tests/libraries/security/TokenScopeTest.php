@@ -96,7 +96,7 @@ class TokenScopeTest extends TestCase
         $this->assertFalse($tokenScope->covers($resourceName));
     }
 
-    public function excludedResources()
+    public static function excludedResources()
     {
         return [
             ['agentcredential.create'],

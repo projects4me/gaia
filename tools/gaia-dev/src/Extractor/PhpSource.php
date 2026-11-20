@@ -34,7 +34,7 @@ class PhpSource
         }
 
         try {
-            $statements = (new ParserFactory())->create(ParserFactory::PREFER_PHP7)->parse(file_get_contents($path));
+            $statements = (new ParserFactory())->createForHostVersion()->parse(file_get_contents($path));
         } catch (\PhpParser\Error $e) {
             throw new RuntimeException("{$path}: " . $e->getMessage(), 0, $e);
         }
@@ -135,8 +135,8 @@ class PhpSource
      */
     public static function literal(Node\Expr $expr)
     {
-        if ($expr instanceof Node\Scalar\String_ || $expr instanceof Node\Scalar\LNumber
-            || $expr instanceof Node\Scalar\DNumber) {
+        if ($expr instanceof Node\Scalar\String_ || $expr instanceof Node\Scalar\Int_
+            || $expr instanceof Node\Scalar\Float_) {
             return $expr->value;
         }
         if ($expr instanceof Node\Expr\ConstFetch) {

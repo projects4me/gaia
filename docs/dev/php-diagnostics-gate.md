@@ -8,7 +8,7 @@ deprecations into errors, so the `API + PHPUnit` job of `.github/workflows/ci.ym
 
 | Source | Log |
 |---|---|
-| PHPUnit (`tests/TestHelper.php` sets `error_log`; warnings and notices already fail tests, deprecations are logged) | `logs/php-diagnostics-phpunit.log` |
+| PHPUnit (`tests/TestHelper.php` sets `error_log`; warnings and notices fail the run through `failOnWarning`/`failOnNotice`, deprecations are logged by `tests/phpunit/DiagnosticsLogExtension.php`) | `logs/php-diagnostics-phpunit.log` |
 | api-tester requests (`docker/php/conf.d/diagnostics.ini`: `E_ALL`, `log_errors=On`) | `logs/php-diagnostics.log` |
 | `php -l` with `E_ALL` on every PHP file (`tools/quality/lint-php.sh`) | `logs/php-lint.log` |
 

@@ -33,7 +33,7 @@ class TestEmailSenderTest extends TestCase
         $this->assertSame($code, (new MailerErrorMapper())->toCode($messages[$languageKey] . $suffix));
     }
 
-    public function phpMailerErrors()
+    public static function phpMailerErrors()
     {
         return [
             'authentication' => ['authenticate', '', MailerErrorMapper::SMTP_AUTH_FAILED],
@@ -89,7 +89,7 @@ class TestEmailSenderTest extends TestCase
         $this->assertNull($sender->mailer);
     }
 
-    public function invalidRecipients()
+    public static function invalidRecipients()
     {
         return [
             'missing' => [null],

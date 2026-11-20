@@ -22,7 +22,7 @@ class ServiceEnrollmentStatusTest extends TestCase
 {
     private const NOW = 1800000000;
 
-    public function allowedTransitions()
+    public static function allowedTransitions()
     {
         return [
             ['pending', 'approved'],
@@ -41,7 +41,7 @@ class ServiceEnrollmentStatusTest extends TestCase
         $this->assertNull(ServiceEnrollmentStatus::transitionError($from, $to, $this->later(60), self::NOW));
     }
 
-    public function refusedTransitions()
+    public static function refusedTransitions()
     {
         return [
             ['pending', 'delivered'],

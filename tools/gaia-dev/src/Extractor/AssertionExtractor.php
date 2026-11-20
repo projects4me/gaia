@@ -224,10 +224,10 @@ class AssertionExtractor
         if ($expr instanceof Node\Scalar\String_) {
             return $expr->value;
         }
-        if ($expr instanceof Node\Scalar\Encapsed) {
+        if ($expr instanceof Node\Scalar\InterpolatedString) {
             $parts = '';
             foreach ($expr->parts as $part) {
-                $parts .= $part instanceof Node\Scalar\EncapsedStringPart ? $part->value : '…';
+                $parts .= $part instanceof Node\InterpolatedStringPart ? $part->value : '…';
             }
             return $parts;
         }

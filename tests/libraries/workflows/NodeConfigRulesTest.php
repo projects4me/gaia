@@ -39,7 +39,7 @@ class NodeConfigRulesTest extends TestCase
         $this->assertContains($message, $this->rules()->errors($category, $kind, $config));
     }
 
-    public function invalidConfigs()
+    public static function invalidConfigs()
     {
         $case = function ($key) {
             return ['key' => $key, 'conditions' => [['field' => 'f', 'operator' => 'equals']]];

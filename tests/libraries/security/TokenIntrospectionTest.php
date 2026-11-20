@@ -237,7 +237,7 @@ class TokenIntrospectionTest extends TestCase
     /**
      * @return array
      */
-    public function refusedCallers(): array
+    public static function refusedCallers(): array
     {
         $cases = [
             'no token', 'unknown token', 'service without the scope', 'scope as a pattern only',

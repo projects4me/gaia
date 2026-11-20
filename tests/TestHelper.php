@@ -13,7 +13,9 @@ use Gaia\Db\Factory\ConnectionFactory;
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-// Deprecations are logged, warnings and notices fail tests (see phpunit.xml) for tools/quality/deprecations-report.php
+// Deprecations are logged, warnings and notices fail the run (see phpunit.xml) for tools/quality/deprecations-report.php.
+// Inside a test PHPUnit's error handler takes the deprecations over and Gaia\Tests\PHPUnit\DiagnosticsLogExtension
+// writes them here; outside a test (bootstrap, data providers) PHP logs them itself (log_errors).
 $diagnosticsLog = realpath(__DIR__ . '/..') . '/logs/php-diagnostics-phpunit.log';
 ini_set('error_log', $diagnosticsLog);
 // PHP creates the log on the first entry only; an empty file tells the gate the suite ran clean.

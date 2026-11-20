@@ -16,6 +16,7 @@ $loader->setNamespaces(
     "ApiTester" => APP_PATH . '/tools/api-tester/src',
     "Gaia\\Tests\\Tools\\Quality" => APP_PATH . "/tests/tools/quality",
     "Quality" => APP_PATH . "/tools/quality/src",
+    "Gaia\\Tests\\PHPUnit" => APP_PATH . "/tests/phpunit",
     ]
 );
 

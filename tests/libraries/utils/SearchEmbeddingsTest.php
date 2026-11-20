@@ -141,7 +141,7 @@ class SearchEmbeddingsTest extends TestCase
         EmbeddingWrite::fromAttributes($attributes, $urlId);
     }
 
-    public function invalidWrites()
+    public static function invalidWrites()
     {
         return [
             'another field' => [function (&$a) {

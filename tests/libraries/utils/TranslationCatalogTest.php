@@ -110,7 +110,7 @@ class TranslationCatalogTest extends TestCase
         $this->assertSame(['ur-pk.json'], array_values(array_diff(scandir($this->directory), ['.', '..'])));
     }
 
-    public function unsupportedLocales()
+    public static function unsupportedLocales()
     {
         return [
             'not configured, though cached' => ['ur-pk'],

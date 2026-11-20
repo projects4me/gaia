@@ -62,7 +62,7 @@ class WorkflowExpressionsTest extends TestCase
         $this->assertSame($holds, $evaluator->all([$condition], self::VALUES));
     }
 
-    public function conditions()
+    public static function conditions()
     {
         return [
             'equals' => [['field' => 'issue.number', 'operator' => 'equals', 'value' => '42'], true],
@@ -124,7 +124,7 @@ class WorkflowExpressionsTest extends TestCase
         $selector->select('assigneeId', $setting, $values, new ExpressionResolver($selector->functions()));
     }
 
-    public function unknownUsers()
+    public static function unknownUsers()
     {
         return [
             'not a member' => ['user-stranger', self::VALUES, 'user-stranger, who is not a member of the project'],

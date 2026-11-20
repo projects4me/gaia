@@ -56,7 +56,7 @@ class TranslationCacheBehaviorTest extends TestCase
         $this->assertNotNull($this->cache->read('ur-pk'));
     }
 
-    public function changeEvents()
+    public static function changeEvents()
     {
         return [['afterCreate'], ['afterUpdate'], ['afterDelete']];
     }

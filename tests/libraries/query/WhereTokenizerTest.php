@@ -79,7 +79,7 @@ class WhereTokenizerTest extends TestCase
         $this->tokenizer->leaves($where);
     }
 
-    public function malformed()
+    public static function malformed()
     {
         return [
             'missing close' => ['((A.a : 1)'],
@@ -106,7 +106,7 @@ class WhereTokenizerTest extends TestCase
         $this->assertSame($expected, $this->tokenizer->unquote($token));
     }
 
-    public function quotedTokens()
+    public static function quotedTokens()
     {
         return [
             'doubled apostrophe' => ["'O''Brien'", "O'Brien"],

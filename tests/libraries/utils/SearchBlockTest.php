@@ -250,7 +250,7 @@ class SearchBlockTest extends TestCase
         SearchBlock::apply(self::MODEL, $metadata);
     }
 
-    public function invalidBlocks()
+    public static function invalidBlocks()
     {
         return [
             'not an array' => [function (&$m) {
