@@ -2,7 +2,7 @@
   "require": {
     "php": "~8.5.0",
     "ext-imagick": "*",
-    "phpunit/phpunit": "9.6.*",
+    "phpunit/phpunit": "^11.5",
     "bshaffer/oauth2-server-php": "^1.14",
     "ext-mbstring": "*",
     "ext-curl": "*",
