@@ -1292,9 +1292,9 @@ class Acl
         }
 
         foreach ($params['fields'] as $requestedField) {
-            if (str_contains(strtoupper($requestedField), "AS")) {
-                list($field,, $alias) = explode(" ", $requestedField);
-                $aliasByFields[$alias] = $field;
+            // Only a `field AS alias` expression; a plain field whose name merely contains "as" has no alias
+            if (preg_match('/^(\S+)\s+AS\s+(\S+)$/i', trim($requestedField), $matches)) {
+                $aliasByFields[$matches[2]] = $matches[1];
             }
         }
 
