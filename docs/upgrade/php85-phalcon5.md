@@ -351,3 +351,13 @@ CI: `graph-drift`, `api-testing` and `deployed-image-config` run on 8.5 only; th
 | `environment` | `dev` or `qa` (default `dev`): the `gaia-<env>` release and `values-<env>.yaml`. |
 
 It uses the same secrets as `cd-ovh.yml`.
+
+## Profiling without xhgui (agaia-4756)
+
+The compose file no longer has the `xhgui` service (`edyan/xhgui:php7.4`), its volume or the `/usr/local/src` mounts.
+No maintained PHP 8.x xhgui image was confirmed to load the profiles that xhprof 2.3.10 writes, so the service is gone.
+The `gaia-env:8.5.12-phalcon5.23.0` image still ships the `xhprof` extension. To profile a request:
+
+1. Wrap the code in `xhprof_enable(XHPROF_FLAGS_CPU | XHPROF_FLAGS_MEMORY)` and `$data = xhprof_disable();` (temporarily, in `public/index.php`).
+2. Save `$data` with `file_put_contents('/tmp/profile.json', json_encode($data))`, then `docker cp gaia-dev:/tmp/profile.json .`.
+3. Open the file in any xhprof viewer (for example a self-hosted xhgui run with `docker run` on a PHP 8 image of your choice).
