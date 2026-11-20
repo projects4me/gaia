@@ -18,6 +18,7 @@
 - status varchar(15) required
 - type varchar(15) required
 - vision text
+- workspaceId varchar(36)
 - also: createdUser, createdUserName, dateCreated, dateModified, deleted, id, modifiedUser, modifiedUserName
 
 <a id="relationships"></a>
@@ -36,13 +37,14 @@
 - memberships hasMany -> Membership
 - milestones hasMany -> Milestone
 - modifiedBy hasOne -> User
+- workspace hasOne -> Workspace
 
 <a id="summary"></a>
 ## Summary
 
-- behaviours: auditBehavior, createdUserBehavior, currentUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modelIdentifierBehavior, modifiedUserBehavior, shortCodeBehavior, softDeleteBehavior
+- behaviours: auditBehavior, createdUserBehavior, currentUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modelIdentifierBehavior, modifiedUserBehavior, projectWorkspaceBehavior, shortCodeBehavior, softDeleteBehavior
 - acl: group=true; recordScopeResource="project.get"
 - controller: Gaia\MVC\REST\Controllers\ProjectController
 - routes: DELETE /api/v1/project, DELETE /api/v1/project/{id}, GET /api/v1/project, GET /api/v1/project/{id}, GET /api/v1/project/{id}/{relation}, OPTIONS /api/v1/project, PATCH /api/v1/project, PATCH /api/v1/project/{id}, POST /api/v1/project, PUT /api/v1/project, PUT /api/v1/project/{id}
 - components: Notification, OnboardMember, ProjectActivities
-- cases: 27 (acl 12, backend 6, client 9); gaia-dev cases project
+- cases: 34 (acl 13, backend 6, client 15); gaia-dev cases project

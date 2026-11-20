@@ -14,6 +14,7 @@
 
 - createdBy hasOne -> User
 - modifiedBy hasOne -> User
+- projects hasMany -> Project
 
 <a id="summary"></a>
 ## Summary
@@ -23,4 +24,4 @@
 - controller: Gaia\MVC\REST\Controllers\WorkspaceController
 - routes: DELETE /api/v1/workspace, DELETE /api/v1/workspace/{id}, GET /api/v1/workspace, GET /api/v1/workspace/{id}, GET /api/v1/workspace/{id}/{relation}, OPTIONS /api/v1/workspace, PATCH /api/v1/workspace, PATCH /api/v1/workspace/{id}, POST /api/v1/workspace, PUT /api/v1/workspace, PUT /api/v1/workspace/{id}
 - components: -
-- cases: 14 (acl 5, backend 6, client 3); gaia-dev cases workspace
+- cases: 15 (acl 5, backend 6, client 4); gaia-dev cases workspace

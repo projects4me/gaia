@@ -4119,6 +4119,18 @@
       }
     },
     {
+      "id": "behaviour:projectWorkspaceBehavior",
+      "type": "behaviour",
+      "key": "projectWorkspaceBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\projectWorkspaceBehavior",
+        "file": "core/mvc/models/behaviors/projectWorkspaceBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:searchIndexBehavior",
       "type": "behaviour",
       "key": "searchIndexBehavior",
@@ -6947,6 +6959,25 @@
         "enabled": true,
         "source": "acl-group",
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-project-create-into-workspace-denied-without-workspace-update",
+      "type": "case",
+      "key": "acl/acl-project-create-into-workspace-denied-without-workspace-update",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": "acl-setting",
+        "placeholders": [
+          "userId",
+          "workspaceId"
+        ],
         "stores": []
       }
     },
@@ -18989,6 +19020,66 @@
       }
     },
     {
+      "id": "case:client/project-create-into-existing-workspace",
+      "type": "case",
+      "key": "client/project-create-into-existing-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "userId",
+          "workspaceId"
+        ],
+        "stores": [
+          "runtime.sharedWorkspaceProjectId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-create-makes-own-workspace",
+      "type": "case",
+      "key": "client/project-create-makes-own-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "userId"
+        ],
+        "stores": [
+          "runtime.ownWorkspaceProjectId",
+          "runtime.ownWorkspaceId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-create-unknown-workspace-422",
+      "type": "case",
+      "key": "client/project-create-unknown-workspace-422",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/project-create-validation-fails-422",
       "type": "case",
       "key": "client/project-create-validation-fails-422",
@@ -19001,6 +19092,79 @@
         "enabled": true,
         "source": null,
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-delete-own-workspace-project",
+      "type": "case",
+      "key": "client/project-delete-own-workspace-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/project/{runtime.ownWorkspaceProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.ownWorkspaceProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-delete-shared-workspace-project",
+      "type": "case",
+      "key": "client/project-delete-shared-workspace-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/project/{runtime.sharedWorkspaceProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.sharedWorkspaceProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-own-workspace-is-named-after-project",
+      "type": "case",
+      "key": "client/project-own-workspace-is-named-after-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{runtime.ownWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.ownWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-patch-workspace-refused",
+      "type": "case",
+      "key": "client/project-patch-workspace-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/project/{runtime.ownWorkspaceProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.ownWorkspaceProjectId",
+          "workspaceId"
+        ],
         "stores": []
       }
     },
@@ -29208,6 +29372,18 @@
         "type": "text",
         "null": true,
         "fts": true
+      }
+    },
+    {
+      "id": "field:Project.workspaceId",
+      "type": "field",
+      "key": "Project.workspaceId",
+      "attributes": {
+        "label": "LBL_PROJECTS_WORKSPACE_ID",
+        "type": "varchar",
+        "null": true,
+        "length": "36",
+        "relatedIdentifier": true
       }
     },
     {
@@ -40309,6 +40485,16 @@
       }
     },
     {
+      "id": "relationship:Project.workspace",
+      "type": "relationship",
+      "key": "Project.workspace",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "workspaceId",
+        "relatedKey": "id"
+      }
+    },
+    {
       "id": "relationship:Role.permissions",
       "type": "relationship",
       "key": "Role.permissions",
@@ -41504,6 +41690,16 @@
         "kind": "hasOne",
         "primaryKey": "modifiedUser",
         "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workspace.projects",
+      "type": "relationship",
+      "key": "Workspace.projects",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "workspaceId"
       }
     },
     {
@@ -56198,6 +56394,46 @@
       "from": "case:acl/acl-project-allowed-when-project-get",
       "type": "runs_as",
       "to": "profile:aclProjectOnly"
+    },
+    {
+      "from": "case:acl/acl-project-create-into-workspace-denied-without-workspace-update",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-project-create-into-workspace-denied-without-workspace-update",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-project-create-into-workspace-denied-without-workspace-update",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-project-create-into-workspace-denied-without-workspace-update",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:acl/acl-project-create-into-workspace-denied-without-workspace-update",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:acl/acl-project-create-into-workspace-denied-without-workspace-update",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-project-create-into-workspace-denied-without-workspace-update",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:acl/acl-project-create-into-workspace-denied-without-workspace-update",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
     },
     {
       "from": "case:acl/acl-project-related-issues-denied",
@@ -77855,6 +78091,111 @@
       "to": "fixture:conversationroomId"
     },
     {
+      "from": "case:client/project-create-into-existing-workspace",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/project-create-into-existing-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-create-into-existing-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-create-into-existing-workspace",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-create-into-existing-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/project-create-into-existing-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-create-into-existing-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/project-create-into-existing-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:client/project-create-makes-own-workspace",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/project-create-makes-own-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-create-makes-own-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-create-makes-own-workspace",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-create-makes-own-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/project-create-makes-own-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-create-makes-own-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/project-create-unknown-workspace-422",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-create-unknown-workspace-422",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-create-unknown-workspace-422",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-create-unknown-workspace-422",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/project-create-unknown-workspace-422",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-create-unknown-workspace-422",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
       "from": "case:client/project-create-validation-fails-422",
       "type": "asserts",
       "to": "assertion:status"
@@ -77873,6 +78214,136 @@
       "from": "case:client/project-create-validation-fails-422",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-delete-own-workspace-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-delete-own-workspace-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-delete-own-workspace-project",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-delete-own-workspace-project",
+      "type": "depends_on",
+      "to": "case:client/project-create-makes-own-workspace"
+    },
+    {
+      "from": "case:client/project-delete-own-workspace-project",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-delete-own-workspace-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-delete-shared-workspace-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-delete-shared-workspace-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-delete-shared-workspace-project",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-delete-shared-workspace-project",
+      "type": "depends_on",
+      "to": "case:client/project-create-into-existing-workspace"
+    },
+    {
+      "from": "case:client/project-delete-shared-workspace-project",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-delete-shared-workspace-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-own-workspace-is-named-after-project",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/project-own-workspace-is-named-after-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-own-workspace-is-named-after-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-own-workspace-is-named-after-project",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/project-own-workspace-is-named-after-project",
+      "type": "depends_on",
+      "to": "case:client/project-create-makes-own-workspace"
+    },
+    {
+      "from": "case:client/project-own-workspace-is-named-after-project",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/project-own-workspace-is-named-after-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-patch-workspace-refused",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-patch-workspace-refused",
+      "type": "depends_on",
+      "to": "case:client/project-create-makes-own-workspace"
+    },
+    {
+      "from": "case:client/project-patch-workspace-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-patch-workspace-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-patch-workspace-refused",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
     },
     {
       "from": "case:client/put-systemnotification-api-v1-systemnotification-id",
@@ -92816,6 +93287,11 @@
     },
     {
       "from": "model:Project",
+      "type": "has_field",
+      "to": "field:Project.workspaceId"
+    },
+    {
+      "from": "model:Project",
       "type": "has_relationship",
       "to": "relationship:Project.aclPermissions"
     },
@@ -92881,6 +93357,11 @@
     },
     {
       "from": "model:Project",
+      "type": "has_relationship",
+      "to": "relationship:Project.workspace"
+    },
+    {
+      "from": "model:Project",
       "type": "uses_behaviour",
       "to": "behaviour:auditBehavior"
     },
@@ -92913,6 +93394,11 @@
       "from": "model:Project",
       "type": "uses_behaviour",
       "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Project",
+      "type": "uses_behaviour",
+      "to": "behaviour:projectWorkspaceBehavior"
     },
     {
       "from": "model:Project",
@@ -96881,6 +97367,11 @@
     },
     {
       "from": "model:Workspace",
+      "type": "has_relationship",
+      "to": "relationship:Workspace.projects"
+    },
+    {
+      "from": "model:Workspace",
       "type": "uses_behaviour",
       "to": "behaviour:auditBehavior"
     },
@@ -99310,6 +99801,11 @@
       "to": "model:User"
     },
     {
+      "from": "relationship:Project.workspace",
+      "type": "targets",
+      "to": "model:Workspace"
+    },
+    {
       "from": "relationship:Role.permissions",
       "type": "targets",
       "to": "model:Permission"
@@ -99928,6 +100424,11 @@
       "from": "relationship:Workspace.modifiedBy",
       "type": "targets",
       "to": "model:User"
+    },
+    {
+      "from": "relationship:Workspace.projects",
+      "type": "targets",
+      "to": "model:Project"
     },
     {
       "from": "route:ANY /",
