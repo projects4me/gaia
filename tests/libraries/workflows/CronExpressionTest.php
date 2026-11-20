@@ -29,7 +29,7 @@ class CronExpressionTest extends TestCase
         $this->assertSame($expected, (new CronExpression($expression))->matches($minute));
     }
 
-    public function minutes()
+    public static function minutes()
     {
         // 2026-11-02 is a Monday
         return [
@@ -62,7 +62,7 @@ class CronExpressionTest extends TestCase
         $this->assertSame($message, CronExpression::error($expression));
     }
 
-    public function invalid()
+    public static function invalid()
     {
         return [
             'too few fields' => ['* * * *', 'must have five fields: minute, hour, day of month, month and day of week.'],

@@ -242,7 +242,7 @@ class SearchServiceTest extends TestCase
     /**
      * @return array
      */
-    public function oddQueries()
+    public static function oddQueries()
     {
         return array(
             'stop words only' => array('the'),
@@ -390,7 +390,7 @@ class SearchServiceTest extends TestCase
     /**
      * @return array
      */
-    public function badMaxDistances()
+    public static function badMaxDistances()
     {
         return array(
             'negative' => array(-0.1),

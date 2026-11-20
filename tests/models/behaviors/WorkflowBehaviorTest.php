@@ -51,7 +51,7 @@ class WorkflowBehaviorTest extends TestCase
         $this->assertSame([$message], $model->messages);
     }
 
-    public function invalidFields()
+    public static function invalidFields()
     {
         return [
             'status' => [['status' => 'Paused'], 'status must be one of Draft, Active, Disabled.'],

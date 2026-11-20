@@ -98,15 +98,15 @@ class WorkflowGraphTest extends TestCase
         $this->assertContains($message, $errors);
     }
 
-    public function invalidEdges()
+    public static function invalidEdges()
     {
         return [
-            'unknown port' => [$this->edge('run', 'maybe', 'end'), "'maybe' is not a port of node 'run' (done, needs_input, blocked, failed, limit)."],
-            'end has no ports' => [$this->edge('end', 'next', 'run'), "'next' is not a port of node 'end'; it has none."],
-            'port in use' => [$this->edge('t', 'next', 'end'), "Port 'next' of node 't' is already connected."],
-            'into trigger' => [$this->edge('run', 'done', 't'), 'An edge cannot lead into the trigger.'],
-            'to itself' => [$this->edge('run', 'done', 'run'), 'An edge cannot join a node to itself.'],
-            'other workflow' => [$this->edge('run', 'done', 'elsewhere'), 'An edge must join two nodes of the same workflow.'],
+            'unknown port' => [self::edge('run', 'maybe', 'end'), "'maybe' is not a port of node 'run' (done, needs_input, blocked, failed, limit)."],
+            'end has no ports' => [self::edge('end', 'next', 'run'), "'next' is not a port of node 'end'; it has none."],
+            'port in use' => [self::edge('t', 'next', 'end'), "Port 'next' of node 't' is already connected."],
+            'into trigger' => [self::edge('run', 'done', 't'), 'An edge cannot lead into the trigger.'],
+            'to itself' => [self::edge('run', 'done', 'run'), 'An edge cannot join a node to itself.'],
+            'other workflow' => [self::edge('run', 'done', 'elsewhere'), 'An edge must join two nodes of the same workflow.'],
         ];
     }
 
@@ -158,7 +158,7 @@ class WorkflowGraphTest extends TestCase
         return ['id' => $id, 'name' => $id, 'category' => $category, 'kind' => $kind, 'config' => $config];
     }
 
-    private function edge($from, $port, $to)
+    private static function edge($from, $port, $to)
     {
         return ['id' => "{$from}-{$port}", 'fromNodeId' => $from, 'fromPort' => $port, 'toNodeId' => $to];
     }

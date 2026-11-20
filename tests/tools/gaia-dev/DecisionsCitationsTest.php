@@ -25,7 +25,7 @@ class DecisionsCitationsTest extends TestCase
     /**
      * @return string[][] doc path
      */
-    public function decisionsDocs(): array
+    public static function decisionsDocs(): array
     {
         $docs = [];
         foreach (glob(dirname(__DIR__, 3) . '/docs/architecture/*/decisions.md') as $path) {

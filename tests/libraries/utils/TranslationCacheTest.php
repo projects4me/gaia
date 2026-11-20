@@ -136,7 +136,7 @@ class TranslationCacheTest extends TestCase
         }
     }
 
-    public function unsafeLocales()
+    public static function unsafeLocales()
     {
         return [
             'parent directory' => ['../secret'],

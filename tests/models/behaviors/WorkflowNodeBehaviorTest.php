@@ -43,7 +43,7 @@ class WorkflowNodeBehaviorTest extends TestCase
         $this->assertContains($message, $model->messages);
     }
 
-    public function invalidNodes()
+    public static function invalidNodes()
     {
         return [
             'active workflow' => [['category' => 'action', 'kind' => 'end'],

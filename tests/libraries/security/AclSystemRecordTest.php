@@ -119,7 +119,7 @@ class AclSystemRecordTest extends TestCase
         $acl->assertSystemRecordWrite('Issuestatus', ['name' => 'x', 'system' => $value]);
     }
 
-    public function truthySystemValues()
+    public static function truthySystemValues()
     {
         return [[1], ['1'], [true], ['true']];
     }

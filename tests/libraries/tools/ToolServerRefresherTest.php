@@ -37,7 +37,7 @@ class ToolServerRefresherTest extends TestCase
         $refresher->refresh($this->server($kind, $transport, $endpoint));
     }
 
-    public function unrefreshableServers()
+    public static function unrefreshableServers()
     {
         return [
             'builtin' => ['builtin', null, null],

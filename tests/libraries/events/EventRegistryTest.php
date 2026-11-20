@@ -103,7 +103,7 @@ class EventRegistryTest extends TestCase
         new EventRegistry(['thing.bad' => $definition + ['channels' => ['hermes'], 'enabled' => true]]);
     }
 
-    public function invalidDefinitions()
+    public static function invalidDefinitions()
     {
         return [
             'no scopes' => [[], 'Event thing.bad lists no scopes'],

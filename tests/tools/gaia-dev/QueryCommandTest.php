@@ -40,7 +40,7 @@ class QueryCommandTest extends TestCase
     /**
      * @return array[] command line for Idea
      */
-    public function ideaCommands(): array
+    public static function ideaCommands(): array
     {
         return [
             'model' => [['model', 'Idea']],

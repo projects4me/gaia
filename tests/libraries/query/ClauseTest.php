@@ -129,7 +129,7 @@ class ClauseTest extends TestCase
         $this->clause->prepareWhere($statement, $this->query);
     }
 
-    public function invalidFields()
+    public static function invalidFields()
     {
         return [
             'unknown field' => ['(Issue.nope : x)'],

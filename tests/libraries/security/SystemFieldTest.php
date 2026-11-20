@@ -190,7 +190,7 @@ class SystemFieldTest extends TestCase
         $this->acl()->authorizeClauseUsage(self::MODEL, 'list', $clauses);
     }
 
-    public function systemFieldClauses()
+    public static function systemFieldClauses()
     {
         return [
             'query' => [['query' => '((' . self::MODEL . '.searchText : x))']],

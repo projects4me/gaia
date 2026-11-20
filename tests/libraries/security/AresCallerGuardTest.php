@@ -39,7 +39,7 @@ class AresCallerGuardTest extends TestCase
         (new AresCallerGuard('ares-unit-secret'))->assertCaller($presented);
     }
 
-    public function refusedSecrets(): array
+    public static function refusedSecrets(): array
     {
         return [
             'missing' => [null],

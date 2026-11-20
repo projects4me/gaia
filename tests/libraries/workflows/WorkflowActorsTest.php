@@ -160,7 +160,7 @@ class WorkflowActorsTest extends TestCase
     /**
      * @return array
      */
-    public function badRunAgentConfigs()
+    public static function badRunAgentConfigs()
     {
         return [
             'gone agent' => [['agentId' => 'agent-gone'], 'Agent agent-gone no longer exists.'],
@@ -254,7 +254,7 @@ class WorkflowActorsTest extends TestCase
     /**
      * @return array
      */
-    public function refusedUpdates()
+    public static function refusedUpdates()
     {
         return [
             'another user' => ['user-ada', ['outcome' => 'done'], 403],

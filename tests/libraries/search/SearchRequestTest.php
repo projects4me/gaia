@@ -47,7 +47,7 @@ class SearchRequestTest extends TestCase
     /**
      * @return array
      */
-    public function invalidRequests()
+    public static function invalidRequests()
     {
         return array(
             'no type' => array(array(), 'login', null),
