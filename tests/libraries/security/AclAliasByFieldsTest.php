@@ -28,7 +28,6 @@ class AclAliasByFieldsTest extends TestCase
     {
         $acl = (new \ReflectionClass(Acl::class))->newInstanceWithoutConstructor();
         $method = new \ReflectionMethod(Acl::class, 'getAliasByFields');
-        $method->setAccessible(true);
 
         return $method->invoke($acl, ['fields' => $fields]);
     }
