@@ -10,7 +10,7 @@ namespace Gaia\Exception;
  * An error inside Gaia that has no HTTP meaning of its own: a missing id or an
  * unknown relationship in a code path, a failed internal save.
  *
- * It replaces Phalcon 4's Phalcon\Exception, which Phalcon 5 removed. Like
+ * It replaces Phalcon 4's base exception class, which Phalcon 5 removed. Like
  * that class it extends \Exception directly and builds no response itself, so
  * public/index.php and SubRequestRunner hand it to PhalconError: logged, a 500
  * with the raw message only when debug is on. It deliberately does not extend
