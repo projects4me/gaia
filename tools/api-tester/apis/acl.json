@@ -3433,6 +3433,28 @@
       "source": "acl-workspace"
     },
     {
+      "id": "acl-project-create-into-workspace-denied-without-workspace-update",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Workspace Denied Project",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0,
+            "workspaceId": "{workspaceId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "You are not allowed to add projects to this workspace." },
+      "source": "acl-setting"
+    },
+    {
       "id": "acl-repository-denied-acl-no-setting",
       "method": "GET",
       "path": "/api/v1/repository",

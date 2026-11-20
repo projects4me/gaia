@@ -101,6 +101,14 @@ $models['Project'] = array(
             'null' => true,
             'fts' => true
         ),
+        'workspaceId' => array(
+            'name' => 'workspaceId',
+            'label' => 'LBL_PROJECTS_WORKSPACE_ID',
+            'type' => 'varchar',
+            'null' => true,
+            'length' => '36',
+            'relatedIdentifier' => true
+        ),
         'shortCode' => array(
             'name' => 'shortCode',
             'label' => 'LBL_PROJECTS_SHORT_CODE',
@@ -188,6 +196,11 @@ $models['Project'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
                 'relatedKey' => 'id'
             ),
+            'workspace' => array(
+                'primaryKey' => 'workspaceId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Workspace',
+                'relatedKey' => 'id'
+            ),
             'createdBy' => array(
                 'primaryKey' => 'createdUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
@@ -270,7 +283,8 @@ $models['Project'] = array(
         'softDeleteBehavior',
         'modelIdentifierBehavior',
         'currentUserBehavior',
-        'shortCodeBehavior'
+        'shortCodeBehavior',
+        'projectWorkspaceBehavior'
     ),
     'acl' => [
         'group' => true,

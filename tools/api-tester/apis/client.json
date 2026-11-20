@@ -10657,6 +10657,146 @@
       }
     },
     {
+      "id": "project-create-makes-own-workspace",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Workspace Own Project",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.ownWorkspaceProjectId": "data.id",
+        "runtime.ownWorkspaceId": "data.attributes.workspaceId"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "workspaceId"
+        ]
+      }
+    },
+    {
+      "id": "project-own-workspace-is-named-after-project",
+      "method": "GET",
+      "path": "/api/v1/workspace/{runtime.ownWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "Workspace Own Project"
+        }
+      }
+    },
+    {
+      "id": "project-create-into-existing-workspace",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Workspace Shared Project",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0,
+            "workspaceId": "{workspaceId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.sharedWorkspaceProjectId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "workspaceId": "{workspaceId}"
+        }
+      }
+    },
+    {
+      "id": "project-create-unknown-workspace-422",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Workspace Unknown Project",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0,
+            "workspaceId": "00000000-0000-0000-0000-000000000000"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "project-patch-workspace-refused",
+      "method": "PATCH",
+      "path": "/api/v1/project/{runtime.ownWorkspaceProjectId}",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "id": "{runtime.ownWorkspaceProjectId}",
+          "attributes": {
+            "workspaceId": "{workspaceId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error"
+      }
+    },
+    {
+      "id": "project-delete-own-workspace-project",
+      "method": "DELETE",
+      "path": "/api/v1/project/{runtime.ownWorkspaceProjectId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "project-delete-shared-workspace-project",
+      "method": "DELETE",
+      "path": "/api/v1/project/{runtime.sharedWorkspaceProjectId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
       "id": "repository-create-defaults-base-branch",
       "method": "POST",
       "path": "/api/v1/repository",
