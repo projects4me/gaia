@@ -10655,6 +10655,139 @@
         "status": 200,
         "shape": "json"
       }
+    },
+    {
+      "id": "repository-create-defaults-base-branch",
+      "method": "POST",
+      "path": "/api/v1/repository",
+      "resource": "repository",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "repository",
+          "attributes": {
+            "workspaceId": "{workspaceId}",
+            "name": "API Test Repository",
+            "url": "https://github.com/projects4me/api-test.git"
+          }
+        }
+      },
+      "store": {
+        "runtime.createdRepositoryId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Test Repository",
+          "baseBranch": "main"
+        }
+      }
+    },
+    {
+      "id": "repository-create-rejects-credentials-in-url",
+      "method": "POST",
+      "path": "/api/v1/repository",
+      "resource": "repository",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "repository",
+          "attributes": {
+            "workspaceId": "{workspaceId}",
+            "name": "Credential Repository",
+            "url": "https://user:token@github.com/projects4me/api-test.git"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "url must not contain credentials; tokens and keys stay on the runtime"
+        }
+      }
+    },
+    {
+      "id": "repository-create-rejects-taken-name",
+      "method": "POST",
+      "path": "/api/v1/repository",
+      "resource": "repository",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "repository",
+          "attributes": {
+            "workspaceId": "{workspaceId}",
+            "name": "API Test Repository",
+            "url": "https://github.com/projects4me/api-test.git"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "A repository named API Test Repository already exists in this workspace"
+        }
+      }
+    },
+    {
+      "id": "repository-update-changes-base-branch",
+      "method": "PATCH",
+      "path": "/api/v1/repository/{runtime.createdRepositoryId}",
+      "resource": "repository",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "repository",
+          "id": "{runtime.createdRepositoryId}",
+          "attributes": {
+            "baseBranch": "develop"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "baseBranch": "develop"
+        }
+      }
+    },
+    {
+      "id": "repository-update-rejects-workspace-change",
+      "method": "PATCH",
+      "path": "/api/v1/repository/{runtime.createdRepositoryId}",
+      "resource": "repository",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "repository",
+          "id": "{runtime.createdRepositoryId}",
+          "attributes": {
+            "workspaceId": "api-test-workspace-other"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "The workspace of a repository cannot be changed"
+        }
+      }
+    },
+    {
+      "id": "repository-delete-soft-deletes",
+      "method": "DELETE",
+      "path": "/api/v1/repository/{runtime.createdRepositoryId}",
+      "resource": "repository",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
     }
   ]
 }

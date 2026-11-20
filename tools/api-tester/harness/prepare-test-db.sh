@@ -491,7 +491,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('doc'), ('doccontent'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep'), ('workspace')
+    ('systemsetting'), ('userrole'), ('doc'), ('doccontent'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep'), ('workspace'), ('repository')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -1399,6 +1399,22 @@ INSERT INTO workspaces (
   ('api-test-workspace-000001', 'Seed name', 'Seed description', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
+-- Repository: the no-setting role may create and update repositories but not read or delete them,
+-- and holds no workspace.update, so a create or update is denied on the workspace grant
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-no-setting-repository-get', 'api-test-role-acl-ns', 'repository.get', 0, NOW(), NOW()),
+  ('atp-acl-no-setting-repository-create', 'api-test-role-acl-ns', 'repository.create', 1, NOW(), NOW()),
+  ('atp-acl-no-setting-repository-update', 'api-test-role-acl-ns', 'repository.update', 1, NOW(), NOW()),
+  ('atp-acl-no-setting-repository-delete', 'api-test-role-acl-ns', 'repository.delete', 0, NOW(), NOW());
+
+-- Repository: seed records
+INSERT INTO repositories (
+  id, "workspaceId", "name", "url", "baseBranch", "description", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-repository-000001', 'api-test-workspace-000001', 'seed-repository', 'https://github.com/projects4me/seed-repository.git', 'main', 'Seed description', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
   '"issues_issueNumber_seq"',
@@ -1565,6 +1581,7 @@ data = {
     "workflowactorstepId": "api-test-workflowactorstep-000001",
     "otherWorkflowactorstepId": "api-test-workflowactorstep-000002",
     "workspaceId": "api-test-workspace-000001",
+    "repositoryId": "api-test-repository-000001",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

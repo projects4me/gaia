@@ -111,6 +111,7 @@ $fixtureIds = [
     'workflowreference' => '{workflowreferenceId}',
     'workflowrun' => '{workflowrunId}',
     'workflowrunstep' => '{workflowrunstepId}',
+    'repository' => '{repositoryId}',
     'workspace' => '{workspaceId}',
 ];
 
@@ -374,6 +375,7 @@ function sampleValue($resource, $name, array $fieldMeta, array $relatedDefaults)
         'workflownodeId' => '{workflownodeId}',
         'workflowedgeId' => '{workflowedgeId}',
         'workflowreferenceId' => '{workflowreferenceId}',
+        'repositoryId' => '{repositoryId}',
         'workspaceId' => '{workspaceId}',
     ];
     if (isset($fk[$name])) {
@@ -440,6 +442,9 @@ function sampleValue($resource, $name, array $fieldMeta, array $relatedDefaults)
             }
             if ($name === 'context' && $resource === 'timelog') {
                 return 'spent';
+            }
+            if ($name === 'url' && $resource === 'repository') {
+                return 'https://github.com/projects4me/api-repository.git';
             }
             if ($name === 'category' && $resource === 'workflownode') {
                 return 'action';
@@ -524,6 +529,7 @@ function patchChange(array $attrs, array $meta = [])
         'workflownodeId' => true,
         'workflowedgeId' => true,
         'workflowreferenceId' => true,
+        'repositoryId' => true,
         'workspaceId' => true,
     ];
     $fields = isset($meta['fields']) && is_array($meta['fields']) ? $meta['fields'] : [];

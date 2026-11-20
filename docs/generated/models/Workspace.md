@@ -14,6 +14,7 @@
 
 - createdBy hasOne -> User
 - modifiedBy hasOne -> User
+- repositories hasMany -> Repository
 
 <a id="summary"></a>
 ## Summary

@@ -98,14 +98,14 @@ class ScaffoldResourceTest extends TestCase
         $spec = new ResourceSpec('Report', ['fields' => 'title:varchar:100:required', 'parent' => 'Project']);
         $changes = (new ResourceScaffold(self::ROOT))->plan($spec, []);
 
-        $this->assertStringContainsString("    'Project',\n    'Report',\n    'Role',", $changes['core/config/models.php']);
+        $this->assertStringContainsString("    'Project',\n    'Report',\n    'Repository',", $changes['core/config/models.php']);
         $this->assertStringContainsString("'path' => '/api/:version/report'", $changes['core/config/routes.php']);
         $generator = $changes['tools/api-tester/bin/generate-backend-apis.php'];
         $this->assertStringContainsString("    'report' => '{reportId}',", $generator);
         $this->assertStringContainsString("        'reportId' => '{reportId}',", $generator);
         $this->assertStringContainsString("        'reportId' => true,", $generator);
         $harness = $changes['tools/api-tester/harness/prepare-test-db.sh'];
-        $this->assertStringContainsString("('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep'), ('workspace'), ('report')\n) AS m(module)", $harness);
+        $this->assertStringContainsString("('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep'), ('workspace'), ('repository'), ('report')\n) AS m(module)", $harness);
         $this->assertStringContainsString('INSERT INTO reports (', $harness);
         $this->assertStringContainsString('"reportId": "api-test-report-000001"', $harness);
         $this->assertStringContainsString('"otherProjectReportId": "api-test-report-000002"', $changes['tools/api-tester/fixtures/default.json']);

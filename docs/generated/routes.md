@@ -514,6 +514,23 @@
 | PUT | /api/v1/project | rest | project.putCollection |
 | PUT | /api/v1/project/{id} | rest | project.put |
 
+<a id="repository"></a>
+## repository
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/repository | rest | repository.deleteCollection |
+| DELETE | /api/v1/repository/{id} | rest | repository.delete |
+| GET | /api/v1/repository | rest | repository.list |
+| GET | /api/v1/repository/{id} | rest | repository.get |
+| GET | /api/v1/repository/{id}/{relation} | rest | repository.related |
+| OPTIONS | /api/v1/repository | rest | repository.options |
+| PATCH | /api/v1/repository | rest | repository.patchCollection |
+| PATCH | /api/v1/repository/{id} | rest | repository.patch |
+| POST | /api/v1/repository | rest | repository.post |
+| PUT | /api/v1/repository | rest | repository.putCollection |
+| PUT | /api/v1/repository/{id} | rest | repository.put |
+
 <a id="resetpassword"></a>
 ## resetpassword
 

@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 250,
-        "enabled": 227,
+        "total": 256,
+        "enabled": 233,
         "disabled": 23,
-        "routeResources": 70,
-        "withMetadata": 52,
+        "routeResources": 71,
+        "withMetadata": 53,
         "skippedResources": 16
     },
     "apis": [
@@ -1030,6 +1030,116 @@
             "method": "DELETE",
             "path": "/api/v1/ideaplanissue/{runtime.ideaplanissueId}",
             "resource": "ideaplanissue",
+            "auth": true,
+            "expects": {
+                "status": [
+                    200,
+                    204
+                ],
+                "shape": "json"
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-repository-api-v1-repository",
+            "method": "GET",
+            "path": "/api/v1/repository",
+            "resource": "repository",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-repository-api-v1-repository-id",
+            "method": "GET",
+            "path": "/api/v1/repository/{repositoryId}",
+            "resource": "repository",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{repositoryId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-repository-api-v1-repository",
+            "method": "POST",
+            "path": "/api/v1/repository",
+            "resource": "repository",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "repository",
+                    "attributes": {
+                        "workspaceId": "{workspaceId}",
+                        "name": "api-repository-name",
+                        "url": "https://github.com/projects4me/api-repository.git"
+                    }
+                }
+            },
+            "source": "backend-metadata",
+            "store": {
+                "runtime.repositoryId": "data.id"
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            }
+        },
+        {
+            "id": "get-repository-api-v1-repository-runtime-id",
+            "method": "GET",
+            "path": "/api/v1/repository/{runtime.repositoryId}",
+            "resource": "repository",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{runtime.repositoryId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "patch-repository-api-v1-repository-id",
+            "method": "PATCH",
+            "path": "/api/v1/repository/{runtime.repositoryId}",
+            "resource": "repository",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "repository",
+                    "id": "{runtime.repositoryId}",
+                    "attributes": {
+                        "name": "api-repository-name Updated"
+                    }
+                }
+            },
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "attributesEqual": {
+                    "name": "api-repository-name Updated"
+                }
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "delete-repository-api-v1-repository-runtime-id",
+            "method": "DELETE",
+            "path": "/api/v1/repository/{runtime.repositoryId}",
+            "resource": "repository",
             "auth": true,
             "expects": {
                 "status": [
