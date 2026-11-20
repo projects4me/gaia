@@ -919,7 +919,7 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
                 'type' => lcfirst($modelAlias),
                 'id' => $write->id(),
                 'attributes' => [
-                    SearchBlock::EMBEDDING_HASH => $write->hash(),
+                    SearchBlock::ACTUAL_HASH => $write->hash(),
                     SearchBlock::EMBEDDED_AT => $embeddedAt,
                 ],
             ],

@@ -8,7 +8,7 @@ namespace Gaia\Libraries\Search;
 
 /**
  * A validated embedding write from the Ares service (D-072): the record id, the embedding and the hash of the
- * semantic text it was made from. The body carries searchEmbedding and searchEmbeddingHash and nothing else.
+ * semantic text it was made from. The body carries searchEmbedding and searchActualHash and nothing else.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -19,7 +19,7 @@ class EmbeddingWrite
     /**
      * Error for a body that is not exactly the embedding and its hash.
      */
-    public const FIELDS_ERROR = 'Send searchEmbedding and searchEmbeddingHash alone.';
+    public const FIELDS_ERROR = 'Send searchEmbedding and searchActualHash alone.';
 
     /**
      * Error for a missing record id, or one that differs from the URL's.
@@ -34,7 +34,7 @@ class EmbeddingWrite
     /**
      * Error for a hash that is not a SemanticText hash.
      */
-    public const HASH_ERROR = 'searchEmbeddingHash must be the 64 character hash of the semantic text.';
+    public const HASH_ERROR = 'searchActualHash must be the 64 character hash of the semantic text.';
 
     /**
      * A SemanticText hash: sha256 in lower case hex.
@@ -100,13 +100,13 @@ class EmbeddingWrite
         unset($attributes['id']);
         $fields = array_keys($attributes);
         sort($fields);
-        $expected = array(SearchBlock::EMBEDDING, SearchBlock::EMBEDDING_HASH);
+        $expected = array(SearchBlock::EMBEDDING, SearchBlock::ACTUAL_HASH);
         sort($expected);
         if ($fields !== $expected) {
             throw new \Gaia\Exception\BadRequest(self::FIELDS_ERROR);
         }
 
-        $hash = $attributes[SearchBlock::EMBEDDING_HASH];
+        $hash = $attributes[SearchBlock::ACTUAL_HASH];
         if (!is_string($hash) || !preg_match(self::HASH_PATTERN, $hash)) {
             throw new \Gaia\Exception\BadRequest(self::HASH_ERROR);
         }

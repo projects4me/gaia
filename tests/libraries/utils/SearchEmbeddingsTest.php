@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * The Ares embedding write (D-072): the body is the embedding and its hash alone, and the embedding is stored only
- * if, with the row locked, its hash is still the record's semantic hash.
+ * if, with the row locked, its hash is still the record's desired hash.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Tests\Libraries\Utils
@@ -45,7 +45,7 @@ class SearchEmbeddingsTest extends TestCase
         $this->assertStringContainsString('FOR UPDATE', $db->sql[0]);
         $this->assertSame([self::ID], $db->binds[0]);
         $this->assertSame(
-            'UPDATE "issues" SET "searchEmbedding" = CAST(? AS vector), "searchEmbeddingHash" = ?, '
+            'UPDATE "issues" SET "searchEmbedding" = CAST(? AS vector), "searchActualHash" = ?, '
             . '"searchEmbeddedAt" = ? WHERE "id" = ?',
             $db->sql[1]
         );
@@ -151,7 +151,7 @@ class SearchEmbeddingsTest extends TestCase
                 $a = ['id' => SearchEmbeddingsTest::ID, 'subject' => 'Changed'];
             }, EmbeddingWrite::FIELDS_ERROR],
             'no hash' => [function (&$a) {
-                unset($a['searchEmbeddingHash']);
+                unset($a['searchActualHash']);
             }, EmbeddingWrite::FIELDS_ERROR],
             'no id in the URL or the body' => [function (&$a, &$urlId) {
                 unset($a['id']);
@@ -179,10 +179,10 @@ class SearchEmbeddingsTest extends TestCase
                 $a['searchEmbedding'][3] = NAN;
             }, EmbeddingWrite::EMBEDDING_ERROR],
             'not a hash' => [function (&$a) {
-                $a['searchEmbeddingHash'] = 'abc';
+                $a['searchActualHash'] = 'abc';
             }, EmbeddingWrite::HASH_ERROR],
             'an upper case hash' => [function (&$a) {
-                $a['searchEmbeddingHash'] = strtoupper($a['searchEmbeddingHash']);
+                $a['searchActualHash'] = strtoupper($a['searchActualHash']);
             }, EmbeddingWrite::HASH_ERROR],
         ];
     }
@@ -192,7 +192,7 @@ class SearchEmbeddingsTest extends TestCase
      */
     private function attributes()
     {
-        return ['searchEmbedding' => array_fill(0, 768, 0.25), 'searchEmbeddingHash' => hash('sha256', 'Subject')];
+        return ['searchEmbedding' => array_fill(0, 768, 0.25), 'searchActualHash' => hash('sha256', 'Subject')];
     }
 
     /**

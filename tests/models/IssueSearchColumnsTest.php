@@ -93,7 +93,7 @@ class IssueSearchColumnsTest extends TestCase
         try {
             // The indexer writes after the model was loaded
             $this->db->execute(
-                'UPDATE "issues" SET "searchEmbeddingHash" = ? WHERE "id" = ?',
+                'UPDATE "issues" SET "searchActualHash" = ? WHERE "id" = ?',
                 array('indexer-hash-4656', $issue->id)
             );
 
@@ -101,7 +101,7 @@ class IssueSearchColumnsTest extends TestCase
             $this->assertTrue($issue->update(), implode('; ', array_map('strval', $issue->getMessages())));
 
             $row = $this->db->fetchOne(
-                'SELECT "searchEmbeddingHash" AS h FROM "issues" WHERE "id" = ?',
+                'SELECT "searchActualHash" AS h FROM "issues" WHERE "id" = ?',
                 \Phalcon\Db\Enum::FETCH_ASSOC,
                 array($issue->id)
             );

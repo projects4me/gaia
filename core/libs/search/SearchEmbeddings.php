@@ -9,7 +9,7 @@ namespace Gaia\Libraries\Search;
 /**
  * Stores the embedding the Ares service made for a record, on the searchable model's own table (D-072). Events reach
  * Ares out of order, so an embedding is stored only if it was made from the record's current semantic text: in one
- * transaction the row is locked and its semantic hash compared with the one the embedding was made from. The write
+ * transaction the row is locked and its desired hash compared with the one the embedding was made from. The write
  * is a bound UPDATE of the embedding columns alone: no behaviours, no audit, no dateModified and no live event, since
  * the record itself did not change.
  *
@@ -32,7 +32,7 @@ class SearchEmbeddings
     /**
      * Error for an embedding made from a text that is no longer the record's.
      */
-    public const STALE_ERROR = 'searchEmbeddingHash is not the hash of the record\'s current semantic text.';
+    public const STALE_ERROR = 'searchActualHash is not the hash of the record\'s current semantic text.';
 
     /**
      * Table and column names the queries take; they come from model metadata, never from the request.
@@ -56,7 +56,7 @@ class SearchEmbeddings
 
     /**
      * This function stores the embedding, its hash and the time it was stored, if the hash is the record's current
-     * semantic hash. deleted is smallint on some tables and boolean on others, hence the cast.
+     * desired hash. deleted is smallint on some tables and boolean on others, hence the cast.
      *
      * @param string $table
      * @param EmbeddingWrite $write
@@ -71,7 +71,7 @@ class SearchEmbeddings
         $db->begin();
         try {
             $row = $db->fetchOne(
-                'SELECT ' . $this->quote(SearchBlock::SEMANTIC_HASH) . ' AS "hash" FROM ' . $table
+                'SELECT ' . $this->quote(SearchBlock::DESIRED_HASH) . ' AS "hash" FROM ' . $table
                 . ' WHERE "id" = ? AND "deleted"::int = 0 FOR UPDATE',
                 \Phalcon\Db\Enum::FETCH_ASSOC,
                 array($write->id())
@@ -86,7 +86,7 @@ class SearchEmbeddings
             $embeddedAt = gmdate('Y-m-d H:i:s');
             $db->execute(
                 'UPDATE ' . $table . ' SET ' . $this->quote(SearchBlock::EMBEDDING) . ' = CAST(? AS vector), '
-                . $this->quote(SearchBlock::EMBEDDING_HASH) . ' = ?, '
+                . $this->quote(SearchBlock::ACTUAL_HASH) . ' = ?, '
                 . $this->quote(SearchBlock::EMBEDDED_AT) . ' = ? WHERE "id" = ?',
                 array(self::vectorLiteral($write->embedding()), $write->hash(), $embeddedAt, $write->id())
             );

@@ -57,7 +57,7 @@ class SearchIndexBehaviorTest extends TestCase
         $this->save($model, 'Create');
 
         $this->assertSame("Login fails\nOn Safari", $model->searchSemanticText);
-        $this->assertSame(SemanticText::hashOf("Login fails\nOn Safari"), $model->searchSemanticHash);
+        $this->assertSame(SemanticText::hashOf("Login fails\nOn Safari"), $model->searchDesiredHash);
         $this->assertCount(1, $this->posted);
         $this->assertSame(EventNames::SEARCH_SEMANTIC_CHANGED, $this->posted[0]['eventName']);
         $this->assertSame('service:ares', $this->posted[0]['projectId']);
@@ -78,7 +78,7 @@ class SearchIndexBehaviorTest extends TestCase
         $this->save($model, 'Update');
 
         $this->assertSame("New subject\nBody", $model->searchSemanticText);
-        $this->assertSame(SemanticText::hashOf("New subject\nBody"), $model->searchSemanticHash);
+        $this->assertSame(SemanticText::hashOf("New subject\nBody"), $model->searchDesiredHash);
         $this->assertCount(1, $this->posted);
         $this->assertSame('i-1', $this->posted[0]['changes']['recordId']);
     }
@@ -93,14 +93,14 @@ class SearchIndexBehaviorTest extends TestCase
     {
         $model = $this->stored(['subject' => 'Same', 'description' => 'Body', 'status' => 'new']);
         $model->searchSemanticText = null;
-        $model->searchSemanticHash = null;
+        $model->searchDesiredHash = null;
         $model->snapshot = $this->valuesOf($model);
         $model->status = 'done';
 
         $this->save($model, 'Update');
 
         $this->assertNull($model->searchSemanticText);
-        $this->assertNull($model->searchSemanticHash);
+        $this->assertNull($model->searchDesiredHash);
         $this->assertSame([], $this->posted);
     }
 
@@ -136,7 +136,7 @@ class SearchIndexBehaviorTest extends TestCase
         $this->save($model, 'Update');
 
         $this->assertNull($model->searchSemanticText);
-        $this->assertNull($model->searchSemanticHash);
+        $this->assertNull($model->searchDesiredHash);
         $this->assertSame([], $this->posted);
     }
 
@@ -187,12 +187,12 @@ class SearchIndexBehaviorTest extends TestCase
         $plain = $this->model(['id' => 'i-1', 'subject' => 'Subject'], ['type' => 'issue', 'semantic' => []]);
         $this->behavior->notify('beforeCreate', $plain);
         $this->behavior->notify('afterCreate', $plain);
-        $this->assertFalse(isset($plain->searchSemanticHash));
+        $this->assertFalse(isset($plain->searchDesiredHash));
 
         $model = $this->model(['id' => 'i-1', 'subject' => 'Subject']);
         $this->behavior->notify('beforeValidationOnCreate', $model);
         $this->behavior->notify('afterDelete', $model);
-        $this->assertFalse(isset($model->searchSemanticHash));
+        $this->assertFalse(isset($model->searchDesiredHash));
         $this->assertSame([], $this->posted);
     }
 
@@ -222,7 +222,7 @@ class SearchIndexBehaviorTest extends TestCase
         $model = $this->model(['id' => 'i-1'] + $values);
         $text = SemanticText::forBlock(['semantic' => ['subject', 'description']])->text($values);
         $model->searchSemanticText = $text;
-        $model->searchSemanticHash = SemanticText::hashOf($text);
+        $model->searchDesiredHash = SemanticText::hashOf($text);
         $model->snapshot = $this->valuesOf($model);
 
         return $model;
@@ -268,7 +268,7 @@ class SearchIndexBehaviorTest extends TestCase
     private function valuesOf($model)
     {
         $values = [];
-        foreach (['id', 'subject', 'description', 'status', 'searchSemanticText', 'searchSemanticHash'] as $field) {
+        foreach (['id', 'subject', 'description', 'status', 'searchSemanticText', 'searchDesiredHash'] as $field) {
             if (isset($model->{$field})) {
                 $values[$field] = $model->{$field};
             }

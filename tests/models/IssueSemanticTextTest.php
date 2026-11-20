@@ -67,7 +67,7 @@ class IssueSemanticTextTest extends TestCase
             $text = SemanticText::forBlock(array('semantic' => array('subject', 'description')))->text($row);
             $this->assertStringEndsWith("\nSemantic text check", $text);
             $this->assertSame($text, $row['searchSemanticText']);
-            $this->assertSame(SemanticText::hashOf($text), $row['searchSemanticHash']);
+            $this->assertSame(SemanticText::hashOf($text), $row['searchDesiredHash']);
         } finally {
             $this->db->rollback();
         }
@@ -90,11 +90,11 @@ class IssueSemanticTextTest extends TestCase
             $this->assertCount(2, $ids, 'The test database needs two issues');
             // One issue has no text yet; the other was embedded from its current text
             $this->db->execute(
-                'UPDATE "issues" SET "searchSemanticText" = NULL, "searchSemanticHash" = NULL WHERE "id" = ?',
+                'UPDATE "issues" SET "searchSemanticText" = NULL, "searchDesiredHash" = NULL WHERE "id" = ?',
                 array($ids[0])
             );
             $this->db->execute(
-                'UPDATE "issues" SET "searchEmbeddingHash" = ? WHERE "id" = ?',
+                'UPDATE "issues" SET "searchActualHash" = ? WHERE "id" = ?',
                 array(SemanticText::hashOf(SemanticText::forBlock(array('semantic' => array('subject', 'description')))
                     ->text($this->row($ids[1]))), $ids[1])
             );
@@ -113,13 +113,13 @@ class IssueSemanticTextTest extends TestCase
             ))->run('issue');
 
             $missing = $this->db->fetchOne(
-                'SELECT COUNT(*) AS n FROM "issues" WHERE "deleted"::int = 0 AND "searchSemanticHash" IS NULL',
+                'SELECT COUNT(*) AS n FROM "issues" WHERE "deleted"::int = 0 AND "searchDesiredHash" IS NULL',
                 \Phalcon\Db\Enum::FETCH_ASSOC
             );
             $this->assertSame(0, (int) $missing['n']);
             $stale = $this->db->fetchOne(
                 'SELECT COUNT(*) AS n FROM "issues" WHERE "deleted"::int = 0'
-                . ' AND "searchEmbeddingHash" IS DISTINCT FROM "searchSemanticHash"',
+                . ' AND "searchActualHash" IS DISTINCT FROM "searchDesiredHash"',
                 \Phalcon\Db\Enum::FETCH_ASSOC
             );
             $published = array_column(array_column($posted, 'changes'), 'recordId');
@@ -139,7 +139,7 @@ class IssueSemanticTextTest extends TestCase
     private function row($id)
     {
         return $this->db->fetchOne(
-            'SELECT "subject", "description", "searchSemanticText", "searchSemanticHash" FROM "issues" WHERE "id" = ?',
+            'SELECT "subject", "description", "searchSemanticText", "searchDesiredHash" FROM "issues" WHERE "id" = ?',
             \Phalcon\Db\Enum::FETCH_ASSOC,
             array($id)
         );

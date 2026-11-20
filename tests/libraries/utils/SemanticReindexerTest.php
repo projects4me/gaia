@@ -99,17 +99,17 @@ class SemanticReindexerTest extends TestCase
         $current = SemanticText::hashOf("Current\nBody");
         $records = $this->records([
             // No text yet (an existing row): backfilled, and never embedded, so published
-            ['id' => 'a', 'subject' => 'Missing', 'description' => null, 'searchSemanticHash' => null,
-                'searchEmbeddingHash' => null],
+            ['id' => 'a', 'subject' => 'Missing', 'description' => null, 'searchDesiredHash' => null,
+                'searchActualHash' => null],
             // Up to date and embedded: left alone
-            ['id' => 'b', 'subject' => 'Current', 'description' => 'Body', 'searchSemanticHash' => $current,
-                'searchEmbeddingHash' => $current],
+            ['id' => 'b', 'subject' => 'Current', 'description' => 'Body', 'searchDesiredHash' => $current,
+                'searchActualHash' => $current],
             // Text stored but the embedding is of an older text: published, not rewritten
-            ['id' => 'c', 'subject' => 'Current', 'description' => 'Body', 'searchSemanticHash' => $current,
-                'searchEmbeddingHash' => 'older'],
+            ['id' => 'c', 'subject' => 'Current', 'description' => 'Body', 'searchDesiredHash' => $current,
+                'searchActualHash' => 'older'],
             // The text rule changed since the hash was stored: corrected, and its embedding is stale
-            ['id' => 'd', 'subject' => 'Current', 'description' => '<p>Body</p>', 'searchSemanticHash' => 'old-rule',
-                'searchEmbeddingHash' => 'old-rule'],
+            ['id' => 'd', 'subject' => 'Current', 'description' => '<p>Body</p>', 'searchDesiredHash' => 'old-rule',
+                'searchActualHash' => 'old-rule'],
         ]);
 
         $counts = $this->reindexer($records)->run();
@@ -128,8 +128,8 @@ class SemanticReindexerTest extends TestCase
     public function testAnEventHermesDidNotTakeCountsAsFailed()
     {
         $records = $this->records([
-            ['id' => 'a', 'subject' => 'Missing', 'description' => null, 'searchSemanticHash' => null,
-                'searchEmbeddingHash' => null],
+            ['id' => 'a', 'subject' => 'Missing', 'description' => null, 'searchDesiredHash' => null,
+                'searchActualHash' => null],
         ]);
         $this->hermesDown = true;
 
@@ -144,8 +144,8 @@ class SemanticReindexerTest extends TestCase
     public function testARecordSavedSinceThePageWasReadIsLeftToTheSave()
     {
         $records = $this->records([
-            ['id' => 'a', 'subject' => 'Read text', 'description' => null, 'searchSemanticHash' => null,
-                'searchEmbeddingHash' => null],
+            ['id' => 'a', 'subject' => 'Read text', 'description' => null, 'searchDesiredHash' => null,
+                'searchActualHash' => null],
         ]);
         $records->savedMeanwhile = ['a'];
 
@@ -162,7 +162,7 @@ class SemanticReindexerTest extends TestCase
         $rows = [];
         for ($i = 0; $i < SemanticReindexer::PAGE_SIZE + 5; $i++) {
             $rows[] = ['id' => sprintf('r%04d', $i), 'subject' => "S{$i}", 'description' => null,
-                'searchSemanticHash' => null, 'searchEmbeddingHash' => null];
+                'searchDesiredHash' => null, 'searchActualHash' => null];
         }
         $records = $this->records($rows);
 

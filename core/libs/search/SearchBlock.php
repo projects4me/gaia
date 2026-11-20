@@ -57,9 +57,9 @@ class SearchBlock
      */
     public const VECTOR = 'searchVector';
     public const SEMANTIC_TEXT = 'searchSemanticText';
-    public const SEMANTIC_HASH = 'searchSemanticHash';
+    public const DESIRED_HASH = 'searchDesiredHash';
     public const EMBEDDING = 'searchEmbedding';
-    public const EMBEDDING_HASH = 'searchEmbeddingHash';
+    public const ACTUAL_HASH = 'searchActualHash';
     public const EMBEDDED_AT = 'searchEmbeddedAt';
 
     /**
@@ -81,8 +81,8 @@ class SearchBlock
      *
      * @var array
      */
-    public const SERVICE_READS = array(self::SEMANTIC_TEXT, self::SEMANTIC_HASH, self::EMBEDDING_HASH, self::EMBEDDED_AT);
-    public const SERVICE_WRITES = array(self::EMBEDDING, self::EMBEDDING_HASH);
+    public const SERVICE_READS = array(self::SEMANTIC_TEXT, self::DESIRED_HASH, self::ACTUAL_HASH, self::EMBEDDED_AT);
+    public const SERVICE_WRITES = array(self::EMBEDDING, self::ACTUAL_HASH);
 
     /**
      * Keys a search block may have.
@@ -242,14 +242,14 @@ class SearchBlock
         );
         if ($block['semantic'] !== array()) {
             $columns[self::SEMANTIC_TEXT] = array('type' => 'text');
-            $columns[self::SEMANTIC_HASH] = array('type' => 'varchar', 'length' => '64');
+            $columns[self::DESIRED_HASH] = array('type' => 'varchar', 'length' => '64');
             // The embedding is written by the indexer alone: a record save must not write back a stale copy.
             $columns[self::EMBEDDING] = array(
                 'type' => 'vector',
                 'dimensions' => self::EMBEDDING_DIMENSIONS,
                 'ormWrite' => false,
             );
-            $columns[self::EMBEDDING_HASH] = array('type' => 'varchar', 'length' => '64', 'ormWrite' => false);
+            $columns[self::ACTUAL_HASH] = array('type' => 'varchar', 'length' => '64', 'ormWrite' => false);
             $columns[self::EMBEDDED_AT] = array('type' => 'datetime', 'ormWrite' => false);
         }
 
