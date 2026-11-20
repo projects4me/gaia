@@ -67,6 +67,17 @@ class WorkspaceMemberships
     }
 
     /**
+     * Ids of all the workspace's live projects.
+     *
+     * @param  string $workspaceId
+     * @return string[]
+     */
+    public function projectIds($workspaceId)
+    {
+        return $this->otherProjectIds($workspaceId, '');
+    }
+
+    /**
      * Of the given projects, the ones the user is a member of.
      *
      * @param  string   $userId

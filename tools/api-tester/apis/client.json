@@ -10940,6 +10940,91 @@
       }
     },
     {
+      "id": "workspace-sync-handover-create-open-issue",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Workspace Handover Issue",
+            "owner": "{userId}",
+            "assignee": "{memberUserId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{runtime.syncProjectBId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.syncHandoverIssueId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-sync-handover-open-issues-need-handover-409",
+      "method": "DELETE",
+      "path": "/api/v1/membership/{runtime.syncMemberAId}",
+      "resource": "membership",
+      "auth": true,
+      "expects": {
+        "status": 409,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "workspace-sync-handover-to-self-422",
+      "method": "DELETE",
+      "path": "/api/v1/membership/{runtime.syncMemberAId}",
+      "resource": "membership",
+      "auth": true,
+      "expects": {
+        "status": 422,
+        "shape": "json"
+      },
+      "query": {
+        "handoverTo": "{memberUserId}"
+      }
+    },
+    {
+      "id": "workspace-sync-handover-to-none-422",
+      "method": "DELETE",
+      "path": "/api/v1/membership/{runtime.syncMemberAId}",
+      "resource": "membership",
+      "auth": true,
+      "expects": {
+        "status": 422,
+        "shape": "json"
+      },
+      "query": {
+        "handoverTo": "none"
+      }
+    },
+    {
+      "id": "workspace-sync-handover-to-non-member-422",
+      "method": "DELETE",
+      "path": "/api/v1/membership/{runtime.syncMemberAId}",
+      "resource": "membership",
+      "auth": true,
+      "expects": {
+        "status": 422,
+        "shape": "json"
+      },
+      "query": {
+        "handoverTo": "api-test-not-a-member"
+      }
+    },
+    {
       "id": "workspace-sync-delete-member-from-project-a",
       "method": "DELETE",
       "path": "/api/v1/membership/{runtime.syncMemberAId}",
@@ -10950,7 +11035,21 @@
         "shape": "json"
       },
       "query": {
-        "newAssigneeId": "{userId}"
+        "handoverTo": "{userId}"
+      }
+    },
+    {
+      "id": "workspace-sync-handover-issue-reassigned",
+      "method": "GET",
+      "path": "/api/v1/issue/{runtime.syncHandoverIssueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "assignee": "{userId}"
+        }
       }
     },
     {
@@ -11049,9 +11148,6 @@
       "expects": {
         "status": 200,
         "shape": "json"
-      },
-      "query": {
-        "newAssigneeId": "{userId}"
       }
     },
     {
