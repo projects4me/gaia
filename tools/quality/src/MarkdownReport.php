@@ -4,13 +4,13 @@
  * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Upgrade;
+namespace Quality;
 
 /**
  * Renders a DeprecationGrouper as markdown, suitable for a CI job summary.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
- * @package Upgrade
+ * @package Quality
  * @category Tools
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */

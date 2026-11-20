@@ -13,8 +13,13 @@ use Gaia\Db\Factory\ConnectionFactory;
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-// Deprecations are logged, warnings and notices fail tests (see phpunit.xml) for tools/upgrade/deprecations-report.php
-ini_set('error_log', realpath(__DIR__ . '/..') . '/logs/php-diagnostics-phpunit.log');
+// Deprecations are logged, warnings and notices fail tests (see phpunit.xml) for tools/quality/deprecations-report.php
+$diagnosticsLog = realpath(__DIR__ . '/..') . '/logs/php-diagnostics-phpunit.log';
+ini_set('error_log', $diagnosticsLog);
+// PHP creates the log on the first entry only; an empty file tells the gate the suite ran clean.
+if (!file_exists($diagnosticsLog)) {
+    touch($diagnosticsLog);
+}
 
 define('APP_PATH', realpath(__DIR__ . '/..'));
 if (!defined('DS')) {

@@ -4,11 +4,11 @@
  * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Gaia\Tests\Tools\Upgrade;
+namespace Gaia\Tests\Tools\Quality;
 
 use PHPUnit\Framework\TestCase;
-use Upgrade\DeprecationGrouper;
-use Upgrade\MarkdownReport;
+use Quality\DeprecationGrouper;
+use Quality\MarkdownReport;
 
 /**
  * Unit tests for grouping PHP deprecations and warnings (agaia-4689).

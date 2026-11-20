@@ -4,7 +4,7 @@
  * Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-namespace Upgrade;
+namespace Quality;
 
 /**
  * Reads PHP error-log lines and groups the deprecations and warnings by message pattern and by file:line.
@@ -13,7 +13,7 @@ namespace Upgrade;
  * lines that are not diagnostics are skipped. Entries under /vendor/ count as vendor, the rest as Gaia.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
- * @package Upgrade
+ * @package Quality
  * @category Tools
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
  */
