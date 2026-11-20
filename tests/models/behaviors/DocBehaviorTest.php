@@ -125,7 +125,7 @@ class DocBehaviorTest extends TestCase
     private function behavior($userId, $mayUpdateProjects)
     {
         $behavior = $this->getMockBuilder(docBehavior::class)
-            ->setMethods(['currentUserId', 'mayUpdateProjects'])
+            ->onlyMethods(['currentUserId', 'mayUpdateProjects'])
             ->getMock();
         $behavior->method('currentUserId')->willReturn($userId);
         $behavior->method('mayUpdateProjects')->willReturn($mayUpdateProjects);

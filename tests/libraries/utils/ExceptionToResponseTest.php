@@ -25,7 +25,7 @@ class ExceptionToResponseTest extends TestCase
      *
      * @return array
      */
-    public function exceptionProvider()
+    public static function exceptionProvider()
     {
         return [
             'Access' => [new Exception\Access('denied'), 403, 'Forbidden', ['error' => 'denied']],
@@ -103,7 +103,7 @@ class ExceptionToResponseTest extends TestCase
      *
      * @return array
      */
-    public function emptyMessageProvider()
+    public static function emptyMessageProvider()
     {
         return [
             'Exception' => [new Exception\Exception()],

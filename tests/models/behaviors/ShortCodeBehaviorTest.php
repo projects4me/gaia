@@ -32,7 +32,7 @@ class ShortCodeBehaviorTest extends TestCase
     protected function setUp(): void
     {
         $this->shortCodeBehaviorMock = $this->getMockBuilder(shortCodeBehavior::class)
-            ->setMethods(['getProjectsByShortCode'])
+            ->onlyMethods(['getProjectsByShortCode'])
             ->getMock();
     }
 

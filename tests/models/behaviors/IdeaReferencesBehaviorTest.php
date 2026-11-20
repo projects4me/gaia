@@ -77,7 +77,7 @@ class IdeaReferencesBehaviorTest extends TestCase
     public function testCreateSkipsEmptyReferences()
     {
         $behavior = $this->getMockBuilder(ideaReferencesBehavior::class)
-            ->setMethods(['planBelongsToIdea', 'issueExists'])
+            ->onlyMethods(['planBelongsToIdea', 'issueExists'])
             ->getMock();
         $behavior->expects($this->never())->method('planBelongsToIdea');
         $behavior->expects($this->never())->method('issueExists');
@@ -137,7 +137,7 @@ class IdeaReferencesBehaviorTest extends TestCase
     public function testUpdateSkipsUnchangedReferences()
     {
         $behavior = $this->getMockBuilder(ideaReferencesBehavior::class)
-            ->setMethods(['planBelongsToIdea', 'issueExists'])
+            ->onlyMethods(['planBelongsToIdea', 'issueExists'])
             ->getMock();
         $behavior->expects($this->never())->method('planBelongsToIdea');
         $behavior->expects($this->never())->method('issueExists');
@@ -171,7 +171,7 @@ class IdeaReferencesBehaviorTest extends TestCase
     private function behavior($planBelongs, $issueExists)
     {
         $behavior = $this->getMockBuilder(ideaReferencesBehavior::class)
-            ->setMethods(['planBelongsToIdea', 'issueExists'])
+            ->onlyMethods(['planBelongsToIdea', 'issueExists'])
             ->getMock();
         $behavior->method('planBelongsToIdea')->willReturn($planBelongs);
         $behavior->method('issueExists')->willReturn($issueExists);

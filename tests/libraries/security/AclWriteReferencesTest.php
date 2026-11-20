@@ -138,7 +138,7 @@ class AclWriteReferencesTest extends TestCase
 
         return $this->getMockBuilder(Acl::class)
             ->setConstructorArgs([$di, Acl::RESOLUTION_PERMISSIVE])
-            ->setMethods($mockedMethods)
+            ->onlyMethods($mockedMethods)
             ->getMock();
     }
 }
