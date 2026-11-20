@@ -86,6 +86,11 @@ class TokenController extends RestController
      */
     private function handlePasswordGrant($request, $response)
     {
+        // The library words a wrong password as "username"; answer like an unknown email
+        if ($response->getParameter('error') === 'invalid_grant') {
+            $response->setParameter('error_description', \Gaia\Exception\InvalidGrant::DESCRIPTION);
+        }
+
         $accessToken = $response->getParameter('access_token');
 
         if ($accessToken) {

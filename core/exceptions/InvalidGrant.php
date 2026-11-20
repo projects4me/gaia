@@ -18,6 +18,9 @@ class InvalidGrant extends \Exception
 {
     use SendsErrorResponse;
 
+    /** The one message for an unknown email and a wrong password. */
+    public const DESCRIPTION = 'Invalid email and password combination';
+
     /**
      * Build the http response without sending it.
      *
@@ -28,7 +31,7 @@ class InvalidGrant extends \Exception
     {
         return ErrorResponse::build(401, 'Unauthorized', [
             'error' => 'invalid_grant',
-            'error_description' => 'Invalid email and password combination'
+            'error_description' => self::DESCRIPTION
         ], [], $response);
     }
 }
