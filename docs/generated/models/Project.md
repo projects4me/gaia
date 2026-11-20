@@ -47,4 +47,4 @@
 - controller: Gaia\MVC\REST\Controllers\ProjectController
 - routes: DELETE /api/v1/project, DELETE /api/v1/project/{id}, GET /api/v1/project, GET /api/v1/project/{id}, GET /api/v1/project/{id}/{relation}, OPTIONS /api/v1/project, PATCH /api/v1/project, PATCH /api/v1/project/{id}, POST /api/v1/project, PUT /api/v1/project, PUT /api/v1/project/{id}
 - components: Notification, OnboardMember, ProjectActivities
-- cases: 34 (acl 13, backend 6, client 15); gaia-dev cases project
+- cases: 44 (acl 13, backend 6, client 21, live 4); gaia-dev cases project

@@ -10797,6 +10797,297 @@
       }
     },
     {
+      "id": "workspace-sync-create-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "API Test Sync Workspace"
+          }
+        }
+      },
+      "store": {
+        "runtime.syncWorkspaceId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-sync-create-project-a",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Workspace Sync Project A",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0,
+            "workspaceId": "{runtime.syncWorkspaceId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.syncProjectAId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-sync-create-project-b",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Workspace Sync Project B",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0,
+            "workspaceId": "{runtime.syncWorkspaceId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.syncProjectBId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-sync-new-project-has-manager-once",
+      "method": "GET",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "query": {
+        "query": "((Membership.projectId : {runtime.syncProjectBId}) AND (Membership.userId : {userId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.userId": "{userId}"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "workspace-sync-add-member-to-project-a",
+      "method": "POST",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "attributes": {
+            "userId": "{memberUserId}",
+            "projectId": "{runtime.syncProjectAId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.syncMemberAId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-sync-member-added-to-project-b",
+      "method": "GET",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "query": {
+        "query": "((Membership.projectId : {runtime.syncProjectBId}) AND (Membership.userId : {memberUserId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.userId": "{memberUserId}"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "workspace-sync-delete-member-from-project-a",
+      "method": "DELETE",
+      "path": "/api/v1/membership/{runtime.syncMemberAId}",
+      "resource": "membership",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      },
+      "query": {
+        "newAssigneeId": "{userId}"
+      }
+    },
+    {
+      "id": "workspace-sync-member-removed-from-project-b",
+      "method": "GET",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "query": {
+        "query": "((Membership.projectId : {runtime.syncProjectBId}) AND (Membership.userId : {memberUserId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonPathAbsent": [
+          "data.0"
+        ]
+      }
+    },
+    {
+      "id": "workspace-sync-create-own-workspace-project",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Workspace Sync Own Project",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.syncOwnProjectId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-sync-add-member-to-own-workspace-project",
+      "method": "POST",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "attributes": {
+            "userId": "{memberUserId}",
+            "projectId": "{runtime.syncOwnProjectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.syncOwnMemberId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-sync-one-project-workspace-stays-apart",
+      "method": "GET",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "query": {
+        "query": "((Membership.projectId : {runtime.syncProjectAId}) AND (Membership.userId : {memberUserId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonPathAbsent": [
+          "data.0"
+        ]
+      }
+    },
+    {
+      "id": "workspace-sync-cleanup-own-member",
+      "method": "DELETE",
+      "path": "/api/v1/membership/{runtime.syncOwnMemberId}",
+      "resource": "membership",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      },
+      "query": {
+        "newAssigneeId": "{userId}"
+      }
+    },
+    {
+      "id": "workspace-sync-cleanup-own-project",
+      "method": "DELETE",
+      "path": "/api/v1/project/{runtime.syncOwnProjectId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "workspace-sync-cleanup-project-b",
+      "method": "DELETE",
+      "path": "/api/v1/project/{runtime.syncProjectBId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "workspace-sync-cleanup-project-a",
+      "method": "DELETE",
+      "path": "/api/v1/project/{runtime.syncProjectAId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
       "id": "repository-create-defaults-base-branch",
       "method": "POST",
       "path": "/api/v1/repository",

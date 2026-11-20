@@ -9,6 +9,7 @@ namespace Gaia\MVC\REST\Controllers\Components;
 use Gaia\Libraries\Utils\Util;
 use Phalcon\Events\Event as Event;
 use Gaia\Workflows\Actions\CreateModel;
+use Gaia\MVC\Models\Membership;
 use Gaia\MVC\REST\Controllers\Components\Notifications\Modules\MembershipNotification;
 use Gaia\MVC\REST\Controllers\Components\Notifications\Services\RecipientService;
 
@@ -35,10 +36,16 @@ class OnboardMemberComponent
         global $logger;
         $logger->debug('Gaia.Controller.Component.OnboardMember::afterCreate()');
 
-        $membership = CreateModel::execute('Membership', [
-            'userId' => $model->projectManager,
-            'projectId' => $model->id,
-        ]);
+        // A project created into a workspace may already have the manager
+        // among the workspace's members (Workspaces D-004): notify them about
+        // that membership instead of creating a second one.
+        $membership = Membership::findOf($model->id, $model->projectManager);
+        if (!$membership) {
+            $membership = CreateModel::execute('Membership', [
+                'userId' => $model->projectManager,
+                'projectId' => $model->id,
+            ]);
+        }
         $recipientService = new RecipientService();
         $membershipNotification = new MembershipNotification($recipientService);
         $membershipNotification->onCreate($membership);

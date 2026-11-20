@@ -60,6 +60,30 @@ class MembershipLiveEventsComponent
     }
 
     /**
+     * Publish once per member for memberships written outside a request,
+     * e.g. by the workspace membership sync (Workspaces D-004): the event is
+     * user-scoped and carries only the user id, so one per user is enough.
+     *
+     * @param  iterable $models Memberships
+     * @return void
+     */
+    public function publishForMembers($models)
+    {
+        $published = [];
+        foreach ($models as $model) {
+            if (!$model || !isset($model->userId)) {
+                continue;
+            }
+            $userId = (string) $model->userId;
+            if (isset($published[$userId])) {
+                continue;
+            }
+            $published[$userId] = true;
+            $this->userAccess->publishAccessChanged($userId);
+        }
+    }
+
+    /**
      * @param  mixed $model Membership
      * @return void
      */

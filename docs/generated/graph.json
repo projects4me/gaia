@@ -22446,6 +22446,296 @@
       }
     },
     {
+      "id": "case:client/workspace-sync-add-member-to-own-workspace-project",
+      "type": "case",
+      "key": "client/workspace-sync-add-member-to-own-workspace-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.syncOwnProjectId"
+        ],
+        "stores": [
+          "runtime.syncOwnMemberId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-add-member-to-project-a",
+      "type": "case",
+      "key": "client/workspace-sync-add-member-to-project-a",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.syncProjectAId"
+        ],
+        "stores": [
+          "runtime.syncMemberAId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-cleanup-own-member",
+      "type": "case",
+      "key": "client/workspace-sync-cleanup-own-member",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/membership/{runtime.syncOwnMemberId}",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncOwnMemberId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-cleanup-own-project",
+      "type": "case",
+      "key": "client/workspace-sync-cleanup-own-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/project/{runtime.syncOwnProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncOwnProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-cleanup-project-a",
+      "type": "case",
+      "key": "client/workspace-sync-cleanup-project-a",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/project/{runtime.syncProjectAId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncProjectAId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-cleanup-project-b",
+      "type": "case",
+      "key": "client/workspace-sync-cleanup-project-b",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/project/{runtime.syncProjectBId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncProjectBId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-create-own-workspace-project",
+      "type": "case",
+      "key": "client/workspace-sync-create-own-workspace-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "userId"
+        ],
+        "stores": [
+          "runtime.syncOwnProjectId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-create-project-a",
+      "type": "case",
+      "key": "client/workspace-sync-create-project-a",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncWorkspaceId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.syncProjectAId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-create-project-b",
+      "type": "case",
+      "key": "client/workspace-sync-create-project-b",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncWorkspaceId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.syncProjectBId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-create-workspace",
+      "type": "case",
+      "key": "client/workspace-sync-create-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.syncWorkspaceId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-delete-member-from-project-a",
+      "type": "case",
+      "key": "client/workspace-sync-delete-member-from-project-a",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/membership/{runtime.syncMemberAId}",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncMemberAId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-member-added-to-project-b",
+      "type": "case",
+      "key": "client/workspace-sync-member-added-to-project-b",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.syncProjectBId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-member-removed-from-project-b",
+      "type": "case",
+      "key": "client/workspace-sync-member-removed-from-project-b",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.syncProjectBId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-new-project-has-manager-once",
+      "type": "case",
+      "key": "client/workspace-sync-new-project-has-manager-once",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncProjectBId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-one-project-workspace-stays-apart",
+      "type": "case",
+      "key": "client/workspace-sync-one-project-workspace-stays-apart",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.syncProjectAId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/workspace-update-changes-name",
       "type": "case",
       "key": "client/workspace-update-changes-name",
@@ -23314,6 +23604,143 @@
       }
     },
     {
+      "id": "case:live/live-workspace-sync-add-member-to-project-a",
+      "type": "case",
+      "key": "live/live-workspace-sync-add-member-to-project-a",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.liveSyncProjectAId"
+        ],
+        "stores": [
+          "runtime.liveSyncMemberAId"
+        ]
+      }
+    },
+    {
+      "id": "case:live/live-workspace-sync-cleanup-member",
+      "type": "case",
+      "key": "live/live-workspace-sync-cleanup-member",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "DELETE",
+        "path": "/api/v1/membership/{runtime.liveSyncMemberAId}",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveSyncMemberAId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-workspace-sync-cleanup-project-a",
+      "type": "case",
+      "key": "live/live-workspace-sync-cleanup-project-a",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "DELETE",
+        "path": "/api/v1/project/{runtime.liveSyncProjectAId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveSyncProjectAId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-workspace-sync-cleanup-project-b",
+      "type": "case",
+      "key": "live/live-workspace-sync-cleanup-project-b",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "DELETE",
+        "path": "/api/v1/project/{runtime.liveSyncProjectBId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.liveSyncProjectBId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:live/live-workspace-sync-create-project-a",
+      "type": "case",
+      "key": "live/live-workspace-sync-create-project-a",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncWorkspaceId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.liveSyncProjectAId"
+        ]
+      }
+    },
+    {
+      "id": "case:live/live-workspace-sync-create-workspace",
+      "type": "case",
+      "key": "live/live-workspace-sync-create-workspace",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.syncWorkspaceId"
+        ]
+      }
+    },
+    {
+      "id": "case:live/live-workspace-sync-new-project-publishes-access-for-seeded-members",
+      "type": "case",
+      "key": "live/live-workspace-sync-new-project-publishes-access-for-seeded-members",
+      "attributes": {
+        "catalog": "live",
+        "file": "tools/api-tester/apis/live.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.syncWorkspaceId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.liveSyncProjectBId"
+        ]
+      }
+    },
+    {
       "id": "case:mail/mail-cleanup-delete-created-user",
       "type": "case",
       "key": "mail/mail-cleanup-delete-created-user",
@@ -23850,7 +24277,8 @@
         "implements": [],
         "hooks": [
           "afterCreate",
-          "afterDelete"
+          "afterDelete",
+          "publishForMembers"
         ]
       }
     },
@@ -85153,6 +85581,531 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/workspace-sync-add-member-to-own-workspace-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-own-workspace-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-own-workspace-project",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-own-workspace-project",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-own-workspace-project"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-own-workspace-project",
+      "type": "exercises",
+      "to": "route:POST /api/v1/membership"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-own-workspace-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-own-workspace-project",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-project-a",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-project-a",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-project-a",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-project-a",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-project-a"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-project-a",
+      "type": "exercises",
+      "to": "route:POST /api/v1/membership"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-project-a",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-add-member-to-project-a",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-member",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-member",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-member",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-member",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-add-member-to-own-workspace-project"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-member",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/membership/{id}"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-member",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-member",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-project",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-project",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-own-workspace-project"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-project",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-own-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-project-a",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-project-a",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-project-a",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-project-a",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-project-a"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-project-a",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-project-a",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-project-b",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-project-b",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-project-b",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-project-b",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-project-b"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-project-b",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/workspace-sync-cleanup-project-b",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-create-own-workspace-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-create-own-workspace-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-create-own-workspace-project",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/workspace-sync-create-own-workspace-project",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/workspace-sync-create-own-workspace-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-create-own-workspace-project",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-a",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-a",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-a",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-a",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-a",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-a",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-a",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-b",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-b",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-b",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-b",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-b",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-b",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-create-project-b",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/workspace-sync-create-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-create-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-create-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-sync-create-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-sync-create-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-delete-member-from-project-a",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-delete-member-from-project-a",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-delete-member-from-project-a",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/workspace-sync-delete-member-from-project-a",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-add-member-to-project-a"
+    },
+    {
+      "from": "case:client/workspace-sync-delete-member-from-project-a",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/membership/{id}"
+    },
+    {
+      "from": "case:client/workspace-sync-delete-member-from-project-a",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-delete-member-from-project-a",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/workspace-sync-member-added-to-project-b",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-sync-member-added-to-project-b",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspace-sync-member-added-to-project-b",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-member-added-to-project-b",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-member-added-to-project-b",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/workspace-sync-member-added-to-project-b",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-project-b"
+    },
+    {
+      "from": "case:client/workspace-sync-member-added-to-project-b",
+      "type": "exercises",
+      "to": "route:GET /api/v1/membership"
+    },
+    {
+      "from": "case:client/workspace-sync-member-added-to-project-b",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-member-added-to-project-b",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:client/workspace-sync-member-removed-from-project-b",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspace-sync-member-removed-from-project-b",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-member-removed-from-project-b",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-member-removed-from-project-b",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/workspace-sync-member-removed-from-project-b",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-project-b"
+    },
+    {
+      "from": "case:client/workspace-sync-member-removed-from-project-b",
+      "type": "exercises",
+      "to": "route:GET /api/v1/membership"
+    },
+    {
+      "from": "case:client/workspace-sync-member-removed-from-project-b",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-member-removed-from-project-b",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:client/workspace-sync-new-project-has-manager-once",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-sync-new-project-has-manager-once",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspace-sync-new-project-has-manager-once",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-new-project-has-manager-once",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-new-project-has-manager-once",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/workspace-sync-new-project-has-manager-once",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-project-b"
+    },
+    {
+      "from": "case:client/workspace-sync-new-project-has-manager-once",
+      "type": "exercises",
+      "to": "route:GET /api/v1/membership"
+    },
+    {
+      "from": "case:client/workspace-sync-new-project-has-manager-once",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-new-project-has-manager-once",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/workspace-sync-one-project-workspace-stays-apart",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspace-sync-one-project-workspace-stays-apart",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-one-project-workspace-stays-apart",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-one-project-workspace-stays-apart",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/workspace-sync-one-project-workspace-stays-apart",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-project-a"
+    },
+    {
+      "from": "case:client/workspace-sync-one-project-workspace-stays-apart",
+      "type": "exercises",
+      "to": "route:GET /api/v1/membership"
+    },
+    {
+      "from": "case:client/workspace-sync-one-project-workspace-stays-apart",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-one-project-workspace-stays-apart",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
       "from": "case:client/workspace-update-changes-name",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -86746,6 +87699,241 @@
       "from": "case:live/live-userrole-delete-publishes-user-access-changed",
       "type": "uses_fixture",
       "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:live/live-workspace-sync-add-member-to-project-a",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-workspace-sync-add-member-to-project-a",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-workspace-sync-add-member-to-project-a",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:live/live-workspace-sync-add-member-to-project-a",
+      "type": "depends_on",
+      "to": "case:live/live-workspace-sync-create-project-a"
+    },
+    {
+      "from": "case:live/live-workspace-sync-add-member-to-project-a",
+      "type": "exercises",
+      "to": "route:POST /api/v1/membership"
+    },
+    {
+      "from": "case:live/live-workspace-sync-add-member-to-project-a",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-workspace-sync-add-member-to-project-a",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-member",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-member",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-member",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-member",
+      "type": "depends_on",
+      "to": "case:live/live-workspace-sync-add-member-to-project-a"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-member",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/membership/{id}"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-member",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-member",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-project-a",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-project-a",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-project-a",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-project-a",
+      "type": "depends_on",
+      "to": "case:live/live-workspace-sync-create-project-a"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-project-a",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/project/{id}"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-project-a",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-project-b",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-project-b",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-project-b",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-project-b",
+      "type": "depends_on",
+      "to": "case:live/live-workspace-sync-new-project-publishes-access-for-seeded-members"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-project-b",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/project/{id}"
+    },
+    {
+      "from": "case:live/live-workspace-sync-cleanup-project-b",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-workspace-sync-create-project-a",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-workspace-sync-create-project-a",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-workspace-sync-create-project-a",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:live/live-workspace-sync-create-project-a",
+      "type": "depends_on",
+      "to": "case:live/live-workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:live/live-workspace-sync-create-project-a",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:live/live-workspace-sync-create-project-a",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-workspace-sync-create-project-a",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:live/live-workspace-sync-create-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-workspace-sync-create-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-workspace-sync-create-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:live/live-workspace-sync-create-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:live/live-workspace-sync-create-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-workspace-sync-new-project-publishes-access-for-seeded-members",
+      "type": "asserts",
+      "to": "assertion:hermes.expect"
+    },
+    {
+      "from": "case:live/live-workspace-sync-new-project-publishes-access-for-seeded-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:live/live-workspace-sync-new-project-publishes-access-for-seeded-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:live/live-workspace-sync-new-project-publishes-access-for-seeded-members",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:live/live-workspace-sync-new-project-publishes-access-for-seeded-members",
+      "type": "depends_on",
+      "to": "case:live/live-workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:live/live-workspace-sync-new-project-publishes-access-for-seeded-members",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:live/live-workspace-sync-new-project-publishes-access-for-seeded-members",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:live/live-workspace-sync-new-project-publishes-access-for-seeded-members",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:live/live-workspace-sync-new-project-publishes-access-for-seeded-members",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
     },
     {
       "from": "case:mail/mail-cleanup-delete-created-user",

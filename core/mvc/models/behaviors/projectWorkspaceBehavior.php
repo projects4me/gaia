@@ -6,7 +6,10 @@
 
 namespace Gaia\MVC\Models\Behaviors;
 
+use Gaia\Libraries\Utils\TransactionScope;
+use Gaia\Libraries\Workspaces\MembershipSync;
 use Gaia\Libraries\Workspaces\ProjectWorkspace;
+use Gaia\MVC\REST\Controllers\Components\Events\MembershipLiveEventsComponent;
 use Phalcon\Messages\Message;
 use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\BehaviorInterface;
@@ -14,7 +17,9 @@ use Phalcon\Mvc\Model\Behavior;
 
 /**
  * Gives every new project a workspace and refuses moving a project to another
- * one (Workspaces D-002). The rule itself lives in {@see ProjectWorkspace}.
+ * one (Workspaces D-002), and gives a project created into a workspace the
+ * workspace's members (D-004). The rules live in {@see ProjectWorkspace} and
+ * {@see MembershipSync}.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
@@ -55,6 +60,43 @@ class projectWorkspaceBehavior extends Behavior implements BehaviorInterface
         }
 
         return true;
+    }
+
+    /**
+     * Add the members of the workspace's other projects to the new project,
+     * all or none, then publish their access change. The project itself is
+     * already saved: a failed sync is logged and does not undo it.
+     *
+     * @param  ModelInterface $model
+     * @return void
+     */
+    protected function afterCreate($model)
+    {
+        global $logger;
+
+        $seed = function () use ($model) {
+            return (new MembershipSync())->projectCreated($model->id ?? null, $model->workspaceId ?? null);
+        };
+
+        try {
+            $connection = $model->getWriteConnection();
+            if ($connection->isUnderTransaction()) {
+                $added = $seed();
+            } else {
+                $added = (new TransactionScope($connection))->run($seed, function () {
+                    return true;
+                });
+            }
+        } catch (\Throwable $e) {
+            if ($logger) {
+                $logger->error('projectWorkspaceBehavior::afterCreate() | ' . $e->getMessage());
+            }
+            return;
+        }
+
+        if (!empty($added)) {
+            (new MembershipLiveEventsComponent())->publishForMembers($added);
+        }
     }
 
     /**
