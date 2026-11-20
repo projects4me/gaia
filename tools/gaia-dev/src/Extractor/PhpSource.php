@@ -34,7 +34,7 @@ class PhpSource
         }
 
         try {
-            $statements = (new ParserFactory())->createForHostVersion()->parse(file_get_contents($path));
+            $statements = (new ParserFactory())->createForNewestSupportedVersion()->parse(file_get_contents($path));
         } catch (\PhpParser\Error $e) {
             throw new RuntimeException("{$path}: " . $e->getMessage(), 0, $e);
         }
