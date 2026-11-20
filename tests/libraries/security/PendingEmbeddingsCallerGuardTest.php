@@ -50,6 +50,7 @@ class PendingEmbeddingsCallerGuardTest extends TestCase
             'hermes' => ['client_id' => 'hermes-client', 'user_id' => null, 'scope' => 'searchpending.get', 'expires' => $future],
             'user' => ['client_id' => 'projects4me', 'user_id' => 'user-1', 'scope' => 'searchpending.get', 'expires' => $future],
             'disabled-ares' => ['client_id' => 'disabled-client', 'user_id' => null, 'scope' => 'searchpending.get', 'expires' => $future],
+            'disabled-ares-without-scope' => ['client_id' => 'disabled-client', 'user_id' => null, 'scope' => 'issue.get', 'expires' => $future],
         ];
         $this->clients = ['ares-client' => 'ares', 'hermes-client' => 'hermes'];
     }
@@ -76,6 +77,7 @@ class PendingEmbeddingsCallerGuardTest extends TestCase
             'unknown token' => ['nope'],
             'expired token' => ['ares-expired'],
             'client no longer active' => ['disabled-ares'],
+            'client no longer active, token without the scope' => ['disabled-ares-without-scope'],
         ];
     }
 

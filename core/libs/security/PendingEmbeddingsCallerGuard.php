@@ -70,15 +70,16 @@ class PendingEmbeddingsCallerGuard
         if (!$data) {
             throw new UnAuthorized(self::NO_TOKEN_ERROR);
         }
-        if ((isset($data['user_id']) && (string) $data['user_id'] !== '')
-            || !$this->hasScope(isset($data['scope']) ? $data['scope'] : '')
-        ) {
+        if (isset($data['user_id']) && (string) $data['user_id'] !== '') {
             throw new Access(self::ERROR);
         }
 
-        // A disabled or deleted client's tokens stop working (D-066): 401, as for any dead token
+        // A disabled or deleted client's tokens stop working (D-066): 401, as for any dead token, before
+        // the scope or kind is looked at
         $client = $this->serviceClient(isset($data['client_id']) ? (string) $data['client_id'] : '');
-        if ((string) $client->kind !== self::KIND) {
+        if (!$this->hasScope(isset($data['scope']) ? $data['scope'] : '')
+            || (string) $client->kind !== self::KIND
+        ) {
             throw new Access(self::ERROR);
         }
 
