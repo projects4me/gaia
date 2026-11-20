@@ -1109,6 +1109,170 @@
       "query": {
         "newAssigneeId": "{userId}"
       }
+    },
+    {
+      "id": "live-workspace-sync-create-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "API Test Live Sync Workspace"
+          }
+        }
+      },
+      "store": {
+        "runtime.syncWorkspaceId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    },
+    {
+      "id": "live-workspace-sync-create-project-a",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Live Workspace Sync Project A",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0,
+            "workspaceId": "{runtime.syncWorkspaceId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.liveSyncProjectAId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    },
+    {
+      "id": "live-workspace-sync-add-member-to-project-a",
+      "method": "POST",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "attributes": {
+            "userId": "{memberUserId}",
+            "projectId": "{runtime.liveSyncProjectAId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.liveSyncMemberAId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    },
+    {
+      "id": "live-workspace-sync-new-project-publishes-access-for-seeded-members",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Live Workspace Sync Project B",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0,
+            "workspaceId": "{runtime.syncWorkspaceId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.liveSyncProjectBId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      },
+      "hermes": {
+        "expect": [
+          {
+            "eventName": "user.access.changed",
+            "projectId": "user:{memberUserId}",
+            "resourceType": "user",
+            "resourceId": "{memberUserId}"
+          }
+        ],
+        "timeoutMs": 5000
+      }
+    },
+    {
+      "id": "live-workspace-sync-cleanup-member",
+      "method": "DELETE",
+      "path": "/api/v1/membership/{runtime.liveSyncMemberAId}",
+      "resource": "membership",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      },
+      "query": {
+        "newAssigneeId": "{userId}"
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    },
+    {
+      "id": "live-workspace-sync-cleanup-project-b",
+      "method": "DELETE",
+      "path": "/api/v1/project/{runtime.liveSyncProjectBId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      },
+      "hermes": {
+        "requireUp": false
+      }
+    },
+    {
+      "id": "live-workspace-sync-cleanup-project-a",
+      "method": "DELETE",
+      "path": "/api/v1/project/{runtime.liveSyncProjectAId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      },
+      "hermes": {
+        "requireUp": false
+      }
     }
   ]
 }

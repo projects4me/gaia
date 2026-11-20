@@ -926,6 +926,24 @@ class LiveEventsComponentsTest extends TestCase
         $this->assertCount(0, $posted);
     }
 
+    public function testSyncedMembershipsPublishAccessChangedOncePerUser()
+    {
+        $posted = array();
+        $membership = new MembershipLiveEventsComponent($this->make(UserAccessLiveEventsComponent::class, $posted));
+
+        $membership->publishForMembers(array(
+            (object) array('id' => 'm-1', 'projectId' => 'project-1', 'userId' => 'user-7'),
+            (object) array('id' => 'm-2', 'projectId' => 'project-2', 'userId' => 'user-7'),
+            (object) array('id' => 'm-3', 'projectId' => 'project-2', 'userId' => 'user-8'),
+            (object) array('id' => 'm-4', 'projectId' => 'project-3'),
+        ));
+
+        $this->assertCount(2, $posted);
+        $this->assertEquals(EventNames::USER_ACCESS_CHANGED, $posted[0]['eventName']);
+        $this->assertEquals('user:user-7', $posted[0]['projectId']);
+        $this->assertEquals('user:user-8', $posted[1]['projectId']);
+    }
+
     public function testUserroleCreateDeleteAndMoveToAnotherUserPublishAccessChanged()
     {
         $posted = array();
