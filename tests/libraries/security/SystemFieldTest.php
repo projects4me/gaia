@@ -270,7 +270,7 @@ class SystemFieldTest extends TestCase
     {
         $acl = $this->getMockBuilder(Acl::class)
             ->setConstructorArgs([$this->di, Acl::RESOLUTION_PERMISSIVE])
-            ->setMethods(['isModelActionAllowed', 'isResourceAllowed'])
+            ->onlyMethods(['isModelActionAllowed', 'isResourceAllowed'])
             ->getMock();
         $acl->method('isModelActionAllowed')->willReturn(true);
         $acl->method('isResourceAllowed')->willReturn(true);

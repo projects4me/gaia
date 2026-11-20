@@ -42,7 +42,7 @@ class BulkRoutePolicyTest extends TestCase
     /**
      * @return array<string, array{0: string, 1: string}>
      */
-    public function allowedProvider(): array
+    public static function allowedProvider(): array
     {
         return [
             'list with query' => ['GET', '/api/v1/issue?query=((Issue.status : new))&limit=5'],
@@ -68,7 +68,7 @@ class BulkRoutePolicyTest extends TestCase
     /**
      * @return array<string, array{0: string, 1: string, 2: string}>
      */
-    public function refusedProvider(): array
+    public static function refusedProvider(): array
     {
         return [
             'absolute url' => ['GET', 'http://evil.example/api/v1/issue', 'is not a relative'],

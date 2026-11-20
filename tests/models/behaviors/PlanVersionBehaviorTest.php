@@ -53,7 +53,7 @@ class PlanVersionBehaviorTest extends TestCase
     public function testCreateAssignsTheIdeasNextVersion()
     {
         $behavior = $this->getMockBuilder(planVersionBehavior::class)
-            ->setMethods(['getLatestVersion', 'lockIdea'])
+            ->onlyMethods(['getLatestVersion', 'lockIdea'])
             ->getMock();
         $behavior->method('getLatestVersion')->willReturn('2');
 
@@ -75,7 +75,7 @@ class PlanVersionBehaviorTest extends TestCase
     {
         $calls = [];
         $behavior = $this->getMockBuilder(planVersionBehavior::class)
-            ->setMethods(['getLatestVersion', 'lockIdea'])
+            ->onlyMethods(['getLatestVersion', 'lockIdea'])
             ->getMock();
         $behavior->expects($this->once())->method('lockIdea')
             ->willReturnCallback(function () use (&$calls) {

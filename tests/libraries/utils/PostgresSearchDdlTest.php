@@ -65,7 +65,7 @@ class PostgresSearchDdlTest extends TestCase
         );
     }
 
-    public function invalidDimensionsProvider()
+    public static function invalidDimensionsProvider()
     {
         return array(
             'missing' => array(array()),
@@ -151,7 +151,7 @@ class PostgresSearchDdlTest extends TestCase
         );
     }
 
-    public function invalidTsvectorProvider()
+    public static function invalidTsvectorProvider()
     {
         return array(
             'no sources' => array(array()),

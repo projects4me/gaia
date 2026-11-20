@@ -202,7 +202,7 @@ class DoccontentBehaviorTest extends TestCase
     private function behavior($docOk, $uniqueOk, $locked = false)
     {
         $behavior = $this->getMockBuilder(doccontentBehavior::class)
-            ->setMethods(['checkDoc', 'checkUnique', 'isAnyDocLocked'])
+            ->onlyMethods(['checkDoc', 'checkUnique', 'isAnyDocLocked'])
             ->getMock();
         $behavior->method('checkDoc')->willReturn($docOk);
         $behavior->method('checkUnique')->willReturn($uniqueOk);

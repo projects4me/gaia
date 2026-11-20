@@ -26,18 +26,23 @@ class BulkExecutorTest extends TestCase
     public function testEveryCallRunsInOrderAndKeepsItsOwnResult(): void
     {
         $runner = $this->createMock(SubRequestRunner::class);
+        $expected = [
+            ['POST', '/api/v1/tag', ['data' => ['type' => 'tag']], 'Bearer abc'],
+            ['GET', '/api/v1/issue/missing', null, 'Bearer abc'],
+            ['GET', '/api/v1/project', null, 'Bearer abc'],
+        ];
+        $results = [
+            new SubResult(201, ['data' => ['id' => 't1']], 12.4),
+            new SubResult(404, ['error' => 'Not Found'], 3.6),
+            new SubResult(403, ['error' => 'Access Denied'], 1.0),
+        ];
+        $calls = 0;
         $runner->expects($this->exactly(3))
             ->method('run')
-            ->withConsecutive(
-                ['POST', '/api/v1/tag', ['data' => ['type' => 'tag']], 'Bearer abc'],
-                ['GET', '/api/v1/issue/missing', null, 'Bearer abc'],
-                ['GET', '/api/v1/project', null, 'Bearer abc']
-            )
-            ->willReturnOnConsecutiveCalls(
-                new SubResult(201, ['data' => ['id' => 't1']], 12.4),
-                new SubResult(404, ['error' => 'Not Found'], 3.6),
-                new SubResult(403, ['error' => 'Access Denied'], 1.0)
-            );
+            ->willReturnCallback(function (...$args) use (&$calls, $expected, $results) {
+                $this->assertSame($expected[$calls], $args);
+                return $results[$calls++];
+            });
 
         $responses = (new BulkExecutor($runner))->run([
             new BulkItem('write', 'POST', '/api/v1/tag', ['data' => ['type' => 'tag']]),
