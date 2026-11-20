@@ -296,10 +296,6 @@ class TokenControllerTest extends TestCase
     /**
      * Test the incorrect password with exceeding login attempts and exceeding lock time.
      *
-     * Quarantined: a wrong password still answers "Invalid username and password
-     * combination" (agaia #4695).
-     *
-     * @group  quarantine
      * @return void
      */
     public function testIncorrectPasswordWithExceedingAttemptsAndExceedingLockTime()
