@@ -142,7 +142,7 @@ class IdeaScreensBehaviorTest extends TestCase
     private function behaviorFinding(array $found)
     {
         $behavior = $this->getMockBuilder(ideaScreensBehavior::class)
-            ->setMethods(['findIdeaUploadIds'])
+            ->onlyMethods(['findIdeaUploadIds'])
             ->getMock();
         $behavior->method('findIdeaUploadIds')->willReturnCallback(
             function ($ideaId, array $uploadIds) use ($found) {

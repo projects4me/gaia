@@ -166,7 +166,7 @@ class SmtpSettingsTest extends TestCase
         $this->assertSame('saved-secret', $smtp['password']);
     }
 
-    public function keptSecrets()
+    public static function keptSecrets()
     {
         return [
             'blank' => [''],
@@ -201,7 +201,7 @@ class SmtpSettingsTest extends TestCase
         $this->assertTrue(SmtpSettings::reusesStoredPassword($stored, $resolved, $submitted));
     }
 
-    public function connectionChanges()
+    public static function connectionChanges()
     {
         return [
             'host' => [['email.smtpHost' => 'attacker.example.com']],
@@ -281,7 +281,7 @@ class SmtpSettingsTest extends TestCase
         $this->assertSame($autoTls, $mail->SMTPAutoTLS);
     }
 
-    public function encryptionModes()
+    public static function encryptionModes()
     {
         return [
             'tls' => ['tls', PHPMailer::ENCRYPTION_STARTTLS, true],

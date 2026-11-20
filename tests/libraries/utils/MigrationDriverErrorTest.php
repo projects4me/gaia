@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  */
 class MigrationDriverErrorTest extends TestCase
 {
-    public function throwableProvider()
+    public static function throwableProvider()
     {
         return [
             'phalcon db exception' => [new DbException('db failed')],
