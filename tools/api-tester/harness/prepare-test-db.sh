@@ -1182,7 +1182,7 @@ INSERT INTO serviceclients (
 ) VALUES
   ('api-test-serviceclient-000002', 'API Tester Hermes', 'hermes', 'active', '["token.introspect"]', 'service-api-tester-hermes', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
   ('api-test-serviceclient-000003', 'API Tester Delegator', 'runtime', 'active', '["agent.delegate","agent.read"]', 'service-api-tester-delegator', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
-  ('api-test-serviceclient-000004', 'API Tester Ares', 'ares', 'active', '["issue.get","issue.update","serviceclient.rotate"]', 'service-api-tester-ares', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+  ('api-test-serviceclient-000004', 'API Tester Ares', 'ares', 'active', '["issue.get","issue.update","searchpending.get","serviceclient.rotate"]', 'service-api-tester-ares', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, kind = EXCLUDED.kind, status = 'active', scopes = EXCLUDED.scopes, "clientId" = EXCLUDED."clientId", deleted = FALSE;
 
 INSERT INTO oauth_access_tokens (access_token, client_id, user_id, expires, scope)

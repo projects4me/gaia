@@ -587,6 +587,16 @@
 | GET | /api/v1/search/{id}/{relation} | rest | search.related |
 | OPTIONS | /api/v1/search | rest | search.options |
 
+<a id="searchpending"></a>
+## searchpending
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/searchpending | rest | searchpending.list |
+| GET | /api/v1/searchpending/{id} | rest | searchpending.get |
+| GET | /api/v1/searchpending/{id}/{relation} | rest | searchpending.related |
+| OPTIONS | /api/v1/searchpending | rest | searchpending.options |
+
 <a id="serviceclient"></a>
 ## serviceclient
 

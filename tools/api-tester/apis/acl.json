@@ -3308,6 +3308,66 @@
       },
       "expects": { "status": 401, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-service-token"
+    },
+    {
+      "id": "acl-searchpending-list-allowed-ares",
+      "method": "GET",
+      "path": "/api/v1/searchpending",
+      "resource": "searchpending",
+      "auth": "serviceAres",
+      "query": { "limit": "5" },
+      "expects": { "status": 200, "shape": "json" },
+      "source": "acl-searchpending"
+    },
+    {
+      "id": "acl-searchpending-list-denied-anonymous",
+      "method": "GET",
+      "path": "/api/v1/searchpending",
+      "resource": "searchpending",
+      "auth": false,
+      "query": { "limit": "5" },
+      "expects": { "status": 401, "shape": "error" },
+      "source": "acl-searchpending"
+    },
+    {
+      "id": "acl-searchpending-list-denied-user",
+      "method": "GET",
+      "path": "/api/v1/searchpending",
+      "resource": "searchpending",
+      "auth": true,
+      "query": { "limit": "5" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Only the Ares service may list the records whose embedding is pending." },
+      "source": "acl-searchpending"
+    },
+    {
+      "id": "acl-searchpending-list-denied-scoped-agent",
+      "method": "GET",
+      "path": "/api/v1/searchpending",
+      "resource": "searchpending",
+      "auth": "aclScopedToken",
+      "query": { "limit": "5" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Only the Ares service may list the records whose embedding is pending." },
+      "source": "acl-searchpending"
+    },
+    {
+      "id": "acl-searchpending-list-denied-hermes",
+      "method": "GET",
+      "path": "/api/v1/searchpending",
+      "resource": "searchpending",
+      "auth": "serviceHermes",
+      "query": { "limit": "5" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Only the Ares service may list the records whose embedding is pending." },
+      "source": "acl-searchpending"
+    },
+    {
+      "id": "acl-searchpending-list-denied-runtime",
+      "method": "GET",
+      "path": "/api/v1/searchpending",
+      "resource": "searchpending",
+      "auth": "serviceRuntime",
+      "query": { "limit": "5" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Only the Ares service may list the records whose embedding is pending." },
+      "source": "acl-searchpending"
     }
   ]
 }

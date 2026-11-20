@@ -15,9 +15,11 @@ use Phalcon\Cli\Task;
  *
  * `php cli.php search reindex [type]` brings every searchable record's
  * semantic text and hash up to date and tells Ares about each record whose
- * embedding is missing or stale. Run it daily: Hermes keeps no history, so
- * this re-sends the changes Ares missed. Exits 1 when a record failed and 2
- * on an unknown type, so cron sees it.
+ * embedding is missing or stale; it is run by hand. `php cli.php search
+ * backfill [type]` is its text step alone and publishes nothing; the
+ * container runs it on start. Ares finds the records it still has to embed
+ * through GET /api/v1/searchpending. Both exit 1 when a record failed and 2
+ * on an unknown type.
  *
  * @author  Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Core\Tasks
@@ -32,12 +34,37 @@ class SearchTask extends Task
     {
         echo 'Search Task - Available actions:' . PHP_EOL;
         echo '  reindex [type] - Update the semantic text and re-publish records with a stale embedding' . PHP_EOL;
+        echo '  backfill [type] - Store missing or outdated semantic text and hashes; publishes nothing' . PHP_EOL;
     }
 
     /**
      * Reindexes one search type, or every type with semantic fields.
      */
     public function reindexAction()
+    {
+        $this->report(function (SemanticReindexer $reindexer, $type) {
+            return $reindexer->run($type);
+        }, true);
+    }
+
+    /**
+     * Backfills the semantic text and hash of one search type, or every type with semantic fields. The container
+     * runs it on start, after the migrations.
+     */
+    public function backfillAction()
+    {
+        $this->report(function (SemanticReindexer $reindexer, $type) {
+            return $reindexer->backfill($type);
+        }, false);
+    }
+
+    /**
+     * Runs one reindexer step for the type given on the command line and prints its counts per type.
+     *
+     * @param callable $step Takes the reindexer and the type, returns the counts per type
+     * @param bool $publishes Whether the step publishes, so its counts have a published count
+     */
+    private function report(callable $step, $publishes)
     {
         $params = $this->dispatcher->getParams();
         $type = isset($params[0]) ? (string) $params[0] : null;
@@ -50,7 +77,7 @@ class SearchTask extends Task
         );
 
         try {
-            $result = $reindexer->run($type);
+            $result = $step($reindexer, $type);
         } catch (\Gaia\Exception\Exception $e) {
             fwrite(STDERR, $e->getMessage() . PHP_EOL);
             exit(2);
@@ -59,8 +86,9 @@ class SearchTask extends Task
         $failed = 0;
         foreach ($result as $searchType => $counts) {
             echo "{$searchType}: {$counts['records']} records, {$counts['updated']} texts updated, "
-                . "{$counts['skipped']} saved meanwhile, {$counts['published']} published, {$counts['failed']} failed"
-                . PHP_EOL;
+                . "{$counts['skipped']} saved meanwhile, "
+                . ($publishes ? "{$counts['published']} published, " : '')
+                . "{$counts['failed']} failed" . PHP_EOL;
             $failed += $counts['failed'];
         }
         if ($failed > 0) {

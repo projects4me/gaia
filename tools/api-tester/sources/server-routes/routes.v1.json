@@ -665,6 +665,13 @@
                 "GET"
             ],
             "identifier": null
+        },
+        "searchpending": {
+            "path": "/api/:version/searchpending",
+            "allowedMethods": [
+                "GET"
+            ],
+            "identifier": null
         }
     }
 }

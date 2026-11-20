@@ -13,7 +13,8 @@ use Gaia\MVC\REST\Controllers\Components\Events\SearchLiveEvents;
  * The search reindex: pages through every non-deleted record of the searchable models with semantic fields,
  * stores the canonical semantic text and hash where they are missing or differ (a backfill, or a change to the
  * text rule), then announces search.semantic.changed, paced, for every record whose embedding is missing or was made
- * from another text. Hermes keeps no history, so this is how Ares catches up on the events it missed.
+ * from another text. Hermes keeps no history, so this is how Ares catches up on the events it missed. The backfill
+ * is the text step alone: it stores the text and hash and announces nothing, so it can run on every container start.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -93,9 +94,34 @@ class SemanticReindexer
      */
     public function run($type = null)
     {
+        return $this->each($type, true);
+    }
+
+    /**
+     * This function stores the missing or outdated semantic text and hash of one search type, or of every type with
+     * semantic fields, and publishes nothing.
+     *
+     * @param string|null $type
+     * @return array Counts per type: records, updated (text stored), skipped (saved meanwhile) and failed (text not
+     *               buildable)
+     * @throws \Gaia\Exception\Exception When the type is unknown or has no semantic fields
+     */
+    public function backfill($type = null)
+    {
+        return $this->each($type, false);
+    }
+
+    /**
+     * @param string|null $type
+     * @param bool $publish Whether to announce the records whose embedding is missing or stale
+     * @return array
+     * @throws \Gaia\Exception\Exception
+     */
+    private function each($type, $publish)
+    {
         $counts = array();
         foreach ($this->blocks($type) as $block) {
-            $counts[$block['type']] = $this->reindex($block);
+            $counts[$block['type']] = $this->reindex($block, $publish);
         }
 
         return $counts;
@@ -130,14 +156,17 @@ class SemanticReindexer
      * This function reindexes the records of one searchable model.
      *
      * @param array $block A registry entry
+     * @param bool $publish
      * @return array
      */
-    private function reindex(array $block)
+    private function reindex(array $block, $publish)
     {
         $table = $this->metaManager->getModelMeta($block['model'])['tableName'];
         $resource = strtolower($block['model']);
         $semanticText = SemanticText::forBlock($block);
-        $counts = array('records' => 0, 'updated' => 0, 'skipped' => 0, 'published' => 0, 'failed' => 0);
+        $counts = $publish
+            ? array('records' => 0, 'updated' => 0, 'skipped' => 0, 'published' => 0, 'failed' => 0)
+            : array('records' => 0, 'updated' => 0, 'skipped' => 0, 'failed' => 0);
 
         $afterId = '';
         do {
@@ -161,7 +190,7 @@ class SemanticReindexer
                     }
                     $counts['updated']++;
                 }
-                if ($row[SearchBlock::ACTUAL_HASH] !== $hash) {
+                if ($publish && $row[SearchBlock::ACTUAL_HASH] !== $hash) {
                     $published = $this->events->publishSemanticChanged($block['type'], $resource, $row['id']) !== null;
                     $counts[$published ? 'published' : 'failed']++;
                     ($this->pause)();

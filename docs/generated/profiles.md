@@ -14,9 +14,9 @@
 - aclNoProject role ACL No Project | allow 3, members 0, deny 3 | cases 24 | issue/comment allowed, project.get denied
 - aclNoSetting role ACL No Setting | allow 12, members 0, deny 21 | cases 43 | issuestatus/issuetype allowed, setting.* denied
 - aclProjectOnly role ACL Project Only | allow 5, members 0, deny 3 | cases 8 | project allowed, issue.get denied
-- aclScopedToken role ACL Agent | allow 27, members 0, deny 1 | cases 8 | ACL Agent
-- anonymous no login | allow 0, members 0, deny 0 | cases 46
-- default role Admin | allow 200, members 0, deny 0 | cases 737 | Admin role of the seeded main user
-- serviceAres no login | allow 0, members 0, deny 0 | cases 12
-- serviceHermes no login | allow 0, members 0, deny 0 | cases 8
-- serviceRuntime no login | allow 0, members 0, deny 0 | cases 19
+- aclScopedToken role ACL Agent | allow 27, members 0, deny 1 | cases 9 | ACL Agent
+- anonymous no login | allow 0, members 0, deny 0 | cases 47
+- default role Admin | allow 200, members 0, deny 0 | cases 740 | Admin role of the seeded main user
+- serviceAres no login | allow 0, members 0, deny 0 | cases 21
+- serviceHermes no login | allow 0, members 0, deny 0 | cases 9
+- serviceRuntime no login | allow 0, members 0, deny 0 | cases 20

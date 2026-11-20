@@ -26,9 +26,10 @@ $config['serviceClients'] = array(
             'scopes' => array('token.introspect', 'serviceclient.rotate'),
         ),
         // The Ares AI service: reads the semantic text of searchable records
-        // and stores their embeddings (D-072). Searchable today: issues.
+        // and stores their embeddings (D-072), and lists the records whose
+        // embedding is pending (search D-009). Searchable today: issues.
         'ares' => array(
-            'scopes' => array('issue.get', 'issue.update', 'serviceclient.rotate'),
+            'scopes' => array('issue.get', 'issue.update', 'searchpending.get', 'serviceclient.rotate'),
         ),
     ),
     // Enrollment (Serviceenrollment, D-066): how long a request waits for an

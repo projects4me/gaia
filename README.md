@@ -17,6 +17,20 @@ design, more so than most of the other frameworks, it was the best choice to bui
 
 # Installation
 
+## Semantic search upkeep
+
+- **On start**: the dev image's `docker/dev/start.sh` runs `php cli.php search backfill` after `migration migrate`. It
+  stores the semantic text and `searchDesiredHash` of records that have none or an outdated one, publishes nothing
+  and prints counts per type. A failed backfill is logged and the container still starts.
+- **Ares catches up**: the Ares service pages through `GET /api/v1/searchpending?after=<cursor>&limit=<n>` for the
+  records whose embedding is missing or stale (ids only, `next` cursor, `limit` default 200, at most 500). Only an
+  active `ares` service client whose token has the scope `searchpending.get` may call it; an Ares client enrolled
+  before that scope existed needs it added.
+- **By hand**: `php cli.php search reindex [type]` backfills and also re-publishes `search.semantic.changed` for every
+  record whose embedding is missing or stale. There is no scheduler.
+
+See `docs/architecture/search/decisions.md` (D-006, D-009).
+
 # Contributions
 
 # License
