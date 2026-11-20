@@ -224,9 +224,6 @@ try {
     $gaiaEventManager = new \Gaia\Events\EventManager();
     $gaiaEventManager->attachEvents();
 
-    // putenv('XHGUI_MONGO_HOST=mongodb://xhgui:27017');
-    // require_once('/usr/local/src/xhgui/external/header.php');
-
     /**
      * @todo move the migration away to elsewhere
      */
