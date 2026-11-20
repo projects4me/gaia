@@ -7,6 +7,8 @@
 namespace  Gaia\MVC\REST\Controllers;
 
 use Gaia\Core\MVC\REST\Controllers\RestController;
+use Gaia\Libraries\Workspaces\MemberRemoval;
+use Gaia\Libraries\Workspaces\MemberRemovalRefusal;
 use Gaia\MVC\Models\Membership;
 
 /**
@@ -42,84 +44,44 @@ class MembershipController extends RestController
     public $uses = array('ProjectActivities', 'Notification', 'Events\\MembershipLiveEvents');
 
     /**
-     * Delete action to handle membership deletion and reassign in-progress issues to a new assignee.
+     * Delete action: hands over the member's open issues in the workspace (query
+     * parameter handoverTo: a user id) and deletes the membership in one
+     * transaction. 409 when open issues need a handover, 422 for a wrong target.
      *
      * @return \Phalcon\Http\Response
      */
     public function deleteAction()
     {
-        global $logger;
-        $logger->debug('MembershipController::deleteAction() | Assigning issues to (given new assignee) member');
+        $membership = Membership::findFirst(['conditions' => 'id = :id:', 'bind' => ['id' => $this->id]]);
+        if (!$membership) {
+            return parent::deleteAction();
+        }
 
-        $membership = Membership::findById($this->id)->getFirst();
-        $newAssigneeId = $this->request->get('newAssigneeId');
-
-        if ($this->checkAssignee($membership, $newAssigneeId)) {
-            $queryBuilder = $this->getDI()->get('modelsManager')->createBuilder();
-            $query = $queryBuilder
-                ->from(['i' => 'Gaia\MVC\Models\Issue'])
-                ->innerJoin(
-                    'Gaia\MVC\Models\Issuestatus',
-                    'is2.projectId = i.projectId AND is2.id = i.statusId',
-                    'is2'
-                )
-                ->where(
-                    'i.assignee = :assignee:', [
-                    'assignee' => $membership->userId
-                    ]
-                )
-                ->andWhere(
-                    'is2.done = :done:', [
-                    'done' => '0'
-                    ]
-                )
-                ->andWhere(
-                    'i.projectId = :projectId:', [
-                    'projectId' => $membership->projectId
-                    ]
-                );
-            
-            $issues = $query->getQuery()->execute();
-
-            if ($issues) {
-                foreach ($issues as $issue) {
-                    $issue->assignee = $newAssigneeId;
-                    $issue->save();
-                }
+        $db = $this->getDI()->getShared('db');
+        $db->begin();
+        try {
+            (new MemberRemoval())->handOver($membership, $this->request->get('handoverTo'));
+            $response = parent::deleteAction();
+            if ($response->getStatusCode() >= 400) {
+                $db->rollback();
+            } else {
+                $db->commit();
             }
+
+            return $response;
+        } catch (MemberRemovalRefusal $refusal) {
+            $db->rollback();
+            $this->response->setStatusCode($refusal->getCode());
+            $this->response->setJsonContent(['status' => 'ERROR', 'messages' => [$refusal->getMessage()]]);
+
+            return $this->response;
+        } catch (\Throwable $e) {
+            try {
+                $db->rollback();
+            } catch (\Throwable $ignored) {
+                // No open transaction.
+            }
+            throw $e;
         }
-
-        return parent::deleteAction();
-    }
-
-    /**
-     * Validates if the new assignee is a member of the project
-     *
-     * @param  Membership $membership    Current membership being deleted
-     * @param  int        $newAssigneeId ID of the new assignee
-     * @return bool True if assignee is valid
-     * @throws \Gaia\Exception\Exception If assignee is not a project member
-     */
-    protected function checkAssignee(Membership $membership, $newAssigneeId)
-    {
-        global $logger;
-        $logger->debug('MembershipController::checkAssignee() | Checking if assignee is a member of the project');
-
-        $newAssigneeMembership = Membership::findFirst(
-            [
-            'conditions' => 'userId = :userId: AND projectId = :projectId:',
-            'bind' => [
-                'userId' => $newAssigneeId,
-                'projectId' => $membership->projectId
-            ]
-            ]
-        );
-
-        if (!$newAssigneeMembership) {
-            $logger->error('MembershipController::checkAssignee() | Assignee is not a member of the project');
-            throw new \Gaia\Exception\Exception('Assignee is not a member of the project');
-        }
-
-        return true;
     }
 }

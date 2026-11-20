@@ -22500,8 +22500,7 @@
         "enabled": true,
         "source": null,
         "placeholders": [
-          "runtime.syncOwnMemberId",
-          "userId"
+          "runtime.syncOwnMemberId"
         ],
         "stores": []
       }
@@ -22655,6 +22654,123 @@
         "placeholders": [
           "runtime.syncMemberAId",
           "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-handover-create-open-issue",
+      "type": "case",
+      "key": "client/workspace-sync-handover-create-open-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "memberUserId",
+          "projectShortcode",
+          "runtime.syncProjectBId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.syncHandoverIssueId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-handover-issue-reassigned",
+      "type": "case",
+      "key": "client/workspace-sync-handover-issue-reassigned",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{runtime.syncHandoverIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncHandoverIssueId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-handover-open-issues-need-handover-409",
+      "type": "case",
+      "key": "client/workspace-sync-handover-open-issues-need-handover-409",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/membership/{runtime.syncMemberAId}",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncMemberAId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-handover-to-non-member-422",
+      "type": "case",
+      "key": "client/workspace-sync-handover-to-non-member-422",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/membership/{runtime.syncMemberAId}",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncMemberAId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-handover-to-none-422",
+      "type": "case",
+      "key": "client/workspace-sync-handover-to-none-422",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/membership/{runtime.syncMemberAId}",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncMemberAId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-sync-handover-to-self-422",
+      "type": "case",
+      "key": "client/workspace-sync-handover-to-self-422",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/membership/{runtime.syncMemberAId}",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.syncMemberAId"
         ],
         "stores": []
       }
@@ -85681,11 +85797,6 @@
       "to": "profile:default"
     },
     {
-      "from": "case:client/workspace-sync-cleanup-own-member",
-      "type": "uses_fixture",
-      "to": "fixture:userId"
-    },
-    {
       "from": "case:client/workspace-sync-cleanup-own-project",
       "type": "asserts",
       "to": "assertion:shape"
@@ -85934,6 +86045,226 @@
       "from": "case:client/workspace-sync-delete-member-from-project-a",
       "type": "uses_fixture",
       "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-create-open-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-create-open-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-create-open-issue",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-create-open-issue",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-project-b"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-create-open-issue",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-create-open-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-create-open-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-create-open-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-create-open-issue",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-create-open-issue",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-create-open-issue",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-issue-reassigned",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-issue-reassigned",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-issue-reassigned",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-issue-reassigned",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-issue-reassigned",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-handover-create-open-issue"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-issue-reassigned",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-issue-reassigned",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-issue-reassigned",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-open-issues-need-handover-409",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-open-issues-need-handover-409",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-open-issues-need-handover-409",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-open-issues-need-handover-409",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-add-member-to-project-a"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-open-issues-need-handover-409",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/membership/{id}"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-open-issues-need-handover-409",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-non-member-422",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-non-member-422",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-non-member-422",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-non-member-422",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-add-member-to-project-a"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-non-member-422",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/membership/{id}"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-non-member-422",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-none-422",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-none-422",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-none-422",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-none-422",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-add-member-to-project-a"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-none-422",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/membership/{id}"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-none-422",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-self-422",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-self-422",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-self-422",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-self-422",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-add-member-to-project-a"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-self-422",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/membership/{id}"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-self-422",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-sync-handover-to-self-422",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
     },
     {
       "from": "case:client/workspace-sync-member-added-to-project-b",
