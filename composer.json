@@ -12,6 +12,6 @@
     "guzzlehttp/guzzle": "^7.9"
   },
   "require-dev": {
-    "nikic/php-parser": "^4.13"
+    "nikic/php-parser": "^5.7"
   }
 }
