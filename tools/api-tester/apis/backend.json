@@ -8,12 +8,12 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 243,
+        "total": 244,
         "enabled": 221,
-        "disabled": 22,
-        "routeResources": 68,
+        "disabled": 23,
+        "routeResources": 69,
         "withMetadata": 51,
-        "skippedResources": 15
+        "skippedResources": 16
     },
     "apis": [
         {
@@ -4344,6 +4344,24 @@
             "method": "GET",
             "path": "/api/v1/search",
             "resource": "search",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "json"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "enabled": false,
+            "skipReason": "No app/metadata/model for resource",
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-searchpending-api-v1-searchpending",
+            "method": "GET",
+            "path": "/api/v1/searchpending",
+            "resource": "searchpending",
             "auth": true,
             "expects": {
                 "status": 200,

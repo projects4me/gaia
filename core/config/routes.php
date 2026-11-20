@@ -688,6 +688,12 @@ $config['routes'] = array(
                 'allowedMethods' => [
                     'GET',
                 ],
+            ],
+            'searchpending' => [
+                'path' => '/api/:version/searchpending',
+                'allowedMethods' => [
+                    'GET',
+                ],
             ]
         )
     ),

@@ -120,7 +120,7 @@ class BulkRoutePolicyTest extends TestCase
         sort($anonymous);
 
         $this->assertSame(
-            ['forgetpassword', 'introspect', 'resetpassword', 'serviceenrollment', 'token'],
+            ['forgetpassword', 'introspect', 'resetpassword', 'searchpending', 'serviceenrollment', 'token'],
             $anonymous,
             'A v1 resource changed whether a bulk batch may call it; update this list on purpose.'
         );

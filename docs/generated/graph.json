@@ -2037,6 +2037,30 @@
       "attributes": {}
     },
     {
+      "id": "action:searchpending.get",
+      "type": "action",
+      "key": "searchpending.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:searchpending.list",
+      "type": "action",
+      "key": "searchpending.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:searchpending.options",
+      "type": "action",
+      "key": "searchpending.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:searchpending.related",
+      "type": "action",
+      "key": "searchpending.related",
+      "attributes": {}
+    },
+    {
       "id": "action:serviceclient.get",
       "type": "action",
       "key": "serviceclient.get",
@@ -3567,9 +3591,7 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 163,
-        "messages": [
-          "attributesAbsent: unexpectedly found attributes.…"
-        ],
+        "messages": [],
         "values": [],
         "example": "acl/acl-field-explicit-fields-omits-denied-subject"
       }
@@ -3581,10 +3603,7 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 201,
-        "messages": [
-          "attributesEqual: missing attributes.…",
-          "attributesEqual: attributes.… expected '…', got '"
-        ],
+        "messages": [],
         "values": [],
         "example": "acl/acl-field-verify-patch-discard-as-admin"
       }
@@ -3596,9 +3615,7 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 152,
-        "messages": [
-          "attributesPresent: missing attributes.…"
-        ],
+        "messages": [],
         "values": [],
         "example": "acl/acl-field-default-select-keeps-structural-projectId"
       }
@@ -3610,9 +3627,7 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 78,
-        "messages": [
-          "errorEqual: expected '…', got '"
-        ],
+        "messages": [],
         "values": [],
         "example": "acl/acl-issue-denied-without-project-group"
       }
@@ -3648,9 +3663,7 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 175,
-        "messages": [
-          "idsExcludes: unexpectedly found id …"
-        ],
+        "messages": [],
         "values": [],
         "example": "acl/acl-members-issuetype-list-includes-system-types"
       }
@@ -3662,9 +3675,7 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 174,
-        "messages": [
-          "idsIncludes: missing id …"
-        ],
+        "messages": [],
         "values": [],
         "example": "acl/acl-project-rels-issues-omitted"
       }
@@ -3676,9 +3687,7 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 102,
-        "messages": [
-          "includedTypesAbsent: unexpectedly found type …"
-        ],
+        "messages": [],
         "values": [],
         "example": "acl/acl-project-rels-issues-omitted"
       }
@@ -3690,9 +3699,7 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 118,
-        "messages": [
-          "includedTypesPresent: missing type …"
-        ],
+        "messages": [],
         "values": [],
         "example": "acl/acl-project-rels-mixed-issues-omitted-members-kept"
       }
@@ -3704,9 +3711,7 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 84,
-        "messages": [
-          "jsonEqual: … expected '…', got '"
-        ],
+        "messages": [],
         "values": [],
         "example": "acl/acl-system-type-labels-unchanged-after-denied-copy"
       }
@@ -3718,9 +3723,7 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 94,
-        "messages": [
-          "jsonPathAbsent: unexpectedly found …"
-        ],
+        "messages": [],
         "values": [],
         "example": "acl/acl-agentspec-allowed-default"
       }
@@ -3792,9 +3795,7 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 134,
-        "messages": [
-          "resourceNamesAbsent: unexpectedly found resourceName …"
-        ],
+        "messages": [],
         "values": [],
         "example": "acl/acl-perm-list-collapses-field-mode-not-triples"
       }
@@ -3806,9 +3807,7 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 143,
-        "messages": [
-          "resourceNamesPresent: missing resourceName …"
-        ],
+        "messages": [],
         "values": [],
         "example": "acl/acl-perm-list-collapses-field-mode-not-triples"
       }
@@ -7182,6 +7181,102 @@
       }
     },
     {
+      "id": "case:acl/acl-searchpending-list-allowed-ares",
+      "type": "case",
+      "key": "acl/acl-searchpending-list-allowed-ares",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": true,
+        "source": "acl-searchpending",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-searchpending-list-denied-anonymous",
+      "type": "case",
+      "key": "acl/acl-searchpending-list-denied-anonymous",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": true,
+        "source": "acl-searchpending",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-searchpending-list-denied-hermes",
+      "type": "case",
+      "key": "acl/acl-searchpending-list-denied-hermes",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": true,
+        "source": "acl-searchpending",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-searchpending-list-denied-runtime",
+      "type": "case",
+      "key": "acl/acl-searchpending-list-denied-runtime",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": true,
+        "source": "acl-searchpending",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-searchpending-list-denied-scoped-agent",
+      "type": "case",
+      "key": "acl/acl-searchpending-list-denied-scoped-agent",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": true,
+        "source": "acl-searchpending",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-searchpending-list-denied-user",
+      "type": "case",
+      "key": "acl/acl-searchpending-list-denied-user",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": true,
+        "source": "acl-searchpending",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-service-token-agent-detail-delegable-allowed",
       "type": "case",
       "key": "acl/acl-service-token-agent-detail-delegable-allowed",
@@ -10469,6 +10564,22 @@
       }
     },
     {
+      "id": "case:backend/get-searchpending-api-v1-searchpending",
+      "type": "case",
+      "key": "backend/get-searchpending-api-v1-searchpending",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/get-serviceclient-api-v1-serviceclient",
       "type": "case",
       "key": "backend/get-serviceclient-api-v1-serviceclient",
@@ -13379,6 +13490,147 @@
           "runtime.desiredHash",
           "runtime.semanticIssueId"
         ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-pending-cursor-continues-after-the-record",
+      "type": "case",
+      "key": "client/ares-pending-cursor-continues-after-the-record",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.pendingIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-pending-drops-embedded-issue",
+      "type": "case",
+      "key": "client/ares-pending-drops-embedded-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.pendingIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-pending-embeds-issue",
+      "type": "case",
+      "key": "client/ares-pending-embeds-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.pendingIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.pendingDesiredHash",
+          "runtime.pendingIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-pending-lists-new-issue",
+      "type": "case",
+      "key": "client/ares-pending-lists-new-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.pendingIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-pending-malformed-cursor-rejected",
+      "type": "case",
+      "key": "client/ares-pending-malformed-cursor-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-pending-reads-hash",
+      "type": "case",
+      "key": "client/ares-pending-reads-hash",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{runtime.pendingIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.pendingIssueId"
+        ],
+        "stores": [
+          "runtime.pendingDesiredHash"
+        ]
+      }
+    },
+    {
+      "id": "case:client/ares-pending-unknown-type-cursor-rejected",
+      "type": "case",
+      "key": "client/ares-pending-unknown-type-cursor-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/ares-pending-zero-limit-rejected",
+      "type": "case",
+      "key": "client/ares-pending-zero-limit-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/searchpending",
+        "resource": "searchpending",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
         "stores": []
       }
     },
@@ -17888,6 +18140,30 @@
           "runtime.userskillId"
         ],
         "stores": []
+      }
+    },
+    {
+      "id": "case:client/pending-issue-create",
+      "type": "case",
+      "key": "client/pending-issue-create",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectId",
+          "projectShortcode",
+          "userId"
+        ],
+        "stores": [
+          "runtime.pendingIssueId"
+        ]
       }
     },
     {
@@ -23739,6 +24015,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\SearchController",
         "file": "app/api/v1/controllers/SearchController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:searchpending",
+      "type": "controller",
+      "key": "searchpending",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\SearchpendingController",
+        "file": "app/api/v1/controllers/SearchpendingController.php",
         "extends": "RestController"
       }
     },
@@ -37074,9 +37361,9 @@
       "attributes": {
         "scoped": true,
         "scopes": {
-          "none": 0,
-          "all": 1,
-          "members": 2
+          "none": null,
+          "all": null,
+          "members": null
         },
         "kind": "action"
       }
@@ -37229,6 +37516,15 @@
       "id": "permission:search.get",
       "type": "permission",
       "key": "search.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:searchpending.get",
+      "type": "permission",
+      "key": "searchpending.get",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -43012,6 +43308,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/searchpending",
+      "type": "route",
+      "key": "GET /api/v1/searchpending",
+      "attributes": {
+        "type": "rest",
+        "name": "searchpending",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/searchpending"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/searchpending/{id}",
+      "type": "route",
+      "key": "GET /api/v1/searchpending/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "searchpending",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/searchpending/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/searchpending/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/searchpending/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "searchpending",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/searchpending/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:GET /api/v1/serviceclient",
       "type": "route",
       "key": "GET /api/v1/serviceclient",
@@ -44497,6 +44829,18 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/search"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/searchpending",
+      "type": "route",
+      "key": "OPTIONS /api/v1/searchpending",
+      "attributes": {
+        "type": "rest",
+        "name": "searchpending",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/searchpending"
       }
     },
     {
@@ -49003,6 +49347,21 @@
       "from": "action:search.related",
       "type": "requires",
       "to": "permission:search.get"
+    },
+    {
+      "from": "action:searchpending.get",
+      "type": "requires",
+      "to": "permission:searchpending.get"
+    },
+    {
+      "from": "action:searchpending.list",
+      "type": "requires",
+      "to": "permission:searchpending.get"
+    },
+    {
+      "from": "action:searchpending.related",
+      "type": "requires",
+      "to": "permission:searchpending.get"
     },
     {
       "from": "action:serviceclient.get",
@@ -55750,6 +56109,176 @@
       "to": "fixture:otherProjectIssueId"
     },
     {
+      "from": "case:acl/acl-searchpending-list-allowed-ares",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-allowed-ares",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-allowed-ares",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-allowed-ares",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-allowed-ares",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-anonymous",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-anonymous",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-anonymous",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-anonymous",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-anonymous",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-hermes",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-hermes",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-hermes",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-hermes",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-hermes",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-hermes",
+      "type": "runs_as",
+      "to": "profile:serviceHermes"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-runtime",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-runtime",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-runtime",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-runtime",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-runtime",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-runtime",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-scoped-agent",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-scoped-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-scoped-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-scoped-agent",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-scoped-agent",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-scoped-agent",
+      "type": "runs_as",
+      "to": "profile:aclScopedToken"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-user",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-user",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-user",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-user",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-user",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:acl/acl-searchpending-list-denied-user",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:acl/acl-service-token-agent-detail-delegable-allowed",
       "type": "asserts",
       "to": "assertion:idsIncludes"
@@ -61650,6 +62179,31 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/get-searchpending-api-v1-searchpending",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-searchpending-api-v1-searchpending",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-searchpending-api-v1-searchpending",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:backend/get-searchpending-api-v1-searchpending",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:backend/get-searchpending-api-v1-searchpending",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/get-serviceclient-api-v1-serviceclient",
       "type": "asserts",
       "to": "assertion:shape"
@@ -66751,6 +67305,276 @@
     },
     {
       "from": "case:client/ares-embedding-rejects-wrong-length",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-pending-cursor-continues-after-the-record",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/ares-pending-cursor-continues-after-the-record",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-pending-cursor-continues-after-the-record",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-pending-cursor-continues-after-the-record",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:client/ares-pending-cursor-continues-after-the-record",
+      "type": "depends_on",
+      "to": "case:client/pending-issue-create"
+    },
+    {
+      "from": "case:client/ares-pending-cursor-continues-after-the-record",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:client/ares-pending-cursor-continues-after-the-record",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-pending-drops-embedded-issue",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/ares-pending-drops-embedded-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-pending-drops-embedded-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-pending-drops-embedded-issue",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:client/ares-pending-drops-embedded-issue",
+      "type": "depends_on",
+      "to": "case:client/pending-issue-create"
+    },
+    {
+      "from": "case:client/ares-pending-drops-embedded-issue",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:client/ares-pending-drops-embedded-issue",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-pending-embeds-issue",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/ares-pending-embeds-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-pending-embeds-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-pending-embeds-issue",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-pending-embeds-issue",
+      "type": "depends_on",
+      "to": "case:client/ares-pending-reads-hash"
+    },
+    {
+      "from": "case:client/ares-pending-embeds-issue",
+      "type": "depends_on",
+      "to": "case:client/pending-issue-create"
+    },
+    {
+      "from": "case:client/ares-pending-embeds-issue",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/ares-pending-embeds-issue",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-pending-lists-new-issue",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/ares-pending-lists-new-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-pending-lists-new-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-pending-lists-new-issue",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:client/ares-pending-lists-new-issue",
+      "type": "depends_on",
+      "to": "case:client/pending-issue-create"
+    },
+    {
+      "from": "case:client/ares-pending-lists-new-issue",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:client/ares-pending-lists-new-issue",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-pending-malformed-cursor-rejected",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/ares-pending-malformed-cursor-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-pending-malformed-cursor-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-pending-malformed-cursor-rejected",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:client/ares-pending-malformed-cursor-rejected",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:client/ares-pending-malformed-cursor-rejected",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-pending-reads-hash",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/ares-pending-reads-hash",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-pending-reads-hash",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-pending-reads-hash",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/ares-pending-reads-hash",
+      "type": "depends_on",
+      "to": "case:client/pending-issue-create"
+    },
+    {
+      "from": "case:client/ares-pending-reads-hash",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/ares-pending-reads-hash",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-pending-unknown-type-cursor-rejected",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/ares-pending-unknown-type-cursor-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-pending-unknown-type-cursor-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-pending-unknown-type-cursor-rejected",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:client/ares-pending-unknown-type-cursor-rejected",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:client/ares-pending-unknown-type-cursor-rejected",
+      "type": "runs_as",
+      "to": "profile:serviceAres"
+    },
+    {
+      "from": "case:client/ares-pending-zero-limit-rejected",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/ares-pending-zero-limit-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/ares-pending-zero-limit-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/ares-pending-zero-limit-rejected",
+      "type": "covers",
+      "to": "controller:searchpending"
+    },
+    {
+      "from": "case:client/ares-pending-zero-limit-rejected",
+      "type": "exercises",
+      "to": "route:GET /api/v1/searchpending"
+    },
+    {
+      "from": "case:client/ares-pending-zero-limit-rejected",
       "type": "runs_as",
       "to": "profile:serviceAres"
     },
@@ -74898,6 +75722,61 @@
       "from": "case:client/patch-userskill-api-v1-userskill-id",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/pending-issue-create",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/pending-issue-create",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/pending-issue-create",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/pending-issue-create",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/pending-issue-create",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/pending-issue-create",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/pending-issue-create",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/pending-issue-create",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/pending-issue-create",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/pending-issue-create",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/pending-issue-create",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
     },
     {
       "from": "case:client/post-comment-api-v1-comment",
@@ -85448,6 +86327,26 @@
       "from": "controller:search",
       "type": "has_action",
       "to": "action:search.related"
+    },
+    {
+      "from": "controller:searchpending",
+      "type": "has_action",
+      "to": "action:searchpending.get"
+    },
+    {
+      "from": "controller:searchpending",
+      "type": "has_action",
+      "to": "action:searchpending.list"
+    },
+    {
+      "from": "controller:searchpending",
+      "type": "has_action",
+      "to": "action:searchpending.options"
+    },
+    {
+      "from": "controller:searchpending",
+      "type": "has_action",
+      "to": "action:searchpending.related"
     },
     {
       "from": "controller:serviceclient",
@@ -98640,6 +99539,21 @@
       "to": "action:search.related"
     },
     {
+      "from": "route:GET /api/v1/searchpending",
+      "type": "handled_by",
+      "to": "action:searchpending.list"
+    },
+    {
+      "from": "route:GET /api/v1/searchpending/{id}",
+      "type": "handled_by",
+      "to": "action:searchpending.get"
+    },
+    {
+      "from": "route:GET /api/v1/searchpending/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:searchpending.related"
+    },
+    {
       "from": "route:GET /api/v1/serviceclient",
       "type": "handled_by",
       "to": "action:serviceclient.list"
@@ -99258,6 +100172,11 @@
       "from": "route:OPTIONS /api/v1/search",
       "type": "handled_by",
       "to": "action:search.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/searchpending",
+      "type": "handled_by",
+      "to": "action:searchpending.options"
     },
     {
       "from": "route:OPTIONS /api/v1/serviceclient",

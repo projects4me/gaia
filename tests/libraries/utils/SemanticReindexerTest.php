@@ -17,7 +17,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * The search reindex (agaia-4658) on in-memory records: it backfills and corrects the stored semantic text, then
- * publishes only the records whose embedding is missing or was made from another text, pausing after each.
+ * publishes only the records whose embedding is missing or was made from another text, pausing after each. The
+ * backfill (agaia-4764) is the text step alone.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Tests
@@ -123,6 +124,39 @@ class SemanticReindexerTest extends TestCase
         $this->assertSame('service:ares', $this->posted[0]['projectId']);
         $this->assertSame(['type' => 'widget', 'resource' => 'agaia4658widget', 'recordId' => 'a'], $this->posted[0]['changes']);
         $this->assertSame(3, $this->pauses);
+    }
+
+    public function testTheBackfillStoresMissingAndOutdatedTextsAndPublishesNothing()
+    {
+        $current = SemanticText::hashOf("Current\nBody");
+        $records = $this->records([
+            ['id' => 'a', 'subject' => 'Missing', 'description' => null, 'searchDesiredHash' => null,
+                'searchActualHash' => null],
+            ['id' => 'b', 'subject' => 'Current', 'description' => 'Body', 'searchDesiredHash' => $current,
+                'searchActualHash' => $current],
+            ['id' => 'c', 'subject' => 'Current', 'description' => 'Body', 'searchDesiredHash' => $current,
+                'searchActualHash' => 'older'],
+            ['id' => 'd', 'subject' => 'Current', 'description' => '<p>Body</p>', 'searchDesiredHash' => 'old-rule',
+                'searchActualHash' => 'old-rule'],
+        ]);
+
+        $counts = $this->reindexer($records)->backfill();
+
+        $this->assertSame(['widget' => ['records' => 4, 'updated' => 2, 'skipped' => 0, 'failed' => 0]], $counts);
+        $this->assertSame([
+            'a' => ['Missing', SemanticText::hashOf('Missing')],
+            'd' => ["Current\nBody", $current],
+        ], $records->stored);
+        // Records c and d still need embedding, but the backfill leaves them to Ares's pending list
+        $this->assertSame([], $this->posted);
+        $this->assertSame(0, $this->pauses);
+    }
+
+    public function testTheBackfillOfAnUnknownTypeIsRefused()
+    {
+        $this->expectException(\Gaia\Exception\Exception::class);
+        $this->expectExceptionMessage("Search type 'plain' is unknown or has no semantic fields.");
+        $this->reindexer($this->records([]), [self::PLAIN_MODEL])->backfill('plain');
     }
 
     public function testAnEventHermesDidNotTakeCountsAsFailed()

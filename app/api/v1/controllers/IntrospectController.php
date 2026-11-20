@@ -10,6 +10,7 @@ use Gaia\Core\MVC\REST\Controllers\RestController;
 use Gaia\Libraries\Agents\AgentTokenIntrospection;
 use Gaia\Libraries\Authorization\TokenIntrospection;
 use Gaia\Libraries\Security\AresCallerGuard;
+use Gaia\Libraries\Security\BearerToken;
 use Gaia\Libraries\Security\IntrospectionCallerGuard;
 
 /**
@@ -71,12 +72,7 @@ class IntrospectController extends RestController
      */
     private function callerToken()
     {
-        $header = trim((string) $this->getOAuthRequest()->headers('AUTHORIZATION'));
-        if (preg_match('/^Bearer\s+(\S+)$/i', $header, $matches) !== 1) {
-            return null;
-        }
-
-        return $matches[1];
+        return BearerToken::fromHeader($this->getOAuthRequest()->headers('AUTHORIZATION'));
     }
 
     /**

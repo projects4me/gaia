@@ -61,6 +61,30 @@ class SemanticRecords
     }
 
     /**
+     * This function returns the ids of the next non-deleted records, ordered by id, whose embedding is missing or was
+     * made from another text: the desired hash is set and the actual hash is null or differs from it.
+     *
+     * @param string $table
+     * @param string $afterId The last id of the previous page, '' for the first page
+     * @param int $limit
+     * @return string[]
+     */
+    public function pending($table, $afterId, $limit)
+    {
+        $desired = $this->quote(SearchBlock::DESIRED_HASH);
+        $rows = $this->db()->fetchAll(
+            'SELECT "id" FROM ' . $this->quote($table) . ' WHERE "deleted"::int = 0 AND ' . $desired . ' IS NOT NULL'
+            . ' AND ' . $this->quote(SearchBlock::ACTUAL_HASH) . ' IS DISTINCT FROM ' . $desired
+            . ' AND "id" > ? ORDER BY "id" LIMIT ?',
+            \Phalcon\Db\Enum::FETCH_ASSOC,
+            array((string) $afterId, (int) $limit),
+            array(\Phalcon\Db\Column::BIND_PARAM_STR, \Phalcon\Db\Column::BIND_PARAM_INT)
+        );
+
+        return array_map('strval', array_column($rows, 'id'));
+    }
+
+    /**
      * This function stores a record's semantic text and hash, unless the stored hash is no longer the one the reindex
      * read: a save in between already stored a newer text and announced it.
      *
