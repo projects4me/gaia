@@ -5,7 +5,7 @@
 > `upgrade-report` job were removed from `ci.yml`; CI runs 8.5 only, with the image tag in one place (`GAIA_ENV_TAG`).
 > The CI sections below (`gaia-env:current`/`next`, `gaia-current`, "CI next-stack report", the switch-over CI notes)
 > describe that earlier setup and are kept as history.
-> PHP 7.4 support was dropped in the code (agaia-4749): `composer.json` requires `~8.5.0`, the `PHP_VERSION_ID` guards are gone. `tools/upgrade/` stays for now: PHPUnit tests still load it.
+> PHP 7.4 support was dropped in the code (agaia-4749): `composer.json` requires `~8.5.0`, the `PHP_VERSION_ID` guards are gone. The deprecations report and lint moved to `tools/quality/` and gate CI (agaia-4754, `docs/dev/php-diagnostics-gate.md`); the stack-comparison scripts (`compare-stacks.sh`, `next-stack-summary.php`) were deleted, so the sections below that use them are history.
 
 Notes for the move from PHP 7.4 / Phalcon 4.1 to PHP 8.5 / Phalcon 5.23. Later issues add their findings here.
 
@@ -107,10 +107,10 @@ it leaves the ini settings alone instead.
   (`E_ALL`, `log_errors=On`, `display_errors=Off`) and log to `logs/php-diagnostics.log`.
 - **PHPUnit:** `tests/phpunit.xml` and `tests/TestHelper.php` log deprecations to
   `logs/php-diagnostics-phpunit.log` without failing tests; warnings and notices fail the test.
-- **Lint on the next image:** `tools/upgrade/lint-next.sh [log]` runs `php -l` with `E_ALL` on every PHP file
+- **Lint on the next image:** `tools/quality/lint-php.sh [log]` runs `php -l` with `E_ALL` on every PHP file
   (outside `vendor` and the gaia-dev fixtures) in `gaia-env:next` and writes `logs/php-lint-next.log` in the
   same format.
-- **Report:** `php tools/upgrade/deprecations-report.php logs/php-diagnostics.log logs/php-diagnostics-phpunit.log logs/php-lint-next.log`
+- **Report:** `php tools/quality/deprecations-report.php logs/php-diagnostics.log logs/php-diagnostics-phpunit.log logs/php-lint-next.log`
   groups entries by message pattern and file:line, separates Gaia code from vendor, counts them and prints
   markdown for a CI job summary.
 
@@ -120,7 +120,7 @@ Every PR runs a non-blocking `next-stack` job in `.github/workflows/ci.yml`. The
 `ghcr.io/projects4me/gaia-env:8.5.12-phalcon5.23.0` as `gaia-env:next`, starts it as the `gaia-next` container on the host network and runs each
 step inside it. It has its own vendor cache key. Only `api-testing` (the current stack) blocks the PR. The job
 loads the baseline dump, runs `migration migrate --dry-run` and then `migrate`, takes a schema snapshot, prepares
-`pr4m_test`, runs PHPUnit (JUnit), runs `tools/upgrade/lint-next.sh` in place (`IMAGE=none`), and runs the
+`pr4m_test`, runs PHPUnit (JUnit), runs `tools/quality/lint-php.sh` in place (`IMAGE=none`), and runs the
 api-tester `client`, `backend` and `acl` modes with `--record-bodies` against Apache with `diagnostics.ini` loaded. Every
 check step has `continue-on-error`, so the job stays green when something fails on the next stack and the failure
 shows in the summary instead; the job only fails when the image or container can't be set up. It records each

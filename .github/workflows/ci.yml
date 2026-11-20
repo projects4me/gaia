@@ -202,6 +202,10 @@ jobs:
 
     - name: Start Apache
       run: |
+        # Log every PHP deprecation and warning of the API requests (checked by the PHP diagnostics gate below).
+        cp docker/php/conf.d/diagnostics.ini /usr/local/etc/php/conf.d/zz-diagnostics.ini
+        rm -f logs/php-diagnostics.log
+        install -m 666 /dev/null logs/php-diagnostics.log
         rm -rf /var/www/html
         ln -s "$GITHUB_WORKSPACE" /var/www/html
         chown -R www-data:www-data "$GITHUB_WORKSPACE"
@@ -240,4 +244,28 @@ jobs:
       with:
         name: api-tester-backend-report
         path: output/api-tester-backend-report.json
+        if-no-files-found: warn
+
+    # Blocking: the count of PHP deprecations and warnings in Gaia code stays at 0. Vendor entries are reported only.
+    # Reproduce locally: docs/dev/php-diagnostics-gate.md
+    - name: PHP diagnostics gate (no deprecation or warning in Gaia code)
+      if: success() || failure()
+      run: |
+        tools/quality/lint-php.sh logs/php-lint.log
+        set +e
+        php tools/quality/deprecations-report.php --fail-on-gaia           logs/php-diagnostics-phpunit.log logs/php-diagnostics.log logs/php-lint.log > logs/php-diagnostics-report.md
+        status=$?
+        cat logs/php-diagnostics-report.md >> "$GITHUB_STEP_SUMMARY"
+        exit $status
+
+    - name: Upload PHP diagnostics report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: php-diagnostics
+        path: |
+          logs/php-diagnostics-report.md
+          logs/php-diagnostics.log
+          logs/php-diagnostics-phpunit.log
+          logs/php-lint.log
         if-no-files-found: warn

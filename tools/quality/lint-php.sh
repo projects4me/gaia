@@ -3,17 +3,17 @@
 # Projects4Me Copyright (c) 2026. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
 #
 # Runs php -l with error_reporting=E_ALL on every PHP file (outside vendor and the gaia-dev
-# fixtures) inside gaia-env:next and writes the diagnostics to a log in the PHP error-log
-# format, ready for tools/upgrade/deprecations-report.php.
+# fixtures) and writes the diagnostics to a log in the PHP error-log format, ready for
+# tools/quality/deprecations-report.php.
 #
-# Usage: tools/upgrade/lint-next.sh [log-file]   (default logs/php-lint-next.log)
-# IMAGE overrides the image (default gaia-env:next). IMAGE=none runs php in place, for a
-# shell that already is on the next image (the CI next-stack job).
+# Usage: tools/quality/lint-php.sh [log-file]   (default logs/php-lint.log)
+# IMAGE runs php in that docker image (for example gaia-env:8.5.12-phalcon5.23.0). The default,
+# IMAGE=none, runs php in place: CI and a shell inside the gaia container.
 
 set -u
 cd "$(dirname "$0")/../.." || exit 1
-LOG="${1:-logs/php-lint-next.log}"
-IMAGE="${IMAGE:-gaia-env:next}"
+LOG="${1:-logs/php-lint.log}"
+IMAGE="${IMAGE:-none}"
 mkdir -p "$(dirname "$LOG")"
 
 LINT='
