@@ -10594,6 +10594,67 @@
         "shape": "error",
         "errorEqual": "The limit must be a whole number from 1."
       }
+    },
+    {
+      "id": "workspace-create-keeps-description",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "API Test Workspace",
+            "description": "Created by the api-tester"
+          }
+        }
+      },
+      "store": {
+        "runtime.createdWorkspaceId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Test Workspace",
+          "description": "Created by the api-tester"
+        }
+      }
+    },
+    {
+      "id": "workspace-update-changes-name",
+      "method": "PATCH",
+      "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "id": "{runtime.createdWorkspaceId}",
+          "attributes": {
+            "name": "API Test Workspace Renamed"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Test Workspace Renamed"
+        }
+      }
+    },
+    {
+      "id": "workspace-delete-soft-deletes",
+      "method": "DELETE",
+      "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
     }
   ]
 }

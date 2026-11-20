@@ -111,6 +111,7 @@ $fixtureIds = [
     'workflowreference' => '{workflowreferenceId}',
     'workflowrun' => '{workflowrunId}',
     'workflowrunstep' => '{workflowrunstepId}',
+    'workspace' => '{workspaceId}',
 ];
 
 /** relatedTo/relatedId defaults inferred from metadata relationships / known modules. */
@@ -373,6 +374,7 @@ function sampleValue($resource, $name, array $fieldMeta, array $relatedDefaults)
         'workflownodeId' => '{workflownodeId}',
         'workflowedgeId' => '{workflowedgeId}',
         'workflowreferenceId' => '{workflowreferenceId}',
+        'workspaceId' => '{workspaceId}',
     ];
     if (isset($fk[$name])) {
         return $fk[$name];
@@ -522,6 +524,7 @@ function patchChange(array $attrs, array $meta = [])
         'workflownodeId' => true,
         'workflowedgeId' => true,
         'workflowreferenceId' => true,
+        'workspaceId' => true,
     ];
     $fields = isset($meta['fields']) && is_array($meta['fields']) ? $meta['fields'] : [];
     $prefer = ['name', 'subject', 'description', 'title', 'tag', 'comment', 'institution'];

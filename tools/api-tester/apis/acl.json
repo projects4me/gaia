@@ -3368,6 +3368,69 @@
       "query": { "limit": "5" },
       "expects": { "status": 403, "shape": "error", "errorEqual": "Only the Ares service may list the records whose embedding is pending." },
       "source": "acl-searchpending"
+    },
+    {
+      "id": "acl-workspace-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-workspace"
+    },
+    {
+      "id": "acl-workspace-detail-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/workspace/{workspaceId}",
+      "resource": "workspace",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-workspace"
+    },
+    {
+      "id": "acl-workspace-create-denied-acl-no-setting",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "ACL Denied Workspace"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-workspace"
+    },
+    {
+      "id": "acl-workspace-update-denied-acl-no-setting",
+      "method": "PATCH",
+      "path": "/api/v1/workspace/{workspaceId}",
+      "resource": "workspace",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "workspace",
+          "id": "{workspaceId}",
+          "attributes": {
+            "name": "ACL Denied Update"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-workspace"
+    },
+    {
+      "id": "acl-workspace-delete-denied-acl-no-setting",
+      "method": "DELETE",
+      "path": "/api/v1/workspace/{workspaceId}",
+      "resource": "workspace",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-workspace"
     }
   ]
 }

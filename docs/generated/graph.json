@@ -3585,6 +3585,72 @@
       "attributes": {}
     },
     {
+      "id": "action:workspace.delete",
+      "type": "action",
+      "key": "workspace.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspace.deleteCollection",
+      "type": "action",
+      "key": "workspace.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspace.get",
+      "type": "action",
+      "key": "workspace.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspace.list",
+      "type": "action",
+      "key": "workspace.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspace.options",
+      "type": "action",
+      "key": "workspace.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspace.patch",
+      "type": "action",
+      "key": "workspace.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspace.patchCollection",
+      "type": "action",
+      "key": "workspace.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspace.post",
+      "type": "action",
+      "key": "workspace.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspace.put",
+      "type": "action",
+      "key": "workspace.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspace.putCollection",
+      "type": "action",
+      "key": "workspace.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspace.related",
+      "type": "action",
+      "key": "workspace.related",
+      "attributes": {}
+    },
+    {
       "id": "assertion:attributesAbsent",
       "type": "assertion",
       "key": "attributesAbsent",
@@ -8728,6 +8794,92 @@
       }
     },
     {
+      "id": "case:acl/acl-workspace-create-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-workspace-create-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "acl-workspace",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workspace-delete-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-workspace-delete-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "DELETE",
+        "path": "/api/v1/workspace/{workspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "acl-workspace",
+        "placeholders": [
+          "workspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workspace-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-workspace-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "acl-workspace",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workspace-detail-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-workspace-detail-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{workspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "acl-workspace",
+        "placeholders": [
+          "workspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workspace-update-denied-acl-no-setting",
+      "type": "case",
+      "key": "acl/acl-workspace-update-denied-acl-no-setting",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/workspace/{workspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "acl-workspace",
+        "placeholders": [
+          "workspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "case",
       "key": "backend/delete-activity-api-v1-activity-runtime-id",
@@ -9336,6 +9488,24 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.workflownodeId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/delete-workspace-api-v1-workspace-runtime-id",
+      "type": "case",
+      "key": "backend/delete-workspace-api-v1-workspace-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "DELETE",
+        "path": "/api/v1/workspace/{runtime.workspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.workspaceId"
         ],
         "stores": []
       }
@@ -11641,6 +11811,58 @@
       }
     },
     {
+      "id": "case:backend/get-workspace-api-v1-workspace",
+      "type": "case",
+      "key": "backend/get-workspace-api-v1-workspace",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workspace-api-v1-workspace-id",
+      "type": "case",
+      "key": "backend/get-workspace-api-v1-workspace-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{workspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workspace-api-v1-workspace-runtime-id",
+      "type": "case",
+      "key": "backend/get-workspace-api-v1-workspace-runtime-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{runtime.workspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.workspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/patch-activity-api-v1-activity-id",
       "type": "case",
       "key": "backend/patch-activity-api-v1-activity-id",
@@ -12159,6 +12381,24 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.workflownodeId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/patch-workspace-api-v1-workspace-id",
+      "type": "case",
+      "key": "backend/patch-workspace-api-v1-workspace-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "PATCH",
+        "path": "/api/v1/workspace/{runtime.workspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "runtime.workspaceId"
         ],
         "stores": []
       }
@@ -13054,6 +13294,24 @@
           "workflowId"
         ],
         "stores": []
+      }
+    },
+    {
+      "id": "case:backend/post-workspace-api-v1-workspace",
+      "type": "case",
+      "key": "backend/post-workspace-api-v1-workspace",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": [
+          "runtime.workspaceId"
+        ]
       }
     },
     {
@@ -21604,6 +21862,60 @@
       }
     },
     {
+      "id": "case:client/workspace-create-keeps-description",
+      "type": "case",
+      "key": "client/workspace-create-keeps-description",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.createdWorkspaceId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-soft-deletes",
+      "type": "case",
+      "key": "client/workspace-delete-soft-deletes",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.createdWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-update-changes-name",
+      "type": "case",
+      "key": "client/workspace-update-changes-name",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.createdWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:live/live-agent-run-cleanup-agent-membership",
       "type": "case",
       "key": "live/live-agent-run-cleanup-agent-membership",
@@ -24402,6 +24714,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\WorkflowrunstepController",
         "file": "app/api/v1/controllers/WorkflowrunstepController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:workspace",
+      "type": "controller",
+      "key": "workspace",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\WorkspaceController",
+        "file": "app/api/v1/controllers/WorkspaceController.php",
         "extends": "RestController"
       }
     },
@@ -34312,6 +34635,120 @@
       }
     },
     {
+      "id": "field:Workspace.createdUser",
+      "type": "field",
+      "key": "Workspace.createdUser",
+      "attributes": {
+        "label": "LBL_WORKSPACES_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Workspace.createdUserName",
+      "type": "field",
+      "key": "Workspace.createdUserName",
+      "attributes": {
+        "label": "LBL_WORKSPACES_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Workspace.dateCreated",
+      "type": "field",
+      "key": "Workspace.dateCreated",
+      "attributes": {
+        "label": "LBL_WORKSPACES_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workspace.dateModified",
+      "type": "field",
+      "key": "Workspace.dateModified",
+      "attributes": {
+        "label": "LBL_WORKSPACES_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workspace.deleted",
+      "type": "field",
+      "key": "Workspace.deleted",
+      "attributes": {
+        "label": "LBL_WORKSPACES_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Workspace.description",
+      "type": "field",
+      "key": "Workspace.description",
+      "attributes": {
+        "label": "LBL_WORKSPACES_DESCRIPTION",
+        "type": "text",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workspace.id",
+      "type": "field",
+      "key": "Workspace.id",
+      "attributes": {
+        "label": "LBL_WORKSPACES_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Workspace.modifiedUser",
+      "type": "field",
+      "key": "Workspace.modifiedUser",
+      "attributes": {
+        "label": "LBL_WORKSPACES_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Workspace.modifiedUserName",
+      "type": "field",
+      "key": "Workspace.modifiedUserName",
+      "attributes": {
+        "label": "LBL_WORKSPACES_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Workspace.name",
+      "type": "field",
+      "key": "Workspace.name",
+      "attributes": {
+        "label": "LBL_WORKSPACES_NAME",
+        "type": "varchar",
+        "length": "100",
+        "null": false
+      }
+    },
+    {
       "id": "fixture:activityId",
       "type": "fixture",
       "key": "activityId",
@@ -34955,6 +35392,14 @@
       "id": "fixture:workflowrunstepId",
       "type": "fixture",
       "key": "workflowrunstepId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:workspaceId",
+      "type": "fixture",
+      "key": "workspaceId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -36306,6 +36751,19 @@
             }
           }
         }
+      }
+    },
+    {
+      "id": "model:Workspace",
+      "type": "model",
+      "key": "Workspace",
+      "attributes": {
+        "file": "app/metadata/model/Workspace.php",
+        "tableName": "workspaces",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": null
       }
     },
     {
@@ -38576,6 +39034,42 @@
       "id": "permission:workflowrunstep.update",
       "type": "permission",
       "key": "workflowrunstep.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workspace.create",
+      "type": "permission",
+      "key": "workspace.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workspace.delete",
+      "type": "permission",
+      "key": "workspace.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workspace.get",
+      "type": "permission",
+      "key": "workspace.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workspace.update",
+      "type": "permission",
+      "key": "workspace.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -40993,6 +41487,26 @@
       }
     },
     {
+      "id": "relationship:Workspace.createdBy",
+      "type": "relationship",
+      "key": "Workspace.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workspace.modifiedBy",
+      "type": "relationship",
+      "key": "Workspace.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
       "id": "route:ANY /",
       "type": "route",
       "key": "ANY /",
@@ -42142,6 +42656,30 @@
         "version": "v1",
         "method": "DELETE",
         "path": "/api/v1/workflownode/{id}"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/workspace",
+      "type": "route",
+      "key": "DELETE /api/v1/workspace",
+      "attributes": {
+        "type": "rest",
+        "name": "workspace",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/workspace"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/workspace/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/workspace/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workspace",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/workspace/{id}"
       }
     },
     {
@@ -44413,6 +44951,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/workspace",
+      "type": "route",
+      "key": "GET /api/v1/workspace",
+      "attributes": {
+        "type": "rest",
+        "name": "workspace",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workspace"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workspace/{id}",
+      "type": "route",
+      "key": "GET /api/v1/workspace/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workspace",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workspace/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workspace/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/workspace/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "workspace",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workspace/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/activity",
       "type": "route",
       "key": "OPTIONS /api/v1/activity",
@@ -45238,6 +45812,18 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/workflowrunstep"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/workspace",
+      "type": "route",
+      "key": "OPTIONS /api/v1/workspace",
+      "attributes": {
+        "type": "rest",
+        "name": "workspace",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/workspace"
       }
     },
     {
@@ -46441,6 +47027,30 @@
       }
     },
     {
+      "id": "route:PATCH /api/v1/workspace",
+      "type": "route",
+      "key": "PATCH /api/v1/workspace",
+      "attributes": {
+        "type": "rest",
+        "name": "workspace",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/workspace"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/workspace/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/workspace/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workspace",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/workspace/{id}"
+      }
+    },
+    {
       "id": "route:POST /api/v1/activity",
       "type": "route",
       "key": "POST /api/v1/activity",
@@ -47098,6 +47708,18 @@
         "version": "v1",
         "method": "POST",
         "path": "/api/v1/workflowrun"
+      }
+    },
+    {
+      "id": "route:POST /api/v1/workspace",
+      "type": "route",
+      "key": "POST /api/v1/workspace",
+      "attributes": {
+        "type": "rest",
+        "name": "workspace",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/workspace"
       }
     },
     {
@@ -48130,6 +48752,30 @@
         "version": "v1",
         "method": "PUT",
         "path": "/api/v1/workflownode/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/workspace",
+      "type": "route",
+      "key": "PUT /api/v1/workspace",
+      "attributes": {
+        "type": "rest",
+        "name": "workspace",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/workspace"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/workspace/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/workspace/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workspace",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/workspace/{id}"
       }
     },
     {
@@ -50322,6 +50968,46 @@
       "from": "action:workflowrunstep.related",
       "type": "requires",
       "to": "permission:workflowrunstep.get"
+    },
+    {
+      "from": "action:workspace.delete",
+      "type": "requires",
+      "to": "permission:workspace.delete"
+    },
+    {
+      "from": "action:workspace.get",
+      "type": "requires",
+      "to": "permission:workspace.get"
+    },
+    {
+      "from": "action:workspace.list",
+      "type": "requires",
+      "to": "permission:workspace.get"
+    },
+    {
+      "from": "action:workspace.patch",
+      "type": "requires",
+      "to": "permission:workspace.update"
+    },
+    {
+      "from": "action:workspace.patchCollection",
+      "type": "requires",
+      "to": "permission:workspace.update"
+    },
+    {
+      "from": "action:workspace.post",
+      "type": "requires",
+      "to": "permission:workspace.create"
+    },
+    {
+      "from": "action:workspace.put",
+      "type": "requires",
+      "to": "permission:workspace.update"
+    },
+    {
+      "from": "action:workspace.related",
+      "type": "requires",
+      "to": "permission:workspace.get"
     },
     {
       "from": "case:acl/acl-admin-comment-allowed",
@@ -58959,6 +59645,171 @@
       "to": "fixture:workflowId"
     },
     {
+      "from": "case:acl/acl-workspace-create-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workspace-create-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workspace-create-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workspace-create-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:acl/acl-workspace-create-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:acl/acl-workspace-create-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-workspace-delete-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workspace-delete-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workspace-delete-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workspace-delete-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:acl/acl-workspace-delete-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:acl/acl-workspace-delete-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-workspace-delete-denied-acl-no-setting",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:acl/acl-workspace-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workspace-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workspace-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workspace-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:acl/acl-workspace-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace"
+    },
+    {
+      "from": "case:acl/acl-workspace-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-workspace-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workspace-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workspace-detail-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workspace-detail-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:acl/acl-workspace-detail-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:acl/acl-workspace-detail-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-workspace-detail-denied-acl-no-setting",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:acl/acl-workspace-update-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workspace-update-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workspace-update-denied-acl-no-setting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workspace-update-denied-acl-no-setting",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:acl/acl-workspace-update-denied-acl-no-setting",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:acl/acl-workspace-update-denied-acl-no-setting",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-workspace-update-denied-acl-no-setting",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
       "from": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -59980,6 +60831,36 @@
     },
     {
       "from": "case:backend/delete-workflownode-api-v1-workflownode-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/delete-workspace-api-v1-workspace-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/delete-workspace-api-v1-workspace-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/delete-workspace-api-v1-workspace-runtime-id",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:backend/delete-workspace-api-v1-workspace-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-workspace-api-v1-workspace"
+    },
+    {
+      "from": "case:backend/delete-workspace-api-v1-workspace-runtime-id",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:backend/delete-workspace-api-v1-workspace-runtime-id",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -64059,6 +64940,101 @@
       "to": "fixture:workflowrunstepId"
     },
     {
+      "from": "case:backend/get-workspace-api-v1-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-id",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-id",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-runtime-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-runtime-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-runtime-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-runtime-id",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-runtime-id",
+      "type": "depends_on",
+      "to": "case:backend/post-workspace-api-v1-workspace"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-runtime-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:backend/get-workspace-api-v1-workspace-runtime-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:backend/patch-activity-api-v1-activity-id",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -65050,6 +66026,41 @@
     },
     {
       "from": "case:backend/patch-workflownode-api-v1-workflownode-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/patch-workspace-api-v1-workspace-id",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:backend/patch-workspace-api-v1-workspace-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/patch-workspace-api-v1-workspace-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/patch-workspace-api-v1-workspace-id",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:backend/patch-workspace-api-v1-workspace-id",
+      "type": "depends_on",
+      "to": "case:backend/post-workspace-api-v1-workspace"
+    },
+    {
+      "from": "case:backend/patch-workspace-api-v1-workspace-id",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:backend/patch-workspace-api-v1-workspace-id",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -66447,6 +67458,31 @@
       "from": "case:backend/post-workflowrun-api-v1-workflowrun",
       "type": "uses_fixture",
       "to": "fixture:workflowId"
+    },
+    {
+      "from": "case:backend/post-workspace-api-v1-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-workspace-api-v1-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-workspace-api-v1-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:backend/post-workspace-api-v1-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:backend/post-workspace-api-v1-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/agent-create-makes-agent-user",
@@ -82209,6 +83245,101 @@
       "to": "fixture:workflownodeId"
     },
     {
+      "from": "case:client/workspace-create-keeps-description",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-create-keeps-description",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-create-keeps-description",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-create-keeps-description",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-create-keeps-description",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-create-keeps-description",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-soft-deletes",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-soft-deletes",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-soft-deletes",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-soft-deletes",
+      "type": "depends_on",
+      "to": "case:client/workspace-create-keeps-description"
+    },
+    {
+      "from": "case:client/workspace-delete-soft-deletes",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-delete-soft-deletes",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-update-changes-name",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-update-changes-name",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-update-changes-name",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-update-changes-name",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-update-changes-name",
+      "type": "depends_on",
+      "to": "case:client/workspace-create-keeps-description"
+    },
+    {
+      "from": "case:client/workspace-update-changes-name",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-update-changes-name",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:live/live-agent-run-cleanup-agent-membership",
       "type": "asserts",
       "to": "assertion:status"
@@ -87839,6 +88970,66 @@
       "to": "model:Workflowrunstep"
     },
     {
+      "from": "controller:workspace",
+      "type": "has_action",
+      "to": "action:workspace.delete"
+    },
+    {
+      "from": "controller:workspace",
+      "type": "has_action",
+      "to": "action:workspace.deleteCollection"
+    },
+    {
+      "from": "controller:workspace",
+      "type": "has_action",
+      "to": "action:workspace.get"
+    },
+    {
+      "from": "controller:workspace",
+      "type": "has_action",
+      "to": "action:workspace.list"
+    },
+    {
+      "from": "controller:workspace",
+      "type": "has_action",
+      "to": "action:workspace.options"
+    },
+    {
+      "from": "controller:workspace",
+      "type": "has_action",
+      "to": "action:workspace.patch"
+    },
+    {
+      "from": "controller:workspace",
+      "type": "has_action",
+      "to": "action:workspace.patchCollection"
+    },
+    {
+      "from": "controller:workspace",
+      "type": "has_action",
+      "to": "action:workspace.post"
+    },
+    {
+      "from": "controller:workspace",
+      "type": "has_action",
+      "to": "action:workspace.put"
+    },
+    {
+      "from": "controller:workspace",
+      "type": "has_action",
+      "to": "action:workspace.putCollection"
+    },
+    {
+      "from": "controller:workspace",
+      "type": "has_action",
+      "to": "action:workspace.related"
+    },
+    {
+      "from": "controller:workspace",
+      "type": "serves",
+      "to": "model:Workspace"
+    },
+    {
       "from": "field:Activity.createdUserName",
       "type": "linked_to",
       "to": "field:Activity.createdUser"
@@ -88392,6 +89583,16 @@
       "from": "field:Workflowreference.modifiedUserName",
       "type": "linked_to",
       "to": "field:Workflowreference.modifiedUser"
+    },
+    {
+      "from": "field:Workspace.createdUserName",
+      "type": "linked_to",
+      "to": "field:Workspace.createdUser"
+    },
+    {
+      "from": "field:Workspace.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Workspace.modifiedUser"
     },
     {
       "from": "model:Aclcontroller",
@@ -95619,6 +96820,96 @@
       "to": "behaviour:softDeleteBehavior"
     },
     {
+      "from": "model:Workspace",
+      "type": "has_field",
+      "to": "field:Workspace.createdUser"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_field",
+      "to": "field:Workspace.createdUserName"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_field",
+      "to": "field:Workspace.dateCreated"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_field",
+      "to": "field:Workspace.dateModified"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_field",
+      "to": "field:Workspace.deleted"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_field",
+      "to": "field:Workspace.description"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_field",
+      "to": "field:Workspace.id"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_field",
+      "to": "field:Workspace.modifiedUser"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_field",
+      "to": "field:Workspace.modifiedUserName"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_field",
+      "to": "field:Workspace.name"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_relationship",
+      "to": "relationship:Workspace.createdBy"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_relationship",
+      "to": "relationship:Workspace.modifiedBy"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
       "from": "permission:issue.description.create",
       "type": "guards",
       "to": "field:Issue.description"
@@ -96192,6 +97483,26 @@
       "from": "profile:aclNoSetting",
       "type": "denies",
       "to": "permission:workflownode.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:workspace.create"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:workspace.delete"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:workspace.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "denies",
+      "to": "permission:workspace.update"
     },
     {
       "from": "profile:aclNoSetting",
@@ -97434,6 +98745,26 @@
       "to": "permission:workflowrunstep.update"
     },
     {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workspace.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workspace.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workspace.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workspace.update"
+    },
+    {
       "from": "relationship:Activity.conversationroom",
       "type": "targets",
       "to": "model:Conversationroom"
@@ -98589,6 +99920,16 @@
       "to": "model:Workflowrun"
     },
     {
+      "from": "relationship:Workspace.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workspace.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
       "from": "route:ANY /",
       "type": "handled_by",
       "to": "action:index.index"
@@ -99067,6 +100408,16 @@
       "from": "route:DELETE /api/v1/workflownode/{id}",
       "type": "handled_by",
       "to": "action:workflownode.delete"
+    },
+    {
+      "from": "route:DELETE /api/v1/workspace",
+      "type": "handled_by",
+      "to": "action:workspace.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/workspace/{id}",
+      "type": "handled_by",
+      "to": "action:workspace.delete"
     },
     {
       "from": "route:GET /api/v1/activity",
@@ -100014,6 +101365,21 @@
       "to": "action:workflowrunstep.related"
     },
     {
+      "from": "route:GET /api/v1/workspace",
+      "type": "handled_by",
+      "to": "action:workspace.list"
+    },
+    {
+      "from": "route:GET /api/v1/workspace/{id}",
+      "type": "handled_by",
+      "to": "action:workspace.get"
+    },
+    {
+      "from": "route:GET /api/v1/workspace/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:workspace.related"
+    },
+    {
       "from": "route:OPTIONS /api/v1/activity",
       "type": "handled_by",
       "to": "action:activity.options"
@@ -100357,6 +101723,11 @@
       "from": "route:OPTIONS /api/v1/workflowrunstep",
       "type": "handled_by",
       "to": "action:workflowrunstep.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/workspace",
+      "type": "handled_by",
+      "to": "action:workspace.options"
     },
     {
       "from": "route:PATCH /api/v1/activity",
@@ -100859,6 +102230,16 @@
       "to": "action:workflownode.patch"
     },
     {
+      "from": "route:PATCH /api/v1/workspace",
+      "type": "handled_by",
+      "to": "action:workspace.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/workspace/{id}",
+      "type": "handled_by",
+      "to": "action:workspace.patch"
+    },
+    {
       "from": "route:POST /api/v1/activity",
       "type": "handled_by",
       "to": "action:activity.post"
@@ -101132,6 +102513,11 @@
       "from": "route:POST /api/v1/workflowrun",
       "type": "handled_by",
       "to": "action:workflowrun.post"
+    },
+    {
+      "from": "route:POST /api/v1/workspace",
+      "type": "handled_by",
+      "to": "action:workspace.post"
     },
     {
       "from": "route:PUT /api/v1/activity",
@@ -101562,6 +102948,16 @@
       "from": "route:PUT /api/v1/workflownode/{id}",
       "type": "handled_by",
       "to": "action:workflownode.put"
+    },
+    {
+      "from": "route:PUT /api/v1/workspace",
+      "type": "handled_by",
+      "to": "action:workspace.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/workspace/{id}",
+      "type": "handled_by",
+      "to": "action:workspace.put"
     },
     {
       "from": "route:system:default",
