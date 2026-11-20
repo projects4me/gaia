@@ -139,6 +139,17 @@
             ],
             "identifier": "id"
         },
+        "repository": {
+            "path": "/api/:version/repository",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "workspace": {
             "path": "/api/:version/workspace",
             "allowedMethods": [

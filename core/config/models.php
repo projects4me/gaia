@@ -36,6 +36,7 @@ $config['models'] = [
     'Oauthscope',
     'Permission',
     'Project',
+    'Repository',
     'Role',
     'Savedsearch',
     'Scoreboard',

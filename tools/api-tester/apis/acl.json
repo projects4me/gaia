@@ -3453,6 +3453,71 @@
       },
       "expects": { "status": 403, "shape": "error", "errorEqual": "You are not allowed to add projects to this workspace." },
       "source": "acl-setting"
+    },
+    {
+      "id": "acl-repository-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/repository",
+      "resource": "repository",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-repository"
+    },
+    {
+      "id": "acl-repository-detail-denied-acl-no-setting",
+      "method": "GET",
+      "path": "/api/v1/repository/{repositoryId}",
+      "resource": "repository",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-repository"
+    },
+    {
+      "id": "acl-repository-create-denied-without-workspace-update",
+      "method": "POST",
+      "path": "/api/v1/repository",
+      "resource": "repository",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "repository",
+          "attributes": {
+            "workspaceId": "{workspaceId}",
+            "name": "ACL Denied Repository",
+            "url": "https://github.com/projects4me/acl-denied.git"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-repository"
+    },
+    {
+      "id": "acl-repository-update-denied-without-workspace-update",
+      "method": "PATCH",
+      "path": "/api/v1/repository/{repositoryId}",
+      "resource": "repository",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "repository",
+          "id": "{repositoryId}",
+          "attributes": {
+            "name": "ACL Denied Update"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-repository"
+    },
+    {
+      "id": "acl-repository-delete-denied-acl-no-setting",
+      "method": "DELETE",
+      "path": "/api/v1/repository/{repositoryId}",
+      "resource": "repository",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-repository"
     }
   ]
 }
