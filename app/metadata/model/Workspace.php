@@ -112,6 +112,13 @@ $models['Workspace'] = array(
                 'relatedKey' => 'id'
             ),
         ),
+        'hasMany' => array(
+            'projects' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
+                'relatedKey' => 'workspaceId',
+            ),
+        ),
     ),
     'behaviors' => array(
         'auditBehavior',
