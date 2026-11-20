@@ -166,6 +166,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'workspace' => array(
+                'path' => '/api/:version/workspace',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'workflowreference' => array(
                 'path' => '/api/:version/workflowreference',
                 'allowedMethods' => array(

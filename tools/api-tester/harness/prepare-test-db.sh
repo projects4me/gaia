@@ -491,7 +491,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('doc'), ('doccontent'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep')
+    ('systemsetting'), ('userrole'), ('doc'), ('doccontent'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep'), ('workspace')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -1384,6 +1384,21 @@ VALUES
   ('atp-acl-mem-workflowrun-create', 'api-test-role-acl-mem', 'workflowrun.create', 0, NOW(), NOW()),
   ('atp-acl-mem-workflowrunstep-get', 'api-test-role-acl-mem', 'workflowrunstep.get', 1, NOW(), NOW());
 
+-- Workspace: the no-setting role is denied each workspace action
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-no-setting-workspace-get', 'api-test-role-acl-ns', 'workspace.get', 0, NOW(), NOW()),
+  ('atp-acl-no-setting-workspace-create', 'api-test-role-acl-ns', 'workspace.create', 0, NOW(), NOW()),
+  ('atp-acl-no-setting-workspace-update', 'api-test-role-acl-ns', 'workspace.update', 0, NOW(), NOW()),
+  ('atp-acl-no-setting-workspace-delete', 'api-test-role-acl-ns', 'workspace.delete', 0, NOW(), NOW());
+
+-- Workspace: seed records (gaia-dev scaffold resource)
+INSERT INTO workspaces (
+  id, "name", "description", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workspace-000001', 'Seed name', 'Seed description', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
   '"issues_issueNumber_seq"',
@@ -1549,6 +1564,7 @@ data = {
     "otherProjectWorkflowrunstepId": "api-test-workflowrunstep-000002",
     "workflowactorstepId": "api-test-workflowactorstep-000001",
     "otherWorkflowactorstepId": "api-test-workflowactorstep-000002",
+    "workspaceId": "api-test-workspace-000001",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

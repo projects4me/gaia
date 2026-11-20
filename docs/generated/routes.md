@@ -1042,3 +1042,20 @@
 | GET | /api/v1/workflowrunstep/{id} | rest | workflowrunstep.get |
 | GET | /api/v1/workflowrunstep/{id}/{relation} | rest | workflowrunstep.related |
 | OPTIONS | /api/v1/workflowrunstep | rest | workflowrunstep.options |
+
+<a id="workspace"></a>
+## workspace
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/workspace | rest | workspace.deleteCollection |
+| DELETE | /api/v1/workspace/{id} | rest | workspace.delete |
+| GET | /api/v1/workspace | rest | workspace.list |
+| GET | /api/v1/workspace/{id} | rest | workspace.get |
+| GET | /api/v1/workspace/{id}/{relation} | rest | workspace.related |
+| OPTIONS | /api/v1/workspace | rest | workspace.options |
+| PATCH | /api/v1/workspace | rest | workspace.patchCollection |
+| PATCH | /api/v1/workspace/{id} | rest | workspace.patch |
+| POST | /api/v1/workspace | rest | workspace.post |
+| PUT | /api/v1/workspace | rest | workspace.putCollection |
+| PUT | /api/v1/workspace/{id} | rest | workspace.put |

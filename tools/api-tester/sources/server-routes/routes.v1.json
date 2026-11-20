@@ -139,6 +139,17 @@
             ],
             "identifier": "id"
         },
+        "workspace": {
+            "path": "/api/:version/workspace",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "workflowreference": {
             "path": "/api/:version/workflowreference",
             "allowedMethods": [
