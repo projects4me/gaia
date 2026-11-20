@@ -13,5 +13,10 @@
   },
   "require-dev": {
     "nikic/php-parser": "^5.7"
+  },
+  "config": {
+    "platform": {
+      "php": "8.5.12"
+    }
   }
 }
