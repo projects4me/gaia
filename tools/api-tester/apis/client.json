@@ -11068,6 +11068,294 @@
       }
     },
     {
+      "id": "workspace-delete-gate-agent-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "Gate Workspace agent"
+          }
+        }
+      },
+      "store": {
+        "runtime.gateAgentWorkspaceId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-delete-gate-agent-owned",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "Gate Agent",
+            "email": "gate-agent-{runId}@example.com",
+            "purpose": "Keeps a workspace from deletion",
+            "modelConfig": {
+              "simple": "sonnet",
+              "complex": "opus"
+            },
+            "maxTurns": 30,
+            "workspaceId": "{runtime.gateAgentWorkspaceId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-delete-refused-with-agent",
+      "method": "DELETE",
+      "path": "/api/v1/workspace/{runtime.gateAgentWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 409,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "workspace-delete-gate-toolserver-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "Gate Workspace toolserver"
+          }
+        }
+      },
+      "store": {
+        "runtime.gateToolserverWorkspaceId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-delete-gate-toolserver-owned",
+      "method": "POST",
+      "path": "/api/v1/toolserver",
+      "resource": "toolserver",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "toolserver",
+          "attributes": {
+            "name": "Gate MCP",
+            "kind": "mcp",
+            "location": "external",
+            "transport": "http",
+            "endpoint": "http://127.0.0.1:9/mcp",
+            "workspaceId": "{runtime.gateToolserverWorkspaceId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-delete-refused-with-toolserver",
+      "method": "DELETE",
+      "path": "/api/v1/workspace/{runtime.gateToolserverWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 409,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "workspace-delete-gate-skill-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "Gate Workspace skill"
+          }
+        }
+      },
+      "store": {
+        "runtime.gateSkillWorkspaceId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-delete-gate-skill-owned",
+      "method": "POST",
+      "path": "/api/v1/skill",
+      "resource": "skill",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "skill",
+          "attributes": {
+            "name": "Gate Skill",
+            "workspaceId": "{runtime.gateSkillWorkspaceId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-delete-refused-with-skill",
+      "method": "DELETE",
+      "path": "/api/v1/workspace/{runtime.gateSkillWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 409,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "workspace-delete-gate-workflow-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "Gate Workspace workflow"
+          }
+        }
+      },
+      "store": {
+        "runtime.gateWorkflowWorkspaceId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-delete-gate-workflow-owned",
+      "method": "POST",
+      "path": "/api/v1/workflow",
+      "resource": "workflow",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflow",
+          "attributes": {
+            "name": "Gate Flow",
+            "workspaceId": "{runtime.gateWorkflowWorkspaceId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-delete-refused-with-workflow",
+      "method": "DELETE",
+      "path": "/api/v1/workspace/{runtime.gateWorkflowWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 409,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "workspace-delete-gate-repository-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "Gate Workspace repository"
+          }
+        }
+      },
+      "store": {
+        "runtime.gateRepositoryWorkspaceId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-delete-gate-repository-owned",
+      "method": "POST",
+      "path": "/api/v1/repository",
+      "resource": "repository",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "repository",
+          "attributes": {
+            "name": "Gate Repository",
+            "url": "https://github.com/projects4me/api-test.git",
+            "workspaceId": "{runtime.gateRepositoryWorkspaceId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-delete-refused-with-repository",
+      "method": "DELETE",
+      "path": "/api/v1/workspace/{runtime.gateRepositoryWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 409,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "workspace-delete-refused-with-project",
+      "method": "DELETE",
+      "path": "/api/v1/workspace/{runtime.ownWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 409,
+        "shape": "json"
+      }
+    },
+    {
       "id": "project-create-into-existing-workspace",
       "method": "POST",
       "path": "/api/v1/project",

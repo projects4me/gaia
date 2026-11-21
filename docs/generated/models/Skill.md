@@ -29,4 +29,4 @@
 - controller: Gaia\MVC\REST\Controllers\SkillController
 - routes: DELETE /api/v1/skill, DELETE /api/v1/skill/{id}, GET /api/v1/skill, GET /api/v1/skill/{id}, GET /api/v1/skill/{id}/{relation}, OPTIONS /api/v1/skill, PATCH /api/v1/skill, PATCH /api/v1/skill/{id}, POST /api/v1/skill, PUT /api/v1/skill, PUT /api/v1/skill/{id}
 - components: -
-- cases: 10 (acl 1, backend 6, client 3); gaia-dev cases skill
+- cases: 11 (acl 1, backend 6, client 4); gaia-dev cases skill
