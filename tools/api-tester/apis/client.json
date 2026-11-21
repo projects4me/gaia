@@ -12132,6 +12132,125 @@
       }
     },
     {
+      "id": "workspace-counts-detail",
+      "method": "GET",
+      "path": "/api/v1/workspace/{runtime.syncWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "projectCount": 2,
+          "memberCount": 2
+        }
+      }
+    },
+    {
+      "id": "workspace-counts-list",
+      "method": "GET",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "query": {
+        "query": "((Workspace.id : {runtime.syncWorkspaceId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.id": "{runtime.syncWorkspaceId}",
+          "data.0.attributes.projectCount": 2,
+          "data.0.attributes.memberCount": 2
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "workspace-counts-requested-fields",
+      "method": "GET",
+      "path": "/api/v1/workspace/{runtime.syncWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "query": {
+        "fields": "Workspace.id,Workspace.name,Workspace.memberCount"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "memberCount": 2
+        },
+        "attributesAbsent": [
+          "projectCount"
+        ]
+      }
+    },
+    {
+      "id": "workspace-counts-sortable",
+      "method": "GET",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "query": {
+        "query": "((Workspace.id : {runtime.syncWorkspaceId}))",
+        "sort": "Workspace.projectCount",
+        "order": "DESC",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.projectCount": 2
+        }
+      }
+    },
+    {
+      "id": "workspace-counts-write-ignored",
+      "method": "PATCH",
+      "path": "/api/v1/workspace/{runtime.syncWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "id": "{runtime.syncWorkspaceId}",
+          "attributes": {
+            "name": "API Test Sync Workspace",
+            "projectCount": 99,
+            "memberCount": 99
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "projectCount": 2,
+          "memberCount": 2
+        }
+      }
+    },
+    {
+      "id": "workspace-counts-not-filterable",
+      "method": "GET",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "query": {
+        "query": "((Workspace.projectCount : 2))"
+      },
+      "expects": {
+        "status": 400
+      }
+    },
+    {
       "id": "workspace-sync-handover-create-open-issue",
       "method": "POST",
       "path": "/api/v1/issue",

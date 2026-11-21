@@ -23638,6 +23638,112 @@
       }
     },
     {
+      "id": "case:client/workspace-counts-detail",
+      "type": "case",
+      "key": "client/workspace-counts-detail",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{runtime.syncWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-counts-list",
+      "type": "case",
+      "key": "client/workspace-counts-list",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-counts-not-filterable",
+      "type": "case",
+      "key": "client/workspace-counts-not-filterable",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-counts-requested-fields",
+      "type": "case",
+      "key": "client/workspace-counts-requested-fields",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{runtime.syncWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-counts-sortable",
+      "type": "case",
+      "key": "client/workspace-counts-sortable",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-counts-write-ignored",
+      "type": "case",
+      "key": "client/workspace-counts-write-ignored",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workspace/{runtime.syncWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/workspace-create-keeps-description",
       "type": "case",
       "key": "client/workspace-create-keeps-description",
@@ -89801,6 +89907,211 @@
       "from": "case:client/workflowrun-test-run-returns-the-path-without-saving",
       "type": "uses_fixture",
       "to": "fixture:workflownodeId"
+    },
+    {
+      "from": "case:client/workspace-counts-detail",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-counts-detail",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-counts-detail",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-counts-detail",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-detail",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-detail",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-counts-detail",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-counts-list",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-counts-list",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspace-counts-list",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-counts-list",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-counts-list",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-list",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-list",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-list",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-counts-not-filterable",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-counts-not-filterable",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-not-filterable",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-not-filterable",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-counts-requested-fields",
+      "type": "asserts",
+      "to": "assertion:attributesAbsent"
+    },
+    {
+      "from": "case:client/workspace-counts-requested-fields",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-counts-requested-fields",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-counts-requested-fields",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-counts-requested-fields",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-requested-fields",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-requested-fields",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-counts-requested-fields",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-counts-sortable",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-counts-sortable",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-counts-sortable",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-counts-sortable",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-sortable",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-sortable",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-sortable",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-counts-write-ignored",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-counts-write-ignored",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-counts-write-ignored",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-counts-write-ignored",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-write-ignored",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-counts-write-ignored",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-counts-write-ignored",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/workspace-create-keeps-description",

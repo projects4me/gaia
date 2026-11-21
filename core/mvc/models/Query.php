@@ -10,6 +10,7 @@ use Phalcon\Mvc\Model\MetaData;
 use Gaia\Libraries\Meta\Manager;
 use Gaia\Libraries\Utils\Util;
 use Gaia\Core\MVC\Models\Query\Clause;
+use Gaia\Core\MVC\Models\Query\ComputedColumns;
 use Gaia\Core\MVC\Models\Query\CountParam;
 
 /**
@@ -125,6 +126,9 @@ class Query
      */
     public function prepareSelectQuery($modelNamespace, $params, $relationship)
     {
+        $computed = $this->getComputedColumns();
+        $computedNames = $this->takeComputedFields($params, $computed);
+
         $this->setFieldsForQuery($params, $relationship);
         $this->filterFieldsByAcl($params);
         $this->beforePrepareQuery($params);
@@ -134,6 +138,11 @@ class Query
         if (isset($params['count']) && !empty($params['count'])) {
             $params['fields'][] = CountParam::parse($params['count'])->toColumn();
         }
+
+        // Computed fields are selected as their expressions (Workspaces D-013).
+        $selectedComputed = $this->authorizedComputedFields($computedNames);
+        $params['fields'] = array_merge($params['fields'], $computed->columns($selectedComputed));
+        $this->clause->orderBy = $computed->rewriteOrderBy($this->clause->orderBy, $selectedComputed);
 
         $this->queryBuilder->columns($params['fields']);
         $this->queryBuilder->groupBy($this->clause->groupBy);
@@ -159,6 +168,60 @@ class Query
         }
 
         $GLOBALS['logger']->debug($this->queryBuilder->getPhql());
+    }
+
+    /**
+     * The computed fields (Workspaces D-013) of the queried model.
+     *
+     * @return ComputedColumns
+     */
+    protected function getComputedColumns()
+    {
+        return new ComputedColumns(
+            $this->modelAlias,
+            $this->di->get('metaManager')->getComputedFields($this->modelAlias)
+        );
+    }
+
+    /**
+     * Take the computed fields out of the requested fields and return the ones to select: those requested, or all of
+     * them for a default select, plus any the sort names (it orders by their column alias). A grouped or counted
+     * select gets none by default: their correlated subqueries are not grouped columns.
+     *
+     * @param  array           $params   Requested params; its `fields` lose the computed ones.
+     * @param  ComputedColumns $computed
+     * @return array Names of the computed fields to select.
+     */
+    protected function takeComputedFields(array &$params, ComputedColumns $computed)
+    {
+        if (isset($params['fields']) && !empty($params['fields']) && is_array($params['fields'])) {
+            list($params['fields'], $names) = $computed->extract($params['fields']);
+        } elseif (empty($params['count']) && empty($this->clause->groupBy)) {
+            $names = $computed->names();
+        } else {
+            $names = [];
+        }
+
+        return array_values(array_unique(array_merge($names, $computed->namedInOrderBy($this->clause->orderBy))));
+    }
+
+    /**
+     * Keep the computed fields the current user may read (Acl::isFieldActionAllowed, Workspaces D-013).
+     *
+     * @param  array $names
+     * @return array
+     */
+    protected function authorizedComputedFields(array $names)
+    {
+        if (!$this->di->has('acl')) {
+            return $names;
+        }
+
+        $acl = $this->di->get('acl');
+
+        return array_values(array_filter($names, function ($name) use ($acl) {
+            return $acl->isFieldActionAllowed($this->modelAlias, $name, 'get');
+        }));
     }
 
     /**
