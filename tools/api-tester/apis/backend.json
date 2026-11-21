@@ -1191,7 +1191,8 @@
                 "data": {
                     "type": "workspace",
                     "attributes": {
-                        "name": "api-workspace-name"
+                        "name": "api-workspace-name",
+                        "shortCode": "apiws{runId}"
                     }
                 }
             },

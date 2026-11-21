@@ -16,6 +16,8 @@ class AgentWorkspaceFakeModel extends \Phalcon\Mvc\Model
     public $projectId;
     public $userId;
     public $runtimeId;
+    public $shortCode;
+    public $id;
 
     /**
      * Fields of the messages appended by the behavior.

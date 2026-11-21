@@ -8,6 +8,7 @@
 - description text
 - name varchar(100) required
 - runtimeId varchar(36)
+- shortCode varchar(50)
 - also: createdUser, createdUserName, dateCreated, dateModified, deleted, id, modifiedUser, modifiedUserName
 
 <a id="relationships"></a>
@@ -26,9 +27,9 @@
 <a id="summary"></a>
 ## Summary
 
-- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior, workspaceRuntimeBehavior
+- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior, workspaceRuntimeBehavior, workspaceShortCodeBehavior
 - acl: service={"actions":["get"],"kinds":["runtime"],"filter":"Workspace.deleted = false AND Workspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:)"}
 - controller: Gaia\MVC\REST\Controllers\WorkspaceController
 - routes: DELETE /api/v1/workspace, DELETE /api/v1/workspace/{id}, GET /api/v1/workspace, GET /api/v1/workspace/{id}, GET /api/v1/workspace/{id}/{relation}, OPTIONS /api/v1/workspace, PATCH /api/v1/workspace, PATCH /api/v1/workspace/{id}, POST /api/v1/workspace, PUT /api/v1/workspace, PUT /api/v1/workspace/{id}
 - components: -
-- cases: 40 (acl 8, backend 6, client 25, live 1); gaia-dev cases workspace
+- cases: 44 (acl 8, backend 6, client 29, live 1); gaia-dev cases workspace

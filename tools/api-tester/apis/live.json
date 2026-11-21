@@ -1121,6 +1121,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "lwscw{runId}",
             "name": "API Test Live Sync Workspace"
           }
         }
