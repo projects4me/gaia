@@ -4014,6 +4014,18 @@
       }
     },
     {
+      "id": "behaviour:agentWorkspaceBehavior",
+      "type": "behaviour",
+      "key": "agentWorkspaceBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\agentWorkspaceBehavior",
+        "file": "core/mvc/models/behaviors/agentWorkspaceBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:auditBehavior",
       "type": "behaviour",
       "key": "auditBehavior",
@@ -4132,6 +4144,30 @@
         "hooks": [
           "notify",
           "uploadIds"
+        ]
+      }
+    },
+    {
+      "id": "behaviour:issueAgentWorkspaceBehavior",
+      "type": "behaviour",
+      "key": "issueAgentWorkspaceBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\issueAgentWorkspaceBehavior",
+        "file": "core/mvc/models/behaviors/issueAgentWorkspaceBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
+      "id": "behaviour:membershipAgentWorkspaceBehavior",
+      "type": "behaviour",
+      "key": "membershipAgentWorkspaceBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\membershipAgentWorkspaceBehavior",
+        "file": "core/mvc/models/behaviors/membershipAgentWorkspaceBehavior.php",
+        "hooks": [
+          "notify"
         ]
       }
     },
@@ -12722,7 +12758,8 @@
         "source": "backend-metadata",
         "placeholders": [
           "runId",
-          "userId"
+          "userId",
+          "workspaceId"
         ],
         "stores": [
           "runtime.agentId"
@@ -13620,6 +13657,52 @@
       }
     },
     {
+      "id": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "case",
+      "key": "client/agent-assignment-in-other-workspace-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectShortcode",
+          "runtime.agentWsProjectOutId",
+          "runtime.wsAgentUserId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agent-assignment-in-own-workspace",
+      "type": "case",
+      "key": "client/agent-assignment-in-own-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectShortcode",
+          "runtime.agentWsProjectInId",
+          "runtime.wsAgentUserId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/agent-create-makes-agent-user",
       "type": "case",
       "key": "client/agent-create-makes-agent-user",
@@ -13632,7 +13715,8 @@
         "enabled": true,
         "source": null,
         "placeholders": [
-          "runId"
+          "runId",
+          "workspaceId"
         ],
         "stores": [
           "runtime.createdAgentId",
@@ -13657,6 +13741,24 @@
       }
     },
     {
+      "id": "case:client/agent-create-needs-workspace",
+      "type": "case",
+      "key": "client/agent-create-needs-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/agent-create-rejects-bad-model-config",
       "type": "case",
       "key": "client/agent-create-rejects-bad-model-config",
@@ -13669,7 +13771,8 @@
         "enabled": true,
         "source": null,
         "placeholders": [
-          "runId"
+          "runId",
+          "workspaceId"
         ],
         "stores": []
       }
@@ -13742,6 +13845,144 @@
           "runtime.createdAgentUserId"
         ],
         "stores": []
+      }
+    },
+    {
+      "id": "case:client/agent-membership-in-other-workspace-refused",
+      "type": "case",
+      "key": "client/agent-membership-in-other-workspace-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.agentWsProjectOutId",
+          "runtime.wsAgentUserId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agent-membership-in-own-workspace",
+      "type": "case",
+      "key": "client/agent-membership-in-own-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.agentWsProjectInId",
+          "runtime.wsAgentUserId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agent-patch-workspace-refused",
+      "type": "case",
+      "key": "client/agent-patch-workspace-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/agent/{runtime.wsAgentId}",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.wsAgentId",
+          "workspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agent-ws-create-agent",
+      "type": "case",
+      "key": "client/agent-ws-create-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.agentWsId"
+        ],
+        "stores": [
+          "runtime.wsAgentId",
+          "runtime.wsAgentUserId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/agent-ws-create-project-inside",
+      "type": "case",
+      "key": "client/agent-ws-create-project-inside",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.agentWsId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.agentWsProjectInId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/agent-ws-create-project-outside",
+      "type": "case",
+      "key": "client/agent-ws-create-project-outside",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "userId"
+        ],
+        "stores": [
+          "runtime.agentWsProjectOutId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/agent-ws-create-workspace",
+      "type": "case",
+      "key": "client/agent-ws-create-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.agentWsId"
+        ]
       }
     },
     {
@@ -26321,6 +26562,18 @@
         "type": "varchar",
         "length": "36",
         "null": false
+      }
+    },
+    {
+      "id": "field:Agent.workspaceId",
+      "type": "field",
+      "key": "Agent.workspaceId",
+      "attributes": {
+        "label": "LBL_AGENTS_WORKSPACE_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true,
+        "relatedIdentifier": true
       }
     },
     {
@@ -40657,6 +40910,16 @@
       }
     },
     {
+      "id": "relationship:Agent.workspace",
+      "type": "relationship",
+      "key": "Agent.workspace",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "workspaceId",
+        "relatedKey": "id"
+      }
+    },
+    {
       "id": "relationship:Agentcredential.agent",
       "type": "relationship",
       "key": "Agentcredential.agent",
@@ -42844,6 +43107,16 @@
         "kind": "hasOne",
         "primaryKey": "runId",
         "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workspace.agents",
+      "type": "relationship",
+      "key": "Workspace.agents",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "workspaceId"
       }
     },
     {
@@ -68047,6 +68320,11 @@
       "to": "fixture:userId"
     },
     {
+      "from": "case:backend/post-agent-api-v1-agent",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
       "from": "case:backend/post-agentcredential-api-v1-agentcredential",
       "type": "asserts",
       "to": "assertion:shape"
@@ -69437,6 +69715,121 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-agent"
+    },
+    {
+      "from": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-project-outside"
+    },
+    {
+      "from": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/agent-assignment-in-other-workspace-refused",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/agent-assignment-in-own-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-assignment-in-own-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-assignment-in-own-workspace",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/agent-assignment-in-own-workspace",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-agent"
+    },
+    {
+      "from": "case:client/agent-assignment-in-own-workspace",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-project-inside"
+    },
+    {
+      "from": "case:client/agent-assignment-in-own-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/agent-assignment-in-own-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-assignment-in-own-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/agent-assignment-in-own-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/agent-assignment-in-own-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/agent-assignment-in-own-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
       "from": "case:client/agent-create-makes-agent-user",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -69467,6 +69860,11 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/agent-create-makes-agent-user",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
       "from": "case:client/agent-create-needs-email",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -69493,6 +69891,36 @@
     },
     {
       "from": "case:client/agent-create-needs-email",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-create-needs-workspace",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/agent-create-needs-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-create-needs-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-create-needs-workspace",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/agent-create-needs-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:client/agent-create-needs-workspace",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -69525,6 +69953,11 @@
       "from": "case:client/agent-create-rejects-bad-model-config",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-create-rejects-bad-model-config",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
     },
     {
       "from": "case:client/agent-create-rejects-taken-email",
@@ -69653,6 +70086,241 @@
     },
     {
       "from": "case:client/agent-deleted-agent-user-gone",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-membership-in-other-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/agent-membership-in-other-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-membership-in-other-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-membership-in-other-workspace-refused",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/agent-membership-in-other-workspace-refused",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-agent"
+    },
+    {
+      "from": "case:client/agent-membership-in-other-workspace-refused",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-project-outside"
+    },
+    {
+      "from": "case:client/agent-membership-in-other-workspace-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/membership"
+    },
+    {
+      "from": "case:client/agent-membership-in-other-workspace-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-membership-in-own-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-membership-in-own-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-membership-in-own-workspace",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/agent-membership-in-own-workspace",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-agent"
+    },
+    {
+      "from": "case:client/agent-membership-in-own-workspace",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-project-inside"
+    },
+    {
+      "from": "case:client/agent-membership-in-own-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/membership"
+    },
+    {
+      "from": "case:client/agent-membership-in-own-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/agent-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-patch-workspace-refused",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/agent-patch-workspace-refused",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-agent"
+    },
+    {
+      "from": "case:client/agent-patch-workspace-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/agent/{id}"
+    },
+    {
+      "from": "case:client/agent-patch-workspace-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-patch-workspace-refused",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:client/agent-ws-create-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-ws-create-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-ws-create-agent",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/agent-ws-create-agent",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-workspace"
+    },
+    {
+      "from": "case:client/agent-ws-create-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:client/agent-ws-create-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-inside",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-inside",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-inside",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-inside",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-workspace"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-inside",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-inside",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-inside",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-outside",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-outside",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-outside",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-outside",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-outside",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agent-ws-create-project-outside",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/agent-ws-create-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agent-ws-create-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agent-ws-create-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/agent-ws-create-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/agent-ws-create-workspace",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -93323,6 +93991,11 @@
     },
     {
       "from": "model:Agent",
+      "type": "has_field",
+      "to": "field:Agent.workspaceId"
+    },
+    {
+      "from": "model:Agent",
       "type": "has_relationship",
       "to": "relationship:Agent.agentSkills"
     },
@@ -93358,8 +94031,18 @@
     },
     {
       "from": "model:Agent",
+      "type": "has_relationship",
+      "to": "relationship:Agent.workspace"
+    },
+    {
+      "from": "model:Agent",
       "type": "uses_behaviour",
       "to": "behaviour:agentConfigBehavior"
+    },
+    {
+      "from": "model:Agent",
+      "type": "uses_behaviour",
+      "to": "behaviour:agentWorkspaceBehavior"
     },
     {
       "from": "model:Agent",
@@ -95324,6 +96007,11 @@
     {
       "from": "model:Issue",
       "type": "uses_behaviour",
+      "to": "behaviour:issueAgentWorkspaceBehavior"
+    },
+    {
+      "from": "model:Issue",
+      "type": "uses_behaviour",
       "to": "behaviour:mentionsBehavior"
     },
     {
@@ -95690,6 +96378,11 @@
       "from": "model:Membership",
       "type": "uses_behaviour",
       "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Membership",
+      "type": "uses_behaviour",
+      "to": "behaviour:membershipAgentWorkspaceBehavior"
     },
     {
       "from": "model:Membership",
@@ -100439,6 +101132,11 @@
     {
       "from": "model:Workspace",
       "type": "has_relationship",
+      "to": "relationship:Workspace.agents"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_relationship",
       "to": "relationship:Workspace.createdBy"
     },
     {
@@ -102437,6 +103135,11 @@
       "to": "model:Workflowreference"
     },
     {
+      "from": "relationship:Agent.workspace",
+      "type": "targets",
+      "to": "model:Workspace"
+    },
+    {
       "from": "relationship:Agentcredential.agent",
       "type": "targets",
       "to": "model:Agent"
@@ -103555,6 +104258,11 @@
       "from": "relationship:Workflowrunstep.run",
       "type": "targets",
       "to": "model:Workflowrun"
+    },
+    {
+      "from": "relationship:Workspace.agents",
+      "type": "targets",
+      "to": "model:Agent"
     },
     {
       "from": "relationship:Workspace.createdBy",

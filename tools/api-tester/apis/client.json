@@ -4825,6 +4825,7 @@
             "name": "Created Agent",
             "email": "created-agent-{runId}@example.com",
             "purpose": "Created by the client suite",
+            "workspaceId": "{workspaceId}",
             "modelConfig": {
               "simple": "sonnet",
               "complex": "opus"
@@ -4838,7 +4839,8 @@
         "shape": "jsonapi.resource",
         "attributesEqual": {
           "name": "Created Agent",
-          "purpose": "Created by the client suite"
+          "purpose": "Created by the client suite",
+          "workspaceId": "api-test-workspace-000001"
         }
       },
       "store": {
@@ -4915,6 +4917,7 @@
           "attributes": {
             "name": "Bad Config Agent",
             "email": "bad-config-{runId}@example.com",
+            "workspaceId": "{workspaceId}",
             "modelConfig": "not json"
           }
         }
@@ -11314,6 +11317,254 @@
       "expects": {
         "status": 200,
         "shape": "json"
+      }
+    },
+    {
+      "id": "agent-create-needs-workspace",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "Agent Without Workspace",
+            "email": "no-workspace-{runId}@example.com"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "errorEqual": "workspaceId is required: an agent belongs to a workspace."
+      }
+    },
+    {
+      "id": "agent-ws-create-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "API Test Agent Workspace"
+          }
+        }
+      },
+      "store": {
+        "runtime.agentWsId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "agent-ws-create-agent",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "Workspace Agent",
+            "email": "ws-agent-{runId}@example.com",
+            "workspaceId": "{runtime.agentWsId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.wsAgentId": "data.id",
+        "runtime.wsAgentUserId": "data.attributes.userId"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "agent-patch-workspace-refused",
+      "method": "PATCH",
+      "path": "/api/v1/agent/{runtime.wsAgentId}",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "id": "{runtime.wsAgentId}",
+          "attributes": {
+            "workspaceId": "{workspaceId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "The workspace of an agent cannot be changed."
+        }
+      }
+    },
+    {
+      "id": "agent-ws-create-project-inside",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Agent Workspace Project In",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0,
+            "workspaceId": "{runtime.agentWsId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.agentWsProjectInId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "agent-ws-create-project-outside",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Agent Workspace Project Out",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.agentWsProjectOutId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "agent-membership-in-other-workspace-refused",
+      "method": "POST",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "attributes": {
+            "projectId": "{runtime.agentWsProjectOutId}",
+            "userId": "{runtime.wsAgentUserId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "An agent can only be a member of projects in its own workspace."
+        }
+      }
+    },
+    {
+      "id": "agent-membership-in-own-workspace",
+      "method": "POST",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "attributes": {
+            "projectId": "{runtime.agentWsProjectInId}",
+            "userId": "{runtime.wsAgentUserId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "agent-assignment-in-other-workspace-refused",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Agent Workspace Issue",
+            "owner": "{userId}",
+            "assignee": "{runtime.wsAgentUserId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{runtime.agentWsProjectOutId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "An agent can only be assigned issues of projects in its own workspace."
+        }
+      }
+    },
+    {
+      "id": "agent-assignment-in-own-workspace",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Agent Workspace Issue",
+            "owner": "{userId}",
+            "assignee": "{runtime.wsAgentUserId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{runtime.agentWsProjectInId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
       }
     }
   ]

@@ -204,7 +204,7 @@ class AgentSpecTest extends TestCase
      */
     private function createAgent($email, array $config)
     {
-        return (new AgentLifecycle())->create(['name' => 'Unit Spec Agent', 'email' => $email] + $config);
+        return (new AgentLifecycle())->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit Spec Agent', 'email' => $email] + $config);
     }
 
     private function createServer($id, $name)

@@ -152,6 +152,7 @@ $extraAttributes = [
         'name' => 'API Tester Agent',
         'email' => 'api-tester-agent-{runId}@example.com',
         'purpose' => 'Created by the api-tester backend suite',
+        'workspaceId' => '{workspaceId}',
         'sponsorId' => '{userId}',
         'rolePrompt' => 'You are a test agent.',
         'modelConfig' => '{"simple":"sonnet","complex":"opus","escalation":"opus"}',

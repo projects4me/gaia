@@ -19,9 +19,9 @@
 <a id="summary"></a>
 ## Summary
 
-- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior
+- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, membershipAgentWorkspaceBehavior, modifiedUserBehavior
 - acl: group Project via projectId
 - controller: Gaia\MVC\REST\Controllers\MembershipController
 - routes: DELETE /api/v1/membership, DELETE /api/v1/membership/{id}, GET /api/v1/membership, GET /api/v1/membership/{id}, GET /api/v1/membership/{id}/{relation}, OPTIONS /api/v1/membership, PATCH /api/v1/membership, PATCH /api/v1/membership/{id}, POST /api/v1/membership, PUT /api/v1/membership, PUT /api/v1/membership/{id}
 - components: Events\MembershipLiveEvents, Notification, ProjectActivities
-- cases: 33 (backend 5, client 18, live 10); gaia-dev cases membership
+- cases: 35 (backend 5, client 20, live 10); gaia-dev cases membership

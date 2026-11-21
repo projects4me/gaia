@@ -278,7 +278,7 @@ class AgentCredentialsTest extends TestCase
      */
     private function createAgent($name, $email)
     {
-        return (new AgentLifecycle())->create(['name' => $name, 'email' => $email]);
+        return (new AgentLifecycle())->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => $name, 'email' => $email]);
     }
 
     /**
