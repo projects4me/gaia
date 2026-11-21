@@ -397,6 +397,31 @@ class UploadController extends RestController
 
 
     /**
+     * Opens the image with Imagick (preferred) and falls back to GD
+     *
+     * In Phalcon 5 the adapter constructor throws when its extension is missing.
+     *
+     * @param  string $file The full filename of the image
+     * @return \Phalcon\Image\Adapter\AdapterInterface
+     * @throws \Throwable when neither extension can open the file
+     */
+    protected function _openImage(string $file)
+    {
+        global $logger;
+
+        try {
+            $image = new \Phalcon\Image\Adapter\Imagick($file);
+            $logger->debug('Using Imagick to generate the thumbnail');
+        } catch (\Throwable $e) {
+            $logger->debug('Imagick not usable (' . $e->getMessage() . '), trying GD');
+            $image = new \Phalcon\Image\Adapter\GD($file);
+            $logger->debug('Using GD to generate the thumbnail');
+        }
+        return $image;
+    }
+
+
+    /**
      * This function creates the thumbnail of the uploaded images
      *
      * Note: This function is not responsible to check for files contents, it assumes that
@@ -417,20 +442,7 @@ class UploadController extends RestController
         $logger->debug('Gaia.Api.Controller.Upload->_generateThumb');
 
         try {
-            // First check for the imaagick extension
-            $image = new \Phalcon\Image\Adapter\Imagick($file);
-            if (!$image->check()) {
-                // If it not available then try to use GD
-                $image = new \Phalcon\Image\Adapter\GD($file);
-                if (!$image->check()) {
-                    $logger->critical('UploadController->_generateFile :: Imagick or GD extentions nor found. Please install either of the extensions.');
-                    throw new Exception('Required extension not found. Please make sure that either GD or Imagick (preferred) PHP extension is available.');
-                } else {
-                    $logger->debug('Using GD to generate the thumbnail');
-                }
-            } else {
-                $logger->debug('Using Imagick to generate the thumbnail');
-            }
+            $image = $this->_openImage($file);
 
             $width = $image->getWidth();
             $height = $image->getHeight();
@@ -440,18 +452,23 @@ class UploadController extends RestController
                 $logger->debug('Ratio is equal to 1.5');
                 $image->resize(198, 132);
             } elseif ($ratio > 1.5) {
+                $resizeWidth = (int) ceil(132 * $ratio);
                 $logger->debug('Ratio is greater than 1.5');
-                $logger->debug('Resizing to '.(ceil(132 * $ratio)).',132');
-                $image->resize((ceil(132 * $ratio)), 132)->crop(198, 132);
+                $logger->debug('Resizing to ' . $resizeWidth . ',132');
+                $image->resize($resizeWidth, 132)->crop(198, 132, intdiv($resizeWidth - 198, 2), 0);
             } else {
+                $resizeHeight = (int) floor(198 / $ratio);
                 $logger->debug("Ratio is less to 1.5");
-                $logger->debug('Resizing to 198,'.(floor(198 / $ratio)));
-                $image->resize(198, (floor(198 / $ratio)))->crop(198, 132);
+                $logger->debug('Resizing to 198,' . $resizeHeight);
+                $image->resize(198, $resizeHeight)->crop(198, 132, 0, intdiv($resizeHeight - 132, 2));
             }
 
-            $image->save($path.DS."thumbnail/thumb_" . $id.'.jpg');
+            $image->save($path . DS . "thumbnail/thumb_" . $id . '.jpg');
+            $logger->debug('-Gaia.Api.Controller.Upload->_generateThumb');
             return true;
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
+            // A failed thumbnail means "no thumbnail"; it must never fail the upload
+            $logger->error('UploadController->_generateThumb :: ' . $e->getMessage());
         }
 
         $logger->debug('-Gaia.Api.Controller.Upload->_generateThumb');
