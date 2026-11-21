@@ -11410,7 +11410,7 @@
       }
     },
     {
-      "id": "project-patch-workspace-refused",
+      "id": "project-patch-unknown-workspace-422",
       "method": "PATCH",
       "path": "/api/v1/project/{runtime.ownWorkspaceProjectId}",
       "resource": "project",
@@ -11420,7 +11420,7 @@
           "type": "project",
           "id": "{runtime.ownWorkspaceProjectId}",
           "attributes": {
-            "workspaceId": "{workspaceId}"
+            "workspaceId": "00000000-0000-0000-0000-000000000000"
           }
         }
       },
@@ -11449,6 +11449,450 @@
       "expects": {
         "status": 200,
         "shape": "json"
+      }
+    },
+    {
+      "id": "project-move-create-source-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "API Test Move Source"
+          }
+        }
+      },
+      "store": {
+        "runtime.moveSrcWsId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-create-target-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "API Test Move Target"
+          }
+        }
+      },
+      "store": {
+        "runtime.moveDstWsId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-create-project",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Project Move Moved",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0,
+            "workspaceId": "{runtime.moveSrcWsId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.moveProjectId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-create-target-project",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Project Move Target",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0,
+            "workspaceId": "{runtime.moveDstWsId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.moveDstProjectId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-create-source-agent",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "Move Source Agent",
+            "email": "move-src-agent-{runId}@example.com",
+            "workspaceId": "{runtime.moveSrcWsId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.moveSrcAgentUserId": "data.attributes.userId"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-create-target-agent",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "Move Target Agent",
+            "email": "move-dst-agent-{runId}@example.com",
+            "workspaceId": "{runtime.moveDstWsId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.moveDstAgentUserId": "data.attributes.userId"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-add-member",
+      "method": "POST",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "attributes": {
+            "userId": "{memberUserId}",
+            "projectId": "{runtime.moveProjectId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-add-source-agent",
+      "method": "POST",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "attributes": {
+            "userId": "{runtime.moveSrcAgentUserId}",
+            "projectId": "{runtime.moveProjectId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-add-target-agent",
+      "method": "POST",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "membership",
+          "attributes": {
+            "userId": "{runtime.moveDstAgentUserId}",
+            "projectId": "{runtime.moveDstProjectId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-create-agent-issue",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Project Move Agent Issue",
+            "owner": "{userId}",
+            "assignee": "{runtime.moveSrcAgentUserId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{runtime.moveProjectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.moveAgentIssueId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-agent-issue-409",
+      "method": "PATCH",
+      "path": "/api/v1/project/{runtime.moveProjectId}",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "id": "{runtime.moveProjectId}",
+          "attributes": {
+            "workspaceId": "{runtime.moveDstWsId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 409,
+        "shape": "error",
+        "jsonEqual": {
+          "error": "conflict",
+          "error_description": "The project has 1 open issue(s) assigned to agents of its workspace; hand them over before moving it."
+        }
+      }
+    },
+    {
+      "id": "project-move-delete-agent-issue",
+      "method": "DELETE",
+      "path": "/api/v1/issue/{runtime.moveAgentIssueId}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "project-move-create-scoped-workflow",
+      "method": "POST",
+      "path": "/api/v1/workflow",
+      "resource": "workflow",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflow",
+          "attributes": {
+            "name": "Project Move Flow",
+            "workspaceId": "{runtime.moveSrcWsId}",
+            "scope": [
+              "{runtime.moveProjectId}"
+            ]
+          }
+        }
+      },
+      "store": {
+        "runtime.moveFlowId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-scoped-workflow-409",
+      "method": "PATCH",
+      "path": "/api/v1/project/{runtime.moveProjectId}",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "id": "{runtime.moveProjectId}",
+          "attributes": {
+            "workspaceId": "{runtime.moveDstWsId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 409,
+        "shape": "error",
+        "jsonEqual": {
+          "error": "conflict",
+          "error_description": "Workflows of the project's workspace list it in their scope: Project Move Flow; remove it from their scope before moving it."
+        }
+      }
+    },
+    {
+      "id": "project-move-delete-scoped-workflow",
+      "method": "DELETE",
+      "path": "/api/v1/workflow/{runtime.moveFlowId}",
+      "resource": "workflow",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "project-move-waiting-run-409",
+      "method": "PATCH",
+      "path": "/api/v1/project/{otherProjectId}",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "id": "{otherProjectId}",
+          "attributes": {
+            "workspaceId": "{otherWorkspaceId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 409,
+        "shape": "error",
+        "jsonEqual": {
+          "error": "conflict",
+          "error_description": "The project has 1 running or waiting workflow run(s); wait for them to finish before moving it."
+        }
+      }
+    },
+    {
+      "id": "project-move-to-target-workspace",
+      "method": "PATCH",
+      "path": "/api/v1/project/{runtime.moveProjectId}",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "id": "{runtime.moveProjectId}",
+          "attributes": {
+            "workspaceId": "{runtime.moveDstWsId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "workspaceId": "{runtime.moveDstWsId}"
+        }
+      }
+    },
+    {
+      "id": "project-move-source-agent-removed",
+      "method": "GET",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "query": {
+        "query": "((Membership.projectId : {runtime.moveProjectId}) AND (Membership.userId : {runtime.moveSrcAgentUserId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonPathAbsent": [
+          "data.0"
+        ]
+      }
+    },
+    {
+      "id": "project-move-target-agent-joined-moved-project",
+      "method": "GET",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "query": {
+        "query": "((Membership.projectId : {runtime.moveProjectId}) AND (Membership.userId : {runtime.moveDstAgentUserId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.userId": "{runtime.moveDstAgentUserId}"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "project-move-member-joined-target-project",
+      "method": "GET",
+      "path": "/api/v1/membership",
+      "resource": "membership",
+      "auth": true,
+      "query": {
+        "query": "((Membership.projectId : {runtime.moveDstProjectId}) AND (Membership.userId : {memberUserId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.userId": "{memberUserId}"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
       }
     },
     {

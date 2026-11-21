@@ -8,6 +8,7 @@ namespace Gaia\MVC\Models\Behaviors;
 
 use Gaia\Libraries\Utils\TransactionScope;
 use Gaia\Libraries\Workspaces\MembershipSync;
+use Gaia\Libraries\Workspaces\ProjectMoveGate;
 use Gaia\Libraries\Workspaces\ProjectWorkspace;
 use Gaia\MVC\REST\Controllers\Components\Events\MembershipLiveEventsComponent;
 use Phalcon\Messages\Message;
@@ -16,10 +17,12 @@ use Phalcon\Mvc\Model\BehaviorInterface;
 use Phalcon\Mvc\Model\Behavior;
 
 /**
- * Gives every new project a workspace and refuses moving a project to another
- * one (Workspaces D-002), and gives a project created into a workspace the
- * workspace's members (D-004). The rules live in {@see ProjectWorkspace} and
- * {@see MembershipSync}.
+ * Gives every new project a workspace (Workspaces D-002), gives a project
+ * created into a workspace the workspace's members (D-004), and lets a project
+ * move to another workspace only when nothing of the old one is still working
+ * in it (D-011). The rules live in {@see ProjectWorkspace}, {@see MembershipSync}
+ * and {@see ProjectMoveGate}; the move's membership sync runs from the
+ * Project model, in one transaction with the save.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
@@ -100,17 +103,31 @@ class projectWorkspaceBehavior extends Behavior implements BehaviorInterface
     }
 
     /**
+     * A save that changes the workspace must pass the move gate: a missing or
+     * unknown target is a message on workspaceId (422); a missing
+     * workspace.update (403) or work still in progress (409) throws.
+     *
      * @param  ModelInterface $model
      * @return bool
+     * @throws \Gaia\Exception\Access
+     * @throws \Gaia\Exception\Conflict
      */
     protected function beforeValidationOnUpdate($model)
     {
+        $snapshot = $model->getSnapshotData();
         $workspace = new ProjectWorkspace();
-        if (!$workspace->isMove($model->getSnapshotData(), $model->workspaceId ?? null)) {
+        if (!$workspace->isMove($snapshot, $model->workspaceId ?? null)) {
             return true;
         }
 
-        $model->appendMessage(new Message(ProjectWorkspace::MOVE_UNSUPPORTED, 'workspaceId', 'InvalidValue'));
-        return false;
+        try {
+            (new ProjectMoveGate())
+                ->check($model->id ?? null, $snapshot['workspaceId'] ?? null, $model->workspaceId ?? null);
+        } catch (\InvalidArgumentException $e) {
+            $model->appendMessage(new Message($e->getMessage(), 'workspaceId', 'InvalidValue'));
+            return false;
+        }
+
+        return true;
     }
 }

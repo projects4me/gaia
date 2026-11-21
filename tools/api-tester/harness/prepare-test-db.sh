@@ -628,6 +628,7 @@ VALUES
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
 VALUES
   ('atp-acl-ns-project-get', 'api-test-role-acl-ns', 'project.get', 1, NOW(), NOW()),
+  ('atp-acl-ns-project-update', 'api-test-role-acl-ns', 'project.update', 1, NOW(), NOW()),
   ('atp-acl-ns-status-get', 'api-test-role-acl-ns', 'issuestatus.get', 1, NOW(), NOW()),
   ('atp-acl-ns-status-create', 'api-test-role-acl-ns', 'issuestatus.create', 1, NOW(), NOW()),
   ('atp-acl-ns-status-update', 'api-test-role-acl-ns', 'issuestatus.update', 1, NOW(), NOW()),
@@ -1394,9 +1395,13 @@ INSERT INTO workflow_runs (
    NOW(), NOW(), FALSE, NOW(), NOW()),
   ('api-test-workflowrun-000002', 'api-test-workflow-000001', 1, 'api-test-workflownode-000001', 'issue.created',
    'api-test-event-000002', 'issue', 'api-test-issue-000003', 'api-test-project-002', 0, 'completed', '{}',
-   NOW(), NOW(), FALSE, NOW(), NOW())
+   NOW(), NOW(), FALSE, NOW(), NOW()),
+  -- A run still waiting in project 002, so moving that project to a workspace is refused (Workspaces D-009)
+  ('api-test-workflowrun-000003', 'api-test-workflow-000001', 1, 'api-test-workflownode-000001', 'issue.created',
+   'api-test-event-000003', 'issue', 'api-test-issue-move-000001', 'api-test-project-002', 0, 'waiting', '{}',
+   NOW(), NULL, FALSE, NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE, "entityType" = EXCLUDED."entityType",
-  "entityId" = EXCLUDED."entityId", "projectId" = EXCLUDED."projectId";
+  "entityId" = EXCLUDED."entityId", "projectId" = EXCLUDED."projectId", status = EXCLUDED.status;
 
 INSERT INTO workflow_run_steps (
   id, "runId", sequence, "nodeId", category, kind, status, port, inputs, outputs, "startedAt", "finishedAt",

@@ -110,6 +110,50 @@ class MembershipSync
     }
 
     /**
+     * After a project moved to another workspace (Workspaces D-011): take the
+     * old workspace's agents out of the project, then give every project of
+     * the new workspace the same members (the union of the moved project's
+     * remaining members and the new workspace's members).
+     *
+     * @param  string      $projectId
+     * @param  string|null $fromWorkspaceId The workspace the project left, null for a legacy project
+     * @param  string      $toWorkspaceId   The workspace the project is now in
+     * @return array The memberships the sync deleted and created
+     */
+    public function projectMoved($projectId, $fromWorkspaceId, $toWorkspaceId)
+    {
+        return $this->round(function () use ($projectId, $fromWorkspaceId, $toWorkspaceId) {
+            if ($this->isBlank($projectId) || $this->isBlank($toWorkspaceId)) {
+                return [];
+            }
+
+            $changed = [];
+            if (!$this->isBlank($fromWorkspaceId)) {
+                foreach ($this->memberships->agentUserIds($fromWorkspaceId) as $agentUserId) {
+                    $changed = array_merge(
+                        $changed,
+                        $this->memberships->remove($agentUserId, [(string) $projectId])
+                    );
+                }
+            }
+
+            $projectIds = $this->memberships->projectIds($toWorkspaceId);
+            if (!in_array((string) $projectId, $projectIds, true)) {
+                $projectIds[] = (string) $projectId;
+            }
+            $memberIds = $this->memberships->memberIdsOf($projectIds);
+            foreach ($projectIds as $id) {
+                $present = $this->memberships->memberIdsOf([$id]);
+                foreach (array_diff($memberIds, $present) as $userId) {
+                    $changed[] = $this->memberships->add($id, $userId);
+                }
+            }
+
+            return $changed;
+        });
+    }
+
+    /**
      * Run one round, unless one is already running.
      *
      * @param  callable $work

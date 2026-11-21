@@ -3455,6 +3455,28 @@
       "source": "acl-setting"
     },
     {
+      "id": "acl-project-move-denied-without-workspace-update",
+      "method": "PATCH",
+      "path": "/api/v1/project/{otherProjectId}",
+      "resource": "project",
+      "auth": "aclNoSetting",
+      "body": {
+        "data": {
+          "type": "project",
+          "id": "{otherProjectId}",
+          "attributes": {
+            "workspaceId": "{otherWorkspaceId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 403,
+        "shape": "error",
+        "errorEqual": "You are not allowed to move projects between these workspaces."
+      },
+      "source": "acl-setting"
+    },
+    {
       "id": "acl-repository-denied-acl-no-setting",
       "method": "GET",
       "path": "/api/v1/repository",

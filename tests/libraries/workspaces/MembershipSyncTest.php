@@ -152,6 +152,51 @@ class MembershipSyncTest extends TestCase
     }
 
     /**
+     * A moved project loses the old workspace's agents; every project of the
+     * new workspace ends with the union of the members.
+     *
+     * @return void
+     */
+    public function testProjectMovedDropsOldAgentsAndUnitesTheMembers()
+    {
+        // p1 moved from w1 to w2 (already stored with w2); a1 is an agent of w1.
+        $store = new InMemoryWorkspaceMemberships(
+            ['p1' => 'w2', 'p2' => 'w2', 'p3' => 'w2', 'p4' => 'w1'],
+            [['p1', 'u1'], ['p1', 'a1'], ['p2', 'u2'], ['p3', 'u2'], ['p3', 'u3'], ['p4', 'a1']]
+        );
+        $store->agents = ['w1' => ['a1']];
+
+        $changed = (new MembershipSync($store))->projectMoved('p1', 'w1', 'w2');
+
+        $this->assertFalse($store->has('p1', 'a1'));
+        $this->assertTrue($store->has('p4', 'a1'));
+        foreach (['p1', 'p2', 'p3'] as $projectId) {
+            foreach (['u1', 'u2', 'u3'] as $userId) {
+                $this->assertTrue($store->has($projectId, $userId), "$projectId should have $userId");
+            }
+        }
+        $this->assertSame(
+            [['p1', 'a1'], ['p1', 'u2'], ['p1', 'u3'], ['p2', 'u1'], ['p2', 'u3'], ['p3', 'u1']],
+            $this->pairs($changed)
+        );
+    }
+
+    /**
+     * A legacy project without a workspace removes no agents when it moves.
+     *
+     * @return void
+     */
+    public function testProjectMovedFromNoWorkspaceOnlyUnitesTheMembers()
+    {
+        $store = new InMemoryWorkspaceMemberships(['p1' => 'w2', 'p2' => 'w2'], [['p1', 'u1'], ['p2', 'u2']]);
+        $store->agents = ['w1' => ['u1']];
+
+        $changed = (new MembershipSync($store))->projectMoved('p1', null, 'w2');
+
+        $this->assertSame([['p1', 'u2'], ['p2', 'u1']], $this->pairs($changed));
+    }
+
+    /**
      * @param  array $memberships
      * @return array
      */
@@ -184,6 +229,9 @@ class InMemoryWorkspaceMemberships extends WorkspaceMemberships
     /** @var bool */
     public $fail = false;
 
+    /** @var array<string, string[]> Agent user ids by workspace */
+    public $agents = [];
+
     /** @var callable|null Called after each add, as the saved row's hook would */
     public $onWrite;
 
@@ -212,6 +260,11 @@ class InMemoryWorkspaceMemberships extends WorkspaceMemberships
         }
 
         return $ids;
+    }
+
+    public function agentUserIds($workspaceId)
+    {
+        return $this->agents[$workspaceId] ?? [];
     }
 
     public function projectIdsOfMember($userId, array $projectIds)
