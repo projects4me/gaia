@@ -11,6 +11,7 @@
 - scope text
 - status varchar(20) required
 - version int required
+- workspaceId varchar(36)
 - also: createdUser, createdUserName, dateCreated, dateModified, deleted, id, modifiedUser, modifiedUserName
 
 <a id="relationships"></a>
@@ -22,13 +23,14 @@
 - nodes hasMany -> Workflownode
 - owner hasOne -> User
 - references hasMany -> Workflowreference
+- workspace hasOne -> Workspace
 
 <a id="summary"></a>
 ## Summary
 
-- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior, workflowBehavior
+- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior, workflowBehavior, workflowWorkspaceBehavior
 - acl: -
 - controller: Gaia\MVC\REST\Controllers\WorkflowController
 - routes: DELETE /api/v1/workflow, DELETE /api/v1/workflow/{id}, GET /api/v1/workflow, GET /api/v1/workflow/{id}, GET /api/v1/workflow/{id}/{relation}, OPTIONS /api/v1/workflow, PATCH /api/v1/workflow, PATCH /api/v1/workflow/{id}, POST /api/v1/workflow, PUT /api/v1/workflow, PUT /api/v1/workflow/{id}
 - components: -
-- cases: 18 (acl 2, backend 6, client 5, live 5); gaia-dev cases workflow
+- cases: 22 (acl 2, backend 6, client 9, live 5); gaia-dev cases workflow

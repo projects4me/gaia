@@ -4379,6 +4379,18 @@
       }
     },
     {
+      "id": "behaviour:workflowWorkspaceBehavior",
+      "type": "behaviour",
+      "key": "workflowWorkspaceBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\workflowWorkspaceBehavior",
+        "file": "core/mvc/models/behaviors/workflowWorkspaceBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "case:acl/acl-admin-comment-allowed",
       "type": "case",
       "key": "acl/acl-admin-comment-allowed",
@@ -13576,7 +13588,9 @@
         "resource": "workflow",
         "enabled": true,
         "source": "backend-metadata",
-        "placeholders": [],
+        "placeholders": [
+          "workspaceId"
+        ],
         "stores": [
           "runtime.workflowId"
         ]
@@ -21934,6 +21948,41 @@
       }
     },
     {
+      "id": "case:client/workflow-create-needs-workspace",
+      "type": "case",
+      "key": "client/workflow-create-needs-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflow",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflow-create-rejects-foreign-scope",
+      "type": "case",
+      "key": "client/workflow-create-rejects-foreign-scope",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflow",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectId",
+          "workspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/workflow-create-rejects-unknown-status",
       "type": "case",
       "key": "client/workflow-create-rejects-unknown-status",
@@ -21945,7 +21994,9 @@
         "resource": "workflow",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "workspaceId"
+        ],
         "stores": []
       }
     },
@@ -21962,7 +22013,8 @@
         "enabled": true,
         "source": null,
         "placeholders": [
-          "projectId"
+          "projectId",
+          "workspaceId"
         ],
         "stores": [
           "runtime.flowId"
@@ -21982,6 +22034,44 @@
         "enabled": true,
         "source": null,
         "placeholders": [
+          "runtime.flowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflow-patch-rejects-foreign-scope",
+      "type": "case",
+      "key": "client/workflow-patch-rejects-foreign-scope",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflow/{runtime.flowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectId",
+          "runtime.flowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workflow-patch-workspace-refused",
+      "type": "case",
+      "key": "client/workflow-patch-workspace-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workflow/{runtime.flowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherWorkspaceId",
           "runtime.flowId"
         ],
         "stores": []
@@ -22309,6 +22399,25 @@
         "stores": [
           "runtime.flowEndId"
         ]
+      }
+    },
+    {
+      "id": "case:client/workflownode-create-rejects-agent-of-other-workspace",
+      "type": "case",
+      "key": "client/workflownode-create-rejects-agent-of-other-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflownode",
+        "resource": "workflownode",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "inactiveAgentId",
+          "runtime.flowId"
+        ],
+        "stores": []
       }
     },
     {
@@ -23522,7 +23631,8 @@
         "source": null,
         "placeholders": [
           "projectId",
-          "runId"
+          "runId",
+          "workspaceId"
         ],
         "stores": [
           "runtime.liveRunFlowId"
@@ -35063,6 +35173,18 @@
       }
     },
     {
+      "id": "field:Workflow.workspaceId",
+      "type": "field",
+      "key": "Workflow.workspaceId",
+      "attributes": {
+        "label": "LBL_WORKFLOWS_WORKSPACE_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true,
+        "relatedIdentifier": true
+      }
+    },
+    {
       "id": "field:Workflowactorstep.actorUserId",
       "type": "field",
       "key": "Workflowactorstep.actorUserId",
@@ -36700,6 +36822,14 @@
       "id": "fixture:otherWorkflowactorstepId",
       "type": "fixture",
       "key": "otherWorkflowactorstepId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:otherWorkspaceId",
+      "type": "fixture",
+      "key": "otherWorkspaceId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -42890,6 +43020,16 @@
       }
     },
     {
+      "id": "relationship:Workflow.workspace",
+      "type": "relationship",
+      "key": "Workflow.workspace",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "workspaceId",
+        "relatedKey": "id"
+      }
+    },
+    {
       "id": "relationship:Workflowactorstep.actor",
       "type": "relationship",
       "key": "Workflowactorstep.actor",
@@ -43153,6 +43293,16 @@
       "id": "relationship:Workspace.repositories",
       "type": "relationship",
       "key": "Workspace.repositories",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "workspaceId"
+      }
+    },
+    {
+      "id": "relationship:Workspace.workflows",
+      "type": "relationship",
+      "key": "Workspace.workflows",
       "attributes": {
         "kind": "hasMany",
         "primaryKey": "id",
@@ -69600,6 +69750,11 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/post-workflow-api-v1-workflow",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
       "from": "case:backend/post-workflowedge-api-v1-workflowedge",
       "type": "asserts",
       "to": "assertion:shape"
@@ -84890,6 +85045,76 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/workflow-create-needs-workspace",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflow-create-needs-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflow-create-needs-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflow-create-needs-workspace",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:client/workflow-create-needs-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflow"
+    },
+    {
+      "from": "case:client/workflow-create-needs-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-foreign-scope",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-foreign-scope",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-foreign-scope",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-foreign-scope",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-foreign-scope",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflow"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-foreign-scope",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-foreign-scope",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectId"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-foreign-scope",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
       "from": "case:client/workflow-create-rejects-unknown-status",
       "type": "asserts",
       "to": "assertion:jsonEqual"
@@ -84918,6 +85143,11 @@
       "from": "case:client/workflow-create-rejects-unknown-status",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflow-create-rejects-unknown-status",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
     },
     {
       "from": "case:client/workflow-create-starts-as-draft",
@@ -84955,6 +85185,11 @@
       "to": "fixture:projectId"
     },
     {
+      "from": "case:client/workflow-create-starts-as-draft",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
       "from": "case:client/workflow-delete",
       "type": "asserts",
       "to": "assertion:shape"
@@ -84983,6 +85218,86 @@
       "from": "case:client/workflow-delete",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflow-patch-rejects-foreign-scope",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflow-patch-rejects-foreign-scope",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflow-patch-rejects-foreign-scope",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflow-patch-rejects-foreign-scope",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:client/workflow-patch-rejects-foreign-scope",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflow-patch-rejects-foreign-scope",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:client/workflow-patch-rejects-foreign-scope",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflow-patch-rejects-foreign-scope",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectId"
+    },
+    {
+      "from": "case:client/workflow-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflow-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflow-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflow-patch-workspace-refused",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:client/workflow-patch-workspace-refused",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflow-patch-workspace-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:client/workflow-patch-workspace-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflow-patch-workspace-refused",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceId"
     },
     {
       "from": "case:client/workflowactorstep-claim",
@@ -85628,6 +85943,46 @@
       "from": "case:client/workflownode-create-end",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-agent-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-agent-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-agent-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-agent-of-other-workspace",
+      "type": "covers",
+      "to": "controller:workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-agent-of-other-workspace",
+      "type": "depends_on",
+      "to": "case:client/workflow-create-starts-as-draft"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-agent-of-other-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflownode"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-agent-of-other-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workflownode-create-rejects-agent-of-other-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:inactiveAgentId"
     },
     {
       "from": "case:client/workflownode-create-rejects-invalid-config",
@@ -87913,6 +88268,11 @@
       "from": "case:live/live-agent-run-setup-workflow",
       "type": "uses_fixture",
       "to": "fixture:projectId"
+    },
+    {
+      "from": "case:live/live-agent-run-setup-workflow",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
     },
     {
       "from": "case:live/live-comment-mention-publishes-user-mentioned",
@@ -100266,6 +100626,11 @@
     },
     {
       "from": "model:Workflow",
+      "type": "has_field",
+      "to": "field:Workflow.workspaceId"
+    },
+    {
+      "from": "model:Workflow",
       "type": "has_relationship",
       "to": "relationship:Workflow.createdBy"
     },
@@ -100293,6 +100658,11 @@
       "from": "model:Workflow",
       "type": "has_relationship",
       "to": "relationship:Workflow.references"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "has_relationship",
+      "to": "relationship:Workflow.workspace"
     },
     {
       "from": "model:Workflow",
@@ -100328,6 +100698,11 @@
       "from": "model:Workflow",
       "type": "uses_behaviour",
       "to": "behaviour:workflowBehavior"
+    },
+    {
+      "from": "model:Workflow",
+      "type": "uses_behaviour",
+      "to": "behaviour:workflowWorkspaceBehavior"
     },
     {
       "from": "model:Workflowactorstep",
@@ -101153,6 +101528,11 @@
       "from": "model:Workspace",
       "type": "has_relationship",
       "to": "relationship:Workspace.repositories"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_relationship",
+      "to": "relationship:Workspace.workflows"
     },
     {
       "from": "model:Workspace",
@@ -104150,6 +104530,11 @@
       "to": "model:Workflowreference"
     },
     {
+      "from": "relationship:Workflow.workspace",
+      "type": "targets",
+      "to": "model:Workspace"
+    },
+    {
       "from": "relationship:Workflowactorstep.actor",
       "type": "targets",
       "to": "model:User"
@@ -104283,6 +104668,11 @@
       "from": "relationship:Workspace.repositories",
       "type": "targets",
       "to": "model:Repository"
+    },
+    {
+      "from": "relationship:Workspace.workflows",
+      "type": "targets",
+      "to": "model:Workflow"
     },
     {
       "from": "route:ANY /",

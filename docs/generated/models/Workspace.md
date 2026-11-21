@@ -17,6 +17,7 @@
 - modifiedBy hasOne -> User
 - projects hasMany -> Project
 - repositories hasMany -> Repository
+- workflows hasMany -> Workflow
 
 <a id="summary"></a>
 ## Summary

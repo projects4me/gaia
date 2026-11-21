@@ -6368,6 +6368,7 @@
           "type": "workflow",
           "attributes": {
             "name": "Client Flow",
+            "workspaceId": "{workspaceId}",
             "scope": [
               "{projectId}"
             ],
@@ -6382,7 +6383,8 @@
           "name": "Client Flow",
           "status": "Draft",
           "version": 0,
-          "scope": "[\"api-test-project-001\"]"
+          "scope": "[\"api-test-project-001\"]",
+          "workspaceId": "api-test-workspace-000001"
         }
       },
       "store": {
@@ -6400,6 +6402,7 @@
           "type": "workflow",
           "attributes": {
             "name": "Bad Flow",
+            "workspaceId": "{workspaceId}",
             "status": "Paused"
           }
         }
@@ -6409,6 +6412,129 @@
         "shape": "error",
         "jsonEqual": {
           "messages.0": "status must be one of Draft, Active, Disabled."
+        }
+      }
+    },
+    {
+      "id": "workflow-create-needs-workspace",
+      "method": "POST",
+      "path": "/api/v1/workflow",
+      "resource": "workflow",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflow",
+          "attributes": {
+            "name": "No Workspace Flow"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "workspaceId is required: a workflow belongs to a workspace."
+        }
+      }
+    },
+    {
+      "id": "workflow-create-rejects-foreign-scope",
+      "method": "POST",
+      "path": "/api/v1/workflow",
+      "resource": "workflow",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflow",
+          "attributes": {
+            "name": "Foreign Scope Flow",
+            "workspaceId": "{workspaceId}",
+            "scope": [
+              "{otherProjectId}"
+            ]
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "scope lists projects outside the workflow's workspace: api-test-project-002."
+        }
+      }
+    },
+    {
+      "id": "workflow-patch-workspace-refused",
+      "method": "PATCH",
+      "path": "/api/v1/workflow/{runtime.flowId}",
+      "resource": "workflow",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflow",
+          "id": "{runtime.flowId}",
+          "attributes": {
+            "workspaceId": "{otherWorkspaceId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "The workspace of a workflow cannot be changed."
+        }
+      }
+    },
+    {
+      "id": "workflow-patch-rejects-foreign-scope",
+      "method": "PATCH",
+      "path": "/api/v1/workflow/{runtime.flowId}",
+      "resource": "workflow",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflow",
+          "id": "{runtime.flowId}",
+          "attributes": {
+            "scope": [
+              "{otherProjectId}"
+            ]
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "scope lists projects outside the workflow's workspace: api-test-project-002."
+        }
+      }
+    },
+    {
+      "id": "workflownode-create-rejects-agent-of-other-workspace",
+      "method": "POST",
+      "path": "/api/v1/workflownode",
+      "resource": "workflownode",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workflownode",
+          "attributes": {
+            "workflowId": "{runtime.flowId}",
+            "category": "actor",
+            "kind": "run_agent",
+            "config": {
+              "agentId": "{inactiveAgentId}"
+            }
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "config names agents outside the workflow workspace: api-test-agent-000003."
         }
       }
     },

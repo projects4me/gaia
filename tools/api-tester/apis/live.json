@@ -667,6 +667,7 @@
           "type": "workflow",
           "attributes": {
             "name": "Live agent run {runId}",
+            "workspaceId": "{workspaceId}",
             "scope": [
               "{projectId}"
             ]

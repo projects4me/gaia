@@ -1645,7 +1645,8 @@
                 "data": {
                     "type": "workflow",
                     "attributes": {
-                        "name": "api-workflow-name"
+                        "name": "api-workflow-name",
+                        "workspaceId": "{workspaceId}"
                     }
                 }
             },

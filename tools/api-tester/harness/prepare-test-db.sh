@@ -1396,8 +1396,16 @@ VALUES
 INSERT INTO workspaces (
   id, "name", "description", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
 ) VALUES
-  ('api-test-workspace-000001', 'Seed name', 'Seed description', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+  ('api-test-workspace-000001', 'Seed name', 'Seed description', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-workspace-000002', 'Other seed name', 'A second workspace, for cross-workspace refusals', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+-- Workspace membership of the seed records: project 001, agents 1 and 2 and the seed workflow are in the first
+-- workspace; agent 3 is in the second; project 002 has none (so it is outside every workspace)
+UPDATE projects SET "workspaceId" = 'api-test-workspace-000001' WHERE id = 'api-test-project-001';
+UPDATE agents SET "workspaceId" = 'api-test-workspace-000001' WHERE id IN ('api-test-agent-000001', 'api-test-agent-000002');
+UPDATE agents SET "workspaceId" = 'api-test-workspace-000002' WHERE id = 'api-test-agent-000003';
+UPDATE workflows SET "workspaceId" = 'api-test-workspace-000001' WHERE id = 'api-test-workflow-000001';
 
 -- Repository: the no-setting role may create and update repositories but not read or delete them,
 -- and holds no workspace.update, so a create or update is denied on the workspace grant
@@ -1581,6 +1589,7 @@ data = {
     "workflowactorstepId": "api-test-workflowactorstep-000001",
     "otherWorkflowactorstepId": "api-test-workflowactorstep-000002",
     "workspaceId": "api-test-workspace-000001",
+    "otherWorkspaceId": "api-test-workspace-000002",
     "repositoryId": "api-test-repository-000001",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
