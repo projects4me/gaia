@@ -7,6 +7,7 @@
 
 - description text
 - name varchar(100) required
+- runtimeId varchar(36)
 - also: createdUser, createdUserName, dateCreated, dateModified, deleted, id, modifiedUser, modifiedUserName
 
 <a id="relationships"></a>
@@ -17,6 +18,7 @@
 - modifiedBy hasOne -> User
 - projects hasMany -> Project
 - repositories hasMany -> Repository
+- runtime hasOne -> Serviceclient
 - skills hasMany -> Skill
 - toolservers hasMany -> Toolserver
 - workflows hasMany -> Workflow
@@ -24,9 +26,9 @@
 <a id="summary"></a>
 ## Summary
 
-- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior
+- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior, workspaceRuntimeBehavior
 - acl: -
 - controller: Gaia\MVC\REST\Controllers\WorkspaceController
 - routes: DELETE /api/v1/workspace, DELETE /api/v1/workspace/{id}, GET /api/v1/workspace, GET /api/v1/workspace/{id}, GET /api/v1/workspace/{id}/{relation}, OPTIONS /api/v1/workspace, PATCH /api/v1/workspace, PATCH /api/v1/workspace/{id}, POST /api/v1/workspace, PUT /api/v1/workspace, PUT /api/v1/workspace/{id}
 - components: -
-- cases: 18 (acl 5, backend 6, client 6, live 1); gaia-dev cases workspace
+- cases: 24 (acl 5, backend 6, client 12, live 1); gaia-dev cases workspace

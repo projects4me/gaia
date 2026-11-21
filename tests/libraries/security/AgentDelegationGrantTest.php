@@ -23,7 +23,8 @@ use Gaia\MVC\Models\User;
 /**
  * Tests the agent-delegation grant (D-067): a runtime service client with
  * `agent.delegate` gets a short-lived token acting as an agent, held to the
- * agent's delegation scopes, and every other request is refused.
+ * agent's delegation scopes, only for agents of the workspaces bound to it
+ * (D-073), and every other request is refused.
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Gaia\Tests
@@ -54,6 +55,10 @@ class AgentDelegationGrantTest extends TestCase
 
     public static function tearDownAfterClass(): void
     {
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
+            'UPDATE workspaces SET "runtimeId" = NULL WHERE id = ?',
+            [AgentTestFixtures::WORKSPACE_ID]
+        );
         self::purgeClients();
         AgentTestFixtures::purge();
         AgentTestFixtures::deleteUser(self::ADMIN_ID);
@@ -203,6 +208,54 @@ class AgentDelegationGrantTest extends TestCase
         $this->tokenResponse(self::CLIENT_PREFIX . 'rt-9', self::SECRET, '');
     }
 
+    public function testARuntimeCannotActForAnAgentOfAWorkspaceBoundToAnotherRuntime(): void
+    {
+        $this->createRuntime('rt-13');
+        $agent = $this->createAgent('elsewhere', ['issue.get']);
+        $this->createRuntime('rt-14');
+
+        $this->expectRefusal(AgentDelegationGuard::AGENT_NOT_DELEGABLE_ERROR);
+
+        $this->tokenResponse(self::CLIENT_PREFIX . 'rt-13', self::SECRET, $agent->id);
+    }
+
+    public function testARuntimeCannotActForAnAgentOfAnUnboundWorkspace(): void
+    {
+        $this->createRuntime('rt-15', 'runtime', false);
+        $this->bindWorkspace(AgentTestFixtures::WORKSPACE_ID, null);
+        $agent = $this->createAgent('unbound', ['issue.get']);
+
+        $this->expectRefusal(AgentDelegationGuard::AGENT_NOT_DELEGABLE_ERROR);
+
+        $this->tokenResponse(self::CLIENT_PREFIX . 'rt-15', self::SECRET, $agent->id);
+    }
+
+    public function testAnAgentWithoutAWorkspaceCannotBeDelegated(): void
+    {
+        $this->createRuntime('rt-16');
+        $agent = $this->createAgent('noworkspace', ['issue.get']);
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
+            'UPDATE agents SET "workspaceId" = NULL WHERE id = ?',
+            [$agent->id]
+        );
+
+        $this->expectRefusal(AgentDelegationGuard::AGENT_NOT_DELEGABLE_ERROR);
+
+        $this->tokenResponse(self::CLIENT_PREFIX . 'rt-16', self::SECRET, $agent->id);
+    }
+
+    public function testABoundRuntimeThatIsDisabledCannotDelegate(): void
+    {
+        $client = $this->createRuntime('rt-17');
+        $agent = $this->createAgent('bounddisabled', ['issue.get']);
+        $client->status = ServiceClients::STATUS_DISABLED;
+        $this->assertTrue($client->save(), $this->messagesOf($client));
+
+        $this->expectRefusal(AgentDelegationGuard::CLIENT_NOT_RUNTIME_ERROR);
+
+        $this->tokenResponse(self::CLIENT_PREFIX . 'rt-17', self::SECRET, $agent->id);
+    }
+
     public function testAServiceClientWithoutAgentDelegateCannotDelegate(): void
     {
         $this->createRuntime('hermes-1', 'hermes');
@@ -302,13 +355,15 @@ class AgentDelegationGrantTest extends TestCase
     }
 
     /**
-     * A service client with its oauth client.
+     * A service client with its oauth client; the test agents' workspace is
+     * bound to it unless `$bind` is false (D-073).
      *
      * @param  string $suffix
      * @param  string $kind
+     * @param  bool   $bind
      * @return Serviceclient
      */
-    private function createRuntime($suffix, $kind = 'runtime')
+    private function createRuntime($suffix, $kind = 'runtime', $bind = true)
     {
         $clientId = self::CLIENT_PREFIX . $suffix;
         $this->insertOauthClient($clientId, ClientKind::SERVICE);
@@ -319,8 +374,26 @@ class AgentDelegationGrantTest extends TestCase
         $client->kind = $kind;
         $client->clientId = $clientId;
         $this->assertTrue($client->save(), $this->messagesOf($client));
+        if ($bind) {
+            $this->bindWorkspace(AgentTestFixtures::WORKSPACE_ID, $client->id);
+        }
 
         return Serviceclient::findFirstById($client->id);
+    }
+
+    /**
+     * Bind a workspace to a service client record, or unbind it with null.
+     *
+     * @param  string      $workspaceId
+     * @param  string|null $serviceClientId
+     * @return void
+     */
+    private function bindWorkspace($workspaceId, $serviceClientId)
+    {
+        \Phalcon\Di\Di::getDefault()->get('db')->execute(
+            'UPDATE workspaces SET "runtimeId" = ? WHERE id = ?',
+            [$serviceClientId, $workspaceId]
+        );
     }
 
     /**
