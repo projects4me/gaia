@@ -341,6 +341,11 @@ class Acl
             return false;
         }
 
+        // A computed field is read with its record and never written (Workspaces D-013).
+        if ($this->isComputedField($modelName, $field)) {
+            return $action === 'get' && $this->isModelActionAllowed($modelName, 'get');
+        }
+
         if ($this->isStructuralField($modelName, $field)) {
             return true;
         }
@@ -1402,6 +1407,23 @@ class Acl
         }
 
         return AclMapCatalog::isStructuralFieldName($field, $meta);
+    }
+
+    /**
+     * Whether a model declares a computed field of this name (metadata key `computed`, Workspaces D-013). Unreadable
+     * metadata reads as no computed field, so the ordinary field rules apply.
+     *
+     * @param  string $modelName
+     * @param  string $field
+     * @return bool
+     */
+    protected function isComputedField($modelName, $field)
+    {
+        try {
+            return $this->di->get('metaManager')->isComputedField($modelName, $field);
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     /**

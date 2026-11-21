@@ -108,6 +108,21 @@ $models['Workspace'] = array(
             'acl' => false
         ),
     ),
+    // Read-only values computed on read, not columns (D-013): workspace totals, whatever projects the caller can see.
+    'computed' => array(
+        'projectCount' => array(
+            'name' => 'projectCount',
+            'label' => 'LBL_WORKSPACES_PROJECT_COUNT',
+            'type' => 'int',
+            'expression' => "SELECT COUNT(CountedProject.id) FROM Gaia\\MVC\\Models\\Project CountedProject WHERE CountedProject.workspaceId = Workspace.id AND CountedProject.deleted = 0",
+        ),
+        'memberCount' => array(
+            'name' => 'memberCount',
+            'label' => 'LBL_WORKSPACES_MEMBER_COUNT',
+            'type' => 'int',
+            'expression' => "SELECT COUNT(DISTINCT CountedMembership.userId) FROM Gaia\\MVC\\Models\\Membership CountedMembership WHERE CountedMembership.projectId IN (SELECT MemberProject.id FROM Gaia\\MVC\\Models\\Project MemberProject WHERE MemberProject.workspaceId = Workspace.id AND MemberProject.deleted = 0)",
+        ),
+    ),
     'indexes' => array(
         'id' => 'primary',
         'name' => 'index',

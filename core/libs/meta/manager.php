@@ -131,6 +131,9 @@ class Manager
 
             'fields' => (isset($metadata['fields']) ? $metadata['fields'] : array()),
 
+            // Read-only values computed on read, not columns (Workspaces D-013)
+            'computed' => (isset($metadata['computed']) && is_array($metadata['computed']) ? $metadata['computed'] : array()),
+
             // All the relationships for the model
             // For now we will just copy things over and see if for future
             // we need any adjustment in the format
@@ -486,6 +489,34 @@ class Manager
     public static function isSystemFieldMeta($fieldMeta)
     {
         return is_array($fieldMeta) && ($fieldMeta['system'] ?? false) === true;
+    }
+
+    /**
+     * Return a model's computed fields: name => metadata (`type`, `label`, `expression`). A computed field is not a
+     * column: the read query selects its PHQL expression, and no request can write it (Workspaces D-013).
+     *
+     * @method getComputedFields
+     * @param  string $modelName
+     * @return array
+     */
+    public function getComputedFields($modelName)
+    {
+        $meta = $this->getModelMeta($modelName);
+
+        return isset($meta['computed']) && is_array($meta['computed']) ? $meta['computed'] : array();
+    }
+
+    /**
+     * Whether a model declares a computed field of this name.
+     *
+     * @method isComputedField
+     * @param  string $modelName
+     * @param  string $fieldName
+     * @return bool
+     */
+    public function isComputedField($modelName, $fieldName)
+    {
+        return array_key_exists($fieldName, $this->getComputedFields($modelName));
     }
 
     /**
