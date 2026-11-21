@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Unit tests for projectWorkspaceBehavior: a save that keeps the workspace
  * skips the move gate, and a project cannot be moved out of every workspace
- * (Workspaces D-010).
+ * (Workspaces D-011).
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Gaia\Tests

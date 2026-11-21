@@ -52,7 +52,7 @@ class Project extends Model
 
     /**
      * A save that moves the project to another workspace runs with its
-     * membership sync in one transaction (Workspaces D-010); a save inside a
+     * membership sync in one transaction (Workspaces D-011); a save inside a
      * caller's transaction joins it. Other saves are unchanged.
      *
      * @return bool

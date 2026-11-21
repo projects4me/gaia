@@ -23480,6 +23480,295 @@
       }
     },
     {
+      "id": "case:client/workspace-delete-gate-agent-owned",
+      "type": "case",
+      "key": "client/workspace-delete-gate-agent-owned",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.gateAgentWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-gate-agent-workspace",
+      "type": "case",
+      "key": "client/workspace-delete-gate-agent-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.gateAgentWorkspaceId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-gate-repository-owned",
+      "type": "case",
+      "key": "client/workspace-delete-gate-repository-owned",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/repository",
+        "resource": "repository",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.gateRepositoryWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-gate-repository-workspace",
+      "type": "case",
+      "key": "client/workspace-delete-gate-repository-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.gateRepositoryWorkspaceId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-gate-skill-owned",
+      "type": "case",
+      "key": "client/workspace-delete-gate-skill-owned",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/skill",
+        "resource": "skill",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.gateSkillWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-gate-skill-workspace",
+      "type": "case",
+      "key": "client/workspace-delete-gate-skill-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.gateSkillWorkspaceId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-gate-toolserver-owned",
+      "type": "case",
+      "key": "client/workspace-delete-gate-toolserver-owned",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/toolserver",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.gateToolserverWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-gate-toolserver-workspace",
+      "type": "case",
+      "key": "client/workspace-delete-gate-toolserver-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.gateToolserverWorkspaceId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-gate-workflow-owned",
+      "type": "case",
+      "key": "client/workspace-delete-gate-workflow-owned",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflow",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.gateWorkflowWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-gate-workflow-workspace",
+      "type": "case",
+      "key": "client/workspace-delete-gate-workflow-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.gateWorkflowWorkspaceId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-refused-with-agent",
+      "type": "case",
+      "key": "client/workspace-delete-refused-with-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/workspace/{runtime.gateAgentWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.gateAgentWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-refused-with-project",
+      "type": "case",
+      "key": "client/workspace-delete-refused-with-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/workspace/{runtime.ownWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.ownWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-refused-with-repository",
+      "type": "case",
+      "key": "client/workspace-delete-refused-with-repository",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/workspace/{runtime.gateRepositoryWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.gateRepositoryWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-refused-with-skill",
+      "type": "case",
+      "key": "client/workspace-delete-refused-with-skill",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/workspace/{runtime.gateSkillWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.gateSkillWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-refused-with-toolserver",
+      "type": "case",
+      "key": "client/workspace-delete-refused-with-toolserver",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/workspace/{runtime.gateToolserverWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.gateToolserverWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-delete-refused-with-workflow",
+      "type": "case",
+      "key": "client/workspace-delete-refused-with-workflow",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/workspace/{runtime.gateWorkflowWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.gateWorkflowWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/workspace-delete-soft-deletes",
       "type": "case",
       "key": "client/workspace-delete-soft-deletes",
@@ -88893,6 +89182,461 @@
     },
     {
       "from": "case:client/workspace-create-keeps-description",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-agent-owned",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-agent-owned",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-agent-owned",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-agent-owned",
+      "type": "depends_on",
+      "to": "case:client/workspace-delete-gate-agent-workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-agent-owned",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-agent-owned",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-agent-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-agent-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-agent-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-agent-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-agent-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-repository-owned",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-repository-owned",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-repository-owned",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-repository-owned",
+      "type": "depends_on",
+      "to": "case:client/workspace-delete-gate-repository-workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-repository-owned",
+      "type": "exercises",
+      "to": "route:POST /api/v1/repository"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-repository-owned",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-repository-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-repository-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-repository-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-repository-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-repository-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-skill-owned",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-skill-owned",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-skill-owned",
+      "type": "covers",
+      "to": "controller:skill"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-skill-owned",
+      "type": "depends_on",
+      "to": "case:client/workspace-delete-gate-skill-workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-skill-owned",
+      "type": "exercises",
+      "to": "route:POST /api/v1/skill"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-skill-owned",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-skill-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-skill-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-skill-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-skill-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-skill-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-toolserver-owned",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-toolserver-owned",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-toolserver-owned",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-toolserver-owned",
+      "type": "depends_on",
+      "to": "case:client/workspace-delete-gate-toolserver-workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-toolserver-owned",
+      "type": "exercises",
+      "to": "route:POST /api/v1/toolserver"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-toolserver-owned",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-toolserver-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-toolserver-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-toolserver-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-toolserver-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-toolserver-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-workflow-owned",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-workflow-owned",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-workflow-owned",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-workflow-owned",
+      "type": "depends_on",
+      "to": "case:client/workspace-delete-gate-workflow-workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-workflow-owned",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflow"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-workflow-owned",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-workflow-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-workflow-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-workflow-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-workflow-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-gate-workflow-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-agent",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-agent",
+      "type": "depends_on",
+      "to": "case:client/workspace-delete-gate-agent-workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-agent",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-project",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-project",
+      "type": "depends_on",
+      "to": "case:client/project-create-makes-own-workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-project",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-repository",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-repository",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-repository",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-repository",
+      "type": "depends_on",
+      "to": "case:client/workspace-delete-gate-repository-workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-repository",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-repository",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-skill",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-skill",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-skill",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-skill",
+      "type": "depends_on",
+      "to": "case:client/workspace-delete-gate-skill-workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-skill",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-skill",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-toolserver",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-toolserver",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-toolserver",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-toolserver",
+      "type": "depends_on",
+      "to": "case:client/workspace-delete-gate-toolserver-workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-toolserver",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-toolserver",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-workflow",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-workflow",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-workflow",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-workflow",
+      "type": "depends_on",
+      "to": "case:client/workspace-delete-gate-workflow-workspace"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-workflow",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-delete-refused-with-workflow",
       "type": "runs_as",
       "to": "profile:default"
     },

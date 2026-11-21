@@ -110,7 +110,7 @@ class MembershipSync
     }
 
     /**
-     * After a project moved to another workspace (Workspaces D-010): take the
+     * After a project moved to another workspace (Workspaces D-011): take the
      * old workspace's agents out of the project, then give every project of
      * the new workspace the same members (the union of the moved project's
      * remaining members and the new workspace's members).

@@ -26,7 +26,7 @@ Agreed decisions for Workspaces in Gaia. Add a new decision whenever behavior is
 | | |
 |---|---|
 | Status | Accepted |
-| Decision | `projects.workspaceId` is nullable in the database (existing rows are filled by a manual script later) but every new project gets one. `POST /project` without `workspaceId` creates a `Workspace` named after the project (cut to 100 characters) and sets it. With `workspaceId`, the workspace must exist (422 otherwise) and the caller needs `workspace.update` (403 otherwise). The rule lives in `Gaia\Libraries\Workspaces\ProjectWorkspace`, called from `projectWorkspaceBehavior`, so every create path gets it. Moving a project to another workspace later is D-010. |
+| Decision | `projects.workspaceId` is nullable in the database (existing rows are filled by a manual script later) but every new project gets one. `POST /project` without `workspaceId` creates a `Workspace` named after the project (cut to 100 characters) and sets it. With `workspaceId`, the workspace must exist (422 otherwise) and the caller needs `workspace.update` (403 otherwise). The rule lives in `Gaia\Libraries\Workspaces\ProjectWorkspace`, called from `projectWorkspaceBehavior`, so every create path gets it. Moving a project to another workspace later is D-011. |
 | Rationale | Nobody has to think about workspaces to create a project, and the rule holds for REST and workflow creates alike. |
 | Consequence | The workspace is created in `beforeCreate`, after the project own validation, but not in one database transaction with the project: a failure of the project insert itself would leave an empty workspace. Outside a request (no ACL loaded) the `workspace.update` check is skipped. |
 
@@ -93,7 +93,17 @@ Agreed decisions for Workspaces in Gaia. Add a new decision whenever behavior is
 | Rationale | The workspace is the environment agents run in, so it is where the runtime that runs them is chosen. |
 | Consequence | `Workspace` has a `runtime` relation; the rule lives in `Gaia\Libraries\Workspaces\WorkspaceRuntime`, checked by `workspaceRuntimeBehavior`. A disabled or deleted runtime keeps its bindings but can no longer delegate. Routing run requests to the bound runtime and runtime read filters are separate issues. |
 
-### D-010 — A project moves to another workspace only when no work of the old one is in progress
+### D-010 — A workspace can be deleted only when it owns nothing
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | `DELETE /api/v1/workspace/{id}` is refused with 409 while the workspace still has live (not deleted) projects, repositories, agents, tool servers, skills or workflows. The message and a `counts` object name how many of each kind. Projects and agents already cover agent runs and the issues assigned to the workspace's agents, so those need no check of their own. The rule lives in `Gaia\Libraries\Workspaces\WorkspaceDeleteGate` (one count per owned kind), called from `WorkspaceController::deleteAction`; any other delete path asks the same class. |
+| Rationale | Deleting a workspace must not strand the things it holds; refusing is safer than guessing what to do with them. |
+| Consequence | Nothing is cascaded: the caller deletes or moves the contents first. An empty workspace is soft-deleted as before. No permission seed SQL ships. |
+
+
+### D-011 — A project moves to another workspace only when no work of the old one is in progress
 
 | | |
 |---|---|

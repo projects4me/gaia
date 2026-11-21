@@ -35,4 +35,4 @@
 - controller: Gaia\MVC\REST\Controllers\ToolserverController
 - routes: DELETE /api/v1/toolserver, DELETE /api/v1/toolserver/{id}, GET /api/v1/toolserver, GET /api/v1/toolserver/{id}, GET /api/v1/toolserver/{id}/{relation}, OPTIONS /api/v1/toolserver, PATCH /api/v1/toolserver, PATCH /api/v1/toolserver/{id}, POST /api/v1/toolserver, PUT /api/v1/toolserver, PUT /api/v1/toolserver/{id}
 - components: -
-- cases: 17 (acl 3, backend 6, client 8); gaia-dev cases toolserver
+- cases: 18 (acl 3, backend 6, client 9); gaia-dev cases toolserver

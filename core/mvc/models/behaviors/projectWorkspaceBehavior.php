@@ -20,7 +20,7 @@ use Phalcon\Mvc\Model\Behavior;
  * Gives every new project a workspace (Workspaces D-002), gives a project
  * created into a workspace the workspace's members (D-004), and lets a project
  * move to another workspace only when nothing of the old one is still working
- * in it (D-010). The rules live in {@see ProjectWorkspace}, {@see MembershipSync}
+ * in it (D-011). The rules live in {@see ProjectWorkspace}, {@see MembershipSync}
  * and {@see ProjectMoveGate}; the move's membership sync runs from the
  * Project model, in one transaction with the save.
  *

@@ -17,7 +17,7 @@ use Gaia\MVC\Models\Workspace;
 use Phalcon\Di\Di;
 
 /**
- * Decides whether a project may move to another workspace (Workspaces D-010):
+ * Decides whether a project may move to another workspace (Workspaces D-011):
  * the target must exist, the caller needs `workspace.update`, and nothing of
  * the old workspace may still be working in the project. Each kind of work
  * that blocks a move is its own check, listed in CHECKS, so a new kind of
