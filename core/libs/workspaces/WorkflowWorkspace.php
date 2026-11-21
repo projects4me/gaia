@@ -12,7 +12,7 @@ use Gaia\MVC\Models\Workflow;
 
 /**
  * The rule that a workflow belongs to one workspace and only runs on that
- * workspace's projects and with its agents (Workspaces D-007). A workflow
+ * workspace's projects and with its agents (Workspaces D-008). A workflow
  * without a workspace (legacy row) is not restricted.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>

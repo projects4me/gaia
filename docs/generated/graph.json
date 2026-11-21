@@ -4026,12 +4026,48 @@
       }
     },
     {
+      "id": "behaviour:agentskillWorkspaceBehavior",
+      "type": "behaviour",
+      "key": "agentskillWorkspaceBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\agentskillWorkspaceBehavior",
+        "file": "core/mvc/models/behaviors/agentskillWorkspaceBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
+      "id": "behaviour:agenttoolWorkspaceBehavior",
+      "type": "behaviour",
+      "key": "agenttoolWorkspaceBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\agenttoolWorkspaceBehavior",
+        "file": "core/mvc/models/behaviors/agenttoolWorkspaceBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:auditBehavior",
       "type": "behaviour",
       "key": "auditBehavior",
       "attributes": {
         "class": "Gaia\\MVC\\Models\\Behaviors\\auditBehavior",
         "file": "core/mvc/models/behaviors/auditBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
+      "id": "behaviour:catalogWorkspaceBehavior",
+      "type": "behaviour",
+      "key": "catalogWorkspaceBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\catalogWorkspaceBehavior",
+        "file": "core/mvc/models/behaviors/catalogWorkspaceBehavior.php",
         "hooks": [
           "notify"
         ]
@@ -13299,7 +13335,9 @@
         "resource": "skill",
         "enabled": true,
         "source": "backend-metadata",
-        "placeholders": [],
+        "placeholders": [
+          "workspaceId"
+        ],
         "stores": [
           "runtime.skillId"
         ]
@@ -13431,7 +13469,9 @@
         "resource": "toolserver",
         "enabled": true,
         "source": "backend-metadata",
-        "placeholders": [],
+        "placeholders": [
+          "workspaceId"
+        ],
         "stores": [
           "runtime.toolserverId"
         ]
@@ -14132,6 +14172,44 @@
       }
     },
     {
+      "id": "case:client/agentskill-grant-refuses-skill-of-other-workspace",
+      "type": "case",
+      "key": "client/agentskill-grant-refuses-skill-of-other-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agentskill",
+        "resource": "agentskill",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentId",
+          "otherWorkspaceSkillId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agentskill-grant-skill-of-own-workspace",
+      "type": "case",
+      "key": "client/agentskill-grant-skill-of-own-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agentskill",
+        "resource": "agentskill",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentId",
+          "skillId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/agenttool-grant-needs-existing-agent",
       "type": "case",
       "key": "client/agenttool-grant-needs-existing-agent",
@@ -14145,6 +14223,44 @@
         "source": null,
         "placeholders": [
           "toolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agenttool-grant-refuses-server-of-other-workspace",
+      "type": "case",
+      "key": "client/agenttool-grant-refuses-server-of-other-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agenttool",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentId",
+          "otherWorkspaceToolserverId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/agenttool-grant-refuses-tool-of-other-workspace",
+      "type": "case",
+      "key": "client/agenttool-grant-refuses-tool-of-other-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agenttool",
+        "resource": "agenttool",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherAgentId",
+          "otherWorkspaceToolId"
         ],
         "stores": []
       }
@@ -21485,6 +21601,61 @@
       }
     },
     {
+      "id": "case:client/skill-create-keeps-workspace",
+      "type": "case",
+      "key": "client/skill-create-keeps-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/skill",
+        "resource": "skill",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workspaceId"
+        ],
+        "stores": [
+          "runtime.createdSkillId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/skill-create-needs-workspace",
+      "type": "case",
+      "key": "client/skill-create-needs-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/skill",
+        "resource": "skill",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/skill-patch-workspace-refused",
+      "type": "case",
+      "key": "client/skill-patch-workspace-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/skill/{runtime.createdSkillId}",
+        "resource": "skill",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherWorkspaceId",
+          "runtime.createdSkillId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/token-client-credentials-new-secret-signs-in",
       "type": "case",
       "key": "client/token-client-credentials-new-secret-signs-in",
@@ -21670,10 +21841,28 @@
         "resource": "toolserver",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "workspaceId"
+        ],
         "stores": [
           "runtime.createdToolserverId"
         ]
+      }
+    },
+    {
+      "id": "case:client/toolserver-create-needs-workspace",
+      "type": "case",
+      "key": "client/toolserver-create-needs-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/toolserver",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
       }
     },
     {
@@ -21688,7 +21877,44 @@
         "resource": "toolserver",
         "enabled": true,
         "source": null,
+        "placeholders": [
+          "workspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/toolserver-create-rejects-unknown-workspace",
+      "type": "case",
+      "key": "client/toolserver-create-rejects-unknown-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/toolserver",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": null,
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/toolserver-patch-workspace-refused",
+      "type": "case",
+      "key": "client/toolserver-patch-workspace-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/toolserver/{runtime.createdToolserverId}",
+        "resource": "toolserver",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherWorkspaceId",
+          "runtime.createdToolserverId"
+        ],
         "stores": []
       }
     },
@@ -31976,6 +32202,18 @@
       }
     },
     {
+      "id": "field:Skill.workspaceId",
+      "type": "field",
+      "key": "Skill.workspaceId",
+      "attributes": {
+        "label": "LBL_SKILLS_WORKSPACE_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true,
+        "relatedIdentifier": true
+      }
+    },
+    {
       "id": "field:Systemnotification.context",
       "type": "field",
       "key": "Systemnotification.context",
@@ -32880,6 +33118,18 @@
         "type": "varchar",
         "length": "20",
         "null": true
+      }
+    },
+    {
+      "id": "field:Toolserver.workspaceId",
+      "type": "field",
+      "key": "Toolserver.workspaceId",
+      "attributes": {
+        "label": "LBL_TOOL_SERVERS_WORKSPACE_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true,
+        "relatedIdentifier": true
       }
     },
     {
@@ -36830,6 +37080,30 @@
       "id": "fixture:otherWorkspaceId",
       "type": "fixture",
       "key": "otherWorkspaceId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:otherWorkspaceSkillId",
+      "type": "fixture",
+      "key": "otherWorkspaceSkillId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:otherWorkspaceToolId",
+      "type": "fixture",
+      "key": "otherWorkspaceToolId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:otherWorkspaceToolserverId",
+      "type": "fixture",
+      "key": "otherWorkspaceToolserverId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -42255,6 +42529,16 @@
       }
     },
     {
+      "id": "relationship:Skill.workspace",
+      "type": "relationship",
+      "key": "Skill.workspace",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "workspaceId",
+        "relatedKey": "id"
+      }
+    },
+    {
       "id": "relationship:Systemnotification.recipientRecords",
       "type": "relationship",
       "key": "Systemnotification.recipientRecords",
@@ -42495,6 +42779,16 @@
         "kind": "hasMany",
         "primaryKey": "id",
         "relatedKey": "toolServerId"
+      }
+    },
+    {
+      "id": "relationship:Toolserver.workspace",
+      "type": "relationship",
+      "key": "Toolserver.workspace",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "workspaceId",
+        "relatedKey": "id"
       }
     },
     {
@@ -43293,6 +43587,26 @@
       "id": "relationship:Workspace.repositories",
       "type": "relationship",
       "key": "Workspace.repositories",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "workspaceId"
+      }
+    },
+    {
+      "id": "relationship:Workspace.skills",
+      "type": "relationship",
+      "key": "Workspace.skills",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "workspaceId"
+      }
+    },
+    {
+      "id": "relationship:Workspace.toolservers",
+      "type": "relationship",
+      "key": "Workspace.toolservers",
       "attributes": {
         "kind": "hasMany",
         "primaryKey": "id",
@@ -69315,6 +69629,11 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/post-skill-api-v1-skill",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
       "from": "case:backend/post-systemnotificationrecipient-api-v1-systemnotificationrecipient",
       "type": "asserts",
       "to": "assertion:shape"
@@ -69513,6 +69832,11 @@
       "from": "case:backend/post-toolserver-api-v1-toolserver",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-toolserver-api-v1-toolserver",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
     },
     {
       "from": "case:backend/post-user-api-v1-user",
@@ -70725,6 +71049,86 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/agentskill-grant-refuses-skill-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/agentskill-grant-refuses-skill-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agentskill-grant-refuses-skill-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agentskill-grant-refuses-skill-of-other-workspace",
+      "type": "covers",
+      "to": "controller:agentskill"
+    },
+    {
+      "from": "case:client/agentskill-grant-refuses-skill-of-other-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agentskill"
+    },
+    {
+      "from": "case:client/agentskill-grant-refuses-skill-of-other-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agentskill-grant-refuses-skill-of-other-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:client/agentskill-grant-refuses-skill-of-other-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceSkillId"
+    },
+    {
+      "from": "case:client/agentskill-grant-skill-of-own-workspace",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/agentskill-grant-skill-of-own-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agentskill-grant-skill-of-own-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agentskill-grant-skill-of-own-workspace",
+      "type": "covers",
+      "to": "controller:agentskill"
+    },
+    {
+      "from": "case:client/agentskill-grant-skill-of-own-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agentskill"
+    },
+    {
+      "from": "case:client/agentskill-grant-skill-of-own-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agentskill-grant-skill-of-own-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:client/agentskill-grant-skill-of-own-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:skillId"
+    },
+    {
       "from": "case:client/agenttool-grant-needs-existing-agent",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -70758,6 +71162,86 @@
       "from": "case:client/agenttool-grant-needs-existing-agent",
       "type": "uses_fixture",
       "to": "fixture:toolserverId"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-server-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-server-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-server-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-server-of-other-workspace",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-server-of-other-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agenttool"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-server-of-other-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-server-of-other-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-server-of-other-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceToolserverId"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-tool-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-tool-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-tool-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-tool-of-other-workspace",
+      "type": "covers",
+      "to": "controller:agenttool"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-tool-of-other-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agenttool"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-tool-of-other-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-tool-of-other-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
+      "from": "case:client/agenttool-grant-refuses-tool-of-other-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceToolId"
     },
     {
       "from": "case:client/agenttool-grant-rejects-server-and-tool",
@@ -84185,6 +84669,111 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/skill-create-keeps-workspace",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/skill-create-keeps-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/skill-create-keeps-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/skill-create-keeps-workspace",
+      "type": "covers",
+      "to": "controller:skill"
+    },
+    {
+      "from": "case:client/skill-create-keeps-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/skill"
+    },
+    {
+      "from": "case:client/skill-create-keeps-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/skill-create-keeps-workspace",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:client/skill-create-needs-workspace",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/skill-create-needs-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/skill-create-needs-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/skill-create-needs-workspace",
+      "type": "covers",
+      "to": "controller:skill"
+    },
+    {
+      "from": "case:client/skill-create-needs-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/skill"
+    },
+    {
+      "from": "case:client/skill-create-needs-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/skill-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/skill-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/skill-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/skill-patch-workspace-refused",
+      "type": "covers",
+      "to": "controller:skill"
+    },
+    {
+      "from": "case:client/skill-patch-workspace-refused",
+      "type": "depends_on",
+      "to": "case:client/skill-create-keeps-workspace"
+    },
+    {
+      "from": "case:client/skill-patch-workspace-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/skill/{id}"
+    },
+    {
+      "from": "case:client/skill-patch-workspace-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/skill-patch-workspace-refused",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceId"
+    },
+    {
       "from": "case:client/token-client-credentials-new-secret-signs-in",
       "type": "asserts",
       "to": "assertion:shape"
@@ -84530,6 +85119,41 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/toolserver-create-mcp-server",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:client/toolserver-create-needs-workspace",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/toolserver-create-needs-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/toolserver-create-needs-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/toolserver-create-needs-workspace",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:client/toolserver-create-needs-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/toolserver"
+    },
+    {
+      "from": "case:client/toolserver-create-needs-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/toolserver-create-rejects-unknown-kind",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -84558,6 +85182,81 @@
       "from": "case:client/toolserver-create-rejects-unknown-kind",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-kind",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-workspace",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-workspace",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/toolserver"
+    },
+    {
+      "from": "case:client/toolserver-create-rejects-unknown-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/toolserver-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/toolserver-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/toolserver-patch-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/toolserver-patch-workspace-refused",
+      "type": "covers",
+      "to": "controller:toolserver"
+    },
+    {
+      "from": "case:client/toolserver-patch-workspace-refused",
+      "type": "depends_on",
+      "to": "case:client/toolserver-create-mcp-server"
+    },
+    {
+      "from": "case:client/toolserver-patch-workspace-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/toolserver/{id}"
+    },
+    {
+      "from": "case:client/toolserver-patch-workspace-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/toolserver-patch-workspace-refused",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceId"
     },
     {
       "from": "case:client/toolserver-refresh-failure-is-recorded",
@@ -94607,6 +95306,11 @@
     {
       "from": "model:Agentskill",
       "type": "uses_behaviour",
+      "to": "behaviour:agentskillWorkspaceBehavior"
+    },
+    {
+      "from": "model:Agentskill",
+      "type": "uses_behaviour",
       "to": "behaviour:auditBehavior"
     },
     {
@@ -94718,6 +95422,11 @@
       "from": "model:Agenttool",
       "type": "has_relationship",
       "to": "relationship:Agenttool.toolServer"
+    },
+    {
+      "from": "model:Agenttool",
+      "type": "uses_behaviour",
+      "to": "behaviour:agenttoolWorkspaceBehavior"
     },
     {
       "from": "model:Agenttool",
@@ -98341,6 +99050,11 @@
     },
     {
       "from": "model:Skill",
+      "type": "has_field",
+      "to": "field:Skill.workspaceId"
+    },
+    {
+      "from": "model:Skill",
       "type": "has_relationship",
       "to": "relationship:Skill.agentSkills"
     },
@@ -98361,8 +99075,18 @@
     },
     {
       "from": "model:Skill",
+      "type": "has_relationship",
+      "to": "relationship:Skill.workspace"
+    },
+    {
+      "from": "model:Skill",
       "type": "uses_behaviour",
       "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Skill",
+      "type": "uses_behaviour",
+      "to": "behaviour:catalogWorkspaceBehavior"
     },
     {
       "from": "model:Skill",
@@ -99031,6 +99755,11 @@
     },
     {
       "from": "model:Toolserver",
+      "type": "has_field",
+      "to": "field:Toolserver.workspaceId"
+    },
+    {
+      "from": "model:Toolserver",
       "type": "has_relationship",
       "to": "relationship:Toolserver.createdBy"
     },
@@ -99051,8 +99780,18 @@
     },
     {
       "from": "model:Toolserver",
+      "type": "has_relationship",
+      "to": "relationship:Toolserver.workspace"
+    },
+    {
+      "from": "model:Toolserver",
       "type": "uses_behaviour",
       "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Toolserver",
+      "type": "uses_behaviour",
+      "to": "behaviour:catalogWorkspaceBehavior"
     },
     {
       "from": "model:Toolserver",
@@ -101528,6 +102267,16 @@
       "from": "model:Workspace",
       "type": "has_relationship",
       "to": "relationship:Workspace.repositories"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_relationship",
+      "to": "relationship:Workspace.skills"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_relationship",
+      "to": "relationship:Workspace.toolservers"
     },
     {
       "from": "model:Workspace",
@@ -104125,6 +104874,11 @@
       "to": "model:User"
     },
     {
+      "from": "relationship:Skill.workspace",
+      "type": "targets",
+      "to": "model:Workspace"
+    },
+    {
       "from": "relationship:Systemnotification.recipientRecords",
       "type": "targets",
       "to": "model:Systemnotificationrecipient"
@@ -104253,6 +105007,11 @@
       "from": "relationship:Toolserver.tools",
       "type": "targets",
       "to": "model:Tool"
+    },
+    {
+      "from": "relationship:Toolserver.workspace",
+      "type": "targets",
+      "to": "model:Workspace"
     },
     {
       "from": "relationship:Translation.createdBy",
@@ -104668,6 +105427,16 @@
       "from": "relationship:Workspace.repositories",
       "type": "targets",
       "to": "model:Repository"
+    },
+    {
+      "from": "relationship:Workspace.skills",
+      "type": "targets",
+      "to": "model:Skill"
+    },
+    {
+      "from": "relationship:Workspace.toolservers",
+      "type": "targets",
+      "to": "model:Toolserver"
     },
     {
       "from": "relationship:Workspace.workflows",

@@ -19,7 +19,7 @@ use Phalcon\Mvc\Model\Behavior;
 /**
  * A workflow belongs to one existing workspace, given when it is created and
  * never changed; its scope lists only projects of that workspace and, when it
- * is activated, the agents its nodes name are all in it (Workspaces D-007).
+ * is activated, the agents its nodes name are all in it (Workspaces D-008).
  * The rules live in {@see WorkflowWorkspace}.
  *
  * @author Hammad Hassan <gollomer@gmail.com>

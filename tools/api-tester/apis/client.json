@@ -6112,6 +6112,7 @@
           "type": "toolserver",
           "attributes": {
             "name": "API Test Unreachable MCP",
+            "workspaceId": "{workspaceId}",
             "kind": "mcp",
             "location": "external",
             "transport": "http",
@@ -6143,6 +6144,7 @@
           "type": "toolserver",
           "attributes": {
             "name": "Bad kind",
+            "workspaceId": "{workspaceId}",
             "kind": "grpc",
             "location": "external"
           }
@@ -6355,6 +6357,242 @@
         "status": 422,
         "shape": "error",
         "errorEqual": "A tool grant needs an existing agent."
+      }
+    },
+    {
+      "id": "toolserver-create-needs-workspace",
+      "method": "POST",
+      "path": "/api/v1/toolserver",
+      "resource": "toolserver",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "toolserver",
+          "attributes": {
+            "name": "No workspace",
+            "kind": "mcp",
+            "location": "external"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "workspaceId is required: a tool server or skill belongs to a workspace."
+        }
+      }
+    },
+    {
+      "id": "toolserver-create-rejects-unknown-workspace",
+      "method": "POST",
+      "path": "/api/v1/toolserver",
+      "resource": "toolserver",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "toolserver",
+          "attributes": {
+            "name": "Ghost workspace",
+            "kind": "mcp",
+            "location": "external",
+            "workspaceId": "no-such-workspace"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "workspaceId must be the id of an existing workspace"
+        }
+      }
+    },
+    {
+      "id": "toolserver-patch-workspace-refused",
+      "method": "PATCH",
+      "path": "/api/v1/toolserver/{runtime.createdToolserverId}",
+      "resource": "toolserver",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "toolserver",
+          "id": "{runtime.createdToolserverId}",
+          "attributes": {
+            "workspaceId": "{otherWorkspaceId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "The workspace of a tool server or skill cannot be changed."
+        }
+      }
+    },
+    {
+      "id": "skill-create-needs-workspace",
+      "method": "POST",
+      "path": "/api/v1/skill",
+      "resource": "skill",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "skill",
+          "attributes": {
+            "name": "API Test Skill No Workspace"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "workspaceId is required: a tool server or skill belongs to a workspace."
+        }
+      }
+    },
+    {
+      "id": "skill-create-keeps-workspace",
+      "method": "POST",
+      "path": "/api/v1/skill",
+      "resource": "skill",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "skill",
+          "attributes": {
+            "name": "API Test Created Skill",
+            "workspaceId": "{workspaceId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.createdSkillId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "workspaceId": "{workspaceId}"
+        }
+      }
+    },
+    {
+      "id": "skill-patch-workspace-refused",
+      "method": "PATCH",
+      "path": "/api/v1/skill/{runtime.createdSkillId}",
+      "resource": "skill",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "skill",
+          "id": "{runtime.createdSkillId}",
+          "attributes": {
+            "workspaceId": "{otherWorkspaceId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "The workspace of a tool server or skill cannot be changed."
+        }
+      }
+    },
+    {
+      "id": "agenttool-grant-refuses-server-of-other-workspace",
+      "method": "POST",
+      "path": "/api/v1/agenttool",
+      "resource": "agenttool",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agenttool",
+          "attributes": {
+            "agentId": "{otherAgentId}",
+            "toolServerId": "{otherWorkspaceToolserverId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "An agent can only be granted tools of its own workspace."
+        }
+      }
+    },
+    {
+      "id": "agenttool-grant-refuses-tool-of-other-workspace",
+      "method": "POST",
+      "path": "/api/v1/agenttool",
+      "resource": "agenttool",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agenttool",
+          "attributes": {
+            "agentId": "{otherAgentId}",
+            "toolId": "{otherWorkspaceToolId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "An agent can only be granted tools of its own workspace."
+        }
+      }
+    },
+    {
+      "id": "agentskill-grant-refuses-skill-of-other-workspace",
+      "method": "POST",
+      "path": "/api/v1/agentskill",
+      "resource": "agentskill",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agentskill",
+          "attributes": {
+            "agentId": "{otherAgentId}",
+            "skillId": "{otherWorkspaceSkillId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "An agent can only be granted skills of its own workspace."
+        }
+      }
+    },
+    {
+      "id": "agentskill-grant-skill-of-own-workspace",
+      "method": "POST",
+      "path": "/api/v1/agentskill",
+      "resource": "agentskill",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agentskill",
+          "attributes": {
+            "agentId": "{otherAgentId}",
+            "skillId": "{skillId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "agentId": "{otherAgentId}",
+          "skillId": "{skillId}"
+        }
       }
     },
     {

@@ -66,7 +66,16 @@ Agreed decisions for Workspaces in Gaia. Add a new decision whenever behavior is
 | Rationale | An agent works with the members and issues of its workspace; keeping that in the model layer holds for REST, workflows and the system alike. |
 | Consequence | A user that is not an agent, and an agent without a workspace (legacy row), are not restricted. Moving an agent between workspaces, runtime rules and tool and skill grants are separate issues. No permission seed SQL ships. |
 
-### D-007 — A workflow belongs to one workspace; its scope and agents stay inside it
+### D-007 — Tool servers and skills belong to a workspace; grants stay inside it
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | `tool_servers.workspaceId` and `skills.workspaceId` are nullable in the database (existing rows are filled by a manual script later) but required on `POST /toolserver` and `POST /skill` (422) and unchangeable afterwards (422, "The workspace of a tool server or skill cannot be changed."); the workspace must exist. A tool has no field of its own: it follows its tool server. `Workspace` has `toolservers` and `skills` relations. `POST /agenttool` is refused with 422 (on `toolServerId` or `toolId`) when the agent and the tool server (or the server of the tool) are in different workspaces, and `POST /agentskill` with 422 (on `skillId`) when the agent and the skill are. The rules live in `Gaia\Libraries\Workspaces\CatalogWorkspace`, called from `catalogWorkspaceBehavior`, `agenttoolWorkspaceBehavior` and `agentskillWorkspaceBehavior`. |
+| Rationale | An agent only gets the tools and skills of its own workspace; keeping the check in the model layer holds for REST, workflows and the system alike. |
+| Consequence | A tool server, skill or agent without a workspace (legacy row) is not restricted. Moving tools or skills between workspaces and runtime read filters are separate issues. No permission seed SQL ships. |
+
+### D-008 — A workflow belongs to one workspace; its scope and agents stay inside it
 
 | | |
 |---|---|

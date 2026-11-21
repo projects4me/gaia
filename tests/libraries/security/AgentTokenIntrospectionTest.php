@@ -212,6 +212,7 @@ class AgentTokenIntrospectionTest extends TestCase
         $server = new Toolserver();
         $server->id = $id;
         $server->name = $name;
+        $server->workspaceId = AgentTestFixtures::WORKSPACE_ID;
         $server->kind = 'mcp';
         $server->location = 'external';
         $server->transport = 'http';

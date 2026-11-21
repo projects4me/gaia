@@ -154,7 +154,8 @@ $models['Agenttool'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'agenttoolWorkspaceBehavior'
     ),
     'acl' => [
         // Runtimes read these for the agents they may run (D-066, D-069).

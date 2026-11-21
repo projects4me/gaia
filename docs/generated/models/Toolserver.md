@@ -15,6 +15,7 @@
 - schemaRefreshedAt datetime
 - spec text
 - transport varchar(20)
+- workspaceId varchar(36)
 - also: createdUser, createdUserName, dateCreated, dateModified, deleted, id, modifiedUser, modifiedUserName
 
 <a id="relationships"></a>
@@ -24,13 +25,14 @@
 - grants hasMany -> Agenttool
 - modifiedBy hasOne -> User
 - tools hasMany -> Tool
+- workspace hasOne -> Workspace
 
 <a id="summary"></a>
 ## Summary
 
-- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior
+- behaviours: auditBehavior, catalogWorkspaceBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior
 - acl: -
 - controller: Gaia\MVC\REST\Controllers\ToolserverController
 - routes: DELETE /api/v1/toolserver, DELETE /api/v1/toolserver/{id}, GET /api/v1/toolserver, GET /api/v1/toolserver/{id}, GET /api/v1/toolserver/{id}/{relation}, OPTIONS /api/v1/toolserver, PATCH /api/v1/toolserver, PATCH /api/v1/toolserver/{id}, POST /api/v1/toolserver, PUT /api/v1/toolserver, PUT /api/v1/toolserver/{id}
 - components: -
-- cases: 14 (acl 3, backend 6, client 5); gaia-dev cases toolserver
+- cases: 17 (acl 3, backend 6, client 8); gaia-dev cases toolserver

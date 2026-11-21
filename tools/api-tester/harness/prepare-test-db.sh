@@ -1291,6 +1291,36 @@ INSERT INTO agent_skills (
   ('api-test-agentskill-000001', 'api-test-agent-000001', 'api-test-skill-000001', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
+-- Workspaces D-007: the seeded tool server, skill and second agent sit in the seed workspace; a second
+-- workspace holds a tool server (with a tool) and a skill the second agent may not be granted
+INSERT INTO workspaces (
+  id, "name", "description", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workspace-000002', 'Other workspace', 'Holds the tools and skills of another workspace', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+UPDATE agents SET "workspaceId" = 'api-test-workspace-000001' WHERE id = 'api-test-agent-000002';
+UPDATE tool_servers SET "workspaceId" = 'api-test-workspace-000001' WHERE id = 'api-test-toolserver-000001';
+UPDATE skills SET "workspaceId" = 'api-test-workspace-000001' WHERE id = 'api-test-skill-000001';
+
+INSERT INTO tool_servers (
+  id, "workspaceId", "name", "kind", "location", "transport", "endpoint", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-toolserver-000002', 'api-test-workspace-000002', 'API Test Other MCP', 'mcp', 'external', 'http', 'http://127.0.0.1:9/mcp', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET "workspaceId" = EXCLUDED."workspaceId", deleted = FALSE;
+
+INSERT INTO tools (
+  id, "toolServerId", "name", "description", "inputSchema", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-tool-000002', 'api-test-toolserver-000002', 'other_tool', 'Tool of the other workspace', '{"type":"object","properties":{}}', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO skills (
+  id, "workspaceId", "name", "description", "content", "version", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-skill-000002', 'api-test-workspace-000002', 'api-test-other-skill', 'Skill of the other workspace', '# Other skill', '1.0', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET "workspaceId" = EXCLUDED."workspaceId", deleted = FALSE;
+
 -- Workflow: seed records (gaia-dev scaffold resource)
 INSERT INTO workflows (
   id, "name", "description", "status", "scope", "version", "ownerId", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
@@ -1573,6 +1603,10 @@ data = {
     "serviceenrollmentPollToken": "api-tester-expired-poll-token",
     "toolserverId": "api-test-toolserver-000001",
     "toolId": "api-test-tool-000001",
+    "otherWorkspaceId": "api-test-workspace-000002",
+    "otherWorkspaceToolserverId": "api-test-toolserver-000002",
+    "otherWorkspaceToolId": "api-test-tool-000002",
+    "otherWorkspaceSkillId": "api-test-skill-000002",
     "agenttoolId": "api-test-agenttool-000001",
     "useridentityId": "api-test-useridentity-000001",
     "otherUseridentityId": "api-test-useridentity-000002",
@@ -1589,7 +1623,6 @@ data = {
     "workflowactorstepId": "api-test-workflowactorstep-000001",
     "otherWorkflowactorstepId": "api-test-workflowactorstep-000002",
     "workspaceId": "api-test-workspace-000001",
-    "otherWorkspaceId": "api-test-workspace-000002",
     "repositoryId": "api-test-repository-000001",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",

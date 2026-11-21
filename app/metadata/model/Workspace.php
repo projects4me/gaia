@@ -125,7 +125,17 @@ $models['Workspace'] = array(
             ),
             'workflows' => array(
                 'primaryKey' => 'id',
-                'relatedModel' => '\Gaia\MVC\Models\Workflow',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Workflow',
+                'relatedKey' => 'workspaceId',
+            ),
+            'toolservers' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\Gaia\MVC\Models\Toolserver',
+                'relatedKey' => 'workspaceId',
+            ),
+            'skills' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\Gaia\MVC\Models\Skill',
                 'relatedKey' => 'workspaceId',
             ),
             'repositories' => array(

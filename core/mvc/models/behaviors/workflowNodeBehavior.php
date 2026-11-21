@@ -135,7 +135,7 @@ class workflowNodeBehavior extends Behavior implements BehaviorInterface
     }
 
     /**
-     * The agents the config names must be in the workflow's workspace (Workspaces D-007).
+     * The agents the config names must be in the workflow's workspace (Workspaces D-008).
      *
      * @param  ModelInterface $model
      * @param  string         $category
