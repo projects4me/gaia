@@ -73,8 +73,8 @@ class AgentDelegationGrant extends ClientCredentials
             return false;
         }
 
-        AgentDelegationGuard::assertRuntimeAllowed($this->getClientId());
-        $delegable = AgentDelegationGuard::assertAgentDelegable((string) $request->request('agent_id'));
+        $runtime = AgentDelegationGuard::assertRuntimeAllowed($this->getClientId());
+        $delegable = AgentDelegationGuard::assertAgentDelegable((string) $request->request('agent_id'), $runtime);
 
         $granted = AgentDelegationScopes::grant($delegable['scopes'], $request->request('scope'));
         if ($granted === null) {

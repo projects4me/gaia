@@ -7,7 +7,9 @@
 /**
  * A workspace groups projects and their environment. It has no members and no
  * record scope: membership and record ACL stay on the projects; only the
- * workspace actions (get, create, update, delete) are permissioned.
+ * workspace actions (get, create, update, delete) are permissioned. A
+ * workspace may be bound to one runtime (`runtimeId`), the only runtime that
+ * may act for its agents (Workspaces D-009).
  */
 $models['Workspace'] = array(
     'tableName' => 'workspaces',
@@ -33,6 +35,14 @@ $models['Workspace'] = array(
             'label' => 'LBL_WORKSPACES_DESCRIPTION',
             'type' => 'text',
             'null' => true,
+        ),
+        'runtimeId' => array(
+            'name' => 'runtimeId',
+            'label' => 'LBL_WORKSPACES_RUNTIME_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+            'relatedIdentifier' => true
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -91,6 +101,7 @@ $models['Workspace'] = array(
     'indexes' => array(
         'id' => 'primary',
         'name' => 'index',
+        'runtimeId' => 'index',
     ),
     'foriegnKeys' => array(
 
@@ -109,6 +120,11 @@ $models['Workspace'] = array(
             'modifiedBy' => array(
                 'primaryKey' => 'modifiedUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'runtime' => array(
+                'primaryKey' => 'runtimeId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Serviceclient',
                 'relatedKey' => 'id'
             ),
         ),
@@ -151,7 +167,8 @@ $models['Workspace'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'workspaceRuntimeBehavior'
     ),
 );
 

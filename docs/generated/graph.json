@@ -4427,6 +4427,18 @@
       }
     },
     {
+      "id": "behaviour:workspaceRuntimeBehavior",
+      "type": "behaviour",
+      "key": "workspaceRuntimeBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\workspaceRuntimeBehavior",
+        "file": "core/mvc/models/behaviors/workspaceRuntimeBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "case:acl/acl-admin-comment-allowed",
       "type": "case",
       "key": "acl/acl-admin-comment-allowed",
@@ -21656,6 +21668,60 @@
       }
     },
     {
+      "id": "case:client/token-agent-delegation-granted-for-bound-workspace",
+      "type": "case",
+      "key": "client/token-agent-delegation-granted-for-bound-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/token",
+        "resource": "token",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.rtAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/token-agent-delegation-refused-for-other-workspace",
+      "type": "case",
+      "key": "client/token-agent-delegation-refused-for-other-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/token",
+        "resource": "token",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.rtOtherAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/token-agent-delegation-refused-without-binding",
+      "type": "case",
+      "key": "client/token-agent-delegation-refused-without-binding",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/token",
+        "resource": "token",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.rtAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/token-client-credentials-new-secret-signs-in",
       "type": "case",
       "key": "client/token-client-credentials-new-secret-signs-in",
@@ -23019,6 +23085,156 @@
           "runtime.createdWorkspaceId"
         ],
         "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-runtime-bind-non-runtime-refused",
+      "type": "case",
+      "key": "client/workspace-runtime-bind-non-runtime-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workspace/{runtime.rtWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.rtWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-runtime-bind-other-runtime",
+      "type": "case",
+      "key": "client/workspace-runtime-bind-other-runtime",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workspace/{runtime.rtOtherWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.rtOtherWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-runtime-bind-runtime",
+      "type": "case",
+      "key": "client/workspace-runtime-bind-runtime",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workspace/{runtime.rtWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.rtWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-runtime-bind-unknown-client-refused",
+      "type": "case",
+      "key": "client/workspace-runtime-bind-unknown-client-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workspace/{runtime.rtWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.rtWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-runtime-create-bound-agent",
+      "type": "case",
+      "key": "client/workspace-runtime-create-bound-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.rtWorkspaceId"
+        ],
+        "stores": [
+          "runtime.rtAgentId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-runtime-create-bound-workspace",
+      "type": "case",
+      "key": "client/workspace-runtime-create-bound-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.rtWorkspaceId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-runtime-create-other-agent",
+      "type": "case",
+      "key": "client/workspace-runtime-create-other-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.rtOtherWorkspaceId"
+        ],
+        "stores": [
+          "runtime.rtOtherAgentId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-runtime-create-other-workspace",
+      "type": "case",
+      "key": "client/workspace-runtime-create-other-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.rtOtherWorkspaceId"
+        ]
       }
     },
     {
@@ -36637,6 +36853,18 @@
       }
     },
     {
+      "id": "field:Workspace.runtimeId",
+      "type": "field",
+      "key": "Workspace.runtimeId",
+      "attributes": {
+        "label": "LBL_WORKSPACES_RUNTIME_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true,
+        "relatedIdentifier": true
+      }
+    },
+    {
       "id": "fixture:activityId",
       "type": "fixture",
       "key": "activityId",
@@ -43591,6 +43819,16 @@
         "kind": "hasMany",
         "primaryKey": "id",
         "relatedKey": "workspaceId"
+      }
+    },
+    {
+      "id": "relationship:Workspace.runtime",
+      "type": "relationship",
+      "key": "Workspace.runtime",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "runtimeId",
+        "relatedKey": "id"
       }
     },
     {
@@ -84774,6 +85012,106 @@
       "to": "fixture:otherWorkspaceId"
     },
     {
+      "from": "case:client/token-agent-delegation-granted-for-bound-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/token-agent-delegation-granted-for-bound-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/token-agent-delegation-granted-for-bound-workspace",
+      "type": "covers",
+      "to": "controller:token"
+    },
+    {
+      "from": "case:client/token-agent-delegation-granted-for-bound-workspace",
+      "type": "depends_on",
+      "to": "case:client/workspace-runtime-create-bound-agent"
+    },
+    {
+      "from": "case:client/token-agent-delegation-granted-for-bound-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/token"
+    },
+    {
+      "from": "case:client/token-agent-delegation-granted-for-bound-workspace",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-for-other-workspace",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-for-other-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-for-other-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-for-other-workspace",
+      "type": "covers",
+      "to": "controller:token"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-for-other-workspace",
+      "type": "depends_on",
+      "to": "case:client/workspace-runtime-create-other-agent"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-for-other-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/token"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-for-other-workspace",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-without-binding",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-without-binding",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-without-binding",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-without-binding",
+      "type": "covers",
+      "to": "controller:token"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-without-binding",
+      "type": "depends_on",
+      "to": "case:client/workspace-runtime-create-bound-agent"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-without-binding",
+      "type": "exercises",
+      "to": "route:POST /api/v1/token"
+    },
+    {
+      "from": "case:client/token-agent-delegation-refused-without-binding",
+      "type": "runs_as",
+      "to": "profile:anonymous"
+    },
+    {
       "from": "case:client/token-client-credentials-new-secret-signs-in",
       "type": "asserts",
       "to": "assertion:shape"
@@ -87415,6 +87753,276 @@
     },
     {
       "from": "case:client/workspace-delete-soft-deletes",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-non-runtime-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-non-runtime-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-non-runtime-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-non-runtime-refused",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-non-runtime-refused",
+      "type": "depends_on",
+      "to": "case:client/workspace-runtime-create-bound-workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-non-runtime-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-non-runtime-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-other-runtime",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-other-runtime",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-other-runtime",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-other-runtime",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-other-runtime",
+      "type": "depends_on",
+      "to": "case:client/workspace-runtime-create-other-workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-other-runtime",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-other-runtime",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-runtime",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-runtime",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-runtime",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-runtime",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-runtime",
+      "type": "depends_on",
+      "to": "case:client/workspace-runtime-create-bound-workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-runtime",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-runtime",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-unknown-client-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-unknown-client-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-unknown-client-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-unknown-client-refused",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-unknown-client-refused",
+      "type": "depends_on",
+      "to": "case:client/workspace-runtime-create-bound-workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-unknown-client-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-runtime-bind-unknown-client-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-agent",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-agent",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-agent",
+      "type": "depends_on",
+      "to": "case:client/workspace-runtime-create-bound-workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-workspace",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-bound-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-agent",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-agent",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-agent",
+      "type": "depends_on",
+      "to": "case:client/workspace-runtime-create-other-workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-workspace",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-create-other-workspace",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -102245,6 +102853,11 @@
     },
     {
       "from": "model:Workspace",
+      "type": "has_field",
+      "to": "field:Workspace.runtimeId"
+    },
+    {
+      "from": "model:Workspace",
       "type": "has_relationship",
       "to": "relationship:Workspace.agents"
     },
@@ -102267,6 +102880,11 @@
       "from": "model:Workspace",
       "type": "has_relationship",
       "to": "relationship:Workspace.repositories"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_relationship",
+      "to": "relationship:Workspace.runtime"
     },
     {
       "from": "model:Workspace",
@@ -102312,6 +102930,11 @@
       "from": "model:Workspace",
       "type": "uses_behaviour",
       "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "uses_behaviour",
+      "to": "behaviour:workspaceRuntimeBehavior"
     },
     {
       "from": "permission:issue.description.create",
@@ -105427,6 +106050,11 @@
       "from": "relationship:Workspace.repositories",
       "type": "targets",
       "to": "model:Repository"
+    },
+    {
+      "from": "relationship:Workspace.runtime",
+      "type": "targets",
+      "to": "model:Serviceclient"
     },
     {
       "from": "relationship:Workspace.skills",

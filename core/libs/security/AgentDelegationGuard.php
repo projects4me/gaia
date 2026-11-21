@@ -9,6 +9,7 @@ namespace Gaia\Libraries\Security;
 use Gaia\Exception\UnAuthorized;
 use Gaia\Libraries\Agents\AgentDelegationScopes;
 use Gaia\Libraries\Authorization\ServiceClientScopes;
+use Gaia\Libraries\Workspaces\WorkspaceRuntime;
 use Gaia\MVC\Models\Agent;
 use Gaia\MVC\Models\Serviceclient;
 use Gaia\MVC\Models\User;
@@ -16,7 +17,8 @@ use Gaia\MVC\Models\User;
 /**
  * Whether a runtime may get a token acting as an agent (D-067): the client
  * must be an active service client holding the `agent.delegate` scope, and
- * the agent must be live, its user an active agent, with delegation scopes.
+ * the agent must be live, its user an active agent, with delegation scopes,
+ * and its workspace bound to the calling runtime (D-073).
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Foundation
@@ -67,14 +69,16 @@ class AgentDelegationGuard
 
     /**
      * The agent and its user, or a rejection when the agent may not be
-     * delegated: missing or deleted, its user missing, not an agent or not
-     * active, or no delegation scopes.
+     * delegated by the runtime: missing or deleted, its user missing, not an
+     * agent or not active, no delegation scopes, or its workspace missing or
+     * not bound to the runtime (D-073).
      *
-     * @param  string $agentId
+     * @param  string        $agentId
+     * @param  Serviceclient $runtime The client {@see assertRuntimeAllowed()} returned
      * @return array ['agent' => Agent, 'user' => User, 'scopes' => string[]]
      * @throws UnAuthorized
      */
-    public static function assertAgentDelegable($agentId)
+    public static function assertAgentDelegable($agentId, Serviceclient $runtime)
     {
         $agent = (string) $agentId === '' ? false : Agent::findFirst([
             'conditions' => 'id = :id: AND deleted = false',
@@ -90,6 +94,7 @@ class AgentDelegationGuard
             || !$user->isAgent()
             || !AclLockoutGuard::isAuthenticatableAccountStatus($user->accountStatus)
             || !$scopes
+            || !(new WorkspaceRuntime())->serves((string) $runtime->id, $agent->workspaceId)
         ) {
             throw new UnAuthorized(self::AGENT_NOT_DELEGABLE_ERROR);
         }

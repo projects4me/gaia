@@ -11930,6 +11930,261 @@
         "status": 201,
         "shape": "jsonapi.resource"
       }
+    },
+    {
+      "id": "workspace-runtime-create-bound-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "API Test Runtime Workspace"
+          }
+        }
+      },
+      "store": {
+        "runtime.rtWorkspaceId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Test Runtime Workspace"
+        }
+      }
+    },
+    {
+      "id": "workspace-runtime-create-other-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "API Test Other Runtime Workspace"
+          }
+        }
+      },
+      "store": {
+        "runtime.rtOtherWorkspaceId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "API Test Other Runtime Workspace"
+        }
+      }
+    },
+    {
+      "id": "workspace-runtime-bind-non-runtime-refused",
+      "method": "PATCH",
+      "path": "/api/v1/workspace/{runtime.rtWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "id": "{runtime.rtWorkspaceId}",
+          "attributes": {
+            "runtimeId": "api-test-serviceclient-000002"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "runtimeId must be the id of an active service client of kind runtime."
+        }
+      }
+    },
+    {
+      "id": "workspace-runtime-bind-unknown-client-refused",
+      "method": "PATCH",
+      "path": "/api/v1/workspace/{runtime.rtWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "id": "{runtime.rtWorkspaceId}",
+          "attributes": {
+            "runtimeId": "api-test-serviceclient-missing"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "runtimeId must be the id of an active service client of kind runtime."
+        }
+      }
+    },
+    {
+      "id": "workspace-runtime-create-bound-agent",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "Runtime Agent a",
+            "email": "runtime-agent-a-{runId}@example.com",
+            "workspaceId": "{runtime.rtWorkspaceId}",
+            "delegationScopes": [
+              "issue.get"
+            ]
+          }
+        }
+      },
+      "store": {
+        "runtime.rtAgentId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "Runtime Agent a"
+        }
+      }
+    },
+    {
+      "id": "workspace-runtime-create-other-agent",
+      "method": "POST",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "agent",
+          "attributes": {
+            "name": "Runtime Agent b",
+            "email": "runtime-agent-b-{runId}@example.com",
+            "workspaceId": "{runtime.rtOtherWorkspaceId}",
+            "delegationScopes": [
+              "issue.get"
+            ]
+          }
+        }
+      },
+      "store": {
+        "runtime.rtOtherAgentId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "Runtime Agent b"
+        }
+      }
+    },
+    {
+      "id": "token-agent-delegation-refused-without-binding",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "form": {
+        "grant_type": "urn:projects4me:params:oauth:grant-type:agent-delegation",
+        "client_id": "service-api-tester-delegator",
+        "client_secret": "p4m_cs_api-tester-service-runtime-not-a-real-secret",
+        "agent_id": "{runtime.rtAgentId}"
+      },
+      "expects": {
+        "status": 401,
+        "shape": "error",
+        "errorEqual": "The agent does not exist, is not active or cannot be delegated."
+      }
+    },
+    {
+      "id": "workspace-runtime-bind-runtime",
+      "method": "PATCH",
+      "path": "/api/v1/workspace/{runtime.rtWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "id": "{runtime.rtWorkspaceId}",
+          "attributes": {
+            "runtimeId": "api-test-serviceclient-000003"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "runtimeId": "api-test-serviceclient-000003"
+        }
+      }
+    },
+    {
+      "id": "workspace-runtime-bind-other-runtime",
+      "method": "PATCH",
+      "path": "/api/v1/workspace/{runtime.rtOtherWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "id": "{runtime.rtOtherWorkspaceId}",
+          "attributes": {
+            "runtimeId": "api-test-serviceclient-000001"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "runtimeId": "api-test-serviceclient-000001"
+        }
+      }
+    },
+    {
+      "id": "token-agent-delegation-granted-for-bound-workspace",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "form": {
+        "grant_type": "urn:projects4me:params:oauth:grant-type:agent-delegation",
+        "client_id": "service-api-tester-delegator",
+        "client_secret": "p4m_cs_api-tester-service-runtime-not-a-real-secret",
+        "agent_id": "{runtime.rtAgentId}"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "oauth.token"
+      }
+    },
+    {
+      "id": "token-agent-delegation-refused-for-other-workspace",
+      "method": "POST",
+      "path": "/api/v1/token",
+      "resource": "token",
+      "auth": false,
+      "form": {
+        "grant_type": "urn:projects4me:params:oauth:grant-type:agent-delegation",
+        "client_id": "service-api-tester-delegator",
+        "client_secret": "p4m_cs_api-tester-service-runtime-not-a-real-secret",
+        "agent_id": "{runtime.rtOtherAgentId}"
+      },
+      "expects": {
+        "status": 401,
+        "shape": "error",
+        "errorEqual": "The agent does not exist, is not active or cannot be delegated."
+      }
     }
   ]
 }

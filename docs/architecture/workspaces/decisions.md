@@ -83,3 +83,12 @@ Agreed decisions for Workspaces in Gaia. Add a new decision whenever behavior is
 | Decision | `workflows.workspaceId` is nullable in the database (existing rows are filled by a manual script later) but required on `POST /workflow` (422) and unchangeable afterwards (422, "The workspace of a workflow cannot be changed."); the workspace must exist. `Workspace` has a `workflows` relation. `Workflow.scope` may only list projects of the workflow's workspace: a foreign project is refused with 422 on `scope`, naming the foreign ids, on create and on every update. An agent named by a node's `ref:Agent` config field (for example Run agent) must be in the workflow's workspace: a node save with another workspace's agent (or one without a workspace) is refused with 422 on `config`, and activating a workflow whose existing nodes break this is refused with 422 on `status`. The rules live in `Gaia\Libraries\Workspaces\WorkflowWorkspace`, called from `workflowWorkspaceBehavior` and `workflowNodeBehavior`, so every write path gets them. |
 | Rationale | A workflow runs with the members, projects and agents of one workspace (D-006); keeping that in the model layer holds for REST, workflows and the system alike. |
 | Consequence | A workflow without a workspace (legacy row) is not restricted. Moving a workflow between workspaces and re-checking runs already in flight are separate issues. Agent references written as expressions name no agent until the run, so they are not checked. No permission seed SQL ships. |
+
+### D-009 — A workspace is bound to one runtime, which acts only for its agents
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | `workspaces.runtimeId` (nullable) names the one runtime service client that may act for the workspace's agents; it must be an active service client of kind `runtime` when set or changed (422). A runtime may serve several workspaces. The delegation rule is RBAC D-073. |
+| Rationale | The workspace is the environment agents run in, so it is where the runtime that runs them is chosen. |
+| Consequence | `Workspace` has a `runtime` relation; the rule lives in `Gaia\Libraries\Workspaces\WorkspaceRuntime`, checked by `workspaceRuntimeBehavior`. A disabled or deleted runtime keeps its bindings but can no longer delegate. Routing run requests to the bound runtime and runtime read filters are separate issues. |
