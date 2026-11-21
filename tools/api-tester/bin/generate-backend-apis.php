@@ -128,6 +128,7 @@ $relatedDefaults = [
 $extraAttributes = [
     'project' => ['name' => 'API Tester Runtime Project', 'status' => 'new', 'type' => 'software', 'projectManager' => '{userId}', 'done' => 0],
     'workflow' => ['workspaceId' => '{workspaceId}'],
+    'workspace' => ['shortCode' => 'apiws{runId}'],
     'issue' => [
         'subject' => 'API Tester Runtime Issue',
         'owner' => '{userId}',

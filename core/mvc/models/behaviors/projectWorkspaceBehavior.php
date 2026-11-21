@@ -56,7 +56,7 @@ class projectWorkspaceBehavior extends Behavior implements BehaviorInterface
     {
         try {
             $model->workspaceId = (new ProjectWorkspace())
-                ->resolveForNewProject($model->workspaceId ?? null, $model->name ?? '');
+                ->resolveForNewProject($model->workspaceId ?? null, $model->name ?? '', $model->shortCode ?? null);
         } catch (\InvalidArgumentException $e) {
             $model->appendMessage(new Message($e->getMessage(), 'workspaceId', 'InvalidValue'));
             return false;

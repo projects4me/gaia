@@ -4439,6 +4439,18 @@
       }
     },
     {
+      "id": "behaviour:workspaceShortCodeBehavior",
+      "type": "behaviour",
+      "key": "workspaceShortCodeBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\workspaceShortCodeBehavior",
+        "file": "core/mvc/models/behaviors/workspaceShortCodeBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "case:acl/acl-admin-comment-allowed",
       "type": "case",
       "key": "acl/acl-admin-comment-allowed",
@@ -9269,7 +9281,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": "acl-workspace",
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": []
       }
     },
@@ -13887,7 +13901,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": "backend-metadata",
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.workspaceId"
         ]
@@ -14216,7 +14232,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.agentWsId"
         ]
@@ -19885,6 +19903,7 @@
         ],
         "stores": [
           "runtime.ownWorkspaceProjectId",
+          "runtime.ownWorkspaceProjectCode",
           "runtime.ownWorkspaceId"
         ]
       }
@@ -20135,7 +20154,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.moveSrcWsId"
         ]
@@ -20195,7 +20216,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.moveDstWsId"
         ]
@@ -20364,7 +20387,8 @@
         "enabled": true,
         "source": null,
         "placeholders": [
-          "runtime.ownWorkspaceId"
+          "runtime.ownWorkspaceId",
+          "runtime.ownWorkspaceProjectCode"
         ],
         "stores": []
       }
@@ -23625,10 +23649,62 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.createdWorkspaceId"
         ]
+      }
+    },
+    {
+      "id": "case:client/workspace-create-needs-short-code",
+      "type": "case",
+      "key": "client/workspace-create-needs-short-code",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-create-rejects-malformed-short-code",
+      "type": "case",
+      "key": "client/workspace-create-rejects-malformed-short-code",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-create-rejects-taken-short-code",
+      "type": "case",
+      "key": "client/workspace-create-rejects-taken-short-code",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId"
+        ],
+        "stores": []
       }
     },
     {
@@ -23662,7 +23738,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.gateAgentWorkspaceId"
         ]
@@ -23698,7 +23776,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.gateRepositoryWorkspaceId"
         ]
@@ -23734,7 +23814,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.gateSkillWorkspaceId"
         ]
@@ -23770,7 +23852,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.gateToolserverWorkspaceId"
         ]
@@ -23806,7 +23890,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.gateWorkflowWorkspaceId"
         ]
@@ -23939,6 +24025,25 @@
       }
     },
     {
+      "id": "case:client/workspace-list-by-short-code",
+      "type": "case",
+      "key": "client/workspace-list-by-short-code",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.createdWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/workspace-runtime-bind-non-runtime-refused",
       "type": "case",
       "key": "client/workspace-runtime-bind-non-runtime-refused",
@@ -24043,7 +24148,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.rtWorkspaceId"
         ]
@@ -24082,7 +24189,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.rtOtherWorkspaceId"
         ]
@@ -24276,7 +24385,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.syncWorkspaceId"
         ]
@@ -25472,7 +25583,9 @@
         "resource": "workspace",
         "enabled": true,
         "source": null,
-        "placeholders": [],
+        "placeholders": [
+          "runId"
+        ],
         "stores": [
           "runtime.syncWorkspaceId"
         ]
@@ -37713,6 +37826,17 @@
         "length": "36",
         "null": true,
         "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Workspace.shortCode",
+      "type": "field",
+      "key": "Workspace.shortCode",
+      "attributes": {
+        "label": "LBL_WORKSPACES_SHORT_CODE",
+        "type": "varchar",
+        "length": "50",
+        "null": true
       }
     },
     {
@@ -89709,6 +89833,91 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/workspace-create-needs-short-code",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-create-needs-short-code",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-create-needs-short-code",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-create-needs-short-code",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-create-needs-short-code",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-create-needs-short-code",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-create-rejects-malformed-short-code",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-create-rejects-malformed-short-code",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-create-rejects-malformed-short-code",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-create-rejects-malformed-short-code",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-create-rejects-malformed-short-code",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-create-rejects-malformed-short-code",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-create-rejects-taken-short-code",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-create-rejects-taken-short-code",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-create-rejects-taken-short-code",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-create-rejects-taken-short-code",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-create-rejects-taken-short-code",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/workspace-delete-gate-agent-owned",
       "type": "asserts",
       "to": "assertion:shape"
@@ -90190,6 +90399,41 @@
     },
     {
       "from": "case:client/workspace-delete-soft-deletes",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-list-by-short-code",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/workspace-list-by-short-code",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-list-by-short-code",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-list-by-short-code",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-list-by-short-code",
+      "type": "depends_on",
+      "to": "case:client/workspace-create-keeps-description"
+    },
+    {
+      "from": "case:client/workspace-list-by-short-code",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace"
+    },
+    {
+      "from": "case:client/workspace-list-by-short-code",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -105295,6 +105539,11 @@
     },
     {
       "from": "model:Workspace",
+      "type": "has_field",
+      "to": "field:Workspace.shortCode"
+    },
+    {
+      "from": "model:Workspace",
       "type": "has_relationship",
       "to": "relationship:Workspace.agents"
     },
@@ -105372,6 +105621,11 @@
       "from": "model:Workspace",
       "type": "uses_behaviour",
       "to": "behaviour:workspaceRuntimeBehavior"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "uses_behaviour",
+      "to": "behaviour:workspaceShortCodeBehavior"
     },
     {
       "from": "permission:issue.description.create",

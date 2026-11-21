@@ -30,18 +30,20 @@ class ProjectWorkspace
 
     /**
      * Make sure a new project has a workspace: create one named after the
-     * project when none is given, otherwise check the given one.
+     * project, with the project's short code (D-012), when none is given,
+     * otherwise check the given one.
      *
      * @param  string|null $workspaceId
      * @param  string|null $projectName
+     * @param  string|null $projectShortCode
      * @return string The workspace id for the project
      * @throws \Gaia\Exception\Access    The caller may not update workspaces
      * @throws \InvalidArgumentException The workspace does not exist, or it could not be created
      */
-    public function resolveForNewProject($workspaceId, $projectName)
+    public function resolveForNewProject($workspaceId, $projectName, $projectShortCode = null)
     {
         if ($workspaceId === null || $workspaceId === '') {
-            return $this->createFor((string) $projectName);
+            return $this->createFor((string) $projectName, (string) $projectShortCode);
         }
 
         $workspace = Workspace::findFirst([
@@ -75,15 +77,20 @@ class ProjectWorkspace
     }
 
     /**
+     * The workspace takes the project's short code, or the first free code
+     * derived from it when another workspace already has it.
+     *
      * @param  string $projectName
+     * @param  string $projectShortCode
      * @return string
      * @throws \InvalidArgumentException
      */
-    protected function createFor($projectName)
+    protected function createFor($projectName, $projectShortCode)
     {
         $workspace = new Workspace();
         $workspace->id = create_guid();
         $workspace->name = mb_substr($projectName, 0, self::NAME_LENGTH);
+        $workspace->shortCode = (new WorkspaceShortCode())->freeCodeFrom($projectShortCode);
         if (!$workspace->save()) {
             $messages = [];
             foreach ($workspace->getMessages() as $message) {

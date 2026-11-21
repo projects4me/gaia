@@ -10972,6 +10972,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "wckd{runId}",
             "name": "API Test Workspace",
             "description": "Created by the api-tester"
           }
@@ -10987,6 +10988,88 @@
           "name": "API Test Workspace",
           "description": "Created by the api-tester"
         }
+      }
+    },
+    {
+      "id": "workspace-create-needs-short-code",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "API Test Workspace without code"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "A workspace needs a short code."
+        }
+      }
+    },
+    {
+      "id": "workspace-create-rejects-malformed-short-code",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "API Test Workspace bad code",
+            "shortCode": "1 bad-code"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "shortCode must start with a letter and hold only letters and digits, at most 50 characters."
+        }
+      }
+    },
+    {
+      "id": "workspace-create-rejects-taken-short-code",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "name": "API Test Workspace taken code",
+            "shortCode": "WCKD{runId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 409,
+        "shape": "json"
+      }
+    },
+    {
+      "id": "workspace-list-by-short-code",
+      "method": "GET",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "query": {
+        "query": "((Workspace.shortCode : wckd{runId}))"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{runtime.createdWorkspaceId}"
+        ]
       }
     },
     {
@@ -11043,6 +11126,7 @@
       },
       "store": {
         "runtime.ownWorkspaceProjectId": "data.id",
+        "runtime.ownWorkspaceProjectCode": "data.attributes.shortCode",
         "runtime.ownWorkspaceId": "data.attributes.workspaceId"
       },
       "expects": {
@@ -11063,7 +11147,8 @@
         "status": 200,
         "shape": "jsonapi.resource",
         "attributesEqual": {
-          "name": "Workspace Own Project"
+          "name": "Workspace Own Project",
+          "shortCode": "{runtime.ownWorkspaceProjectCode}"
         }
       }
     },
@@ -11077,6 +11162,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "wdgaw{runId}",
             "name": "Gate Workspace agent"
           }
         }
@@ -11137,6 +11223,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "wdgtw{runId}",
             "name": "Gate Workspace toolserver"
           }
         }
@@ -11194,6 +11281,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "wdgsw{runId}",
             "name": "Gate Workspace skill"
           }
         }
@@ -11247,6 +11335,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "wdgww{runId}",
             "name": "Gate Workspace workflow"
           }
         }
@@ -11300,6 +11389,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "wdgrw{runId}",
             "name": "Gate Workspace repository"
           }
         }
@@ -11461,6 +11551,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "pmcsw{runId}",
             "name": "API Test Move Source"
           }
         }
@@ -11483,6 +11574,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "pmctw{runId}",
             "name": "API Test Move Target"
           }
         }
@@ -11905,6 +11997,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "wscw{runId}",
             "name": "API Test Sync Workspace"
           }
         }
@@ -12446,6 +12539,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "awcw{runId}",
             "name": "API Test Agent Workspace"
           }
         }
@@ -12673,6 +12767,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "wrcbw{runId}",
             "name": "API Test Runtime Workspace"
           }
         }
@@ -12698,6 +12793,7 @@
         "data": {
           "type": "workspace",
           "attributes": {
+            "shortCode": "wrcow{runId}",
             "name": "API Test Other Runtime Workspace"
           }
         }

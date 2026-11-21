@@ -9,7 +9,8 @@
  * record scope: membership and record ACL stay on the projects; only the
  * workspace actions (get, create, update, delete) are permissioned. A
  * workspace may be bound to one runtime (`runtimeId`), the only runtime that
- * may act for its agents (Workspaces D-009).
+ * may act for its agents (Workspaces D-009). Its `shortCode` is unique among
+ * the live workspaces (D-012).
  */
 $models['Workspace'] = array(
     'tableName' => 'workspaces',
@@ -29,6 +30,15 @@ $models['Workspace'] = array(
             'type' => 'varchar',
             'length' => '100',
             'null' => false,
+        ),
+        // Required by workspaceShortCodeBehavior (D-012); the column stays
+        // nullable so the declarative migration can add it to existing rows.
+        'shortCode' => array(
+            'name' => 'shortCode',
+            'label' => 'LBL_WORKSPACES_SHORT_CODE',
+            'type' => 'varchar',
+            'length' => '50',
+            'null' => true,
         ),
         'description' => array(
             'name' => 'description',
@@ -101,6 +111,7 @@ $models['Workspace'] = array(
     'indexes' => array(
         'id' => 'primary',
         'name' => 'index',
+        'shortCode' => 'index',
         'runtimeId' => 'index',
     ),
     'foriegnKeys' => array(
@@ -168,7 +179,8 @@ $models['Workspace'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior',
-        'workspaceRuntimeBehavior'
+        'workspaceRuntimeBehavior',
+        'workspaceShortCodeBehavior'
     ),
     'acl' => [
         // Runtimes read the workspaces bound to them (D-074).
