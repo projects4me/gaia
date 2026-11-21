@@ -75,7 +75,7 @@ class AgentWorkspaceTest extends TestCase
 
             public function workspaceIdOf($projectId)
             {
-                return $this->projects[$projectId] ?? null;
+                return $projectId === null ? null : ($this->projects[$projectId] ?? null);
             }
         };
 
@@ -90,7 +90,7 @@ class AgentWorkspaceTest extends TestCase
 
             public function workspaceIdOfAgentUser($userId)
             {
-                return $this->agents[$userId] ?? null;
+                return $userId === null ? null : ($this->agents[$userId] ?? null);
             }
         };
     }
