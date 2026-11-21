@@ -170,6 +170,14 @@ $models['Workspace'] = array(
         'softDeleteBehavior',
         'workspaceRuntimeBehavior'
     ),
+    'acl' => [
+        // Runtimes read the workspaces bound to them (D-074).
+        'service' => [
+            'actions' => ['get'],
+            'kinds' => ['runtime'],
+            'filter' => "Workspace.deleted = false AND Workspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:)",
+        ],
+    ],
 );
 
 return $models;

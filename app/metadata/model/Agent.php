@@ -226,12 +226,12 @@ $models['Agent'] = array(
             'field' => 'sponsorId',
             'condition' => 'Agent.sponsorId=:userId:'
         ],
-        // Runtimes read the agents they may run (D-066, D-069); `agentspec`
+        // Runtimes read the agents they may run, in their bound workspaces (D-066, D-069, D-074); `agentspec`
         // follows this opt-in (ServiceAccess::VIEWS).
         'service' => [
             'actions' => ['get'],
             'kinds' => ['runtime'],
-            'filter' => "Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))",
+            'filter' => "Agent.workspaceId IN (SELECT BoundWorkspace.id FROM Gaia\\MVC\\Models\\Workspace BoundWorkspace WHERE BoundWorkspace.deleted = false AND BoundWorkspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:)) AND Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))",
         ],
     ],
 );

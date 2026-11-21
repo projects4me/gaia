@@ -25,8 +25,8 @@
 ## Summary
 
 - behaviours: auditBehavior, catalogWorkspaceBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior
-- acl: service={"actions":["get"],"kinds":["runtime"],"filter":"Skill.id IN (SELECT DelegableSkill.skillId FROM Gaia\\MVC\\Models\\Agentskill DelegableSkill WHERE DelegableSkill.deleted = false AND DelegableSkill.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))))"}
+- acl: service={"actions":["get"],"kinds":["runtime"],"filter":"Skill.deleted = false AND Skill.workspaceId IN (SELECT BoundWorkspace.id FROM Gaia\\MVC\\Models\\Workspace BoundWorkspace WHERE BoundWorkspace.deleted = false AND BoundWorkspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:))"}
 - controller: Gaia\MVC\REST\Controllers\SkillController
 - routes: DELETE /api/v1/skill, DELETE /api/v1/skill/{id}, GET /api/v1/skill, GET /api/v1/skill/{id}, GET /api/v1/skill/{id}/{relation}, OPTIONS /api/v1/skill, PATCH /api/v1/skill, PATCH /api/v1/skill/{id}, POST /api/v1/skill, PUT /api/v1/skill, PUT /api/v1/skill/{id}
 - components: -
-- cases: 11 (acl 1, backend 6, client 4); gaia-dev cases skill
+- cases: 12 (acl 2, backend 6, client 4); gaia-dev cases skill

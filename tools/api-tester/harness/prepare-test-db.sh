@@ -1151,10 +1151,31 @@ ON CONFLICT (client_id) DO UPDATE SET
   previous_client_secret = NULL,
   previous_secret_expires = NULL;
 
+-- An unbound runtime (D-074): same secret and read scopes as the runtime above, bound to no workspace.
+INSERT INTO oauth_clients (id, client_id, client_secret, redirect_uri, grant_types, scope, user_id, kind)
+VALUES (
+  'api-test-oauth-client-unbound', 'service-api-tester-unbound',
+  '$2y$10$W3vHdhjl0OjQmePY7V9.4OJ9Z2zrGUGSEE5.GoKvYHsbjxann90Fu',
+  '', 'client_credentials', NULL, NULL, 'service'
+)
+ON CONFLICT (client_id) DO UPDATE SET
+  client_secret = EXCLUDED.client_secret,
+  grant_types = EXCLUDED.grant_types,
+  user_id = NULL,
+  kind = EXCLUDED.kind,
+  previous_client_secret = NULL,
+  previous_secret_expires = NULL;
+
 INSERT INTO serviceclients (
   id, name, kind, status, scopes, "clientId", "lastUsedAt", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
 ) VALUES
-  ('api-test-serviceclient-000001', 'API Tester Runtime', 'runtime', 'active', '["agent.delegate","agent.read","project.read","issue.read","agent.get","agentspec.get","agenttool.get","agentskill.get","skill.get","serviceclient.rotate"]', 'service-api-tester-runtime', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+  ('api-test-serviceclient-000005', 'API Tester Unbound Runtime', 'runtime', 'active', '["agent.get","agentspec.get","agenttool.get","agentskill.get","skill.get","workspace.get","repository.get"]', 'service-api-tester-unbound', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, kind = EXCLUDED.kind, status = 'active', scopes = EXCLUDED.scopes, "clientId" = EXCLUDED."clientId", deleted = FALSE;
+
+INSERT INTO serviceclients (
+  id, name, kind, status, scopes, "clientId", "lastUsedAt", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-serviceclient-000001', 'API Tester Runtime', 'runtime', 'active', '["agent.delegate","agent.read","project.read","issue.read","agent.get","agentspec.get","agenttool.get","agentskill.get","skill.get","workspace.get","repository.get","serviceclient.rotate"]', 'service-api-tester-runtime', NULL, FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, kind = EXCLUDED.kind, status = 'active', scopes = EXCLUDED.scopes, "clientId" = EXCLUDED."clientId", deleted = FALSE;
 
 -- Token introspection (D-065): the serviceHermes profile signs in as a hermes service client with the
@@ -1458,6 +1479,16 @@ INSERT INTO repositories (
   ('api-test-repository-000001', 'api-test-workspace-000001', 'seed-repository', 'https://github.com/projects4me/seed-repository.git', 'main', 'Seed description', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
+INSERT INTO repositories (
+  id, "workspaceId", "name", "url", "baseBranch", "description", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-repository-000002', 'api-test-workspace-000002', 'other-repository', 'https://github.com/projects4me/other-repository.git', 'main', 'Repository of the other workspace', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+-- Runtime binding (D-073, D-074): the seed workspace is bound to the runtime service client, the second
+-- workspace to none; the runtime sees only the first workspace's rows
+UPDATE workspaces SET "runtimeId" = 'api-test-serviceclient-000001' WHERE id = 'api-test-workspace-000001';
+
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
   '"issues_issueNumber_seq"',
@@ -1526,6 +1557,11 @@ data = {
     "serviceRuntime": {
       "grantType": "client_credentials",
       "clientId": "service-api-tester-runtime",
+      "clientSecret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
+    },
+    "serviceUnboundRuntime": {
+      "grantType": "client_credentials",
+      "clientId": "service-api-tester-unbound",
       "clientSecret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
     },
     "serviceHermes": {
@@ -1609,6 +1645,7 @@ data = {
     "toolserverId": "api-test-toolserver-000001",
     "toolId": "api-test-tool-000001",
     "otherWorkspaceId": "api-test-workspace-000002",
+    "otherRepositoryId": "api-test-repository-000002",
     "otherWorkspaceToolserverId": "api-test-toolserver-000002",
     "otherWorkspaceToolId": "api-test-tool-000002",
     "otherWorkspaceSkillId": "api-test-skill-000002",

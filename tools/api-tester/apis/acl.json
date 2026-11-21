@@ -2738,7 +2738,85 @@
       "resource": "skill",
       "auth": "serviceRuntime",
       "query": {"limit": 50, "page": 1},
-      "expects": {"status": 200, "shape": "jsonapi.collection"},
+      "expects": {"status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{skillId}"], "idsExcludes": ["{otherWorkspaceSkillId}"]},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-workspace-list-bound-only",
+      "method": "GET",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": "serviceRuntime",
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{workspaceId}"], "idsExcludes": ["{otherWorkspaceId}"]},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-workspace-detail-other-denied",
+      "method": "GET",
+      "path": "/api/v1/workspace/{otherWorkspaceId}",
+      "resource": "workspace",
+      "auth": "serviceRuntime",
+      "expects": {"status": 401, "shape": "error", "errorEqual": "Access Denied"},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-repository-list-bound-only",
+      "method": "GET",
+      "path": "/api/v1/repository",
+      "resource": "repository",
+      "auth": "serviceRuntime",
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{repositoryId}"], "idsExcludes": ["{otherRepositoryId}"]},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-repository-detail-other-denied",
+      "method": "GET",
+      "path": "/api/v1/repository/{otherRepositoryId}",
+      "resource": "repository",
+      "auth": "serviceRuntime",
+      "expects": {"status": 401, "shape": "error", "errorEqual": "Access Denied"},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-agent-list-unbound-sees-none",
+      "method": "GET",
+      "path": "/api/v1/agent",
+      "resource": "agent",
+      "auth": "serviceUnboundRuntime",
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 200, "shape": "jsonapi.collection", "idsExcludes": ["{otherAgentId}"]},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-workspace-list-unbound-sees-none",
+      "method": "GET",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": "serviceUnboundRuntime",
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 200, "shape": "jsonapi.collection", "idsExcludes": ["{workspaceId}", "{otherWorkspaceId}"]},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-repository-list-unbound-sees-none",
+      "method": "GET",
+      "path": "/api/v1/repository",
+      "resource": "repository",
+      "auth": "serviceUnboundRuntime",
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 200, "shape": "jsonapi.collection", "idsExcludes": ["{repositoryId}", "{otherRepositoryId}"]},
+      "source": "acl-service-token"
+    },
+    {
+      "id": "acl-service-token-skill-list-unbound-sees-none",
+      "method": "GET",
+      "path": "/api/v1/skill",
+      "resource": "skill",
+      "auth": "serviceUnboundRuntime",
+      "query": {"limit": 50, "page": 1},
+      "expects": {"status": 200, "shape": "jsonapi.collection", "idsExcludes": ["{skillId}", "{otherWorkspaceSkillId}"]},
       "source": "acl-service-token"
     },
     {

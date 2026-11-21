@@ -157,11 +157,11 @@ $models['Skill'] = array(
         'catalogWorkspaceBehavior'
     ),
     'acl' => [
-        // Runtimes read these for the agents they may run (D-066, D-069).
+        // Runtimes read the skills of their bound workspaces (D-066, D-069, D-074).
         'service' => [
             'actions' => ['get'],
             'kinds' => ['runtime'],
-            'filter' => "Skill.id IN (SELECT DelegableSkill.skillId FROM Gaia\\MVC\\Models\\Agentskill DelegableSkill WHERE DelegableSkill.deleted = false AND DelegableSkill.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))))",
+            'filter' => "Skill.deleted = false AND Skill.workspaceId IN (SELECT BoundWorkspace.id FROM Gaia\\MVC\\Models\\Workspace BoundWorkspace WHERE BoundWorkspace.deleted = false AND BoundWorkspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:))",
         ],
     ],
 );

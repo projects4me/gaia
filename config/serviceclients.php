@@ -17,7 +17,7 @@ $config['serviceClients'] = array(
         'runtime' => array(
             'scopes' => array(
                 'agent.delegate', 'agent.read', 'project.read', 'issue.read',
-                'agent.get', 'agentspec.get', 'agenttool.get', 'agentskill.get', 'skill.get',
+                'agent.get', 'agentspec.get', 'agenttool.get', 'agentskill.get', 'skill.get', 'workspace.get', 'repository.get',
                 'serviceclient.rotate',
             ),
         ),

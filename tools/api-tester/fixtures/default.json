@@ -43,6 +43,11 @@
       "clientId": "service-api-tester-runtime",
       "clientSecret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
     },
+    "serviceUnboundRuntime": {
+      "grantType": "client_credentials",
+      "clientId": "service-api-tester-unbound",
+      "clientSecret": "p4m_cs_api-tester-service-runtime-not-a-real-secret"
+    },
     "serviceHermes": {
       "grantType": "client_credentials",
       "clientId": "service-api-tester-hermes",
@@ -124,6 +129,7 @@
     "toolserverId": "api-test-toolserver-000001",
     "toolId": "api-test-tool-000001",
     "otherWorkspaceId": "api-test-workspace-000002",
+    "otherRepositoryId": "api-test-repository-000002",
     "otherWorkspaceToolserverId": "api-test-toolserver-000002",
     "otherWorkspaceToolId": "api-test-tool-000002",
     "otherWorkspaceSkillId": "api-test-skill-000002",
