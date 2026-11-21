@@ -127,6 +127,7 @@ $relatedDefaults = [
 /** Extra required/useful attributes beyond null=>false inference. */
 $extraAttributes = [
     'project' => ['name' => 'API Tester Runtime Project', 'status' => 'new', 'type' => 'software', 'projectManager' => '{userId}', 'done' => 0],
+    'workflow' => ['workspaceId' => '{workspaceId}'],
     'issue' => [
         'subject' => 'API Tester Runtime Issue',
         'owner' => '{userId}',

@@ -50,6 +50,14 @@ $models['Workflow'] = array(
             'null' => false,
             'default' => 0,
         ),
+        'workspaceId' => array(
+            'name' => 'workspaceId',
+            'label' => 'LBL_WORKFLOWS_WORKSPACE_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+            'relatedIdentifier' => true
+        ),
         'ownerId' => array(
             'name' => 'ownerId',
             'label' => 'LBL_WORKFLOWS_OWNER_ID',
@@ -115,6 +123,7 @@ $models['Workflow'] = array(
         'id' => 'primary',
         'status' => 'index',
         'ownerId' => 'index',
+        'workspaceId' => 'index',
     ),
     'foriegnKeys' => array(
 
@@ -125,6 +134,11 @@ $models['Workflow'] = array(
     'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
+            'workspace' => array(
+                'primaryKey' => 'workspaceId',
+                'relatedModel' => '\Gaia\MVC\Models\Workspace',
+                'relatedKey' => 'id'
+            ),
             'owner' => array(
                 'primaryKey' => 'ownerId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
@@ -166,7 +180,8 @@ $models['Workflow'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior',
-        'workflowBehavior'
+        'workflowBehavior',
+        'workflowWorkspaceBehavior'
     ),
 );
 

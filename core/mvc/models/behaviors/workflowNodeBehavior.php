@@ -11,6 +11,7 @@ use Gaia\Libraries\Workflows\NodeKindCatalog;
 use Gaia\Libraries\Workflows\WorkflowGraph;
 use Gaia\Libraries\Workflows\WorkflowGraphReader;
 use Gaia\Libraries\Workflows\WorkflowStatus;
+use Gaia\Libraries\Workspaces\WorkflowWorkspace;
 use Phalcon\Messages\Message;
 use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\Model\BehaviorInterface;
@@ -126,7 +127,33 @@ class workflowNodeBehavior extends Behavior implements BehaviorInterface
             return false;
         }
 
+        if (!$this->checkAgentWorkspace($model, $category, $kind, $config)) {
+            return false;
+        }
+
         return $category !== NodeKindCatalog::TRIGGER || $this->checkSingleTrigger($model);
+    }
+
+    /**
+     * The agents the config names must be in the workflow's workspace (Workspaces D-008).
+     *
+     * @param  ModelInterface $model
+     * @param  string         $category
+     * @param  string         $kind
+     * @param  array          $config
+     * @return bool
+     */
+    protected function checkAgentWorkspace($model, $category, $kind, array $config)
+    {
+        $workspaceId = $this->workspaceRule()->workspaceIdOfWorkflow((string) $model->workflowId);
+        if ($workspaceId === null) {
+            return true;
+        }
+        $node = [['category' => $category, 'kind' => $kind, 'config' => $config]];
+        $foreign = $this->workspaceRule()->foreignAgentIds($workspaceId, $this->workspaceRule()->agentIdsOf($node));
+
+        return $foreign === []
+            || $this->reject($model, 'config', 'config names agents outside the workflow workspace: ' . implode(', ', $foreign) . '.');
     }
 
     /**
@@ -200,6 +227,14 @@ class workflowNodeBehavior extends Behavior implements BehaviorInterface
     protected function workflowNodes($workflowId)
     {
         return (new WorkflowGraphReader())->nodes($workflowId);
+    }
+
+    /**
+     * @return WorkflowWorkspace
+     */
+    protected function workspaceRule()
+    {
+        return new WorkflowWorkspace();
     }
 
     /**

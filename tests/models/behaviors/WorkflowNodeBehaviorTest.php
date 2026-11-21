@@ -57,6 +57,14 @@ class WorkflowNodeBehaviorTest extends TestCase
         ];
     }
 
+    public function testCreateRefusesAnAgentOfAnotherWorkspace()
+    {
+        $model = $this->node(['category' => 'actor', 'kind' => 'run_agent', 'config' => ['agentId' => 'agent-far']]);
+
+        $this->assertFalse($this->behavior()->notify('beforeValidationOnCreate', $model));
+        $this->assertSame(['config names agents outside the workflow workspace: agent-far.'], $model->messages);
+    }
+
     public function testUpdateMayMoveANodeOfAnActiveWorkflow()
     {
         $stored = ['workflowId' => 'wf-1', 'category' => 'action', 'kind' => 'end', 'config' => '{}', 'positionX' => 1];
@@ -119,6 +127,11 @@ class WorkflowNodeBehaviorTest extends TestCase
             protected function workflowNodes($workflowId)
             {
                 return [['id' => 'trigger-1', 'name' => 't', 'category' => 'trigger', 'kind' => 'issue.created', 'config' => []]];
+            }
+
+            protected function workspaceRule()
+            {
+                return new WorkflowWorkspaceStub(['wf-1' => 'ws-1'], [], ['agent-1' => 'ws-1', 'agent-far' => 'ws-2']);
             }
 
             protected function configRules()

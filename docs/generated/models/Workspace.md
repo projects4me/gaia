@@ -19,6 +19,7 @@
 - repositories hasMany -> Repository
 - skills hasMany -> Skill
 - toolservers hasMany -> Toolserver
+- workflows hasMany -> Workflow
 
 <a id="summary"></a>
 ## Summary
