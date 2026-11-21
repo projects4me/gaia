@@ -18,6 +18,11 @@ namespace Gaia\Tests\Libraries\Security;
 class AgentTestFixtures
 {
     /**
+     * The workspace every test agent belongs to.
+     */
+    public const WORKSPACE_ID = 'unit-agent-workspace-1';
+
+    /**
      * Create or revive an Active human user.
      *
      * @param  string $id
@@ -27,6 +32,14 @@ class AgentTestFixtures
     public static function ensureHumanUser($id, $email)
     {
         $db = \Phalcon\Di\Di::getDefault()->get('db');
+        $db->execute('DELETE FROM workspaces WHERE id = ?', [self::WORKSPACE_ID]);
+        $db->execute(
+            "INSERT INTO workspaces (
+                id, name, deleted, \"createdUser\", \"modifiedUser\", \"createdUserName\", \"modifiedUserName\",
+                \"dateCreated\", \"dateModified\"
+             ) VALUES (?, 'Agent Test Workspace', false, 'unit', 'unit', 'unit', 'unit', NOW(), NOW())",
+            [self::WORKSPACE_ID]
+        );
         $db->execute('DELETE FROM users WHERE id = ? OR email = ?', [$id, $email]);
         $db->execute(
             "INSERT INTO users (

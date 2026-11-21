@@ -50,6 +50,7 @@ class AgentLifecycleTest extends TestCase
     public function testCreateMakesAnAgentUserAndItsAgentRow(): void
     {
         $agent = (new AgentLifecycle())->create([
+            'workspaceId' => AgentTestFixtures::WORKSPACE_ID,
             'name' => 'Unit Agent',
             'email' => 'unit-agent-create@gaia.test',
             'purpose' => 'Writes code',
@@ -81,6 +82,7 @@ class AgentLifecycleTest extends TestCase
     {
         try {
             (new AgentLifecycle())->create([
+                'workspaceId' => AgentTestFixtures::WORKSPACE_ID,
                 'name' => 'Unit Agent Bad Config',
                 'email' => 'unit-agent-bad-config@gaia.test',
                 'modelConfig' => 'not json',
@@ -98,7 +100,7 @@ class AgentLifecycleTest extends TestCase
         $this->expectException(\Gaia\Exception\Permission::class);
         $this->expectExceptionMessage('A user with this email already exists.');
 
-        (new AgentLifecycle())->create(['name' => 'Unit Agent Taken', 'email' => 'agent-sponsor@gaia.test']);
+        (new AgentLifecycle())->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit Agent Taken', 'email' => 'agent-sponsor@gaia.test']);
     }
 
     public function testCreateRejectsAnUnknownSponsor(): void
@@ -107,6 +109,7 @@ class AgentLifecycleTest extends TestCase
         $this->expectExceptionMessage('The sponsor of an agent must be an existing user.');
 
         (new AgentLifecycle())->create([
+            'workspaceId' => AgentTestFixtures::WORKSPACE_ID,
             'name' => 'Unit Agent Orphan',
             'email' => 'unit-agent-orphan@gaia.test',
             'sponsorId' => 'no-such-user',
@@ -119,6 +122,7 @@ class AgentLifecycleTest extends TestCase
         $this->expectExceptionMessage('maxTurns must be a positive whole number');
 
         (new AgentLifecycle())->create([
+            'workspaceId' => AgentTestFixtures::WORKSPACE_ID,
             'name' => 'Unit Agent Zero Turns',
             'email' => 'unit-agent-zero-turns@gaia.test',
             'maxTurns' => 0,
@@ -127,7 +131,7 @@ class AgentLifecycleTest extends TestCase
 
     public function testTheUserOfAnAgentCannotBeChanged(): void
     {
-        $agent = (new AgentLifecycle())->create(['name' => 'Unit Agent Fixed', 'email' => 'unit-agent-fixed@gaia.test']);
+        $agent = (new AgentLifecycle())->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit Agent Fixed', 'email' => 'unit-agent-fixed@gaia.test']);
 
         $stored = Agent::findFirstById($agent->id);
         $stored->userId = self::SPONSOR_ID;
@@ -138,7 +142,7 @@ class AgentLifecycleTest extends TestCase
     public function testDeletingEitherRowDeletesTheOther(): void
     {
         $lifecycle = new AgentLifecycle();
-        $agent = $lifecycle->create(['name' => 'Unit Agent Gone', 'email' => 'unit-agent-gone@gaia.test']);
+        $agent = $lifecycle->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit Agent Gone', 'email' => 'unit-agent-gone@gaia.test']);
         $userId = $agent->userId;
 
         $lifecycle->deleteAgentOfUser($userId);
@@ -151,7 +155,7 @@ class AgentLifecycleTest extends TestCase
     public function testSyncUserNameCopiesTheAgentName(): void
     {
         $lifecycle = new AgentLifecycle();
-        $agent = $lifecycle->create(['name' => 'Unit Agent Old', 'email' => 'unit-agent-rename@gaia.test']);
+        $agent = $lifecycle->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit Agent Old', 'email' => 'unit-agent-rename@gaia.test']);
 
         $agent->name = 'Unit Agent New';
         $lifecycle->syncUserName($agent);
@@ -179,7 +183,7 @@ class AgentLifecycleTest extends TestCase
 
     public function testAnAgentUserCannotGetAPassword(): void
     {
-        $agent = (new AgentLifecycle())->create(['name' => 'Unit Agent Locked', 'email' => 'unit-agent-locked@gaia.test']);
+        $agent = (new AgentLifecycle())->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit Agent Locked', 'email' => 'unit-agent-locked@gaia.test']);
         $policy = new AgentUserPolicy();
 
         $policy->assertUpdatable(User::findFirstById(self::SPONSOR_ID), ['password' => 'a-new-secret']);

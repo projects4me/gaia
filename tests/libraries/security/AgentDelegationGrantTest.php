@@ -292,6 +292,7 @@ class AgentDelegationGrantTest extends TestCase
     private function createAgent($handle, array $scopes)
     {
         $agent = (new AgentLifecycle())->create([
+            'workspaceId' => AgentTestFixtures::WORKSPACE_ID,
             'name' => 'Unit Delegation ' . $handle,
             'email' => 'unit-agent-dlg-' . $handle . '@gaia.test',
             'delegationScopes' => json_encode($scopes),

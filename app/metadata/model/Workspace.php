@@ -118,6 +118,11 @@ $models['Workspace'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
                 'relatedKey' => 'workspaceId',
             ),
+            'agents' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Agent',
+                'relatedKey' => 'workspaceId',
+            ),
             'repositories' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Repository',

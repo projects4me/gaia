@@ -272,7 +272,7 @@ class TokenIntrospectionTest extends TestCase
      */
     private function createAgent($email)
     {
-        return (new AgentLifecycle())->create(['name' => 'Unit ' . $email, 'email' => $email]);
+        return (new AgentLifecycle())->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit ' . $email, 'email' => $email]);
     }
 
     /**

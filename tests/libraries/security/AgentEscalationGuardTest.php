@@ -75,8 +75,8 @@ class AgentEscalationGuardTest extends TestCase
         $currentUser = User::findFirstById(self::HUMAN_ID);
 
         $lifecycle = new AgentLifecycle();
-        $this->agent = $lifecycle->create(['name' => 'Unit Agent Actor', 'email' => 'unit-agent-actor@gaia.test']);
-        $this->otherAgent = $lifecycle->create(['name' => 'Unit Agent Other', 'email' => 'unit-agent-other@gaia.test']);
+        $this->agent = $lifecycle->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit Agent Actor', 'email' => 'unit-agent-actor@gaia.test']);
+        $this->otherAgent = $lifecycle->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit Agent Other', 'email' => 'unit-agent-other@gaia.test']);
         $this->actor = User::findFirstById($this->agent->userId);
 
         $this->heldRole = new Userrole();

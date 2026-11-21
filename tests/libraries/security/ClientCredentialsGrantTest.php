@@ -71,7 +71,7 @@ class ClientCredentialsGrantTest extends TestCase
 
     public function testAnAgentClientGetsTheAgentUsersToken(): void
     {
-        $agent = (new AgentLifecycle())->create(['name' => 'Unit Grant Agent', 'email' => 'unit-agent-grant@gaia.test']);
+        $agent = (new AgentLifecycle())->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit Grant Agent', 'email' => 'unit-agent-grant@gaia.test']);
         $issued = (new AgentCredentials())->issue($agent->id);
         $clientId = $issued['credential']->clientId;
 
@@ -184,7 +184,7 @@ class ClientCredentialsGrantTest extends TestCase
 
     public function testAServiceClientNeverGetsAUsersToken(): void
     {
-        $agent = (new AgentLifecycle())->create(['name' => 'Unit Grant Bound', 'email' => 'unit-agent-grant-bound@gaia.test']);
+        $agent = (new AgentLifecycle())->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit Grant Bound', 'email' => 'unit-agent-grant-bound@gaia.test']);
         $this->createServiceClient('bound-1', 'runtime', $agent->userId);
 
         $this->expectException(\Gaia\Exception\UnAuthorized::class);
@@ -195,7 +195,7 @@ class ClientCredentialsGrantTest extends TestCase
 
     public function testTheAgentGuardRefusesAServiceClientBoundToAnAgent(): void
     {
-        $agent = (new AgentLifecycle())->create(['name' => 'Unit Grant Bound2', 'email' => 'unit-agent-grant-bound2@gaia.test']);
+        $agent = (new AgentLifecycle())->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit Grant Bound2', 'email' => 'unit-agent-grant-bound2@gaia.test']);
         $this->insertOauthClient(self::SERVICE_PREFIX . 'bound-2', ClientKind::SERVICE, $agent->userId);
 
         $this->expectException(\Gaia\Exception\UnAuthorized::class);
@@ -206,7 +206,7 @@ class ClientCredentialsGrantTest extends TestCase
 
     public function testAnAgentClientNeverGetsAServiceToken(): void
     {
-        $agent = (new AgentLifecycle())->create(['name' => 'Unit Grant Both', 'email' => 'unit-agent-grant-both@gaia.test']);
+        $agent = (new AgentLifecycle())->create(['workspaceId' => AgentTestFixtures::WORKSPACE_ID, 'name' => 'Unit Grant Both', 'email' => 'unit-agent-grant-both@gaia.test']);
         $issued = (new AgentCredentials())->issue($agent->id);
         $clientId = $issued['credential']->clientId;
         $this->saveServiceClient($clientId, 'runtime');

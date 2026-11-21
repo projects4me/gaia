@@ -113,7 +113,8 @@ $models['Membership'] = array(
         'dateCreatedBehavior',
         'dateModifiedBehavior',
         'createdUserBehavior',
-        'modifiedUserBehavior'
+        'modifiedUserBehavior',
+        'membershipAgentWorkspaceBehavior'
     ),
     'acl' => [
         'groups' => ['Project'],

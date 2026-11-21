@@ -42,6 +42,14 @@ $models['Agent'] = array(
             'length' => '255',
             'null' => true,
         ),
+        'workspaceId' => array(
+            'name' => 'workspaceId',
+            'label' => 'LBL_AGENTS_WORKSPACE_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+            'relatedIdentifier' => true
+        ),
         'sponsorId' => array(
             'name' => 'sponsorId',
             'label' => 'LBL_AGENTS_SPONSOR',
@@ -146,6 +154,7 @@ $models['Agent'] = array(
         'id' => 'primary',
         'userId' => 'unique',
         'sponsorId' => 'index',
+        'workspaceId' => 'index',
     ),
     'foriegnKeys' => array(
 
@@ -159,6 +168,11 @@ $models['Agent'] = array(
             'user' => array(
                 'primaryKey' => 'userId',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
+            'workspace' => array(
+                'primaryKey' => 'workspaceId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Workspace',
                 'relatedKey' => 'id'
             ),
             'sponsor' => array(
@@ -203,7 +217,8 @@ $models['Agent'] = array(
         'createdUserBehavior',
         'modifiedUserBehavior',
         'softDeleteBehavior',
-        'agentConfigBehavior'
+        'agentConfigBehavior',
+        'agentWorkspaceBehavior'
     ),
     'acl' => [
         // Record scope by sponsor, declared the same way as Userrole's.
