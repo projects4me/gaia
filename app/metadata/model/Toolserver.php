@@ -92,6 +92,14 @@ $models['Toolserver'] = array(
             'type' => 'text',
             'null' => true,
         ),
+        'workspaceId' => array(
+            'name' => 'workspaceId',
+            'label' => 'LBL_TOOL_SERVERS_WORKSPACE_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+            'relatedIdentifier' => true
+        ),
         'createdUser' => array(
             'name' => 'createdUser',
             'label' => 'LBL_TOOL_SERVERS_CREATED_USER',
@@ -148,6 +156,7 @@ $models['Toolserver'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
+        'workspaceId' => 'index',
         'name' => 'index',
     ),
     'foriegnKeys' => array(
@@ -159,6 +168,11 @@ $models['Toolserver'] = array(
     'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
+            'workspace' => array(
+                'primaryKey' => 'workspaceId',
+                'relatedModel' => '\Gaia\MVC\Models\Workspace',
+                'relatedKey' => 'id'
+            ),
             'createdBy' => array(
                 'primaryKey' => 'createdUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
@@ -189,7 +203,8 @@ $models['Toolserver'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'catalogWorkspaceBehavior'
     ),
 );
 

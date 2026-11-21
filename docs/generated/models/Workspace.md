@@ -17,6 +17,8 @@
 - modifiedBy hasOne -> User
 - projects hasMany -> Project
 - repositories hasMany -> Repository
+- skills hasMany -> Skill
+- toolservers hasMany -> Toolserver
 
 <a id="summary"></a>
 ## Summary

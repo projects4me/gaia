@@ -128,7 +128,8 @@ $models['Agentskill'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'agentskillWorkspaceBehavior'
     ),
     'acl' => [
         // Runtimes read these for the agents they may run (D-066, D-069).

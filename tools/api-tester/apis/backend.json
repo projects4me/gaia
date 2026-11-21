@@ -1999,7 +1999,8 @@
                 "data": {
                     "type": "toolserver",
                     "attributes": {
-                        "name": "api-toolserver-name"
+                        "name": "api-toolserver-name",
+                        "workspaceId": "{workspaceId}"
                     }
                 }
             },
@@ -2217,7 +2218,8 @@
                 "data": {
                     "type": "skill",
                     "attributes": {
-                        "name": "api-skill-name"
+                        "name": "api-skill-name",
+                        "workspaceId": "{workspaceId}"
                     }
                 }
             },
