@@ -553,6 +553,15 @@ These scenarios are settled and should become tests later:
 | Rationale | D-067 let any runtime with `agent.delegate` act for any delegable agent and left binding a runtime to its agents out of scope. A workspace already groups an agent's projects and environment (Workspaces D-006), so binding the runtime to the workspace bounds each runtime to the agents it was set up for without a per-agent list. |
 | Implications | `WorkspaceRuntime` (`core/libs/workspaces/WorkspaceRuntime.php`) holds the rule; `workspaceRuntimeBehavior` checks a binding as it is saved, and `AgentDelegationGuard::assertAgentDelegable()` takes the runtime `assertRuntimeAllowed()` returned. Only a changed binding is checked, so disabling or deleting a runtime leaves the binding in place, but its delegation then fails at the client check and its tokens are deleted (D-063). `Workspace` has a `runtime` relation. The runtime read filters (D-069) and the Hermes `runtimes` room are unchanged: a runtime still sees every delegable agent and every run request, but only the bound runtime gets a token. Agents created before workspaces (no `workspaceId`) need one before they can be delegated again. |
 
+### D-074 — A runtime reads only its bound workspaces, their repositories, agents, grants and skills
+
+| | |
+|---|---|
+| Status | Accepted (amends D-069) |
+| Decision | The D-069 runtime read filters gain a workspace condition: a runtime sees an `Agent` (and `GET /agentspec/{agentId}`), and its `Agenttool` and `Agentskill` rows only when the agent's workspace is bound to it; a `Skill` is read when its own workspace is bound to it (the D-069 "held by a delegable agent" condition is dropped, so a runtime also reads the workspace's skills not yet granted). Bound means `Workspace.runtimeId` holds its service client record (D-073), found through `Serviceclient.clientId = :serviceClientId:`. `Workspace` and `Repository` opt in for kind `runtime`, action `get`, with the same "bound to me" filter (a repository through its workspace). The runtime kind's default scopes add `workspace.get` and `repository.get`. An unbound runtime reads none of these. |
+| Rationale | D-073 lets a runtime act only for the agents of its bound workspaces; reading should follow the same boundary, and a runtime needs its workspace and repositories to do the work. |
+| Implications | The filters stay literal PHQL in the metadata (D-069). Runtimes enrolled before this need `workspace.get` and `repository.get` added to their scopes by hand. Skill files (`Upload`) and any write access stay closed to runtimes. |
+
 ## Open questions
 
 Track unsettled policy here. Do not generate tests from these until accepted.
@@ -573,6 +582,7 @@ Track unsettled policy here. Do not generate tests from these until accepted.
 
 | Date | Change |
 |------|--------|
+| 2026-11-21 | D-074 (amends D-069): a runtime reads only the agents, grants, skills, workspaces and repositories of the workspaces bound to it; `workspace.get` and `repository.get` join the runtime kind's default scopes |
 | 2026-11-21 | D-073 (amends D-067): a workspace is bound to one runtime (`Workspace.runtimeId`, an active service client of kind `runtime`, 422 otherwise); the agent-delegation grant requires the agent's workspace to be bound to the calling runtime, and an agent without a workspace cannot be delegated |
 | 2026-11-20 | D-072: the hash columns are named after the state they record: `searchDesiredHash` (current semantic text) and `searchActualHash` (the stored embedding's text); an existing database renames them in place |
 | 2026-11-19 | D-072: service kind `ares`; a semantic model opens get (stored search text and hashes through `fields=`) and an embedding-only PATCH to it, whatever its groups; the PATCH locks the row and stores only for the current semantic hash (409 otherwise, 404 when missing or deleted), as a bound UPDATE stamped by no one |

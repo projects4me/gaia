@@ -151,6 +151,14 @@ $models['Repository'] = array(
         'softDeleteBehavior',
         'repositoryBehavior'
     ),
+    'acl' => [
+        // Runtimes read the repositories of their bound workspaces (D-074).
+        'service' => [
+            'actions' => ['get'],
+            'kinds' => ['runtime'],
+            'filter' => "Repository.deleted = false AND Repository.workspaceId IN (SELECT BoundWorkspace.id FROM Gaia\\MVC\\Models\\Workspace BoundWorkspace WHERE BoundWorkspace.deleted = false AND BoundWorkspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:))",
+        ],
+    ],
 );
 
 return $models;

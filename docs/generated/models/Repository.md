@@ -23,8 +23,8 @@
 ## Summary
 
 - behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, repositoryBehavior, softDeleteBehavior
-- acl: -
+- acl: service={"actions":["get"],"kinds":["runtime"],"filter":"Repository.deleted = false AND Repository.workspaceId IN (SELECT BoundWorkspace.id FROM Gaia\\MVC\\Models\\Workspace BoundWorkspace WHERE BoundWorkspace.deleted = false AND BoundWorkspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:))"}
 - controller: Gaia\MVC\REST\Controllers\RepositoryController
 - routes: DELETE /api/v1/repository, DELETE /api/v1/repository/{id}, GET /api/v1/repository, GET /api/v1/repository/{id}, GET /api/v1/repository/{id}/{relation}, OPTIONS /api/v1/repository, PATCH /api/v1/repository, PATCH /api/v1/repository/{id}, POST /api/v1/repository, PUT /api/v1/repository, PUT /api/v1/repository/{id}
 - components: -
-- cases: 18 (acl 5, backend 6, client 7); gaia-dev cases repository
+- cases: 21 (acl 8, backend 6, client 7); gaia-dev cases repository

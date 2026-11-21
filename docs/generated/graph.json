@@ -7754,6 +7754,24 @@
       }
     },
     {
+      "id": "case:acl/acl-service-token-agent-list-unbound-sees-none",
+      "type": "case",
+      "key": "acl/acl-service-token-agent-list-unbound-sees-none",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "otherAgentId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-service-token-agentcredential-list-denied",
       "type": "case",
       "key": "acl/acl-service-token-agentcredential-list-denied",
@@ -7926,6 +7944,62 @@
       }
     },
     {
+      "id": "case:acl/acl-service-token-repository-detail-other-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-repository-detail-other-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/repository/{otherRepositoryId}",
+        "resource": "repository",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "otherRepositoryId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-repository-list-bound-only",
+      "type": "case",
+      "key": "acl/acl-service-token-repository-list-bound-only",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/repository",
+        "resource": "repository",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "otherRepositoryId",
+          "repositoryId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-repository-list-unbound-sees-none",
+      "type": "case",
+      "key": "acl/acl-service-token-repository-list-unbound-sees-none",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/repository",
+        "resource": "repository",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "otherRepositoryId",
+          "repositoryId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-service-token-runtime-issue-denied",
       "type": "case",
       "key": "acl/acl-service-token-runtime-issue-denied",
@@ -8025,7 +8099,29 @@
         "resource": "skill",
         "enabled": true,
         "source": "acl-service-token",
-        "placeholders": [],
+        "placeholders": [
+          "otherWorkspaceSkillId",
+          "skillId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-skill-list-unbound-sees-none",
+      "type": "case",
+      "key": "acl/acl-service-token-skill-list-unbound-sees-none",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/skill",
+        "resource": "skill",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "otherWorkspaceSkillId",
+          "skillId"
+        ],
         "stores": []
       }
     },
@@ -8042,6 +8138,62 @@
         "enabled": true,
         "source": "acl-service-token",
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-workspace-detail-other-denied",
+      "type": "case",
+      "key": "acl/acl-service-token-workspace-detail-other-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{otherWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "otherWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-workspace-list-bound-only",
+      "type": "case",
+      "key": "acl/acl-service-token-workspace-list-bound-only",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "otherWorkspaceId",
+          "workspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-service-token-workspace-list-unbound-sees-none",
+      "type": "case",
+      "key": "acl/acl-service-token-workspace-list-unbound-sees-none",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": "acl-service-token",
+        "placeholders": [
+          "otherWorkspaceId",
+          "workspaceId"
+        ],
         "stores": []
       }
     },
@@ -37980,6 +38132,14 @@
       }
     },
     {
+      "id": "fixture:otherRepositoryId",
+      "type": "fixture",
+      "key": "otherRepositoryId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:otherServiceclientId",
       "type": "fixture",
       "key": "otherServiceclientId",
@@ -38344,7 +38504,7 @@
             "kinds": [
               "runtime"
             ],
-            "filter": "Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))"
+            "filter": "Agent.workspaceId IN (SELECT BoundWorkspace.id FROM Gaia\\MVC\\Models\\Workspace BoundWorkspace WHERE BoundWorkspace.deleted = false AND BoundWorkspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:)) AND Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))"
           }
         }
       }
@@ -38380,7 +38540,7 @@
             "kinds": [
               "runtime"
             ],
-            "filter": "Agentskill.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited')))"
+            "filter": "Agentskill.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.workspaceId IN (SELECT BoundWorkspace.id FROM Gaia\\MVC\\Models\\Workspace BoundWorkspace WHERE BoundWorkspace.deleted = false AND BoundWorkspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:)) AND Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited')))"
           }
         }
       }
@@ -38403,7 +38563,7 @@
             "kinds": [
               "runtime"
             ],
-            "filter": "Agenttool.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited')))"
+            "filter": "Agenttool.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.workspaceId IN (SELECT BoundWorkspace.id FROM Gaia\\MVC\\Models\\Workspace BoundWorkspace WHERE BoundWorkspace.deleted = false AND BoundWorkspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:)) AND Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited')))"
           }
         }
       }
@@ -38969,7 +39129,17 @@
         "isView": false,
         "registered": true,
         "hasMetadata": true,
-        "acl": null
+        "acl": {
+          "service": {
+            "actions": [
+              "get"
+            ],
+            "kinds": [
+              "runtime"
+            ],
+            "filter": "Repository.deleted = false AND Repository.workspaceId IN (SELECT BoundWorkspace.id FROM Gaia\\MVC\\Models\\Workspace BoundWorkspace WHERE BoundWorkspace.deleted = false AND BoundWorkspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:))"
+          }
+        }
       }
     },
     {
@@ -39106,7 +39276,7 @@
             "kinds": [
               "runtime"
             ],
-            "filter": "Skill.id IN (SELECT DelegableSkill.skillId FROM Gaia\\MVC\\Models\\Agentskill DelegableSkill WHERE DelegableSkill.deleted = false AND DelegableSkill.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))))"
+            "filter": "Skill.deleted = false AND Skill.workspaceId IN (SELECT BoundWorkspace.id FROM Gaia\\MVC\\Models\\Workspace BoundWorkspace WHERE BoundWorkspace.deleted = false AND BoundWorkspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:))"
           }
         }
       }
@@ -39631,7 +39801,17 @@
         "isView": false,
         "registered": true,
         "hasMetadata": true,
-        "acl": null
+        "acl": {
+          "service": {
+            "actions": [
+              "get"
+            ],
+            "kinds": [
+              "runtime"
+            ],
+            "filter": "Workspace.deleted = false AND Workspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:)"
+          }
+        }
       }
     },
     {
@@ -42122,6 +42302,14 @@
       "id": "profile:serviceRuntime",
       "type": "profile",
       "key": "serviceRuntime",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "profile:serviceUnboundRuntime",
+      "type": "profile",
+      "key": "serviceUnboundRuntime",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -60621,6 +60809,41 @@
       "to": "fixture:otherAgentId"
     },
     {
+      "from": "case:acl/acl-service-token-agent-list-unbound-sees-none",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-unbound-sees-none",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-unbound-sees-none",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-unbound-sees-none",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-unbound-sees-none",
+      "type": "exercises",
+      "to": "route:GET /api/v1/agent"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-unbound-sees-none",
+      "type": "runs_as",
+      "to": "profile:serviceUnboundRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-agent-list-unbound-sees-none",
+      "type": "uses_fixture",
+      "to": "fixture:otherAgentId"
+    },
+    {
       "from": "case:acl/acl-service-token-agentcredential-list-denied",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -60941,6 +61164,126 @@
       "to": "profile:serviceRuntime"
     },
     {
+      "from": "case:acl/acl-service-token-repository-detail-other-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-detail-other-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-detail-other-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-detail-other-denied",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-detail-other-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/repository/{id}"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-detail-other-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-detail-other-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherRepositoryId"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-bound-only",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-bound-only",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-bound-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-bound-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-bound-only",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-bound-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/repository"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-bound-only",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-bound-only",
+      "type": "uses_fixture",
+      "to": "fixture:otherRepositoryId"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-bound-only",
+      "type": "uses_fixture",
+      "to": "fixture:repositoryId"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-unbound-sees-none",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-unbound-sees-none",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-unbound-sees-none",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-unbound-sees-none",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-unbound-sees-none",
+      "type": "exercises",
+      "to": "route:GET /api/v1/repository"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-unbound-sees-none",
+      "type": "runs_as",
+      "to": "profile:serviceUnboundRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-unbound-sees-none",
+      "type": "uses_fixture",
+      "to": "fixture:otherRepositoryId"
+    },
+    {
+      "from": "case:acl/acl-service-token-repository-list-unbound-sees-none",
+      "type": "uses_fixture",
+      "to": "fixture:repositoryId"
+    },
+    {
       "from": "case:acl/acl-service-token-runtime-issue-denied",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -61113,6 +61456,16 @@
     {
       "from": "case:acl/acl-service-token-skill-list-allowed",
       "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-allowed",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-allowed",
+      "type": "asserts",
       "to": "assertion:shape"
     },
     {
@@ -61134,6 +61487,56 @@
       "from": "case:acl/acl-service-token-skill-list-allowed",
       "type": "runs_as",
       "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceSkillId"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:skillId"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-unbound-sees-none",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-unbound-sees-none",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-unbound-sees-none",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-unbound-sees-none",
+      "type": "covers",
+      "to": "controller:skill"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-unbound-sees-none",
+      "type": "exercises",
+      "to": "route:GET /api/v1/skill"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-unbound-sees-none",
+      "type": "runs_as",
+      "to": "profile:serviceUnboundRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-unbound-sees-none",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceSkillId"
+    },
+    {
+      "from": "case:acl/acl-service-token-skill-list-unbound-sees-none",
+      "type": "uses_fixture",
+      "to": "fixture:skillId"
     },
     {
       "from": "case:acl/acl-service-token-useridentity-list-denied",
@@ -61164,6 +61567,126 @@
       "from": "case:acl/acl-service-token-useridentity-list-denied",
       "type": "runs_as",
       "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-detail-other-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-detail-other-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-detail-other-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-detail-other-denied",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-detail-other-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-detail-other-denied",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-detail-other-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceId"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-bound-only",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-bound-only",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-bound-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-bound-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-bound-only",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-bound-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-bound-only",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-bound-only",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceId"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-bound-only",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-unbound-sees-none",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-unbound-sees-none",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-unbound-sees-none",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-unbound-sees-none",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-unbound-sees-none",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-unbound-sees-none",
+      "type": "runs_as",
+      "to": "profile:serviceUnboundRuntime"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-unbound-sees-none",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceId"
+    },
+    {
+      "from": "case:acl/acl-service-token-workspace-list-unbound-sees-none",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
     },
     {
       "from": "case:acl/acl-serviceclient-detail-allowed-default",
