@@ -27,4 +27,4 @@
 - controller: Gaia\MVC\REST\Controllers\RepositoryController
 - routes: DELETE /api/v1/repository, DELETE /api/v1/repository/{id}, GET /api/v1/repository, GET /api/v1/repository/{id}, GET /api/v1/repository/{id}/{relation}, OPTIONS /api/v1/repository, PATCH /api/v1/repository, PATCH /api/v1/repository/{id}, POST /api/v1/repository, PUT /api/v1/repository, PUT /api/v1/repository/{id}
 - components: -
-- cases: 17 (acl 5, backend 6, client 6); gaia-dev cases repository
+- cases: 18 (acl 5, backend 6, client 7); gaia-dev cases repository

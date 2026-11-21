@@ -92,3 +92,12 @@ Agreed decisions for Workspaces in Gaia. Add a new decision whenever behavior is
 | Decision | `workspaces.runtimeId` (nullable) names the one runtime service client that may act for the workspace's agents; it must be an active service client of kind `runtime` when set or changed (422). A runtime may serve several workspaces. The delegation rule is RBAC D-073. |
 | Rationale | The workspace is the environment agents run in, so it is where the runtime that runs them is chosen. |
 | Consequence | `Workspace` has a `runtime` relation; the rule lives in `Gaia\Libraries\Workspaces\WorkspaceRuntime`, checked by `workspaceRuntimeBehavior`. A disabled or deleted runtime keeps its bindings but can no longer delegate. Routing run requests to the bound runtime and runtime read filters are separate issues. |
+
+### D-010 — A workspace can be deleted only when it owns nothing
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | `DELETE /api/v1/workspace/{id}` is refused with 409 while the workspace still has live (not deleted) projects, repositories, agents, tool servers, skills or workflows. The message and a `counts` object name how many of each kind. Projects and agents already cover agent runs and the issues assigned to the workspace's agents, so those need no check of their own. The rule lives in `Gaia\Libraries\Workspaces\WorkspaceDeleteGate` (one count per owned kind), called from `WorkspaceController::deleteAction`; any other delete path asks the same class. |
+| Rationale | Deleting a workspace must not strand the things it holds; refusing is safer than guessing what to do with them. |
+| Consequence | Nothing is cascaded: the caller deletes or moves the contents first. An empty workspace is soft-deleted as before. No permission seed SQL ships. |
