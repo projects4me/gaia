@@ -212,6 +212,7 @@ class AgentSpecTest extends TestCase
         $server = new Toolserver();
         $server->id = $id;
         $server->name = $name;
+        $server->workspaceId = AgentTestFixtures::WORKSPACE_ID;
         $server->kind = 'mcp';
         $server->location = 'external';
         $server->transport = 'http';
@@ -250,6 +251,7 @@ class AgentSpecTest extends TestCase
     {
         $skill = new Skill();
         $skill->id = 'unit-spec-skill-' . $name;
+        $skill->workspaceId = AgentTestFixtures::WORKSPACE_ID;
         $skill->name = 'unit-spec-' . $name;
         $skill->description = 'Use for ' . $name;
         $skill->content = $content;

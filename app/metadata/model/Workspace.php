@@ -123,6 +123,16 @@ $models['Workspace'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Agent',
                 'relatedKey' => 'workspaceId',
             ),
+            'toolservers' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\Gaia\MVC\Models\Toolserver',
+                'relatedKey' => 'workspaceId',
+            ),
+            'skills' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\Gaia\MVC\Models\Skill',
+                'relatedKey' => 'workspaceId',
+            ),
             'repositories' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Repository',

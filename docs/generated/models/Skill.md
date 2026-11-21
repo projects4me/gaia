@@ -9,6 +9,7 @@
 - description text
 - name varchar(100) required
 - version varchar(25)
+- workspaceId varchar(36)
 - also: createdUser, createdUserName, dateCreated, dateModified, deleted, id, modifiedUser, modifiedUserName
 
 <a id="relationships"></a>
@@ -18,13 +19,14 @@
 - createdBy hasOne -> User
 - files hasMany -> Upload
 - modifiedBy hasOne -> User
+- workspace hasOne -> Workspace
 
 <a id="summary"></a>
 ## Summary
 
-- behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior
+- behaviours: auditBehavior, catalogWorkspaceBehavior, createdUserBehavior, dateCreatedBehavior, dateModifiedBehavior, modifiedUserBehavior, softDeleteBehavior
 - acl: service={"actions":["get"],"kinds":["runtime"],"filter":"Skill.id IN (SELECT DelegableSkill.skillId FROM Gaia\\MVC\\Models\\Agentskill DelegableSkill WHERE DelegableSkill.deleted = false AND DelegableSkill.agentId IN (SELECT Agent.id FROM Gaia\\MVC\\Models\\Agent Agent WHERE Agent.deleted = false AND Agent.delegationScopes IS NOT NULL AND Agent.delegationScopes <> '' AND Agent.delegationScopes <> '[]' AND Agent.userId IN (SELECT DelegableUser.id FROM Gaia\\MVC\\Models\\User DelegableUser WHERE DelegableUser.deleted = 0 AND DelegableUser.type = 'agent' AND LOWER(DelegableUser.accountStatus) IN ('active', 'invited'))))"}
 - controller: Gaia\MVC\REST\Controllers\SkillController
 - routes: DELETE /api/v1/skill, DELETE /api/v1/skill/{id}, GET /api/v1/skill, GET /api/v1/skill/{id}, GET /api/v1/skill/{id}/{relation}, OPTIONS /api/v1/skill, PATCH /api/v1/skill, PATCH /api/v1/skill/{id}, POST /api/v1/skill, PUT /api/v1/skill, PUT /api/v1/skill/{id}
 - components: -
-- cases: 7 (acl 1, backend 6); gaia-dev cases skill
+- cases: 10 (acl 1, backend 6, client 3); gaia-dev cases skill

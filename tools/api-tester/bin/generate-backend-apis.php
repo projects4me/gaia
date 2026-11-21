@@ -148,6 +148,12 @@ $extraAttributes = [
         'accountStatus' => 'active',
         'type' => 'human',
     ],
+    'toolserver' => [
+        'workspaceId' => '{workspaceId}',
+    ],
+    'skill' => [
+        'workspaceId' => '{workspaceId}',
+    ],
     'agent' => [
         'name' => 'API Tester Agent',
         'email' => 'api-tester-agent-{runId}@example.com',

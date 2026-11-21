@@ -42,6 +42,14 @@ $models['Skill'] = array(
             'length' => '25',
             'null' => true,
         ),
+        'workspaceId' => array(
+            'name' => 'workspaceId',
+            'label' => 'LBL_SKILLS_WORKSPACE_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+            'relatedIdentifier' => true
+        ),
         'createdUser' => array(
             'name' => 'createdUser',
             'label' => 'LBL_SKILLS_CREATED_USER',
@@ -98,6 +106,7 @@ $models['Skill'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
+        'workspaceId' => 'index',
     ),
     'foriegnKeys' => array(
 
@@ -108,6 +117,11 @@ $models['Skill'] = array(
     'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
+            'workspace' => array(
+                'primaryKey' => 'workspaceId',
+                'relatedModel' => '\Gaia\MVC\Models\Workspace',
+                'relatedKey' => 'id'
+            ),
             'createdBy' => array(
                 'primaryKey' => 'createdUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
@@ -139,7 +153,8 @@ $models['Skill'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
+        'softDeleteBehavior',
+        'catalogWorkspaceBehavior'
     ),
     'acl' => [
         // Runtimes read these for the agents they may run (D-066, D-069).
