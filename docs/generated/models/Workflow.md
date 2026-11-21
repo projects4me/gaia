@@ -33,4 +33,4 @@
 - controller: Gaia\MVC\REST\Controllers\WorkflowController
 - routes: DELETE /api/v1/workflow, DELETE /api/v1/workflow/{id}, GET /api/v1/workflow, GET /api/v1/workflow/{id}, GET /api/v1/workflow/{id}/{relation}, OPTIONS /api/v1/workflow, PATCH /api/v1/workflow, PATCH /api/v1/workflow/{id}, POST /api/v1/workflow, PUT /api/v1/workflow, PUT /api/v1/workflow/{id}
 - components: -
-- cases: 22 (acl 2, backend 6, client 9, live 5); gaia-dev cases workflow
+- cases: 24 (acl 2, backend 6, client 11, live 5); gaia-dev cases workflow

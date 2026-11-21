@@ -8,8 +8,9 @@ use Phalcon\Mvc\ModelInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for projectWorkspaceBehavior: a project cannot be moved to
- * another workspace (Workspaces D-002).
+ * Unit tests for projectWorkspaceBehavior: a save that keeps the workspace
+ * skips the move gate, and a project cannot be moved out of every workspace
+ * (Workspaces D-010).
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Gaia\Tests
@@ -32,18 +33,18 @@ class ProjectWorkspaceBehaviorTest extends TestCase
     }
 
     /**
-     * A save that changes the workspace is refused with a message on the field.
+     * A save that clears the workspace is refused with a message on the field.
      *
      * @return void
      */
-    public function testChangingTheWorkspaceIsRefused()
+    public function testMovingToNoWorkspaceIsRefused()
     {
-        $model = $this->model(['workspaceId' => 'w1'], 'w2');
+        $model = $this->model(['workspaceId' => 'w1'], '');
         $model->expects($this->once())
             ->method('appendMessage')
             ->with($this->callback(function (Message $message) {
                 return $message->getField() === 'workspaceId'
-                    && $message->getMessage() === 'Moving a project is not supported yet.';
+                    && $message->getMessage() === 'A project must belong to a workspace.';
             }));
 
         $this->assertFalse((new projectWorkspaceBehavior())->notify('beforeValidationOnUpdate', $model));
@@ -61,6 +62,7 @@ class ProjectWorkspaceBehaviorTest extends TestCase
             ->onlyMethods(['getSnapshotData', 'appendMessage'])
             ->getMock();
         $model->method('getSnapshotData')->willReturn($snapshot);
+        $model->id = 'p1';
         $model->workspaceId = $workspaceId;
 
         return $model;

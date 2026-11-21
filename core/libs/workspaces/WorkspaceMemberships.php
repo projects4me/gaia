@@ -6,6 +6,7 @@
 
 namespace Gaia\Libraries\Workspaces;
 
+use Gaia\MVC\Models\Agent;
 use Gaia\MVC\Models\Membership;
 use Gaia\MVC\Models\Project;
 
@@ -75,6 +76,28 @@ class WorkspaceMemberships
     public function projectIds($workspaceId)
     {
         return $this->otherProjectIds($workspaceId, '');
+    }
+
+    /**
+     * The user ids of the workspace's live agents.
+     *
+     * @param  string $workspaceId
+     * @return string[]
+     */
+    public function agentUserIds($workspaceId)
+    {
+        $agents = Agent::find([
+            'conditions' => 'workspaceId = :workspaceId: AND deleted = false',
+            'bind' => ['workspaceId' => (string) $workspaceId],
+            'columns' => 'userId',
+        ]);
+
+        $ids = [];
+        foreach ($agents as $agent) {
+            $ids[] = (string) $agent->userId;
+        }
+
+        return array_values(array_unique($ids));
     }
 
     /**

@@ -7156,6 +7156,25 @@
       }
     },
     {
+      "id": "case:acl/acl-project-move-denied-without-workspace-update",
+      "type": "case",
+      "key": "acl/acl-project-move-denied-without-workspace-update",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/project/{otherProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": "acl-setting",
+        "placeholders": [
+          "otherProjectId",
+          "otherWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-project-related-issues-denied",
       "type": "case",
       "key": "acl/acl-project-related-issues-denied",
@@ -19789,6 +19808,398 @@
       }
     },
     {
+      "id": "case:client/project-move-add-member",
+      "type": "case",
+      "key": "client/project-move-add-member",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.moveProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-add-source-agent",
+      "type": "case",
+      "key": "client/project-move-add-source-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveProjectId",
+          "runtime.moveSrcAgentUserId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-add-target-agent",
+      "type": "case",
+      "key": "client/project-move-add-target-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstAgentUserId",
+          "runtime.moveDstProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-agent-issue-409",
+      "type": "case",
+      "key": "client/project-move-agent-issue-409",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/project/{runtime.moveProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstWsId",
+          "runtime.moveProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-create-agent-issue",
+      "type": "case",
+      "key": "client/project-move-create-agent-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectShortcode",
+          "runtime.moveProjectId",
+          "runtime.moveSrcAgentUserId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.moveAgentIssueId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-create-project",
+      "type": "case",
+      "key": "client/project-move-create-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveSrcWsId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.moveProjectId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-create-scoped-workflow",
+      "type": "case",
+      "key": "client/project-move-create-scoped-workflow",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workflow",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveProjectId",
+          "runtime.moveSrcWsId"
+        ],
+        "stores": [
+          "runtime.moveFlowId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-create-source-agent",
+      "type": "case",
+      "key": "client/project-move-create-source-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.moveSrcWsId"
+        ],
+        "stores": [
+          "runtime.moveSrcAgentUserId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-create-source-workspace",
+      "type": "case",
+      "key": "client/project-move-create-source-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.moveSrcWsId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-create-target-agent",
+      "type": "case",
+      "key": "client/project-move-create-target-agent",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/agent",
+        "resource": "agent",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.moveDstWsId"
+        ],
+        "stores": [
+          "runtime.moveDstAgentUserId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-create-target-project",
+      "type": "case",
+      "key": "client/project-move-create-target-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstWsId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.moveDstProjectId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-create-target-workspace",
+      "type": "case",
+      "key": "client/project-move-create-target-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.moveDstWsId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-delete-agent-issue",
+      "type": "case",
+      "key": "client/project-move-delete-agent-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/issue/{runtime.moveAgentIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveAgentIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-delete-scoped-workflow",
+      "type": "case",
+      "key": "client/project-move-delete-scoped-workflow",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/workflow/{runtime.moveFlowId}",
+        "resource": "workflow",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveFlowId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-member-joined-target-project",
+      "type": "case",
+      "key": "client/project-move-member-joined-target-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.moveDstProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-scoped-workflow-409",
+      "type": "case",
+      "key": "client/project-move-scoped-workflow-409",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/project/{runtime.moveProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstWsId",
+          "runtime.moveProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-source-agent-removed",
+      "type": "case",
+      "key": "client/project-move-source-agent-removed",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveProjectId",
+          "runtime.moveSrcAgentUserId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-target-agent-joined-moved-project",
+      "type": "case",
+      "key": "client/project-move-target-agent-joined-moved-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/membership",
+        "resource": "membership",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstAgentUserId",
+          "runtime.moveProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-to-target-workspace",
+      "type": "case",
+      "key": "client/project-move-to-target-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/project/{runtime.moveProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstWsId",
+          "runtime.moveProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-waiting-run-409",
+      "type": "case",
+      "key": "client/project-move-waiting-run-409",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/project/{otherProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectId",
+          "otherWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/project-own-workspace-is-named-after-project",
       "type": "case",
       "key": "client/project-own-workspace-is-named-after-project",
@@ -19807,9 +20218,9 @@
       }
     },
     {
-      "id": "case:client/project-patch-workspace-refused",
+      "id": "case:client/project-patch-unknown-workspace-422",
       "type": "case",
-      "key": "client/project-patch-workspace-refused",
+      "key": "client/project-patch-unknown-workspace-422",
       "attributes": {
         "catalog": "client",
         "file": "tools/api-tester/apis/client.json",
@@ -19819,8 +20230,7 @@
         "enabled": true,
         "source": null,
         "placeholders": [
-          "runtime.ownWorkspaceProjectId",
-          "workspaceId"
+          "runtime.ownWorkspaceProjectId"
         ],
         "stores": []
       }
@@ -58767,6 +59177,46 @@
       "to": "fixture:workspaceId"
     },
     {
+      "from": "case:acl/acl-project-move-denied-without-workspace-update",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-project-move-denied-without-workspace-update",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-project-move-denied-without-workspace-update",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-project-move-denied-without-workspace-update",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:acl/acl-project-move-denied-without-workspace-update",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/project/{id}"
+    },
+    {
+      "from": "case:acl/acl-project-move-denied-without-workspace-update",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-project-move-denied-without-workspace-update",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectId"
+    },
+    {
+      "from": "case:acl/acl-project-move-denied-without-workspace-update",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceId"
+    },
+    {
       "from": "case:acl/acl-project-related-issues-denied",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -81537,6 +81987,731 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/project-move-add-member",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-add-member",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-add-member",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/project-move-add-member",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-add-member",
+      "type": "exercises",
+      "to": "route:POST /api/v1/membership"
+    },
+    {
+      "from": "case:client/project-move-add-member",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-add-member",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:client/project-move-add-source-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-add-source-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-add-source-agent",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/project-move-add-source-agent",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-add-source-agent",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-source-agent"
+    },
+    {
+      "from": "case:client/project-move-add-source-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/membership"
+    },
+    {
+      "from": "case:client/project-move-add-source-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-add-target-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-add-target-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-add-target-agent",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/project-move-add-target-agent",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-agent"
+    },
+    {
+      "from": "case:client/project-move-add-target-agent",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-project"
+    },
+    {
+      "from": "case:client/project-move-add-target-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/membership"
+    },
+    {
+      "from": "case:client/project-move-add-target-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-agent-issue-409",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/project-move-agent-issue-409",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-agent-issue-409",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-agent-issue-409",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-move-agent-issue-409",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-agent-issue-409",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-workspace"
+    },
+    {
+      "from": "case:client/project-move-agent-issue-409",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-move-agent-issue-409",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-agent-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-agent-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-agent-issue",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/project-move-create-agent-issue",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-create-agent-issue",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-source-agent"
+    },
+    {
+      "from": "case:client/project-move-create-agent-issue",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/project-move-create-agent-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-agent-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/project-move-create-agent-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/project-move-create-agent-issue",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/project-move-create-agent-issue",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/project-move-create-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-project",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-move-create-project",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-source-workspace"
+    },
+    {
+      "from": "case:client/project-move-create-project",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/project-move-create-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-project",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/project-move-create-scoped-workflow",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-scoped-workflow",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-scoped-workflow",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:client/project-move-create-scoped-workflow",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-create-scoped-workflow",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-source-workspace"
+    },
+    {
+      "from": "case:client/project-move-create-scoped-workflow",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workflow"
+    },
+    {
+      "from": "case:client/project-move-create-scoped-workflow",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-source-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-source-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-source-agent",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/project-move-create-source-agent",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-source-workspace"
+    },
+    {
+      "from": "case:client/project-move-create-source-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:client/project-move-create-source-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-source-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-source-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-source-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/project-move-create-source-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/project-move-create-source-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-target-agent",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-target-agent",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-target-agent",
+      "type": "covers",
+      "to": "controller:agent"
+    },
+    {
+      "from": "case:client/project-move-create-target-agent",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-workspace"
+    },
+    {
+      "from": "case:client/project-move-create-target-agent",
+      "type": "exercises",
+      "to": "route:POST /api/v1/agent"
+    },
+    {
+      "from": "case:client/project-move-create-target-agent",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-target-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-target-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-target-project",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-move-create-target-project",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-workspace"
+    },
+    {
+      "from": "case:client/project-move-create-target-project",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/project-move-create-target-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-target-project",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/project-move-create-target-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-target-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-target-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/project-move-create-target-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/project-move-create-target-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-delete-agent-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-delete-agent-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-delete-agent-issue",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/project-move-delete-agent-issue",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-agent-issue"
+    },
+    {
+      "from": "case:client/project-move-delete-agent-issue",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/project-move-delete-agent-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-delete-scoped-workflow",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-delete-scoped-workflow",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-delete-scoped-workflow",
+      "type": "covers",
+      "to": "controller:workflow"
+    },
+    {
+      "from": "case:client/project-move-delete-scoped-workflow",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-scoped-workflow"
+    },
+    {
+      "from": "case:client/project-move-delete-scoped-workflow",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/workflow/{id}"
+    },
+    {
+      "from": "case:client/project-move-delete-scoped-workflow",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-member-joined-target-project",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/project-move-member-joined-target-project",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/project-move-member-joined-target-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-member-joined-target-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-member-joined-target-project",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/project-move-member-joined-target-project",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-project"
+    },
+    {
+      "from": "case:client/project-move-member-joined-target-project",
+      "type": "exercises",
+      "to": "route:GET /api/v1/membership"
+    },
+    {
+      "from": "case:client/project-move-member-joined-target-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-member-joined-target-project",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:client/project-move-scoped-workflow-409",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/project-move-scoped-workflow-409",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-scoped-workflow-409",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-scoped-workflow-409",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-move-scoped-workflow-409",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-scoped-workflow-409",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-workspace"
+    },
+    {
+      "from": "case:client/project-move-scoped-workflow-409",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-move-scoped-workflow-409",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-source-agent-removed",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/project-move-source-agent-removed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-source-agent-removed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-source-agent-removed",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/project-move-source-agent-removed",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-source-agent-removed",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-source-agent"
+    },
+    {
+      "from": "case:client/project-move-source-agent-removed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/membership"
+    },
+    {
+      "from": "case:client/project-move-source-agent-removed",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-target-agent-joined-moved-project",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/project-move-target-agent-joined-moved-project",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/project-move-target-agent-joined-moved-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-target-agent-joined-moved-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-target-agent-joined-moved-project",
+      "type": "covers",
+      "to": "controller:membership"
+    },
+    {
+      "from": "case:client/project-move-target-agent-joined-moved-project",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-target-agent-joined-moved-project",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-agent"
+    },
+    {
+      "from": "case:client/project-move-target-agent-joined-moved-project",
+      "type": "exercises",
+      "to": "route:GET /api/v1/membership"
+    },
+    {
+      "from": "case:client/project-move-target-agent-joined-moved-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-to-target-workspace",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/project-move-to-target-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-to-target-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-to-target-workspace",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-move-to-target-workspace",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-to-target-workspace",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-workspace"
+    },
+    {
+      "from": "case:client/project-move-to-target-workspace",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-move-to-target-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-waiting-run-409",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/project-move-waiting-run-409",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-waiting-run-409",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-waiting-run-409",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-move-waiting-run-409",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-move-waiting-run-409",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-waiting-run-409",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectId"
+    },
+    {
+      "from": "case:client/project-move-waiting-run-409",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceId"
+    },
+    {
       "from": "case:client/project-own-workspace-is-named-after-project",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -81572,39 +82747,34 @@
       "to": "profile:default"
     },
     {
-      "from": "case:client/project-patch-workspace-refused",
+      "from": "case:client/project-patch-unknown-workspace-422",
       "type": "asserts",
       "to": "assertion:shape"
     },
     {
-      "from": "case:client/project-patch-workspace-refused",
+      "from": "case:client/project-patch-unknown-workspace-422",
       "type": "asserts",
       "to": "assertion:status"
     },
     {
-      "from": "case:client/project-patch-workspace-refused",
+      "from": "case:client/project-patch-unknown-workspace-422",
       "type": "covers",
       "to": "controller:project"
     },
     {
-      "from": "case:client/project-patch-workspace-refused",
+      "from": "case:client/project-patch-unknown-workspace-422",
       "type": "depends_on",
       "to": "case:client/project-create-makes-own-workspace"
     },
     {
-      "from": "case:client/project-patch-workspace-refused",
+      "from": "case:client/project-patch-unknown-workspace-422",
       "type": "exercises",
       "to": "route:PATCH /api/v1/project/{id}"
     },
     {
-      "from": "case:client/project-patch-workspace-refused",
+      "from": "case:client/project-patch-unknown-workspace-422",
       "type": "runs_as",
       "to": "profile:default"
-    },
-    {
-      "from": "case:client/project-patch-workspace-refused",
-      "type": "uses_fixture",
-      "to": "fixture:workspaceId"
     },
     {
       "from": "case:client/put-systemnotification-api-v1-systemnotification-id",
@@ -103595,6 +104765,11 @@
       "from": "profile:aclNoSetting",
       "type": "grants",
       "to": "permission:project.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:project.update"
     },
     {
       "from": "profile:aclNoSetting",

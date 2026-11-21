@@ -7,6 +7,11 @@
 namespace Gaia\MVC\Models;
 
 use Gaia\Core\MVC\Models\Model;
+use Gaia\Libraries\Utils\TransactionScope;
+use Gaia\Libraries\Workspaces\MembershipSync;
+use Gaia\Libraries\Workspaces\ProjectWorkspace;
+use Gaia\MVC\REST\Controllers\Components\Events\MembershipLiveEventsComponent;
+use Phalcon\Messages\Message;
 
 /**
  * Project Model
@@ -29,6 +34,96 @@ class Project extends Model
      * @var bool
      */
     public $splitQueries = false;
+
+    /**
+     * While a save moves the project to another workspace: the workspace it
+     * leaves (null for a legacy project without one). False otherwise.
+     *
+     * @var string|null|false
+     */
+    protected $movingFrom = false;
+
+    /**
+     * The memberships the workspace sync wrote during the current move.
+     *
+     * @var Membership[]
+     */
+    protected $movedMemberships = [];
+
+    /**
+     * A save that moves the project to another workspace runs with its
+     * membership sync in one transaction (Workspaces D-010); a save inside a
+     * caller's transaction joins it. Other saves are unchanged.
+     *
+     * @return bool
+     * @throws \Throwable
+     */
+    public function save(): bool
+    {
+        $snapshot = $this->hasSnapshotData() ? $this->getSnapshotData() : null;
+        if (!(new ProjectWorkspace())->isMove($snapshot, $this->workspaceId ?? null)) {
+            return parent::save();
+        }
+
+        $from = (string) ($snapshot['workspaceId'] ?? '');
+        $this->movingFrom = $from === '' ? null : $from;
+        $this->movedMemberships = [];
+        try {
+            $saved = $this->saveInTransaction();
+        } finally {
+            $this->movingFrom = false;
+        }
+
+        if ($saved && !empty($this->movedMemberships)) {
+            (new MembershipLiveEventsComponent())->publishForMembers($this->movedMemberships);
+        }
+
+        return $saved;
+    }
+
+    /**
+     * Sync the memberships after a move: the old workspace's agents leave the
+     * project and the new workspace's projects get the same members.
+     *
+     * @return void
+     */
+    public function afterUpdate()
+    {
+        if ($this->movingFrom === false) {
+            return;
+        }
+
+        $this->movedMemberships = (new MembershipSync())
+            ->projectMoved($this->id, $this->movingFrom, (string) $this->workspaceId);
+    }
+
+    /**
+     * @return bool
+     * @throws \Throwable
+     */
+    protected function saveInTransaction()
+    {
+        $connection = $this->getWriteConnection();
+
+        // Inside a caller's transaction a failed sync throws, so the caller
+        // rolls back the move together with the synced rows.
+        if ($connection->isUnderTransaction()) {
+            return parent::save();
+        }
+
+        try {
+            return (new TransactionScope($connection))->run(function () {
+                return parent::save();
+            }, function ($saved) {
+                return $saved;
+            });
+        } catch (\PDOException $e) {
+            throw $e;
+        } catch (\RuntimeException $e) {
+            $this->appendMessage(new Message($e->getMessage(), 'workspaceId', 'WorkspaceSync'));
+            return false;
+        }
+    }
 
     /**
      * Project ids the user belongs to via memberships.

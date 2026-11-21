@@ -26,8 +26,6 @@ class ProjectWorkspace
 
     const UNKNOWN_WORKSPACE = 'The workspace does not exist.';
 
-    const MOVE_UNSUPPORTED = 'Moving a project is not supported yet.';
-
     const NOT_ALLOWED = 'You are not allowed to add projects to this workspace.';
 
     /**
