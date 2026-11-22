@@ -157,6 +157,12 @@ $models['Activity'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
                 'relatedKey' => 'id',
                 'condition' => 'Activity.relatedTo = "conversationroom"'
+            ),
+            'workspace' => array(
+                'primaryKey' => 'relatedId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Workspace',
+                'relatedKey' => 'id',
+                'condition' => 'Activity.relatedTo = "workspace"'
             )
         )
     ),
@@ -191,6 +197,15 @@ $models['Activity'] = array(
                         'localKey' => 'relatedId',
                         'relatedKey' => 'id',
                         'projectField' => 'projectId',
+                    ],
+                    // A workspace has no record scope (Workspaces D-001): its
+                    // activities are read by the members of its projects (D-018).
+                    [
+                        'when' => ['relatedTo' => 'workspace'],
+                        'relatedModel' => 'Project',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'workspaceId',
+                        'projectField' => 'id',
                     ],
                 ],
             ],

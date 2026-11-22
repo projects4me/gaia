@@ -202,7 +202,8 @@ $models['Workspace'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior',
         'workspaceRuntimeBehavior',
-        'workspaceShortCodeBehavior'
+        'workspaceShortCodeBehavior',
+        'workspaceActivityBehavior'
     ),
     'acl' => [
         // Runtimes read the workspaces bound to them (D-074).

@@ -4451,6 +4451,18 @@
       }
     },
     {
+      "id": "behaviour:workspaceActivityBehavior",
+      "type": "behaviour",
+      "key": "workspaceActivityBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\workspaceActivityBehavior",
+        "file": "core/mvc/models/behaviors/workspaceActivityBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:workspaceRuntimeBehavior",
       "type": "behaviour",
       "key": "workspaceRuntimeBehavior",
@@ -24240,6 +24252,114 @@
       }
     },
     {
+      "id": "case:client/workspace-activity-created-recorded",
+      "type": "case",
+      "key": "client/workspace-activity-created-recorded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-activity-member-added-once",
+      "type": "case",
+      "key": "client/workspace-activity-member-added-once",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-activity-member-removed-once",
+      "type": "case",
+      "key": "client/workspace-activity-member-removed-once",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-activity-project-added-recorded",
+      "type": "case",
+      "key": "client/workspace-activity-project-added-recorded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.syncWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-activity-project-moved-in-recorded",
+      "type": "case",
+      "key": "client/workspace-activity-project-moved-in-recorded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstWsId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-activity-project-moved-out-recorded",
+      "type": "case",
+      "key": "client/workspace-activity-project-moved-out-recorded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/activity",
+        "resource": "activity",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveSrcWsId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/workspace-counts-detail",
       "type": "case",
       "key": "client/workspace-counts-detail",
@@ -39655,6 +39775,15 @@
                   "localKey": "relatedId",
                   "relatedKey": "id",
                   "projectField": "projectId"
+                },
+                {
+                  "when": {
+                    "relatedTo": "workspace"
+                  },
+                  "relatedModel": "Project",
+                  "localKey": "relatedId",
+                  "relatedKey": "workspaceId",
+                  "projectField": "id"
                 }
               ]
             }
@@ -43588,6 +43717,17 @@
         "primaryKey": "relatedId",
         "relatedKey": "id",
         "condition": "Activity.relatedTo = \"project\""
+      }
+    },
+    {
+      "id": "relationship:Activity.workspace",
+      "type": "relationship",
+      "key": "Activity.workspace",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "relatedId",
+        "relatedKey": "id",
+        "condition": "Activity.relatedTo = \"workspace\""
       }
     },
     {
@@ -92075,6 +92215,246 @@
       "to": "fixture:workflownodeId"
     },
     {
+      "from": "case:client/workspace-activity-created-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-activity-created-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspace-activity-created-recorded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-activity-created-recorded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-activity-created-recorded",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/workspace-activity-created-recorded",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-activity-created-recorded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/workspace-activity-created-recorded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-activity-member-added-once",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-activity-member-added-once",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspace-activity-member-added-once",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-activity-member-added-once",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-activity-member-added-once",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/workspace-activity-member-added-once",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-activity-member-added-once",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/workspace-activity-member-added-once",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-activity-member-removed-once",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-activity-member-removed-once",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspace-activity-member-removed-once",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-activity-member-removed-once",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-activity-member-removed-once",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/workspace-activity-member-removed-once",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-activity-member-removed-once",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/workspace-activity-member-removed-once",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-activity-project-added-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-activity-project-added-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspace-activity-project-added-recorded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-activity-project-added-recorded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-activity-project-added-recorded",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/workspace-activity-project-added-recorded",
+      "type": "depends_on",
+      "to": "case:client/workspace-sync-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-activity-project-added-recorded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/workspace-activity-project-added-recorded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-in-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-in-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-in-recorded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-in-recorded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-in-recorded",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-in-recorded",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-workspace"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-in-recorded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-in-recorded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-out-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-out-recorded",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-out-recorded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-out-recorded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-out-recorded",
+      "type": "covers",
+      "to": "controller:activity"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-out-recorded",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-source-workspace"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-out-recorded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/activity"
+    },
+    {
+      "from": "case:client/workspace-activity-project-moved-out-recorded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/workspace-counts-detail",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -101106,6 +101486,11 @@
     },
     {
       "from": "model:Activity",
+      "type": "has_relationship",
+      "to": "relationship:Activity.workspace"
+    },
+    {
+      "from": "model:Activity",
       "type": "uses_behaviour",
       "to": "behaviour:auditBehavior"
     },
@@ -108512,6 +108897,11 @@
     {
       "from": "model:Workspace",
       "type": "uses_behaviour",
+      "to": "behaviour:workspaceActivityBehavior"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "uses_behaviour",
       "to": "behaviour:workspaceRuntimeBehavior"
     },
     {
@@ -110513,6 +110903,11 @@
       "from": "relationship:Activity.project",
       "type": "targets",
       "to": "model:Project"
+    },
+    {
+      "from": "relationship:Activity.workspace",
+      "type": "targets",
+      "to": "model:Workspace"
     },
     {
       "from": "relationship:Agent.agentSkills",

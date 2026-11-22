@@ -9,6 +9,7 @@ namespace Gaia\MVC\Models\Behaviors;
 use Gaia\Libraries\Utils\TransactionScope;
 use Gaia\Libraries\Workspaces\MembershipSync;
 use Gaia\Libraries\Workspaces\ProjectMoveGate;
+use Gaia\Libraries\Workspaces\WorkspaceActivity;
 use Gaia\Libraries\Workspaces\ProjectWorkspace;
 use Gaia\MVC\REST\Controllers\Components\Events\MembershipLiveEventsComponent;
 use Phalcon\Messages\Message;
@@ -80,6 +81,8 @@ class projectWorkspaceBehavior extends Behavior implements BehaviorInterface
     protected function afterCreate($model)
     {
         global $logger;
+
+        (new WorkspaceActivity())->projectAdded($model->workspaceId ?? null, $model);
 
         $seed = function () use ($model) {
             return (new MembershipSync())->projectCreated($model->id ?? null, $model->workspaceId ?? null);
