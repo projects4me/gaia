@@ -14208,6 +14208,257 @@
       "expects": {
         "status": 404
       }
+    },
+    {
+      "id": "issue-parent-cycle-create-root",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Parent Cycle Root",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.cycleRootId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "issue-parent-cycle-create-child",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Parent Cycle Child",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0,
+            "parentId": "{runtime.cycleRootId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.cycleChildId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "parentId": "{runtime.cycleRootId}"
+        }
+      }
+    },
+    {
+      "id": "issue-parent-cycle-create-grandchild",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Parent Cycle Grandchild",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0,
+            "parentId": "{runtime.cycleChildId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.cycleGrandchildId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "parentId": "{runtime.cycleChildId}"
+        }
+      }
+    },
+    {
+      "id": "issue-parent-cycle-create-other",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Parent Cycle Other",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.cycleOtherId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "issue-parent-cycle-self-refused",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{runtime.cycleRootId}",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{runtime.cycleRootId}",
+          "attributes": {
+            "parentId": "{runtime.cycleRootId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "An issue cannot be its own parent."
+        }
+      }
+    },
+    {
+      "id": "issue-parent-cycle-direct-child-refused",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{runtime.cycleChildId}",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{runtime.cycleChildId}",
+          "attributes": {
+            "parentId": "{runtime.cycleGrandchildId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "The parent cannot be one of the issue's own sub-issues."
+        }
+      }
+    },
+    {
+      "id": "issue-parent-cycle-deep-descendant-refused",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{runtime.cycleRootId}",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{runtime.cycleRootId}",
+          "attributes": {
+            "parentId": "{runtime.cycleGrandchildId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "The parent cannot be one of the issue's own sub-issues."
+        }
+      }
+    },
+    {
+      "id": "issue-parent-cycle-valid-move",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{runtime.cycleGrandchildId}",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{runtime.cycleGrandchildId}",
+          "attributes": {
+            "parentId": "{runtime.cycleRootId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "parentId": "{runtime.cycleRootId}"
+        }
+      }
+    },
+    {
+      "id": "issue-parent-cycle-valid-under-other",
+      "method": "PATCH",
+      "path": "/api/v1/issue/{runtime.cycleRootId}",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "id": "{runtime.cycleRootId}",
+          "attributes": {
+            "parentId": "{runtime.cycleOtherId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "parentId": "{runtime.cycleOtherId}"
+        }
+      }
     }
   ]
 }
