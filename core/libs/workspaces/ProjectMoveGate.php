@@ -11,6 +11,7 @@ use Gaia\Exception\Conflict;
 use Gaia\Libraries\Workflows\RunStatus;
 use Gaia\Libraries\Workflows\WorkflowScope;
 use Gaia\MVC\Models\Issue;
+use Gaia\MVC\Models\Issuelink;
 use Gaia\MVC\Models\Workflow;
 use Gaia\MVC\Models\Workflowrun;
 use Gaia\MVC\Models\Workspace;
@@ -38,7 +39,8 @@ class ProjectMoveGate
      * The checks for work in progress and repository name clashes, run in
      * order; the first that finds something refuses the move.
      */
-    const CHECKS = ['checkWorkflowRuns', 'checkAgentIssues', 'checkScopedWorkflows', 'checkRepositoryNames'];
+    const CHECKS = ['checkWorkflowRuns', 'checkAgentIssues', 'checkScopedWorkflows', 'checkRepositoryNames',
+        'checkCrossProjectLinks'];
 
     /**
      * @var WorkspaceMemberships
@@ -229,6 +231,31 @@ class ProjectMoveGate
             throw new Conflict(
                 'The target workspace already has repositories named ' . implode(', ', $names)
                 . '; rename the project\'s repositories before moving it.'
+            );
+        }
+    }
+
+    /**
+     * Live issue links with one side in the project and the other in a
+     * different project of the workspace; links inside the project do not
+     * count. The move would leave them across workspaces.
+     *
+     * @param  string      $projectId
+     * @param  string|null $fromWorkspaceId
+     * @return void
+     * @throws Conflict
+     */
+    protected function checkCrossProjectLinks($projectId, $fromWorkspaceId)
+    {
+        $count = Issuelink::count([
+            'conditions' => 'deleted = false AND projectId <> targetProjectId'
+                . ' AND (projectId = :projectId: OR targetProjectId = :projectId:)',
+            'bind' => ['projectId' => $projectId],
+        ]);
+        if ($count > 0) {
+            throw new Conflict(
+                $count . ' issue links to other projects of this workspace; '
+                . 'delete them before moving the project.'
             );
         }
     }

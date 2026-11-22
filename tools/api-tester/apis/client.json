@@ -12135,6 +12135,212 @@
       }
     },
     {
+      "id": "project-move-create-link-project",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Project Move Link Peer",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0,
+            "workspaceId": "{runtime.moveSrcWsId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.moveLinkProjectId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-create-link-issue",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Project Move Link Issue",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{runtime.moveProjectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.moveLinkIssueId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-create-link-inner-issue",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Project Move Link Inner Issue",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{runtime.moveProjectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.moveLinkInnerIssueId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-create-link-peer-issue",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Project Move Link Peer Issue",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{runtime.moveLinkProjectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.moveLinkPeerIssueId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-create-internal-link",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.moveLinkIssueId}",
+            "targetIssueId": "{runtime.moveLinkInnerIssueId}",
+            "type": "relates"
+          }
+        }
+      },
+      "store": {
+        "runtime.moveInternalLinkId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-create-cross-project-link",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.moveLinkPeerIssueId}",
+            "targetIssueId": "{runtime.moveLinkIssueId}",
+            "type": "relates"
+          }
+        }
+      },
+      "store": {
+        "runtime.moveCrossLinkId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-cross-project-link-409",
+      "method": "PATCH",
+      "path": "/api/v1/project/{runtime.moveProjectId}",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "id": "{runtime.moveProjectId}",
+          "attributes": {
+            "workspaceId": "{runtime.moveDstWsId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 409,
+        "shape": "error",
+        "jsonEqual": {
+          "error": "conflict",
+          "error_description": "1 issue links to other projects of this workspace; delete them before moving the project."
+        }
+      }
+    },
+    {
+      "id": "project-move-delete-cross-project-link",
+      "method": "DELETE",
+      "path": "/api/v1/issuelink/{runtime.moveCrossLinkId}",
+      "resource": "issuelink",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
       "id": "project-move-to-target-workspace",
       "method": "PATCH",
       "path": "/api/v1/project/{runtime.moveProjectId}",
