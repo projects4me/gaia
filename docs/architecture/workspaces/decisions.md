@@ -165,3 +165,12 @@ Agreed decisions for Workspaces in Gaia. Add a new decision whenever behavior is
 | Decision | `Workspace.runtimeOnline` (bool, read-only computed field, D-013) is true when the workspace is bound to a runtime (`runtimeId`) whose service client is not deleted, is `active`, and was last used (`Serviceclient.lastUsedAt`, UTC) within the last 5 minutes; otherwise false, including for an unbound workspace. `lastUsedAt` is the existing usage stamp: it is written when the client is issued a token and on every request made with a service token (RBAC D-066), so no new column or heartbeat endpoint exists. The cross-project link counts proposed with it (`crossProjectLinkCount`, `crossProjectBlockingCount`) are not added: Gaia has no issue-link model (an issue has only a parent), so there are no links or link types to count. |
 | Rationale | The workspace Overview shows "Environment: online". A runtime that runs signs in and calls Gaia as it polls, so its last use already says when it was last seen; a separate throttled `lastSeenAt` would duplicate that stamp. Counting links needs typed issue links (blocks / blocked by) first, which is a resource of its own. |
 | Consequence | `runtimeOnline` turns false at most 5 minutes after the runtime's last call; a runtime that stays idle longer must call Gaia at least that often to show as online. The stamp is one UPDATE per service request, unthrottled. The window is in the field's PHQL expression in `app/metadata/model/Workspace.php`. Cross-project link counts wait for an issue-link resource. |
+
+### D-018 — A workspace reports its environment counts as read-only computed fields
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | `Workspace.repositoryCount` (live repositories of the workspace), `projectRepositoryCount` (those with a `projectId`), `agentCount`, `toolserverCount`, `skillCount` (live rows of the workspace) and `runsInProgress` (workflow runs `running` or `waiting` in the workspace's live projects, the definition of the move gate in D-011). They are computed fields like D-013: returned on `GET /workspace` and `GET /workspace/{id}`, sortable, discarded on write, not filterable, whatever rows the caller can see. |
+| Rationale | The workspace Overview shows an Environment box; subquery columns give the counts in the same query, without a request per kind and without a custom endpoint. |
+| Consequence | Declared under `computed` in `app/metadata/model/Workspace.php`; no column, migration or permission row. |
