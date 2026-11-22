@@ -122,6 +122,44 @@ $models['Workspace'] = array(
             'type' => 'int',
             'expression' => "SELECT COUNT(DISTINCT CountedMembership.userId) FROM Gaia\\MVC\\Models\\Membership CountedMembership WHERE CountedMembership.projectId IN (SELECT MemberProject.id FROM Gaia\\MVC\\Models\\Project MemberProject WHERE MemberProject.workspaceId = Workspace.id AND MemberProject.deleted = 0)",
         ),
+        // Environment counts (D-016).
+        'repositoryCount' => array(
+            'name' => 'repositoryCount',
+            'label' => 'LBL_WORKSPACES_REPOSITORY_COUNT',
+            'type' => 'int',
+            'expression' => "SELECT COUNT(CountedRepository.id) FROM Gaia\\MVC\\Models\\Repository CountedRepository WHERE CountedRepository.workspaceId = Workspace.id AND CountedRepository.deleted = false",
+        ),
+        'projectRepositoryCount' => array(
+            'name' => 'projectRepositoryCount',
+            'label' => 'LBL_WORKSPACES_PROJECT_REPOSITORY_COUNT',
+            'type' => 'int',
+            'expression' => "SELECT COUNT(CountedProjectRepository.id) FROM Gaia\\MVC\\Models\\Repository CountedProjectRepository WHERE CountedProjectRepository.workspaceId = Workspace.id AND CountedProjectRepository.deleted = false AND CountedProjectRepository.projectId IS NOT NULL",
+        ),
+        'agentCount' => array(
+            'name' => 'agentCount',
+            'label' => 'LBL_WORKSPACES_AGENT_COUNT',
+            'type' => 'int',
+            'expression' => "SELECT COUNT(CountedAgent.id) FROM Gaia\\MVC\\Models\\Agent CountedAgent WHERE CountedAgent.workspaceId = Workspace.id AND CountedAgent.deleted = false",
+        ),
+        'toolserverCount' => array(
+            'name' => 'toolserverCount',
+            'label' => 'LBL_WORKSPACES_TOOLSERVER_COUNT',
+            'type' => 'int',
+            'expression' => "SELECT COUNT(CountedToolserver.id) FROM Gaia\\MVC\\Models\\Toolserver CountedToolserver WHERE CountedToolserver.workspaceId = Workspace.id AND CountedToolserver.deleted = false",
+        ),
+        'skillCount' => array(
+            'name' => 'skillCount',
+            'label' => 'LBL_WORKSPACES_SKILL_COUNT',
+            'type' => 'int',
+            'expression' => "SELECT COUNT(CountedSkill.id) FROM Gaia\\MVC\\Models\\Skill CountedSkill WHERE CountedSkill.workspaceId = Workspace.id AND CountedSkill.deleted = false",
+        ),
+        // Same definition as the project move gate (D-011): running or waiting runs of the workspace's live projects.
+        'runsInProgress' => array(
+            'name' => 'runsInProgress',
+            'label' => 'LBL_WORKSPACES_RUNS_IN_PROGRESS',
+            'type' => 'int',
+            'expression' => "SELECT COUNT(CountedRun.id) FROM Gaia\\MVC\\Models\\Workflowrun CountedRun WHERE CountedRun.deleted = false AND CountedRun.status IN ('running', 'waiting') AND CountedRun.projectId IN (SELECT RunProject.id FROM Gaia\\MVC\\Models\\Project RunProject WHERE RunProject.workspaceId = Workspace.id AND RunProject.deleted = 0)",
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',
