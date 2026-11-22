@@ -14936,6 +14936,99 @@
       }
     },
     {
+      "id": "workspace-link-counts-across-projects",
+      "method": "GET",
+      "path": "/api/v1/workspace/api-test-workspace-000003",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "crossProjectLinkCount": 1,
+          "crossProjectBlockingCount": 0
+        }
+      }
+    },
+    {
+      "id": "workspace-link-counts-create-inside",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "api-test-issue-wsm-01",
+            "targetIssueId": "api-test-issue-wsm-02",
+            "type": "relates"
+          }
+        }
+      },
+      "store": {
+        "runtime.countInsideLink": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-link-counts-inside-project-not-counted",
+      "method": "GET",
+      "path": "/api/v1/workspace/api-test-workspace-000003",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "crossProjectLinkCount": 1,
+          "crossProjectBlockingCount": 0
+        }
+      }
+    },
+    {
+      "id": "workspace-link-counts-create-blocks",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "api-test-issue-wsm-01",
+            "targetIssueId": "{runtime.linkIssueW}",
+            "type": "blocks"
+          }
+        }
+      },
+      "store": {
+        "runtime.countBlocksLink": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-link-counts-blocks",
+      "method": "GET",
+      "path": "/api/v1/workspace/api-test-workspace-000003",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "crossProjectLinkCount": 2,
+          "crossProjectBlockingCount": 1
+        }
+      }
+    },
+    {
       "id": "issuelink-list-by-source",
       "method": "GET",
       "path": "/api/v1/issuelink",
@@ -15050,6 +15143,49 @@
           200,
           204
         ]
+      }
+    },
+    {
+      "id": "workspace-link-counts-deleted-not-counted",
+      "method": "GET",
+      "path": "/api/v1/workspace/api-test-workspace-000003",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "crossProjectLinkCount": 1,
+          "crossProjectBlockingCount": 1
+        }
+      }
+    },
+    {
+      "id": "workspace-link-counts-delete-blocks",
+      "method": "DELETE",
+      "path": "/api/v1/issuelink/{runtime.countBlocksLink}",
+      "resource": "issuelink",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "workspace-link-counts-blocks-deleted",
+      "method": "GET",
+      "path": "/api/v1/workspace/api-test-workspace-000003",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "crossProjectLinkCount": 0,
+          "crossProjectBlockingCount": 0
+        }
       }
     },
     {

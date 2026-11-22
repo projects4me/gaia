@@ -26000,6 +26000,142 @@
       }
     },
     {
+      "id": "case:client/workspace-link-counts-across-projects",
+      "type": "case",
+      "key": "client/workspace-link-counts-across-projects",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/api-test-workspace-000003",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-link-counts-blocks",
+      "type": "case",
+      "key": "client/workspace-link-counts-blocks",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/api-test-workspace-000003",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-link-counts-blocks-deleted",
+      "type": "case",
+      "key": "client/workspace-link-counts-blocks-deleted",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/api-test-workspace-000003",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-link-counts-create-blocks",
+      "type": "case",
+      "key": "client/workspace-link-counts-create-blocks",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueW"
+        ],
+        "stores": [
+          "runtime.countBlocksLink"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-link-counts-create-inside",
+      "type": "case",
+      "key": "client/workspace-link-counts-create-inside",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": [
+          "runtime.countInsideLink"
+        ]
+      }
+    },
+    {
+      "id": "case:client/workspace-link-counts-delete-blocks",
+      "type": "case",
+      "key": "client/workspace-link-counts-delete-blocks",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/issuelink/{runtime.countBlocksLink}",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.countBlocksLink"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-link-counts-deleted-not-counted",
+      "type": "case",
+      "key": "client/workspace-link-counts-deleted-not-counted",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/api-test-workspace-000003",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-link-counts-inside-project-not-counted",
+      "type": "case",
+      "key": "client/workspace-link-counts-inside-project-not-counted",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/api-test-workspace-000003",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/workspace-list-by-short-code",
       "type": "case",
       "key": "client/workspace-list-by-short-code",
@@ -97302,6 +97438,236 @@
     },
     {
       "from": "case:client/workspace-environment-counts-populated",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-link-counts-across-projects",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-link-counts-across-projects",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-link-counts-across-projects",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-link-counts-across-projects",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-link-counts-across-projects",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-link-counts-across-projects",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-link-counts-blocks",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-link-counts-blocks",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-link-counts-blocks",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-link-counts-blocks",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-link-counts-blocks",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-link-counts-blocks",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-link-counts-blocks-deleted",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-link-counts-blocks-deleted",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-link-counts-blocks-deleted",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-link-counts-blocks-deleted",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-link-counts-blocks-deleted",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-link-counts-blocks-deleted",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-link-counts-create-blocks",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-link-counts-create-blocks",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-link-counts-create-blocks",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/workspace-link-counts-create-blocks",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-w"
+    },
+    {
+      "from": "case:client/workspace-link-counts-create-blocks",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/workspace-link-counts-create-blocks",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-link-counts-create-inside",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-link-counts-create-inside",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-link-counts-create-inside",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/workspace-link-counts-create-inside",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/workspace-link-counts-create-inside",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-link-counts-delete-blocks",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-link-counts-delete-blocks",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/workspace-link-counts-delete-blocks",
+      "type": "depends_on",
+      "to": "case:client/workspace-link-counts-create-blocks"
+    },
+    {
+      "from": "case:client/workspace-link-counts-delete-blocks",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/issuelink/{id}"
+    },
+    {
+      "from": "case:client/workspace-link-counts-delete-blocks",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-link-counts-deleted-not-counted",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-link-counts-deleted-not-counted",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-link-counts-deleted-not-counted",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-link-counts-deleted-not-counted",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-link-counts-deleted-not-counted",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-link-counts-deleted-not-counted",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-link-counts-inside-project-not-counted",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-link-counts-inside-project-not-counted",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-link-counts-inside-project-not-counted",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-link-counts-inside-project-not-counted",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-link-counts-inside-project-not-counted",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-link-counts-inside-project-not-counted",
       "type": "runs_as",
       "to": "profile:default"
     },

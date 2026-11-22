@@ -160,6 +160,19 @@ $models['Workspace'] = array(
             'type' => 'int',
             'expression' => "SELECT COUNT(CountedRun.id) FROM Gaia\\MVC\\Models\\Workflowrun CountedRun WHERE CountedRun.deleted = false AND CountedRun.status IN ('running', 'waiting') AND CountedRun.projectId IN (SELECT RunProject.id FROM Gaia\\MVC\\Models\\Project RunProject WHERE RunProject.workspaceId = Workspace.id AND RunProject.deleted = 0)",
         ),
+        // Cross-project link counts (D-017): live links between two different projects of this workspace.
+        'crossProjectLinkCount' => array(
+            'name' => 'crossProjectLinkCount',
+            'label' => 'LBL_WORKSPACES_CROSS_PROJECT_LINK_COUNT',
+            'type' => 'int',
+            'expression' => "SELECT COUNT(CountedLink.id) FROM Gaia\\MVC\\Models\\Issuelink CountedLink WHERE CountedLink.deleted = false AND CountedLink.projectId <> CountedLink.targetProjectId AND CountedLink.projectId IN (SELECT LinkProject.id FROM Gaia\\MVC\\Models\\Project LinkProject WHERE LinkProject.workspaceId = Workspace.id AND LinkProject.deleted = 0) AND CountedLink.targetProjectId IN (SELECT LinkTargetProject.id FROM Gaia\\MVC\\Models\\Project LinkTargetProject WHERE LinkTargetProject.workspaceId = Workspace.id AND LinkTargetProject.deleted = 0)",
+        ),
+        'crossProjectBlockingCount' => array(
+            'name' => 'crossProjectBlockingCount',
+            'label' => 'LBL_WORKSPACES_CROSS_PROJECT_BLOCKING_COUNT',
+            'type' => 'int',
+            'expression' => "SELECT COUNT(CountedBlock.id) FROM Gaia\\MVC\\Models\\Issuelink CountedBlock WHERE CountedBlock.deleted = false AND CountedBlock.type = 'blocks' AND CountedBlock.projectId <> CountedBlock.targetProjectId AND CountedBlock.projectId IN (SELECT BlockProject.id FROM Gaia\\MVC\\Models\\Project BlockProject WHERE BlockProject.workspaceId = Workspace.id AND BlockProject.deleted = 0) AND CountedBlock.targetProjectId IN (SELECT BlockTargetProject.id FROM Gaia\\MVC\\Models\\Project BlockTargetProject WHERE BlockTargetProject.workspaceId = Workspace.id AND BlockTargetProject.deleted = 0)",
+        ),
         // Workspaces D-017: the bound runtime is online when its service client was used (lastUsedAt, UTC) in the last 5 minutes.
         'runtimeOnline' => array(
             'name' => 'runtimeOnline',

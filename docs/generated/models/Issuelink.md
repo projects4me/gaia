@@ -30,4 +30,4 @@
 - controller: Gaia\MVC\REST\Controllers\IssuelinkController
 - routes: DELETE /api/v1/issuelink, DELETE /api/v1/issuelink/{id}, GET /api/v1/issuelink, GET /api/v1/issuelink/{id}, GET /api/v1/issuelink/{id}/{relation}, OPTIONS /api/v1/issuelink, PATCH /api/v1/issuelink, PATCH /api/v1/issuelink/{id}, POST /api/v1/issuelink, PUT /api/v1/issuelink, PUT /api/v1/issuelink/{id}
 - components: -
-- cases: 32 (acl 8, backend 3, client 21); gaia-dev cases issuelink
+- cases: 35 (acl 8, backend 3, client 24); gaia-dev cases issuelink
