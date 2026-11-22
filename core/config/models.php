@@ -77,7 +77,8 @@ $config['models'] = [
     'Workflowrun',
     'Workflowrunstep',
     'Workspace',
-    'Workspacemember'
+    'Workspacemember',
+    'Workspacemilestone'
 ];
 
 return $config;

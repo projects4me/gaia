@@ -491,7 +491,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('doc'), ('doccontent'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep'), ('workspace'), ('repository'), ('workspacemember')
+    ('systemsetting'), ('userrole'), ('doc'), ('doccontent'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep'), ('workspace'), ('repository'), ('workspacemember'), ('workspacemilestone')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -1570,6 +1570,82 @@ VALUES
   ('atp-acl-mem-wsmember-get', 'api-test-role-acl-mem', 'workspacemember.get', 0, NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET allowed = EXCLUDED.allowed;
 
+-- Workspace milestones (Workspaces D-020): a fifth workspace with three live projects and a deleted one.
+-- "Release 1" is open in all three live projects (one row, projectCount 3, in_progress because one is); its
+-- issues: two in the first project (one done; a deleted one does not count), one open in the second, one done in
+-- the third: issueCount 4, doneIssueCount 2. A completed and a deleted "Release 1", and one in the deleted
+-- project, each hold an open issue that does not count. "Sprint 9" is planned in the first project only and ends
+-- first. "Shipped" is completed and has no row.
+INSERT INTO workspaces (
+  id, "name", "shortCode", "description", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workspace-000005', 'Milestones workspace', 'apimilestones', 'Holds the workspace milestone rows', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO projects (
+  id, name, "shortCode", type, "modifiedUser", deleted, status,
+  "createdUser", "createdUserName", "modifiedUserName", done, "projectManager", "workspaceId"
+) VALUES
+  ('api-test-project-wsms-1', 'Workspace Milestones One', 'WMS1', 'software', 'api-test-user-0001', 0, 'new',
+   'api-test-user-0001', 'API Tester', 'API Tester', 0, 'api-test-user-0001', 'api-test-workspace-000005'),
+  ('api-test-project-wsms-2', 'Workspace Milestones Two', 'WMS2', 'software', 'api-test-user-0001', 0, 'new',
+   'api-test-user-0001', 'API Tester', 'API Tester', 0, 'api-test-user-0001', 'api-test-workspace-000005'),
+  ('api-test-project-wsms-3', 'Workspace Milestones Three', 'WMS3', 'software', 'api-test-user-0001', 0, 'new',
+   'api-test-user-0001', 'API Tester', 'API Tester', 0, 'api-test-user-0001', 'api-test-workspace-000005'),
+  ('api-test-project-wsms-4', 'Workspace Milestones Deleted', 'WMS4', 'software', 'api-test-user-0001', 1, 'new',
+   'api-test-user-0001', 'API Tester', 'API Tester', 0, 'api-test-user-0001', 'api-test-workspace-000005')
+ON CONFLICT (id) DO UPDATE SET deleted = EXCLUDED.deleted, "workspaceId" = EXCLUDED."workspaceId";
+
+INSERT INTO milestones (
+  id, name, deleted, "createdUser", "modifiedUser", status, "milestoneType", "projectId",
+  "createdUserName", "modifiedUserName", "startDate", "endDate"
+)
+SELECT v.id, v.name, v.deleted, 'api-test-user-0001', 'api-test-user-0001', v.status, 'milestone', v.project,
+  'API Tester', 'API Tester', v.starts::date, v.ends::date
+FROM (VALUES
+  ('api-test-milestone-wsms-1', 'Release 1', 0, 'planned', 'api-test-project-wsms-1', '2026-01-10', '2026-03-01'),
+  ('api-test-milestone-wsms-2', 'Release 1', 0, 'in_progress', 'api-test-project-wsms-2', '2026-01-01', '2026-02-01'),
+  ('api-test-milestone-wsms-3', 'Release 1', 0, 'planned', 'api-test-project-wsms-3', '2026-02-01', '2026-04-01'),
+  ('api-test-milestone-wsms-4', 'Release 1', 0, 'planned', 'api-test-project-wsms-4', '2025-01-01', '2027-01-01'),
+  ('api-test-milestone-wsms-5', 'Release 1', 0, 'completed', 'api-test-project-wsms-1', '2025-01-01', '2027-01-01'),
+  ('api-test-milestone-wsms-6', 'Release 1', 1, 'planned', 'api-test-project-wsms-2', '2025-01-01', '2027-01-01'),
+  ('api-test-milestone-wsms-7', 'Sprint 9', 0, 'planned', 'api-test-project-wsms-1', '2026-01-01', '2026-01-15'),
+  ('api-test-milestone-wsms-8', 'Shipped', 0, 'completed', 'api-test-project-wsms-1', '2025-01-01', '2025-02-01')
+) AS v(id, name, deleted, status, project, starts, ends)
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, deleted = EXCLUDED.deleted, status = EXCLUDED.status,
+  "projectId" = EXCLUDED."projectId", "startDate" = EXCLUDED."startDate", "endDate" = EXCLUDED."endDate";
+
+INSERT INTO issues (
+  id, subject, deleted, "createdUser", owner, assignee, "reportedUser", "modifiedUser",
+  priority, status, "projectId", "milestoneId", "typeId", "createdUserName", "modifiedUserName",
+  "statusId", "projectShortcode", "isPlanned", "isReopened", "issueNumber"
+)
+SELECT v.id, v.subject, v.deleted, 'api-test-user-0001', 'api-test-user-0001', 'api-test-user-0001', 'api-test-user-0001',
+  'api-test-user-0001', 'low', 'new', v.project, v.milestone,
+  (SELECT id FROM issue_types WHERE system = 1 AND deleted = 0 ORDER BY id LIMIT 1), 'API Tester', 'API Tester',
+  (SELECT id FROM issue_statuses WHERE system = 1 AND deleted = 0 AND done = v.done ORDER BY id LIMIT 1),
+  v.code, 0, 0, nextval('"issues_issueNumber_seq"')
+FROM (VALUES
+  ('api-test-issue-wsms-01', 'Release open issue', 0, 'api-test-project-wsms-1', 'api-test-milestone-wsms-1', 'WMS1', 0),
+  ('api-test-issue-wsms-02', 'Release done issue', 0, 'api-test-project-wsms-1', 'api-test-milestone-wsms-1', 'WMS1', 1),
+  ('api-test-issue-wsms-03', 'Release deleted issue', 1, 'api-test-project-wsms-1', 'api-test-milestone-wsms-1', 'WMS1', 0),
+  ('api-test-issue-wsms-04', 'Release second project issue', 0, 'api-test-project-wsms-2', 'api-test-milestone-wsms-2', 'WMS2', 0),
+  ('api-test-issue-wsms-05', 'Release third project issue', 0, 'api-test-project-wsms-3', 'api-test-milestone-wsms-3', 'WMS3', 1),
+  ('api-test-issue-wsms-06', 'Release deleted project issue', 0, 'api-test-project-wsms-4', 'api-test-milestone-wsms-4', 'WMS4', 0),
+  ('api-test-issue-wsms-07', 'Release completed milestone issue', 0, 'api-test-project-wsms-1', 'api-test-milestone-wsms-5', 'WMS1', 0),
+  ('api-test-issue-wsms-08', 'Release deleted milestone issue', 0, 'api-test-project-wsms-2', 'api-test-milestone-wsms-6', 'WMS2', 0)
+) AS v(id, subject, deleted, project, milestone, code, done)
+ON CONFLICT (id) DO UPDATE SET deleted = EXCLUDED.deleted, "projectId" = EXCLUDED."projectId",
+  "milestoneId" = EXCLUDED."milestoneId", "statusId" = EXCLUDED."statusId";
+
+-- Workspace milestones ACL: the no-setting role reads workspace milestones but not workspaces (group denial); the
+-- members role is refused workspacemilestone.get (module denial)
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-ns-wsmilestone-get', 'api-test-role-acl-ns', 'workspacemilestone.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-wsmilestone-get', 'api-test-role-acl-mem', 'workspacemilestone.get', 0, NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET allowed = EXCLUDED.allowed;
+
 -- Refresh auth materialized views when present (used by RLS helpers)
 DO $$
 BEGIN
@@ -1747,6 +1823,9 @@ data = {
     "workspacememberId": "12bb5dc3-bc0d-62d0-b066-7ef18000b3b8",
     "agentWorkspacememberId": "66c3a7da-ba5f-1a20-1c45-7768d05a39c2",
     "aclMemWorkspacememberId": "2cb5df70-7dcb-7013-fd55-c404cbf7f256",
+    "milestoneWorkspaceId": "api-test-workspace-000005",
+    "workspacemilestoneId": "f71f4371-0003-21d3-2f92-eabb5aeed838",
+    "sprintWorkspacemilestoneId": "a57ea343-181e-19cf-dad9-f0b4370f32e1",
     "repositoryId": "api-test-repository-000001",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",

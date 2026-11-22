@@ -168,6 +168,13 @@
             ],
             "identifier": "id"
         },
+        "workspacemilestone": {
+            "path": "/api/:version/workspacemilestone",
+            "allowedMethods": [
+                "GET"
+            ],
+            "identifier": "id"
+        },
         "workflowreference": {
             "path": "/api/:version/workflowreference",
             "allowedMethods": [

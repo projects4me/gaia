@@ -115,6 +115,8 @@ $fixtureIds = [
     'workspace' => '{workspaceId}',
     // A member row's id is derived from its workspace and user (seeded member workspace).
     'workspacemember' => '{workspacememberId}',
+    // A milestone row's id is derived from its workspace and milestone name (seeded milestone workspace).
+    'workspacemilestone' => '{workspacemilestoneId}',
 ];
 
 /** relatedTo/relatedId defaults inferred from metadata relationships / known modules. */

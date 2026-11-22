@@ -3741,6 +3741,30 @@
       "attributes": {}
     },
     {
+      "id": "action:workspacemilestone.get",
+      "type": "action",
+      "key": "workspacemilestone.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspacemilestone.list",
+      "type": "action",
+      "key": "workspacemilestone.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspacemilestone.options",
+      "type": "action",
+      "key": "workspacemilestone.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspacemilestone.related",
+      "type": "action",
+      "key": "workspacemilestone.related",
+      "attributes": {}
+    },
+    {
       "id": "assertion:attributesAbsent",
       "type": "assertion",
       "key": "attributesAbsent",
@@ -9444,6 +9468,56 @@
       }
     },
     {
+      "id": "case:acl/acl-workspacemilestone-denied-without-grant",
+      "type": "case",
+      "key": "acl/acl-workspacemilestone-denied-without-grant",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemilestone",
+        "resource": "workspacemilestone",
+        "enabled": true,
+        "source": "acl-workspace",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workspacemilestone-denied-without-workspace-group",
+      "type": "case",
+      "key": "acl/acl-workspacemilestone-denied-without-workspace-group",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemilestone",
+        "resource": "workspacemilestone",
+        "enabled": true,
+        "source": "acl-workspace",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workspacemilestone-detail-denied-without-workspace-group",
+      "type": "case",
+      "key": "acl/acl-workspacemilestone-detail-denied-without-workspace-group",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemilestone/{workspacemilestoneId}",
+        "resource": "workspacemilestone",
+        "enabled": true,
+        "source": "acl-workspace",
+        "placeholders": [
+          "workspacemilestoneId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "case",
       "key": "backend/delete-activity-api-v1-activity-runtime-id",
@@ -12526,6 +12600,40 @@
         "source": "backend-metadata",
         "placeholders": [
           "workspacememberId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workspacemilestone-api-v1-workspacemilestone",
+      "type": "case",
+      "key": "backend/get-workspacemilestone-api-v1-workspacemilestone",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemilestone",
+        "resource": "workspacemilestone",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workspacemilestone-api-v1-workspacemilestone-id",
+      "type": "case",
+      "key": "backend/get-workspacemilestone-api-v1-workspacemilestone-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemilestone/{workspacemilestoneId}",
+        "resource": "workspacemilestone",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workspacemilestoneId"
         ],
         "stores": []
       }
@@ -25678,6 +25786,121 @@
       }
     },
     {
+      "id": "case:client/workspacemilestone-create-refused",
+      "type": "case",
+      "key": "client/workspacemilestone-create-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspacemilestone",
+        "resource": "workspacemilestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "milestoneWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspacemilestone-delete-refused",
+      "type": "case",
+      "key": "client/workspacemilestone-delete-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/workspacemilestone/{workspacemilestoneId}",
+        "resource": "workspacemilestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workspacemilestoneId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspacemilestone-detail-dates",
+      "type": "case",
+      "key": "client/workspacemilestone-detail-dates",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemilestone/{workspacemilestoneId}",
+        "resource": "workspacemilestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "milestoneWorkspaceId",
+          "workspacemilestoneId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspacemilestone-one-row-per-name",
+      "type": "case",
+      "key": "client/workspacemilestone-one-row-per-name",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemilestone",
+        "resource": "workspacemilestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "milestoneWorkspaceId",
+          "sprintWorkspacemilestoneId",
+          "workspacemilestoneId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspacemilestone-other-workspace-excluded",
+      "type": "case",
+      "key": "client/workspacemilestone-other-workspace-excluded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemilestone",
+        "resource": "workspacemilestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "sprintWorkspacemilestoneId",
+          "workspaceId",
+          "workspacemilestoneId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspacemilestone-pages-by-end-date",
+      "type": "case",
+      "key": "client/workspacemilestone-pages-by-end-date",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemilestone",
+        "resource": "workspacemilestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "milestoneWorkspaceId",
+          "sprintWorkspacemilestoneId",
+          "workspacemilestoneId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:live/live-agent-run-cleanup-agent-membership",
       "type": "case",
       "key": "live/live-agent-run-cleanup-agent-membership",
@@ -28650,6 +28873,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\WorkspacememberController",
         "file": "app/api/v1/controllers/WorkspacememberController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:workspacemilestone",
+      "type": "controller",
+      "key": "workspacemilestone",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\WorkspacemilestoneController",
+        "file": "app/api/v1/controllers/WorkspacemilestoneController.php",
         "extends": "RestController"
       }
     },
@@ -39004,6 +39238,102 @@
       }
     },
     {
+      "id": "field:Workspacemilestone.doneIssueCount",
+      "type": "field",
+      "key": "Workspacemilestone.doneIssueCount",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MILESTONES_DONE_ISSUE_COUNT",
+        "type": "int",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workspacemilestone.endDate",
+      "type": "field",
+      "key": "Workspacemilestone.endDate",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MILESTONES_END_DATE",
+        "type": "date",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workspacemilestone.id",
+      "type": "field",
+      "key": "Workspacemilestone.id",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MILESTONES_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Workspacemilestone.issueCount",
+      "type": "field",
+      "key": "Workspacemilestone.issueCount",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MILESTONES_ISSUE_COUNT",
+        "type": "int",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workspacemilestone.name",
+      "type": "field",
+      "key": "Workspacemilestone.name",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MILESTONES_NAME",
+        "type": "varchar",
+        "length": "255",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workspacemilestone.projectCount",
+      "type": "field",
+      "key": "Workspacemilestone.projectCount",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MILESTONES_PROJECT_COUNT",
+        "type": "int",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workspacemilestone.startDate",
+      "type": "field",
+      "key": "Workspacemilestone.startDate",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MILESTONES_START_DATE",
+        "type": "date",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workspacemilestone.status",
+      "type": "field",
+      "key": "Workspacemilestone.status",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MILESTONES_STATUS",
+        "type": "varchar",
+        "length": "25",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workspacemilestone.workspaceId",
+      "type": "field",
+      "key": "Workspacemilestone.workspaceId",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MILESTONES_WORKSPACE",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
       "id": "fixture:aclMemWorkspacememberId",
       "type": "fixture",
       "key": "aclMemWorkspacememberId",
@@ -39332,6 +39662,14 @@
       }
     },
     {
+      "id": "fixture:milestoneWorkspaceId",
+      "type": "fixture",
+      "key": "milestoneWorkspaceId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:otherAgentId",
       "type": "fixture",
       "key": "otherAgentId",
@@ -39604,6 +39942,14 @@
       }
     },
     {
+      "id": "fixture:sprintWorkspacemilestoneId",
+      "type": "fixture",
+      "key": "sprintWorkspacemilestoneId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:staleRuntimeWorkspaceId",
       "type": "fixture",
       "key": "staleRuntimeWorkspaceId",
@@ -39751,6 +40097,14 @@
       "id": "fixture:workspacememberId",
       "type": "fixture",
       "key": "workspacememberId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:workspacemilestoneId",
+      "type": "fixture",
+      "key": "workspacemilestoneId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -41166,6 +41520,23 @@
       "attributes": {
         "file": "app/metadata/model/Workspacemember.php",
         "tableName": "workspace_members",
+        "isView": true,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": {
+          "groups": [
+            "Workspace"
+          ]
+        }
+      }
+    },
+    {
+      "id": "model:Workspacemilestone",
+      "type": "model",
+      "key": "Workspacemilestone",
+      "attributes": {
+        "file": "app/metadata/model/Workspacemilestone.php",
+        "tableName": "workspace_milestones",
         "isView": true,
         "registered": true,
         "hasMetadata": true,
@@ -43552,6 +43923,42 @@
       "id": "permission:workspacemember.update",
       "type": "permission",
       "key": "workspacemember.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workspacemilestone.create",
+      "type": "permission",
+      "key": "workspacemilestone.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workspacemilestone.delete",
+      "type": "permission",
+      "key": "workspacemilestone.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workspacemilestone.get",
+      "type": "permission",
+      "key": "workspacemilestone.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workspacemilestone.update",
+      "type": "permission",
+      "key": "workspacemilestone.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -46181,6 +46588,16 @@
       "id": "relationship:Workspacemember.workspace",
       "type": "relationship",
       "key": "Workspacemember.workspace",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "workspaceId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workspacemilestone.workspace",
+      "type": "relationship",
+      "key": "Workspacemilestone.workspace",
       "attributes": {
         "kind": "hasOne",
         "primaryKey": "workspaceId",
@@ -49764,6 +50181,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/workspacemilestone",
+      "type": "route",
+      "key": "GET /api/v1/workspacemilestone",
+      "attributes": {
+        "type": "rest",
+        "name": "workspacemilestone",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workspacemilestone"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workspacemilestone/{id}",
+      "type": "route",
+      "key": "GET /api/v1/workspacemilestone/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workspacemilestone",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workspacemilestone/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workspacemilestone/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/workspacemilestone/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "workspacemilestone",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workspacemilestone/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/activity",
       "type": "route",
       "key": "OPTIONS /api/v1/activity",
@@ -50625,6 +51078,18 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/workspacemember"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/workspacemilestone",
+      "type": "route",
+      "key": "OPTIONS /api/v1/workspacemilestone",
+      "attributes": {
+        "type": "rest",
+        "name": "workspacemilestone",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/workspacemilestone"
       }
     },
     {
@@ -55924,6 +56389,21 @@
       "from": "action:workspacemember.related",
       "type": "requires",
       "to": "permission:workspacemember.get"
+    },
+    {
+      "from": "action:workspacemilestone.get",
+      "type": "requires",
+      "to": "permission:workspacemilestone.get"
+    },
+    {
+      "from": "action:workspacemilestone.list",
+      "type": "requires",
+      "to": "permission:workspacemilestone.get"
+    },
+    {
+      "from": "action:workspacemilestone.related",
+      "type": "requires",
+      "to": "permission:workspacemilestone.get"
     },
     {
       "from": "case:acl/acl-admin-comment-allowed",
@@ -65406,6 +65886,101 @@
       "to": "fixture:workspacememberId"
     },
     {
+      "from": "case:acl/acl-workspacemilestone-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-denied-without-grant",
+      "type": "covers",
+      "to": "controller:workspacemilestone"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-denied-without-grant",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemilestone"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-denied-without-grant",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-denied-without-workspace-group",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-denied-without-workspace-group",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-denied-without-workspace-group",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-denied-without-workspace-group",
+      "type": "covers",
+      "to": "controller:workspacemilestone"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-denied-without-workspace-group",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemilestone"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-denied-without-workspace-group",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-detail-denied-without-workspace-group",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-detail-denied-without-workspace-group",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-detail-denied-without-workspace-group",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-detail-denied-without-workspace-group",
+      "type": "covers",
+      "to": "controller:workspacemilestone"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-detail-denied-without-workspace-group",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemilestone/{id}"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-detail-denied-without-workspace-group",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-workspacemilestone-detail-denied-without-workspace-group",
+      "type": "uses_fixture",
+      "to": "fixture:workspacemilestoneId"
+    },
+    {
       "from": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -70814,6 +71389,66 @@
       "from": "case:backend/get-workspacemember-api-v1-workspacemember-id",
       "type": "uses_fixture",
       "to": "fixture:workspacememberId"
+    },
+    {
+      "from": "case:backend/get-workspacemilestone-api-v1-workspacemilestone",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workspacemilestone-api-v1-workspacemilestone",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workspacemilestone-api-v1-workspacemilestone",
+      "type": "covers",
+      "to": "controller:workspacemilestone"
+    },
+    {
+      "from": "case:backend/get-workspacemilestone-api-v1-workspacemilestone",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemilestone"
+    },
+    {
+      "from": "case:backend/get-workspacemilestone-api-v1-workspacemilestone",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workspacemilestone-api-v1-workspacemilestone-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workspacemilestone-api-v1-workspacemilestone-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workspacemilestone-api-v1-workspacemilestone-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workspacemilestone-api-v1-workspacemilestone-id",
+      "type": "covers",
+      "to": "controller:workspacemilestone"
+    },
+    {
+      "from": "case:backend/get-workspacemilestone-api-v1-workspacemilestone-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemilestone/{id}"
+    },
+    {
+      "from": "case:backend/get-workspacemilestone-api-v1-workspacemilestone-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workspacemilestone-api-v1-workspacemilestone-id",
+      "type": "uses_fixture",
+      "to": "fixture:workspacemilestoneId"
     },
     {
       "from": "case:backend/patch-activity-api-v1-activity-id",
@@ -94821,6 +95456,231 @@
       "to": "fixture:workspacememberId"
     },
     {
+      "from": "case:client/workspacemilestone-create-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspacemilestone-create-refused",
+      "type": "covers",
+      "to": "controller:workspacemilestone"
+    },
+    {
+      "from": "case:client/workspacemilestone-create-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspacemilestone-create-refused",
+      "type": "uses_fixture",
+      "to": "fixture:milestoneWorkspaceId"
+    },
+    {
+      "from": "case:client/workspacemilestone-delete-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspacemilestone-delete-refused",
+      "type": "covers",
+      "to": "controller:workspacemilestone"
+    },
+    {
+      "from": "case:client/workspacemilestone-delete-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspacemilestone-delete-refused",
+      "type": "uses_fixture",
+      "to": "fixture:workspacemilestoneId"
+    },
+    {
+      "from": "case:client/workspacemilestone-detail-dates",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspacemilestone-detail-dates",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspacemilestone-detail-dates",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspacemilestone-detail-dates",
+      "type": "covers",
+      "to": "controller:workspacemilestone"
+    },
+    {
+      "from": "case:client/workspacemilestone-detail-dates",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemilestone/{id}"
+    },
+    {
+      "from": "case:client/workspacemilestone-detail-dates",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspacemilestone-detail-dates",
+      "type": "uses_fixture",
+      "to": "fixture:milestoneWorkspaceId"
+    },
+    {
+      "from": "case:client/workspacemilestone-detail-dates",
+      "type": "uses_fixture",
+      "to": "fixture:workspacemilestoneId"
+    },
+    {
+      "from": "case:client/workspacemilestone-one-row-per-name",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspacemilestone-one-row-per-name",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspacemilestone-one-row-per-name",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspacemilestone-one-row-per-name",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspacemilestone-one-row-per-name",
+      "type": "covers",
+      "to": "controller:workspacemilestone"
+    },
+    {
+      "from": "case:client/workspacemilestone-one-row-per-name",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemilestone"
+    },
+    {
+      "from": "case:client/workspacemilestone-one-row-per-name",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspacemilestone-one-row-per-name",
+      "type": "uses_fixture",
+      "to": "fixture:milestoneWorkspaceId"
+    },
+    {
+      "from": "case:client/workspacemilestone-one-row-per-name",
+      "type": "uses_fixture",
+      "to": "fixture:sprintWorkspacemilestoneId"
+    },
+    {
+      "from": "case:client/workspacemilestone-one-row-per-name",
+      "type": "uses_fixture",
+      "to": "fixture:workspacemilestoneId"
+    },
+    {
+      "from": "case:client/workspacemilestone-other-workspace-excluded",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/workspacemilestone-other-workspace-excluded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspacemilestone-other-workspace-excluded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspacemilestone-other-workspace-excluded",
+      "type": "covers",
+      "to": "controller:workspacemilestone"
+    },
+    {
+      "from": "case:client/workspacemilestone-other-workspace-excluded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemilestone"
+    },
+    {
+      "from": "case:client/workspacemilestone-other-workspace-excluded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspacemilestone-other-workspace-excluded",
+      "type": "uses_fixture",
+      "to": "fixture:sprintWorkspacemilestoneId"
+    },
+    {
+      "from": "case:client/workspacemilestone-other-workspace-excluded",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:client/workspacemilestone-other-workspace-excluded",
+      "type": "uses_fixture",
+      "to": "fixture:workspacemilestoneId"
+    },
+    {
+      "from": "case:client/workspacemilestone-pages-by-end-date",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/workspacemilestone-pages-by-end-date",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/workspacemilestone-pages-by-end-date",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspacemilestone-pages-by-end-date",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspacemilestone-pages-by-end-date",
+      "type": "covers",
+      "to": "controller:workspacemilestone"
+    },
+    {
+      "from": "case:client/workspacemilestone-pages-by-end-date",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemilestone"
+    },
+    {
+      "from": "case:client/workspacemilestone-pages-by-end-date",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspacemilestone-pages-by-end-date",
+      "type": "uses_fixture",
+      "to": "fixture:milestoneWorkspaceId"
+    },
+    {
+      "from": "case:client/workspacemilestone-pages-by-end-date",
+      "type": "uses_fixture",
+      "to": "fixture:sprintWorkspacemilestoneId"
+    },
+    {
+      "from": "case:client/workspacemilestone-pages-by-end-date",
+      "type": "uses_fixture",
+      "to": "fixture:workspacemilestoneId"
+    },
+    {
       "from": "case:live/live-agent-run-cleanup-agent-membership",
       "type": "asserts",
       "to": "assertion:status"
@@ -100834,6 +101694,31 @@
       "from": "controller:workspacemember",
       "type": "serves",
       "to": "model:Workspacemember"
+    },
+    {
+      "from": "controller:workspacemilestone",
+      "type": "has_action",
+      "to": "action:workspacemilestone.get"
+    },
+    {
+      "from": "controller:workspacemilestone",
+      "type": "has_action",
+      "to": "action:workspacemilestone.list"
+    },
+    {
+      "from": "controller:workspacemilestone",
+      "type": "has_action",
+      "to": "action:workspacemilestone.options"
+    },
+    {
+      "from": "controller:workspacemilestone",
+      "type": "has_action",
+      "to": "action:workspacemilestone.related"
+    },
+    {
+      "from": "controller:workspacemilestone",
+      "type": "serves",
+      "to": "model:Workspacemilestone"
     },
     {
       "from": "field:Activity.createdUserName",
@@ -109061,6 +109946,56 @@
       "to": "relationship:Workspacemember.workspace"
     },
     {
+      "from": "model:Workspacemilestone",
+      "type": "has_field",
+      "to": "field:Workspacemilestone.doneIssueCount"
+    },
+    {
+      "from": "model:Workspacemilestone",
+      "type": "has_field",
+      "to": "field:Workspacemilestone.endDate"
+    },
+    {
+      "from": "model:Workspacemilestone",
+      "type": "has_field",
+      "to": "field:Workspacemilestone.id"
+    },
+    {
+      "from": "model:Workspacemilestone",
+      "type": "has_field",
+      "to": "field:Workspacemilestone.issueCount"
+    },
+    {
+      "from": "model:Workspacemilestone",
+      "type": "has_field",
+      "to": "field:Workspacemilestone.name"
+    },
+    {
+      "from": "model:Workspacemilestone",
+      "type": "has_field",
+      "to": "field:Workspacemilestone.projectCount"
+    },
+    {
+      "from": "model:Workspacemilestone",
+      "type": "has_field",
+      "to": "field:Workspacemilestone.startDate"
+    },
+    {
+      "from": "model:Workspacemilestone",
+      "type": "has_field",
+      "to": "field:Workspacemilestone.status"
+    },
+    {
+      "from": "model:Workspacemilestone",
+      "type": "has_field",
+      "to": "field:Workspacemilestone.workspaceId"
+    },
+    {
+      "from": "model:Workspacemilestone",
+      "type": "has_relationship",
+      "to": "relationship:Workspacemilestone.workspace"
+    },
+    {
       "from": "permission:issue.description.create",
       "type": "guards",
       "to": "field:Issue.description"
@@ -109379,6 +110314,11 @@
       "from": "profile:aclMembers",
       "type": "denies",
       "to": "permission:workspacemember.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "denies",
+      "to": "permission:workspacemilestone.get"
     },
     {
       "from": "profile:aclMembers",
@@ -109749,6 +110689,11 @@
       "from": "profile:aclNoSetting",
       "type": "grants",
       "to": "permission:workspacemember.get"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:workspacemilestone.get"
     },
     {
       "from": "profile:aclProjectOnly",
@@ -110989,6 +111934,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:workspacemember.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workspacemilestone.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workspacemilestone.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workspacemilestone.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workspacemilestone.update"
     },
     {
       "from": "relationship:Activity.conversationroom",
@@ -112247,6 +113212,11 @@
     },
     {
       "from": "relationship:Workspacemember.workspace",
+      "type": "targets",
+      "to": "model:Workspace"
+    },
+    {
+      "from": "relationship:Workspacemilestone.workspace",
       "type": "targets",
       "to": "model:Workspace"
     },
@@ -113741,6 +114711,21 @@
       "to": "action:workspacemember.related"
     },
     {
+      "from": "route:GET /api/v1/workspacemilestone",
+      "type": "handled_by",
+      "to": "action:workspacemilestone.list"
+    },
+    {
+      "from": "route:GET /api/v1/workspacemilestone/{id}",
+      "type": "handled_by",
+      "to": "action:workspacemilestone.get"
+    },
+    {
+      "from": "route:GET /api/v1/workspacemilestone/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:workspacemilestone.related"
+    },
+    {
       "from": "route:OPTIONS /api/v1/activity",
       "type": "handled_by",
       "to": "action:activity.options"
@@ -114099,6 +115084,11 @@
       "from": "route:OPTIONS /api/v1/workspacemember",
       "type": "handled_by",
       "to": "action:workspacemember.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/workspacemilestone",
+      "type": "handled_by",
+      "to": "action:workspacemilestone.options"
     },
     {
       "from": "route:PATCH /api/v1/activity",
