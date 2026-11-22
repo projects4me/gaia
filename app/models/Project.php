@@ -9,6 +9,7 @@ namespace Gaia\MVC\Models;
 use Gaia\Core\MVC\Models\Model;
 use Gaia\Libraries\Utils\TransactionScope;
 use Gaia\Libraries\Workspaces\MembershipSync;
+use Gaia\Libraries\Workspaces\ProjectRepositories;
 use Gaia\Libraries\Workspaces\ProjectWorkspace;
 use Gaia\MVC\REST\Controllers\Components\Events\MembershipLiveEventsComponent;
 use Phalcon\Messages\Message;
@@ -82,8 +83,9 @@ class Project extends Model
     }
 
     /**
-     * Sync the memberships after a move: the old workspace's agents leave the
-     * project and the new workspace's projects get the same members.
+     * After a move: the project's repositories follow it (D-015), the old
+     * workspace's agents leave the project and the new workspace's projects
+     * get the same members.
      *
      * @return void
      */
@@ -93,6 +95,7 @@ class Project extends Model
             return;
         }
 
+        (new ProjectRepositories())->move($this->id, (string) $this->workspaceId);
         $this->movedMemberships = (new MembershipSync())
             ->projectMoved($this->id, $this->movingFrom, (string) $this->workspaceId);
     }
