@@ -77,6 +77,24 @@ class ProjectWorkspace
     }
 
     /**
+     * When the project joined the workspace it is saved in (Workspaces D-015): now for a new project or a move,
+     * otherwise the stored value, so no request can write it.
+     *
+     * @param  array|null $snapshot    The stored row, null for a new record
+     * @param  mixed      $workspaceId The value being saved
+     * @param  string     $now         UTC datetime `Y-m-d H:i:s`
+     * @return string|null
+     */
+    public function joinedAt($snapshot, $workspaceId, $now)
+    {
+        if (!is_array($snapshot) || $this->isMove($snapshot, $workspaceId)) {
+            return $now;
+        }
+
+        return $snapshot['workspaceJoinedAt'] ?? null;
+    }
+
+    /**
      * The workspace takes the project's short code, or the first free code
      * derived from it when another workspace already has it.
      *

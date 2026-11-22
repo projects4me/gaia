@@ -56,4 +56,40 @@ class ProjectWorkspaceTest extends TestCase
     {
         $this->assertFalse((new ProjectWorkspace())->isMove(['workspaceId' => null], null));
     }
+
+    /**
+     * A new project joins its workspace now (Workspaces D-015).
+     *
+     * @return void
+     */
+    public function testNewProjectJoinsNow()
+    {
+        $this->assertSame('2026-11-22 10:00:00', (new ProjectWorkspace())->joinedAt(null, 'w1', '2026-11-22 10:00:00'));
+    }
+
+    /**
+     * A move restamps the join date.
+     *
+     * @return void
+     */
+    public function testMoveJoinsNow()
+    {
+        $snapshot = ['workspaceId' => 'w1', 'workspaceJoinedAt' => '2026-01-01 00:00:00'];
+
+        $this->assertSame('2026-11-22 10:00:00', (new ProjectWorkspace())->joinedAt($snapshot, 'w2', '2026-11-22 10:00:00'));
+    }
+
+    /**
+     * Any other save keeps the stored join date, whatever the request sent.
+     *
+     * @return void
+     */
+    public function testOtherSaveKeepsTheStoredJoinDate()
+    {
+        $rule = new ProjectWorkspace();
+        $snapshot = ['workspaceId' => 'w1', 'workspaceJoinedAt' => '2026-01-01 00:00:00'];
+
+        $this->assertSame('2026-01-01 00:00:00', $rule->joinedAt($snapshot, 'w1', '2026-11-22 10:00:00'));
+        $this->assertNull($rule->joinedAt(['workspaceId' => 'w1'], 'w1', '2026-11-22 10:00:00'));
+    }
 }

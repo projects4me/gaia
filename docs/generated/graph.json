@@ -20520,6 +20520,308 @@
       }
     },
     {
+      "id": "case:client/project-stats-cleanup-project",
+      "type": "case",
+      "key": "client/project-stats-cleanup-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/project/{runtime.statsProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.statsProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-stats-create-active-milestone",
+      "type": "case",
+      "key": "client/project-stats-create-active-milestone",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/milestone",
+        "resource": "milestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.statsProjectId"
+        ],
+        "stores": [
+          "runtime.statsActiveMilestoneId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-stats-create-closed-issue",
+      "type": "case",
+      "key": "client/project-stats-create-closed-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "doneIssuestatusId",
+          "issuetypeId",
+          "projectShortcode",
+          "runtime.statsProjectId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.statsClosedIssueId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-stats-create-later-active-milestone",
+      "type": "case",
+      "key": "client/project-stats-create-later-active-milestone",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/milestone",
+        "resource": "milestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.statsProjectId"
+        ],
+        "stores": [
+          "runtime.statsLaterActiveMilestoneId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-stats-create-later-planned-milestone",
+      "type": "case",
+      "key": "client/project-stats-create-later-planned-milestone",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/milestone",
+        "resource": "milestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.statsProjectId"
+        ],
+        "stores": [
+          "runtime.statsLaterMilestoneId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-stats-create-open-issue",
+      "type": "case",
+      "key": "client/project-stats-create-open-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectShortcode",
+          "runtime.statsProjectId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.statsOpenIssueId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-stats-create-planned-milestone",
+      "type": "case",
+      "key": "client/project-stats-create-planned-milestone",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/milestone",
+        "resource": "milestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.statsProjectId"
+        ],
+        "stores": [
+          "runtime.statsPlannedMilestoneId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-stats-create-project",
+      "type": "case",
+      "key": "client/project-stats-create-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.statsWsId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.statsProjectId",
+          "runtime.statsJoinedAt"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-stats-create-workspace",
+      "type": "case",
+      "key": "client/project-stats-create-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspace",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId"
+        ],
+        "stores": [
+          "runtime.statsWsId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-stats-delete-active-milestone",
+      "type": "case",
+      "key": "client/project-stats-delete-active-milestone",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/milestone/{runtime.statsActiveMilestoneId}",
+        "resource": "milestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.statsActiveMilestoneId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-stats-delete-later-active-milestone",
+      "type": "case",
+      "key": "client/project-stats-delete-later-active-milestone",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/milestone/{runtime.statsLaterActiveMilestoneId}",
+        "resource": "milestone",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.statsLaterActiveMilestoneId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-stats-falls-back-to-next-planned",
+      "type": "case",
+      "key": "client/project-stats-falls-back-to-next-planned",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/project/{runtime.statsProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.statsPlannedMilestoneId",
+          "runtime.statsProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-stats-list-by-workspace",
+      "type": "case",
+      "key": "client/project-stats-list-by-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.statsActiveMilestoneId",
+          "runtime.statsJoinedAt",
+          "runtime.statsProjectId",
+          "runtime.statsWsId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-stats-runs-in-progress",
+      "type": "case",
+      "key": "client/project-stats-runs-in-progress",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/project/{otherProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-stats-write-ignored",
+      "type": "case",
+      "key": "client/project-stats-write-ignored",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/project/{runtime.statsProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.statsActiveMilestoneId",
+          "runtime.statsJoinedAt",
+          "runtime.statsProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/put-systemnotification-api-v1-systemnotification-id",
       "type": "case",
       "key": "client/put-systemnotification-api-v1-systemnotification-id",
@@ -32438,6 +32740,16 @@
       }
     },
     {
+      "id": "field:Project.workspaceJoinedAt",
+      "type": "field",
+      "key": "Project.workspaceJoinedAt",
+      "attributes": {
+        "label": "LBL_PROJECTS_WORKSPACE_JOINED_AT",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
       "id": "field:Repository.baseBranch",
       "type": "field",
       "key": "Repository.baseBranch",
@@ -38408,6 +38720,14 @@
       "id": "fixture:doccontentId",
       "type": "fixture",
       "key": "doccontentId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:doneIssuestatusId",
+      "type": "fixture",
+      "key": "doneIssuestatusId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -84457,6 +84777,536 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/project-stats-cleanup-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-cleanup-project",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-stats-cleanup-project",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-project"
+    },
+    {
+      "from": "case:client/project-stats-cleanup-project",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-stats-cleanup-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-create-active-milestone",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-stats-create-active-milestone",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-create-active-milestone",
+      "type": "covers",
+      "to": "controller:milestone"
+    },
+    {
+      "from": "case:client/project-stats-create-active-milestone",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-project"
+    },
+    {
+      "from": "case:client/project-stats-create-active-milestone",
+      "type": "exercises",
+      "to": "route:POST /api/v1/milestone"
+    },
+    {
+      "from": "case:client/project-stats-create-active-milestone",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-create-closed-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-stats-create-closed-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-create-closed-issue",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/project-stats-create-closed-issue",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-project"
+    },
+    {
+      "from": "case:client/project-stats-create-closed-issue",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/project-stats-create-closed-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-create-closed-issue",
+      "type": "uses_fixture",
+      "to": "fixture:doneIssuestatusId"
+    },
+    {
+      "from": "case:client/project-stats-create-closed-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/project-stats-create-closed-issue",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/project-stats-create-closed-issue",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/project-stats-create-later-active-milestone",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-stats-create-later-active-milestone",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-create-later-active-milestone",
+      "type": "covers",
+      "to": "controller:milestone"
+    },
+    {
+      "from": "case:client/project-stats-create-later-active-milestone",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-project"
+    },
+    {
+      "from": "case:client/project-stats-create-later-active-milestone",
+      "type": "exercises",
+      "to": "route:POST /api/v1/milestone"
+    },
+    {
+      "from": "case:client/project-stats-create-later-active-milestone",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-create-later-planned-milestone",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-stats-create-later-planned-milestone",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-create-later-planned-milestone",
+      "type": "covers",
+      "to": "controller:milestone"
+    },
+    {
+      "from": "case:client/project-stats-create-later-planned-milestone",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-project"
+    },
+    {
+      "from": "case:client/project-stats-create-later-planned-milestone",
+      "type": "exercises",
+      "to": "route:POST /api/v1/milestone"
+    },
+    {
+      "from": "case:client/project-stats-create-later-planned-milestone",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-create-open-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-stats-create-open-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-create-open-issue",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/project-stats-create-open-issue",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-project"
+    },
+    {
+      "from": "case:client/project-stats-create-open-issue",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/project-stats-create-open-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-create-open-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/project-stats-create-open-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/project-stats-create-open-issue",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/project-stats-create-open-issue",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/project-stats-create-planned-milestone",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-stats-create-planned-milestone",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-create-planned-milestone",
+      "type": "covers",
+      "to": "controller:milestone"
+    },
+    {
+      "from": "case:client/project-stats-create-planned-milestone",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-project"
+    },
+    {
+      "from": "case:client/project-stats-create-planned-milestone",
+      "type": "exercises",
+      "to": "route:POST /api/v1/milestone"
+    },
+    {
+      "from": "case:client/project-stats-create-planned-milestone",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-create-project",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/project-stats-create-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-stats-create-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-create-project",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-stats-create-project",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-workspace"
+    },
+    {
+      "from": "case:client/project-stats-create-project",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/project-stats-create-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-create-project",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/project-stats-create-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-stats-create-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-create-workspace",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/project-stats-create-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/workspace"
+    },
+    {
+      "from": "case:client/project-stats-create-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-delete-active-milestone",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-delete-active-milestone",
+      "type": "covers",
+      "to": "controller:milestone"
+    },
+    {
+      "from": "case:client/project-stats-delete-active-milestone",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-active-milestone"
+    },
+    {
+      "from": "case:client/project-stats-delete-active-milestone",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/milestone/{id}"
+    },
+    {
+      "from": "case:client/project-stats-delete-active-milestone",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-delete-later-active-milestone",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-delete-later-active-milestone",
+      "type": "covers",
+      "to": "controller:milestone"
+    },
+    {
+      "from": "case:client/project-stats-delete-later-active-milestone",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-later-active-milestone"
+    },
+    {
+      "from": "case:client/project-stats-delete-later-active-milestone",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/milestone/{id}"
+    },
+    {
+      "from": "case:client/project-stats-delete-later-active-milestone",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-falls-back-to-next-planned",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/project-stats-falls-back-to-next-planned",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-stats-falls-back-to-next-planned",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-falls-back-to-next-planned",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-stats-falls-back-to-next-planned",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-planned-milestone"
+    },
+    {
+      "from": "case:client/project-stats-falls-back-to-next-planned",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-project"
+    },
+    {
+      "from": "case:client/project-stats-falls-back-to-next-planned",
+      "type": "exercises",
+      "to": "route:GET /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-stats-falls-back-to-next-planned",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-list-by-workspace",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/project-stats-list-by-workspace",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/project-stats-list-by-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-stats-list-by-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-list-by-workspace",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-stats-list-by-workspace",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-active-milestone"
+    },
+    {
+      "from": "case:client/project-stats-list-by-workspace",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-project"
+    },
+    {
+      "from": "case:client/project-stats-list-by-workspace",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-workspace"
+    },
+    {
+      "from": "case:client/project-stats-list-by-workspace",
+      "type": "exercises",
+      "to": "route:GET /api/v1/project"
+    },
+    {
+      "from": "case:client/project-stats-list-by-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-runs-in-progress",
+      "type": "asserts",
+      "to": "assertion:attributesAbsent"
+    },
+    {
+      "from": "case:client/project-stats-runs-in-progress",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/project-stats-runs-in-progress",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-stats-runs-in-progress",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-runs-in-progress",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-stats-runs-in-progress",
+      "type": "exercises",
+      "to": "route:GET /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-stats-runs-in-progress",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-stats-runs-in-progress",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectId"
+    },
+    {
+      "from": "case:client/project-stats-write-ignored",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/project-stats-write-ignored",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-stats-write-ignored",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-stats-write-ignored",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-stats-write-ignored",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-active-milestone"
+    },
+    {
+      "from": "case:client/project-stats-write-ignored",
+      "type": "depends_on",
+      "to": "case:client/project-stats-create-project"
+    },
+    {
+      "from": "case:client/project-stats-write-ignored",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-stats-write-ignored",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/put-systemnotification-api-v1-systemnotification-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -102520,6 +103370,11 @@
       "from": "model:Project",
       "type": "has_field",
       "to": "field:Project.workspaceId"
+    },
+    {
+      "from": "model:Project",
+      "type": "has_field",
+      "to": "field:Project.workspaceJoinedAt"
     },
     {
       "from": "model:Project",
