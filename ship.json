@@ -1,0 +1,10 @@
+{"title": "feat(workspace): add environment counts to Workspace", "body": "Add repositoryCount, projectRepositoryCount, agentCount, toolserverCount, skillCount and runsInProgress as computed attributes on Workspace (D-016).",
+"files": ["app/metadata/model/Workspace.php", "docs/architecture/workspaces/decisions.md", "docs/generated/graph.json", "docs/generated/models/Workspace.md", "docs/generated/profiles.md", "tools/api-tester/apis/client.json"],
+"what": "Six read-only computed counts on Workspace GET one and list: repositoryCount, projectRepositoryCount, agentCount, toolserverCount, skillCount and runsInProgress (workflow runs running or waiting in live projects, same definition as ProjectMoveGate::checkWorkflowRuns).",
+"why": "Lets the UI show a workspace's environment at a glance without extra calls.",
+"howTested": "Two new api-tester cases: workspace-environment-counts-empty and workspace-environment-counts-populated (agentCount 1).",
+"contract": "Additive read-only attributes on Workspace GET one and list.",
+"migration": "None",
+"outOfScope": "Non-zero api cases for repository, projectRepository, toolserver, skill and runsInProgress counts.",
+"notes": "<p>Counts are workspace totals, not filtered by caller visibility (same as D-013). The Project <code>deleted</code> column is a smallint (<code>= 0</code>); other tables use <code>= false</code>. Follow-up: non-zero cases for the remaining counts.</p>",
+"timeNote": "shipping"}
