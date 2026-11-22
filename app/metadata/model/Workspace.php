@@ -122,7 +122,7 @@ $models['Workspace'] = array(
             'type' => 'int',
             'expression' => "SELECT COUNT(DISTINCT CountedMembership.userId) FROM Gaia\\MVC\\Models\\Membership CountedMembership WHERE CountedMembership.projectId IN (SELECT MemberProject.id FROM Gaia\\MVC\\Models\\Project MemberProject WHERE MemberProject.workspaceId = Workspace.id AND MemberProject.deleted = 0)",
         ),
-        // Environment counts (D-016).
+        // Environment counts (D-017).
         'repositoryCount' => array(
             'name' => 'repositoryCount',
             'label' => 'LBL_WORKSPACES_REPOSITORY_COUNT',
