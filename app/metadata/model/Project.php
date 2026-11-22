@@ -4,10 +4,6 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-// The active milestone (Workspaces D-016): the in-progress one with the earliest end date, otherwise the planned one
-// with the earliest start date. One ordering for activeMilestoneId and activeMilestoneName; %s is the column.
-$projectActiveMilestone = "SELECT ActiveMilestone.%s FROM Gaia\\MVC\\Models\\Milestone ActiveMilestone WHERE ActiveMilestone.projectId = Project.id AND ActiveMilestone.deleted = 0 AND ActiveMilestone.status IN ('in_progress', 'planned') ORDER BY CASE ActiveMilestone.status WHEN 'in_progress' THEN 0 ELSE 1 END, COALESCE(CASE ActiveMilestone.status WHEN 'in_progress' THEN ActiveMilestone.endDate ELSE ActiveMilestone.startDate END, '9999-12-31'), COALESCE(ActiveMilestone.endDate, '9999-12-31'), ActiveMilestone.id LIMIT 1";
-
 $models['Project'] = array(
     'tableName' => 'projects',
     'fts' => false,
@@ -200,17 +196,19 @@ $models['Project'] = array(
             'type' => 'int',
             'expression' => "SELECT COUNT(OpenIssue.id) FROM Gaia\\MVC\\Models\\Issue OpenIssue WHERE OpenIssue.projectId = Project.id AND OpenIssue.deleted = 0 AND OpenIssue.statusId IN (SELECT OpenStatus.id FROM Gaia\\MVC\\Models\\Issuestatus OpenStatus WHERE OpenStatus.done = 0)",
         ),
+        // The active milestone (Workspaces D-016): the in-progress one with the earliest end date, otherwise the
+        // planned one with the earliest start date; activeMilestoneId and activeMilestoneName use the same ordering.
         'activeMilestoneId' => array(
             'name' => 'activeMilestoneId',
             'label' => 'LBL_PROJECTS_ACTIVE_MILESTONE_ID',
             'type' => 'varchar',
-            'expression' => sprintf($projectActiveMilestone, 'id'),
+            'expression' => "SELECT ActiveMilestone.id FROM Gaia\\MVC\\Models\\Milestone ActiveMilestone WHERE ActiveMilestone.projectId = Project.id AND ActiveMilestone.deleted = 0 AND ActiveMilestone.status IN ('in_progress', 'planned') ORDER BY CASE ActiveMilestone.status WHEN 'in_progress' THEN 0 ELSE 1 END, COALESCE(CASE ActiveMilestone.status WHEN 'in_progress' THEN ActiveMilestone.endDate ELSE ActiveMilestone.startDate END, '9999-12-31'), COALESCE(ActiveMilestone.endDate, '9999-12-31'), ActiveMilestone.id LIMIT 1",
         ),
         'activeMilestoneName' => array(
             'name' => 'activeMilestoneName',
             'label' => 'LBL_PROJECTS_ACTIVE_MILESTONE_NAME',
             'type' => 'varchar',
-            'expression' => sprintf($projectActiveMilestone, 'name'),
+            'expression' => "SELECT ActiveMilestone.name FROM Gaia\\MVC\\Models\\Milestone ActiveMilestone WHERE ActiveMilestone.projectId = Project.id AND ActiveMilestone.deleted = 0 AND ActiveMilestone.status IN ('in_progress', 'planned') ORDER BY CASE ActiveMilestone.status WHEN 'in_progress' THEN 0 ELSE 1 END, COALESCE(CASE ActiveMilestone.status WHEN 'in_progress' THEN ActiveMilestone.endDate ELSE ActiveMilestone.startDate END, '9999-12-31'), COALESCE(ActiveMilestone.endDate, '9999-12-31'), ActiveMilestone.id LIMIT 1",
         ),
         'runsInProgress' => array(
             'name' => 'runsInProgress',
