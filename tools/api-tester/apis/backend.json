@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 260,
-        "enabled": 237,
-        "disabled": 23,
-        "routeResources": 73,
-        "withMetadata": 55,
+        "total": 263,
+        "enabled": 239,
+        "disabled": 24,
+        "routeResources": 74,
+        "withMetadata": 56,
         "skippedResources": 16
     },
     "apis": [
@@ -1038,6 +1038,63 @@
                 ],
                 "shape": "json"
             },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-issuelink-api-v1-issuelink",
+            "method": "GET",
+            "path": "/api/v1/issuelink",
+            "resource": "issuelink",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-issuelink-api-v1-issuelink-id",
+            "method": "GET",
+            "path": "/api/v1/issuelink/{issuelinkId}",
+            "resource": "issuelink",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{issuelinkId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "post-issuelink-api-v1-issuelink",
+            "method": "POST",
+            "path": "/api/v1/issuelink",
+            "resource": "issuelink",
+            "auth": true,
+            "body": {
+                "data": {
+                    "type": "issuelink",
+                    "attributes": {
+                        "projectId": "{projectId}",
+                        "sourceIssueId": "api-issuelink-sourceIssueId",
+                        "targetIssueId": "api-issuelink-targetIssueId",
+                        "type": "api-issuelink-type",
+                        "targetProjectId": "api-issuelink-targetProjectId"
+                    }
+                }
+            },
+            "expects": {
+                "status": 201,
+                "shape": "jsonapi.resource"
+            },
+            "enabled": false,
+            "skipReason": "A link joins two issues of one workspace once and a PATCH may not change its type or issues; client and acl cases cover it",
             "source": "backend-metadata"
         },
         {

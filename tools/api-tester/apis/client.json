@@ -14459,6 +14459,621 @@
           "parentId": "{runtime.cycleOtherId}"
         }
       }
+    },
+    {
+      "id": "issuelink-create-issue-a",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Link Issue A",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.linkIssueA": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "issuelink-create-issue-b",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Link Issue B",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.linkIssueB": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "issuelink-create-issue-c",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Link Issue C",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{projectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.linkIssueC": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "issuelink-create-issue-w",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Link Issue W",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "api-test-project-wsm-2",
+            "projectShortcode": "WSM2",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.linkIssueW": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "issuelink-create-blocks-sets-projects",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueA}",
+            "targetIssueId": "{runtime.linkIssueB}",
+            "type": "blocks",
+            "projectId": "{otherProjectId}",
+            "targetProjectId": "{otherProjectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.linkAB": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "projectId": "{projectId}",
+          "targetProjectId": "{projectId}",
+          "type": "blocks"
+        }
+      }
+    },
+    {
+      "id": "issuelink-create-blocks-chain",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueB}",
+            "targetIssueId": "{runtime.linkIssueC}",
+            "type": "blocks"
+          }
+        }
+      },
+      "store": {
+        "runtime.linkBC": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "issuelink-blocks-cycle-refused",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueC}",
+            "targetIssueId": "{runtime.linkIssueA}",
+            "type": "blocks"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "The link would make the issues block each other in a cycle."
+        }
+      }
+    },
+    {
+      "id": "issuelink-blocks-duplicate-refused",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueA}",
+            "targetIssueId": "{runtime.linkIssueB}",
+            "type": "blocks"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "These issues are already linked this way."
+        }
+      }
+    },
+    {
+      "id": "issuelink-create-relates",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueA}",
+            "targetIssueId": "{runtime.linkIssueB}",
+            "type": "relates"
+          }
+        }
+      },
+      "store": {
+        "runtime.linkRel": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "issuelink-relates-reverse-duplicate-refused",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueB}",
+            "targetIssueId": "{runtime.linkIssueA}",
+            "type": "relates"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "These issues are already linked this way."
+        }
+      }
+    },
+    {
+      "id": "issuelink-self-link-refused",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueA}",
+            "targetIssueId": "{runtime.linkIssueA}",
+            "type": "relates"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "An issue cannot be linked to itself."
+        }
+      }
+    },
+    {
+      "id": "issuelink-unknown-type-refused",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueA}",
+            "targetIssueId": "{runtime.linkIssueC}",
+            "type": "duplicates"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "The link type must be blocks, relates or splits."
+        }
+      }
+    },
+    {
+      "id": "issuelink-missing-issue-refused",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueA}",
+            "targetIssueId": "api-test-issue-missing",
+            "type": "relates"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "Both linked issues must exist."
+        }
+      }
+    },
+    {
+      "id": "issuelink-create-splits",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueA}",
+            "targetIssueId": "{runtime.linkIssueB}",
+            "type": "splits"
+          }
+        }
+      },
+      "store": {
+        "runtime.linkSplit": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "issuelink-split-second-source-refused",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueC}",
+            "targetIssueId": "{runtime.linkIssueB}",
+            "type": "splits"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "The target issue is already split from another issue."
+        }
+      }
+    },
+    {
+      "id": "issuelink-splits-cycle-refused",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueB}",
+            "targetIssueId": "{runtime.linkIssueA}",
+            "type": "splits"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "The link would make an issue split from one of its own splits."
+        }
+      }
+    },
+    {
+      "id": "issuelink-other-workspace-refused",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{runtime.linkIssueA}",
+            "targetIssueId": "{runtime.linkIssueW}",
+            "type": "relates"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "Issues in different workspaces can't be linked."
+        }
+      }
+    },
+    {
+      "id": "issuelink-create-across-projects-of-workspace",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "api-test-issue-wsm-01",
+            "targetIssueId": "{runtime.linkIssueW}",
+            "type": "relates"
+          }
+        }
+      },
+      "store": {
+        "runtime.linkWs": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "projectId": "api-test-project-wsm-1",
+          "targetProjectId": "api-test-project-wsm-2"
+        }
+      }
+    },
+    {
+      "id": "issuelink-list-by-source",
+      "method": "GET",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "query": {
+        "query": "((Issuelink.sourceIssueId : {runtime.linkIssueA}))",
+        "limit": 20,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{runtime.linkAB}",
+          "{runtime.linkRel}",
+          "{runtime.linkSplit}"
+        ]
+      }
+    },
+    {
+      "id": "issuelink-list-by-target",
+      "method": "GET",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": true,
+      "query": {
+        "query": "((Issuelink.targetIssueId : {runtime.linkIssueB}))",
+        "limit": 20,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{runtime.linkAB}",
+          "{runtime.linkRel}",
+          "{runtime.linkSplit}"
+        ]
+      }
+    },
+    {
+      "id": "issuelink-get-by-id",
+      "method": "GET",
+      "path": "/api/v1/issuelink/{runtime.linkWs}",
+      "resource": "issuelink",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "sourceIssueId": "api-test-issue-wsm-01",
+          "targetIssueId": "{runtime.linkIssueW}",
+          "type": "relates"
+        }
+      }
+    },
+    {
+      "id": "issuelink-patch-type-refused",
+      "method": "PATCH",
+      "path": "/api/v1/issuelink/{runtime.linkAB}",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "id": "{runtime.linkAB}",
+          "attributes": {
+            "type": "relates"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "A link's type and issues can't be changed: delete the link and create a new one."
+        }
+      }
+    },
+    {
+      "id": "issuelink-patch-target-refused",
+      "method": "PATCH",
+      "path": "/api/v1/issuelink/{runtime.linkAB}",
+      "resource": "issuelink",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "id": "{runtime.linkAB}",
+          "attributes": {
+            "targetIssueId": "{runtime.linkIssueC}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "A link's type and issues can't be changed: delete the link and create a new one."
+        }
+      }
+    },
+    {
+      "id": "issuelink-delete",
+      "method": "DELETE",
+      "path": "/api/v1/issuelink/{runtime.linkWs}",
+      "resource": "issuelink",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "issuelink-delete-issue-b",
+      "method": "DELETE",
+      "path": "/api/v1/issue/{runtime.linkIssueB}",
+      "resource": "issue",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "issuelink-deleted-with-its-issue",
+      "method": "GET",
+      "path": "/api/v1/issuelink/{runtime.linkAB}",
+      "resource": "issuelink",
+      "auth": true,
+      "expects": {
+        "status": 404
+      }
     }
   ]
 }

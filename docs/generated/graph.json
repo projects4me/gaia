@@ -1251,6 +1251,72 @@
       "attributes": {}
     },
     {
+      "id": "action:issuelink.delete",
+      "type": "action",
+      "key": "issuelink.delete",
+      "attributes": {}
+    },
+    {
+      "id": "action:issuelink.deleteCollection",
+      "type": "action",
+      "key": "issuelink.deleteCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:issuelink.get",
+      "type": "action",
+      "key": "issuelink.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:issuelink.list",
+      "type": "action",
+      "key": "issuelink.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:issuelink.options",
+      "type": "action",
+      "key": "issuelink.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:issuelink.patch",
+      "type": "action",
+      "key": "issuelink.patch",
+      "attributes": {}
+    },
+    {
+      "id": "action:issuelink.patchCollection",
+      "type": "action",
+      "key": "issuelink.patchCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:issuelink.post",
+      "type": "action",
+      "key": "issuelink.post",
+      "attributes": {}
+    },
+    {
+      "id": "action:issuelink.put",
+      "type": "action",
+      "key": "issuelink.put",
+      "attributes": {}
+    },
+    {
+      "id": "action:issuelink.putCollection",
+      "type": "action",
+      "key": "issuelink.putCollection",
+      "attributes": {}
+    },
+    {
+      "id": "action:issuelink.related",
+      "type": "action",
+      "key": "issuelink.related",
+      "attributes": {}
+    },
+    {
       "id": "action:issueplanning.options",
       "type": "action",
       "key": "issueplanning.options",
@@ -4244,6 +4310,18 @@
       }
     },
     {
+      "id": "behaviour:issueLinkBehavior",
+      "type": "behaviour",
+      "key": "issueLinkBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\issueLinkBehavior",
+        "file": "core/mvc/models/behaviors/issueLinkBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:issueParentCycleBehavior",
       "type": "behaviour",
       "key": "issueParentCycleBehavior",
@@ -5951,6 +6029,154 @@
         "placeholders": [
           "issueId"
         ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-issuelink-create-member-allowed-acl-members",
+      "type": "case",
+      "key": "acl/acl-issuelink-create-member-allowed-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "issueId",
+          "projectId"
+        ],
+        "stores": [
+          "runtime.aclIssuelinkId"
+        ]
+      }
+    },
+    {
+      "id": "case:acl/acl-issuelink-create-source-non-member-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-issuelink-create-source-non-member-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "issueId",
+          "otherProjectIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-issuelink-create-target-non-member-denied-acl-members",
+      "type": "case",
+      "key": "acl/acl-issuelink-create-target-non-member-denied-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "issueId",
+          "otherProjectIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-issuelink-delete-member-allowed-acl-members",
+      "type": "case",
+      "key": "acl/acl-issuelink-delete-member-allowed-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "DELETE",
+        "path": "/api/v1/issuelink/{runtime.aclIssuelinkId}",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "runtime.aclIssuelinkId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-issuelink-detail-denied-other-project-acl-members",
+      "type": "case",
+      "key": "acl/acl-issuelink-detail-denied-other-project-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/issuelink/{otherProjectIssuelinkId}",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectIssuelinkId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-issuelink-detail-member-allowed-acl-members",
+      "type": "case",
+      "key": "acl/acl-issuelink-detail-member-allowed-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/issuelink/{issuelinkId}",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "issuelinkId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-issuelink-list-member-scope-acl-members",
+      "type": "case",
+      "key": "acl/acl-issuelink-list-member-scope-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "issuelinkId",
+          "otherProjectIssuelinkId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-issuelink-member-allowed-acl-members",
+      "type": "case",
+      "key": "acl/acl-issuelink-member-allowed-acl-members",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [],
         "stores": []
       }
     },
@@ -10967,6 +11193,40 @@
       }
     },
     {
+      "id": "case:backend/get-issuelink-api-v1-issuelink",
+      "type": "case",
+      "key": "backend/get-issuelink-api-v1-issuelink",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-issuelink-api-v1-issuelink-id",
+      "type": "case",
+      "key": "backend/get-issuelink-api-v1-issuelink-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/issuelink/{issuelinkId}",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "issuelinkId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/get-issuestatus-api-v1-issuestatus",
       "type": "case",
       "key": "backend/get-issuestatus-api-v1-issuestatus",
@@ -13528,6 +13788,24 @@
         "stores": [
           "runtime.issueId"
         ]
+      }
+    },
+    {
+      "id": "case:backend/post-issuelink-api-v1-issuelink",
+      "type": "case",
+      "key": "backend/post-issuelink-api-v1-issuelink",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": false,
+        "source": "backend-metadata",
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
       }
     },
     {
@@ -17812,6 +18090,527 @@
         "placeholders": [
           "runtime.renameSystemIssueId",
           "runtime.renameSystemStatusId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-blocks-cycle-refused",
+      "type": "case",
+      "key": "client/issuelink-blocks-cycle-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueA",
+          "runtime.linkIssueC"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-blocks-duplicate-refused",
+      "type": "case",
+      "key": "client/issuelink-blocks-duplicate-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueA",
+          "runtime.linkIssueB"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-create-across-projects-of-workspace",
+      "type": "case",
+      "key": "client/issuelink-create-across-projects-of-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueW"
+        ],
+        "stores": [
+          "runtime.linkWs"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issuelink-create-blocks-chain",
+      "type": "case",
+      "key": "client/issuelink-create-blocks-chain",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueB",
+          "runtime.linkIssueC"
+        ],
+        "stores": [
+          "runtime.linkBC"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issuelink-create-blocks-sets-projects",
+      "type": "case",
+      "key": "client/issuelink-create-blocks-sets-projects",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectId",
+          "projectId",
+          "runtime.linkIssueA",
+          "runtime.linkIssueB"
+        ],
+        "stores": [
+          "runtime.linkAB"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issuelink-create-issue-a",
+      "type": "case",
+      "key": "client/issuelink-create-issue-a",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectId",
+          "projectShortcode",
+          "userId"
+        ],
+        "stores": [
+          "runtime.linkIssueA"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issuelink-create-issue-b",
+      "type": "case",
+      "key": "client/issuelink-create-issue-b",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectId",
+          "projectShortcode",
+          "userId"
+        ],
+        "stores": [
+          "runtime.linkIssueB"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issuelink-create-issue-c",
+      "type": "case",
+      "key": "client/issuelink-create-issue-c",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectId",
+          "projectShortcode",
+          "userId"
+        ],
+        "stores": [
+          "runtime.linkIssueC"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issuelink-create-issue-w",
+      "type": "case",
+      "key": "client/issuelink-create-issue-w",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.linkIssueW"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issuelink-create-relates",
+      "type": "case",
+      "key": "client/issuelink-create-relates",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueA",
+          "runtime.linkIssueB"
+        ],
+        "stores": [
+          "runtime.linkRel"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issuelink-create-splits",
+      "type": "case",
+      "key": "client/issuelink-create-splits",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueA",
+          "runtime.linkIssueB"
+        ],
+        "stores": [
+          "runtime.linkSplit"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issuelink-delete",
+      "type": "case",
+      "key": "client/issuelink-delete",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/issuelink/{runtime.linkWs}",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkWs"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-delete-issue-b",
+      "type": "case",
+      "key": "client/issuelink-delete-issue-b",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/issue/{runtime.linkIssueB}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueB"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-deleted-with-its-issue",
+      "type": "case",
+      "key": "client/issuelink-deleted-with-its-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issuelink/{runtime.linkAB}",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkAB"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-get-by-id",
+      "type": "case",
+      "key": "client/issuelink-get-by-id",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issuelink/{runtime.linkWs}",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueW",
+          "runtime.linkWs"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-list-by-source",
+      "type": "case",
+      "key": "client/issuelink-list-by-source",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkAB",
+          "runtime.linkIssueA",
+          "runtime.linkRel",
+          "runtime.linkSplit"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-list-by-target",
+      "type": "case",
+      "key": "client/issuelink-list-by-target",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkAB",
+          "runtime.linkIssueB",
+          "runtime.linkRel",
+          "runtime.linkSplit"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-missing-issue-refused",
+      "type": "case",
+      "key": "client/issuelink-missing-issue-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueA"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-other-workspace-refused",
+      "type": "case",
+      "key": "client/issuelink-other-workspace-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueA",
+          "runtime.linkIssueW"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-patch-target-refused",
+      "type": "case",
+      "key": "client/issuelink-patch-target-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuelink/{runtime.linkAB}",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkAB",
+          "runtime.linkIssueC"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-patch-type-refused",
+      "type": "case",
+      "key": "client/issuelink-patch-type-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issuelink/{runtime.linkAB}",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkAB"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-relates-reverse-duplicate-refused",
+      "type": "case",
+      "key": "client/issuelink-relates-reverse-duplicate-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueA",
+          "runtime.linkIssueB"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-self-link-refused",
+      "type": "case",
+      "key": "client/issuelink-self-link-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueA"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-split-second-source-refused",
+      "type": "case",
+      "key": "client/issuelink-split-second-source-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueB",
+          "runtime.linkIssueC"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-splits-cycle-refused",
+      "type": "case",
+      "key": "client/issuelink-splits-cycle-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueA",
+          "runtime.linkIssueB"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issuelink-unknown-type-refused",
+      "type": "case",
+      "key": "client/issuelink-unknown-type-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.linkIssueA",
+          "runtime.linkIssueC"
         ],
         "stores": []
       }
@@ -28511,6 +29310,17 @@
       }
     },
     {
+      "id": "controller:issuelink",
+      "type": "controller",
+      "key": "issuelink",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\IssuelinkController",
+        "file": "app/api/v1/controllers/IssuelinkController.php",
+        "extends": "RestController"
+      }
+    },
+    {
       "id": "controller:issueplanning",
       "type": "controller",
       "key": "issueplanning",
@@ -32062,6 +32872,154 @@
         "label": "LBL_ISSUES_TYPE",
         "type": "varchar",
         "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Issuelink.createdUser",
+      "type": "field",
+      "key": "Issuelink.createdUser",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_CREATED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Issuelink.createdUserName",
+      "type": "field",
+      "key": "Issuelink.createdUserName",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_CREATED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "createdUser"
+      }
+    },
+    {
+      "id": "field:Issuelink.dateCreated",
+      "type": "field",
+      "key": "Issuelink.dateCreated",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_DATE_CREATED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Issuelink.dateModified",
+      "type": "field",
+      "key": "Issuelink.dateModified",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_DATE_MODIFIED",
+        "type": "datetime",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Issuelink.deleted",
+      "type": "field",
+      "key": "Issuelink.deleted",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_DELETED",
+        "type": "bool",
+        "length": "1",
+        "null": false,
+        "default": 0,
+        "acl": false
+      }
+    },
+    {
+      "id": "field:Issuelink.id",
+      "type": "field",
+      "key": "Issuelink.id",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Issuelink.modifiedUser",
+      "type": "field",
+      "key": "Issuelink.modifiedUser",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_MODIFIED_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Issuelink.modifiedUserName",
+      "type": "field",
+      "key": "Issuelink.modifiedUserName",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_MODIFIED_USER_NAME",
+        "type": "varchar",
+        "length": "50",
+        "null": false,
+        "linkedTo": "modifiedUser"
+      }
+    },
+    {
+      "id": "field:Issuelink.projectId",
+      "type": "field",
+      "key": "Issuelink.projectId",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_PROJECT",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Issuelink.sourceIssueId",
+      "type": "field",
+      "key": "Issuelink.sourceIssueId",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_SOURCE_ISSUE_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Issuelink.targetIssueId",
+      "type": "field",
+      "key": "Issuelink.targetIssueId",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_TARGET_ISSUE_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Issuelink.targetProjectId",
+      "type": "field",
+      "key": "Issuelink.targetProjectId",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_TARGET_PROJECT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Issuelink.type",
+      "type": "field",
+      "key": "Issuelink.type",
+      "attributes": {
+        "label": "LBL_ISSUELINKS_TYPE",
+        "type": "varchar",
+        "length": "25",
         "null": false
       }
     },
@@ -39778,6 +40736,14 @@
       }
     },
     {
+      "id": "fixture:issuelinkId",
+      "type": "fixture",
+      "key": "issuelinkId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:issuestatusId",
       "type": "fixture",
       "key": "issuestatusId",
@@ -39973,6 +40939,14 @@
       "id": "fixture:otherProjectIssueUploadId",
       "type": "fixture",
       "key": "otherProjectIssueUploadId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:otherProjectIssuelinkId",
+      "type": "fixture",
+      "key": "otherProjectIssuelinkId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -40803,6 +41777,38 @@
           ],
           "groupKeys": {
             "Project": "projectId"
+          }
+        }
+      }
+    },
+    {
+      "id": "model:Issuelink",
+      "type": "model",
+      "key": "Issuelink",
+      "attributes": {
+        "file": "app/metadata/model/Issuelink.php",
+        "tableName": "issuelinks",
+        "isView": false,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": {
+          "groups": [
+            "Project"
+          ],
+          "groupKeys": {
+            "Project": "projectId"
+          },
+          "references": {
+            "sourceIssueId": {
+              "relatedModel": "Issue",
+              "relatedKey": "id",
+              "projectField": "projectId"
+            },
+            "targetIssueId": {
+              "relatedModel": "Issue",
+              "relatedKey": "id",
+              "projectField": "projectId"
+            }
           }
         }
       }
@@ -42547,6 +43553,42 @@
       "id": "permission:issue.update",
       "type": "permission",
       "key": "issue.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuelink.create",
+      "type": "permission",
+      "key": "issuelink.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuelink.delete",
+      "type": "permission",
+      "key": "issuelink.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuelink.get",
+      "type": "permission",
+      "key": "issuelink.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:issuelink.update",
+      "type": "permission",
+      "key": "issuelink.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -45082,6 +46124,17 @@
       }
     },
     {
+      "id": "relationship:Issue.incomingLinks",
+      "type": "relationship",
+      "key": "Issue.incomingLinks",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "targetIssueId",
+        "condition": "incomingLinks.deleted = \"0\""
+      }
+    },
+    {
       "id": "relationship:Issue.issuemilestone",
       "type": "relationship",
       "key": "Issue.issuemilestone",
@@ -45119,6 +46172,17 @@
         "kind": "hasOne",
         "primaryKey": "modifiedUser",
         "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Issue.outgoingLinks",
+      "type": "relationship",
+      "key": "Issue.outgoingLinks",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "sourceIssueId",
+        "condition": "outgoingLinks.deleted = \"0\""
       }
     },
     {
@@ -45180,6 +46244,66 @@
         "kind": "hasMany",
         "primaryKey": "id",
         "relatedKey": "issueId"
+      }
+    },
+    {
+      "id": "relationship:Issuelink.createdBy",
+      "type": "relationship",
+      "key": "Issuelink.createdBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Issuelink.modifiedBy",
+      "type": "relationship",
+      "key": "Issuelink.modifiedBy",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Issuelink.project",
+      "type": "relationship",
+      "key": "Issuelink.project",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "projectId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Issuelink.sourceIssue",
+      "type": "relationship",
+      "key": "Issuelink.sourceIssue",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "sourceIssueId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Issuelink.targetIssue",
+      "type": "relationship",
+      "key": "Issuelink.targetIssue",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "targetIssueId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Issuelink.targetProject",
+      "type": "relationship",
+      "key": "Issuelink.targetProject",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "targetProjectId",
+        "relatedKey": "id"
       }
     },
     {
@@ -47289,6 +48413,30 @@
       }
     },
     {
+      "id": "route:DELETE /api/v1/issuelink",
+      "type": "route",
+      "key": "DELETE /api/v1/issuelink",
+      "attributes": {
+        "type": "rest",
+        "name": "issuelink",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/issuelink"
+      }
+    },
+    {
+      "id": "route:DELETE /api/v1/issuelink/{id}",
+      "type": "route",
+      "key": "DELETE /api/v1/issuelink/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "issuelink",
+        "version": "v1",
+        "method": "DELETE",
+        "path": "/api/v1/issuelink/{id}"
+      }
+    },
+    {
       "id": "route:DELETE /api/v1/issuestatus",
       "type": "route",
       "key": "DELETE /api/v1/issuestatus",
@@ -48726,6 +49874,42 @@
         "version": "v1",
         "method": "GET",
         "path": "/api/v1/issue/{id}/{relation}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/issuelink",
+      "type": "route",
+      "key": "GET /api/v1/issuelink",
+      "attributes": {
+        "type": "rest",
+        "name": "issuelink",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/issuelink"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/issuelink/{id}",
+      "type": "route",
+      "key": "GET /api/v1/issuelink/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "issuelink",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/issuelink/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/issuelink/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/issuelink/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "issuelink",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/issuelink/{id}/{relation}"
       }
     },
     {
@@ -50685,6 +51869,18 @@
       }
     },
     {
+      "id": "route:OPTIONS /api/v1/issuelink",
+      "type": "route",
+      "key": "OPTIONS /api/v1/issuelink",
+      "attributes": {
+        "type": "rest",
+        "name": "issuelink",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/issuelink"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/issueplanning",
       "type": "route",
       "key": "OPTIONS /api/v1/issueplanning",
@@ -51702,6 +52898,30 @@
         "version": "v1",
         "method": "PATCH",
         "path": "/api/v1/issue/{id}"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/issuelink",
+      "type": "route",
+      "key": "PATCH /api/v1/issuelink",
+      "attributes": {
+        "type": "rest",
+        "name": "issuelink",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/issuelink"
+      }
+    },
+    {
+      "id": "route:PATCH /api/v1/issuelink/{id}",
+      "type": "route",
+      "key": "PATCH /api/v1/issuelink/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "issuelink",
+        "version": "v1",
+        "method": "PATCH",
+        "path": "/api/v1/issuelink/{id}"
       }
     },
     {
@@ -52785,6 +54005,18 @@
       }
     },
     {
+      "id": "route:POST /api/v1/issuelink",
+      "type": "route",
+      "key": "POST /api/v1/issuelink",
+      "attributes": {
+        "type": "rest",
+        "name": "issuelink",
+        "version": "v1",
+        "method": "POST",
+        "path": "/api/v1/issuelink"
+      }
+    },
+    {
       "id": "route:POST /api/v1/issueplanning",
       "type": "route",
       "key": "POST /api/v1/issueplanning",
@@ -53634,6 +54866,30 @@
         "version": "v1",
         "method": "PUT",
         "path": "/api/v1/issue/{id}"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/issuelink",
+      "type": "route",
+      "key": "PUT /api/v1/issuelink",
+      "attributes": {
+        "type": "rest",
+        "name": "issuelink",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/issuelink"
+      }
+    },
+    {
+      "id": "route:PUT /api/v1/issuelink/{id}",
+      "type": "route",
+      "key": "PUT /api/v1/issuelink/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "issuelink",
+        "version": "v1",
+        "method": "PUT",
+        "path": "/api/v1/issuelink/{id}"
       }
     },
     {
@@ -55073,6 +56329,46 @@
       "from": "action:issue.related",
       "type": "requires",
       "to": "permission:issue.get"
+    },
+    {
+      "from": "action:issuelink.delete",
+      "type": "requires",
+      "to": "permission:issuelink.delete"
+    },
+    {
+      "from": "action:issuelink.get",
+      "type": "requires",
+      "to": "permission:issuelink.get"
+    },
+    {
+      "from": "action:issuelink.list",
+      "type": "requires",
+      "to": "permission:issuelink.get"
+    },
+    {
+      "from": "action:issuelink.patch",
+      "type": "requires",
+      "to": "permission:issuelink.update"
+    },
+    {
+      "from": "action:issuelink.patchCollection",
+      "type": "requires",
+      "to": "permission:issuelink.update"
+    },
+    {
+      "from": "action:issuelink.post",
+      "type": "requires",
+      "to": "permission:issuelink.create"
+    },
+    {
+      "from": "action:issuelink.put",
+      "type": "requires",
+      "to": "permission:issuelink.update"
+    },
+    {
+      "from": "action:issuelink.related",
+      "type": "requires",
+      "to": "permission:issuelink.get"
     },
     {
       "from": "action:issueplanning.post",
@@ -59323,6 +60619,286 @@
       "from": "case:acl/acl-issue-detail-denied-without-project-group",
       "type": "uses_fixture",
       "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-member-allowed-acl-members",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-member-allowed-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-member-allowed-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-member-allowed-acl-members",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-member-allowed-acl-members",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-member-allowed-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-member-allowed-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-member-allowed-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-source-non-member-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-source-non-member-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-source-non-member-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-source-non-member-denied-acl-members",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-source-non-member-denied-acl-members",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-source-non-member-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-source-non-member-denied-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-source-non-member-denied-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectIssueId"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-target-non-member-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-target-non-member-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-target-non-member-denied-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-target-non-member-denied-acl-members",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-target-non-member-denied-acl-members",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-target-non-member-denied-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-target-non-member-denied-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-issuelink-create-target-non-member-denied-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectIssueId"
+    },
+    {
+      "from": "case:acl/acl-issuelink-delete-member-allowed-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-issuelink-delete-member-allowed-acl-members",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-delete-member-allowed-acl-members",
+      "type": "depends_on",
+      "to": "case:acl/acl-issuelink-create-member-allowed-acl-members"
+    },
+    {
+      "from": "case:acl/acl-issuelink-delete-member-allowed-acl-members",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/issuelink/{id}"
+    },
+    {
+      "from": "case:acl/acl-issuelink-delete-member-allowed-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-denied-other-project-acl-members",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-denied-other-project-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-denied-other-project-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-denied-other-project-acl-members",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-denied-other-project-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuelink/{id}"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-denied-other-project-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-denied-other-project-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectIssuelinkId"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-member-allowed-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-member-allowed-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-member-allowed-acl-members",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-member-allowed-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuelink/{id}"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-member-allowed-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-issuelink-detail-member-allowed-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:issuelinkId"
+    },
+    {
+      "from": "case:acl/acl-issuelink-list-member-scope-acl-members",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-issuelink-list-member-scope-acl-members",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-issuelink-list-member-scope-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-issuelink-list-member-scope-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-issuelink-list-member-scope-acl-members",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-list-member-scope-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-list-member-scope-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-issuelink-list-member-scope-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:issuelinkId"
+    },
+    {
+      "from": "case:acl/acl-issuelink-list-member-scope-acl-members",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectIssuelinkId"
+    },
+    {
+      "from": "case:acl/acl-issuelink-member-allowed-acl-members",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-issuelink-member-allowed-acl-members",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-issuelink-member-allowed-acl-members",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-member-allowed-acl-members",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuelink"
+    },
+    {
+      "from": "case:acl/acl-issuelink-member-allowed-acl-members",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
     },
     {
       "from": "case:acl/acl-issuestatus-issue-count-denied-without-setting",
@@ -68680,6 +70256,66 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/get-issuelink-api-v1-issuelink",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-issuelink-api-v1-issuelink",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-issuelink-api-v1-issuelink",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:backend/get-issuelink-api-v1-issuelink",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuelink"
+    },
+    {
+      "from": "case:backend/get-issuelink-api-v1-issuelink",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-issuelink-api-v1-issuelink-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-issuelink-api-v1-issuelink-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-issuelink-api-v1-issuelink-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-issuelink-api-v1-issuelink-id",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:backend/get-issuelink-api-v1-issuelink-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuelink/{id}"
+    },
+    {
+      "from": "case:backend/get-issuelink-api-v1-issuelink-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-issuelink-api-v1-issuelink-id",
+      "type": "uses_fixture",
+      "to": "fixture:issuelinkId"
+    },
+    {
       "from": "case:backend/get-issuestatus-api-v1-issuestatus",
       "type": "asserts",
       "to": "assertion:shape"
@@ -73243,6 +74879,36 @@
       "from": "case:backend/post-issue-api-v1-issue",
       "type": "uses_fixture",
       "to": "fixture:userId"
+    },
+    {
+      "from": "case:backend/post-issuelink-api-v1-issuelink",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/post-issuelink-api-v1-issuelink",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/post-issuelink-api-v1-issuelink",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:backend/post-issuelink-api-v1-issuelink",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:backend/post-issuelink-api-v1-issuelink",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/post-issuelink-api-v1-issuelink",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
     },
     {
       "from": "case:backend/post-issuestatus-api-v1-issuestatus",
@@ -80996,6 +82662,1026 @@
     },
     {
       "from": "case:client/issue-status-unchanged-after-rejected-system-rename",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-blocks-cycle-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issuelink-blocks-cycle-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-blocks-cycle-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-blocks-cycle-refused",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-blocks-cycle-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-a"
+    },
+    {
+      "from": "case:client/issuelink-blocks-cycle-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-c"
+    },
+    {
+      "from": "case:client/issuelink-blocks-cycle-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-blocks-cycle-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-blocks-duplicate-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issuelink-blocks-duplicate-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-blocks-duplicate-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-blocks-duplicate-refused",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-blocks-duplicate-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-a"
+    },
+    {
+      "from": "case:client/issuelink-blocks-duplicate-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-b"
+    },
+    {
+      "from": "case:client/issuelink-blocks-duplicate-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-blocks-duplicate-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-create-across-projects-of-workspace",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/issuelink-create-across-projects-of-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-create-across-projects-of-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-create-across-projects-of-workspace",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-create-across-projects-of-workspace",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-w"
+    },
+    {
+      "from": "case:client/issuelink-create-across-projects-of-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-create-across-projects-of-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-chain",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-chain",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-chain",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-chain",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-b"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-chain",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-c"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-chain",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-chain",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-sets-projects",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-sets-projects",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-sets-projects",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-sets-projects",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-sets-projects",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-a"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-sets-projects",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-b"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-sets-projects",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-sets-projects",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-sets-projects",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectId"
+    },
+    {
+      "from": "case:client/issuelink-create-blocks-sets-projects",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-a",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-a",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-a",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-a",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-a",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-a",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-a",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-a",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-a",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-a",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-b",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-b",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-b",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-b",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-b",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-b",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-b",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-b",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-b",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-b",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-c",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-c",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-c",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-c",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-c",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-c",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-c",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-c",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-c",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-c",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-w",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-w",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-w",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-w",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-w",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-w",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-w",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/issuelink-create-issue-w",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/issuelink-create-relates",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-create-relates",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-create-relates",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-create-relates",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-a"
+    },
+    {
+      "from": "case:client/issuelink-create-relates",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-b"
+    },
+    {
+      "from": "case:client/issuelink-create-relates",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-create-relates",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-create-splits",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-create-splits",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-create-splits",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-create-splits",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-a"
+    },
+    {
+      "from": "case:client/issuelink-create-splits",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-b"
+    },
+    {
+      "from": "case:client/issuelink-create-splits",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-create-splits",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-delete",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-delete",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-delete",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-across-projects-of-workspace"
+    },
+    {
+      "from": "case:client/issuelink-delete",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/issuelink/{id}"
+    },
+    {
+      "from": "case:client/issuelink-delete",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-delete-issue-b",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-delete-issue-b",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issuelink-delete-issue-b",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-b"
+    },
+    {
+      "from": "case:client/issuelink-delete-issue-b",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/issuelink-delete-issue-b",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-deleted-with-its-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-deleted-with-its-issue",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-deleted-with-its-issue",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-blocks-sets-projects"
+    },
+    {
+      "from": "case:client/issuelink-deleted-with-its-issue",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuelink/{id}"
+    },
+    {
+      "from": "case:client/issuelink-deleted-with-its-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-get-by-id",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/issuelink-get-by-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-get-by-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-get-by-id",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-get-by-id",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-across-projects-of-workspace"
+    },
+    {
+      "from": "case:client/issuelink-get-by-id",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-w"
+    },
+    {
+      "from": "case:client/issuelink-get-by-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuelink/{id}"
+    },
+    {
+      "from": "case:client/issuelink-get-by-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-list-by-source",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/issuelink-list-by-source",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-list-by-source",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-list-by-source",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-list-by-source",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-blocks-sets-projects"
+    },
+    {
+      "from": "case:client/issuelink-list-by-source",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-a"
+    },
+    {
+      "from": "case:client/issuelink-list-by-source",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-relates"
+    },
+    {
+      "from": "case:client/issuelink-list-by-source",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-splits"
+    },
+    {
+      "from": "case:client/issuelink-list-by-source",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-list-by-source",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-list-by-target",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/issuelink-list-by-target",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-list-by-target",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-list-by-target",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-list-by-target",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-blocks-sets-projects"
+    },
+    {
+      "from": "case:client/issuelink-list-by-target",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-b"
+    },
+    {
+      "from": "case:client/issuelink-list-by-target",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-relates"
+    },
+    {
+      "from": "case:client/issuelink-list-by-target",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-splits"
+    },
+    {
+      "from": "case:client/issuelink-list-by-target",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-list-by-target",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-missing-issue-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issuelink-missing-issue-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-missing-issue-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-missing-issue-refused",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-missing-issue-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-a"
+    },
+    {
+      "from": "case:client/issuelink-missing-issue-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-missing-issue-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-other-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issuelink-other-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-other-workspace-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-other-workspace-refused",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-other-workspace-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-a"
+    },
+    {
+      "from": "case:client/issuelink-other-workspace-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-w"
+    },
+    {
+      "from": "case:client/issuelink-other-workspace-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-other-workspace-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-patch-target-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issuelink-patch-target-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-patch-target-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-patch-target-refused",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-patch-target-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-blocks-sets-projects"
+    },
+    {
+      "from": "case:client/issuelink-patch-target-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-c"
+    },
+    {
+      "from": "case:client/issuelink-patch-target-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuelink/{id}"
+    },
+    {
+      "from": "case:client/issuelink-patch-target-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-patch-type-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issuelink-patch-type-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-patch-type-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-patch-type-refused",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-patch-type-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-blocks-sets-projects"
+    },
+    {
+      "from": "case:client/issuelink-patch-type-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issuelink/{id}"
+    },
+    {
+      "from": "case:client/issuelink-patch-type-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-relates-reverse-duplicate-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issuelink-relates-reverse-duplicate-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-relates-reverse-duplicate-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-relates-reverse-duplicate-refused",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-relates-reverse-duplicate-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-a"
+    },
+    {
+      "from": "case:client/issuelink-relates-reverse-duplicate-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-b"
+    },
+    {
+      "from": "case:client/issuelink-relates-reverse-duplicate-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-relates-reverse-duplicate-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-self-link-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issuelink-self-link-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-self-link-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-self-link-refused",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-self-link-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-a"
+    },
+    {
+      "from": "case:client/issuelink-self-link-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-self-link-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-split-second-source-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issuelink-split-second-source-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-split-second-source-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-split-second-source-refused",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-split-second-source-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-b"
+    },
+    {
+      "from": "case:client/issuelink-split-second-source-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-c"
+    },
+    {
+      "from": "case:client/issuelink-split-second-source-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-split-second-source-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-splits-cycle-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issuelink-splits-cycle-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-splits-cycle-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-splits-cycle-refused",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-splits-cycle-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-a"
+    },
+    {
+      "from": "case:client/issuelink-splits-cycle-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-b"
+    },
+    {
+      "from": "case:client/issuelink-splits-cycle-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-splits-cycle-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issuelink-unknown-type-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issuelink-unknown-type-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issuelink-unknown-type-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issuelink-unknown-type-refused",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/issuelink-unknown-type-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-a"
+    },
+    {
+      "from": "case:client/issuelink-unknown-type-refused",
+      "type": "depends_on",
+      "to": "case:client/issuelink-create-issue-c"
+    },
+    {
+      "from": "case:client/issuelink-unknown-type-refused",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/issuelink-unknown-type-refused",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -99905,6 +102591,66 @@
       "to": "component:Notification"
     },
     {
+      "from": "controller:issuelink",
+      "type": "has_action",
+      "to": "action:issuelink.delete"
+    },
+    {
+      "from": "controller:issuelink",
+      "type": "has_action",
+      "to": "action:issuelink.deleteCollection"
+    },
+    {
+      "from": "controller:issuelink",
+      "type": "has_action",
+      "to": "action:issuelink.get"
+    },
+    {
+      "from": "controller:issuelink",
+      "type": "has_action",
+      "to": "action:issuelink.list"
+    },
+    {
+      "from": "controller:issuelink",
+      "type": "has_action",
+      "to": "action:issuelink.options"
+    },
+    {
+      "from": "controller:issuelink",
+      "type": "has_action",
+      "to": "action:issuelink.patch"
+    },
+    {
+      "from": "controller:issuelink",
+      "type": "has_action",
+      "to": "action:issuelink.patchCollection"
+    },
+    {
+      "from": "controller:issuelink",
+      "type": "has_action",
+      "to": "action:issuelink.post"
+    },
+    {
+      "from": "controller:issuelink",
+      "type": "has_action",
+      "to": "action:issuelink.put"
+    },
+    {
+      "from": "controller:issuelink",
+      "type": "has_action",
+      "to": "action:issuelink.putCollection"
+    },
+    {
+      "from": "controller:issuelink",
+      "type": "has_action",
+      "to": "action:issuelink.related"
+    },
+    {
+      "from": "controller:issuelink",
+      "type": "serves",
+      "to": "model:Issuelink"
+    },
+    {
       "from": "controller:issueplanning",
       "type": "has_action",
       "to": "action:issueplanning.options"
@@ -102508,6 +105254,16 @@
       "from": "field:Issue.modifiedUserName",
       "type": "linked_to",
       "to": "field:Issue.modifiedUser"
+    },
+    {
+      "from": "field:Issuelink.createdUserName",
+      "type": "linked_to",
+      "to": "field:Issuelink.createdUser"
+    },
+    {
+      "from": "field:Issuelink.modifiedUserName",
+      "type": "linked_to",
+      "to": "field:Issuelink.modifiedUser"
     },
     {
       "from": "field:Issuestatus.createdUserName",
@@ -105167,6 +107923,11 @@
     {
       "from": "model:Issue",
       "type": "has_relationship",
+      "to": "relationship:Issue.incomingLinks"
+    },
+    {
+      "from": "model:Issue",
+      "type": "has_relationship",
       "to": "relationship:Issue.issuemilestone"
     },
     {
@@ -105183,6 +107944,11 @@
       "from": "model:Issue",
       "type": "has_relationship",
       "to": "relationship:Issue.modifiedBy"
+    },
+    {
+      "from": "model:Issue",
+      "type": "has_relationship",
+      "to": "relationship:Issue.outgoingLinks"
     },
     {
       "from": "model:Issue",
@@ -105256,6 +108022,136 @@
     },
     {
       "from": "model:Issue",
+      "type": "uses_behaviour",
+      "to": "behaviour:softDeleteBehavior"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.createdUser"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.createdUserName"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.dateCreated"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.dateModified"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.deleted"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.id"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.modifiedUser"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.modifiedUserName"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.projectId"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.sourceIssueId"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.targetIssueId"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.targetProjectId"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_field",
+      "to": "field:Issuelink.type"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_relationship",
+      "to": "relationship:Issuelink.createdBy"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_relationship",
+      "to": "relationship:Issuelink.modifiedBy"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_relationship",
+      "to": "relationship:Issuelink.project"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_relationship",
+      "to": "relationship:Issuelink.sourceIssue"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_relationship",
+      "to": "relationship:Issuelink.targetIssue"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "has_relationship",
+      "to": "relationship:Issuelink.targetProject"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "uses_behaviour",
+      "to": "behaviour:auditBehavior"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "uses_behaviour",
+      "to": "behaviour:createdUserBehavior"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateCreatedBehavior"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "uses_behaviour",
+      "to": "behaviour:dateModifiedBehavior"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "uses_behaviour",
+      "to": "behaviour:issueLinkBehavior"
+    },
+    {
+      "from": "model:Issuelink",
+      "type": "uses_behaviour",
+      "to": "behaviour:modifiedUserBehavior"
+    },
+    {
+      "from": "model:Issuelink",
       "type": "uses_behaviour",
       "to": "behaviour:softDeleteBehavior"
     },
@@ -111037,12 +113933,27 @@
     {
       "from": "profile:aclMembers",
       "type": "grants",
+      "to": "permission:issuelink.create"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:issuelink.delete"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
       "to": "permission:workflowrun.get"
     },
     {
       "from": "profile:aclMembers",
       "type": "grants",
       "to": "permission:workflowrunstep.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants_members",
+      "to": "permission:issuelink.get"
     },
     {
       "from": "profile:aclMembers",
@@ -111818,6 +114729,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:issue.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issuelink.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issuelink.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issuelink.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:issuelink.update"
     },
     {
       "from": "profile:default",
@@ -112960,6 +115891,11 @@
       "to": "model:Upload"
     },
     {
+      "from": "relationship:Issue.incomingLinks",
+      "type": "targets",
+      "to": "model:Issuelink"
+    },
+    {
       "from": "relationship:Issue.issuemilestone",
       "type": "targets",
       "to": "model:Milestone"
@@ -112978,6 +115914,11 @@
       "from": "relationship:Issue.modifiedBy",
       "type": "targets",
       "to": "model:User"
+    },
+    {
+      "from": "relationship:Issue.outgoingLinks",
+      "type": "targets",
+      "to": "model:Issuelink"
     },
     {
       "from": "relationship:Issue.ownedBy",
@@ -113008,6 +115949,36 @@
       "from": "relationship:Issue.watchers",
       "type": "targets",
       "to": "model:Issuewatcher"
+    },
+    {
+      "from": "relationship:Issuelink.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Issuelink.modifiedBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Issuelink.project",
+      "type": "targets",
+      "to": "model:Project"
+    },
+    {
+      "from": "relationship:Issuelink.sourceIssue",
+      "type": "targets",
+      "to": "model:Issue"
+    },
+    {
+      "from": "relationship:Issuelink.targetIssue",
+      "type": "targets",
+      "to": "model:Issue"
+    },
+    {
+      "from": "relationship:Issuelink.targetProject",
+      "type": "targets",
+      "to": "model:Project"
     },
     {
       "from": "relationship:Membership.project",
@@ -114045,6 +117016,16 @@
       "to": "action:issue.delete"
     },
     {
+      "from": "route:DELETE /api/v1/issuelink",
+      "type": "handled_by",
+      "to": "action:issuelink.deleteCollection"
+    },
+    {
+      "from": "route:DELETE /api/v1/issuelink/{id}",
+      "type": "handled_by",
+      "to": "action:issuelink.delete"
+    },
+    {
       "from": "route:DELETE /api/v1/issuestatus",
       "type": "handled_by",
       "to": "action:issuestatus.deleteCollection"
@@ -114643,6 +117624,21 @@
       "from": "route:GET /api/v1/issue/{id}/{relation}",
       "type": "handled_by",
       "to": "action:issue.related"
+    },
+    {
+      "from": "route:GET /api/v1/issuelink",
+      "type": "handled_by",
+      "to": "action:issuelink.list"
+    },
+    {
+      "from": "route:GET /api/v1/issuelink/{id}",
+      "type": "handled_by",
+      "to": "action:issuelink.get"
+    },
+    {
+      "from": "route:GET /api/v1/issuelink/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:issuelink.related"
     },
     {
       "from": "route:GET /api/v1/issuestatus",
@@ -115460,6 +118456,11 @@
       "to": "action:issue.options"
     },
     {
+      "from": "route:OPTIONS /api/v1/issuelink",
+      "type": "handled_by",
+      "to": "action:issuelink.options"
+    },
+    {
       "from": "route:OPTIONS /api/v1/issueplanning",
       "type": "handled_by",
       "to": "action:issueplanning.options"
@@ -115883,6 +118884,16 @@
       "from": "route:PATCH /api/v1/issue/{id}",
       "type": "handled_by",
       "to": "action:issue.patch"
+    },
+    {
+      "from": "route:PATCH /api/v1/issuelink",
+      "type": "handled_by",
+      "to": "action:issuelink.patchCollection"
+    },
+    {
+      "from": "route:PATCH /api/v1/issuelink/{id}",
+      "type": "handled_by",
+      "to": "action:issuelink.patch"
     },
     {
       "from": "route:PATCH /api/v1/issuestatus",
@@ -116335,6 +119346,11 @@
       "to": "action:issue.post"
     },
     {
+      "from": "route:POST /api/v1/issuelink",
+      "type": "handled_by",
+      "to": "action:issuelink.post"
+    },
+    {
       "from": "route:POST /api/v1/issueplanning",
       "type": "handled_by",
       "to": "action:issueplanning.post"
@@ -116688,6 +119704,16 @@
       "from": "route:PUT /api/v1/issue/{id}",
       "type": "handled_by",
       "to": "action:issue.put"
+    },
+    {
+      "from": "route:PUT /api/v1/issuelink",
+      "type": "handled_by",
+      "to": "action:issuelink.putCollection"
+    },
+    {
+      "from": "route:PUT /api/v1/issuelink/{id}",
+      "type": "handled_by",
+      "to": "action:issuelink.put"
     },
     {
       "from": "route:PUT /api/v1/issuestatus",

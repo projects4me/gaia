@@ -7,6 +7,7 @@
 namespace Gaia\MVC\Models;
 
 use Gaia\Core\MVC\Models\Model;
+use Gaia\Libraries\Issues\IssueLinks;
 use Gaia\Libraries\Utils\TransactionScope;
 
 /**
@@ -52,5 +53,19 @@ class Issue extends Model
                 return $saved === true;
             }
         );
+    }
+
+    /**
+     * A deleted issue takes its links with it (Workspaces D-021), from
+     * either end. softDeleteBehavior calls this once the issue is marked
+     * deleted.
+     *
+     * @return void
+     */
+    public function afterSoftDelete()
+    {
+        foreach ((new IssueLinks())->of((string) $this->id) as $link) {
+            $link->delete();
+        }
     }
 }

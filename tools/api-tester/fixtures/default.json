@@ -159,6 +159,8 @@
     "workspacemilestoneId": "f71f4371-0003-21d3-2f92-eabb5aeed838",
     "sprintWorkspacemilestoneId": "a57ea343-181e-19cf-dad9-f0b4370f32e1",
     "repositoryId": "api-test-repository-000001",
+    "issuelinkId": "api-test-issuelink-000001",
+    "otherProjectIssuelinkId": "api-test-issuelink-000002",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

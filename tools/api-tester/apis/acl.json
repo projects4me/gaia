@@ -3677,6 +3677,111 @@
       "auth": "aclNoSetting",
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-repository"
+    },
+    {
+      "id": "acl-issuelink-member-allowed-acl-members",
+      "method": "GET",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": "aclMembers",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-issuelink-detail-member-allowed-acl-members",
+      "method": "GET",
+      "path": "/api/v1/issuelink/{issuelinkId}",
+      "resource": "issuelink",
+      "auth": "aclMembers",
+      "expects": { "status": 200, "shape": "jsonapi.resource" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-issuelink-detail-denied-other-project-acl-members",
+      "method": "GET",
+      "path": "/api/v1/issuelink/{otherProjectIssuelinkId}",
+      "resource": "issuelink",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-issuelink-list-member-scope-acl-members",
+      "method": "GET",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": "aclMembers",
+      "query": { "limit": 100, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{issuelinkId}"], "idsExcludes": ["{otherProjectIssuelinkId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-issuelink-create-member-allowed-acl-members",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{issueId}",
+            "targetIssueId": "api-test-issue-000002",
+            "type": "relates"
+          }
+        }
+      },
+      "store": { "runtime.aclIssuelinkId": "data.id" },
+      "expects": { "status": 201, "shape": "jsonapi.resource", "attributesEqual": {"projectId": "{projectId}"} },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-issuelink-delete-member-allowed-acl-members",
+      "method": "DELETE",
+      "path": "/api/v1/issuelink/{runtime.aclIssuelinkId}",
+      "resource": "issuelink",
+      "auth": "aclMembers",
+      "expects": { "status": [200, 204] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-issuelink-create-target-non-member-denied-acl-members",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{issueId}",
+            "targetIssueId": "{otherProjectIssueId}",
+            "type": "relates"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-issuelink-create-source-non-member-denied-acl-members",
+      "method": "POST",
+      "path": "/api/v1/issuelink",
+      "resource": "issuelink",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "issuelink",
+          "attributes": {
+            "sourceIssueId": "{otherProjectIssueId}",
+            "targetIssueId": "{issueId}",
+            "type": "relates"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
     }
   ]
 }
