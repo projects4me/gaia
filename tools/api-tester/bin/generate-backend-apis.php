@@ -113,6 +113,8 @@ $fixtureIds = [
     'workflowrunstep' => '{workflowrunstepId}',
     'repository' => '{repositoryId}',
     'workspace' => '{workspaceId}',
+    // A member row's id is derived from its workspace and user (seeded member workspace).
+    'workspacemember' => '{workspacememberId}',
 ];
 
 /** relatedTo/relatedId defaults inferred from metadata relationships / known modules. */

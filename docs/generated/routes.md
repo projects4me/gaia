@@ -1076,3 +1076,13 @@
 | POST | /api/v1/workspace | rest | workspace.post |
 | PUT | /api/v1/workspace | rest | workspace.putCollection |
 | PUT | /api/v1/workspace/{id} | rest | workspace.put |
+
+<a id="workspacemember"></a>
+## workspacemember
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/workspacemember | rest | workspacemember.list |
+| GET | /api/v1/workspacemember/{id} | rest | workspacemember.get |
+| GET | /api/v1/workspacemember/{id}/{relation} | rest | workspacemember.related |
+| OPTIONS | /api/v1/workspacemember | rest | workspacemember.options |

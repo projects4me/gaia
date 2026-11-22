@@ -491,7 +491,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('doc'), ('doccontent'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep'), ('workspace'), ('repository')
+    ('systemsetting'), ('userrole'), ('doc'), ('doccontent'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep'), ('workspace'), ('repository'), ('workspacemember')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -1495,6 +1495,67 @@ SELECT setval(
   GREATEST((SELECT COALESCE(MAX("issueNumber"), 1) FROM issues), 1)
 );
 
+-- Workspace members (Workspaces D-014): a third workspace with two live projects and a deleted one.
+-- api-test-user-0001 is in all three (one row, projectCount 2), the agent api-test-user-agent2 in the first,
+-- api-test-user-acl-mem in the second. Open issues: user 0001 has one open issue in the first project (a done,
+-- a deleted and a deleted-project issue do not count); the agent has one open issue in the second project,
+-- where it is no member.
+INSERT INTO workspaces (
+  id, "name", "description", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workspace-000003', 'Members workspace', 'Holds the workspace member rows', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO projects (
+  id, name, "shortCode", type, "modifiedUser", deleted, status,
+  "createdUser", "createdUserName", "modifiedUserName", done, "projectManager", "workspaceId"
+) VALUES
+  ('api-test-project-wsm-1', 'Workspace Members One', 'WSM1', 'software', 'api-test-user-0001', 0, 'new',
+   'api-test-user-0001', 'API Tester', 'API Tester', 0, 'api-test-user-0001', 'api-test-workspace-000003'),
+  ('api-test-project-wsm-2', 'Workspace Members Two', 'WSM2', 'software', 'api-test-user-0001', 0, 'new',
+   'api-test-user-0001', 'API Tester', 'API Tester', 0, 'api-test-user-0001', 'api-test-workspace-000003'),
+  ('api-test-project-wsm-3', 'Workspace Members Deleted', 'WSM3', 'software', 'api-test-user-0001', 1, 'new',
+   'api-test-user-0001', 'API Tester', 'API Tester', 0, 'api-test-user-0001', 'api-test-workspace-000003')
+ON CONFLICT (id) DO UPDATE SET deleted = EXCLUDED.deleted, "workspaceId" = EXCLUDED."workspaceId";
+
+INSERT INTO memberships (
+  id, "createdUser", "modifiedUser", "userId", "createdUserName", "modifiedUserName", "projectId"
+) VALUES
+  ('api-test-membership-wsm-1', 'api-test-user-0001', 'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester', 'api-test-project-wsm-1'),
+  ('api-test-membership-wsm-2', 'api-test-user-0001', 'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester', 'api-test-project-wsm-2'),
+  ('api-test-membership-wsm-3', 'api-test-user-0001', 'api-test-user-0001', 'api-test-user-0001', 'API Tester', 'API Tester', 'api-test-project-wsm-3'),
+  ('api-test-membership-wsm-4', 'api-test-user-0001', 'api-test-user-0001', 'api-test-user-agent2', 'API Tester', 'API Tester', 'api-test-project-wsm-1'),
+  ('api-test-membership-wsm-5', 'api-test-user-0001', 'api-test-user-0001', 'api-test-user-acl-mem', 'API Tester', 'API Tester', 'api-test-project-wsm-2')
+ON CONFLICT (id) DO UPDATE SET "userId" = EXCLUDED."userId", "projectId" = EXCLUDED."projectId";
+
+INSERT INTO issues (
+  id, subject, deleted, "createdUser", owner, assignee, "reportedUser", "modifiedUser",
+  priority, status, "projectId", "milestoneId", "typeId", "createdUserName", "modifiedUserName",
+  "statusId", "projectShortcode", "isPlanned", "isReopened", "issueNumber"
+)
+SELECT v.id, v.subject, v.deleted, 'api-test-user-0001', 'api-test-user-0001', v.assignee, 'api-test-user-0001',
+  'api-test-user-0001', 'low', 'new', v.project, NULL,
+  (SELECT id FROM issue_types WHERE system = 1 AND deleted = 0 ORDER BY id LIMIT 1), 'API Tester', 'API Tester',
+  (SELECT id FROM issue_statuses WHERE system = 1 AND deleted = 0 AND done = v.done ORDER BY id LIMIT 1),
+  v.code, 0, 0, nextval('"issues_issueNumber_seq"')
+FROM (VALUES
+  ('api-test-issue-wsm-01', 'Workspace member open issue', 0, 'api-test-user-0001', 'api-test-project-wsm-1', 'WSM1', 0),
+  ('api-test-issue-wsm-02', 'Workspace member done issue', 0, 'api-test-user-0001', 'api-test-project-wsm-1', 'WSM1', 1),
+  ('api-test-issue-wsm-03', 'Workspace member deleted issue', 1, 'api-test-user-0001', 'api-test-project-wsm-1', 'WSM1', 0),
+  ('api-test-issue-wsm-04', 'Workspace member deleted project issue', 0, 'api-test-user-0001', 'api-test-project-wsm-3', 'WSM3', 0),
+  ('api-test-issue-wsm-05', 'Workspace agent open issue', 0, 'api-test-user-agent2', 'api-test-project-wsm-2', 'WSM2', 0)
+) AS v(id, subject, deleted, assignee, project, code, done)
+ON CONFLICT (id) DO UPDATE SET deleted = EXCLUDED.deleted, assignee = EXCLUDED.assignee,
+  "projectId" = EXCLUDED."projectId", "statusId" = EXCLUDED."statusId";
+
+-- Workspace members ACL: the no-setting role reads members but not workspaces (group denial); the members
+-- role is refused workspacemember.get (module denial)
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-ns-wsmember-get', 'api-test-role-acl-ns', 'workspacemember.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-wsmember-get', 'api-test-role-acl-mem', 'workspacemember.get', 0, NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET allowed = EXCLUDED.allowed;
+
 -- Refresh auth materialized views when present (used by RLS helpers)
 DO $$
 BEGIN
@@ -1665,6 +1726,10 @@ data = {
     "workflowactorstepId": "api-test-workflowactorstep-000001",
     "otherWorkflowactorstepId": "api-test-workflowactorstep-000002",
     "workspaceId": "api-test-workspace-000001",
+    "memberWorkspaceId": "api-test-workspace-000003",
+    "workspacememberId": "12bb5dc3-bc0d-62d0-b066-7ef18000b3b8",
+    "agentWorkspacememberId": "66c3a7da-ba5f-1a20-1c45-7768d05a39c2",
+    "aclMemWorkspacememberId": "2cb5df70-7dcb-7013-fd55-c404cbf7f256",
     "repositoryId": "api-test-repository-000001",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",

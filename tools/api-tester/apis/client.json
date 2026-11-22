@@ -13132,6 +13132,138 @@
         "shape": "error",
         "errorEqual": "The agent does not exist, is not active or cannot be delegated."
       }
+    },
+    {
+      "id": "workspacemember-one-row-per-user",
+      "method": "GET",
+      "path": "/api/v1/workspacemember",
+      "resource": "workspacemember",
+      "auth": true,
+      "query": {
+        "query": "((Workspacemember.workspaceId : {memberWorkspaceId}))",
+        "sort": "Workspacemember.userName",
+        "order": "ASC",
+        "limit": 20,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.id": "{workspacememberId}",
+          "data.0.attributes.userId": "api-test-user-0001",
+          "data.0.attributes.kind": "person",
+          "data.0.attributes.projectCount": 2,
+          "data.0.attributes.openIssueCount": 1,
+          "data.1.id": "{aclMemWorkspacememberId}",
+          "data.1.attributes.kind": "person",
+          "data.1.attributes.projectCount": 1,
+          "data.1.attributes.openIssueCount": 0,
+          "data.2.id": "{agentWorkspacememberId}",
+          "data.2.attributes.kind": "agent",
+          "data.2.attributes.projectCount": 1,
+          "data.2.attributes.openIssueCount": 1
+        },
+        "jsonPathAbsent": [
+          "data.3"
+        ]
+      }
+    },
+    {
+      "id": "workspacemember-pages-distinct-users",
+      "method": "GET",
+      "path": "/api/v1/workspacemember",
+      "resource": "workspacemember",
+      "auth": true,
+      "query": {
+        "query": "((Workspacemember.workspaceId : {memberWorkspaceId}))",
+        "sort": "Workspacemember.userName",
+        "order": "ASC",
+        "limit": 2,
+        "page": 2
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{agentWorkspacememberId}"
+        ],
+        "idsExcludes": [
+          "{workspacememberId}",
+          "{aclMemWorkspacememberId}"
+        ]
+      }
+    },
+    {
+      "id": "workspacemember-detail-counts",
+      "method": "GET",
+      "path": "/api/v1/workspacemember/{workspacememberId}",
+      "resource": "workspacemember",
+      "auth": true,
+      "query": {
+        "rels": "user"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "jsonEqual": {
+          "data.attributes.workspaceId": "{memberWorkspaceId}",
+          "data.attributes.userName": "API Tester",
+          "data.attributes.projectCount": 2,
+          "data.attributes.openIssueCount": 1,
+          "data.relationships.user.data.id": "api-test-user-0001"
+        }
+      }
+    },
+    {
+      "id": "workspacemember-other-workspace-excluded",
+      "method": "GET",
+      "path": "/api/v1/workspacemember",
+      "resource": "workspacemember",
+      "auth": true,
+      "query": {
+        "query": "((Workspacemember.workspaceId : {workspaceId}))",
+        "limit": 50,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsExcludes": [
+          "{workspacememberId}",
+          "{agentWorkspacememberId}",
+          "{aclMemWorkspacememberId}"
+        ]
+      }
+    },
+    {
+      "id": "workspacemember-create-refused",
+      "method": "POST",
+      "path": "/api/v1/workspacemember",
+      "resource": "workspacemember",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspacemember",
+          "attributes": {
+            "workspaceId": "{memberWorkspaceId}",
+            "userId": "api-test-user-0001"
+          }
+        }
+      },
+      "expects": {
+        "status": 404
+      }
+    },
+    {
+      "id": "workspacemember-delete-refused",
+      "method": "DELETE",
+      "path": "/api/v1/workspacemember/{workspacememberId}",
+      "resource": "workspacemember",
+      "auth": true,
+      "expects": {
+        "status": 404
+      }
     }
   ]
 }

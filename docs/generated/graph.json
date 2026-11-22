@@ -3717,6 +3717,30 @@
       "attributes": {}
     },
     {
+      "id": "action:workspacemember.get",
+      "type": "action",
+      "key": "workspacemember.get",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspacemember.list",
+      "type": "action",
+      "key": "workspacemember.list",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspacemember.options",
+      "type": "action",
+      "key": "workspacemember.options",
+      "attributes": {}
+    },
+    {
+      "id": "action:workspacemember.related",
+      "type": "action",
+      "key": "workspacemember.related",
+      "attributes": {}
+    },
+    {
       "id": "assertion:attributesAbsent",
       "type": "assertion",
       "key": "attributesAbsent",
@@ -9358,6 +9382,56 @@
       }
     },
     {
+      "id": "case:acl/acl-workspacemember-denied-without-grant",
+      "type": "case",
+      "key": "acl/acl-workspacemember-denied-without-grant",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemember",
+        "resource": "workspacemember",
+        "enabled": true,
+        "source": "acl-workspace",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workspacemember-denied-without-workspace-group",
+      "type": "case",
+      "key": "acl/acl-workspacemember-denied-without-workspace-group",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemember",
+        "resource": "workspacemember",
+        "enabled": true,
+        "source": "acl-workspace",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-workspacemember-detail-denied-without-workspace-group",
+      "type": "case",
+      "key": "acl/acl-workspacemember-detail-denied-without-workspace-group",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemember/{workspacememberId}",
+        "resource": "workspacemember",
+        "enabled": true,
+        "source": "acl-workspace",
+        "placeholders": [
+          "workspacememberId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "case",
       "key": "backend/delete-activity-api-v1-activity-runtime-id",
@@ -12406,6 +12480,40 @@
         "source": "backend-metadata",
         "placeholders": [
           "runtime.workspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workspacemember-api-v1-workspacemember",
+      "type": "case",
+      "key": "backend/get-workspacemember-api-v1-workspacemember",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemember",
+        "resource": "workspacemember",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:backend/get-workspacemember-api-v1-workspacemember-id",
+      "type": "case",
+      "key": "backend/get-workspacemember-api-v1-workspacemember-id",
+      "attributes": {
+        "catalog": "backend",
+        "file": "tools/api-tester/apis/backend.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemember/{workspacememberId}",
+        "resource": "workspacemember",
+        "enabled": true,
+        "source": "backend-metadata",
+        "placeholders": [
+          "workspacememberId"
         ],
         "stores": []
       }
@@ -24730,6 +24838,124 @@
       }
     },
     {
+      "id": "case:client/workspacemember-create-refused",
+      "type": "case",
+      "key": "client/workspacemember-create-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/workspacemember",
+        "resource": "workspacemember",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspacemember-delete-refused",
+      "type": "case",
+      "key": "client/workspacemember-delete-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/workspacemember/{workspacememberId}",
+        "resource": "workspacemember",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workspacememberId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspacemember-detail-counts",
+      "type": "case",
+      "key": "client/workspacemember-detail-counts",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemember/{workspacememberId}",
+        "resource": "workspacemember",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberWorkspaceId",
+          "workspacememberId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspacemember-one-row-per-user",
+      "type": "case",
+      "key": "client/workspacemember-one-row-per-user",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemember",
+        "resource": "workspacemember",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "aclMemWorkspacememberId",
+          "agentWorkspacememberId",
+          "memberWorkspaceId",
+          "workspacememberId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspacemember-other-workspace-excluded",
+      "type": "case",
+      "key": "client/workspacemember-other-workspace-excluded",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemember",
+        "resource": "workspacemember",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "aclMemWorkspacememberId",
+          "agentWorkspacememberId",
+          "workspaceId",
+          "workspacememberId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspacemember-pages-distinct-users",
+      "type": "case",
+      "key": "client/workspacemember-pages-distinct-users",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspacemember",
+        "resource": "workspacemember",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "aclMemWorkspacememberId",
+          "agentWorkspacememberId",
+          "memberWorkspaceId",
+          "workspacememberId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:live/live-agent-run-cleanup-agent-membership",
       "type": "case",
       "key": "live/live-agent-run-cleanup-agent-membership",
@@ -27691,6 +27917,17 @@
         "rest": true,
         "class": "Gaia\\MVC\\REST\\Controllers\\WorkspaceController",
         "file": "app/api/v1/controllers/WorkspaceController.php",
+        "extends": "RestController"
+      }
+    },
+    {
+      "id": "controller:workspacemember",
+      "type": "controller",
+      "key": "workspacemember",
+      "attributes": {
+        "rest": true,
+        "class": "Gaia\\MVC\\REST\\Controllers\\WorkspacememberController",
+        "file": "app/api/v1/controllers/WorkspacememberController.php",
         "extends": "RestController"
       }
     },
@@ -37946,6 +38183,92 @@
       }
     },
     {
+      "id": "field:Workspacemember.id",
+      "type": "field",
+      "key": "Workspacemember.id",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MEMBERS_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "identifier": true
+      }
+    },
+    {
+      "id": "field:Workspacemember.kind",
+      "type": "field",
+      "key": "Workspacemember.kind",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MEMBERS_KIND",
+        "type": "varchar",
+        "length": "10",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workspacemember.openIssueCount",
+      "type": "field",
+      "key": "Workspacemember.openIssueCount",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MEMBERS_OPEN_ISSUE_COUNT",
+        "type": "int",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workspacemember.projectCount",
+      "type": "field",
+      "key": "Workspacemember.projectCount",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MEMBERS_PROJECT_COUNT",
+        "type": "int",
+        "null": false
+      }
+    },
+    {
+      "id": "field:Workspacemember.userId",
+      "type": "field",
+      "key": "Workspacemember.userId",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MEMBERS_USER",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "field:Workspacemember.userName",
+      "type": "field",
+      "key": "Workspacemember.userName",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MEMBERS_USER_NAME",
+        "type": "varchar",
+        "length": "255",
+        "null": true
+      }
+    },
+    {
+      "id": "field:Workspacemember.workspaceId",
+      "type": "field",
+      "key": "Workspacemember.workspaceId",
+      "attributes": {
+        "label": "LBL_WORKSPACE_MEMBERS_WORKSPACE",
+        "type": "varchar",
+        "length": "36",
+        "null": false,
+        "relatedIdentifier": true
+      }
+    },
+    {
+      "id": "fixture:aclMemWorkspacememberId",
+      "type": "fixture",
+      "key": "aclMemWorkspacememberId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:activityId",
       "type": "fixture",
       "key": "activityId",
@@ -37989,6 +38312,14 @@
       "id": "fixture:agentUserroleId",
       "type": "fixture",
       "key": "agentUserroleId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:agentWorkspacememberId",
+      "type": "fixture",
+      "key": "agentWorkspacememberId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -38197,6 +38528,14 @@
       "id": "fixture:memberUserId",
       "type": "fixture",
       "key": "memberUserId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:memberWorkspaceId",
+      "type": "fixture",
+      "key": "memberWorkspaceId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -38645,6 +38984,14 @@
       "id": "fixture:workspaceId",
       "type": "fixture",
       "key": "workspaceId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:workspacememberId",
+      "type": "fixture",
+      "key": "workspacememberId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -40041,6 +40388,23 @@
             ],
             "filter": "Workspace.deleted = false AND Workspace.runtimeId IN (SELECT BoundClient.id FROM Gaia\\MVC\\Models\\Serviceclient BoundClient WHERE BoundClient.deleted = false AND BoundClient.clientId = :serviceClientId:)"
           }
+        }
+      }
+    },
+    {
+      "id": "model:Workspacemember",
+      "type": "model",
+      "key": "Workspacemember",
+      "attributes": {
+        "file": "app/metadata/model/Workspacemember.php",
+        "tableName": "workspace_members",
+        "isView": true,
+        "registered": true,
+        "hasMetadata": true,
+        "acl": {
+          "groups": [
+            "Workspace"
+          ]
         }
       }
     },
@@ -42384,6 +42748,42 @@
       "id": "permission:workspace.update",
       "type": "permission",
       "key": "workspace.update",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workspacemember.create",
+      "type": "permission",
+      "key": "workspacemember.create",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workspacemember.delete",
+      "type": "permission",
+      "key": "workspacemember.delete",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workspacemember.get",
+      "type": "permission",
+      "key": "workspacemember.get",
+      "attributes": {
+        "kind": "action",
+        "scoped": false
+      }
+    },
+    {
+      "id": "permission:workspacemember.update",
+      "type": "permission",
+      "key": "workspacemember.update",
       "attributes": {
         "kind": "action",
         "scoped": false
@@ -44976,6 +45376,26 @@
         "kind": "hasMany",
         "primaryKey": "id",
         "relatedKey": "workspaceId"
+      }
+    },
+    {
+      "id": "relationship:Workspacemember.user",
+      "type": "relationship",
+      "key": "Workspacemember.user",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "userId",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workspacemember.workspace",
+      "type": "relationship",
+      "key": "Workspacemember.workspace",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "workspaceId",
+        "relatedKey": "id"
       }
     },
     {
@@ -48519,6 +48939,42 @@
       }
     },
     {
+      "id": "route:GET /api/v1/workspacemember",
+      "type": "route",
+      "key": "GET /api/v1/workspacemember",
+      "attributes": {
+        "type": "rest",
+        "name": "workspacemember",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workspacemember"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workspacemember/{id}",
+      "type": "route",
+      "key": "GET /api/v1/workspacemember/{id}",
+      "attributes": {
+        "type": "rest",
+        "name": "workspacemember",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workspacemember/{id}"
+      }
+    },
+    {
+      "id": "route:GET /api/v1/workspacemember/{id}/{relation}",
+      "type": "route",
+      "key": "GET /api/v1/workspacemember/{id}/{relation}",
+      "attributes": {
+        "type": "rest",
+        "name": "workspacemember",
+        "version": "v1",
+        "method": "GET",
+        "path": "/api/v1/workspacemember/{id}/{relation}"
+      }
+    },
+    {
       "id": "route:OPTIONS /api/v1/activity",
       "type": "route",
       "key": "OPTIONS /api/v1/activity",
@@ -49368,6 +49824,18 @@
         "version": "v1",
         "method": "OPTIONS",
         "path": "/api/v1/workspace"
+      }
+    },
+    {
+      "id": "route:OPTIONS /api/v1/workspacemember",
+      "type": "route",
+      "key": "OPTIONS /api/v1/workspacemember",
+      "attributes": {
+        "type": "rest",
+        "name": "workspacemember",
+        "version": "v1",
+        "method": "OPTIONS",
+        "path": "/api/v1/workspacemember"
       }
     },
     {
@@ -54652,6 +55120,21 @@
       "from": "action:workspace.related",
       "type": "requires",
       "to": "permission:workspace.get"
+    },
+    {
+      "from": "action:workspacemember.get",
+      "type": "requires",
+      "to": "permission:workspacemember.get"
+    },
+    {
+      "from": "action:workspacemember.list",
+      "type": "requires",
+      "to": "permission:workspacemember.get"
+    },
+    {
+      "from": "action:workspacemember.related",
+      "type": "requires",
+      "to": "permission:workspacemember.get"
     },
     {
       "from": "case:acl/acl-admin-comment-allowed",
@@ -64039,6 +64522,101 @@
       "to": "fixture:workspaceId"
     },
     {
+      "from": "case:acl/acl-workspacemember-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-denied-without-grant",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-denied-without-grant",
+      "type": "covers",
+      "to": "controller:workspacemember"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-denied-without-grant",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemember"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-denied-without-grant",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-denied-without-workspace-group",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-denied-without-workspace-group",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-denied-without-workspace-group",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-denied-without-workspace-group",
+      "type": "covers",
+      "to": "controller:workspacemember"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-denied-without-workspace-group",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemember"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-denied-without-workspace-group",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-detail-denied-without-workspace-group",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-detail-denied-without-workspace-group",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-detail-denied-without-workspace-group",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-detail-denied-without-workspace-group",
+      "type": "covers",
+      "to": "controller:workspacemember"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-detail-denied-without-workspace-group",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemember/{id}"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-detail-denied-without-workspace-group",
+      "type": "runs_as",
+      "to": "profile:aclNoSetting"
+    },
+    {
+      "from": "case:acl/acl-workspacemember-detail-denied-without-workspace-group",
+      "type": "uses_fixture",
+      "to": "fixture:workspacememberId"
+    },
+    {
       "from": "case:backend/delete-activity-api-v1-activity-runtime-id",
       "type": "asserts",
       "to": "assertion:shape"
@@ -69387,6 +69965,66 @@
       "from": "case:backend/get-workspace-api-v1-workspace-runtime-id",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workspacemember-api-v1-workspacemember",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workspacemember-api-v1-workspacemember",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workspacemember-api-v1-workspacemember",
+      "type": "covers",
+      "to": "controller:workspacemember"
+    },
+    {
+      "from": "case:backend/get-workspacemember-api-v1-workspacemember",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemember"
+    },
+    {
+      "from": "case:backend/get-workspacemember-api-v1-workspacemember",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workspacemember-api-v1-workspacemember-id",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:backend/get-workspacemember-api-v1-workspacemember-id",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:backend/get-workspacemember-api-v1-workspacemember-id",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:backend/get-workspacemember-api-v1-workspacemember-id",
+      "type": "covers",
+      "to": "controller:workspacemember"
+    },
+    {
+      "from": "case:backend/get-workspacemember-api-v1-workspacemember-id",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemember/{id}"
+    },
+    {
+      "from": "case:backend/get-workspacemember-api-v1-workspacemember-id",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:backend/get-workspacemember-api-v1-workspacemember-id",
+      "type": "uses_fixture",
+      "to": "fixture:workspacememberId"
     },
     {
       "from": "case:backend/patch-activity-api-v1-activity-id",
@@ -91794,6 +92432,246 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/workspacemember-create-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspacemember-create-refused",
+      "type": "covers",
+      "to": "controller:workspacemember"
+    },
+    {
+      "from": "case:client/workspacemember-create-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspacemember-create-refused",
+      "type": "uses_fixture",
+      "to": "fixture:memberWorkspaceId"
+    },
+    {
+      "from": "case:client/workspacemember-delete-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspacemember-delete-refused",
+      "type": "covers",
+      "to": "controller:workspacemember"
+    },
+    {
+      "from": "case:client/workspacemember-delete-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspacemember-delete-refused",
+      "type": "uses_fixture",
+      "to": "fixture:workspacememberId"
+    },
+    {
+      "from": "case:client/workspacemember-detail-counts",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspacemember-detail-counts",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspacemember-detail-counts",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspacemember-detail-counts",
+      "type": "covers",
+      "to": "controller:workspacemember"
+    },
+    {
+      "from": "case:client/workspacemember-detail-counts",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemember/{id}"
+    },
+    {
+      "from": "case:client/workspacemember-detail-counts",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspacemember-detail-counts",
+      "type": "uses_fixture",
+      "to": "fixture:memberWorkspaceId"
+    },
+    {
+      "from": "case:client/workspacemember-detail-counts",
+      "type": "uses_fixture",
+      "to": "fixture:workspacememberId"
+    },
+    {
+      "from": "case:client/workspacemember-one-row-per-user",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspacemember-one-row-per-user",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/workspacemember-one-row-per-user",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspacemember-one-row-per-user",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspacemember-one-row-per-user",
+      "type": "covers",
+      "to": "controller:workspacemember"
+    },
+    {
+      "from": "case:client/workspacemember-one-row-per-user",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemember"
+    },
+    {
+      "from": "case:client/workspacemember-one-row-per-user",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspacemember-one-row-per-user",
+      "type": "uses_fixture",
+      "to": "fixture:aclMemWorkspacememberId"
+    },
+    {
+      "from": "case:client/workspacemember-one-row-per-user",
+      "type": "uses_fixture",
+      "to": "fixture:agentWorkspacememberId"
+    },
+    {
+      "from": "case:client/workspacemember-one-row-per-user",
+      "type": "uses_fixture",
+      "to": "fixture:memberWorkspaceId"
+    },
+    {
+      "from": "case:client/workspacemember-one-row-per-user",
+      "type": "uses_fixture",
+      "to": "fixture:workspacememberId"
+    },
+    {
+      "from": "case:client/workspacemember-other-workspace-excluded",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/workspacemember-other-workspace-excluded",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspacemember-other-workspace-excluded",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspacemember-other-workspace-excluded",
+      "type": "covers",
+      "to": "controller:workspacemember"
+    },
+    {
+      "from": "case:client/workspacemember-other-workspace-excluded",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemember"
+    },
+    {
+      "from": "case:client/workspacemember-other-workspace-excluded",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspacemember-other-workspace-excluded",
+      "type": "uses_fixture",
+      "to": "fixture:aclMemWorkspacememberId"
+    },
+    {
+      "from": "case:client/workspacemember-other-workspace-excluded",
+      "type": "uses_fixture",
+      "to": "fixture:agentWorkspacememberId"
+    },
+    {
+      "from": "case:client/workspacemember-other-workspace-excluded",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:client/workspacemember-other-workspace-excluded",
+      "type": "uses_fixture",
+      "to": "fixture:workspacememberId"
+    },
+    {
+      "from": "case:client/workspacemember-pages-distinct-users",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/workspacemember-pages-distinct-users",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/workspacemember-pages-distinct-users",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspacemember-pages-distinct-users",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspacemember-pages-distinct-users",
+      "type": "covers",
+      "to": "controller:workspacemember"
+    },
+    {
+      "from": "case:client/workspacemember-pages-distinct-users",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspacemember"
+    },
+    {
+      "from": "case:client/workspacemember-pages-distinct-users",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspacemember-pages-distinct-users",
+      "type": "uses_fixture",
+      "to": "fixture:aclMemWorkspacememberId"
+    },
+    {
+      "from": "case:client/workspacemember-pages-distinct-users",
+      "type": "uses_fixture",
+      "to": "fixture:agentWorkspacememberId"
+    },
+    {
+      "from": "case:client/workspacemember-pages-distinct-users",
+      "type": "uses_fixture",
+      "to": "fixture:memberWorkspaceId"
+    },
+    {
+      "from": "case:client/workspacemember-pages-distinct-users",
+      "type": "uses_fixture",
+      "to": "fixture:workspacememberId"
+    },
+    {
       "from": "case:live/live-agent-run-cleanup-agent-membership",
       "type": "asserts",
       "to": "assertion:status"
@@ -97782,6 +98660,31 @@
       "from": "controller:workspace",
       "type": "serves",
       "to": "model:Workspace"
+    },
+    {
+      "from": "controller:workspacemember",
+      "type": "has_action",
+      "to": "action:workspacemember.get"
+    },
+    {
+      "from": "controller:workspacemember",
+      "type": "has_action",
+      "to": "action:workspacemember.list"
+    },
+    {
+      "from": "controller:workspacemember",
+      "type": "has_action",
+      "to": "action:workspacemember.options"
+    },
+    {
+      "from": "controller:workspacemember",
+      "type": "has_action",
+      "to": "action:workspacemember.related"
+    },
+    {
+      "from": "controller:workspacemember",
+      "type": "serves",
+      "to": "model:Workspacemember"
     },
     {
       "from": "field:Activity.createdUserName",
@@ -105939,6 +106842,51 @@
       "to": "behaviour:workspaceShortCodeBehavior"
     },
     {
+      "from": "model:Workspacemember",
+      "type": "has_field",
+      "to": "field:Workspacemember.id"
+    },
+    {
+      "from": "model:Workspacemember",
+      "type": "has_field",
+      "to": "field:Workspacemember.kind"
+    },
+    {
+      "from": "model:Workspacemember",
+      "type": "has_field",
+      "to": "field:Workspacemember.openIssueCount"
+    },
+    {
+      "from": "model:Workspacemember",
+      "type": "has_field",
+      "to": "field:Workspacemember.projectCount"
+    },
+    {
+      "from": "model:Workspacemember",
+      "type": "has_field",
+      "to": "field:Workspacemember.userId"
+    },
+    {
+      "from": "model:Workspacemember",
+      "type": "has_field",
+      "to": "field:Workspacemember.userName"
+    },
+    {
+      "from": "model:Workspacemember",
+      "type": "has_field",
+      "to": "field:Workspacemember.workspaceId"
+    },
+    {
+      "from": "model:Workspacemember",
+      "type": "has_relationship",
+      "to": "relationship:Workspacemember.user"
+    },
+    {
+      "from": "model:Workspacemember",
+      "type": "has_relationship",
+      "to": "relationship:Workspacemember.workspace"
+    },
+    {
       "from": "permission:issue.description.create",
       "type": "guards",
       "to": "field:Issue.description"
@@ -106252,6 +107200,11 @@
       "from": "profile:aclMembers",
       "type": "denies",
       "to": "permission:workflowrun.create"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "denies",
+      "to": "permission:workspacemember.get"
     },
     {
       "from": "profile:aclMembers",
@@ -106617,6 +107570,11 @@
       "from": "profile:aclNoSetting",
       "type": "grants",
       "to": "permission:workflowrun.create"
+    },
+    {
+      "from": "profile:aclNoSetting",
+      "type": "grants",
+      "to": "permission:workspacemember.get"
     },
     {
       "from": "profile:aclProjectOnly",
@@ -107837,6 +108795,26 @@
       "from": "profile:default",
       "type": "grants",
       "to": "permission:workspace.update"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workspacemember.create"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workspacemember.delete"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workspacemember.get"
+    },
+    {
+      "from": "profile:default",
+      "type": "grants",
+      "to": "permission:workspacemember.update"
     },
     {
       "from": "relationship:Activity.conversationroom",
@@ -109077,6 +110055,16 @@
       "from": "relationship:Workspace.workflows",
       "type": "targets",
       "to": "model:Workflow"
+    },
+    {
+      "from": "relationship:Workspacemember.user",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workspacemember.workspace",
+      "type": "targets",
+      "to": "model:Workspace"
     },
     {
       "from": "route:ANY /",
@@ -110554,6 +111542,21 @@
       "to": "action:workspace.related"
     },
     {
+      "from": "route:GET /api/v1/workspacemember",
+      "type": "handled_by",
+      "to": "action:workspacemember.list"
+    },
+    {
+      "from": "route:GET /api/v1/workspacemember/{id}",
+      "type": "handled_by",
+      "to": "action:workspacemember.get"
+    },
+    {
+      "from": "route:GET /api/v1/workspacemember/{id}/{relation}",
+      "type": "handled_by",
+      "to": "action:workspacemember.related"
+    },
+    {
       "from": "route:OPTIONS /api/v1/activity",
       "type": "handled_by",
       "to": "action:activity.options"
@@ -110907,6 +111910,11 @@
       "from": "route:OPTIONS /api/v1/workspace",
       "type": "handled_by",
       "to": "action:workspace.options"
+    },
+    {
+      "from": "route:OPTIONS /api/v1/workspacemember",
+      "type": "handled_by",
+      "to": "action:workspacemember.options"
     },
     {
       "from": "route:PATCH /api/v1/activity",
