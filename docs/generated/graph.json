@@ -21331,6 +21331,141 @@
       }
     },
     {
+      "id": "case:client/project-move-create-cross-project-link",
+      "type": "case",
+      "key": "client/project-move-create-cross-project-link",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveLinkIssueId",
+          "runtime.moveLinkPeerIssueId"
+        ],
+        "stores": [
+          "runtime.moveCrossLinkId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-create-internal-link",
+      "type": "case",
+      "key": "client/project-move-create-internal-link",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issuelink",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveLinkInnerIssueId",
+          "runtime.moveLinkIssueId"
+        ],
+        "stores": [
+          "runtime.moveInternalLinkId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-create-link-inner-issue",
+      "type": "case",
+      "key": "client/project-move-create-link-inner-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectShortcode",
+          "runtime.moveProjectId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.moveLinkInnerIssueId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-create-link-issue",
+      "type": "case",
+      "key": "client/project-move-create-link-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectShortcode",
+          "runtime.moveProjectId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.moveLinkIssueId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-create-link-peer-issue",
+      "type": "case",
+      "key": "client/project-move-create-link-peer-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectShortcode",
+          "runtime.moveLinkProjectId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.moveLinkPeerIssueId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/project-move-create-link-project",
+      "type": "case",
+      "key": "client/project-move-create-link-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveSrcWsId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.moveLinkProjectId"
+        ]
+      }
+    },
+    {
       "id": "case:client/project-move-create-project",
       "type": "case",
       "key": "client/project-move-create-project",
@@ -21476,6 +21611,25 @@
       }
     },
     {
+      "id": "case:client/project-move-cross-project-link-409",
+      "type": "case",
+      "key": "client/project-move-cross-project-link-409",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/project/{runtime.moveProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstWsId",
+          "runtime.moveProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/project-move-delete-agent-issue",
       "type": "case",
       "key": "client/project-move-delete-agent-issue",
@@ -21507,6 +21661,24 @@
         "source": null,
         "placeholders": [
           "runtime.moveClashRepositoryId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-delete-cross-project-link",
+      "type": "case",
+      "key": "client/project-move-delete-cross-project-link",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/issuelink/{runtime.moveCrossLinkId}",
+        "resource": "issuelink",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveCrossLinkId"
         ],
         "stores": []
       }
@@ -88762,6 +88934,261 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/project-move-create-cross-project-link",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-cross-project-link",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-cross-project-link",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/project-move-create-cross-project-link",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-link-issue"
+    },
+    {
+      "from": "case:client/project-move-create-cross-project-link",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-link-peer-issue"
+    },
+    {
+      "from": "case:client/project-move-create-cross-project-link",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/project-move-create-cross-project-link",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-internal-link",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-internal-link",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-internal-link",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/project-move-create-internal-link",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-link-inner-issue"
+    },
+    {
+      "from": "case:client/project-move-create-internal-link",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-link-issue"
+    },
+    {
+      "from": "case:client/project-move-create-internal-link",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issuelink"
+    },
+    {
+      "from": "case:client/project-move-create-internal-link",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-link-inner-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-link-inner-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-link-inner-issue",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/project-move-create-link-inner-issue",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-create-link-inner-issue",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/project-move-create-link-inner-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-link-inner-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/project-move-create-link-inner-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/project-move-create-link-inner-issue",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/project-move-create-link-inner-issue",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/project-move-create-link-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-link-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-link-issue",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/project-move-create-link-issue",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-create-link-issue",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/project-move-create-link-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-link-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/project-move-create-link-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/project-move-create-link-issue",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/project-move-create-link-issue",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/project-move-create-link-peer-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-link-peer-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-link-peer-issue",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/project-move-create-link-peer-issue",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-link-project"
+    },
+    {
+      "from": "case:client/project-move-create-link-peer-issue",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/project-move-create-link-peer-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-link-peer-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/project-move-create-link-peer-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/project-move-create-link-peer-issue",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/project-move-create-link-peer-issue",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/project-move-create-link-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-link-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-link-project",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-move-create-link-project",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-source-workspace"
+    },
+    {
+      "from": "case:client/project-move-create-link-project",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/project-move-create-link-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-create-link-project",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
       "from": "case:client/project-move-create-project",
       "type": "asserts",
       "to": "assertion:shape"
@@ -88977,6 +89404,46 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/project-move-cross-project-link-409",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/project-move-cross-project-link-409",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-cross-project-link-409",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-cross-project-link-409",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-move-cross-project-link-409",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-cross-project-link-409",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-workspace"
+    },
+    {
+      "from": "case:client/project-move-cross-project-link-409",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-move-cross-project-link-409",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/project-move-delete-agent-issue",
       "type": "asserts",
       "to": "assertion:shape"
@@ -89033,6 +89500,36 @@
     },
     {
       "from": "case:client/project-move-delete-clashing-repository",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-delete-cross-project-link",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-delete-cross-project-link",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-delete-cross-project-link",
+      "type": "covers",
+      "to": "controller:issuelink"
+    },
+    {
+      "from": "case:client/project-move-delete-cross-project-link",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-cross-project-link"
+    },
+    {
+      "from": "case:client/project-move-delete-cross-project-link",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/issuelink/{id}"
+    },
+    {
+      "from": "case:client/project-move-delete-cross-project-link",
       "type": "runs_as",
       "to": "profile:default"
     },
