@@ -9,6 +9,8 @@ namespace Gaia\MVC\Models;
 use Gaia\Core\MVC\Models\Model;
 use Gaia\Libraries\Utils\TransactionScope;
 use Gaia\Libraries\Workspaces\MembershipSync;
+use Gaia\Libraries\Workspaces\WorkspaceActivity;
+use Gaia\Libraries\Workspaces\WorkspaceMemberships;
 use Gaia\MVC\REST\Controllers\Components\Events\MembershipLiveEventsComponent;
 use Phalcon\Messages\Message;
 
@@ -57,23 +59,46 @@ class Membership extends Model
     }
 
     /**
-     * Add the member to the workspace's other projects.
+     * Add the member to the workspace's other projects and record it on the
+     * workspace once (Workspaces D-019).
      *
      * @return void
      */
     public function afterCreate()
     {
+        $synced = MembershipSync::inRound();
         $this->syncedMemberships = (new MembershipSync())->created($this);
+        if (!$synced) {
+            (new WorkspaceActivity())->memberAdded($this->workspaceId(), (string) $this->userId);
+        }
     }
 
     /**
-     * Remove the member from the workspace's other projects.
+     * Remove the member from the workspace's other projects and record it on
+     * the workspace once (Workspaces D-019).
      *
      * @return void
      */
     public function afterDelete()
     {
+        $synced = MembershipSync::inRound();
         $this->syncedMemberships = (new MembershipSync())->deleted($this);
+        if (!$synced) {
+            (new WorkspaceActivity())->memberRemoved($this->workspaceId(), (string) $this->userId);
+        }
+    }
+
+    /**
+     * The workspace of the membership's project, or null when it has none
+     * (WorkspaceActivity then records nothing). Only a membership a user
+     * made is recorded; the ones the sync writes in the other projects are
+     * told apart by MembershipSync::inRound(), read before the sync runs.
+     *
+     * @return string|null
+     */
+    protected function workspaceId()
+    {
+        return (new WorkspaceMemberships())->workspaceIdOf($this->projectId ?? null);
     }
 
     /**

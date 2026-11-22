@@ -22,13 +22,14 @@
 - createdBy hasOne -> User
 - issue hasOne -> Issue
 - project hasOne -> Project
+- workspace hasOne -> Workspace
 
 <a id="summary"></a>
 ## Summary
 
 - behaviours: auditBehavior, createdUserBehavior, dateCreatedBehavior, softDeleteBehavior
-- acl: group Project via {"paths":[{"when":{"relatedTo":"project"},"relatedModel":"Project","localKey":"relatedId","relatedKey":"id","projectField":"id"},{"when":{"relatedTo":"issue"},"relatedModel":"Issue","localKey":"relatedId","relatedKey":"id","projectField":"projectId"},{"when":{"relatedTo":"conversationroom"},"relatedModel":"Conversationroom","localKey":"relatedId","relatedKey":"id","projectField":"projectId"}]}
+- acl: group Project via {"paths":[{"when":{"relatedTo":"project"},"relatedModel":"Project","localKey":"relatedId","relatedKey":"id","projectField":"id"},{"when":{"relatedTo":"issue"},"relatedModel":"Issue","localKey":"relatedId","relatedKey":"id","projectField":"projectId"},{"when":{"relatedTo":"conversationroom"},"relatedModel":"Conversationroom","localKey":"relatedId","relatedKey":"id","projectField":"projectId"},{"when":{"relatedTo":"workspace"},"relatedModel":"Project","localKey":"relatedId","relatedKey":"workspaceId","projectField":"id"}]}
 - controller: Gaia\MVC\REST\Controllers\ActivityController
 - routes: DELETE /api/v1/activity, DELETE /api/v1/activity/{id}, GET /api/v1/activity, GET /api/v1/activity/{id}, GET /api/v1/activity/{id}/{relation}, OPTIONS /api/v1/activity, PATCH /api/v1/activity, PATCH /api/v1/activity/{id}, POST /api/v1/activity, PUT /api/v1/activity, PUT /api/v1/activity/{id}
 - components: -
-- cases: 14 (backend 6, client 8); gaia-dev cases activity
+- cases: 20 (backend 6, client 14); gaia-dev cases activity

@@ -114,6 +114,36 @@ class ProjectAclScopeTest extends TestCase
         $this->assertStringContainsString("Issue.projectId IN ('proj-a')", $where);
     }
 
+    /**
+     * A workspace activity is visible through the projects of the workspace
+     * (Workspaces D-019): relatedId is matched against Project.workspaceId.
+     */
+    public function testBuildAclWhereForWorkspacePathGoesThroughProjects()
+    {
+        $where = \Gaia\MVC\Models\Project::buildAclWhere(
+            'Activity',
+            [
+                'paths' => [
+                    [
+                        'when' => ['relatedTo' => 'workspace'],
+                        'relatedModel' => 'Project',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'workspaceId',
+                        'projectField' => 'id',
+                    ],
+                ],
+            ],
+            ['proj-a']
+        );
+
+        $this->assertSame(
+            "((Activity.relatedTo = 'workspace' AND Activity.relatedId IN ("
+            . 'SELECT Project.workspaceId FROM [Gaia\\MVC\\Models\\Project] AS Project '
+            . "WHERE Project.id IN ('proj-a'))))",
+            $where
+        );
+    }
+
     public function testBuildAclWhereForPathsSkipsRedundantSelfSubquery()
     {
         $where = \Gaia\MVC\Models\Project::buildAclWhere(

@@ -12158,6 +12158,52 @@
       }
     },
     {
+      "id": "workspace-activity-project-moved-out-recorded",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedTo : workspace) AND (Activity.relatedId : {runtime.moveSrcWsId}) AND (Activity.relatedActivity : movedOut))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.relatedActivityModule": "project",
+          "data.0.attributes.description": "Project <b>Project Move Moved</b> moved to <b>API Test Move Target</b>"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "workspace-activity-project-moved-in-recorded",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedTo : workspace) AND (Activity.relatedId : {runtime.moveDstWsId}) AND (Activity.relatedActivity : movedIn))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.relatedActivityModule": "project",
+          "data.0.attributes.description": "Project <b>Project Move Moved</b> moved in from <b>API Test Move Source</b>"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
       "id": "project-move-repository-moved-with-project",
       "method": "GET",
       "path": "/api/v1/repository/{runtime.moveRepositoryId}",
@@ -12399,6 +12445,80 @@
         },
         "jsonPathAbsent": [
           "data.1"
+        ]
+      }
+    },
+    {
+      "id": "workspace-activity-created-recorded",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedTo : workspace) AND (Activity.relatedId : {runtime.syncWorkspaceId}) AND (Activity.type : created))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.relatedTo": "workspace",
+          "data.0.attributes.relatedId": "{runtime.syncWorkspaceId}",
+          "data.0.attributes.description": "Workspace <b>API Test Sync Workspace</b> created"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "workspace-activity-project-added-recorded",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedTo : workspace) AND (Activity.relatedId : {runtime.syncWorkspaceId}) AND (Activity.relatedActivityModule : project))",
+        "limit": 5,
+        "page": 1,
+        "sort": "Activity.description",
+        "order": "ASC"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.type": "related",
+          "data.0.attributes.relatedActivity": "created",
+          "data.0.attributes.description": "Project <b>Workspace Sync Project A</b> added",
+          "data.1.attributes.description": "Project <b>Workspace Sync Project B</b> added"
+        },
+        "jsonPathAbsent": [
+          "data.2"
+        ]
+      }
+    },
+    {
+      "id": "workspace-activity-member-added-once",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedTo : workspace) AND (Activity.relatedId : {runtime.syncWorkspaceId}) AND (Activity.relatedActivityModule : membership) AND (Activity.relatedActivity : created))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.type": "related",
+          "data.1.attributes.type": "related"
+        },
+        "jsonPathAbsent": [
+          "data.2"
         ]
       }
     },
@@ -13010,6 +13130,29 @@
         "shape": "jsonapi.collection",
         "jsonPathAbsent": [
           "data.0"
+        ]
+      }
+    },
+    {
+      "id": "workspace-activity-member-removed-once",
+      "method": "GET",
+      "path": "/api/v1/activity",
+      "resource": "activity",
+      "auth": true,
+      "query": {
+        "query": "((Activity.relatedTo : workspace) AND (Activity.relatedId : {runtime.syncWorkspaceId}) AND (Activity.relatedActivityModule : membership) AND (Activity.relatedActivity : deleted))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.attributes.type": "related",
+          "data.0.attributes.relatedTo": "workspace"
+        },
+        "jsonPathAbsent": [
+          "data.1"
         ]
       }
     },

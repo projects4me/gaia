@@ -197,6 +197,27 @@ class MembershipSyncTest extends TestCase
     }
 
     /**
+     * The memberships a round writes are told apart from the one a user made
+     * (Workspaces D-019): inRound() holds only while the round writes.
+     *
+     * @return void
+     */
+    public function testInRoundHoldsOnlyWhileTheSyncWrites()
+    {
+        $store = new InMemoryWorkspaceMemberships(['p1' => 'w1', 'p2' => 'w1'], []);
+        $seen = [];
+        $store->onWrite = function () use (&$seen) {
+            $seen[] = MembershipSync::inRound();
+        };
+
+        $this->assertFalse(MembershipSync::inRound());
+        (new MembershipSync($store))->created((object) ['projectId' => 'p1', 'userId' => 'u1']);
+
+        $this->assertSame([true], $seen);
+        $this->assertFalse(MembershipSync::inRound());
+    }
+
+    /**
      * @param  array $memberships
      * @return array
      */

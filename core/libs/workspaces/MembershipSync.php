@@ -154,6 +154,17 @@ class MembershipSync
     }
 
     /**
+     * Whether a sync round is writing memberships right now, i.e. a
+     * membership being written is one the sync made, not the one a user made.
+     *
+     * @return bool
+     */
+    public static function inRound()
+    {
+        return self::$running;
+    }
+
+    /**
      * Run one round, unless one is already running.
      *
      * @param  callable $work
