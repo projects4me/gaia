@@ -1630,7 +1630,7 @@ FROM (VALUES
   ('api-test-issue-wsms-02', 'Release done issue', 0, 'api-test-project-wsms-1', 'api-test-milestone-wsms-1', 'WMS1', 1),
   ('api-test-issue-wsms-03', 'Release deleted issue', 1, 'api-test-project-wsms-1', 'api-test-milestone-wsms-1', 'WMS1', 0),
   ('api-test-issue-wsms-04', 'Release second project issue', 0, 'api-test-project-wsms-2', 'api-test-milestone-wsms-2', 'WMS2', 0),
-  ('api-test-issue-wsms-05', 'Release third project issue', 0, 'api-test-project-wsms-3', 'api-test-milestone-wsms-3', 'WMS3', 1),
+  ('api-test-issue-wsms-05', 'Release project C issue', 0, 'api-test-project-wsms-3', 'api-test-milestone-wsms-3', 'WMS3', 1),
   ('api-test-issue-wsms-06', 'Release deleted project issue', 0, 'api-test-project-wsms-4', 'api-test-milestone-wsms-4', 'WMS4', 0),
   ('api-test-issue-wsms-07', 'Release completed milestone issue', 0, 'api-test-project-wsms-1', 'api-test-milestone-wsms-5', 'WMS1', 0),
   ('api-test-issue-wsms-08', 'Release deleted milestone issue', 0, 'api-test-project-wsms-2', 'api-test-milestone-wsms-6', 'WMS2', 0)
