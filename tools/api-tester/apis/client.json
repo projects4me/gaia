@@ -12522,6 +12522,366 @@
       }
     },
     {
+      "id": "project-stats-create-workspace",
+      "method": "POST",
+      "path": "/api/v1/workspace",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "attributes": {
+            "shortCode": "pstats{runId}",
+            "name": "API Test Project Stats"
+          }
+        }
+      },
+      "store": {
+        "runtime.statsWsId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-stats-create-project",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Project Stats",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{userId}",
+            "done": 0,
+            "workspaceId": "{runtime.statsWsId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.statsProjectId": "data.id",
+        "runtime.statsJoinedAt": "data.attributes.workspaceJoinedAt"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "workspaceJoinedAt"
+        ]
+      }
+    },
+    {
+      "id": "project-stats-create-planned-milestone",
+      "method": "POST",
+      "path": "/api/v1/milestone",
+      "resource": "milestone",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "milestone",
+          "attributes": {
+            "name": "Stats Next Planned",
+            "status": "planned",
+            "milestoneType": "sprint",
+            "startDate": "2027-01-01",
+            "endDate": "2027-01-31",
+            "projectId": "{runtime.statsProjectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.statsPlannedMilestoneId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-stats-create-later-planned-milestone",
+      "method": "POST",
+      "path": "/api/v1/milestone",
+      "resource": "milestone",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "milestone",
+          "attributes": {
+            "name": "Stats Later Planned",
+            "status": "planned",
+            "milestoneType": "sprint",
+            "startDate": "2027-03-01",
+            "endDate": "2027-03-31",
+            "projectId": "{runtime.statsProjectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.statsLaterMilestoneId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-stats-create-active-milestone",
+      "method": "POST",
+      "path": "/api/v1/milestone",
+      "resource": "milestone",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "milestone",
+          "attributes": {
+            "name": "Stats Active Sprint",
+            "status": "in_progress",
+            "milestoneType": "sprint",
+            "startDate": "2026-11-01",
+            "endDate": "2027-02-28",
+            "projectId": "{runtime.statsProjectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.statsActiveMilestoneId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-stats-create-later-active-milestone",
+      "method": "POST",
+      "path": "/api/v1/milestone",
+      "resource": "milestone",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "milestone",
+          "attributes": {
+            "name": "Stats Later Active Sprint",
+            "status": "in_progress",
+            "milestoneType": "sprint",
+            "startDate": "2026-11-01",
+            "endDate": "2027-04-30",
+            "projectId": "{runtime.statsProjectId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.statsLaterActiveMilestoneId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-stats-create-open-issue",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Project Stats Open Issue",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{issuestatusId}",
+            "priority": "medium",
+            "projectId": "{runtime.statsProjectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.statsOpenIssueId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-stats-create-closed-issue",
+      "method": "POST",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "issue",
+          "attributes": {
+            "subject": "Project Stats Closed Issue",
+            "owner": "{userId}",
+            "assignee": "{userId}",
+            "reportedUser": "{userId}",
+            "typeId": "{issuetypeId}",
+            "statusId": "{doneIssuestatusId}",
+            "priority": "medium",
+            "projectId": "{runtime.statsProjectId}",
+            "projectShortcode": "{projectShortcode}",
+            "isPlanned": 0,
+            "isReopened": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.statsClosedIssueId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-stats-list-by-workspace",
+      "method": "GET",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "query": {
+        "query": "((Project.workspaceId : {runtime.statsWsId}))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.id": "{runtime.statsProjectId}",
+          "data.0.attributes.openIssueCount": 1,
+          "data.0.attributes.activeMilestoneId": "{runtime.statsActiveMilestoneId}",
+          "data.0.attributes.activeMilestoneName": "Stats Active Sprint",
+          "data.0.attributes.runsInProgress": 0,
+          "data.0.attributes.workspaceJoinedAt": "{runtime.statsJoinedAt}"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "project-stats-write-ignored",
+      "method": "PATCH",
+      "path": "/api/v1/project/{runtime.statsProjectId}",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "id": "{runtime.statsProjectId}",
+          "attributes": {
+            "name": "Project Stats Renamed",
+            "openIssueCount": 99,
+            "activeMilestoneId": "x",
+            "activeMilestoneName": "x",
+            "runsInProgress": 99,
+            "workspaceJoinedAt": "2000-01-01 00:00:00"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "name": "Project Stats Renamed",
+          "openIssueCount": 1,
+          "activeMilestoneId": "{runtime.statsActiveMilestoneId}",
+          "runsInProgress": 0,
+          "workspaceJoinedAt": "{runtime.statsJoinedAt}"
+        }
+      }
+    },
+    {
+      "id": "project-stats-runs-in-progress",
+      "method": "GET",
+      "path": "/api/v1/project/{otherProjectId}",
+      "resource": "project",
+      "auth": true,
+      "query": {
+        "fields": "Project.id,Project.name,Project.runsInProgress"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "runsInProgress": 1
+        },
+        "attributesAbsent": [
+          "openIssueCount",
+          "activeMilestoneId"
+        ]
+      }
+    },
+    {
+      "id": "project-stats-delete-active-milestone",
+      "method": "DELETE",
+      "path": "/api/v1/milestone/{runtime.statsActiveMilestoneId}",
+      "resource": "milestone",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "project-stats-delete-later-active-milestone",
+      "method": "DELETE",
+      "path": "/api/v1/milestone/{runtime.statsLaterActiveMilestoneId}",
+      "resource": "milestone",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
+      "id": "project-stats-falls-back-to-next-planned",
+      "method": "GET",
+      "path": "/api/v1/project/{runtime.statsProjectId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "activeMilestoneId": "{runtime.statsPlannedMilestoneId}",
+          "activeMilestoneName": "Stats Next Planned"
+        }
+      }
+    },
+    {
+      "id": "project-stats-cleanup-project",
+      "method": "DELETE",
+      "path": "/api/v1/project/{runtime.statsProjectId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ]
+      }
+    },
+    {
       "id": "workspace-sync-handover-create-open-issue",
       "method": "POST",
       "path": "/api/v1/issue",

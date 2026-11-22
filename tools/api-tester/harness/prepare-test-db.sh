@@ -1458,7 +1458,7 @@ ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 
 -- Workspace membership of the seed records: project 001, agents 1 and 2 and the seed workflow are in the first
 -- workspace; agent 3 is in the second; project 002 has none (so it is outside every workspace)
-UPDATE projects SET "workspaceId" = 'api-test-workspace-000001' WHERE id = 'api-test-project-001';
+UPDATE projects SET "workspaceId" = 'api-test-workspace-000001', "workspaceJoinedAt" = NOW() WHERE id = 'api-test-project-001';
 UPDATE agents SET "workspaceId" = 'api-test-workspace-000001' WHERE id IN ('api-test-agent-000001', 'api-test-agent-000002');
 UPDATE agents SET "workspaceId" = 'api-test-workspace-000002' WHERE id = 'api-test-agent-000003';
 UPDATE workflows SET "workspaceId" = 'api-test-workspace-000001' WHERE id = 'api-test-workflow-000001';
@@ -1586,6 +1586,7 @@ SQL
 echo "==> Writing fixtures JSON for portable api-tester (IDs read from seeded DB)"
 BUG_TYPE_ID="$(psql_db "$TEST_DB" -Atc "SELECT id FROM issue_types WHERE system=1 AND name IN ('bug','Bug') AND deleted=0 LIMIT 1")"
 NEW_STATUS_ID="$(psql_db "$TEST_DB" -Atc "SELECT id FROM issue_statuses WHERE system=1 AND name='new' AND deleted=0 LIMIT 1")"
+DONE_STATUS_ID="$(psql_db "$TEST_DB" -Atc "SELECT id FROM issue_statuses WHERE system=1 AND done=1 AND deleted=0 ORDER BY (name <> 'done'), id LIMIT 1")"
 python3 - <<PY
 import json, os
 path = """${FIXTURES_OUT}"""
@@ -1670,6 +1671,7 @@ data = {
     "developerRoleId": "3",
     "membershipId": "api-test-membership-1",
     "issuestatusId": """${NEW_STATUS_ID}""" or "api-test-issuestatus1",
+    "doneIssuestatusId": """${DONE_STATUS_ID}""" or "api-test-issuestatus-done",
     "issuetypeId": """${BUG_TYPE_ID}""" or "api-test-issuetype-01",
     "systemnotificationId": "api-test-sysnotif-01",
     "systemnotificationrecipientId": "api-test-sysnotifrec01",

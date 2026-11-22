@@ -20,9 +20,11 @@ use Phalcon\Mvc\Model\Behavior;
  * Gives every new project a workspace (Workspaces D-002), gives a project
  * created into a workspace the workspace's members (D-004), and lets a project
  * move to another workspace only when nothing of the old one is still working
- * in it (D-011). The rules live in {@see ProjectWorkspace}, {@see MembershipSync}
- * and {@see ProjectMoveGate}; the move's membership sync runs from the
- * Project model, in one transaction with the save.
+ * in it (D-011). It stamps when the project joined its workspace on create
+ * and on a move, and keeps the stored value on any other save (D-016). The
+ * rules live in {@see ProjectWorkspace}, {@see MembershipSync} and
+ * {@see ProjectMoveGate}; the move's membership sync runs from the Project
+ * model, in one transaction with the save.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
@@ -55,8 +57,10 @@ class projectWorkspaceBehavior extends Behavior implements BehaviorInterface
     protected function beforeCreate($model)
     {
         try {
-            $model->workspaceId = (new ProjectWorkspace())
+            $workspace = new ProjectWorkspace();
+            $model->workspaceId = $workspace
                 ->resolveForNewProject($model->workspaceId ?? null, $model->name ?? '', $model->shortCode ?? null);
+            $model->workspaceJoinedAt = $workspace->joinedAt(null, $model->workspaceId, $this->now());
         } catch (\InvalidArgumentException $e) {
             $model->appendMessage(new Message($e->getMessage(), 'workspaceId', 'InvalidValue'));
             return false;
@@ -103,8 +107,9 @@ class projectWorkspaceBehavior extends Behavior implements BehaviorInterface
     }
 
     /**
-     * A save that changes the workspace must pass the move gate: a missing or
-     * unknown target is a message on workspaceId (422); a missing
+     * A save keeps the stored join date unless it changes the workspace
+     * (D-016). A save that changes the workspace must pass the move gate: a
+     * missing or unknown target is a message on workspaceId (422); a missing
      * workspace.update (403) or work still in progress (409) throws.
      *
      * @param  ModelInterface $model
@@ -116,6 +121,7 @@ class projectWorkspaceBehavior extends Behavior implements BehaviorInterface
     {
         $snapshot = $model->getSnapshotData();
         $workspace = new ProjectWorkspace();
+        $model->workspaceJoinedAt = $workspace->joinedAt($snapshot, $model->workspaceId ?? null, $this->now());
         if (!$workspace->isMove($snapshot, $model->workspaceId ?? null)) {
             return true;
         }
@@ -129,5 +135,15 @@ class projectWorkspaceBehavior extends Behavior implements BehaviorInterface
         }
 
         return true;
+    }
+
+    /**
+     * The current UTC time, as stored in datetime columns.
+     *
+     * @return string
+     */
+    protected function now()
+    {
+        return gmdate('Y-m-d H:i:s');
     }
 }

@@ -79,6 +79,7 @@
     "developerRoleId": "3",
     "membershipId": "api-test-membership-1",
     "issuestatusId": "bf3f206262c6-8e43-047e-2160cab7abb6",
+    "doneIssuestatusId": "402f48b562c6-8e43-a8e0-0abdb1b2f5be",
     "issuetypeId": "5",
     "systemnotificationId": "api-test-sysnotif-01",
     "systemnotificationrecipientId": "api-test-sysnotifrec01",

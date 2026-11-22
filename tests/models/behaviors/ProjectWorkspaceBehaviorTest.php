@@ -33,6 +33,21 @@ class ProjectWorkspaceBehaviorTest extends TestCase
     }
 
     /**
+     * A save that keeps the workspace keeps the stored join date over the one sent (Workspaces D-016).
+     *
+     * @return void
+     */
+    public function testKeepingTheWorkspaceKeepsTheJoinDate()
+    {
+        $model = $this->model(['workspaceId' => 'w1', 'workspaceJoinedAt' => '2026-01-01 00:00:00'], 'w1');
+        $model->workspaceJoinedAt = '2030-01-01 00:00:00';
+
+        (new projectWorkspaceBehavior())->notify('beforeValidationOnUpdate', $model);
+
+        $this->assertSame('2026-01-01 00:00:00', $model->workspaceJoinedAt);
+    }
+
+    /**
      * A save that clears the workspace is refused with a message on the field.
      *
      * @return void
@@ -61,7 +76,8 @@ class ProjectWorkspaceBehaviorTest extends TestCase
             ->disableOriginalConstructor()
             ->onlyMethods(['getSnapshotData', 'appendMessage'])
             ->getMock();
-        $model->method('getSnapshotData')->willReturn($snapshot);
+        // A stored join date: assigning null to a mocked model looks up relations through its models manager.
+        $model->method('getSnapshotData')->willReturn($snapshot + ['workspaceJoinedAt' => '2026-01-01 00:00:00']);
         $model->id = 'p1';
         $model->workspaceId = $workspaceId;
 

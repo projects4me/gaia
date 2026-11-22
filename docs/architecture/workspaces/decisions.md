@@ -148,7 +148,16 @@ Agreed decisions for Workspaces in Gaia. Add a new decision whenever behavior is
 | Rationale | Prometheus shows each member project's repository on the workspace Overview and counts project and workspace repositories apart. A project's repository is part of the project, not of the old workspace's work: moving it keeps the project working where it lands, where blocking the move would make the user delete and recreate it. |
 | Consequence | Workspace-wide repositories never move. A failed repository save rolls back the whole move (422 with the message on `workspaceId`). Deleting a project leaves its repositories in the workspace, still pointing at it. No permission seed SQL ships. |
 
-### D-016 — A workspace reports whether its runtime is online from the runtime's last use, and no cross-project link counts yet
+### D-016 — A project reports its open issues, active milestone, runs in progress and workspace join date
+
+| | |
+|---|---|
+| Status | Accepted |
+| Decision | `Project.openIssueCount` (live issues whose status is not `done`, the move gate's open issues), `Project.activeMilestoneId` / `activeMilestoneName` (the live `in_progress` milestone with the earliest end date, otherwise the `planned` one with the earliest start date; ties by end date then id; null when none) and `Project.runsInProgress` (live workflow runs of the project that are `running` or `waiting`, the move gate's definition, D-011) are read-only computed fields like D-013: project totals, whatever issues, milestones or runs the caller can see. `Project.workspaceJoinedAt` is a nullable datetime column: `projectWorkspaceBehavior` sets it to now (UTC) when a project is created (including into its own one-project workspace, D-002) and when it moves (D-011), and puts the stored value back on every other save, so a request cannot write it. All five come back on `GET /project` lists and details. |
+| Rationale | The workspace Overview and Settings tables show these per project. Subquery columns give them in the list's own query, without a request per row or a custom endpoint. The join date cannot be derived from other rows (a move leaves no dated record), so it is stored. |
+| Consequence | `db/manual/workspaces_default.sql` gives every project in a workspace without a join date its workspace's creation date; the api-tester seed sets it for the seeded project. Rows from before the column keep a null date until that script runs. A milestone's status names are the stored values `in_progress` and `planned`; any other status is never active. |
+
+### D-017 — A workspace reports whether its runtime is online from the runtime's last use, and no cross-project link counts yet
 
 | | |
 |---|---|
