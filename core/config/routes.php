@@ -195,6 +195,13 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'workspacemilestone' => array(
+                'path' => '/api/:version/workspacemilestone',
+                'allowedMethods' => array(
+                    'GET',
+                ),
+                'identifier' => 'id',
+            ),
             'workflowreference' => array(
                 'path' => '/api/:version/workflowreference',
                 'allowedMethods' => array(

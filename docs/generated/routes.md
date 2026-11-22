@@ -1086,3 +1086,13 @@
 | GET | /api/v1/workspacemember/{id} | rest | workspacemember.get |
 | GET | /api/v1/workspacemember/{id}/{relation} | rest | workspacemember.related |
 | OPTIONS | /api/v1/workspacemember | rest | workspacemember.options |
+
+<a id="workspacemilestone"></a>
+## workspacemilestone
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| GET | /api/v1/workspacemilestone | rest | workspacemilestone.list |
+| GET | /api/v1/workspacemilestone/{id} | rest | workspacemilestone.get |
+| GET | /api/v1/workspacemilestone/{id}/{relation} | rest | workspacemilestone.related |
+| OPTIONS | /api/v1/workspacemilestone | rest | workspacemilestone.options |

@@ -14076,6 +14076,138 @@
       "expects": {
         "status": 404
       }
+    },
+    {
+      "id": "workspacemilestone-one-row-per-name",
+      "method": "GET",
+      "path": "/api/v1/workspacemilestone",
+      "resource": "workspacemilestone",
+      "auth": true,
+      "query": {
+        "query": "((Workspacemilestone.workspaceId : {milestoneWorkspaceId}))",
+        "sort": "Workspacemilestone.endDate",
+        "order": "ASC",
+        "limit": 20,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.id": "{sprintWorkspacemilestoneId}",
+          "data.0.attributes.name": "Sprint 9",
+          "data.0.attributes.projectCount": 1,
+          "data.0.attributes.status": "planned",
+          "data.0.attributes.issueCount": 0,
+          "data.0.attributes.doneIssueCount": 0,
+          "data.1.id": "{workspacemilestoneId}",
+          "data.1.attributes.name": "Release 1",
+          "data.1.attributes.projectCount": 3,
+          "data.1.attributes.status": "in_progress",
+          "data.1.attributes.issueCount": 4,
+          "data.1.attributes.doneIssueCount": 2
+        },
+        "jsonPathAbsent": [
+          "data.2"
+        ]
+      }
+    },
+    {
+      "id": "workspacemilestone-pages-by-end-date",
+      "method": "GET",
+      "path": "/api/v1/workspacemilestone",
+      "resource": "workspacemilestone",
+      "auth": true,
+      "query": {
+        "query": "((Workspacemilestone.workspaceId : {milestoneWorkspaceId}))",
+        "sort": "Workspacemilestone.endDate",
+        "order": "ASC",
+        "limit": 1,
+        "page": 2
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{workspacemilestoneId}"
+        ],
+        "idsExcludes": [
+          "{sprintWorkspacemilestoneId}"
+        ]
+      }
+    },
+    {
+      "id": "workspacemilestone-detail-dates",
+      "method": "GET",
+      "path": "/api/v1/workspacemilestone/{workspacemilestoneId}",
+      "resource": "workspacemilestone",
+      "auth": true,
+      "query": {
+        "rels": "workspace"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "jsonEqual": {
+          "data.attributes.workspaceId": "{milestoneWorkspaceId}",
+          "data.attributes.name": "Release 1",
+          "data.attributes.startDate": "2026-01-01",
+          "data.attributes.endDate": "2026-04-01",
+          "data.attributes.projectCount": 3,
+          "data.attributes.issueCount": 4,
+          "data.attributes.doneIssueCount": 2,
+          "data.relationships.workspace.data.id": "{milestoneWorkspaceId}"
+        }
+      }
+    },
+    {
+      "id": "workspacemilestone-other-workspace-excluded",
+      "method": "GET",
+      "path": "/api/v1/workspacemilestone",
+      "resource": "workspacemilestone",
+      "auth": true,
+      "query": {
+        "query": "((Workspacemilestone.workspaceId : {workspaceId}))",
+        "limit": 50,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsExcludes": [
+          "{workspacemilestoneId}",
+          "{sprintWorkspacemilestoneId}"
+        ]
+      }
+    },
+    {
+      "id": "workspacemilestone-create-refused",
+      "method": "POST",
+      "path": "/api/v1/workspacemilestone",
+      "resource": "workspacemilestone",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspacemilestone",
+          "attributes": {
+            "workspaceId": "{milestoneWorkspaceId}",
+            "name": "Release 2"
+          }
+        }
+      },
+      "expects": {
+        "status": 404
+      }
+    },
+    {
+      "id": "workspacemilestone-delete-refused",
+      "method": "DELETE",
+      "path": "/api/v1/workspacemilestone/{workspacemilestoneId}",
+      "resource": "workspacemilestone",
+      "auth": true,
+      "expects": {
+        "status": 404
+      }
     }
   ]
 }

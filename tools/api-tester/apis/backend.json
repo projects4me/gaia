@@ -8,11 +8,11 @@
         "metadata": "app/metadata/model"
     },
     "summary": {
-        "total": 258,
-        "enabled": 235,
+        "total": 260,
+        "enabled": 237,
         "disabled": 23,
-        "routeResources": 72,
-        "withMetadata": 54,
+        "routeResources": 73,
+        "withMetadata": 55,
         "skippedResources": 16
     },
     "apis": [
@@ -1286,6 +1286,37 @@
                 "shape": "jsonapi.resource",
                 "idsIncludes": [
                     "{workspacememberId}"
+                ]
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workspacemilestone-api-v1-workspacemilestone",
+            "method": "GET",
+            "path": "/api/v1/workspacemilestone",
+            "resource": "workspacemilestone",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.collection"
+            },
+            "query": {
+                "limit": 5,
+                "page": 1
+            },
+            "source": "backend-metadata"
+        },
+        {
+            "id": "get-workspacemilestone-api-v1-workspacemilestone-id",
+            "method": "GET",
+            "path": "/api/v1/workspacemilestone/{workspacemilestoneId}",
+            "resource": "workspacemilestone",
+            "auth": true,
+            "expects": {
+                "status": 200,
+                "shape": "jsonapi.resource",
+                "idsIncludes": [
+                    "{workspacemilestoneId}"
                 ]
             },
             "source": "backend-metadata"
