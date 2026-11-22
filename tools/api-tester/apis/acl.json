@@ -3030,6 +3030,35 @@
       "source": "acl-group"
     },
     {
+      "id": "acl-workspacemember-denied-without-workspace-group",
+      "method": "GET",
+      "path": "/api/v1/workspacemember",
+      "resource": "workspacemember",
+      "auth": "aclNoSetting",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-workspace"
+    },
+    {
+      "id": "acl-workspacemember-detail-denied-without-workspace-group",
+      "method": "GET",
+      "path": "/api/v1/workspacemember/{workspacememberId}",
+      "resource": "workspacemember",
+      "auth": "aclNoSetting",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-workspace"
+    },
+    {
+      "id": "acl-workspacemember-denied-without-grant",
+      "method": "GET",
+      "path": "/api/v1/workspacemember",
+      "resource": "workspacemember",
+      "auth": "aclMembers",
+      "query": { "limit": 5, "page": 1 },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-workspace"
+    },
+    {
       "id": "acl-doccontent-denied-without-project-group",
       "method": "GET",
       "path": "/api/v1/doccontent",

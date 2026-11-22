@@ -188,6 +188,13 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'workspacemember' => array(
+                'path' => '/api/:version/workspacemember',
+                'allowedMethods' => array(
+                    'GET',
+                ),
+                'identifier' => 'id',
+            ),
             'workflowreference' => array(
                 'path' => '/api/:version/workflowreference',
                 'allowedMethods' => array(
