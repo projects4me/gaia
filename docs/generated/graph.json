@@ -24906,6 +24906,78 @@
       }
     },
     {
+      "id": "case:client/workspace-runtime-online-recently-used",
+      "type": "case",
+      "key": "client/workspace-runtime-online-recently-used",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{workspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-runtime-online-runtime-signs-in",
+      "type": "case",
+      "key": "client/workspace-runtime-online-runtime-signs-in",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{workspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "workspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-runtime-online-stale",
+      "type": "case",
+      "key": "client/workspace-runtime-online-stale",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{staleRuntimeWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "staleRuntimeWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-runtime-online-unbound",
+      "type": "case",
+      "key": "client/workspace-runtime-online-unbound",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{otherWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/workspace-sync-add-member-to-own-workspace-project",
       "type": "case",
       "key": "client/workspace-sync-add-member-to-own-workspace-project",
@@ -39371,6 +39443,14 @@
       "id": "fixture:skillId",
       "type": "fixture",
       "key": "skillId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:staleRuntimeWorkspaceId",
+      "type": "fixture",
+      "key": "staleRuntimeWorkspaceId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -93103,6 +93183,141 @@
       "from": "case:client/workspace-runtime-create-other-workspace",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-recently-used",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-recently-used",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-recently-used",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-recently-used",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-recently-used",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-recently-used",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-recently-used",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-runtime-signs-in",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-runtime-signs-in",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-runtime-signs-in",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-runtime-signs-in",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-runtime-signs-in",
+      "type": "runs_as",
+      "to": "profile:serviceRuntime"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-runtime-signs-in",
+      "type": "uses_fixture",
+      "to": "fixture:workspaceId"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-stale",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-stale",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-stale",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-stale",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-stale",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-stale",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-stale",
+      "type": "uses_fixture",
+      "to": "fixture:staleRuntimeWorkspaceId"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-unbound",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-unbound",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-unbound",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-unbound",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-unbound",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-unbound",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-runtime-online-unbound",
+      "type": "uses_fixture",
+      "to": "fixture:otherWorkspaceId"
     },
     {
       "from": "case:client/workspace-sync-add-member-to-own-workspace-project",
