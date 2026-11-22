@@ -60,7 +60,7 @@ class Membership extends Model
 
     /**
      * Add the member to the workspace's other projects and record it on the
-     * workspace once (Workspaces D-018).
+     * workspace once (Workspaces D-019).
      *
      * @return void
      */
@@ -75,7 +75,7 @@ class Membership extends Model
 
     /**
      * Remove the member from the workspace's other projects and record it on
-     * the workspace once (Workspaces D-018).
+     * the workspace once (Workspaces D-019).
      *
      * @return void
      */

@@ -14,7 +14,7 @@ require_once __DIR__ . '/AgentWorkspaceFakeModel.php';
 
 /**
  * Unit tests for workspaceActivityBehavior: a workspace records its creation
- * and the changes auditBehavior collected (Workspaces D-018).
+ * and the changes auditBehavior collected (Workspaces D-019).
  *
  * @author   Hammad Hassan <gollomer@gmail.com>
  * @package  Gaia\Tests

@@ -14,7 +14,7 @@ use Gaia\MVC\Models\Workspace;
 use function Gaia\Libraries\Utils\create_guid;
 
 /**
- * Records the activities of a workspace (Workspaces D-018): Activity rows
+ * Records the activities of a workspace (Workspaces D-019): Activity rows
  * with `relatedTo` `workspace`, in the same type/description shape as project
  * activities. A change of the workspace itself is `created` or `updated`; a
  * change of a project or a member in it is `related`, naming the module

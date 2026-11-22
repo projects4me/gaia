@@ -116,7 +116,7 @@ class ProjectAclScopeTest extends TestCase
 
     /**
      * A workspace activity is visible through the projects of the workspace
-     * (Workspaces D-018): relatedId is matched against Project.workspaceId.
+     * (Workspaces D-019): relatedId is matched against Project.workspaceId.
      */
     public function testBuildAclWhereForWorkspacePathGoesThroughProjects()
     {

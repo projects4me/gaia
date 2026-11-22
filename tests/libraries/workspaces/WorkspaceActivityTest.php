@@ -6,7 +6,7 @@ use Gaia\Libraries\Workspaces\WorkspaceActivity;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for {@see WorkspaceActivity} (Workspaces D-018): which rows a
+ * Unit tests for {@see WorkspaceActivity} (Workspaces D-019): which rows a
  * workspace change records, with names looked up in memory.
  *
  * @author   Hammad Hassan <gollomer@gmail.com>

@@ -24853,6 +24853,42 @@
       }
     },
     {
+      "id": "case:client/workspace-environment-counts-empty",
+      "type": "case",
+      "key": "client/workspace-environment-counts-empty",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{runtime.agentWsId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.agentWsId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-environment-counts-populated",
+      "type": "case",
+      "key": "client/workspace-environment-counts-populated",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{runtime.agentWsId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.agentWsId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/workspace-list-by-short-code",
       "type": "case",
       "key": "client/workspace-list-by-short-code",
@@ -93256,6 +93292,76 @@
     },
     {
       "from": "case:client/workspace-delete-soft-deletes",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-empty",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-empty",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-empty",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-empty",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-empty",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-empty",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-empty",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-populated",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-populated",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-populated",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-populated",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-populated",
+      "type": "depends_on",
+      "to": "case:client/agent-ws-create-workspace"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-populated",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-environment-counts-populated",
       "type": "runs_as",
       "to": "profile:default"
     },

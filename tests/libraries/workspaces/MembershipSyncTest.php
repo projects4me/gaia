@@ -198,7 +198,7 @@ class MembershipSyncTest extends TestCase
 
     /**
      * The memberships a round writes are told apart from the one a user made
-     * (Workspaces D-018): inRound() holds only while the round writes.
+     * (Workspaces D-019): inRound() holds only while the round writes.
      *
      * @return void
      */

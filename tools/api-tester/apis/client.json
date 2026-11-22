@@ -13446,6 +13446,25 @@
       }
     },
     {
+      "id": "workspace-environment-counts-empty",
+      "method": "GET",
+      "path": "/api/v1/workspace/{runtime.agentWsId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "repositoryCount": 0,
+          "projectRepositoryCount": 0,
+          "agentCount": 0,
+          "toolserverCount": 0,
+          "skillCount": 0,
+          "runsInProgress": 0
+        }
+      }
+    },
+    {
       "id": "agent-ws-create-agent",
       "method": "POST",
       "path": "/api/v1/agent",
@@ -13587,6 +13606,25 @@
       "expects": {
         "status": 201,
         "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-environment-counts-populated",
+      "method": "GET",
+      "path": "/api/v1/workspace/{runtime.agentWsId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "repositoryCount": 0,
+          "projectRepositoryCount": 0,
+          "agentCount": 1,
+          "toolserverCount": 0,
+          "skillCount": 0,
+          "runsInProgress": 0
+        }
       }
     },
     {

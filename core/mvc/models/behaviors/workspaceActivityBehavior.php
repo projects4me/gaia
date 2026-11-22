@@ -12,7 +12,7 @@ use Phalcon\Mvc\Model\BehaviorInterface;
 use Phalcon\Mvc\Model\Behavior;
 
 /**
- * Records a workspace's own activities (Workspaces D-018): created, and the
+ * Records a workspace's own activities (Workspaces D-019): created, and the
  * name, short code, description or runtime binding updated. The update reads
  * the changes `auditBehavior` collected before the save. The descriptions
  * live in {@see WorkspaceActivity}.

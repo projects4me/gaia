@@ -86,7 +86,7 @@ class Project extends Model
     /**
      * After a move: the project's repositories follow it (D-015), the old
      * workspace's agents leave the project, the new workspace's projects
-     * get the same members and both workspaces record the move (D-018).
+     * get the same members and both workspaces record the move (D-019).
      *
      * @return void
      */

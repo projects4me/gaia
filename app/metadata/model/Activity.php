@@ -199,7 +199,7 @@ $models['Activity'] = array(
                         'projectField' => 'projectId',
                     ],
                     // A workspace has no record scope (Workspaces D-001): its
-                    // activities are read by the members of its projects (D-018).
+                    // activities are read by the members of its projects (D-019).
                     [
                         'when' => ['relatedTo' => 'workspace'],
                         'relatedModel' => 'Project',
