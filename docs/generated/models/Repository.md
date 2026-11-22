@@ -8,6 +8,7 @@
 - baseBranch varchar(100) required
 - description text
 - name varchar(100) required
+- projectId varchar(36)
 - url varchar(255) required
 - workspaceId varchar(36) required
 - also: createdUser, createdUserName, dateCreated, dateModified, deleted, id, modifiedUser, modifiedUserName
@@ -17,6 +18,7 @@
 
 - createdBy hasOne -> User
 - modifiedBy hasOne -> User
+- project hasOne -> Project
 - workspace hasOne -> Workspace
 
 <a id="summary"></a>
@@ -27,4 +29,4 @@
 - controller: Gaia\MVC\REST\Controllers\RepositoryController
 - routes: DELETE /api/v1/repository, DELETE /api/v1/repository/{id}, GET /api/v1/repository, GET /api/v1/repository/{id}, GET /api/v1/repository/{id}/{relation}, OPTIONS /api/v1/repository, PATCH /api/v1/repository, PATCH /api/v1/repository/{id}, POST /api/v1/repository, PUT /api/v1/repository, PUT /api/v1/repository/{id}
 - components: -
-- cases: 21 (acl 8, backend 6, client 7); gaia-dev cases repository
+- cases: 30 (acl 8, backend 6, client 16); gaia-dev cases repository

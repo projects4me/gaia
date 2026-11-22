@@ -20188,6 +20188,26 @@
       }
     },
     {
+      "id": "case:client/project-move-create-clashing-repository",
+      "type": "case",
+      "key": "client/project-move-create-clashing-repository",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/repository",
+        "resource": "repository",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstWsId"
+        ],
+        "stores": [
+          "runtime.moveClashRepositoryId"
+        ]
+      }
+    },
+    {
       "id": "case:client/project-move-create-project",
       "type": "case",
       "key": "client/project-move-create-project",
@@ -20351,6 +20371,24 @@
       }
     },
     {
+      "id": "case:client/project-move-delete-clashing-repository",
+      "type": "case",
+      "key": "client/project-move-delete-clashing-repository",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/repository/{runtime.moveClashRepositoryId}",
+        "resource": "repository",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveClashRepositoryId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/project-move-delete-scoped-workflow",
       "type": "case",
       "key": "client/project-move-delete-scoped-workflow",
@@ -20383,6 +20421,45 @@
         "placeholders": [
           "memberUserId",
           "runtime.moveDstProjectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-repository-moved-with-project",
+      "type": "case",
+      "key": "client/project-move-repository-moved-with-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/repository/{runtime.moveRepositoryId}",
+        "resource": "repository",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstWsId",
+          "runtime.moveProjectId",
+          "runtime.moveRepositoryId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-move-repository-name-409",
+      "type": "case",
+      "key": "client/project-move-repository-name-409",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/project/{runtime.moveProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstWsId",
+          "runtime.moveProjectId"
         ],
         "stores": []
       }
@@ -20842,6 +20919,25 @@
       }
     },
     {
+      "id": "case:client/repository-create-rejects-project-of-other-workspace",
+      "type": "case",
+      "key": "client/repository-create-rejects-project-of-other-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/repository",
+        "resource": "repository",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstProjectId",
+          "runtime.moveSrcWsId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/repository-create-rejects-taken-name",
       "type": "case",
       "key": "client/repository-create-rejects-taken-name",
@@ -20860,6 +20956,26 @@
       }
     },
     {
+      "id": "case:client/repository-create-workspace-wide",
+      "type": "case",
+      "key": "client/repository-create-workspace-wide",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/repository",
+        "resource": "repository",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveSrcWsId"
+        ],
+        "stores": [
+          "runtime.moveRepositoryId"
+        ]
+      }
+    },
+    {
       "id": "case:client/repository-delete-soft-deletes",
       "type": "case",
       "key": "client/repository-delete-soft-deletes",
@@ -20873,6 +20989,26 @@
         "source": null,
         "placeholders": [
           "runtime.createdRepositoryId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/repository-list-filters-by-project",
+      "type": "case",
+      "key": "client/repository-list-filters-by-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/repository",
+        "resource": "repository",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstProjectId",
+          "runtime.moveProjectId",
+          "runtime.moveRepositoryId"
         ],
         "stores": []
       }
@@ -20896,6 +21032,43 @@
       }
     },
     {
+      "id": "case:client/repository-update-clears-project",
+      "type": "case",
+      "key": "client/repository-update-clears-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/repository/{runtime.moveRepositoryId}",
+        "resource": "repository",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveRepositoryId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/repository-update-rejects-project-of-other-workspace",
+      "type": "case",
+      "key": "client/repository-update-rejects-project-of-other-workspace",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/repository/{runtime.moveRepositoryId}",
+        "resource": "repository",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveDstProjectId",
+          "runtime.moveRepositoryId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/repository-update-rejects-workspace-change",
       "type": "case",
       "key": "client/repository-update-rejects-workspace-change",
@@ -20909,6 +21082,25 @@
         "source": null,
         "placeholders": [
           "runtime.createdRepositoryId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/repository-update-sets-project",
+      "type": "case",
+      "key": "client/repository-update-sets-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/repository/{runtime.moveRepositoryId}",
+        "resource": "repository",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.moveProjectId",
+          "runtime.moveRepositoryId"
         ],
         "stores": []
       }
@@ -32564,6 +32756,17 @@
       }
     },
     {
+      "id": "field:Repository.projectId",
+      "type": "field",
+      "key": "Repository.projectId",
+      "attributes": {
+        "label": "LBL_REPOSITORIES_PROJECT_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true
+      }
+    },
+    {
       "id": "field:Repository.url",
       "type": "field",
       "key": "Repository.url",
@@ -44067,6 +44270,16 @@
       "attributes": {
         "kind": "hasOne",
         "primaryKey": "modifiedUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Repository.project",
+      "type": "relationship",
+      "key": "Repository.project",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "projectId",
         "relatedKey": "id"
       }
     },
@@ -83867,6 +84080,36 @@
       "to": "fixture:userId"
     },
     {
+      "from": "case:client/project-move-create-clashing-repository",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-create-clashing-repository",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-create-clashing-repository",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:client/project-move-create-clashing-repository",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-workspace"
+    },
+    {
+      "from": "case:client/project-move-create-clashing-repository",
+      "type": "exercises",
+      "to": "route:POST /api/v1/repository"
+    },
+    {
+      "from": "case:client/project-move-create-clashing-repository",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/project-move-create-project",
       "type": "asserts",
       "to": "assertion:shape"
@@ -84112,6 +84355,36 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/project-move-delete-clashing-repository",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-delete-clashing-repository",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-delete-clashing-repository",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:client/project-move-delete-clashing-repository",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-clashing-repository"
+    },
+    {
+      "from": "case:client/project-move-delete-clashing-repository",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/repository/{id}"
+    },
+    {
+      "from": "case:client/project-move-delete-clashing-repository",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/project-move-delete-scoped-workflow",
       "type": "asserts",
       "to": "assertion:shape"
@@ -84185,6 +84458,91 @@
       "from": "case:client/project-move-member-joined-target-project",
       "type": "uses_fixture",
       "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:client/project-move-repository-moved-with-project",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/project-move-repository-moved-with-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-repository-moved-with-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-repository-moved-with-project",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:client/project-move-repository-moved-with-project",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-repository-moved-with-project",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-workspace"
+    },
+    {
+      "from": "case:client/project-move-repository-moved-with-project",
+      "type": "depends_on",
+      "to": "case:client/repository-create-workspace-wide"
+    },
+    {
+      "from": "case:client/project-move-repository-moved-with-project",
+      "type": "exercises",
+      "to": "route:GET /api/v1/repository/{id}"
+    },
+    {
+      "from": "case:client/project-move-repository-moved-with-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-move-repository-name-409",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/project-move-repository-name-409",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-move-repository-name-409",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-move-repository-name-409",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-move-repository-name-409",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/project-move-repository-name-409",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-workspace"
+    },
+    {
+      "from": "case:client/project-move-repository-name-409",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-move-repository-name-409",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/project-move-scoped-workflow-409",
@@ -85022,6 +85380,46 @@
       "to": "fixture:workspaceId"
     },
     {
+      "from": "case:client/repository-create-rejects-project-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/repository-create-rejects-project-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/repository-create-rejects-project-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/repository-create-rejects-project-of-other-workspace",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:client/repository-create-rejects-project-of-other-workspace",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-source-workspace"
+    },
+    {
+      "from": "case:client/repository-create-rejects-project-of-other-workspace",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-project"
+    },
+    {
+      "from": "case:client/repository-create-rejects-project-of-other-workspace",
+      "type": "exercises",
+      "to": "route:POST /api/v1/repository"
+    },
+    {
+      "from": "case:client/repository-create-rejects-project-of-other-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/repository-create-rejects-taken-name",
       "type": "asserts",
       "to": "assertion:jsonEqual"
@@ -85057,6 +85455,41 @@
       "to": "fixture:workspaceId"
     },
     {
+      "from": "case:client/repository-create-workspace-wide",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/repository-create-workspace-wide",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/repository-create-workspace-wide",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/repository-create-workspace-wide",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:client/repository-create-workspace-wide",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-source-workspace"
+    },
+    {
+      "from": "case:client/repository-create-workspace-wide",
+      "type": "exercises",
+      "to": "route:POST /api/v1/repository"
+    },
+    {
+      "from": "case:client/repository-create-workspace-wide",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/repository-delete-soft-deletes",
       "type": "asserts",
       "to": "assertion:shape"
@@ -85083,6 +85516,56 @@
     },
     {
       "from": "case:client/repository-delete-soft-deletes",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/repository-list-filters-by-project",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/repository-list-filters-by-project",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/repository-list-filters-by-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/repository-list-filters-by-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/repository-list-filters-by-project",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:client/repository-list-filters-by-project",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/repository-list-filters-by-project",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-project"
+    },
+    {
+      "from": "case:client/repository-list-filters-by-project",
+      "type": "depends_on",
+      "to": "case:client/repository-create-workspace-wide"
+    },
+    {
+      "from": "case:client/repository-list-filters-by-project",
+      "type": "exercises",
+      "to": "route:GET /api/v1/repository"
+    },
+    {
+      "from": "case:client/repository-list-filters-by-project",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -85122,6 +85605,81 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/repository-update-clears-project",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/repository-update-clears-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/repository-update-clears-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/repository-update-clears-project",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:client/repository-update-clears-project",
+      "type": "depends_on",
+      "to": "case:client/repository-create-workspace-wide"
+    },
+    {
+      "from": "case:client/repository-update-clears-project",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/repository/{id}"
+    },
+    {
+      "from": "case:client/repository-update-clears-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/repository-update-rejects-project-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/repository-update-rejects-project-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/repository-update-rejects-project-of-other-workspace",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/repository-update-rejects-project-of-other-workspace",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:client/repository-update-rejects-project-of-other-workspace",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-target-project"
+    },
+    {
+      "from": "case:client/repository-update-rejects-project-of-other-workspace",
+      "type": "depends_on",
+      "to": "case:client/repository-create-workspace-wide"
+    },
+    {
+      "from": "case:client/repository-update-rejects-project-of-other-workspace",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/repository/{id}"
+    },
+    {
+      "from": "case:client/repository-update-rejects-project-of-other-workspace",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/repository-update-rejects-workspace-change",
       "type": "asserts",
       "to": "assertion:jsonEqual"
@@ -85153,6 +85711,46 @@
     },
     {
       "from": "case:client/repository-update-rejects-workspace-change",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/repository-update-sets-project",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/repository-update-sets-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/repository-update-sets-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/repository-update-sets-project",
+      "type": "covers",
+      "to": "controller:repository"
+    },
+    {
+      "from": "case:client/repository-update-sets-project",
+      "type": "depends_on",
+      "to": "case:client/project-move-create-project"
+    },
+    {
+      "from": "case:client/repository-update-sets-project",
+      "type": "depends_on",
+      "to": "case:client/repository-create-workspace-wide"
+    },
+    {
+      "from": "case:client/repository-update-sets-project",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/repository/{id}"
+    },
+    {
+      "from": "case:client/repository-update-sets-project",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -102699,6 +103297,11 @@
     {
       "from": "model:Repository",
       "type": "has_field",
+      "to": "field:Repository.projectId"
+    },
+    {
+      "from": "model:Repository",
+      "type": "has_field",
       "to": "field:Repository.url"
     },
     {
@@ -102715,6 +103318,11 @@
       "from": "model:Repository",
       "type": "has_relationship",
       "to": "relationship:Repository.modifiedBy"
+    },
+    {
+      "from": "model:Repository",
+      "type": "has_relationship",
+      "to": "relationship:Repository.project"
     },
     {
       "from": "model:Repository",
@@ -109380,6 +109988,11 @@
       "from": "relationship:Repository.modifiedBy",
       "type": "targets",
       "to": "model:User"
+    },
+    {
+      "from": "relationship:Repository.project",
+      "type": "targets",
+      "to": "model:Project"
     },
     {
       "from": "relationship:Repository.workspace",

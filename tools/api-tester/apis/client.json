@@ -11902,6 +11902,185 @@
       }
     },
     {
+      "id": "repository-create-workspace-wide",
+      "method": "POST",
+      "path": "/api/v1/repository",
+      "resource": "repository",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "repository",
+          "attributes": {
+            "workspaceId": "{runtime.moveSrcWsId}",
+            "name": "Move Repo",
+            "url": "https://github.com/projects4me/move-repo.git"
+          }
+        }
+      },
+      "store": {
+        "runtime.moveRepositoryId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "projectId": null
+        }
+      }
+    },
+    {
+      "id": "repository-update-sets-project",
+      "method": "PATCH",
+      "path": "/api/v1/repository/{runtime.moveRepositoryId}",
+      "resource": "repository",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "repository",
+          "id": "{runtime.moveRepositoryId}",
+          "attributes": {
+            "projectId": "{runtime.moveProjectId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "projectId": "{runtime.moveProjectId}"
+        }
+      }
+    },
+    {
+      "id": "repository-create-rejects-project-of-other-workspace",
+      "method": "POST",
+      "path": "/api/v1/repository",
+      "resource": "repository",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "repository",
+          "attributes": {
+            "workspaceId": "{runtime.moveSrcWsId}",
+            "name": "Move Repo Other",
+            "url": "https://github.com/projects4me/move-repo.git",
+            "projectId": "{runtime.moveDstProjectId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "projectId must be the id of a project of the repository's workspace"
+        }
+      }
+    },
+    {
+      "id": "repository-update-rejects-project-of-other-workspace",
+      "method": "PATCH",
+      "path": "/api/v1/repository/{runtime.moveRepositoryId}",
+      "resource": "repository",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "repository",
+          "id": "{runtime.moveRepositoryId}",
+          "attributes": {
+            "projectId": "{runtime.moveDstProjectId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "projectId must be the id of a project of the repository's workspace"
+        }
+      }
+    },
+    {
+      "id": "repository-list-filters-by-project",
+      "method": "GET",
+      "path": "/api/v1/repository",
+      "resource": "repository",
+      "auth": true,
+      "query": {
+        "query": "((Repository.projectId CONTAINS '{runtime.moveProjectId}','{runtime.moveDstProjectId}'))",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.id": "{runtime.moveRepositoryId}"
+        },
+        "jsonPathAbsent": [
+          "data.1"
+        ]
+      }
+    },
+    {
+      "id": "project-move-create-clashing-repository",
+      "method": "POST",
+      "path": "/api/v1/repository",
+      "resource": "repository",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "repository",
+          "attributes": {
+            "workspaceId": "{runtime.moveDstWsId}",
+            "name": "Move Repo",
+            "url": "https://github.com/projects4me/move-repo.git"
+          }
+        }
+      },
+      "store": {
+        "runtime.moveClashRepositoryId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "project-move-repository-name-409",
+      "method": "PATCH",
+      "path": "/api/v1/project/{runtime.moveProjectId}",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "id": "{runtime.moveProjectId}",
+          "attributes": {
+            "workspaceId": "{runtime.moveDstWsId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 409,
+        "shape": "error",
+        "jsonEqual": {
+          "error": "conflict",
+          "error_description": "The target workspace already has repositories named Move Repo; rename the project's repositories before moving it."
+        }
+      }
+    },
+    {
+      "id": "project-move-delete-clashing-repository",
+      "method": "DELETE",
+      "path": "/api/v1/repository/{runtime.moveClashRepositoryId}",
+      "resource": "repository",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
+      }
+    },
+    {
       "id": "project-move-to-target-workspace",
       "method": "PATCH",
       "path": "/api/v1/project/{runtime.moveProjectId}",
@@ -11921,6 +12100,44 @@
         "shape": "jsonapi.resource",
         "attributesEqual": {
           "workspaceId": "{runtime.moveDstWsId}"
+        }
+      }
+    },
+    {
+      "id": "project-move-repository-moved-with-project",
+      "method": "GET",
+      "path": "/api/v1/repository/{runtime.moveRepositoryId}",
+      "resource": "repository",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "workspaceId": "{runtime.moveDstWsId}",
+          "projectId": "{runtime.moveProjectId}"
+        }
+      }
+    },
+    {
+      "id": "repository-update-clears-project",
+      "method": "PATCH",
+      "path": "/api/v1/repository/{runtime.moveRepositoryId}",
+      "resource": "repository",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "repository",
+          "id": "{runtime.moveRepositoryId}",
+          "attributes": {
+            "projectId": ""
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "projectId": null
         }
       }
     },

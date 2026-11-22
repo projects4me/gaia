@@ -7,6 +7,7 @@
 namespace Gaia\MVC\Models\Behaviors;
 
 use Gaia\Libraries\Workspaces\RepositoryUrl;
+use Gaia\MVC\Models\Project;
 use Gaia\MVC\Models\Repository;
 use Gaia\MVC\Models\Workspace;
 use Phalcon\Messages\Message;
@@ -18,7 +19,9 @@ use Phalcon\Mvc\Model\Behavior;
  * This behavior checks a workspace repository as it is saved: its workspace
  * exists and never changes, the URL is an https or ssh git URL without
  * credentials (see `RepositoryUrl`), the base branch is set, and the name is
- * unique within the workspace.
+ * unique within the workspace. A projectId, when set or changed, must be a
+ * project of the same workspace (Workspaces D-015). Only a project's move
+ * (`ProjectRepositories`) changes a repository's workspace.
  *
  * @author Hammad Hassan <gollomer@gmail.com>
  * @package Foundation
@@ -27,6 +30,8 @@ use Phalcon\Mvc\Model\Behavior;
  */
 class repositoryBehavior extends Behavior implements BehaviorInterface
 {
+    const PROJECT_ERROR = 'projectId must be the id of a project of the repository\'s workspace';
+
     /**
      * Returning false from a before* event cancels the save.
      *
@@ -51,6 +56,9 @@ class repositoryBehavior extends Behavior implements BehaviorInterface
         if ($workspaceId === '' || !$this->workspaceExists($workspaceId)) {
             return $this->reject($model, 'workspaceId', 'workspaceId must be the id of an existing workspace');
         }
+        if (!$this->checkProject($model)) {
+            return false;
+        }
 
         return $this->checkRepository($model);
     }
@@ -64,6 +72,7 @@ class repositoryBehavior extends Behavior implements BehaviorInterface
         $snapshot = $model->getSnapshotData();
         if (is_array($snapshot) && isset($snapshot['workspaceId'])
             && (string) $snapshot['workspaceId'] !== (string) $model->readAttribute('workspaceId')
+            && !(method_exists($model, 'isMovingWithProject') && $model->isMovingWithProject())
         ) {
             return $this->reject($model, 'workspaceId', 'The workspace of a repository cannot be changed');
         }
@@ -71,7 +80,36 @@ class repositoryBehavior extends Behavior implements BehaviorInterface
             return true;
         }
 
+        $projectChanged = !is_array($snapshot)
+            || (string) ($snapshot['projectId'] ?? '') !== (string) $model->readAttribute('projectId');
+        if ($projectChanged && !$this->checkProject($model)) {
+            return false;
+        }
+
         return $this->checkRepository($model);
+    }
+
+    /**
+     * An empty projectId makes the repository workspace-wide (stored as null);
+     * otherwise it must be a live project of the repository's workspace.
+     *
+     * @param  ModelInterface $model
+     * @return bool
+     */
+    protected function checkProject($model)
+    {
+        $projectId = $model->readAttribute('projectId');
+        if ($projectId === null || trim((string) $projectId) === '') {
+            $model->writeAttribute('projectId', null);
+            return true;
+        }
+
+        $workspaceId = $this->projectWorkspaceId((string) $projectId);
+        if ($workspaceId === null || $workspaceId !== (string) $model->readAttribute('workspaceId')) {
+            return $this->reject($model, 'projectId', self::PROJECT_ERROR);
+        }
+
+        return true;
     }
 
     /**
@@ -109,6 +147,21 @@ class repositoryBehavior extends Behavior implements BehaviorInterface
             'conditions' => 'id = :id: AND deleted = false',
             'bind' => ['id' => $workspaceId],
         ]);
+    }
+
+    /**
+     * @param  string $projectId
+     * @return string|null the live project's workspace, null when there is no such project
+     */
+    protected function projectWorkspaceId($projectId)
+    {
+        $project = Project::findFirst([
+            'conditions' => 'id = :id: AND deleted = 0',
+            'bind' => ['id' => $projectId],
+            'columns' => 'workspaceId',
+        ]);
+
+        return $project ? (string) $project->workspaceId : null;
     }
 
     /**
