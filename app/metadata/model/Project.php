@@ -109,6 +109,14 @@ $models['Project'] = array(
             'length' => '36',
             'relatedIdentifier' => true
         ),
+        // When the project joined its current workspace: set by projectWorkspaceBehavior on create and on a move,
+        // kept on every other save, so a request cannot write it (Workspaces D-016).
+        'workspaceJoinedAt' => array(
+            'name' => 'workspaceJoinedAt',
+            'label' => 'LBL_PROJECTS_WORKSPACE_JOINED_AT',
+            'type' => 'datetime',
+            'null' => true
+        ),
         'shortCode' => array(
             'name' => 'shortCode',
             'label' => 'LBL_PROJECTS_SHORT_CODE',
@@ -178,6 +186,36 @@ $models['Project'] = array(
             'length' => '36',
             'null' => false,
         )
+    ),
+    // Read-only values computed on read, not columns (Workspaces D-013, D-016): project totals, whatever the caller
+    // can see of the project's issues, milestones and runs.
+    'computed' => array(
+        'openIssueCount' => array(
+            'name' => 'openIssueCount',
+            'label' => 'LBL_PROJECTS_OPEN_ISSUE_COUNT',
+            'type' => 'int',
+            'expression' => "SELECT COUNT(OpenIssue.id) FROM Gaia\\MVC\\Models\\Issue OpenIssue WHERE OpenIssue.projectId = Project.id AND OpenIssue.deleted = 0 AND OpenIssue.statusId IN (SELECT OpenStatus.id FROM Gaia\\MVC\\Models\\Issuestatus OpenStatus WHERE OpenStatus.done = 0)",
+        ),
+        // The active milestone (Workspaces D-016): the in-progress one with the earliest end date, otherwise the
+        // planned one with the earliest start date; activeMilestoneId and activeMilestoneName use the same ordering.
+        'activeMilestoneId' => array(
+            'name' => 'activeMilestoneId',
+            'label' => 'LBL_PROJECTS_ACTIVE_MILESTONE_ID',
+            'type' => 'varchar',
+            'expression' => "SELECT ActiveMilestone.id FROM Gaia\\MVC\\Models\\Milestone ActiveMilestone WHERE ActiveMilestone.projectId = Project.id AND ActiveMilestone.deleted = 0 AND ActiveMilestone.status IN ('in_progress', 'planned') ORDER BY CASE ActiveMilestone.status WHEN 'in_progress' THEN 0 ELSE 1 END, COALESCE(CASE ActiveMilestone.status WHEN 'in_progress' THEN ActiveMilestone.endDate ELSE ActiveMilestone.startDate END, '9999-12-31'), COALESCE(ActiveMilestone.endDate, '9999-12-31'), ActiveMilestone.id LIMIT 1",
+        ),
+        'activeMilestoneName' => array(
+            'name' => 'activeMilestoneName',
+            'label' => 'LBL_PROJECTS_ACTIVE_MILESTONE_NAME',
+            'type' => 'varchar',
+            'expression' => "SELECT ActiveMilestone.name FROM Gaia\\MVC\\Models\\Milestone ActiveMilestone WHERE ActiveMilestone.projectId = Project.id AND ActiveMilestone.deleted = 0 AND ActiveMilestone.status IN ('in_progress', 'planned') ORDER BY CASE ActiveMilestone.status WHEN 'in_progress' THEN 0 ELSE 1 END, COALESCE(CASE ActiveMilestone.status WHEN 'in_progress' THEN ActiveMilestone.endDate ELSE ActiveMilestone.startDate END, '9999-12-31'), COALESCE(ActiveMilestone.endDate, '9999-12-31'), ActiveMilestone.id LIMIT 1",
+        ),
+        'runsInProgress' => array(
+            'name' => 'runsInProgress',
+            'label' => 'LBL_PROJECTS_RUNS_IN_PROGRESS',
+            'type' => 'int',
+            'expression' => "SELECT COUNT(ProgressRun.id) FROM Gaia\\MVC\\Models\\Workflowrun ProgressRun WHERE ProgressRun.projectId = Project.id AND ProgressRun.deleted = false AND ProgressRun.status IN ('running', 'waiting')",
+        ),
     ),
     'indexes' => array(
         'id' => 'primary',

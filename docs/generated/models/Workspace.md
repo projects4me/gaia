@@ -32,4 +32,4 @@
 - controller: Gaia\MVC\REST\Controllers\WorkspaceController
 - routes: DELETE /api/v1/workspace, DELETE /api/v1/workspace/{id}, GET /api/v1/workspace, GET /api/v1/workspace/{id}, GET /api/v1/workspace/{id}/{relation}, OPTIONS /api/v1/workspace, PATCH /api/v1/workspace, PATCH /api/v1/workspace/{id}, POST /api/v1/workspace, PUT /api/v1/workspace, PUT /api/v1/workspace/{id}
 - components: -
-- cases: 50 (acl 8, backend 6, client 35, live 1); gaia-dev cases workspace
+- cases: 51 (acl 8, backend 6, client 36, live 1); gaia-dev cases workspace
