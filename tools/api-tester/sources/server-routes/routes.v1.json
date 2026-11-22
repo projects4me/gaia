@@ -139,6 +139,17 @@
             ],
             "identifier": "id"
         },
+        "issuelink": {
+            "path": "/api/:version/issuelink",
+            "allowedMethods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH"
+            ],
+            "identifier": "id"
+        },
         "repository": {
             "path": "/api/:version/repository",
             "allowedMethods": [

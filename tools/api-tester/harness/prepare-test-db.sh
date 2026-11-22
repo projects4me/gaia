@@ -491,7 +491,7 @@ FROM (
     ('issuestatus'), ('membership'), ('milestone'), ('project'), ('role'),
     ('permission'), ('tag'), ('tagged'), ('timelog'), ('user'), ('userskill'),
     ('userqualification'), ('wiki'), ('vote'), ('savedsearch'), ('upload'),
-    ('systemsetting'), ('userrole'), ('doc'), ('doccontent'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep'), ('workspace'), ('repository'), ('workspacemember'), ('workspacemilestone')
+    ('systemsetting'), ('userrole'), ('doc'), ('doccontent'), ('idea'), ('ideamessage'), ('ideaplan'), ('ideaplanissue'), ('agent'), ('agentcredential'), ('serviceclient'), ('serviceenrollment'), ('serviceenrollmenttoken'), ('toolserver'), ('tool'), ('agenttool'), ('useridentity'), ('skill'), ('agentskill'), ('agentspec'), ('workflow'), ('workflownode'), ('workflowedge'), ('workflowreference'), ('workflowevent'), ('workflowactorstep'), ('workflowrun'), ('workflowrunstep'), ('workspace'), ('repository'), ('workspacemember'), ('workspacemilestone'), ('issuelink')
 ) AS m(module)
 CROSS JOIN (
   VALUES ('get'), ('create'), ('update'), ('delete')
@@ -1503,6 +1503,22 @@ INSERT INTO workspaces (
   ('api-test-workspace-000004', 'Stale runtime workspace', 'apistaleruntime', 'Bound to a runtime not seen for an hour', 'api-test-serviceclient-000006', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE, "runtimeId" = EXCLUDED."runtimeId";
 
+-- Issuelink: seed records (gaia-dev scaffold resource). The second row is an ACL
+-- fixture in the other project (it has one issue), written past the validator.
+INSERT INTO issuelinks (
+  id, "projectId", "sourceIssueId", "targetIssueId", "type", "targetProjectId", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-issuelink-000001', 'api-test-project-001', 'api-test-issue-000001', 'api-test-issue-000002', 'blocks', 'api-test-project-001', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-issuelink-000002', 'api-test-project-002', 'api-test-issue-000003', 'api-test-issue-000003', 'relates', 'api-test-project-002', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
+VALUES
+  ('atp-acl-members-issuelink-get', 'api-test-role-acl-mem', 'issuelink.get', 2, NOW(), NOW()),
+  ('atp-acl-members-issuelink-create', 'api-test-role-acl-mem', 'issuelink.create', 1, NOW(), NOW()),
+  ('atp-acl-members-issuelink-delete', 'api-test-role-acl-mem', 'issuelink.delete', 1, NOW(), NOW())
+ON CONFLICT (id) DO NOTHING;
+
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
   '"issues_issueNumber_seq"',
@@ -1827,6 +1843,8 @@ data = {
     "workspacemilestoneId": "f71f4371-0003-21d3-2f92-eabb5aeed838",
     "sprintWorkspacemilestoneId": "a57ea343-181e-19cf-dad9-f0b4370f32e1",
     "repositoryId": "api-test-repository-000001",
+    "issuelinkId": "api-test-issuelink-000001",
+    "otherProjectIssuelinkId": "api-test-issuelink-000002",
     "params.c_id": "api-test-convroom-001",
     "params.issue_number": "1",
     "milestone.id": "api-test-milestone-01",

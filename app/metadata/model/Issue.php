@@ -312,6 +312,18 @@ $models['Issue'] = array(
             )
         ),
         'hasMany' => array(
+            'outgoingLinks' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issuelink',
+                'relatedKey' => 'sourceIssueId',
+                'condition' => 'outgoingLinks.deleted = "0"'
+            ),
+            'incomingLinks' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Issuelink',
+                'relatedKey' => 'targetIssueId',
+                'condition' => 'incomingLinks.deleted = "0"'
+            ),
             'estimated' => array(
                 'primaryKey' => 'id',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Timelog',

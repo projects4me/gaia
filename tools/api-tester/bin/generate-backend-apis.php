@@ -70,6 +70,7 @@ $skipMutations = [
     'serviceenrollmenttoken' => 'POST returns the token once and refuses an unconfigured kind; client and acl cases cover it',
     'workflowrun' => 'A POST is a test run (test: true), not a create; client cases cover it',
     'workflowedge' => 'An edge joins two nodes of its workflow on a free port; client cases cover it',
+    'issuelink' => 'A link joins two issues of one workspace once and a PATCH may not change its type or issues; client and acl cases cover it',
 ];
 
 /** Seeded fixture placeholders for get-by-id when available. */
@@ -77,6 +78,7 @@ $fixtureIds = [
     'activity' => '{activityId}',
     'agent' => '{agentId}',
     'agentcredential' => '{agentcredentialId}',
+    'issuelink' => '{issuelinkId}',
     'serviceclient' => '{serviceclientId}',
     'agenttool' => '{agenttoolId}',
     'agentskill' => '{agentskillId}',
@@ -390,6 +392,7 @@ function sampleValue($resource, $name, array $fieldMeta, array $relatedDefaults)
         'workflowreferenceId' => '{workflowreferenceId}',
         'repositoryId' => '{repositoryId}',
         'workspaceId' => '{workspaceId}',
+        'issuelinkId' => '{issuelinkId}',
     ];
     if (isset($fk[$name])) {
         return $fk[$name];
@@ -544,6 +547,7 @@ function patchChange(array $attrs, array $meta = [])
         'workflowreferenceId' => true,
         'repositoryId' => true,
         'workspaceId' => true,
+        'issuelinkId' => true,
     ];
     $fields = isset($meta['fields']) && is_array($meta['fields']) ? $meta['fields'] : [];
     $prefer = ['name', 'subject', 'description', 'title', 'tag', 'comment', 'institution'];

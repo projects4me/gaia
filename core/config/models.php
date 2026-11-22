@@ -23,6 +23,7 @@ $config['models'] = [
     'Ideaplan',
     'Ideaplanissue',
     'Issue',
+    'Issuelink',
     'Issuestatus',
     'Issuetype',
     'Membership',

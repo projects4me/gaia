@@ -360,6 +360,23 @@
 | PUT | /api/v1/issue | rest | issue.putCollection |
 | PUT | /api/v1/issue/{id} | rest | issue.put |
 
+<a id="issuelink"></a>
+## issuelink
+
+| Method | Path | Type | Action |
+|---|---|---|---|
+| DELETE | /api/v1/issuelink | rest | issuelink.deleteCollection |
+| DELETE | /api/v1/issuelink/{id} | rest | issuelink.delete |
+| GET | /api/v1/issuelink | rest | issuelink.list |
+| GET | /api/v1/issuelink/{id} | rest | issuelink.get |
+| GET | /api/v1/issuelink/{id}/{relation} | rest | issuelink.related |
+| OPTIONS | /api/v1/issuelink | rest | issuelink.options |
+| PATCH | /api/v1/issuelink | rest | issuelink.patchCollection |
+| PATCH | /api/v1/issuelink/{id} | rest | issuelink.patch |
+| POST | /api/v1/issuelink | rest | issuelink.post |
+| PUT | /api/v1/issuelink | rest | issuelink.putCollection |
+| PUT | /api/v1/issuelink/{id} | rest | issuelink.put |
+
 <a id="issueplanning"></a>
 ## issueplanning
 

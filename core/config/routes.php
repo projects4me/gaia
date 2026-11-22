@@ -166,6 +166,17 @@ $config['routes'] = array(
                 ),
                 'identifier' => 'id',
             ),
+            'issuelink' => array(
+                'path' => '/api/:version/issuelink',
+                'allowedMethods' => array(
+                    'GET',
+                    'POST',
+                    'PUT',
+                    'DELETE',
+                    'PATCH',
+                ),
+                'identifier' => 'id',
+            ),
             'repository' => array(
                 'path' => '/api/:version/repository',
                 'allowedMethods' => array(
