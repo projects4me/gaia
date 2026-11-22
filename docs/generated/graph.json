@@ -4244,6 +4244,18 @@
       }
     },
     {
+      "id": "behaviour:issueParentCycleBehavior",
+      "type": "behaviour",
+      "key": "issueParentCycleBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\issueParentCycleBehavior",
+        "file": "core/mvc/models/behaviors/issueParentCycleBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:membershipAgentWorkspaceBehavior",
       "type": "behaviour",
       "key": "membershipAgentWorkspaceBehavior",
@@ -17505,6 +17517,198 @@
         "source": null,
         "placeholders": [
           "runtime.longNameIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-parent-cycle-create-child",
+      "type": "case",
+      "key": "client/issue-parent-cycle-create-child",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectId",
+          "projectShortcode",
+          "runtime.cycleRootId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.cycleChildId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "case",
+      "key": "client/issue-parent-cycle-create-grandchild",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectId",
+          "projectShortcode",
+          "runtime.cycleChildId",
+          "userId"
+        ],
+        "stores": [
+          "runtime.cycleGrandchildId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issue-parent-cycle-create-other",
+      "type": "case",
+      "key": "client/issue-parent-cycle-create-other",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectId",
+          "projectShortcode",
+          "userId"
+        ],
+        "stores": [
+          "runtime.cycleOtherId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issue-parent-cycle-create-root",
+      "type": "case",
+      "key": "client/issue-parent-cycle-create-root",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issuestatusId",
+          "issuetypeId",
+          "projectId",
+          "projectShortcode",
+          "userId"
+        ],
+        "stores": [
+          "runtime.cycleRootId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/issue-parent-cycle-deep-descendant-refused",
+      "type": "case",
+      "key": "client/issue-parent-cycle-deep-descendant-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.cycleRootId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.cycleGrandchildId",
+          "runtime.cycleRootId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-parent-cycle-direct-child-refused",
+      "type": "case",
+      "key": "client/issue-parent-cycle-direct-child-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.cycleChildId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.cycleChildId",
+          "runtime.cycleGrandchildId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-parent-cycle-self-refused",
+      "type": "case",
+      "key": "client/issue-parent-cycle-self-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.cycleRootId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.cycleRootId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-parent-cycle-valid-move",
+      "type": "case",
+      "key": "client/issue-parent-cycle-valid-move",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.cycleGrandchildId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.cycleGrandchildId",
+          "runtime.cycleRootId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-parent-cycle-valid-under-other",
+      "type": "case",
+      "key": "client/issue-parent-cycle-valid-under-other",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/issue/{runtime.cycleRootId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.cycleOtherId",
+          "runtime.cycleRootId"
         ],
         "stores": []
       }
@@ -80171,6 +80375,421 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/issue-parent-cycle-create-child",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-child",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-child",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-child",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-child",
+      "type": "depends_on",
+      "to": "case:client/issue-parent-cycle-create-root"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-child",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-child",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-child",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-child",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-child",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-child",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-child",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "depends_on",
+      "to": "case:client/issue-parent-cycle-create-child"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-grandchild",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-other",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-other",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-other",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-other",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-other",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-other",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-other",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-other",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-other",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-other",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-root",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-root",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-root",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-root",
+      "type": "exercises",
+      "to": "route:POST /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-root",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-root",
+      "type": "uses_fixture",
+      "to": "fixture:issuestatusId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-root",
+      "type": "uses_fixture",
+      "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-root",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-root",
+      "type": "uses_fixture",
+      "to": "fixture:projectShortcode"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-create-root",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-deep-descendant-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-deep-descendant-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-deep-descendant-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-deep-descendant-refused",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-deep-descendant-refused",
+      "type": "depends_on",
+      "to": "case:client/issue-parent-cycle-create-grandchild"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-deep-descendant-refused",
+      "type": "depends_on",
+      "to": "case:client/issue-parent-cycle-create-root"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-deep-descendant-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-deep-descendant-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-direct-child-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-direct-child-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-direct-child-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-direct-child-refused",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-direct-child-refused",
+      "type": "depends_on",
+      "to": "case:client/issue-parent-cycle-create-child"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-direct-child-refused",
+      "type": "depends_on",
+      "to": "case:client/issue-parent-cycle-create-grandchild"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-direct-child-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-direct-child-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-self-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-self-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-self-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-self-refused",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-self-refused",
+      "type": "depends_on",
+      "to": "case:client/issue-parent-cycle-create-root"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-self-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-self-refused",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-move",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-move",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-move",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-move",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-move",
+      "type": "depends_on",
+      "to": "case:client/issue-parent-cycle-create-grandchild"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-move",
+      "type": "depends_on",
+      "to": "case:client/issue-parent-cycle-create-root"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-move",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-move",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-under-other",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-under-other",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-under-other",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-under-other",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-under-other",
+      "type": "depends_on",
+      "to": "case:client/issue-parent-cycle-create-other"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-under-other",
+      "type": "depends_on",
+      "to": "case:client/issue-parent-cycle-create-root"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-under-other",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/issue-parent-cycle-valid-under-other",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/issue-rename-create-on-project-copy",
       "type": "asserts",
       "to": "assertion:shape"
@@ -104619,6 +105238,11 @@
       "from": "model:Issue",
       "type": "uses_behaviour",
       "to": "behaviour:issueAgentWorkspaceBehavior"
+    },
+    {
+      "from": "model:Issue",
+      "type": "uses_behaviour",
+      "to": "behaviour:issueParentCycleBehavior"
     },
     {
       "from": "model:Issue",

@@ -362,7 +362,8 @@ $models['Issue'] = array(
         'modifiedUserBehavior',
         'softDeleteBehavior',
         'mentionsBehavior',
-        'issueAgentWorkspaceBehavior'
+        'issueAgentWorkspaceBehavior',
+        'issueParentCycleBehavior'
     ),
     'mentions' => ['fields' => ['description']],
     'acl' => [

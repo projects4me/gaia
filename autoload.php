@@ -85,6 +85,7 @@ $loader->setNamespaces(
         "Gaia\\Libraries\\Conversations" => APP_PATH . '/core/libs/conversations/',
         "Gaia\\Libraries\\Events" => APP_PATH . '/core/libs/events/',
         "Gaia\\Libraries\\Mentions" => APP_PATH . '/core/libs/mentions/',
+        "Gaia\\Libraries\\Issues" => APP_PATH . '/core/libs/issues/',
         "Gaia\\Libraries\\Workspaces" => APP_PATH . '/core/libs/workspaces/',
         "Gaia\\Exception" => APP_PATH . '/core/exceptions/',
         "Gaia\\Events\\Notification" => APP_PATH . '/core/events/notifications/',
