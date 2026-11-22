@@ -122,7 +122,7 @@ $models['Workspace'] = array(
             'type' => 'int',
             'expression' => "SELECT COUNT(DISTINCT CountedMembership.userId) FROM Gaia\\MVC\\Models\\Membership CountedMembership WHERE CountedMembership.projectId IN (SELECT MemberProject.id FROM Gaia\\MVC\\Models\\Project MemberProject WHERE MemberProject.workspaceId = Workspace.id AND MemberProject.deleted = 0)",
         ),
-        // Environment counts (D-017).
+        // Environment counts (D-018).
         'repositoryCount' => array(
             'name' => 'repositoryCount',
             'label' => 'LBL_WORKSPACES_REPOSITORY_COUNT',
@@ -159,6 +159,13 @@ $models['Workspace'] = array(
             'label' => 'LBL_WORKSPACES_RUNS_IN_PROGRESS',
             'type' => 'int',
             'expression' => "SELECT COUNT(CountedRun.id) FROM Gaia\\MVC\\Models\\Workflowrun CountedRun WHERE CountedRun.deleted = false AND CountedRun.status IN ('running', 'waiting') AND CountedRun.projectId IN (SELECT RunProject.id FROM Gaia\\MVC\\Models\\Project RunProject WHERE RunProject.workspaceId = Workspace.id AND RunProject.deleted = 0)",
+        ),
+        // Workspaces D-017: the bound runtime is online when its service client was used (lastUsedAt, UTC) in the last 5 minutes.
+        'runtimeOnline' => array(
+            'name' => 'runtimeOnline',
+            'label' => 'LBL_WORKSPACES_RUNTIME_ONLINE',
+            'type' => 'bool',
+            'expression' => "SELECT COUNT(OnlineRuntime.id) > 0 FROM Gaia\\MVC\\Models\\Serviceclient OnlineRuntime WHERE OnlineRuntime.id = Workspace.runtimeId AND OnlineRuntime.deleted = false AND OnlineRuntime.status = 'active' AND OnlineRuntime.lastUsedAt >= TIMEZONE('UTC', NOW()) - MAKE_INTERVAL(0, 0, 0, 0, 0, 5)",
         ),
     ),
     'indexes' => array(
