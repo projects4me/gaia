@@ -1489,7 +1489,7 @@ ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 -- workspace to none; the runtime sees only the first workspace's rows
 UPDATE workspaces SET "runtimeId" = 'api-test-serviceclient-000001' WHERE id = 'api-test-workspace-000001';
 
--- Runtime online (Workspaces D-016): a workspace bound to a runtime last used an hour ago, which no profile signs
+-- Runtime online (Workspaces D-017): a workspace bound to a runtime last used an hour ago, which no profile signs
 -- in as, so its runtimeOnline stays false
 INSERT INTO serviceclients (
   id, name, kind, status, scopes, "clientId", "lastUsedAt", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"

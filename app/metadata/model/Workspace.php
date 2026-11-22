@@ -122,7 +122,7 @@ $models['Workspace'] = array(
             'type' => 'int',
             'expression' => "SELECT COUNT(DISTINCT CountedMembership.userId) FROM Gaia\\MVC\\Models\\Membership CountedMembership WHERE CountedMembership.projectId IN (SELECT MemberProject.id FROM Gaia\\MVC\\Models\\Project MemberProject WHERE MemberProject.workspaceId = Workspace.id AND MemberProject.deleted = 0)",
         ),
-        // Workspaces D-016: the bound runtime is online when its service client was used (lastUsedAt, UTC) in the last 5 minutes.
+        // Workspaces D-017: the bound runtime is online when its service client was used (lastUsedAt, UTC) in the last 5 minutes.
         'runtimeOnline' => array(
             'name' => 'runtimeOnline',
             'label' => 'LBL_WORKSPACES_RUNTIME_ONLINE',

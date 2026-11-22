@@ -5531,7 +5531,7 @@
     },
     {
       "id": "workspace-runtime-online-runtime-signs-in",
-      "description": "Before serviceclient-rotate-own-secret, which revokes this runtime's tokens: the runtime calls Gaia, so the next case sees its workspace online (Workspaces D-016).",
+      "description": "Before serviceclient-rotate-own-secret, which revokes this runtime's tokens: the runtime calls Gaia, so the next case sees its workspace online (Workspaces D-017).",
       "method": "GET",
       "path": "/api/v1/workspace/{workspaceId}",
       "resource": "workspace",
