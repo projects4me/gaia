@@ -5530,6 +5530,60 @@
       }
     },
     {
+      "id": "workspace-runtime-online-runtime-signs-in",
+      "description": "Before serviceclient-rotate-own-secret, which revokes this runtime's tokens: the runtime calls Gaia, so the next case sees its workspace online (Workspaces D-016).",
+      "method": "GET",
+      "path": "/api/v1/workspace/{workspaceId}",
+      "resource": "workspace",
+      "auth": "serviceRuntime",
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "workspace-runtime-online-recently-used",
+      "method": "GET",
+      "path": "/api/v1/workspace/{workspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "runtimeOnline": true
+        }
+      }
+    },
+    {
+      "id": "workspace-runtime-online-stale",
+      "method": "GET",
+      "path": "/api/v1/workspace/{staleRuntimeWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "runtimeOnline": false
+        }
+      }
+    },
+    {
+      "id": "workspace-runtime-online-unbound",
+      "method": "GET",
+      "path": "/api/v1/workspace/{otherWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "runtimeOnline": false
+        }
+      }
+    },
+    {
       "id": "serviceclient-rotate-own-secret",
       "method": "PATCH",
       "path": "/api/v1/serviceclient/{serviceclientId}",

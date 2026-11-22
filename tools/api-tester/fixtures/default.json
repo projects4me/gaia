@@ -150,6 +150,7 @@
     "otherWorkflowactorstepId": "api-test-workflowactorstep-000002",
     "workspaceId": "api-test-workspace-000001",
     "memberWorkspaceId": "api-test-workspace-000003",
+    "staleRuntimeWorkspaceId": "api-test-workspace-000004",
     "workspacememberId": "12bb5dc3-bc0d-62d0-b066-7ef18000b3b8",
     "agentWorkspacememberId": "66c3a7da-ba5f-1a20-1c45-7768d05a39c2",
     "aclMemWorkspacememberId": "2cb5df70-7dcb-7013-fd55-c404cbf7f256",

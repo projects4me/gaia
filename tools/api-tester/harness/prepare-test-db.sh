@@ -1489,6 +1489,20 @@ ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
 -- workspace to none; the runtime sees only the first workspace's rows
 UPDATE workspaces SET "runtimeId" = 'api-test-serviceclient-000001' WHERE id = 'api-test-workspace-000001';
 
+-- Runtime online (Workspaces D-016): a workspace bound to a runtime last used an hour ago, which no profile signs
+-- in as, so its runtimeOnline stays false
+INSERT INTO serviceclients (
+  id, name, kind, status, scopes, "clientId", "lastUsedAt", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-serviceclient-000006', 'API Tester Stale Runtime', 'runtime', 'active', '["workspace.get"]', 'service-api-tester-stale', (NOW() AT TIME ZONE 'UTC') - INTERVAL '1 hour', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE, status = 'active', "lastUsedAt" = EXCLUDED."lastUsedAt";
+
+INSERT INTO workspaces (
+  id, "name", "shortCode", "description", "runtimeId", deleted, "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-workspace-000004', 'Stale runtime workspace', 'apistaleruntime', 'Bound to a runtime not seen for an hour', 'api-test-serviceclient-000006', FALSE, 'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = FALSE, "runtimeId" = EXCLUDED."runtimeId";
+
 -- Keep serial in sync after seeding explicit issueNumber values
 SELECT setval(
   '"issues_issueNumber_seq"',
@@ -1727,6 +1741,7 @@ data = {
     "otherWorkflowactorstepId": "api-test-workflowactorstep-000002",
     "workspaceId": "api-test-workspace-000001",
     "memberWorkspaceId": "api-test-workspace-000003",
+    "staleRuntimeWorkspaceId": "api-test-workspace-000004",
     "workspacememberId": "12bb5dc3-bc0d-62d0-b066-7ef18000b3b8",
     "agentWorkspacememberId": "66c3a7da-ba5f-1a20-1c45-7768d05a39c2",
     "aclMemWorkspacememberId": "2cb5df70-7dcb-7013-fd55-c404cbf7f256",
