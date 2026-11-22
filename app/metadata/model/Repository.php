@@ -6,7 +6,9 @@
 
 /**
  * A repository a workspace's agents work on: its git URL and base branch. No
- * secrets are stored here; tokens and keys stay on the runtime. It has no
+ * secrets are stored here; tokens and keys stay on the runtime. A repository
+ * with a projectId belongs to that project of the workspace; without one it is
+ * workspace-wide, and it moves with its project (D-015). It has no
  * record scope: only the repository actions (get, create, update, delete) are
  * permissioned, and a create or update also needs workspace.update.
  */
@@ -28,6 +30,13 @@ $models['Repository'] = array(
             'type' => 'varchar',
             'length' => '36',
             'null' => false,
+        ),
+        'projectId' => array(
+            'name' => 'projectId',
+            'label' => 'LBL_REPOSITORIES_PROJECT_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
         ),
         'name' => array(
             'name' => 'name',
@@ -114,6 +123,7 @@ $models['Repository'] = array(
     'indexes' => array(
         'id' => 'primary',
         'workspaceId' => 'index',
+        'projectId' => 'index',
         'name' => 'index',
     ),
     'foriegnKeys' => array(
@@ -128,6 +138,11 @@ $models['Repository'] = array(
             'workspace' => array(
                 'primaryKey' => 'workspaceId',
                 'relatedModel' => '\Gaia\MVC\Models\Workspace',
+                'relatedKey' => 'id'
+            ),
+            'project' => array(
+                'primaryKey' => 'projectId',
+                'relatedModel' => '\Gaia\MVC\Models\Project',
                 'relatedKey' => 'id'
             ),
             'createdBy' => array(

@@ -70,7 +70,7 @@ BEGIN
     END LOOP;
 END $$;
 
--- 5. Join dates (Workspaces D-015): a project in a workspace without one gets its workspace's creation date.
+-- 5. Join dates (Workspaces D-016): a project in a workspace without one gets its workspace's creation date.
 --    Run it after the migration that adds `projects.workspaceJoinedAt`.
 UPDATE projects p
 SET "workspaceJoinedAt" = w."dateCreated"

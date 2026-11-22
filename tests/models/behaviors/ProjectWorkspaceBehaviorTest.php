@@ -33,7 +33,7 @@ class ProjectWorkspaceBehaviorTest extends TestCase
     }
 
     /**
-     * A save that keeps the workspace keeps the stored join date over the one sent (Workspaces D-015).
+     * A save that keeps the workspace keeps the stored join date over the one sent (Workspaces D-016).
      *
      * @return void
      */

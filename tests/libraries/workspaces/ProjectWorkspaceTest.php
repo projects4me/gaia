@@ -58,7 +58,7 @@ class ProjectWorkspaceTest extends TestCase
     }
 
     /**
-     * A new project joins its workspace now (Workspaces D-015).
+     * A new project joins its workspace now (Workspaces D-016).
      *
      * @return void
      */

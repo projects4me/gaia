@@ -19,9 +19,10 @@ use Phalcon\Di\Di;
 /**
  * Decides whether a project may move to another workspace (Workspaces D-011):
  * the target must exist, the caller needs `workspace.update`, and nothing of
- * the old workspace may still be working in the project. Each kind of work
- * that blocks a move is its own check, listed in CHECKS, so a new kind of
- * owned thing is one more method.
+ * the old workspace may still be working in the project, and the project's
+ * repositories, which move with it (D-015), must not clash by name with the
+ * target's. Each thing that blocks a move is its own check, listed in
+ * CHECKS, so a new kind of owned thing is one more method.
  *
  * @author  Hammad Hassan <gollomer@gmail.com>
  * @package Gaia\Libraries\Workspaces
@@ -34,10 +35,10 @@ class ProjectMoveGate
     const NOT_ALLOWED = 'You are not allowed to move projects between these workspaces.';
 
     /**
-     * The checks for work in progress, run in order; the first that finds
-     * something refuses the move.
+     * The checks for work in progress and repository name clashes, run in
+     * order; the first that finds something refuses the move.
      */
-    const CHECKS = ['checkWorkflowRuns', 'checkAgentIssues', 'checkScopedWorkflows'];
+    const CHECKS = ['checkWorkflowRuns', 'checkAgentIssues', 'checkScopedWorkflows', 'checkRepositoryNames'];
 
     /**
      * @var WorkspaceMemberships
@@ -45,11 +46,18 @@ class ProjectMoveGate
     protected $memberships;
 
     /**
-     * @param WorkspaceMemberships|null $memberships
+     * @var ProjectRepositories
      */
-    public function __construct($memberships = null)
+    protected $repositories;
+
+    /**
+     * @param WorkspaceMemberships|null $memberships
+     * @param ProjectRepositories|null  $repositories
+     */
+    public function __construct($memberships = null, $repositories = null)
     {
         $this->memberships = $memberships ?: new WorkspaceMemberships();
+        $this->repositories = $repositories ?: new ProjectRepositories();
     }
 
     /**
@@ -69,7 +77,11 @@ class ProjectMoveGate
         $this->checkPermission();
 
         foreach (self::CHECKS as $check) {
-            $this->$check((string) $projectId, $this->isBlank($fromWorkspaceId) ? null : (string) $fromWorkspaceId);
+            $this->$check(
+                (string) $projectId,
+                $this->isBlank($fromWorkspaceId) ? null : (string) $fromWorkspaceId,
+                (string) $toWorkspaceId
+            );
         }
     }
 
@@ -196,6 +208,27 @@ class ProjectMoveGate
             throw new Conflict(
                 'Workflows of the project\'s workspace list it in their scope: ' . implode(', ', $names)
                 . '; remove it from their scope before moving it.'
+            );
+        }
+    }
+
+    /**
+     * The project's repositories move with it (D-015), so none may share a
+     * name with a repository of the target workspace.
+     *
+     * @param  string      $projectId
+     * @param  string|null $fromWorkspaceId
+     * @param  string      $toWorkspaceId
+     * @return void
+     * @throws Conflict
+     */
+    protected function checkRepositoryNames($projectId, $fromWorkspaceId, $toWorkspaceId)
+    {
+        $names = $this->repositories->clashingNames($projectId, $toWorkspaceId);
+        if (!empty($names)) {
+            throw new Conflict(
+                'The target workspace already has repositories named ' . implode(', ', $names)
+                . '; rename the project\'s repositories before moving it.'
             );
         }
     }

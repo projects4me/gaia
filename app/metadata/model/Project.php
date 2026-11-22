@@ -4,7 +4,7 @@
  * Projects4Me Copyright (c) 2017. Licensing : http://legal.projects4.me/LICENSE.txt. Do not remove this line
  */
 
-// The active milestone (Workspaces D-015): the in-progress one with the earliest end date, otherwise the planned one
+// The active milestone (Workspaces D-016): the in-progress one with the earliest end date, otherwise the planned one
 // with the earliest start date. One ordering for activeMilestoneId and activeMilestoneName; %s is the column.
 $projectActiveMilestone = "SELECT ActiveMilestone.%s FROM Gaia\\MVC\\Models\\Milestone ActiveMilestone WHERE ActiveMilestone.projectId = Project.id AND ActiveMilestone.deleted = 0 AND ActiveMilestone.status IN ('in_progress', 'planned') ORDER BY CASE ActiveMilestone.status WHEN 'in_progress' THEN 0 ELSE 1 END, COALESCE(CASE ActiveMilestone.status WHEN 'in_progress' THEN ActiveMilestone.endDate ELSE ActiveMilestone.startDate END, '9999-12-31'), COALESCE(ActiveMilestone.endDate, '9999-12-31'), ActiveMilestone.id LIMIT 1";
 
@@ -114,7 +114,7 @@ $models['Project'] = array(
             'relatedIdentifier' => true
         ),
         // When the project joined its current workspace: set by projectWorkspaceBehavior on create and on a move,
-        // kept on every other save, so a request cannot write it (Workspaces D-015).
+        // kept on every other save, so a request cannot write it (Workspaces D-016).
         'workspaceJoinedAt' => array(
             'name' => 'workspaceJoinedAt',
             'label' => 'LBL_PROJECTS_WORKSPACE_JOINED_AT',
@@ -191,7 +191,7 @@ $models['Project'] = array(
             'null' => false,
         )
     ),
-    // Read-only values computed on read, not columns (Workspaces D-013, D-015): project totals, whatever the caller
+    // Read-only values computed on read, not columns (Workspaces D-013, D-016): project totals, whatever the caller
     // can see of the project's issues, milestones and runs.
     'computed' => array(
         'openIssueCount' => array(

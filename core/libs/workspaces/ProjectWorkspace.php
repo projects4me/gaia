@@ -77,7 +77,7 @@ class ProjectWorkspace
     }
 
     /**
-     * When the project joined the workspace it is saved in (Workspaces D-015): now for a new project or a move,
+     * When the project joined the workspace it is saved in (Workspaces D-016): now for a new project or a move,
      * otherwise the stored value, so no request can write it.
      *
      * @param  array|null $snapshot    The stored row, null for a new record

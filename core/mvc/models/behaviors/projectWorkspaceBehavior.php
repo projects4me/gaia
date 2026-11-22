@@ -21,7 +21,7 @@ use Phalcon\Mvc\Model\Behavior;
  * created into a workspace the workspace's members (D-004), and lets a project
  * move to another workspace only when nothing of the old one is still working
  * in it (D-011). It stamps when the project joined its workspace on create
- * and on a move, and keeps the stored value on any other save (D-015). The
+ * and on a move, and keeps the stored value on any other save (D-016). The
  * rules live in {@see ProjectWorkspace}, {@see MembershipSync} and
  * {@see ProjectMoveGate}; the move's membership sync runs from the Project
  * model, in one transaction with the save.
@@ -108,7 +108,7 @@ class projectWorkspaceBehavior extends Behavior implements BehaviorInterface
 
     /**
      * A save keeps the stored join date unless it changes the workspace
-     * (D-015). A save that changes the workspace must pass the move gate: a
+     * (D-016). A save that changes the workspace must pass the move gate: a
      * missing or unknown target is a message on workspaceId (422); a missing
      * workspace.update (403) or work still in progress (409) throws.
      *
