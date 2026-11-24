@@ -11,8 +11,8 @@ use Gaia\Libraries\Security\Acl;
 
 /**
  * Module-agnostic search: parses the query once, runs every searcher over each requested type, inside what the user
- * may see, and ranks what they found by its strongest signal, records matching every word first. A query without
- * a letter or a digit finds nothing.
+ * may see, and ranks what they found by its strongest signal, records matching every word first, dropping fuzzy-only
+ * results unless the query has an unknown word. A query without a letter or a digit finds nothing.
  *
  * Each type needs <module>.get (a denied type denies the whole request, as unauthorized query criteria do, D-027).
  * Every candidate query stays inside the module's record scope and deleted = 0 before ranking and LIMIT (D-022).
@@ -57,6 +57,11 @@ class SearchService
     private $ranking;
 
     /**
+     * @var UnknownWords
+     */
+    private $unknownWords;
+
+    /**
      * @var DisplayLoader
      */
     private $display;
@@ -75,6 +80,7 @@ class SearchService
      * @param SearchScope $scope
      * @param Searcher[] $searchers
      * @param StrongestSignal $ranking
+     * @param UnknownWords $unknownWords
      * @param DisplayLoader $display
      * @param int $candidateDepth How many candidates each searcher gives per type, at least 1
      * @throws \Gaia\Exception\Exception When the candidate depth is not a positive whole number
@@ -86,6 +92,7 @@ class SearchService
         SearchScope $scope,
         array $searchers,
         StrongestSignal $ranking,
+        UnknownWords $unknownWords,
         DisplayLoader $display,
         $candidateDepth
     ) {
@@ -98,6 +105,7 @@ class SearchService
         $this->scope = $scope;
         $this->searchers = $searchers;
         $this->ranking = $ranking;
+        $this->unknownWords = $unknownWords;
         $this->display = $display;
         $this->candidateDepth = (int) $candidateDepth;
     }
@@ -152,9 +160,50 @@ class SearchService
             }
         }
 
-        $ranked = $this->ranking->rank($found, $request->limit(), $query->hasSeveralWords());
+        $unknownWords = $this->hasFuzzyResults($found) ? $this->hasUnknownWords($targets, $query) : true;
+        $ranked = $this->ranking->rank($found, $request->limit(), $unknownWords, $query->hasSeveralWords());
 
         return new SearchResults($this->results($ranked, $targets, $query->text()), $unavailable);
+    }
+
+    /**
+     * Only fuzzy results can be dropped, so the unknown words are looked up only when there are some.
+     *
+     * @param array $found
+     * @return bool
+     */
+    private function hasFuzzyResults(array $found)
+    {
+        foreach ($found as $searcher) {
+            if ($searcher['kind'] === FuzzySearcher::KIND && $searcher['signals'] !== array()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Whether the query has a word no record the user may read has (a likely typo). Without a type to look in, the
+     * query counts as having one, so fuzzy matches are kept.
+     *
+     * @param SearchTarget[] $targets
+     * @param SearchQuery $query
+     * @return bool
+     */
+    private function hasUnknownWords(array $targets, SearchQuery $query)
+    {
+        $lookIn = array();
+        foreach ($targets as $target) {
+            foreach ($this->searchers as $searcher) {
+                if ($searcher->kind() === FtsSearcher::KIND && $this->mayMatch($target, $searcher)) {
+                    $lookIn[] = $target;
+                    break;
+                }
+            }
+        }
+
+        return $lookIn === array() || $this->unknownWords->any($lookIn, $query);
     }
 
     /**
