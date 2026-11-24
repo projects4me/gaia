@@ -31,13 +31,6 @@ class SemanticSearcher implements Searcher
     public const KIND = 'semantic';
 
     /**
-     * The cosine distance of system.search.semanticMaxDistance when the config gives none.
-     *
-     * @var float
-     */
-    public const DEFAULT_MAX_DISTANCE = 0.5;
-
-    /**
      * The hnsw.iterative_scan mode: strict_order keeps the records in exact distance order.
      *
      * @var string
@@ -101,7 +94,7 @@ class SemanticSearcher implements Searcher
     /**
      * {@inheritdoc}
      */
-    public function rank(SearchTarget $target, $query, $limit)
+    public function rank(SearchTarget $target, SearchQuery $query, $limit)
     {
         if ($this->fields($target) === array()) {
             return array();
@@ -109,7 +102,7 @@ class SemanticSearcher implements Searcher
 
         $column = $this->candidates->column(SearchBlock::EMBEDDING);
         $distance = $column . ' <=> CAST(:search_semantic AS vector)';
-        $bind = array('search_semantic' => $this->vector($query), 'search_semantic_max' => $this->maxDistance);
+        $bind = array('search_semantic' => $this->vector($query->text()), 'search_semantic_max' => $this->maxDistance);
 
         // The scope and the maximum distance filter the HNSW scan's candidates, which stop at hnsw.ef_search;
         // an iterative scan (pgvector 0.8) keeps scanning, nearest first, until the limit has records that pass,

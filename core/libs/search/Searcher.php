@@ -36,10 +36,10 @@ interface Searcher
      * means depends on the kind), best first.
      *
      * @param SearchTarget $target
-     * @param string $query The query text
+     * @param SearchQuery $query
      * @param int $limit The most records to return
      * @return array Each id => its signal as a float, best first
      * @throws SearcherUnavailableException When a service it needs is down; the search goes on without it
      */
-    public function rank(SearchTarget $target, $query, $limit);
+    public function rank(SearchTarget $target, SearchQuery $query, $limit);
 }

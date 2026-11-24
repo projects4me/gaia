@@ -10,8 +10,8 @@ use Gaia\Libraries\Meta\Manager;
 use Gaia\Libraries\Security\Acl;
 
 /**
- * Module-agnostic search: runs every searcher over each requested type, inside what the user may see, and fuses
- * their rankings into one list.
+ * Module-agnostic search: parses the query once, runs every searcher over each requested type, inside what the user
+ * may see, and ranks what they found by its strongest signal. A query without a letter or a digit finds nothing.
  *
  * Each type needs <module>.get (a denied type denies the whole request, as unauthorized query criteria do, D-027).
  * Every candidate query stays inside the module's record scope and deleted = 0 before ranking and LIMIT (D-022).
@@ -25,14 +25,6 @@ use Gaia\Libraries\Security\Acl;
  */
 class SearchService
 {
-    /**
-     * How many candidates each searcher gives per type: fusion and the ranking work need more than the limit to
-     * reorder.
-     *
-     * @var int
-     */
-    private const CANDIDATE_DEPTH = 100;
-
     /**
      * @var SearchableRegistry
      */
@@ -59,9 +51,9 @@ class SearchService
     private $searchers;
 
     /**
-     * @var RankFusion
+     * @var StrongestSignal
      */
-    private $fusion;
+    private $ranking;
 
     /**
      * @var DisplayLoader
@@ -69,13 +61,22 @@ class SearchService
     private $display;
 
     /**
+     * How many candidates each searcher gives per type: the ranking needs more than the limit to reorder.
+     *
+     * @var int
+     */
+    private $candidateDepth;
+
+    /**
      * @param SearchableRegistry $registry
      * @param Manager $metaManager
      * @param Acl $acl The ACL of the user searching
      * @param SearchScope $scope
      * @param Searcher[] $searchers
-     * @param RankFusion $fusion
+     * @param StrongestSignal $ranking
      * @param DisplayLoader $display
+     * @param int $candidateDepth How many candidates each searcher gives per type, at least 1
+     * @throws \Gaia\Exception\Exception When the candidate depth is not a positive whole number
      */
     public function __construct(
         SearchableRegistry $registry,
@@ -83,16 +84,21 @@ class SearchService
         Acl $acl,
         SearchScope $scope,
         array $searchers,
-        RankFusion $fusion,
-        DisplayLoader $display
+        StrongestSignal $ranking,
+        DisplayLoader $display,
+        $candidateDepth
     ) {
+        if (filter_var($candidateDepth, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1))) === false) {
+            throw new \Gaia\Exception\Exception('The search candidate depth must be a whole number from 1.');
+        }
         $this->registry = $registry;
         $this->metaManager = $metaManager;
         $this->acl = $acl;
         $this->scope = $scope;
         $this->searchers = $searchers;
-        $this->fusion = $fusion;
+        $this->ranking = $ranking;
         $this->display = $display;
+        $this->candidateDepth = (int) $candidateDepth;
     }
 
     /**
@@ -116,8 +122,13 @@ class SearchService
             $entries[$type] = $entry;
         }
 
+        $query = new SearchQuery($request->query());
+        if (!$query->hasWords()) {
+            return new SearchResults(array(), array());
+        }
+
         $targets = array();
-        $rankings = array();
+        $found = array();
         $unavailable = array();
         foreach ($entries as $type => $entry) {
             $targets[$type] = $this->target($entry);
@@ -126,24 +137,23 @@ class SearchService
                     continue;
                 }
                 try {
-                    $signals = $searcher->rank($targets[$type], $request->query(), self::CANDIDATE_DEPTH);
+                    $signals = $searcher->rank($targets[$type], $query, $this->candidateDepth);
                 } catch (SearcherUnavailableException $e) {
                     $this->logUnavailable($searcher->kind(), $e);
                     $unavailable[] = $searcher->kind();
                     continue;
                 }
-                $rankings[] = array(
-                    'kind' => $searcher->kind(),
-                    'keys' => array_map(function ($id) use ($type) {
-                        return $type . ':' . $id;
-                    }, array_keys($signals)),
-                );
+                $keyed = array();
+                foreach ($signals as $id => $signal) {
+                    $keyed[$type . ':' . $id] = $signal;
+                }
+                $found[] = array('kind' => $searcher->kind(), 'signals' => $keyed);
             }
         }
 
-        $fused = array_slice($this->fusion->fuse($rankings), 0, $request->limit());
+        $ranked = $this->ranking->rank($found, $request->limit());
 
-        return new SearchResults($this->results($fused, $targets, $request->query()), $unavailable);
+        return new SearchResults($this->results($ranked, $targets, $query->text()), $unavailable);
     }
 
     /**
@@ -194,17 +204,17 @@ class SearchService
     }
 
     /**
-     * This function turns the fused items into results with their display values.
+     * This function turns the ranked items into results with their display values.
      *
-     * @param array $fused Items from RankFusion, keys "type:id"
+     * @param array $ranked Items from StrongestSignal, keys "type:id"
      * @param SearchTarget[] $targets Keyed by type
      * @param string $query
      * @return array
      */
-    private function results(array $fused, array $targets, $query)
+    private function results(array $ranked, array $targets, $query)
     {
         $idsByType = array();
-        foreach ($fused as $item) {
+        foreach ($ranked as $item) {
             list($type, $id) = explode(':', $item['key'], 2);
             $idsByType[$type][] = $id;
         }
@@ -216,7 +226,7 @@ class SearchService
         }
 
         $results = array();
-        foreach ($fused as $item) {
+        foreach ($ranked as $item) {
             list($type, $id) = explode(':', $item['key'], 2);
             if (!isset($values[$type][$id])) {
                 continue;

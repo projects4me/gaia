@@ -10,7 +10,8 @@ namespace Gaia\Libraries\Search;
  * Typo tolerant search: pg_trgm word_similarity of the query to the type's fuzzy fields, keeping the records with a
  * field that reaches the threshold, ranked by their best similarity, which is the signal. The match is the <% operator, which the fuzzy
  * fields' gin_trgm indexes serve; it reads the threshold from pg_trgm.word_similarity_threshold, set before each
- * search.
+ * search. It says nothing for a query of stop words only or of fewer than MIN_LENGTH letters and digits, where
+ * near spellings are noise.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -26,11 +27,11 @@ class FuzzySearcher implements Searcher
     public const KIND = 'fuzzy';
 
     /**
-     * The similarity threshold of system.search.fuzzyThreshold when the config gives none.
+     * The fewest letters and digits, outside stop words, a query needs for fuzzy matching.
      *
-     * @var float
+     * @var int
      */
-    public const DEFAULT_THRESHOLD = 0.3;
+    public const MIN_LENGTH = 3;
 
     /**
      * @var CandidateQuery
@@ -75,10 +76,10 @@ class FuzzySearcher implements Searcher
     /**
      * {@inheritdoc}
      */
-    public function rank(SearchTarget $target, $query, $limit)
+    public function rank(SearchTarget $target, SearchQuery $query, $limit)
     {
         $fields = $this->fields($target);
-        if ($fields === array()) {
+        if ($fields === array() || $query->nonStopLength() < self::MIN_LENGTH) {
             return array();
         }
 
@@ -100,7 +101,7 @@ class FuzzySearcher implements Searcher
                     implode(' OR ', $matches),
                     $score,
                     $score . ' DESC',
-                    array('search_fuzzy' => $query),
+                    array('search_fuzzy' => $query->text()),
                     $limit
                 );
             }

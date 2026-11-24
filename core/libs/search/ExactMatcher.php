@@ -11,7 +11,8 @@ use Gaia\Db\Migration\PostgresSearchDdl;
 /**
  * Finds the records whose exact fields equal the query, e.g. an issue by its number. A numeric field matches only an
  * integer query, which may start with # (#123); a text field matches the query as it is (case-sensitive); a field of
- * any other type never matches. Their signal is 1; RankFusion pins them first.
+ * any other type never matches. Their signal is 1; StrongestSignal
+ * scores them 1 and puts them first.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -79,12 +80,12 @@ class ExactMatcher implements Searcher
     /**
      * {@inheritdoc}
      */
-    public function rank(SearchTarget $target, $query, $limit)
+    public function rank(SearchTarget $target, SearchQuery $query, $limit)
     {
         $conditions = array();
         $bind = array();
         foreach ($this->fields($target) as $i => $field) {
-            $value = $this->valueFor($target->field($field), $query);
+            $value = $this->valueFor($target->field($field), $query->text());
             if ($value === null) {
                 continue;
             }

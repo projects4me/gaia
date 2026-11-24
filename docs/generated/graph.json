@@ -4153,7 +4153,8 @@
           "scoresFalling: … has no numeric score",
           "scoresFalling: … scores …, above the result before it (…)"
         ],
-        "values": []
+        "values": [],
+        "example": "search/search-f2-scores-mean-something"
       }
     },
     {
@@ -4166,7 +4167,8 @@
         "messages": [
           "scoresWithin: … scores "
         ],
-        "values": []
+        "values": [],
+        "example": "search/search-f2-scores-mean-something"
       }
     },
     {
@@ -29055,7 +29057,7 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": true,
+        "enabled": false,
         "source": null,
         "placeholders": [],
         "stores": []
@@ -29263,7 +29265,7 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": true,
+        "enabled": false,
         "source": null,
         "placeholders": [],
         "stores": []
@@ -29311,7 +29313,7 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": true,
+        "enabled": false,
         "source": null,
         "placeholders": [],
         "stores": []
@@ -29343,7 +29345,7 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": false,
+        "enabled": true,
         "source": null,
         "placeholders": [],
         "stores": []
@@ -29439,7 +29441,7 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": false,
+        "enabled": true,
         "source": null,
         "placeholders": [],
         "stores": []
@@ -29487,7 +29489,7 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": false,
+        "enabled": true,
         "source": null,
         "placeholders": [],
         "stores": []

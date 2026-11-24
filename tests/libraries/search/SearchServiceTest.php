@@ -9,15 +9,17 @@ namespace Gaia\Tests\Libraries\Search;
 use Gaia\Libraries\Search\CandidateQuery;
 use Gaia\Libraries\Search\DisplayLoader;
 use Gaia\Libraries\Search\ExactMatcher;
+use Gaia\Libraries\Search\ExactTitleMatcher;
 use Gaia\Libraries\Search\FtsSearcher;
 use Gaia\Libraries\Search\FuzzySearcher;
-use Gaia\Libraries\Search\RankFusion;
 use Gaia\Libraries\Search\SearchableRegistry;
+use Gaia\Libraries\Search\SearchQuery;
 use Gaia\Libraries\Search\SearchRequest;
 use Gaia\Libraries\Search\SearchScope;
 use Gaia\Libraries\Search\SearchService;
 use Gaia\Libraries\Search\SemanticSearcher;
 use Gaia\Libraries\Search\Snippet;
+use Gaia\Libraries\Search\StrongestSignal;
 use Gaia\Libraries\Search\TextSearchQuery;
 use Gaia\Libraries\Security\Acl;
 use Gaia\Exception\EmbeddingsUnavailableException;
@@ -25,7 +27,8 @@ use Gaia\Services\Embeddings;
 use PHPUnit\Framework\TestCase;
 
 /**
- * SearchService over Issue (agaia-4666, agaia-4668): exact, FTS, fuzzy and semantic matching fused into one ranking,
+ * SearchService over Issue (agaia-4666, agaia-4668, agaia-4888): exact, FTS, fuzzy and semantic matching ranked by
+ * their strongest signal,
  * inside the user's project scope and field ACL. Semantic matching runs on a fake Embeddings and embeddings the test
  * writes. Each test adds its issues in a transaction it rolls back.
  *
@@ -45,6 +48,15 @@ class SearchServiceTest extends TestCase
      */
     private const PROJECT_A = 'a4666000-0000-4000-8000-00000000000a';
     private const PROJECT_B = 'a4666000-0000-4000-8000-00000000000b';
+
+    /**
+     * The search settings the tests run with, those of system.search.
+     *
+     * @var float|int
+     */
+    private const THRESHOLD = 0.15;
+    private const MAX_DISTANCE = 0.5;
+    private const CANDIDATE_DEPTH = 100;
 
     /**
      * @var \Phalcon\Db\Adapter\AdapterInterface
@@ -80,7 +92,7 @@ class SearchServiceTest extends TestCase
         }
     }
 
-    public function testRanksIssuesMatchingInTheSubjectAndByMoreSearchersFirst()
+    public function testRanksIssuesMatchingInTheSubjectFirst()
     {
         $inBoth = $this->addIssue('Zebracorn import fails', 'The zebracorn importer stops.');
         $inDescription = $this->addIssue('Importer stops', 'Seen while testing the zebracorn feed.');
@@ -117,6 +129,117 @@ class SearchServiceTest extends TestCase
         $this->assertSame(array(), $this->search('#98765430x'));
     }
 
+    public function testPinsTheIssueWhoseTitleIsTheQueryWithCaseAndSpacingIgnored()
+    {
+        $longer = $this->addIssue('Zebracorn import fails on Mondays', null);
+        $exact = $this->addIssue('Zebracorn  import fails', null);
+
+        $results = $this->search('  zebracorn IMPORT   fails ');
+
+        $this->assertSame(array($exact, $longer), array_column($results, 'id'));
+        $this->assertContains('exact', $results[0]['matchedBy']);
+        $this->assertSame(1.0, $results[0]['score']);
+        $this->assertLessThan(1.0, $results[1]['score']);
+    }
+
+    public function testPinsTheIssueWhoseTitleHasANoBreakSpace()
+    {
+        $exact = $this->addIssue("Zebracorn\u{00A0}import fails", null);
+
+        $results = $this->search("zebracorn import\u{00A0}fails");
+
+        $this->assertSame(array($exact), array_column($results, 'id'));
+        $this->assertContains('exact', $results[0]['matchedBy']);
+    }
+
+    public function testPinsTheIssueWhoseTitleEndsInACapitalSigma()
+    {
+        $exact = $this->addIssue('ΖΕΒΡΑΚΟΡΝ ΟΣ', null);
+
+        $results = $this->search('ΖΕΒΡΑΚΟΡΝ ΟΣ');
+
+        $this->assertSame(array($exact), array_column($results, 'id'));
+        $this->assertContains('exact', $results[0]['matchedBy']);
+    }
+
+    public function testFindsByNumberWhenTheTitleIsUnreadable()
+    {
+        $numbered = $this->addIssue('Zebracorn import fails', null, 987654304);
+        $this->acl->deniedFields = array('subject');
+
+        $results = $this->search('987654304');
+
+        $this->assertSame(array($numbered), array_column($results, 'id'));
+        $this->assertSame(array('exact'), $results[0]['matchedBy']);
+    }
+
+    public function testAQueryWithoutLettersOrDigitsFindsNothing()
+    {
+        $this->addIssue('!!! ??? everywhere', '!!!');
+        $this->embeddings->vectors['!!!'] = $this->vector(1);
+
+        $this->assertSame(array(), $this->search('!!!'));
+        $this->assertSame(0, $this->embeddings->calls);
+    }
+
+    public function testAStopWordQueryHasNoFuzzyMatches()
+    {
+        $this->addIssue('The end of an era', null);
+        $this->addIssue('Them and those', null);
+
+        $this->assertSame(array(), $this->search('the and of'));
+    }
+
+    public function testAQueryUnderThreeLettersHasNoFuzzyMatches()
+    {
+        $this->addIssue('Zqx import', null);
+
+        $this->assertSame(array(), $this->search('zq'));
+    }
+
+    public function testTheFuzzySearcherSkipsStopWordsAndShortQueriesOnly()
+    {
+        $id = $this->addIssue('The zqx', null);
+        $fuzzy = new FuzzySearcher(new CandidateQuery($this->db), 0.1);
+        $target = $this->target();
+
+        $this->assertSame(array(), $fuzzy->rank($target, new SearchQuery('the and of'), 10));
+        $this->assertSame(array(), $fuzzy->rank($target, new SearchQuery('zq'), 10));
+        $this->assertArrayHasKey($id, $fuzzy->rank($target, new SearchQuery('the zqx'), 10));
+    }
+
+    public function testScoresFromZeroToOneNeverRisingDownTheList()
+    {
+        $this->addIssue('Zebracorn import fails', 'The zebracorn importer stops.');
+        $this->addIssue('Importer stops', 'Seen while testing the zebracorn feed.');
+        $this->addIssue('Zebracorns', null);
+
+        $scores = array_column($this->search('zebracorn'), 'score');
+
+        $this->assertNotEmpty($scores);
+        $previous = 1.0;
+        foreach ($scores as $score) {
+            $this->assertGreaterThanOrEqual(self::THRESHOLD, $score);
+            $this->assertLessThanOrEqual($previous, $score);
+            $previous = $score;
+        }
+    }
+
+    public function testKeepsAMeaningMatchAtTheThresholdAndDropsOneUnderIt()
+    {
+        $this->embeddings->vectors['zebracorn'] = $this->vector(1);
+        // Cosine distances 0.30 (meaning about 0.41) and 0.38 (meaning about 0.09), both within the max distance
+        $kept = $this->addIssue('Alpha', null);
+        $this->embed($kept, $this->vector(0.7, 0.714));
+        $dropped = $this->addIssue('Beta', null);
+        $this->embed($dropped, $this->vector(0.62, 0.7846));
+
+        $results = $this->search('zebracorn');
+
+        $this->assertSame(array($kept), array_column($results, 'id'));
+        $this->assertEqualsWithDelta(0.41, $results[0]['score'], 0.01);
+    }
+
     public function testFindsASubjectDespiteATypo()
     {
         $issue = $this->addIssue('Zebracorn import fails', null);
@@ -135,10 +258,10 @@ class SearchServiceTest extends TestCase
         $candidates = new CandidateQuery($this->db);
         $target = $this->target();
 
-        $exact = (new ExactMatcher($candidates))->rank($target, '987654303', 10);
-        $fts = (new FtsSearcher($candidates, new TextSearchQuery()))->rank($target, 'zebracorn', 10);
-        $fuzzy = (new FuzzySearcher($candidates, 0.3))->rank($target, 'zebracorn', 10);
-        $semantic = (new SemanticSearcher($candidates, $this->embeddings, 0.5))->rank($target, 'zebracorn', 10);
+        $exact = (new ExactMatcher($candidates))->rank($target, new SearchQuery('987654303'), 10);
+        $fts = (new FtsSearcher($candidates, new TextSearchQuery()))->rank($target, new SearchQuery('zebracorn'), 10);
+        $fuzzy = (new FuzzySearcher($candidates, 0.3))->rank($target, new SearchQuery('zebracorn'), 10);
+        $semantic = (new SemanticSearcher($candidates, $this->embeddings, 0.5))->rank($target, new SearchQuery('zebracorn'), 10);
 
         $this->assertSame(array($id => 1.0), $exact);
         $this->assertSame(array($id), array_keys($fts));
@@ -160,8 +283,8 @@ class SearchServiceTest extends TestCase
         $candidates = new CandidateQuery($this->db);
         $target = $this->target();
 
-        $semantic = (new SemanticSearcher($candidates, $this->embeddings, 0.5))->rank($target, 'zebracorn', 10);
-        $fts = (new FtsSearcher($candidates, new TextSearchQuery()))->rank($target, 'zebracorn', 10);
+        $semantic = (new SemanticSearcher($candidates, $this->embeddings, 0.5))->rank($target, new SearchQuery('zebracorn'), 10);
+        $fts = (new FtsSearcher($candidates, new TextSearchQuery()))->rank($target, new SearchQuery('zebracorn'), 10);
 
         $this->assertSame(array($near, $far), array_keys($semantic));
         $this->assertLessThan($semantic[$far], $semantic[$near]);
@@ -391,7 +514,7 @@ class SearchServiceTest extends TestCase
         $this->embed($this->addIssue('Alpha', null), $this->vector(1));
         $candidates = new SearchTestSettingSpy($this->db);
 
-        $this->service(SemanticSearcher::DEFAULT_MAX_DISTANCE, $candidates)
+        $this->service(self::MAX_DISTANCE, $candidates)
             ->search(new SearchRequest(array('issue'), 'zebracorn'));
 
         $this->assertSame('strict_order', $candidates->settings['semantic']);
@@ -465,6 +588,28 @@ class SearchServiceTest extends TestCase
     }
 
     /**
+     * @dataProvider badCandidateDepths
+     */
+    public function testRejectsACandidateDepthThatIsNotAPositiveWholeNumber($candidateDepth)
+    {
+        $this->expectException(\Gaia\Exception\Exception::class);
+        $this->service(self::MAX_DISTANCE, null, $candidateDepth);
+    }
+
+    /**
+     * @return array
+     */
+    public static function badCandidateDepths()
+    {
+        return array(
+            'zero' => array(0),
+            'negative' => array(-1),
+            'fraction' => array(1.5),
+            'not a number' => array('deep'),
+        );
+    }
+
+    /**
      * @param string $query
      * @param int|null $limit
      * @return array
@@ -503,10 +648,14 @@ class SearchServiceTest extends TestCase
     /**
      * @param float $maxDistance
      * @param CandidateQuery|null $candidates
+     * @param mixed $candidateDepth
      * @return SearchService
      */
-    private function service($maxDistance = SemanticSearcher::DEFAULT_MAX_DISTANCE, ?CandidateQuery $candidates = null)
-    {
+    private function service(
+        $maxDistance = self::MAX_DISTANCE,
+        ?CandidateQuery $candidates = null,
+        $candidateDepth = self::CANDIDATE_DEPTH
+    ) {
         $di = \Phalcon\Di\Di::getDefault();
         $metaManager = $di->get('metaManager');
         $candidates = $candidates ?? new CandidateQuery($this->db);
@@ -519,12 +668,14 @@ class SearchServiceTest extends TestCase
             new SearchScope($this->acl, $di->get('modelsManager')),
             array(
                 new ExactMatcher($candidates),
+                new ExactTitleMatcher($candidates),
                 new FtsSearcher($candidates, $tsquery),
                 new FuzzySearcher($candidates, 0.3),
                 new SemanticSearcher($candidates, $this->embeddings, $maxDistance),
             ),
-            new RankFusion(),
-            new DisplayLoader($candidates, new Snippet($tsquery))
+            new StrongestSignal(self::THRESHOLD, 0.6, 0.3, 0.156, 0.402),
+            new DisplayLoader($candidates, new Snippet($tsquery)),
+            $candidateDepth
         );
     }
 

@@ -39,9 +39,19 @@ $config['system'] = [
     ],
     'search' => [
         // pg_trgm word_similarity a fuzzy search match needs, from 0 to 1.
-        'fuzzyThreshold' => \Gaia\Libraries\Search\FuzzySearcher::DEFAULT_THRESHOLD,
+        'fuzzyThreshold' => 0.3,
         // Cosine distance a semantic search match may have at most, from 0 to 2.
-        'semanticMaxDistance' => \Gaia\Libraries\Search\SemanticSearcher::DEFAULT_MAX_DISTANCE,
+        'semanticMaxDistance' => 0.5,
+        // Score from 0 to 1 a result needs to be kept; exact matches are always kept.
+        'threshold' => 0.15,
+        // Score from 0 to 1 of a perfect fuzzy match.
+        'fuzzyWeight' => 0.6,
+        // Cosine distances a semantic match scores 1 at (or nearer) and 0 at (or farther), from 0 to 2,
+        // calibrated for the embedding model: recalibrate them when it changes.
+        'semanticNear' => 0.156,
+        'semanticFar' => 0.402,
+        // Candidates each searcher gives per type: the ranking needs more than the result limit to reorder.
+        'candidateDepth' => 100,
     ],
 ];
 
