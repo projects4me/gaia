@@ -7,24 +7,24 @@
 <a id="assertions"></a>
 ## Assertions
 
-- attributesAbsent | e.g. acl/acl-field-explicit-fields-omits-denied-subject
-- attributesEqual | e.g. acl/acl-field-verify-patch-discard-as-admin
-- attributesPresent | e.g. acl/acl-field-default-select-keeps-structural-projectId
-- errorEqual | e.g. acl/acl-issue-denied-without-project-group
+- attributesAbsent -- attributesAbsent: unexpectedly found attributes.… | e.g. acl/acl-field-explicit-fields-omits-denied-subject
+- attributesEqual -- attributesEqual: missing attributes.… | e.g. acl/acl-field-verify-patch-discard-as-admin
+- attributesPresent -- attributesPresent: missing attributes.… | e.g. acl/acl-field-default-select-keeps-structural-projectId
+- errorEqual -- errorEqual: expected '…', got ' | e.g. acl/acl-issue-denied-without-project-group
 - hermes.absent | e.g. live/live-agent-run-non-delegable-agent-request-skips-runtimes
 - hermes.expect | e.g. live/live-issue-create-publishes-issue-created
-- idsExcludes | e.g. acl/acl-members-issuetype-list-includes-system-types
-- idsIncludes | e.g. acl/acl-project-rels-issues-omitted
-- includedTypesAbsent | e.g. acl/acl-project-rels-issues-omitted
-- includedTypesPresent | e.g. acl/acl-project-rels-mixed-issues-omitted-members-kept
-- jsonEqual | e.g. acl/acl-system-type-labels-unchanged-after-denied-copy
-- jsonPathAbsent | e.g. acl/acl-agentspec-allowed-default
+- idsExcludes -- idsExcludes: unexpectedly found id … | e.g. acl/acl-members-issuetype-list-includes-system-types
+- idsIncludes -- idsIncludes: missing id … | e.g. acl/acl-project-rels-issues-omitted
+- includedTypesAbsent -- includedTypesAbsent: unexpectedly found type … | e.g. acl/acl-project-rels-issues-omitted
+- includedTypesPresent -- includedTypesPresent: missing type … | e.g. acl/acl-project-rels-mixed-issues-omitted-members-kept
+- jsonEqual -- jsonEqual: … expected '…', got ' | e.g. acl/acl-system-type-labels-unchanged-after-denied-copy
+- jsonPathAbsent -- jsonPathAbsent: unexpectedly found … | e.g. acl/acl-agentspec-allowed-default
 - mail.bodyContains | e.g. mail/mail-welcome-password-email-is-delivered
 - mail.fromEmail | e.g. mail/mail-welcome-password-email-is-delivered
 - mail.fromName | e.g. mail/mail-welcome-password-email-is-delivered
 - mail.subject | e.g. mail/mail-welcome-password-email-is-delivered
 - mail.to | e.g. mail/mail-welcome-password-email-is-delivered
-- resourceNamesAbsent | e.g. acl/acl-perm-list-collapses-field-mode-not-triples
-- resourceNamesPresent | e.g. acl/acl-perm-list-collapses-field-mode-not-triples
+- resourceNamesAbsent -- resourceNamesAbsent: unexpectedly found resourceName … | e.g. acl/acl-perm-list-collapses-field-mode-not-triples
+- resourceNamesPresent -- resourceNamesPresent: missing resourceName … | e.g. acl/acl-perm-list-collapses-field-mode-not-triples
 - shape (error|json|jsonapi.collection|jsonapi.resource|oauth.token) | e.g. acl/acl-issue-denied-without-project-group
 - status -- status: expected %s, got %s | e.g. acl/acl-issue-denied-without-project-group

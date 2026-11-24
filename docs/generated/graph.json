@@ -3837,7 +3837,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 163,
-        "messages": [],
+        "messages": [
+          "attributesAbsent: unexpectedly found attributes.…"
+        ],
         "values": [],
         "example": "acl/acl-field-explicit-fields-omits-denied-subject"
       }
@@ -3849,7 +3851,10 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 201,
-        "messages": [],
+        "messages": [
+          "attributesEqual: missing attributes.…",
+          "attributesEqual: attributes.… expected '…', got '"
+        ],
         "values": [],
         "example": "acl/acl-field-verify-patch-discard-as-admin"
       }
@@ -3861,7 +3866,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 152,
-        "messages": [],
+        "messages": [
+          "attributesPresent: missing attributes.…"
+        ],
         "values": [],
         "example": "acl/acl-field-default-select-keeps-structural-projectId"
       }
@@ -3873,7 +3880,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 78,
-        "messages": [],
+        "messages": [
+          "errorEqual: expected '…', got '"
+        ],
         "values": [],
         "example": "acl/acl-issue-denied-without-project-group"
       }
@@ -3909,7 +3918,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 175,
-        "messages": [],
+        "messages": [
+          "idsExcludes: unexpectedly found id …"
+        ],
         "values": [],
         "example": "acl/acl-members-issuetype-list-includes-system-types"
       }
@@ -3921,7 +3932,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 174,
-        "messages": [],
+        "messages": [
+          "idsIncludes: missing id …"
+        ],
         "values": [],
         "example": "acl/acl-project-rels-issues-omitted"
       }
@@ -3933,7 +3946,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 102,
-        "messages": [],
+        "messages": [
+          "includedTypesAbsent: unexpectedly found type …"
+        ],
         "values": [],
         "example": "acl/acl-project-rels-issues-omitted"
       }
@@ -3945,7 +3960,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 118,
-        "messages": [],
+        "messages": [
+          "includedTypesPresent: missing type …"
+        ],
         "values": [],
         "example": "acl/acl-project-rels-mixed-issues-omitted-members-kept"
       }
@@ -3957,7 +3974,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 84,
-        "messages": [],
+        "messages": [
+          "jsonEqual: … expected '…', got '"
+        ],
         "values": [],
         "example": "acl/acl-system-type-labels-unchanged-after-denied-copy"
       }
@@ -3969,7 +3988,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 94,
-        "messages": [],
+        "messages": [
+          "jsonPathAbsent: unexpectedly found …"
+        ],
         "values": [],
         "example": "acl/acl-agentspec-allowed-default"
       }
@@ -4041,7 +4062,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 134,
-        "messages": [],
+        "messages": [
+          "resourceNamesAbsent: unexpectedly found resourceName …"
+        ],
         "values": [],
         "example": "acl/acl-perm-list-collapses-field-mode-not-triples"
       }
@@ -4053,7 +4076,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 143,
-        "messages": [],
+        "messages": [
+          "resourceNamesPresent: missing resourceName …"
+        ],
         "values": [],
         "example": "acl/acl-perm-list-collapses-field-mode-not-triples"
       }
@@ -44154,9 +44179,9 @@
       "attributes": {
         "scoped": true,
         "scopes": {
-          "none": null,
-          "all": null,
-          "members": null
+          "none": 0,
+          "all": 1,
+          "members": 2
         },
         "kind": "action"
       }
