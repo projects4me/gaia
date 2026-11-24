@@ -9,10 +9,10 @@ namespace Gaia\Libraries\Search;
 /**
  * Builds the SearchService of the user the DI's acl belongs to: exact (number and title), FTS, fuzzy and semantic
  * matching for text, number, partial number and reference lookups (SearchRoute), ranked by StrongestSignal, with the
- * settings of system.search: fuzzyThreshold, semanticMaxDistance, candidateDepth, numberQueryWords and the ranking's
- * threshold, fuzzyWeight, semanticNear, semanticFar, allWordsBoundary and partialNumberBoundary. Every
- * setting is required:
- * the values live in the config only. A new kind of matching is added here.
+ * settings of system.search: fuzzyThreshold, semanticMaxDistance, candidateDepth, numberQueryWords, the ranking's
+ * threshold, fuzzyWeight, semanticNear, semanticFar, allWordsBoundary and partialNumberBoundary, and the query
+ * expansion's maxAlternatives, spellingMinLength, splitMinPart and splitMinRecords. Every setting is required: the
+ * values live in the config only. A new kind of matching is added here.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -31,6 +31,12 @@ class SearchServiceFactory
         $maxDistance = self::setting('semanticMaxDistance');
         $candidateDepth = self::setting('candidateDepth');
         $numberQueryWords = self::setting('numberQueryWords');
+        $expander = new QueryExpander(
+            self::setting('maxAlternatives'),
+            self::setting('spellingMinLength'),
+            self::setting('splitMinPart')
+        );
+        $splitMinRecords = self::setting('splitMinRecords');
         $ranking = new StrongestSignal(
             self::setting('threshold'),
             self::setting('fuzzyWeight'),
@@ -46,6 +52,7 @@ class SearchServiceFactory
         $candidates = new CandidateQuery($di->get('db'));
         $tsquery = new TextSearchQuery();
         $exact = new ExactMatcher($candidates, $numberQueryWords);
+        $expansion = new QueryExpansion($candidates, $tsquery, $expander, $splitMinRecords);
 
         return new SearchService(
             SearchableRegistry::fromMetadata($metaManager),
@@ -56,7 +63,7 @@ class SearchServiceFactory
                 array(
                     $exact,
                     new ExactTitleMatcher($candidates),
-                    new FtsSearcher($candidates, $tsquery),
+                    new FtsSearcher($candidates, $tsquery, $expansion),
                     new FuzzySearcher($candidates, $threshold),
                     new SemanticSearcher($candidates, new \Gaia\Services\Embeddings(), $maxDistance),
                 ),
@@ -67,6 +74,7 @@ class SearchServiceFactory
             $ranking,
             new UnknownWords($candidates, $tsquery),
             new DisplayLoader($candidates, new Snippet($tsquery)),
+            $expansion,
             $candidateDepth
         );
     }
