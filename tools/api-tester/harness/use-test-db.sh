@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Optional local helper: start gaia-test (DB_NAME=pr4m_test) on :8081.
+# TEST_SERVICE=gaia-test-hermes-down (:8082) or gaia-test-ares (:8083) starts a variant on the same database.
 # Not used by api-tester itself — only for bringing up a local target.
 set -euo pipefail
 
@@ -13,6 +14,9 @@ if [[ -z "$BASE_URI" ]]; then
   case "$SERVICE" in
     gaia-test-hermes-down)
       BASE_URI="http://localhost:8082"
+      ;;
+    gaia-test-ares)
+      BASE_URI="http://localhost:8083"
       ;;
     *)
       BASE_URI="http://localhost:8081"
@@ -36,6 +40,9 @@ done
 echo "Local API ready at $BASE_URI"
 if [[ "$SERVICE" == "gaia-test-hermes-down" ]]; then
   echo "Next (fail-open): ./tools/api-tester/harness/run-api-tests.sh --base-uri $BASE_URI --mode live --filter fail-open"
+elif [[ "$SERVICE" == "gaia-test-ares" ]]; then
+  echo "Next (meaning search, Ares up): ./tools/api-tester/harness/seed-search.sh"
+  echo "       ./tools/api-tester/harness/run-api-tests.sh --base-uri $BASE_URI --mode search-semantic"
 else
   echo "Next: ./tools/api-tester/harness/run-api-tests.sh --base-uri $BASE_URI --mode backend"
   echo "Live: ./tools/api-tester/harness/run-api-tests.sh --base-uri $BASE_URI --mode live --hermes-url http://localhost:9001"
