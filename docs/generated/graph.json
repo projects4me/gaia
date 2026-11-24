@@ -3837,7 +3837,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 181,
-        "messages": [],
+        "messages": [
+          "attributesAbsent: unexpectedly found attributes.…"
+        ],
         "values": [],
         "example": "acl/acl-field-explicit-fields-omits-denied-subject"
       }
@@ -3849,7 +3851,10 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 310,
-        "messages": [],
+        "messages": [
+          "attributesEqual: missing attributes.…",
+          "attributesEqual: attributes.… expected '…', got '"
+        ],
         "values": [],
         "example": "acl/acl-field-verify-patch-discard-as-admin"
       }
@@ -3861,7 +3866,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 170,
-        "messages": [],
+        "messages": [
+          "attributesPresent: missing attributes.…"
+        ],
         "values": [],
         "example": "acl/acl-field-default-select-keeps-structural-projectId"
       }
@@ -3873,7 +3880,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 96,
-        "messages": [],
+        "messages": [
+          "errorEqual: expected '…', got '"
+        ],
         "values": [],
         "example": "acl/acl-issue-denied-without-project-group"
       }
@@ -3909,7 +3918,10 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 244,
-        "messages": [],
+        "messages": [
+          "idsBefore: missing id …",
+          "idsBefore: … ranks above …"
+        ],
         "values": [],
         "example": "search/search-b2-several-keywords"
       }
@@ -3935,7 +3947,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 193,
-        "messages": [],
+        "messages": [
+          "idsExcludes: unexpectedly found id …"
+        ],
         "values": [],
         "example": "acl/acl-members-issuetype-list-includes-system-types"
       }
@@ -3947,7 +3961,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 192,
-        "messages": [],
+        "messages": [
+          "idsIncludes: missing id …"
+        ],
         "values": [],
         "example": "acl/acl-project-rels-issues-omitted"
       }
@@ -3959,7 +3975,10 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 262,
-        "messages": [],
+        "messages": [
+          "idsSameAs: case … has no results to compare with (not run, skipped, failed or empty)",
+          "idsSameAs: expected the results of … ["
+        ],
         "values": [],
         "example": "search/search-b3-keywords-other-order"
       }
@@ -3972,7 +3991,8 @@
         "source": "tools/api-tester/src/Asserter.php",
         "line": 229,
         "messages": [
-          "idsWithin: needs a rank of 1 or more and at least one id"
+          "idsWithin: needs a rank of 1 or more and at least one id",
+          "idsWithin: … is not in the top …"
         ],
         "values": [],
         "example": "search/search-a6-exact-title"
@@ -3985,7 +4005,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 120,
-        "messages": [],
+        "messages": [
+          "includedTypesAbsent: unexpectedly found type …"
+        ],
         "values": [],
         "example": "acl/acl-project-rels-issues-omitted"
       }
@@ -3997,7 +4019,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 136,
-        "messages": [],
+        "messages": [
+          "includedTypesPresent: missing type …"
+        ],
         "values": [],
         "example": "acl/acl-project-rels-mixed-issues-omitted-members-kept"
       }
@@ -4009,7 +4033,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 102,
-        "messages": [],
+        "messages": [
+          "jsonEqual: … expected '…', got '"
+        ],
         "values": [],
         "example": "acl/acl-system-type-labels-unchanged-after-denied-copy"
       }
@@ -4021,7 +4047,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 112,
-        "messages": [],
+        "messages": [
+          "jsonPathAbsent: unexpectedly found …"
+        ],
         "values": [],
         "example": "acl/acl-agentspec-allowed-default"
       }
@@ -4093,7 +4121,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 152,
-        "messages": [],
+        "messages": [
+          "resourceNamesAbsent: unexpectedly found resourceName …"
+        ],
         "values": [],
         "example": "acl/acl-perm-list-collapses-field-mode-not-triples"
       }
@@ -4105,7 +4135,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 161,
-        "messages": [],
+        "messages": [
+          "resourceNamesPresent: missing resourceName …"
+        ],
         "values": [],
         "example": "acl/acl-perm-list-collapses-field-mode-not-triples"
       }
@@ -4117,7 +4149,10 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 296,
-        "messages": [],
+        "messages": [
+          "scoresFalling: … has no numeric score",
+          "scoresFalling: … scores …, above the result before it (…)"
+        ],
         "values": []
       }
     },
@@ -4128,7 +4163,9 @@
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
         "line": 286,
-        "messages": [],
+        "messages": [
+          "scoresWithin: … scores "
+        ],
         "values": []
       }
     },
@@ -45004,9 +45041,9 @@
       "attributes": {
         "scoped": true,
         "scopes": {
-          "none": null,
-          "all": null,
-          "members": null
+          "none": 0,
+          "all": 1,
+          "members": 2
         },
         "kind": "action"
       }
