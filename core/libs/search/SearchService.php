@@ -10,8 +10,8 @@ use Gaia\Libraries\Meta\Manager;
 use Gaia\Libraries\Security\Acl;
 
 /**
- * Module-agnostic search: runs every searcher over each requested type, inside what the user may see, and fuses
- * their rankings into one list.
+ * Module-agnostic search: parses the query once, runs every searcher over each requested type, inside what the user
+ * may see, and ranks what they found by its strongest signal. A query without a letter or a digit finds nothing.
  *
  * Each type needs <module>.get (a denied type denies the whole request, as unauthorized query criteria do, D-027).
  * Every candidate query stays inside the module's record scope and deleted = 0 before ranking and LIMIT (D-022).
@@ -26,8 +26,7 @@ use Gaia\Libraries\Security\Acl;
 class SearchService
 {
     /**
-     * How many candidates each searcher gives per type: fusion and the ranking work need more than the limit to
-     * reorder.
+     * How many candidates each searcher gives per type: the ranking needs more than the limit to reorder.
      *
      * @var int
      */
@@ -59,9 +58,9 @@ class SearchService
     private $searchers;
 
     /**
-     * @var RankFusion
+     * @var StrongestSignal
      */
-    private $fusion;
+    private $ranking;
 
     /**
      * @var DisplayLoader
@@ -74,7 +73,7 @@ class SearchService
      * @param Acl $acl The ACL of the user searching
      * @param SearchScope $scope
      * @param Searcher[] $searchers
-     * @param RankFusion $fusion
+     * @param StrongestSignal $ranking
      * @param DisplayLoader $display
      */
     public function __construct(
@@ -83,7 +82,7 @@ class SearchService
         Acl $acl,
         SearchScope $scope,
         array $searchers,
-        RankFusion $fusion,
+        StrongestSignal $ranking,
         DisplayLoader $display
     ) {
         $this->registry = $registry;
@@ -91,7 +90,7 @@ class SearchService
         $this->acl = $acl;
         $this->scope = $scope;
         $this->searchers = $searchers;
-        $this->fusion = $fusion;
+        $this->ranking = $ranking;
         $this->display = $display;
     }
 
@@ -116,8 +115,13 @@ class SearchService
             $entries[$type] = $entry;
         }
 
+        $query = new SearchQuery($request->query());
+        if (!$query->hasWords()) {
+            return new SearchResults(array(), array());
+        }
+
         $targets = array();
-        $rankings = array();
+        $found = array();
         $unavailable = array();
         foreach ($entries as $type => $entry) {
             $targets[$type] = $this->target($entry);
@@ -126,24 +130,23 @@ class SearchService
                     continue;
                 }
                 try {
-                    $signals = $searcher->rank($targets[$type], $request->query(), self::CANDIDATE_DEPTH);
+                    $signals = $searcher->rank($targets[$type], $query, self::CANDIDATE_DEPTH);
                 } catch (SearcherUnavailableException $e) {
                     $this->logUnavailable($searcher->kind(), $e);
                     $unavailable[] = $searcher->kind();
                     continue;
                 }
-                $rankings[] = array(
-                    'kind' => $searcher->kind(),
-                    'keys' => array_map(function ($id) use ($type) {
-                        return $type . ':' . $id;
-                    }, array_keys($signals)),
-                );
+                $keyed = array();
+                foreach ($signals as $id => $signal) {
+                    $keyed[$type . ':' . $id] = $signal;
+                }
+                $found[] = array('kind' => $searcher->kind(), 'signals' => $keyed);
             }
         }
 
-        $fused = array_slice($this->fusion->fuse($rankings), 0, $request->limit());
+        $ranked = $this->ranking->rank($found, $request->limit());
 
-        return new SearchResults($this->results($fused, $targets, $request->query()), $unavailable);
+        return new SearchResults($this->results($ranked, $targets, $query->text()), $unavailable);
     }
 
     /**
@@ -194,17 +197,17 @@ class SearchService
     }
 
     /**
-     * This function turns the fused items into results with their display values.
+     * This function turns the ranked items into results with their display values.
      *
-     * @param array $fused Items from RankFusion, keys "type:id"
+     * @param array $ranked Items from StrongestSignal, keys "type:id"
      * @param SearchTarget[] $targets Keyed by type
      * @param string $query
      * @return array
      */
-    private function results(array $fused, array $targets, $query)
+    private function results(array $ranked, array $targets, $query)
     {
         $idsByType = array();
-        foreach ($fused as $item) {
+        foreach ($ranked as $item) {
             list($type, $id) = explode(':', $item['key'], 2);
             $idsByType[$type][] = $id;
         }
@@ -216,7 +219,7 @@ class SearchService
         }
 
         $results = array();
-        foreach ($fused as $item) {
+        foreach ($ranked as $item) {
             list($type, $id) = explode(':', $item['key'], 2);
             if (!isset($values[$type][$id])) {
                 continue;

@@ -30,7 +30,7 @@
 - mail.to | e.g. mail/mail-welcome-password-email-is-delivered
 - resourceNamesAbsent -- resourceNamesAbsent: unexpectedly found resourceName … | e.g. acl/acl-perm-list-collapses-field-mode-not-triples
 - resourceNamesPresent -- resourceNamesPresent: missing resourceName … | e.g. acl/acl-perm-list-collapses-field-mode-not-triples
-- scoresFalling -- scoresFalling: … has no numeric score
-- scoresWithin -- scoresWithin: … scores 
+- scoresFalling -- scoresFalling: … has no numeric score | e.g. search/search-f2-scores-mean-something
+- scoresWithin -- scoresWithin: … scores  | e.g. search/search-f2-scores-mean-something
 - shape (error|json|jsonapi.collection|jsonapi.resource|oauth.token) | e.g. acl/acl-issue-denied-without-project-group
 - status -- status: expected %s, got %s | e.g. acl/acl-issue-denied-without-project-group

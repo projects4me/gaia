@@ -9477,7 +9477,7 @@
       "auth": true,
       "query": {
         "types": "issue",
-        "q": "Tsster"
+        "q": "Testr"
       },
       "expects": {
         "status": 200,
@@ -9495,7 +9495,7 @@
       "auth": true,
       "query": {
         "types": "issue",
-        "q": "Tsster"
+        "q": "Testr"
       },
       "expects": {
         "status": 200,

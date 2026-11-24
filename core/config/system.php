@@ -42,6 +42,14 @@ $config['system'] = [
         'fuzzyThreshold' => \Gaia\Libraries\Search\FuzzySearcher::DEFAULT_THRESHOLD,
         // Cosine distance a semantic search match may have at most, from 0 to 2.
         'semanticMaxDistance' => \Gaia\Libraries\Search\SemanticSearcher::DEFAULT_MAX_DISTANCE,
+        // Score from 0 to 1 a result needs to be kept; exact matches are always kept.
+        'threshold' => \Gaia\Libraries\Search\StrongestSignal::DEFAULT_THRESHOLD,
+        // Score from 0 to 1 of a perfect fuzzy match.
+        'fuzzyWeight' => \Gaia\Libraries\Search\StrongestSignal::DEFAULT_FUZZY_WEIGHT,
+        // Cosine distances a semantic match scores 1 at (or nearer) and 0 at (or farther), from 0 to 2,
+        // calibrated for the embedding model: recalibrate them when it changes.
+        'semanticNear' => \Gaia\Libraries\Search\StrongestSignal::DEFAULT_SEMANTIC_NEAR,
+        'semanticFar' => \Gaia\Libraries\Search\StrongestSignal::DEFAULT_SEMANTIC_FAR,
     ],
 ];
 

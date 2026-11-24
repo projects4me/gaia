@@ -61,7 +61,7 @@ class FtsSearcher implements Searcher
     /**
      * {@inheritdoc}
      */
-    public function rank(SearchTarget $target, $query, $limit)
+    public function rank(SearchTarget $target, SearchQuery $query, $limit)
     {
         $vector = $this->candidates->column(SearchBlock::VECTOR);
         $tsquery = $this->tsquery->sql();
@@ -74,7 +74,7 @@ class FtsSearcher implements Searcher
             $vector . ' @@ ' . $tsquery,
             $rank,
             $rank . ' DESC',
-            $this->tsquery->bind($target, $query),
+            $this->tsquery->bind($target, $query->text()),
             $limit
         );
     }
