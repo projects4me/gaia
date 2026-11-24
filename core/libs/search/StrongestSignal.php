@@ -16,7 +16,9 @@ namespace Gaia\Libraries\Search;
  * - semantic: 1 at semanticNear or nearer, 0 at semanticFar or farther, linear in between;
  * - exact (the number, or the display title with case and spacing ignored): 1, first.
  *
- * A record scores the most of its signals; one under the threshold is dropped, unless exact. Exact records come
+ * A record scores the most of its signals; one under the threshold is dropped, unless exact. When the query has no
+ * unknown word (a likely typo) and some record matches by keyword or by meaning at the threshold, a record only
+ * fuzzy matched is dropped too: fuzzy on real words is noise. Exact records come
  * first and the rest by score, so scores never rise down the list; equal scores keep the order of their keys.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
@@ -77,19 +79,24 @@ class StrongestSignal
      *
      * @param array $found Each ['kind' => string, 'signals' => item key => raw signal]
      * @param int $limit The most items to return
+     * @param bool $unknownWords Whether the query has a word no readable record has; fuzzy-only records are kept then
      * @return array Each ['key' => string, 'score' => float from 0 to 1, 'matchedBy' => list of kinds]
      * @throws \Gaia\Exception\Exception When a kind has no scale
      */
-    public function rank(array $found, $limit)
+    public function rank(array $found, $limit, $unknownWords)
     {
         $items = array();
         foreach ($found as $searcher) {
             foreach ($searcher['signals'] as $key => $signal) {
                 $key = (string) $key;
                 if (!isset($items[$key])) {
-                    $items[$key] = array('key' => $key, 'score' => 0.0, 'matchedBy' => array(), 'pinned' => false);
+                    $items[$key] = array('key' => $key, 'score' => 0.0, 'matchedBy' => array(), 'pinned' => false, 'solid' => false);
                 }
-                $items[$key]['score'] = max($items[$key]['score'], $this->strength($searcher['kind'], $signal));
+                $strength = $this->strength($searcher['kind'], $signal);
+                $items[$key]['score'] = max($items[$key]['score'], $strength);
+                if ($searcher['kind'] !== FuzzySearcher::KIND && $strength >= $this->threshold) {
+                    $items[$key]['solid'] = true;
+                }
                 if (!in_array($searcher['kind'], $items[$key]['matchedBy'], true)) {
                     $items[$key]['matchedBy'][] = $searcher['kind'];
                 }
@@ -99,7 +106,14 @@ class StrongestSignal
             }
         }
 
-        $items = array_filter($items, function ($item) {
+        $dropFuzzyOnly = !$unknownWords && array_filter($items, function ($item) {
+            return $item['solid'];
+        }) !== array();
+        $items = array_filter($items, function ($item) use ($dropFuzzyOnly) {
+            if ($dropFuzzyOnly && !$item['solid'] && !$item['pinned']) {
+                return false;
+            }
+
             return $item['pinned'] || $item['score'] >= $this->threshold;
         });
         usort($items, function ($a, $b) {
@@ -114,7 +128,7 @@ class StrongestSignal
         });
 
         return array_map(function ($item) {
-            unset($item['pinned']);
+            unset($item['pinned'], $item['solid']);
 
             return $item;
         }, array_slice($items, 0, $limit));

@@ -101,6 +101,18 @@ class SearchQuery
     }
 
     /**
+     * This function returns the words a typo can be told from: of three letters or more, not stop words, not numbers, not excluded (-word).
+     *
+     * @return array
+     */
+    public function typoCandidates()
+    {
+        return array_values(array_filter($this->nonStopWords(), function ($word) {
+            return mb_strlen($word, 'UTF-8') >= 3 && !ctype_digit($word) && !in_array($word, $this->excluded, true);
+        }));
+    }
+
+    /**
      * This function returns the words that are whole numbers.
      *
      * @return array
