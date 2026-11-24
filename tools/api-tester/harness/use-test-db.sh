@@ -41,7 +41,7 @@ echo "Local API ready at $BASE_URI"
 if [[ "$SERVICE" == "gaia-test-hermes-down" ]]; then
   echo "Next (fail-open): ./tools/api-tester/harness/run-api-tests.sh --base-uri $BASE_URI --mode live --filter fail-open"
 elif [[ "$SERVICE" == "gaia-test-ares" ]]; then
-  echo "Next (meaning search, Ares up): ./tools/api-tester/harness/seed-search.sh"
+  echo "Next (meaning search, Ares up): TEST_DB=${TEST_DB:-pr4m_test} ./tools/api-tester/harness/seed-search.sh"
   echo "       ./tools/api-tester/harness/run-api-tests.sh --base-uri $BASE_URI --mode search-semantic"
 else
   echo "Next: ./tools/api-tester/harness/run-api-tests.sh --base-uri $BASE_URI --mode backend"

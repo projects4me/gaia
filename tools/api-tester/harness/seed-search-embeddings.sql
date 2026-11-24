@@ -24,7 +24,8 @@ BEGIN
   GET DIAGNOSTICS loaded = ROW_COUNT;
 
   IF loaded <> expected OR EXISTS (
-    SELECT 1 FROM issues WHERE id LIKE 'api-test-search-%' AND deleted = 0 AND "searchActualHash" IS NULL
+    SELECT 1 FROM issues i WHERE i.id LIKE 'api-test-search-%' AND i.deleted = 0
+      AND NOT EXISTS (SELECT 1 FROM jsonb_array_elements(doc -> 'records') r WHERE r ->> 'id' = i.id)
   ) THEN
     RAISE EXCEPTION 'search fixture: fixtures/search-embeddings.json is out of step with seed-search.sql '
       '(% of % records matched); regenerate it with harness/generate-search-embeddings.sh', loaded, expected;
