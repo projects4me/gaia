@@ -9,6 +9,7 @@ namespace Gaia\Tests\Libraries\Utils;
 use Gaia\Db\Migration\Postgres;
 use Gaia\Libraries\Meta\Manager;
 use Gaia\Libraries\Meta\Migration;
+use Gaia\Libraries\Search\VocabularySource;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -320,6 +321,43 @@ class PostgresSearchMigrationTest extends TestCase
         $this->assertSame('character varying(64)', $this->columnType('searchActualHash'));
     }
 
+    public function testASearchBlockCreatesItsVocabularyAndEmptiesItWhenTheFtsFieldsChange()
+    {
+        $skipped = (new Postgres())->createExtensions($this->db, array('vector', 'pg_trgm'));
+        $this->assertNotContains('pg_trgm', $skipped);
+        $model = $this->searchBlockModel();
+        unset($model['search']['semantic']);
+        $vocabulary = '"' . VocabularySource::tableFor('fixture') . '"';
+
+        $this->migrate($this->migrationMetaData('TestSearchFixture', $model));
+        $this->db->execute("INSERT INTO {$vocabulary} (\"projectId\", term, docs) VALUES ('', 'login', 2)");
+        $this->migrate($this->migrationMetaData('TestSearchFixture', $model));
+
+        $this->assertSame(1, $this->vocabularyRows(), 'the same fts fields keep the counts');
+
+        $model['search']['fts'] = array('subject' => 'A');
+        $meta = $this->migrationMetaData('TestSearchFixture', $model);
+        $this->migrate($meta);
+
+        $this->assertSame(0, $this->vocabularyRows(), 'other fts fields empty the counts');
+        $row = $this->db->fetchOne(
+            "SELECT obj_description(to_regclass('public.search_vocabulary_fixture'), 'pg_class') AS signature",
+            \PDO::FETCH_ASSOC
+        );
+        $this->assertSame(VocabularySource::fromMetadata($meta['TestSearchFixture'])->signature(), $row['signature']);
+    }
+
+    public function testAModelWithoutASearchBlockHasNoVocabulary()
+    {
+        $this->migrate($this->fixtureMeta(false));
+
+        $row = $this->db->fetchOne(
+            "SELECT to_regclass('public.search_vocabulary_fixture') IS NOT NULL AS present",
+            \PDO::FETCH_ASSOC
+        );
+        $this->assertNotContains($row['present'], array(true, 't', 1, '1'));
+    }
+
     /**
      * Raw metadata of a fixture model with a search block that has semantic fields.
      *
@@ -404,6 +442,7 @@ class PostgresSearchMigrationTest extends TestCase
                 $indexes,
                 $definition['searchColumns']
             );
+            $this->migrateVocabulary($handler, $meta);
             return;
         }
 
@@ -412,6 +451,32 @@ class PostgresSearchMigrationTest extends TestCase
             'indexes' => $definition['indexes'],
         ));
         $handler->syncSearchSchema($this->db, self::TABLE, $definition['searchColumns'], $indexes);
+        $this->migrateVocabulary($handler, $meta);
+    }
+
+    /**
+     * The vocabulary step of Migration::migrateTable, which runs after the table is created or synced.
+     *
+     * @param Postgres $handler
+     * @param array $meta
+     * @return void
+     */
+    private function migrateVocabulary(Postgres $handler, array $meta)
+    {
+        $source = VocabularySource::fromMetadata($meta['TestSearchFixture']);
+        if ($source !== null) {
+            $handler->syncSearchVocabulary($this->db, $source->table(), $source->signature());
+        }
+    }
+
+    private function vocabularyRows()
+    {
+        $row = $this->db->fetchOne(
+            'SELECT COUNT(*) AS total FROM "' . VocabularySource::tableFor('fixture') . '"',
+            \PDO::FETCH_ASSOC
+        );
+
+        return (int) $row['total'];
     }
 
     /**
@@ -499,6 +564,7 @@ class PostgresSearchMigrationTest extends TestCase
 
     private function dropFixture()
     {
+        $this->db->execute('DROP TABLE IF EXISTS "' . VocabularySource::tableFor('fixture') . '"');
         $this->db->execute('DROP TABLE IF EXISTS "' . self::TABLE . '_other"');
         $this->db->execute('DROP TABLE IF EXISTS "' . self::TABLE . '"');
     }

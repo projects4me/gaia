@@ -6,6 +6,7 @@
 
 use Gaia\Libraries\Search\SearchableRegistry;
 use Gaia\Libraries\Search\SemanticRecords;
+use Gaia\Libraries\Search\SearchVocabularyBuilder;
 use Gaia\Libraries\Search\SemanticReindexer;
 use Gaia\MVC\REST\Controllers\Components\Events\SearchLiveEvents;
 use Phalcon\Cli\Task;
@@ -19,7 +20,10 @@ use Phalcon\Cli\Task;
  * backfill [type]` is its text step alone and publishes nothing; the
  * container runs it on start. Ares finds the records it still has to embed
  * through GET /api/v1/searchpending. Both exit 1 when a record failed and 2
- * on an unknown type.
+ * on an unknown type. `php cli.php search vocabulary [type]` rebuilds the
+ * words and word pairs counted per project (D-010); the container runs it on
+ * start after the backfill, and it exits 1 when a rebuild failed and 2 on an
+ * unknown type.
  *
  * @author  Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Core\Tasks
@@ -35,6 +39,7 @@ class SearchTask extends Task
         echo 'Search Task - Available actions:' . PHP_EOL;
         echo '  reindex [type] - Update the semantic text and re-publish records with a stale embedding' . PHP_EOL;
         echo '  backfill [type] - Store missing or outdated semantic text and hashes; publishes nothing' . PHP_EOL;
+        echo '  vocabulary [type] - Rebuild the words and word pairs counted per project' . PHP_EOL;
     }
 
     /**
@@ -56,6 +61,32 @@ class SearchTask extends Task
         $this->report(function (SemanticReindexer $reindexer, $type) {
             return $reindexer->backfill($type);
         }, false);
+    }
+
+    /**
+     * Rebuilds the vocabulary of one search type, or of every type (D-010). The container runs it on start, after
+     * the backfill.
+     */
+    public function vocabularyAction()
+    {
+        $params = $this->dispatcher->getParams();
+        $type = isset($params[0]) ? (string) $params[0] : null;
+        $metaManager = $this->getDI()->get('metaManager');
+        $builder = new SearchVocabularyBuilder(SearchableRegistry::fromMetadata($metaManager), $metaManager);
+
+        try {
+            $result = $builder->run($type);
+        } catch (\Gaia\Exception\Exception $e) {
+            fwrite(STDERR, $e->getMessage() . PHP_EOL);
+            exit(2);
+        } catch (\Throwable $e) {
+            fwrite(STDERR, 'Search vocabulary rebuild failed: ' . $e->getMessage() . PHP_EOL);
+            exit(1);
+        }
+
+        foreach ($result as $searchType => $counts) {
+            echo "{$searchType}: {$counts['words']} words, {$counts['pairs']} pairs, {$counts['ms']} ms" . PHP_EOL;
+        }
     }
 
     /**

@@ -140,6 +140,18 @@ class Mysql
     }
 
     /**
+     * This function has nothing to sync on MySQL: a search block needs a tsvector column, which only PostgreSQL has.
+     *
+     * @param SchemaConnection $connection Active database connection
+     * @param string $tableName Vocabulary table
+     * @param string $signature VocabularySource::signature()
+     * @return void
+     */
+    public function syncSearchVocabulary($connection, $tableName, $signature)
+    {
+    }
+
+    /**
      * This function maps metadata field types to Phalcon column types.
      *
      * @param string $metadataType Field type defined in model metadata

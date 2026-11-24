@@ -11,6 +11,7 @@ use Phalcon\Db\Index;
 use Gaia\Db\Migration\SchemaConnection;
 use Gaia\Libraries\Meta\Manager as metaManager;
 use Gaia\Libraries\Search\SearchBlock;
+use Gaia\Libraries\Search\VocabularySource;
 
 /**
  * This class is responsible for synchronizing the database by using the
@@ -140,6 +141,7 @@ class Migration
                 $indexes,
                 $tableDefinition['searchColumns']
             );
+            $this->migrateSearchVocabulary($meta[$model]);
             $this->migrateTriggers($model, $meta);
             return;
         }
@@ -154,8 +156,30 @@ class Migration
             )
         );
         $handler->syncSearchSchema($this->getConnection(), $tableName, $tableDefinition['searchColumns'], $indexes);
+        $this->migrateSearchVocabulary($meta[$model]);
 
         $this->migrateTriggers($model, $meta);
+    }
+
+    /**
+     * This function creates the vocabulary table of a model with a search block, or empties it when its fts fields
+     * changed (D-010). `php cli.php search vocabulary` fills it.
+     *
+     * @param array $modelMeta The model's metadata, with its search block applied
+     * @return void
+     */
+    private function migrateSearchVocabulary(array $modelMeta)
+    {
+        $source = VocabularySource::fromMetadata($modelMeta);
+        if ($source === null) {
+            return;
+        }
+
+        $this->di->get('migrationHandler')->syncSearchVocabulary(
+            $this->getConnection(),
+            $source->table(),
+            $source->signature()
+        );
     }
 
     /**

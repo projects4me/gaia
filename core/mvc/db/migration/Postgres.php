@@ -180,6 +180,62 @@ class Postgres
     }
 
     /**
+     * This function creates a search type's vocabulary table (D-010), or empties it when the signature of what its
+     * counts were made from changed: stale counts are worse than none until the next rebuild. The signature is kept
+     * as the table comment.
+     *
+     * @param SchemaConnection $connection Active database connection
+     * @param string $tableName Vocabulary table
+     * @param string $signature VocabularySource::signature()
+     * @return void
+     */
+    public function syncSearchVocabulary($connection, $tableName, $signature)
+    {
+        $quotedTable = $connection->escapeIdentifier($tableName);
+        $comment = "COMMENT ON TABLE {$quotedTable} IS " . $connection->escapeString($signature);
+        if (!$connection->tableExists($tableName)) {
+            $this->inTransaction($connection, array(
+                (new PostgresSearchDdl())->createVocabularyTableSql($tableName),
+                $comment,
+            ));
+            return;
+        }
+
+        $row = $connection->fetchOne(
+            "SELECT obj_description(table_class.oid, 'pg_class') AS signature
+             FROM pg_class table_class
+             JOIN pg_namespace table_schema ON table_schema.oid = table_class.relnamespace
+             WHERE table_schema.nspname = ? AND table_class.relname = ?",
+            \PDO::FETCH_ASSOC,
+            array($this->getDefaultSchema(), $tableName)
+        );
+        if (!empty($row) && $row['signature'] === $signature) {
+            return;
+        }
+
+        $this->inTransaction($connection, array("DELETE FROM {$quotedTable}", $comment));
+    }
+
+    /**
+     * @param SchemaConnection $connection
+     * @param string[] $statements Run in order, all or none
+     * @return void
+     */
+    private function inTransaction($connection, array $statements)
+    {
+        $connection->begin();
+        try {
+            foreach ($statements as $statement) {
+                $connection->execute($statement);
+            }
+            $connection->commit();
+        } catch (\Throwable $e) {
+            $connection->rollback();
+            throw $e;
+        }
+    }
+
+    /**
      * This function adds a vector/tsvector column, or drops and re-adds it when its
      * definition changed. The definition's signature is kept in the column comment.
      * Re-adding drops the column's indexes too; syncIndexes recreates them.

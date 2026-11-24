@@ -30,6 +30,15 @@ else
     echo "Semantic search backfill failed (exit $?); continuing"
 fi
 
+# Rebuild the words and word pairs counted per searchable type (D-010); a failure is logged likewise and
+# search vocabulary can be run by hand later.
+echo "Rebuilding the search vocabulary..."
+if su -s /bin/sh www-data -c "php cli.php search vocabulary"; then
+    echo "Search vocabulary rebuilt"
+else
+    echo "Search vocabulary rebuild failed (exit $?); continuing"
+fi
+
 # Anything created while running as root must still be writable for Apache (agaia-4772).
 chown -R www-data:www-data /var/www/html/logs
 

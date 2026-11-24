@@ -139,6 +139,23 @@ class PostgresSearchDdl
     }
 
     /**
+     * This function returns the CREATE TABLE statement of a search vocabulary table (D-010): one row per project and
+     * word (next '') or adjacent word pair (term, next), with the number of records it occurs in.
+     *
+     * @param string $tableName Vocabulary table
+     * @return string
+     */
+    public function createVocabularyTableSql($tableName)
+    {
+        return 'CREATE TABLE IF NOT EXISTS ' . self::quote($tableName) . ' ('
+            . '"projectId" varchar(36) NOT NULL, '
+            . 'term text NOT NULL, '
+            . "next text NOT NULL DEFAULT '', "
+            . 'docs integer NOT NULL, '
+            . 'PRIMARY KEY (term, next, "projectId"))';
+    }
+
+    /**
      * This function returns the extension a column definition or index kind needs, or
      * null when it needs none.
      *
