@@ -26,6 +26,7 @@ $gaiaRoot = dirname($apiTesterRoot, 2);
 
 require $apiTesterRoot . '/src/SearchEmbeddingFixture.php';
 require $gaiaRoot . '/core/libs/search/SemanticText.php';
+require $gaiaRoot . '/core/libs/search/SearchBlock.php';
 // SemanticText throws Gaia's exception on a PCRE error; load it from core/exceptions when that happens
 spl_autoload_register(function ($class) use ($gaiaRoot) {
     $prefix = 'Gaia\\Exception\\';
@@ -38,6 +39,7 @@ spl_autoload_register(function ($class) use ($gaiaRoot) {
 });
 
 use ApiTester\SearchEmbeddingFixture;
+use Gaia\Libraries\Search\SearchBlock;
 use Gaia\Libraries\Search\SemanticText;
 
 $options = getopt('', ['ares-url:', 'out:']);
@@ -95,6 +97,12 @@ try {
     $data = $fixture->build($records);
 } catch (\RuntimeException $e) {
     fwrite(STDERR, $e->getMessage() . "\n");
+    exit(1);
+}
+// The issues.searchEmbedding column holds this many numbers: a file of another size would only fail at seed time
+if ($data['dimensions'] !== SearchBlock::EMBEDDING_DIMENSIONS) {
+    fwrite(STDERR, "Ares returned {$data['dimensions']}-number embeddings ({$data['model']}); searchEmbedding holds "
+        . SearchBlock::EMBEDDING_DIMENSIONS . ". {$options['out']} was not changed.\n");
     exit(1);
 }
 
