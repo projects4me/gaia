@@ -3782,6 +3782,46 @@
       },
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-group"
+    },
+    {
+      "id": "acl-search-members-cannot-find-other-project-issue-by-number",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": "aclMembers",
+      "query": { "types": "issue", "q": "#3" },
+      "expects": { "status": 200, "shape": "json", "idsExcludes": ["issue:{otherProjectIssueId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-search-text-only-in-unreadable-fields-finds-nothing",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": "aclFields",
+      "query": { "types": "issue", "q": "Seed Issue" },
+      "expects": { "status": 200, "shape": "json", "idsExcludes": ["issue:{issueId}"] },
+      "source": "acl-field"
+    },
+    {
+      "id": "acl-search-members-find-own-project-issue-by-number",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": "aclMembers",
+      "query": { "types": "issue", "q": "#1" },
+      "expects": { "status": 200, "shape": "json", "idsIncludes": ["issue:{issueId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-search-members-find-issue-by-readable-subject",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": "aclMembers",
+      "query": { "types": "issue", "q": "Seed Issue" },
+      "expects": { "status": 200, "shape": "json", "idsIncludes": ["issue:{issueId}"] },
+      "source": "acl-field"
     }
   ]
 }
