@@ -254,6 +254,9 @@ class Runner
             $expects = isset($api['expects']) ? $api['expects'] : ['status' => 200, 'shape' => 'json'];
             $expects = $this->fixtures->resolve($expects);
             $failures = $this->asserter->assert($expects, $response);
+            if (empty($failures)) {
+                $this->asserter->rememberCase($id, $response);
+            }
 
             if (empty($failures) && !empty($api['store'])) {
                 $this->storeRuntimeValues($api['store'], $response);

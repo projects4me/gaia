@@ -4,6 +4,24 @@ namespace ApiTester;
 
 class Asserter
 {
+    /**
+     * The result ids of each passed case so far, by case id, for idsSameAs.
+     *
+     * @var array
+     */
+    private $caseIds = [];
+
+    /**
+     * Keep a passed case's result ids, so a later case can compare its results with them (idsSameAs).
+     *
+     * @param string $caseId
+     * @param array  $response
+     */
+    public function rememberCase($caseId, array $response)
+    {
+        $this->caseIds[(string) $caseId] = $this->collectionIds(isset($response['json']) ? $response['json'] : null);
+    }
+
     public function assert(array $expects, array $response)
     {
         $failures = [];
@@ -198,6 +216,97 @@ class Asserter
             }
         }
 
+        // Ordered result lists (search): the ids in order, nothing else; [] means no results
+        if (array_key_exists('idsEqual', $expects) && is_array($expects['idsEqual'])) {
+            $ids = $this->collectionIds($json);
+            $expected = array_map('strval', array_values($expects['idsEqual']));
+            if ($ids !== $expected) {
+                $failures[] = 'idsEqual: expected [' . implode(', ', $expected) . '], got [' . implode(', ', $ids) . ']';
+            }
+        }
+
+        // Every id ranks at or above `rank` (1 = first)
+        if (!empty($expects['idsWithin']) && is_array($expects['idsWithin'])) {
+            $rank = isset($expects['idsWithin']['rank']) ? (int) $expects['idsWithin']['rank'] : 0;
+            $within = isset($expects['idsWithin']['ids']) ? (array) $expects['idsWithin']['ids'] : [];
+            if ($rank < 1 || $within === []) {
+                $failures[] = 'idsWithin: needs a rank of 1 or more and at least one id';
+            }
+            $top = array_slice($this->collectionIds($json), 0, max($rank, 0));
+            foreach ($within as $expectedId) {
+                if (!in_array((string) $expectedId, $top, true)) {
+                    $failures[] = "idsWithin: {$expectedId} is not in the top {$rank}";
+                }
+            }
+        }
+
+        // Every listed id that is returned ranks above every `before` id that is returned
+        if (!empty($expects['idsBefore']) && is_array($expects['idsBefore'])) {
+            $places = array_flip($this->collectionIds($json));
+            $ids = isset($expects['idsBefore']['ids']) ? (array) $expects['idsBefore']['ids'] : [];
+            $later = isset($expects['idsBefore']['before']) ? (array) $expects['idsBefore']['before'] : [];
+            foreach ($ids as $id) {
+                if (!isset($places[(string) $id])) {
+                    $failures[] = "idsBefore: missing id {$id}";
+                    continue;
+                }
+                foreach ($later as $other) {
+                    if (isset($places[(string) $other]) && $places[(string) $other] < $places[(string) $id]) {
+                        $failures[] = "idsBefore: {$other} ranks above {$id}";
+                    }
+                }
+            }
+        }
+
+        // The ids an earlier passed case returned (rememberCase): the same list, or its first `top`
+        if (!empty($expects['idsSameAs']) && is_array($expects['idsSameAs'])) {
+            $same = $expects['idsSameAs'];
+            $case = isset($same['case']) ? (string) $same['case'] : '';
+            if (!isset($this->caseIds[$case]) || $this->caseIds[$case] === []) {
+                $failures[] = "idsSameAs: case {$case} has no results to compare with (not run, skipped, failed or empty)";
+            } else {
+                $ids = $this->collectionIds($json);
+                $other = $this->caseIds[$case];
+                if (isset($same['top'])) {
+                    $ids = array_slice($ids, 0, (int) $same['top']);
+                    $other = array_slice($other, 0, (int) $same['top']);
+                }
+                if (empty($same['ordered'])) {
+                    sort($ids);
+                    sort($other);
+                }
+                if ($ids !== $other) {
+                    $failures[] = "idsSameAs: expected the results of {$case} [" . implode(', ', $other)
+                        . '], got [' . implode(', ', $ids) . ']';
+                }
+            }
+        }
+
+        // Every attributes.score in [min, max]
+        if (!empty($expects['scoresWithin']) && is_array($expects['scoresWithin'])) {
+            list($min, $max) = array_values($expects['scoresWithin']) + [0, 0];
+            foreach ($this->collectionScores($json) as list($id, $score)) {
+                if (!is_numeric($score) || $score < $min || $score > $max) {
+                    $failures[] = "scoresWithin: {$id} scores " . json_encode($score) . ", outside [{$min}, {$max}]";
+                }
+            }
+        }
+
+        // attributes.score never rises down the list
+        if (!empty($expects['scoresFalling'])) {
+            $previous = null;
+            foreach ($this->collectionScores($json) as list($id, $score)) {
+                if (!is_numeric($score)) {
+                    $failures[] = "scoresFalling: {$id} has no numeric score";
+                    continue;
+                }
+                if ($previous !== null && $score > $previous) {
+                    $failures[] = "scoresFalling: {$id} scores {$score}, above the result before it ({$previous})";
+                }
+                $previous = $score;
+            }
+        }
+
         if (!empty($expects['attributesEqual']) && is_array($expects['attributesEqual'])) {
             foreach ($this->attributeMaps($json) as $index => $attrs) {
                 foreach ($expects['attributesEqual'] as $attr => $expected) {
@@ -285,6 +394,47 @@ class Asserter
         }
 
         return [0 => []];
+    }
+
+    /**
+     * The ids of a collection's data items, in order.
+     *
+     * @param  array|null $json
+     * @return string[]
+     */
+    private function collectionIds($json)
+    {
+        $ids = [];
+        if (!is_array($json) || !isset($json['data']) || !is_array($json['data']) || isset($json['data']['id'])) {
+            return $ids;
+        }
+        foreach ($json['data'] as $row) {
+            if (is_array($row) && isset($row['id'])) {
+                $ids[] = trim((string) $row['id']);
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
+     * The attributes.score of a collection's data items, in order, as [id, score] pairs.
+     *
+     * @param  array|null $json
+     * @return array[]
+     */
+    private function collectionScores($json)
+    {
+        $scores = [];
+        if (!is_array($json) || !isset($json['data']) || !is_array($json['data']) || isset($json['data']['id'])) {
+            return $scores;
+        }
+        foreach ($json['data'] as $index => $row) {
+            $id = is_array($row) && isset($row['id']) ? (string) $row['id'] : (string) $index;
+            $scores[] = [$id, isset($row['attributes']['score']) ? $row['attributes']['score'] : null];
+        }
+
+        return $scores;
     }
 
     /**

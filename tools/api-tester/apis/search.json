@@ -1,0 +1,988 @@
+{
+  "name": "search",
+  "version": 1,
+  "basePath": "/api/v1",
+  "description": "GET /api/v1/search against the search fixture (harness/seed-search.sh), following the search test catalog (case ids A1-F7). Cases waiting for a ranking rule are disabled with the issue that brings it.",
+  "apis": [
+    {
+      "id": "search-a1-full-number",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "9101",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": [
+          "issue:api-test-search-001"
+        ]
+      },
+      "note": "A1: that issue alone"
+    },
+    {
+      "id": "search-a2-number-with-hash",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "#9101",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": [
+          "issue:api-test-search-001"
+        ]
+      },
+      "note": "A2: same as A1"
+    },
+    {
+      "id": "search-a3-short-code",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "SRA-9101",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": [
+          "issue:api-test-search-001"
+        ]
+      },
+      "note": "A3: that issue alone",
+      "enabled": false,
+      "skipReason": "pending agaia-4890: project short code lookup"
+    },
+    {
+      "id": "search-a3-short-code-any-case",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "sra-9101",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": [
+          "issue:api-test-search-001"
+        ]
+      },
+      "note": "A3: ignoring case",
+      "enabled": false,
+      "skipReason": "pending agaia-4890: project short code lookup"
+    },
+    {
+      "id": "search-a3-short-code-other-project",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "SRB-9101",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": []
+      },
+      "note": "A3: the number is in another project, so nothing"
+    },
+    {
+      "id": "search-a4-missing-number",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "99999",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": []
+      },
+      "note": "A4: nothing, no noise",
+      "enabled": false,
+      "skipReason": "pending agaia-4888: fuzzy noise below the score threshold (\"99 percent\")"
+    },
+    {
+      "id": "search-a5-partial-number",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "917",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 3,
+          "ids": [
+            "issue:api-test-search-030",
+            "issue:api-test-search-031",
+            "issue:api-test-search-032"
+          ]
+        },
+        "idsBefore": {
+          "ids": [
+            "issue:api-test-search-032",
+            "issue:api-test-search-031",
+            "issue:api-test-search-030"
+          ],
+          "before": [
+            "issue:api-test-search-033"
+          ]
+        }
+      },
+      "note": "A5: numbers starting with it first (9170-9172), then ending with it (8917)",
+      "enabled": false,
+      "skipReason": "pending agaia-4890: partial issue number lookup"
+    },
+    {
+      "id": "search-a6-exact-title",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "Quarterly ledger reconciliation stalls",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 1,
+          "ids": [
+            "issue:api-test-search-001"
+          ]
+        }
+      },
+      "note": "A6: that issue at #1"
+    },
+    {
+      "id": "search-a7-exact-title-case-and-spacing",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "quarterly  LEDGER reconciliation   stalls",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 1,
+          "ids": [
+            "issue:api-test-search-001"
+          ]
+        }
+      },
+      "note": "A7: that issue at #1"
+    },
+    {
+      "id": "search-a8-number-inside-text",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "issue 9105",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 1,
+          "ids": [
+            "issue:api-test-search-005"
+          ]
+        }
+      },
+      "note": "A8: that issue at #1",
+      "enabled": false,
+      "skipReason": "pending agaia-4890: issue number inside a short query"
+    },
+    {
+      "id": "search-a8-number-before-words",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "9105 ledger",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 1,
+          "ids": [
+            "issue:api-test-search-005"
+          ]
+        }
+      },
+      "note": "A8: that issue at #1, then text matches",
+      "enabled": false,
+      "skipReason": "pending agaia-4890: issue number inside a short query"
+    },
+    {
+      "id": "search-b1-one-keyword",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "zephyrine",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 3,
+          "ids": [
+            "issue:api-test-search-006",
+            "issue:api-test-search-007",
+            "issue:api-test-search-008"
+          ]
+        }
+      },
+      "note": "B1: the issues with the word in the top results"
+    },
+    {
+      "id": "search-b2-several-keywords",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "ledger reconciliation",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsBefore": {
+          "ids": [
+            "issue:api-test-search-001"
+          ],
+          "before": [
+            "issue:api-test-search-004",
+            "issue:api-test-search-005"
+          ]
+        }
+      },
+      "note": "B2: issues with every word above those missing one"
+    },
+    {
+      "id": "search-b3-keywords-other-order",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "reconciliation ledger",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsSameAs": {
+          "case": "search-b2-several-keywords"
+        }
+      },
+      "note": "B3: same issues as B2"
+    },
+    {
+      "id": "search-b4-word-forms-base",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "upload avatar",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsIncludes": [
+          "issue:api-test-search-009"
+        ]
+      },
+      "note": "B4: reference query"
+    },
+    {
+      "id": "search-b4-word-forms",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "uploading avatars",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsSameAs": {
+          "case": "search-b4-word-forms-base"
+        }
+      },
+      "note": "B4: same issues as the base form"
+    },
+    {
+      "id": "search-b5-short-keyword",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "css",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsIncludes": [
+          "issue:api-test-search-023"
+        ],
+        "idsExcludes": [
+          "issue:api-test-search-024"
+        ]
+      },
+      "note": "B5: no result matching only by shared letters"
+    },
+    {
+      "id": "search-b6-technical-name",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "LedgerSyncWorker",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 1,
+          "ids": [
+            "issue:api-test-search-010"
+          ]
+        }
+      },
+      "note": "B6: the issue naming it first"
+    },
+    {
+      "id": "search-b7-phrase",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "\"ledger export\"",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsIncludes": [
+          "issue:api-test-search-002"
+        ],
+        "idsExcludes": [
+          "issue:api-test-search-003"
+        ]
+      },
+      "note": "B7: only issues with the exact phrase",
+      "enabled": false,
+      "skipReason": "pending agaia-4889: \"phrase\" keeps keyword matches only"
+    },
+    {
+      "id": "search-b8-excluding-a-word",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "ledger -export",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsIncludes": [
+          "issue:api-test-search-001",
+          "issue:api-test-search-005"
+        ],
+        "idsExcludes": [
+          "issue:api-test-search-002",
+          "issue:api-test-search-003"
+        ]
+      },
+      "note": "B8: no result holding the excluded word",
+      "enabled": false,
+      "skipReason": "pending agaia-4889: -word keeps keyword matches only"
+    },
+    {
+      "id": "search-b8-1-excluding-a-word-in-a-path",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "redirect -oauth",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsIncludes": [
+          "issue:api-test-search-013"
+        ],
+        "idsExcludes": [
+          "issue:api-test-search-012"
+        ]
+      },
+      "note": "B8.1: OAuth/callback holds oauth",
+      "enabled": false,
+      "skipReason": "pending agaia-4894: paths split into words in the search index"
+    },
+    {
+      "id": "search-b8-3-excluding-a-word-in-a-file-name",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "upload -image",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsIncludes": [
+          "issue:api-test-search-015"
+        ],
+        "idsExcludes": [
+          "issue:api-test-search-014"
+        ]
+      },
+      "note": "B8.3: image-upload.js holds image",
+      "enabled": false,
+      "skipReason": "pending agaia-4894: file names split into words in the search index"
+    },
+    {
+      "id": "search-b9-word-only-in-description",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "quillwort",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 1,
+          "ids": [
+            "issue:api-test-search-011"
+          ]
+        }
+      },
+      "note": "B9: the issue whose description holds it"
+    },
+    {
+      "id": "search-b10-very-common-word",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "ledger",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 10,
+          "ids": [
+            "issue:api-test-search-001",
+            "issue:api-test-search-002",
+            "issue:api-test-search-003",
+            "issue:api-test-search-005",
+            "issue:api-test-search-010"
+          ]
+        }
+      },
+      "note": "B10: every issue with the word in the top 10"
+    },
+    {
+      "id": "search-c1-one-typo",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "zephyrene",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 5,
+          "ids": [
+            "issue:api-test-search-006",
+            "issue:api-test-search-007",
+            "issue:api-test-search-008"
+          ]
+        }
+      },
+      "note": "C1: the intended issues"
+    },
+    {
+      "id": "search-c2-several-typos",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "quartrly ledgr reconciliaton",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 5,
+          "ids": [
+            "issue:api-test-search-001"
+          ]
+        }
+      },
+      "note": "C2: the intended issue"
+    },
+    {
+      "id": "search-c3-space-base",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "task board",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsIncludes": [
+          "issue:api-test-search-016",
+          "issue:api-test-search-017"
+        ]
+      },
+      "note": "C3: reference query"
+    },
+    {
+      "id": "search-c3-missing-space",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "taskboard",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsSameAs": {
+          "case": "search-c3-space-base"
+        }
+      },
+      "note": "C3: same issues as with the space"
+    },
+    {
+      "id": "search-c4-spelling-base",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "color picker",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsIncludes": [
+          "issue:api-test-search-020"
+        ]
+      },
+      "note": "C4: reference query"
+    },
+    {
+      "id": "search-c4-british-spelling",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "colour picker",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsSameAs": {
+          "case": "search-c4-spelling-base"
+        }
+      },
+      "note": "C4: same issues as the American spelling"
+    },
+    {
+      "id": "search-c5-abbreviation",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "config",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 3,
+          "ids": [
+            "issue:api-test-search-021"
+          ]
+        }
+      },
+      "note": "C5: the configuration issue"
+    },
+    {
+      "id": "search-d4-pasted-error",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "Failed to rebind the 'slot' for the VaultCursor",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 1,
+          "ids": [
+            "issue:api-test-search-022"
+          ]
+        }
+      },
+      "note": "D4: the issue with that error at #1"
+    },
+    {
+      "id": "search-e1-gibberish",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "qxzvkjw",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": []
+      },
+      "note": "E1"
+    },
+    {
+      "id": "search-e2-stop-words-only",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "the and of",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": []
+      },
+      "note": "E2",
+      "enabled": false,
+      "skipReason": "pending agaia-4888: no fuzzy matching for stop-words-only queries"
+    },
+    {
+      "id": "search-e3-symbols-only",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "!!! ???",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": []
+      },
+      "note": "E3"
+    },
+    {
+      "id": "search-e4-other-script",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "проблема входа",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": []
+      },
+      "note": "E4"
+    },
+    {
+      "id": "search-e5-too-short",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "a",
+        "limit": 20
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error"
+      },
+      "note": "E5: rejected"
+    },
+    {
+      "id": "search-e6-too-long",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "limit": 20
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error"
+      },
+      "note": "E6: rejected"
+    },
+    {
+      "id": "search-e7-unrelated-topic",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "volcano tourism brochure",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": []
+      },
+      "note": "E7"
+    },
+    {
+      "id": "search-f2-scores-mean-something",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "ledger",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "scoresWithin": [
+          0.15,
+          1
+        ],
+        "scoresFalling": true
+      },
+      "note": "F2/F6: scores in [threshold, 1], falling",
+      "enabled": false,
+      "skipReason": "pending agaia-4888: 0-1 scores with a threshold"
+    },
+    {
+      "id": "search-f3-limit-50",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "ledger",
+        "limit": 50
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsIncludes": [
+          "issue:api-test-search-001"
+        ]
+      },
+      "note": "F3: reference query"
+    },
+    {
+      "id": "search-f3-limit-5",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "ledger",
+        "limit": 5
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsSameAs": {
+          "case": "search-f3-limit-50",
+          "top": 5,
+          "ordered": true
+        }
+      },
+      "note": "F3: the top 5 are the same for any limit"
+    },
+    {
+      "id": "search-f5-exact-title-on-top",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "Ledger export drops the currency column",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 1,
+          "ids": [
+            "issue:api-test-search-002"
+          ]
+        },
+        "attributesEqual": {
+          "score": 1
+        }
+      },
+      "note": "F5: the exact match first, scoring 1",
+      "enabled": false,
+      "skipReason": "pending agaia-4888: an exact title scores 1"
+    },
+    {
+      "id": "search-f7-same-query-twice",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "ledger",
+        "limit": 50
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsSameAs": {
+          "case": "search-f3-limit-50",
+          "ordered": true
+        }
+      },
+      "note": "F7: the same list on a repeat"
+    }
+  ]
+}
