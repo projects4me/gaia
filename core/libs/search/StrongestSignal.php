@@ -20,9 +20,10 @@ namespace Gaia\Libraries\Search;
  * first and the rest by score, so scores never rise down the list; equal scores keep the order of their keys.
  *
  * When asked to put all-words matches first (a query of several non-stop words), the records the keyword search
- * matched (it needs every word) have their score mapped to [0.5 + 0.5 x threshold, 1] and the others to
- * [threshold, 0.5], each linearly, so the order inside a band stays and the threshold still decided on the original
- * score: this reorders, it never adds or drops a result. Exact records stay at 1.
+ * matched (it needs every word) have their score mapped to [boundary + (1 - boundary) x threshold, 1] and the
+ * others to [threshold, boundary], each linearly (boundary = allWordsBoundary), so the order inside a band stays
+ * and the threshold still decided on the original score: this reorders, it never adds or drops a result. Exact
+ * records stay at 1.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -56,14 +57,21 @@ class StrongestSignal
     private $semanticFar;
 
     /**
+     * @var float
+     */
+    private $allWordsBoundary;
+
+    /**
      * @param float $threshold The score a record needs to be kept, from 0 to 1
      * @param float $fuzzyWeight What a perfect fuzzy match scores, from 0 to 1
      * @param float $fuzzyThreshold The word_similarity the fuzzy searcher keeps from, from 0 to 1
      * @param float $semanticNear The cosine distance a meaning match scores 1 at, from 0 to 2
      * @param float $semanticFar The cosine distance a meaning match scores 0 at, from 0 to 2, past semanticNear
+     * @param float $allWordsBoundary The score that splits all-words matches from the others, past the threshold
+     *     and under 1
      * @throws \Gaia\Exception\Exception When a setting is out of bounds
      */
-    public function __construct($threshold, $fuzzyWeight, $fuzzyThreshold, $semanticNear, $semanticFar)
+    public function __construct($threshold, $fuzzyWeight, $fuzzyThreshold, $semanticNear, $semanticFar, $allWordsBoundary)
     {
         $this->threshold = $this->bounded($threshold, 1, 'threshold');
         $this->fuzzyWeight = $this->bounded($fuzzyWeight, 1, 'fuzzy weight');
@@ -73,6 +81,12 @@ class StrongestSignal
         if ($this->semanticFar <= $this->semanticNear) {
             throw new \Gaia\Exception\Exception(
                 'The search semantic far distance must be past the semantic near distance.'
+            );
+        }
+        $this->allWordsBoundary = $this->bounded($allWordsBoundary, 1, 'all-words boundary');
+        if ($this->allWordsBoundary <= $this->threshold || $this->allWordsBoundary >= 1) {
+            throw new \Gaia\Exception\Exception(
+                'The search all-words boundary must be past the threshold and under 1.'
             );
         }
     }
@@ -86,7 +100,7 @@ class StrongestSignal
      * @return array Each ['key' => string, 'score' => float from 0 to 1, 'matchedBy' => list of kinds]
      * @throws \Gaia\Exception\Exception When a kind has no scale
      */
-    public function rank(array $found, $limit, $allWordsFirst = false)
+    public function rank(array $found, $limit, $allWordsFirst)
     {
         $items = array();
         foreach ($found as $searcher) {
@@ -132,24 +146,24 @@ class StrongestSignal
     }
 
     /**
-     * This function maps a kept item's score into the band of its group: keyword matches in the upper half, the
-     * others in the lower. An exact record keeps 1.
+     * This function maps a kept item's score into the band of its group: keyword matches (the keyword search needs
+     * every word) above the all-words boundary, the others from the threshold up to it. An exact record keeps 1.
      *
      * @param array $item
      * @return array
      */
     private function banded(array $item)
     {
-        if ($item['pinned'] || $this->threshold >= 1) {
+        if ($item['pinned']) {
             return $item;
         }
         $position = ($item['score'] - $this->threshold) / (1 - $this->threshold);
         if (in_array(FtsSearcher::KIND, $item['matchedBy'], true)) {
-            $low = 0.5 + 0.5 * $this->threshold;
+            $low = $this->allWordsBoundary + (1 - $this->allWordsBoundary) * $this->threshold;
             $high = 1.0;
         } else {
             $low = $this->threshold;
-            $high = max(0.5, $this->threshold);
+            $high = $this->allWordsBoundary;
         }
         $item['score'] = $low + $position * ($high - $low);
 

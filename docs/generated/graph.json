@@ -29112,70 +29112,6 @@
       }
     },
     {
-      "id": "case:search/search-b7-phrase",
-      "type": "case",
-      "key": "search/search-b7-phrase",
-      "attributes": {
-        "catalog": "search",
-        "file": "tools/api-tester/apis/search.json",
-        "method": "GET",
-        "path": "/api/v1/search",
-        "resource": "search",
-        "enabled": false,
-        "source": null,
-        "placeholders": [],
-        "stores": []
-      }
-    },
-    {
-      "id": "case:search/search-b8-1-excluding-a-word-in-a-path",
-      "type": "case",
-      "key": "search/search-b8-1-excluding-a-word-in-a-path",
-      "attributes": {
-        "catalog": "search",
-        "file": "tools/api-tester/apis/search.json",
-        "method": "GET",
-        "path": "/api/v1/search",
-        "resource": "search",
-        "enabled": false,
-        "source": null,
-        "placeholders": [],
-        "stores": []
-      }
-    },
-    {
-      "id": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
-      "type": "case",
-      "key": "search/search-b8-3-excluding-a-word-in-a-file-name",
-      "attributes": {
-        "catalog": "search",
-        "file": "tools/api-tester/apis/search.json",
-        "method": "GET",
-        "path": "/api/v1/search",
-        "resource": "search",
-        "enabled": false,
-        "source": null,
-        "placeholders": [],
-        "stores": []
-      }
-    },
-    {
-      "id": "case:search/search-b8-excluding-a-word",
-      "type": "case",
-      "key": "search/search-b8-excluding-a-word",
-      "attributes": {
-        "catalog": "search",
-        "file": "tools/api-tester/apis/search.json",
-        "method": "GET",
-        "path": "/api/v1/search",
-        "resource": "search",
-        "enabled": false,
-        "source": null,
-        "placeholders": [],
-        "stores": []
-      }
-    },
-    {
       "id": "case:search/search-b9-word-only-in-description",
       "type": "case",
       "key": "search/search-b9-word-only-in-description",
@@ -29499,6 +29435,54 @@
       "id": "case:search/search-f7-same-query-twice",
       "type": "case",
       "key": "search/search-f7-same-query-twice",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-plain-text-dash",
+      "type": "case",
+      "key": "search/search-plain-text-dash",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-plain-text-quotes",
+      "type": "case",
+      "key": "search/search-plain-text-quotes",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-plain-text-words",
+      "type": "case",
+      "key": "search/search-plain-text-words",
       "attributes": {
         "catalog": "search",
         "file": "tools/api-tester/apis/search.json",
@@ -104175,146 +104159,6 @@
       "to": "profile:default"
     },
     {
-      "from": "case:search/search-b7-phrase",
-      "type": "asserts",
-      "to": "assertion:idsExcludes"
-    },
-    {
-      "from": "case:search/search-b7-phrase",
-      "type": "asserts",
-      "to": "assertion:idsIncludes"
-    },
-    {
-      "from": "case:search/search-b7-phrase",
-      "type": "asserts",
-      "to": "assertion:shape"
-    },
-    {
-      "from": "case:search/search-b7-phrase",
-      "type": "asserts",
-      "to": "assertion:status"
-    },
-    {
-      "from": "case:search/search-b7-phrase",
-      "type": "covers",
-      "to": "controller:search"
-    },
-    {
-      "from": "case:search/search-b7-phrase",
-      "type": "exercises",
-      "to": "route:GET /api/v1/search"
-    },
-    {
-      "from": "case:search/search-b7-phrase",
-      "type": "runs_as",
-      "to": "profile:default"
-    },
-    {
-      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
-      "type": "asserts",
-      "to": "assertion:idsExcludes"
-    },
-    {
-      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
-      "type": "asserts",
-      "to": "assertion:idsIncludes"
-    },
-    {
-      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
-      "type": "asserts",
-      "to": "assertion:shape"
-    },
-    {
-      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
-      "type": "asserts",
-      "to": "assertion:status"
-    },
-    {
-      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
-      "type": "covers",
-      "to": "controller:search"
-    },
-    {
-      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
-      "type": "exercises",
-      "to": "route:GET /api/v1/search"
-    },
-    {
-      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
-      "type": "runs_as",
-      "to": "profile:default"
-    },
-    {
-      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
-      "type": "asserts",
-      "to": "assertion:idsExcludes"
-    },
-    {
-      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
-      "type": "asserts",
-      "to": "assertion:idsIncludes"
-    },
-    {
-      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
-      "type": "asserts",
-      "to": "assertion:shape"
-    },
-    {
-      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
-      "type": "asserts",
-      "to": "assertion:status"
-    },
-    {
-      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
-      "type": "covers",
-      "to": "controller:search"
-    },
-    {
-      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
-      "type": "exercises",
-      "to": "route:GET /api/v1/search"
-    },
-    {
-      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
-      "type": "runs_as",
-      "to": "profile:default"
-    },
-    {
-      "from": "case:search/search-b8-excluding-a-word",
-      "type": "asserts",
-      "to": "assertion:idsExcludes"
-    },
-    {
-      "from": "case:search/search-b8-excluding-a-word",
-      "type": "asserts",
-      "to": "assertion:idsIncludes"
-    },
-    {
-      "from": "case:search/search-b8-excluding-a-word",
-      "type": "asserts",
-      "to": "assertion:shape"
-    },
-    {
-      "from": "case:search/search-b8-excluding-a-word",
-      "type": "asserts",
-      "to": "assertion:status"
-    },
-    {
-      "from": "case:search/search-b8-excluding-a-word",
-      "type": "covers",
-      "to": "controller:search"
-    },
-    {
-      "from": "case:search/search-b8-excluding-a-word",
-      "type": "exercises",
-      "to": "route:GET /api/v1/search"
-    },
-    {
-      "from": "case:search/search-b8-excluding-a-word",
-      "type": "runs_as",
-      "to": "profile:default"
-    },
-    {
       "from": "case:search/search-b9-word-only-in-description",
       "type": "asserts",
       "to": "assertion:idsWithin"
@@ -104941,6 +104785,101 @@
     },
     {
       "from": "case:search/search-f7-same-query-twice",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-plain-text-dash",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:search/search-plain-text-dash",
+      "type": "asserts",
+      "to": "assertion:idsSameAs"
+    },
+    {
+      "from": "case:search/search-plain-text-dash",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-plain-text-dash",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-plain-text-dash",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-plain-text-dash",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-plain-text-dash",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-plain-text-quotes",
+      "type": "asserts",
+      "to": "assertion:idsSameAs"
+    },
+    {
+      "from": "case:search/search-plain-text-quotes",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-plain-text-quotes",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-plain-text-quotes",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-plain-text-quotes",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-plain-text-quotes",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-plain-text-words",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:search/search-plain-text-words",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-plain-text-words",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-plain-text-words",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-plain-text-words",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-plain-text-words",
       "type": "runs_as",
       "to": "profile:default"
     },

@@ -9,7 +9,8 @@ namespace Gaia\Libraries\Search;
 /**
  * Builds the SearchService of the user the DI's acl belongs to: exact (number and title), FTS, fuzzy and semantic
  * matching, ranked by StrongestSignal, with the settings of system.search: fuzzyThreshold, semanticMaxDistance,
- * candidateDepth and the ranking's threshold, fuzzyWeight, semanticNear and semanticFar. Every setting is required:
+ * candidateDepth and the ranking's threshold, fuzzyWeight, semanticNear, semanticFar and allWordsBoundary. Every
+ * setting is required:
  * the values live in the config only. A new kind of matching is added here.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
@@ -33,7 +34,8 @@ class SearchServiceFactory
             self::setting('fuzzyWeight'),
             $threshold,
             self::setting('semanticNear'),
-            self::setting('semanticFar')
+            self::setting('semanticFar'),
+            self::setting('allWordsBoundary')
         );
 
         $metaManager = $di->get('metaManager');

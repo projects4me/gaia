@@ -38,6 +38,7 @@ class SearchServiceFactoryTest extends TestCase
             'fuzzyWeight' => 0.6,
             'semanticNear' => 0.156,
             'semanticFar' => 0.402,
+            'allWordsBoundary' => 0.5,
             'candidateDepth' => 100,
         );
     }
@@ -80,6 +81,7 @@ class SearchServiceFactoryTest extends TestCase
             'fuzzyWeight',
             'semanticNear',
             'semanticFar',
+            'allWordsBoundary',
             'candidateDepth',
         );
 
