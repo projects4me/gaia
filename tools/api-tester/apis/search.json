@@ -419,32 +419,28 @@
       "note": "B6: the issue naming it first"
     },
     {
-      "id": "search-b7-phrase",
+      "id": "search-plain-text-words",
       "method": "GET",
       "path": "/api/v1/search",
       "resource": "search",
       "auth": true,
       "query": {
         "types": "issue",
-        "q": "\"ledger export\"",
+        "q": "ledger export",
         "limit": 20
       },
       "expects": {
         "status": 200,
         "shape": "json",
         "idsIncludes": [
-          "issue:api-test-search-002"
-        ],
-        "idsExcludes": [
+          "issue:api-test-search-002",
           "issue:api-test-search-003"
         ]
       },
-      "note": "B7: only issues with the exact phrase",
-      "enabled": false,
-      "skipReason": "pending agaia-4889: \"phrase\" keeps keyword matches only"
+      "note": "No operators: reference query for the two words"
     },
     {
-      "id": "search-b8-excluding-a-word",
+      "id": "search-plain-text-dash",
       "method": "GET",
       "path": "/api/v1/search",
       "resource": "search",
@@ -458,67 +454,36 @@
         "status": 200,
         "shape": "json",
         "idsIncludes": [
-          "issue:api-test-search-001",
-          "issue:api-test-search-005"
-        ],
-        "idsExcludes": [
           "issue:api-test-search-002",
           "issue:api-test-search-003"
-        ]
+        ],
+        "idsSameAs": {
+          "case": "search-plain-text-words",
+          "ordered": true
+        }
       },
-      "note": "B8: no result holding the excluded word",
-      "enabled": false,
-      "skipReason": "pending agaia-4889: -word keeps keyword matches only"
+      "note": "No operators: a dash is plain text, so -export still finds the issues holding export"
     },
     {
-      "id": "search-b8-1-excluding-a-word-in-a-path",
+      "id": "search-plain-text-quotes",
       "method": "GET",
       "path": "/api/v1/search",
       "resource": "search",
       "auth": true,
       "query": {
         "types": "issue",
-        "q": "redirect -oauth",
+        "q": "\"ledger export\"",
         "limit": 20
       },
       "expects": {
         "status": 200,
         "shape": "json",
-        "idsIncludes": [
-          "issue:api-test-search-013"
-        ],
-        "idsExcludes": [
-          "issue:api-test-search-012"
-        ]
+        "idsSameAs": {
+          "case": "search-plain-text-words",
+          "ordered": true
+        }
       },
-      "note": "B8.1: OAuth/callback holds oauth",
-      "enabled": false,
-      "skipReason": "pending agaia-4894: paths split into words in the search index"
-    },
-    {
-      "id": "search-b8-3-excluding-a-word-in-a-file-name",
-      "method": "GET",
-      "path": "/api/v1/search",
-      "resource": "search",
-      "auth": true,
-      "query": {
-        "types": "issue",
-        "q": "upload -image",
-        "limit": 20
-      },
-      "expects": {
-        "status": 200,
-        "shape": "json",
-        "idsIncludes": [
-          "issue:api-test-search-015"
-        ],
-        "idsExcludes": [
-          "issue:api-test-search-014"
-        ]
-      },
-      "note": "B8.3: image-upload.js holds image",
-      "enabled": false,
-      "skipReason": "pending agaia-4894: file names split into words in the search index"
+      "note": "No operators: quotes are plain text"
     },
     {
       "id": "search-b9-word-only-in-description",

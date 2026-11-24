@@ -21,6 +21,12 @@ namespace Gaia\Libraries\Search;
  * fuzzy matched is dropped too: fuzzy on real words is noise. Exact records come
  * first and the rest by score, so scores never rise down the list; equal scores keep the order of their keys.
  *
+ * When asked to put all-words matches first (a query of several non-stop words), the records the keyword search
+ * matched (it needs every word) have their score mapped to [boundary + (1 - boundary) x threshold, 1] and the
+ * others to [threshold, boundary], each linearly (boundary = allWordsBoundary), so the order inside a band stays
+ * and the threshold still decided on the original score: this reorders, it never adds or drops a result. Exact
+ * records stay at 1.
+ *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
@@ -53,14 +59,21 @@ class StrongestSignal
     private $semanticFar;
 
     /**
+     * @var float
+     */
+    private $allWordsBoundary;
+
+    /**
      * @param float $threshold The score a record needs to be kept, from 0 to 1
      * @param float $fuzzyWeight What a perfect fuzzy match scores, from 0 to 1
      * @param float $fuzzyThreshold The word_similarity the fuzzy searcher keeps from, from 0 to 1
      * @param float $semanticNear The cosine distance a meaning match scores 1 at, from 0 to 2
      * @param float $semanticFar The cosine distance a meaning match scores 0 at, from 0 to 2, past semanticNear
+     * @param float $allWordsBoundary The score that splits all-words matches from the others, past the threshold
+     *     and under 1
      * @throws \Gaia\Exception\Exception When a setting is out of bounds
      */
-    public function __construct($threshold, $fuzzyWeight, $fuzzyThreshold, $semanticNear, $semanticFar)
+    public function __construct($threshold, $fuzzyWeight, $fuzzyThreshold, $semanticNear, $semanticFar, $allWordsBoundary)
     {
         $this->threshold = $this->bounded($threshold, 1, 'threshold');
         $this->fuzzyWeight = $this->bounded($fuzzyWeight, 1, 'fuzzy weight');
@@ -72,6 +85,12 @@ class StrongestSignal
                 'The search semantic far distance must be past the semantic near distance.'
             );
         }
+        $this->allWordsBoundary = $this->bounded($allWordsBoundary, 1, 'all-words boundary');
+        if ($this->allWordsBoundary <= $this->threshold || $this->allWordsBoundary >= 1) {
+            throw new \Gaia\Exception\Exception(
+                'The search all-words boundary must be past the threshold and under 1.'
+            );
+        }
     }
 
     /**
@@ -80,10 +99,11 @@ class StrongestSignal
      * @param array $found Each ['kind' => string, 'signals' => item key => raw signal]
      * @param int $limit The most items to return
      * @param bool $unknownWords Whether the query has a word no readable record has; fuzzy-only records are kept then
+     * @param bool $allWordsFirst Whether the keyword matches go before the others, in their own score band
      * @return array Each ['key' => string, 'score' => float from 0 to 1, 'matchedBy' => list of kinds]
      * @throws \Gaia\Exception\Exception When a kind has no scale
      */
-    public function rank(array $found, $limit, $unknownWords)
+    public function rank(array $found, $limit, $unknownWords, $allWordsFirst)
     {
         $items = array();
         foreach ($found as $searcher) {
@@ -116,6 +136,11 @@ class StrongestSignal
 
             return $item['pinned'] || $item['score'] >= $this->threshold;
         });
+        if ($allWordsFirst) {
+            $items = array_map(function ($item) {
+                return $this->banded($item);
+            }, $items);
+        }
         usort($items, function ($a, $b) {
             if ($a['pinned'] !== $b['pinned']) {
                 return $a['pinned'] ? -1 : 1;
@@ -132,6 +157,31 @@ class StrongestSignal
 
             return $item;
         }, array_slice($items, 0, $limit));
+    }
+
+    /**
+     * This function maps a kept item's score into the band of its group: keyword matches (the keyword search needs
+     * every word) above the all-words boundary, the others from the threshold up to it. An exact record keeps 1.
+     *
+     * @param array $item
+     * @return array
+     */
+    private function banded(array $item)
+    {
+        if ($item['pinned']) {
+            return $item;
+        }
+        $position = ($item['score'] - $this->threshold) / (1 - $this->threshold);
+        if (in_array(FtsSearcher::KIND, $item['matchedBy'], true)) {
+            $low = $this->allWordsBoundary + (1 - $this->allWordsBoundary) * $this->threshold;
+            $high = 1.0;
+        } else {
+            $low = $this->threshold;
+            $high = $this->allWordsBoundary;
+        }
+        $item['score'] = $low + $position * ($high - $low);
+
+        return $item;
     }
 
     /**

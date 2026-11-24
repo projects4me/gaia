@@ -8,7 +8,8 @@ namespace Gaia\Libraries\Search;
 
 /**
  * The query text of a search, parsed once and handed to every searcher: its words (runs of letters and digits,
- * lowercased), the words that are not stop words, the numbers, the quoted phrases and the excluded (-word) words.
+ * lowercased), the words that are not stop words and the numbers. Search has no query operators: quotes and a
+ * leading dash are plain text.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -45,31 +46,12 @@ class SearchQuery
     private $words;
 
     /**
-     * @var array
-     */
-    private $phrases;
-
-    /**
-     * @var array
-     */
-    private $excluded;
-
-    /**
      * @param string $text The query text, trimmed and in bounds (SearchRequest)
      */
     public function __construct($text)
     {
         $this->text = (string) $text;
         $this->words = $this->wordsOf($this->text);
-
-        preg_match_all('/"([^"]*)"/u', $this->text, $phrases);
-        $this->phrases = array_values(array_filter(array_map('trim', $phrases[1]), 'strlen'));
-
-        preg_match_all('/(?:^|[\s\p{Z}])-([\p{L}\p{N}][^\s\p{Z}"]*)/u', $this->text, $excluded);
-        $this->excluded = array();
-        foreach ($excluded[1] as $word) {
-            $this->excluded = array_merge($this->excluded, $this->wordsOf($word));
-        }
     }
 
     /**
@@ -101,14 +83,14 @@ class SearchQuery
     }
 
     /**
-     * This function returns the words a typo can be told from: of three letters or more, not stop words, not numbers, not excluded (-word).
+     * This function returns the words a typo can be told from: of three letters or more, not stop words, not numbers.
      *
      * @return array
      */
     public function typoCandidates()
     {
         return array_values(array_filter($this->nonStopWords(), function ($word) {
-            return mb_strlen($word, 'UTF-8') >= 3 && !ctype_digit($word) && !in_array($word, $this->excluded, true);
+            return mb_strlen($word, 'UTF-8') >= 3 && !ctype_digit($word);
         }));
     }
 
@@ -123,23 +105,14 @@ class SearchQuery
     }
 
     /**
-     * This function returns the quoted phrases, without their quotes.
+     * This function tells whether the query has several different words that are not stop words, so a record
+     * matching all of them is a stronger match than one matching some.
      *
-     * @return array
+     * @return bool
      */
-    public function phrases()
+    public function hasSeveralWords()
     {
-        return $this->phrases;
-    }
-
-    /**
-     * This function returns the words of the -word terms, lowercased.
-     *
-     * @return array
-     */
-    public function excluded()
-    {
-        return $this->excluded;
+        return count(array_unique($this->nonStopWords())) >= 2;
     }
 
     /**

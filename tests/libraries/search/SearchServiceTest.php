@@ -109,6 +109,21 @@ class SearchServiceTest extends TestCase
         $this->assertStringContainsString('<mark>zebracorn</mark>', $results[0]['snippet']);
     }
 
+    public function testQuotesAndADashArePlainTextNotOperators()
+    {
+        $both = $this->addIssue('Zebracorn import fails', null);
+        $this->addIssue('Zebracorn feed stops', null);
+        $plain = $this->search('zebracorn import');
+
+        foreach (array('zebracorn -import', '"zebracorn import"', '"import zebracorn"') as $query) {
+            $results = $this->search($query);
+
+            $this->assertSame(array_column($plain, 'id'), array_column($results, 'id'), $query);
+            $this->assertSame($both, $results[0]['id'], $query);
+            $this->assertContains('fts', $results[0]['matchedBy'], $query);
+        }
+    }
+
     public function testPinsTheIssueWhoseNumberIsTheQuery()
     {
         $mentions = $this->addIssue('Follow up on 987654301', 'Same as 987654301.');
@@ -508,6 +523,21 @@ class SearchServiceTest extends TestCase
         $this->service()->search(new SearchRequest(array('nosuchtype'), 'zebracorn'));
     }
 
+    public function testAQueryOfSeveralWordsPutsTheIssuesHoldingEveryWordFirst()
+    {
+        $this->embeddings->vectors['zebracorn quokka'] = $this->vector(1);
+        $this->embeddings->vectors['zebracorn'] = $this->vector(1);
+        $everyWord = $this->addIssue('Feed notes', 'The zebracorn quokka feed stops on Mondays.');
+        $byMeaning = $this->addIssue('Coat colours fade', null);
+        $this->embed($byMeaning, $this->vector(1));
+
+        $several = $this->service()->search(new SearchRequest(array('issue'), 'zebracorn quokka'))->items();
+        $one = $this->service()->search(new SearchRequest(array('issue'), 'zebracorn'))->items();
+
+        $this->assertSame(array($everyWord, $byMeaning), array_column($several, 'id'));
+        $this->assertSame(array($byMeaning, $everyWord), array_column($one, 'id'));
+    }
+
     public function testFindsAParaphraseByMeaning()
     {
         $this->embeddings->vectors['login fails after password reset'] = $this->vector(0.9, 0.436);
@@ -716,7 +746,7 @@ class SearchServiceTest extends TestCase
                 new FuzzySearcher($candidates, 0.3),
                 new SemanticSearcher($candidates, $this->embeddings, $maxDistance),
             ),
-            new StrongestSignal(self::THRESHOLD, 0.6, 0.3, 0.156, 0.402),
+            new StrongestSignal(self::THRESHOLD, 0.6, 0.3, 0.156, 0.402, 0.5),
             new UnknownWords($candidates, $tsquery),
             new DisplayLoader($candidates, new Snippet($tsquery)),
             $candidateDepth

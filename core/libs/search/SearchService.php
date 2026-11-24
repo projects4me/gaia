@@ -11,8 +11,8 @@ use Gaia\Libraries\Security\Acl;
 
 /**
  * Module-agnostic search: parses the query once, runs every searcher over each requested type, inside what the user
- * may see, and ranks what they found by its strongest signal, dropping fuzzy-only results unless the query has an unknown
- * word. A query without a letter or a digit finds nothing.
+ * may see, and ranks what they found by its strongest signal, records matching every word first, dropping fuzzy-only
+ * results unless the query has an unknown word. A query without a letter or a digit finds nothing.
  *
  * Each type needs <module>.get (a denied type denies the whole request, as unauthorized query criteria do, D-027).
  * Every candidate query stays inside the module's record scope and deleted = 0 before ranking and LIMIT (D-022).
@@ -161,7 +161,7 @@ class SearchService
         }
 
         $unknownWords = $this->hasFuzzyResults($found) ? $this->hasUnknownWords($targets, $query) : true;
-        $ranked = $this->ranking->rank($found, $request->limit(), $unknownWords);
+        $ranked = $this->ranking->rank($found, $request->limit(), $unknownWords, $query->hasSeveralWords());
 
         return new SearchResults($this->results($ranked, $targets, $query->text()), $unavailable);
     }

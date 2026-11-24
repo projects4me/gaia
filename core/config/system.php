@@ -50,6 +50,9 @@ $config['system'] = [
         // calibrated for the embedding model: recalibrate them when it changes.
         'semanticNear' => 0.156,
         'semanticFar' => 0.402,
+        // For a query of several words, the score splitting the records matching every word (above it) from the
+        // others (from the threshold up to it); past the threshold and under 1.
+        'allWordsBoundary' => 0.5,
         // Candidates each searcher gives per type: the ranking needs more than the result limit to reorder.
         'candidateDepth' => 100,
     ],

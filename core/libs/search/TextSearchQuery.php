@@ -9,8 +9,9 @@ namespace Gaia\Libraries\Search;
 use Gaia\Db\Migration\PostgresSearchDdl;
 
 /**
- * The query text as a Postgres tsquery (websearch_to_tsquery), in the text search config the type's searchVector is
- * built with, so the query is parsed the way the records were.
+ * The query text as a Postgres tsquery (plainto_tsquery: every word, no operators, so quotes and a leading dash are
+ * plain text), in the text search config the type's searchVector is built with, so the query is parsed the way the
+ * records were.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -25,7 +26,7 @@ class TextSearchQuery
      */
     public function sql()
     {
-        return 'websearch_to_tsquery(' . $this->config() . ', :search_fts)';
+        return 'plainto_tsquery(' . $this->config() . ', :search_fts)';
     }
 
     /**

@@ -38,12 +38,11 @@ class SearchQueryTest extends TestCase
         $this->assertSame(13, $query->nonStopLength());
     }
 
-    public function testReadsPhrasesAndExcludedWords()
+    public function testQuotesAndADashAreReadAsPlainWords()
     {
-        $query = new SearchQuery('"ledger export" fails -csv -Bank-sync not-excluded');
+        $query = new SearchQuery('"ledger export" fails -csv');
 
-        $this->assertSame(array('ledger export'), $query->phrases());
-        $this->assertSame(array('csv', 'bank', 'sync'), $query->excluded());
+        $this->assertSame(array('ledger', 'export', 'fails', 'csv'), $query->words());
     }
 
     public function testAQueryOfSymbolsHasNoWords()
@@ -62,5 +61,12 @@ class SearchQueryTest extends TestCase
         $this->assertTrue($query->hasWords());
         $this->assertSame(array(), $query->nonStopWords());
         $this->assertSame(0, $query->nonStopLength());
+    }
+
+    public function testSeveralWordsMeansTwoNonStopWords()
+    {
+        $this->assertTrue((new SearchQuery('ledger export'))->hasSeveralWords());
+        $this->assertFalse((new SearchQuery('the ledger'))->hasSeveralWords());
+        $this->assertFalse((new SearchQuery('ledger Ledger ledger'))->hasSeveralWords());
     }
 }
