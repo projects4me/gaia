@@ -58,18 +58,30 @@ class ExactTitleMatcher implements Searcher
             return array();
         }
 
-        // The same spaces as \s and \p{Z} below, listed so the database locale cannot leave a no-break space out
-        $title = "lower(btrim(regexp_replace(" . $this->candidates->column($fields[0])
-            . ", '[[:space:]   -     　]+', ' ', 'g')))";
-        $text = mb_strtolower(trim(preg_replace('/[\s\p{Z}]+/u', ' ', $query->text())), 'UTF-8');
+        $condition = $this->normalized($this->candidates->column($fields[0]))
+            . ' = ' . $this->normalized(':search_title');
 
         return $this->candidates->signals(
             $target,
-            $title . ' = :search_title',
+            $condition,
             '1',
             null,
-            array('search_title' => $text),
+            array('search_title' => $query->text()),
             $limit
         );
+    }
+
+    /**
+     * This function returns the SQL that lowercases a text and collapses its spaces. The title and the query both
+     * go through it, so one case mapping serves both sides.
+     *
+     * @param string $operand
+     * @return string
+     */
+    private function normalized($operand)
+    {
+        // Unicode spaces are listed so the database locale cannot leave a no-break space out
+        return "lower(btrim(regexp_replace(" . $operand
+            . ", '[[:space:]   -     　]+', ' ', 'g')))";
     }
 }

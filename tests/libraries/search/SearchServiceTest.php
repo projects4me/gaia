@@ -143,6 +143,16 @@ class SearchServiceTest extends TestCase
         $this->assertContains('exact', $results[0]['matchedBy']);
     }
 
+    public function testPinsTheIssueWhoseTitleEndsInACapitalSigma()
+    {
+        $exact = $this->addIssue('ΖΕΒΡΑΚΟΡΝ ΟΣ', null);
+
+        $results = $this->search('ΖΕΒΡΑΚΟΡΝ ΟΣ');
+
+        $this->assertSame(array($exact), array_column($results, 'id'));
+        $this->assertContains('exact', $results[0]['matchedBy']);
+    }
+
     public function testFindsByNumberWhenTheTitleIsUnreadable()
     {
         $numbered = $this->addIssue('Zebracorn import fails', null, 987654304);
