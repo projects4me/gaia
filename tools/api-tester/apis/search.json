@@ -62,9 +62,7 @@
           "issue:api-test-search-001"
         ]
       },
-      "note": "A3: that issue alone",
-      "enabled": false,
-      "skipReason": "pending agaia-4890: project short code lookup"
+      "note": "A3: that issue alone"
     },
     {
       "id": "search-a3-short-code-any-case",
@@ -84,9 +82,7 @@
           "issue:api-test-search-001"
         ]
       },
-      "note": "A3: ignoring case",
-      "enabled": false,
-      "skipReason": "pending agaia-4890: project short code lookup"
+      "note": "A3: ignoring case"
     },
     {
       "id": "search-a3-short-code-other-project",
@@ -122,9 +118,7 @@
         "shape": "json",
         "idsEqual": []
       },
-      "note": "A4: nothing, no noise",
-      "enabled": false,
-      "skipReason": "pending agaia-4893: 99999 still fuzzy-matches \"99 percent\" (similarity 0.75, score 0.39)"
+      "note": "A4: nothing, no noise"
     },
     {
       "id": "search-a5-partial-number",
@@ -159,9 +153,7 @@
           ]
         }
       },
-      "note": "A5: numbers starting with it first (9170-9172), then ending with it (8917)",
-      "enabled": false,
-      "skipReason": "pending agaia-4890: partial issue number lookup"
+      "note": "A5: numbers starting with it first (9170-9172), then ending with it (8917)"
     },
     {
       "id": "search-a6-exact-title",
@@ -230,9 +222,7 @@
           ]
         }
       },
-      "note": "A8: that issue at #1",
-      "enabled": false,
-      "skipReason": "pending agaia-4890: issue number inside a short query"
+      "note": "A8: that issue at #1"
     },
     {
       "id": "search-a8-number-before-words",
@@ -255,9 +245,93 @@
           ]
         }
       },
-      "note": "A8: that issue at #1, then text matches",
-      "enabled": false,
-      "skipReason": "pending agaia-4890: issue number inside a short query"
+      "note": "A8: that issue at #1, then text matches"
+    },
+    {
+      "id": "search-a1-number-not-member",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": "aclMembers",
+      "query": {
+        "types": "issue",
+        "q": "9101",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": []
+      },
+      "note": "A1: the number of an issue in a project the user is not in finds nothing"
+    },
+    {
+      "id": "search-a3-short-code-not-member",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": "aclMembers",
+      "query": {
+        "types": "issue",
+        "q": "SRA-9101",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": []
+      },
+      "note": "A3: the short code of a project the user is not in finds nothing"
+    },
+    {
+      "id": "search-a5-partial-number-not-member",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": "aclMembers",
+      "query": {
+        "types": "issue",
+        "q": "917",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsExcludes": [
+          "issue:api-test-search-001",
+          "issue:api-test-search-005",
+          "issue:api-test-search-030",
+          "issue:api-test-search-031",
+          "issue:api-test-search-032",
+          "issue:api-test-search-033"
+        ]
+      },
+      "note": "A5: numbers starting or ending with it stay in the user's projects"
+    },
+    {
+      "id": "search-a8-number-inside-text-not-member",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": "aclMembers",
+      "query": {
+        "types": "issue",
+        "q": "issue 9105",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsExcludes": [
+          "issue:api-test-search-001",
+          "issue:api-test-search-005",
+          "issue:api-test-search-030",
+          "issue:api-test-search-031",
+          "issue:api-test-search-032",
+          "issue:api-test-search-033"
+        ]
+      },
+      "note": "A8: a number inside text stays in the user's projects"
     },
     {
       "id": "search-b1-one-keyword",

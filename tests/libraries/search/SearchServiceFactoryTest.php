@@ -39,7 +39,9 @@ class SearchServiceFactoryTest extends TestCase
             'semanticNear' => 0.156,
             'semanticFar' => 0.402,
             'allWordsBoundary' => 0.5,
+            'partialNumberBoundary' => 0.5,
             'candidateDepth' => 100,
+            'numberQueryWords' => 5,
         );
     }
 
@@ -82,7 +84,9 @@ class SearchServiceFactoryTest extends TestCase
             'semanticNear',
             'semanticFar',
             'allWordsBoundary',
+            'partialNumberBoundary',
             'candidateDepth',
+            'numberQueryWords',
         );
 
         return array_combine($names, array_map(function ($name) {

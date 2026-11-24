@@ -8,7 +8,8 @@ namespace Gaia\Libraries\Search;
 
 /**
  * The query text of a search, parsed once and handed to every searcher: its words (runs of letters and digits,
- * lowercased), the words that are not stop words and the numbers. Search has no query operators: quotes and a
+ * lowercased), the words that are not stop words and the numbers, and its shape: a number alone (4170, #4170), a
+ * reference (agaia-4170) or text, with the numbers written #N in it. Search has no query operators: quotes and a
  * leading dash are plain text.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
@@ -34,6 +35,27 @@ class SearchQuery
         'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't',
         'can', 'will', 'just', 'don', 'should', 'now',
     );
+
+    /**
+     * A query that is a number alone, with an optional leading #.
+     *
+     * @var string
+     */
+    private const NUMBER_PATTERN = '/^#?([0-9]+)\z/';
+
+    /**
+     * A query that is a reference: a prefix (a project's short code), a dash and a number, e.g. agaia-4170.
+     *
+     * @var string
+     */
+    private const REFERENCE_PATTERN = '/^(\p{L}[\p{L}\p{N}]{0,49})-([0-9]+)\z/u';
+
+    /**
+     * A number written with a leading #, not inside a word, e.g. (see #3969).
+     *
+     * @var string
+     */
+    private const HASH_NUMBER_PATTERN = '/(?<![\p{L}\p{N}#])#([0-9]+)(?![\p{L}\p{N}])/u';
 
     /**
      * @var string
@@ -102,6 +124,43 @@ class SearchQuery
     public function numbers()
     {
         return array_values(array_filter($this->words, 'ctype_digit'));
+    }
+
+    /**
+     * This function returns the digits of a query that is a number alone (4170, #4170), or null.
+     *
+     * @return string|null
+     */
+    public function number()
+    {
+        return preg_match(self::NUMBER_PATTERN, $this->text, $match) ? $match[1] : null;
+    }
+
+    /**
+     * This function returns the prefix and the digits of a query that is a reference (agaia-4170), or null. The
+     * prefix is as typed: whether it is a known one is up to the searcher.
+     *
+     * @return array|null ['prefix' => string, 'number' => string]
+     */
+    public function reference()
+    {
+        if (!preg_match(self::REFERENCE_PATTERN, $this->text, $match)) {
+            return null;
+        }
+
+        return array('prefix' => $match[1], 'number' => $match[2]);
+    }
+
+    /**
+     * This function returns the numbers written with a leading # (see #3969), in query order.
+     *
+     * @return array
+     */
+    public function hashNumbers()
+    {
+        preg_match_all(self::HASH_NUMBER_PATTERN, $this->text, $matches);
+
+        return $matches[1];
     }
 
     /**

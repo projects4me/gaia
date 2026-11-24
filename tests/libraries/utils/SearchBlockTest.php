@@ -222,8 +222,19 @@ class SearchBlockTest extends TestCase
             'fuzzy' => ['subject'],
             'semantic' => ['subject', 'description'],
             'exact' => [],
+            'referencePrefix' => null,
             'display' => ['title' => 'subject', 'snippet' => null],
         ], $block);
+    }
+
+    public function testAReferencePrefixIsATextFieldBeforeAnIntegerExactField()
+    {
+        $metadata = self::metadata();
+        $metadata['search']['referencePrefix'] = 'subject';
+
+        $block = SearchBlock::apply(self::MODEL, $metadata)['search'];
+
+        $this->assertSame('subject', $block['referencePrefix']);
     }
 
     public function testANullSnippetIsAccepted()
@@ -326,6 +337,19 @@ class SearchBlockTest extends TestCase
             'exact unknown field' => [function (&$m) {
                 $m['search']['exact'] = ['code'];
             }, "names unknown field 'code' in exact"],
+            'reference prefix unknown field' => [function (&$m) {
+                $m['search']['referencePrefix'] = 'code';
+            }, "names unknown field 'code' in referencePrefix"],
+            'reference prefix not text' => [function (&$m) {
+                $m['search']['referencePrefix'] = 'number';
+            }, "names 'number' of type 'int' in referencePrefix"],
+            'reference prefix not a field name' => [function (&$m) {
+                $m['search']['referencePrefix'] = ['subject'];
+            }, "names unknown field 'array' in referencePrefix"],
+            'reference prefix without an integer exact field' => [function (&$m) {
+                $m['search']['referencePrefix'] = 'subject';
+                $m['search']['exact'] = ['description'];
+            }, "has a referencePrefix but no integer field in 'exact'"],
             'missing display' => [function (&$m) {
                 unset($m['search']['display']);
             }, "needs 'display' => ['title' => field"],

@@ -8,8 +8,9 @@ namespace Gaia\Libraries\Search;
 
 /**
  * Builds the SearchService of the user the DI's acl belongs to: exact (number and title), FTS, fuzzy and semantic
- * matching, ranked by StrongestSignal, with the settings of system.search: fuzzyThreshold, semanticMaxDistance,
- * candidateDepth and the ranking's threshold, fuzzyWeight, semanticNear, semanticFar and allWordsBoundary. Every
+ * matching for text, number, partial number and reference lookups (SearchRoute), ranked by StrongestSignal, with the
+ * settings of system.search: fuzzyThreshold, semanticMaxDistance, candidateDepth, numberQueryWords and the ranking's
+ * threshold, fuzzyWeight, semanticNear, semanticFar, allWordsBoundary and partialNumberBoundary. Every
  * setting is required:
  * the values live in the config only. A new kind of matching is added here.
  *
@@ -29,31 +30,39 @@ class SearchServiceFactory
         $threshold = self::setting('fuzzyThreshold');
         $maxDistance = self::setting('semanticMaxDistance');
         $candidateDepth = self::setting('candidateDepth');
+        $numberQueryWords = self::setting('numberQueryWords');
         $ranking = new StrongestSignal(
             self::setting('threshold'),
             self::setting('fuzzyWeight'),
             $threshold,
             self::setting('semanticNear'),
             self::setting('semanticFar'),
-            self::setting('allWordsBoundary')
+            self::setting('allWordsBoundary'),
+            self::setting('partialNumberBoundary')
         );
 
         $metaManager = $di->get('metaManager');
         $acl = $di->get('acl');
         $candidates = new CandidateQuery($di->get('db'));
         $tsquery = new TextSearchQuery();
+        $exact = new ExactMatcher($candidates, $numberQueryWords);
 
         return new SearchService(
             SearchableRegistry::fromMetadata($metaManager),
             $metaManager,
             $acl,
             new SearchScope($acl, $di->get('modelsManager')),
-            array(
-                new ExactMatcher($candidates),
-                new ExactTitleMatcher($candidates),
-                new FtsSearcher($candidates, $tsquery),
-                new FuzzySearcher($candidates, $threshold),
-                new SemanticSearcher($candidates, new \Gaia\Services\Embeddings(), $maxDistance),
+            new SearchRoute(
+                array(
+                    $exact,
+                    new ExactTitleMatcher($candidates),
+                    new FtsSearcher($candidates, $tsquery),
+                    new FuzzySearcher($candidates, $threshold),
+                    new SemanticSearcher($candidates, new \Gaia\Services\Embeddings(), $maxDistance),
+                ),
+                $exact,
+                new PartialNumberMatcher($candidates),
+                new ReferenceMatcher($candidates)
             ),
             $ranking,
             new UnknownWords($candidates, $tsquery),

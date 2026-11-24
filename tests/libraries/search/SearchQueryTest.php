@@ -69,4 +69,63 @@ class SearchQueryTest extends TestCase
         $this->assertFalse((new SearchQuery('the ledger'))->hasSeveralWords());
         $this->assertFalse((new SearchQuery('ledger Ledger ledger'))->hasSeveralWords());
     }
+    /**
+     * @dataProvider numberQueries
+     */
+    public function testANumberAloneIsANumberQuery($text, $number)
+    {
+        $this->assertSame($number, (new SearchQuery($text))->number());
+    }
+
+    /**
+     * @return array
+     */
+    public static function numberQueries()
+    {
+        return array(
+            'digits' => array('4170', '4170'),
+            'with a hash' => array('#4170', '4170'),
+            'leading zeros kept' => array('0917', '0917'),
+            'inside text' => array('issue 4170', null),
+            'a hash alone' => array('#', null),
+            'two hashes' => array('##4170', null),
+            'a reference' => array('agaia-4170', null),
+            'a decimal' => array('41.70', null),
+            'too long for any integer' => array('12345678901234567890', '12345678901234567890'),
+        );
+    }
+
+    /**
+     * @dataProvider referenceQueries
+     */
+    public function testAPrefixDashNumberIsAReference($text, $reference)
+    {
+        $this->assertSame($reference, (new SearchQuery($text))->reference());
+    }
+
+    /**
+     * @return array
+     */
+    public static function referenceQueries()
+    {
+        return array(
+            'short code' => array('agaia-4170', array('prefix' => 'agaia', 'number' => '4170')),
+            'any case, as typed' => array('AGaia-4170', array('prefix' => 'AGaia', 'number' => '4170')),
+            'letters and digits' => array('p4m-12', array('prefix' => 'p4m', 'number' => '12')),
+            'a number alone' => array('4170', null),
+            'starting with a digit' => array('4agaia-4170', null),
+            'inside text' => array('see agaia-4170', null),
+            'two dashes' => array('agaia--4170', null),
+            'no number' => array('agaia-', null),
+            'letters after the number' => array('covid-19x', null),
+            'digits of another script' => array("ab-\u{0664}\u{0661}", null),
+        );
+    }
+
+    public function testFindsTheNumbersWrittenWithAHash()
+    {
+        $query = new SearchQuery('Pasted (see #3969), and #12 or a#5, #7b, 44 and ##8');
+
+        $this->assertSame(array('3969', '12'), $query->hashNumbers());
+    }
 }

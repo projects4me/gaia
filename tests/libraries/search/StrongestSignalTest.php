@@ -26,6 +26,13 @@ class StrongestSignalTest extends TestCase
      */
     private const BOUNDARY = 0.5;
 
+    /**
+     * The partial number boundary the tests rank with.
+     *
+     * @var float
+     */
+    private const NUMBER_BOUNDARY = 0.5;
+
     public function testARecordScoresItsStrongestSignal()
     {
         $ranked = $this->ranking()->rank(array(
@@ -94,7 +101,7 @@ class StrongestSignalTest extends TestCase
 
     public function testAnExactMatchIsKeptWhateverTheThreshold()
     {
-        $ranked = (new StrongestSignal(0.995, 0.6, 0.3, 0.156, 0.402, 0.998))->rank(array(
+        $ranked = (new StrongestSignal(0.995, 0.6, 0.3, 0.156, 0.402, 0.998, 0.998))->rank(array(
             array('kind' => 'fts', 'signals' => array('issue:a' => 0.99)),
             array('kind' => 'exact', 'signals' => array('issue:b' => 1.0)),
         ), 20, true, false);
@@ -102,13 +109,47 @@ class StrongestSignalTest extends TestCase
         $this->assertSame(array('issue:b'), array_column($ranked, 'key'));
     }
 
-    public function testEqualScoresKeepTheOrderOfTheirKeysAndTheLimitCuts()
+    public function testEqualScoresKeepTheOrderTheyWereFoundInAndTheLimitCuts()
     {
         $ranked = $this->ranking()->rank(array(
-            array('kind' => 'fts', 'signals' => array('issue:c' => 0.5, 'issue:a' => 0.5, 'issue:b' => 0.5)),
-        ), 2, true, false);
+            array('kind' => 'fts', 'signals' => array('issue:c' => 0.5, 'issue:a' => 0.5)),
+            array('kind' => 'semantic', 'signals' => array('issue:b' => 0.156)),
+            array('kind' => 'fts', 'signals' => array('issue:d' => 0.5)),
+        ), 3, true, false);
 
-        $this->assertSame(array('issue:a', 'issue:b'), array_column($ranked, 'key'));
+        $this->assertSame(array('issue:b', 'issue:c', 'issue:a'), array_column($ranked, 'key'));
+    }
+
+    public function testANumberStartingWithTheQueryScoresFromTheBoundaryAndOneEndingWithItFromTheThreshold()
+    {
+        $ranked = $this->ranking()->rank(array(
+            array('kind' => 'number', 'signals' => array(
+                'issue:start-short' => 1.75,
+                'issue:start-long' => 1.6,
+                'issue:end-short' => 0.75,
+                'issue:end-long' => 0.6,
+            )),
+        ), 20, true, false);
+
+        $this->assertSame(
+            array('issue:start-short', 'issue:start-long', 'issue:end-short', 'issue:end-long'),
+            array_column($ranked, 'key')
+        );
+        $scores = array_column($ranked, 'score', 'key');
+        $this->assertEqualsWithDelta(0.5 + 0.5 * 0.75, $scores['issue:start-short'], 1e-12);
+        $this->assertEqualsWithDelta(0.5 + 0.5 * 0.6, $scores['issue:start-long'], 1e-12);
+        $this->assertEqualsWithDelta(0.15 + 0.35 * 0.75, $scores['issue:end-short'], 1e-12);
+        $this->assertEqualsWithDelta(0.15 + 0.35 * 0.6, $scores['issue:end-long'], 1e-12);
+        $this->assertSame(array('number'), $ranked[0]['matchedBy']);
+    }
+
+    public function testEqualPartialNumbersKeepTheirNewestFirstOrder()
+    {
+        $ranked = $this->ranking()->rank(array(
+            array('kind' => 'number', 'signals' => array('issue:9172' => 1.75, 'issue:9170' => 1.75, 'issue:8917' => 0.75)),
+        ), 20, true, false);
+
+        $this->assertSame(array('issue:9172', 'issue:9170', 'issue:8917'), array_column($ranked, 'key'));
     }
 
     public function testFuzzyOnlyRecordsAreDroppedWhenKeywordOrMeaningMatchesAndNoWordIsUnknown()
@@ -186,17 +227,20 @@ class StrongestSignalTest extends TestCase
     public static function badSettings()
     {
         return array(
-            'negative threshold' => array(array(-0.1, 0.6, 0.3, 0.156, 0.402, 0.5)),
-            'threshold past 1' => array(array(1.1, 0.6, 0.3, 0.156, 0.402, 0.5)),
-            'fuzzy weight not a number' => array(array(0.15, 'heavy', 0.3, 0.156, 0.402, 0.5)),
-            'fuzzy threshold past 1' => array(array(0.15, 0.6, 1.5, 0.156, 0.402, 0.5)),
-            'semantic near not finite' => array(array(0.15, 0.6, 0.3, NAN, 0.402, 0.5)),
-            'semantic far past 2' => array(array(0.15, 0.6, 0.3, 0.156, 2.1, 0.5)),
-            'far not past near' => array(array(0.15, 0.6, 0.3, 0.4, 0.4, 0.5)),
-            'boundary not a number' => array(array(0.15, 0.6, 0.3, 0.156, 0.402, 'half')),
-            'boundary at the threshold' => array(array(0.5, 0.6, 0.3, 0.156, 0.402, 0.5)),
-            'boundary under the threshold' => array(array(0.6, 0.6, 0.3, 0.156, 0.402, 0.5)),
-            'boundary at 1' => array(array(0.15, 0.6, 0.3, 0.156, 0.402, 1)),
+            'negative threshold' => array(array(-0.1, 0.6, 0.3, 0.156, 0.402, 0.5, 0.5)),
+            'threshold past 1' => array(array(1.1, 0.6, 0.3, 0.156, 0.402, 0.5, 0.5)),
+            'fuzzy weight not a number' => array(array(0.15, 'heavy', 0.3, 0.156, 0.402, 0.5, 0.5)),
+            'fuzzy threshold past 1' => array(array(0.15, 0.6, 1.5, 0.156, 0.402, 0.5, 0.5)),
+            'semantic near not finite' => array(array(0.15, 0.6, 0.3, NAN, 0.402, 0.5, 0.5)),
+            'semantic far past 2' => array(array(0.15, 0.6, 0.3, 0.156, 2.1, 0.5, 0.5)),
+            'far not past near' => array(array(0.15, 0.6, 0.3, 0.4, 0.4, 0.5, 0.5)),
+            'boundary not a number' => array(array(0.15, 0.6, 0.3, 0.156, 0.402, 'half', 0.5)),
+            'boundary at the threshold' => array(array(0.5, 0.6, 0.3, 0.156, 0.402, 0.5, 0.5)),
+            'boundary under the threshold' => array(array(0.6, 0.6, 0.3, 0.156, 0.402, 0.5, 0.5)),
+            'boundary at 1' => array(array(0.15, 0.6, 0.3, 0.156, 0.402, 1, 0.5)),
+            'number boundary not a number' => array(array(0.15, 0.6, 0.3, 0.156, 0.402, 0.5, 'half')),
+            'number boundary at the threshold' => array(array(0.5, 0.6, 0.3, 0.156, 0.402, 0.6, 0.5)),
+            'number boundary at 1' => array(array(0.15, 0.6, 0.3, 0.156, 0.402, 0.5, 1)),
         );
     }
 
@@ -245,7 +289,7 @@ class StrongestSignalTest extends TestCase
 
     public function testTheBandsFollowTheBoundaryAndAThresholdPastHalf()
     {
-        $ranking = new StrongestSignal(0.6, 0.6, 0.3, 0.156, 0.402, 0.8);
+        $ranking = new StrongestSignal(0.6, 0.6, 0.3, 0.156, 0.402, 0.8, 0.8);
         $banded = $ranking->rank(array(
             array('kind' => 'fts', 'signals' => array('issue:a' => 0.7)),
             array('kind' => 'semantic', 'signals' => array('issue:b' => 0.156, 'issue:c' => 0.2)),
@@ -281,7 +325,8 @@ class StrongestSignalTest extends TestCase
             0.3,
             0.156,
             0.402,
-            self::BOUNDARY
+            self::BOUNDARY,
+            self::NUMBER_BOUNDARY
         );
     }
 

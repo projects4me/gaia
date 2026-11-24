@@ -53,6 +53,12 @@ $config['system'] = [
         // For a query of several words, the score splitting the records matching every word (above it) from the
         // others (from the threshold up to it); past the threshold and under 1.
         'allWordsBoundary' => 0.5,
+        // For a number query with no record of that number, the score splitting the numbers starting with it (above
+        // it) from those ending with it (from the threshold up to it); past the threshold and under 1.
+        'partialNumberBoundary' => 0.5,
+        // The most words a query may have for its plain numbers to be looked up as record numbers (issue 4174);
+        // in a longer query, pasted text, only numbers written with # are (see #3969).
+        'numberQueryWords' => 5,
         // Candidates each searcher gives per type: the ranking needs more than the result limit to reorder.
         'candidateDepth' => 100,
     ],

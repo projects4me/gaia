@@ -13,7 +13,7 @@
 - errorEqual -- errorEqual: expected '…', got ' | e.g. acl/acl-issue-denied-without-project-group
 - hermes.absent | e.g. live/live-agent-run-non-delegable-agent-request-skips-runtimes
 - hermes.expect | e.g. live/live-issue-create-publishes-issue-created
-- idsBefore -- idsBefore: missing id … | e.g. search/search-b2-several-keywords
+- idsBefore -- idsBefore: missing id … | e.g. search/search-a5-partial-number
 - idsEqual -- idsEqual: expected [ | e.g. search/search-a1-full-number
 - idsExcludes -- idsExcludes: unexpectedly found id … | e.g. acl/acl-members-issuetype-list-includes-system-types
 - idsIncludes -- idsIncludes: missing id … | e.g. acl/acl-project-rels-issues-omitted
