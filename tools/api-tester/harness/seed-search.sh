@@ -30,11 +30,12 @@ run_psql() {
   fi
 }
 
-# The data file goes in as a dollar-quoted literal: it holds JSON only, never the $embeddings$ delimiter
+# The data file goes in as a standard string literal with its quotes doubled, so any fixture text fits
+# (standard_conforming_strings is on: backslashes in the JSON stay as they are)
 embeddings_sql() {
-  printf '%s' 'SELECT set_config('"'"'search.embeddings'"'"', $embeddings$'
-  cat "$EMBEDDINGS_FILE"
-  printf '%s\n' '$embeddings$, false);'
+  printf '%s' "SET standard_conforming_strings = on; SELECT set_config('search.embeddings', '"
+  sed "s/'/''/g" "$EMBEDDINGS_FILE"
+  printf '%s\n' "', false);"
   cat "$HARNESS_DIR/seed-search-embeddings.sql"
 }
 
