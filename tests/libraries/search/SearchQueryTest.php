@@ -63,4 +63,25 @@ class SearchQueryTest extends TestCase
         $this->assertSame(array(), $query->nonStopWords());
         $this->assertSame(0, $query->nonStopLength());
     }
+
+    public function testOperatorsNeedAPhraseOrAnExcludedWordInAShortQuery()
+    {
+        $this->assertTrue((new SearchQuery('"ledger export" fails'))->hasOperators());
+        $this->assertTrue((new SearchQuery('build -pipeline'))->hasOperators());
+        $this->assertFalse((new SearchQuery('ledger export'))->hasOperators());
+        $this->assertFalse((new SearchQuery('well-known'))->hasOperators());
+    }
+
+    public function testALongQueryIsPastedTextWhereDashesAreNotOperators()
+    {
+        $this->assertFalse((new SearchQuery('the build failed on the server -p flag'))->hasOperators());
+        $this->assertTrue((new SearchQuery('one two three four -five'))->hasOperators());
+        $this->assertFalse((new SearchQuery('one two three four five -six'))->hasOperators());
+    }
+
+    public function testSeveralWordsMeansTwoNonStopWords()
+    {
+        $this->assertTrue((new SearchQuery('ledger export'))->hasSeveralWords());
+        $this->assertFalse((new SearchQuery('the ledger'))->hasSeveralWords());
+    }
 }

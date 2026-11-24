@@ -19,6 +19,11 @@ namespace Gaia\Libraries\Search;
  * A record scores the most of its signals; one under the threshold is dropped, unless exact. Exact records come
  * first and the rest by score, so scores never rise down the list; equal scores keep the order of their keys.
  *
+ * When asked to put all-words matches first (a query of several non-stop words), the records the keyword search
+ * matched (it needs every word) have their score mapped to [0.5 + 0.5 x threshold, 1] and the others to
+ * [threshold, 0.5], each linearly, so the order inside a band stays and the threshold still decided on the original
+ * score: this reorders, it never adds or drops a result. Exact records stay at 1.
+ *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
  * @license http://www.gnu.org/licenses/agpl.html AGPLv3
@@ -77,10 +82,11 @@ class StrongestSignal
      *
      * @param array $found Each ['kind' => string, 'signals' => item key => raw signal]
      * @param int $limit The most items to return
+     * @param bool $allWordsFirst Whether the keyword matches go before the others, in their own score band
      * @return array Each ['key' => string, 'score' => float from 0 to 1, 'matchedBy' => list of kinds]
      * @throws \Gaia\Exception\Exception When a kind has no scale
      */
-    public function rank(array $found, $limit)
+    public function rank(array $found, $limit, $allWordsFirst = false)
     {
         $items = array();
         foreach ($found as $searcher) {
@@ -102,6 +108,11 @@ class StrongestSignal
         $items = array_filter($items, function ($item) {
             return $item['pinned'] || $item['score'] >= $this->threshold;
         });
+        if ($allWordsFirst) {
+            $items = array_map(function ($item) {
+                return $this->banded($item);
+            }, $items);
+        }
         usort($items, function ($a, $b) {
             if ($a['pinned'] !== $b['pinned']) {
                 return $a['pinned'] ? -1 : 1;
@@ -118,6 +129,31 @@ class StrongestSignal
 
             return $item;
         }, array_slice($items, 0, $limit));
+    }
+
+    /**
+     * This function maps a kept item's score into the band of its group: keyword matches in the upper half, the
+     * others in the lower. An exact record keeps 1.
+     *
+     * @param array $item
+     * @return array
+     */
+    private function banded(array $item)
+    {
+        if ($item['pinned'] || $this->threshold >= 1) {
+            return $item;
+        }
+        $position = ($item['score'] - $this->threshold) / (1 - $this->threshold);
+        if (in_array(FtsSearcher::KIND, $item['matchedBy'], true)) {
+            $low = 0.5 + 0.5 * $this->threshold;
+            $high = 1.0;
+        } else {
+            $low = $this->threshold;
+            $high = max(0.5, $this->threshold);
+        }
+        $item['score'] = $low + $position * ($high - $low);
+
+        return $item;
     }
 
     /**

@@ -35,6 +35,14 @@ class SearchQuery
     );
 
     /**
+     * The most words a query has for "phrase" and -word to be operators; a longer query is pasted text, where a
+     * dash is not one.
+     *
+     * @var int
+     */
+    public const OPERATOR_MAX_WORDS = 5;
+
+    /**
      * @var string
      */
     private $text;
@@ -128,6 +136,28 @@ class SearchQuery
     public function excluded()
     {
         return $this->excluded;
+    }
+
+    /**
+     * This function tells whether the query uses a "quoted phrase" or a -word as an operator: it has one and is
+     * short enough not to be pasted text.
+     *
+     * @return bool
+     */
+    public function hasOperators()
+    {
+        return count($this->words) <= self::OPERATOR_MAX_WORDS && ($this->phrases !== array() || $this->excluded !== array());
+    }
+
+    /**
+     * This function tells whether the query has several words that are not stop words, so a record matching all of
+     * them is a stronger match than one matching some.
+     *
+     * @return bool
+     */
+    public function hasSeveralWords()
+    {
+        return count($this->nonStopWords()) >= 2;
     }
 
     /**

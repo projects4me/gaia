@@ -140,6 +140,48 @@ class StrongestSignalTest extends TestCase
         );
     }
 
+    public function testAllWordsMatchesGoFirstInTheirOwnBand()
+    {
+        $found = array(
+            array('kind' => 'fts', 'signals' => array('issue:a' => 0.5)),
+            array('kind' => 'fuzzy', 'signals' => array('issue:b' => 1.0)),
+        );
+
+        $plain = $this->ranking()->rank($found, 20);
+        $this->assertSame(array('issue:b', 'issue:a'), array_column($plain, 'key'));
+
+        $banded = $this->ranking()->rank($found, 20, true);
+        $this->assertSame(array('issue:a', 'issue:b'), array_column($banded, 'key'));
+        $this->assertEqualsWithDelta(0.575 + (0.35 / 0.85) * 0.425, $banded[0]['score'], 1e-12);
+        $this->assertEqualsWithDelta(0.15 + (0.45 / 0.85) * 0.35, $banded[1]['score'], 1e-12);
+    }
+
+    public function testBandsKeepTheOrderInsideAndNeverDropOrAddResults()
+    {
+        $found = array(
+            array('kind' => 'fts', 'signals' => array('issue:a' => 0.9, 'issue:b' => 0.2, 'issue:c' => 0.1)),
+            array('kind' => 'fuzzy', 'signals' => array('issue:d' => 1.0, 'issue:e' => 0.5)),
+        );
+
+        $banded = $this->ranking()->rank($found, 20, true);
+
+        $this->assertSame(array('issue:a', 'issue:b', 'issue:d', 'issue:e'), array_column($banded, 'key'));
+        $this->assertEqualsWithDelta(1.0, $banded[0]['score'], 0.2);
+        $this->assertGreaterThanOrEqual(0.575, $banded[1]['score']);
+        $this->assertLessThanOrEqual(0.5, $banded[2]['score']);
+    }
+
+    public function testExactMatchesKeepOneWhenBanded()
+    {
+        $banded = $this->ranking()->rank(array(
+            array('kind' => 'exact', 'signals' => array('issue:x' => 1.0)),
+            array('kind' => 'fts', 'signals' => array('issue:a' => 0.5)),
+        ), 20, true);
+
+        $this->assertSame(array('issue:x', 'issue:a'), array_column($banded, 'key'));
+        $this->assertSame(1.0, $banded[0]['score']);
+    }
+
     /**
      * @param float $threshold
      * @return StrongestSignal
