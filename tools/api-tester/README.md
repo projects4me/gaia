@@ -107,6 +107,10 @@ Both runs should start from a freshly prepared database (`harness/prepare-test-d
 # mail (Gaia → SMTP sink) — requires the mailpit sink (:8025) + --mail-url
 ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode mail --mail-url http://localhost:8025
 
+# search — needs the search fixture, loaded after prepare-test-db.sh and the other modes
+./tools/api-tester/harness/seed-search.sh
+./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode search
+
 # remote
 ./tools/api-tester/harness/run-api-tests.sh --base-uri https://api.staging.example.com --mode backend
 ```
@@ -143,6 +147,13 @@ Both runs should start from a freshly prepared database (`harness/prepare-test-d
 - `tools/api-tester/apis/mail.json`
   - **Gaia → SMTP** delivery check (opt-in; needs `--mail-url`, not run by default or in CI)
   - Saves Settings > Email pointing at the Mailpit sink, creates a user (welcome password email), calls `POST /api/v1/forgetpassword` (reset email), asserts recipient, sender, subject and link/content on the captured messages, then blanks the email settings again
+
+- `tools/api-tester/apis/search.json`
+  - **search quality**: `GET /api/v1/search` cases following the search test catalog (looking up an issue, topics, mistakes, a pasted error, input that should return nothing, list behaviour); case ids carry the catalog id (`search-a1-…`, `search-b8-1-…`)
+  - runs on its own fixture: `harness/seed-search.sh` loads `harness/seed-search.sql` (two projects, `SRA` and `SRB`, issues numbered 8917 and 9101-9172 with made-up words) into the test database. Load it after the other modes have run: its issues would show up in their lists
+  - the test API has no Ares, so meaning search is `unavailable`; meaning cases are not in this catalog
+  - cases that wait for a ranking rule are `"enabled": false` with the issue that brings the rule in `skipReason`; that issue turns them on
+  - permission cases for search (other project, unreadable fields) are in `acl.json`
 
 Generate catalogs:
 
@@ -283,6 +294,12 @@ Each API entry can declare `expects`:
 - `attributesEqual`: map of attribute key → expected value
 - `idsIncludes`: expected resource ids
 - `idsExcludes`: resource ids that must not appear
+- `idsEqual`: the collection's ids, in order, and nothing else (`[]` = no results)
+- `idsWithin`: `{ "rank": N, "ids": [...] }`, every id in the first N results (`rank: 1` = first)
+- `idsBefore`: `{ "ids": [...], "before": [...] }`, every listed id is returned and ranks above every returned `before` id
+- `idsSameAs`: `{ "case": "<earlier case id>", "top": N, "ordered": true }`, the same ids as that case returned (as a set unless `ordered`; only the first N when `top` is given)
+- `scoresWithin`: `[min, max]`, every item's `attributes.score` in the range
+- `scoresFalling`: `true`, no item's `attributes.score` is above the one before it
 
 ## Auth profiles
 

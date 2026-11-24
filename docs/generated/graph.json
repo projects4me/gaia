@@ -3836,10 +3836,8 @@
       "key": "attributesAbsent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 163,
-        "messages": [
-          "attributesAbsent: unexpectedly found attributes.…"
-        ],
+        "line": 181,
+        "messages": [],
         "values": [],
         "example": "acl/acl-field-explicit-fields-omits-denied-subject"
       }
@@ -3850,11 +3848,8 @@
       "key": "attributesEqual",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 201,
-        "messages": [
-          "attributesEqual: missing attributes.…",
-          "attributesEqual: attributes.… expected '…', got '"
-        ],
+        "line": 310,
+        "messages": [],
         "values": [],
         "example": "acl/acl-field-verify-patch-discard-as-admin"
       }
@@ -3865,10 +3860,8 @@
       "key": "attributesPresent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 152,
-        "messages": [
-          "attributesPresent: missing attributes.…"
-        ],
+        "line": 170,
+        "messages": [],
         "values": [],
         "example": "acl/acl-field-default-select-keeps-structural-projectId"
       }
@@ -3879,10 +3872,8 @@
       "key": "errorEqual",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 78,
-        "messages": [
-          "errorEqual: expected '…', got '"
-        ],
+        "line": 96,
+        "messages": [],
         "values": [],
         "example": "acl/acl-issue-denied-without-project-group"
       }
@@ -3912,15 +3903,39 @@
       }
     },
     {
+      "id": "assertion:idsBefore",
+      "type": "assertion",
+      "key": "idsBefore",
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 244,
+        "messages": [],
+        "values": [],
+        "example": "search/search-b2-several-keywords"
+      }
+    },
+    {
+      "id": "assertion:idsEqual",
+      "type": "assertion",
+      "key": "idsEqual",
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 220,
+        "messages": [
+          "idsEqual: expected ["
+        ],
+        "values": [],
+        "example": "search/search-a1-full-number"
+      }
+    },
+    {
       "id": "assertion:idsExcludes",
       "type": "assertion",
       "key": "idsExcludes",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 175,
-        "messages": [
-          "idsExcludes: unexpectedly found id …"
-        ],
+        "line": 193,
+        "messages": [],
         "values": [],
         "example": "acl/acl-members-issuetype-list-includes-system-types"
       }
@@ -3931,12 +3946,36 @@
       "key": "idsIncludes",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 174,
-        "messages": [
-          "idsIncludes: missing id …"
-        ],
+        "line": 192,
+        "messages": [],
         "values": [],
         "example": "acl/acl-project-rels-issues-omitted"
+      }
+    },
+    {
+      "id": "assertion:idsSameAs",
+      "type": "assertion",
+      "key": "idsSameAs",
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 262,
+        "messages": [],
+        "values": [],
+        "example": "search/search-b3-keywords-other-order"
+      }
+    },
+    {
+      "id": "assertion:idsWithin",
+      "type": "assertion",
+      "key": "idsWithin",
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 229,
+        "messages": [
+          "idsWithin: needs a rank of 1 or more and at least one id"
+        ],
+        "values": [],
+        "example": "search/search-a6-exact-title"
       }
     },
     {
@@ -3945,10 +3984,8 @@
       "key": "includedTypesAbsent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 102,
-        "messages": [
-          "includedTypesAbsent: unexpectedly found type …"
-        ],
+        "line": 120,
+        "messages": [],
         "values": [],
         "example": "acl/acl-project-rels-issues-omitted"
       }
@@ -3959,10 +3996,8 @@
       "key": "includedTypesPresent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 118,
-        "messages": [
-          "includedTypesPresent: missing type …"
-        ],
+        "line": 136,
+        "messages": [],
         "values": [],
         "example": "acl/acl-project-rels-mixed-issues-omitted-members-kept"
       }
@@ -3973,10 +4008,8 @@
       "key": "jsonEqual",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 84,
-        "messages": [
-          "jsonEqual: … expected '…', got '"
-        ],
+        "line": 102,
+        "messages": [],
         "values": [],
         "example": "acl/acl-system-type-labels-unchanged-after-denied-copy"
       }
@@ -3987,10 +4020,8 @@
       "key": "jsonPathAbsent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 94,
-        "messages": [
-          "jsonPathAbsent: unexpectedly found …"
-        ],
+        "line": 112,
+        "messages": [],
         "values": [],
         "example": "acl/acl-agentspec-allowed-default"
       }
@@ -4001,7 +4032,7 @@
       "key": "mail.bodyContains",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 340,
+        "line": 343,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -4013,7 +4044,7 @@
       "key": "mail.fromEmail",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 328,
+        "line": 331,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -4025,7 +4056,7 @@
       "key": "mail.fromName",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 328,
+        "line": 331,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -4037,7 +4068,7 @@
       "key": "mail.subject",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 315,
+        "line": 318,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -4049,7 +4080,7 @@
       "key": "mail.to",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 315,
+        "line": 318,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -4061,10 +4092,8 @@
       "key": "resourceNamesAbsent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 134,
-        "messages": [
-          "resourceNamesAbsent: unexpectedly found resourceName …"
-        ],
+        "line": 152,
+        "messages": [],
         "values": [],
         "example": "acl/acl-perm-list-collapses-field-mode-not-triples"
       }
@@ -4075,12 +4104,32 @@
       "key": "resourceNamesPresent",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 143,
-        "messages": [
-          "resourceNamesPresent: missing resourceName …"
-        ],
+        "line": 161,
+        "messages": [],
         "values": [],
         "example": "acl/acl-perm-list-collapses-field-mode-not-triples"
+      }
+    },
+    {
+      "id": "assertion:scoresFalling",
+      "type": "assertion",
+      "key": "scoresFalling",
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 296,
+        "messages": [],
+        "values": []
+      }
+    },
+    {
+      "id": "assertion:scoresWithin",
+      "type": "assertion",
+      "key": "scoresWithin",
+      "attributes": {
+        "source": "tools/api-tester/src/Asserter.php",
+        "line": 286,
+        "messages": [],
+        "values": []
       }
     },
     {
@@ -4089,7 +4138,7 @@
       "key": "shape",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 24,
+        "line": 42,
         "messages": [],
         "values": [
           "error",
@@ -4107,7 +4156,7 @@
       "key": "status",
       "attributes": {
         "source": "tools/api-tester/src/Asserter.php",
-        "line": 11,
+        "line": 29,
         "messages": [
           "status: expected %s, got %s"
         ],
@@ -7875,6 +7924,60 @@
       }
     },
     {
+      "id": "case:acl/acl-search-members-cannot-find-other-project-issue-by-number",
+      "type": "case",
+      "key": "acl/acl-search-members-cannot-find-other-project-issue-by-number",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-search-members-find-issue-by-readable-subject",
+      "type": "case",
+      "key": "acl/acl-search-members-find-issue-by-readable-subject",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": "acl-field",
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-search-members-find-own-project-issue-by-number",
+      "type": "case",
+      "key": "acl/acl-search-members-find-own-project-issue-by-number",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-search-members-hides-other-project-issues",
       "type": "case",
       "key": "acl/acl-search-members-hides-other-project-issues",
@@ -7889,6 +7992,24 @@
         "placeholders": [
           "issueId",
           "otherProjectIssueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-search-text-only-in-unreadable-fields-finds-nothing",
+      "type": "case",
+      "key": "acl/acl-search-text-only-in-unreadable-fields-finds-nothing",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": "acl-field",
+        "placeholders": [
+          "issueId"
         ],
         "stores": []
       }
@@ -28536,6 +28657,710 @@
       }
     },
     {
+      "id": "case:search/search-a1-full-number",
+      "type": "case",
+      "key": "search/search-a1-full-number",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a2-number-with-hash",
+      "type": "case",
+      "key": "search/search-a2-number-with-hash",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a3-short-code",
+      "type": "case",
+      "key": "search/search-a3-short-code",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a3-short-code-any-case",
+      "type": "case",
+      "key": "search/search-a3-short-code-any-case",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a3-short-code-other-project",
+      "type": "case",
+      "key": "search/search-a3-short-code-other-project",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a4-missing-number",
+      "type": "case",
+      "key": "search/search-a4-missing-number",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a5-partial-number",
+      "type": "case",
+      "key": "search/search-a5-partial-number",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a6-exact-title",
+      "type": "case",
+      "key": "search/search-a6-exact-title",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a7-exact-title-case-and-spacing",
+      "type": "case",
+      "key": "search/search-a7-exact-title-case-and-spacing",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a8-number-before-words",
+      "type": "case",
+      "key": "search/search-a8-number-before-words",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a8-number-inside-text",
+      "type": "case",
+      "key": "search/search-a8-number-inside-text",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b1-one-keyword",
+      "type": "case",
+      "key": "search/search-b1-one-keyword",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b10-very-common-word",
+      "type": "case",
+      "key": "search/search-b10-very-common-word",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b2-several-keywords",
+      "type": "case",
+      "key": "search/search-b2-several-keywords",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b3-keywords-other-order",
+      "type": "case",
+      "key": "search/search-b3-keywords-other-order",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b4-word-forms",
+      "type": "case",
+      "key": "search/search-b4-word-forms",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b4-word-forms-base",
+      "type": "case",
+      "key": "search/search-b4-word-forms-base",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b5-short-keyword",
+      "type": "case",
+      "key": "search/search-b5-short-keyword",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b6-technical-name",
+      "type": "case",
+      "key": "search/search-b6-technical-name",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b7-phrase",
+      "type": "case",
+      "key": "search/search-b7-phrase",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b8-1-excluding-a-word-in-a-path",
+      "type": "case",
+      "key": "search/search-b8-1-excluding-a-word-in-a-path",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
+      "type": "case",
+      "key": "search/search-b8-3-excluding-a-word-in-a-file-name",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b8-excluding-a-word",
+      "type": "case",
+      "key": "search/search-b8-excluding-a-word",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b9-word-only-in-description",
+      "type": "case",
+      "key": "search/search-b9-word-only-in-description",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-c1-one-typo",
+      "type": "case",
+      "key": "search/search-c1-one-typo",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-c2-several-typos",
+      "type": "case",
+      "key": "search/search-c2-several-typos",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-c3-missing-space",
+      "type": "case",
+      "key": "search/search-c3-missing-space",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-c3-space-base",
+      "type": "case",
+      "key": "search/search-c3-space-base",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-c4-british-spelling",
+      "type": "case",
+      "key": "search/search-c4-british-spelling",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-c4-spelling-base",
+      "type": "case",
+      "key": "search/search-c4-spelling-base",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-c5-abbreviation",
+      "type": "case",
+      "key": "search/search-c5-abbreviation",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-d4-pasted-error",
+      "type": "case",
+      "key": "search/search-d4-pasted-error",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-e1-gibberish",
+      "type": "case",
+      "key": "search/search-e1-gibberish",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-e2-stop-words-only",
+      "type": "case",
+      "key": "search/search-e2-stop-words-only",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-e3-symbols-only",
+      "type": "case",
+      "key": "search/search-e3-symbols-only",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-e4-other-script",
+      "type": "case",
+      "key": "search/search-e4-other-script",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-e5-too-short",
+      "type": "case",
+      "key": "search/search-e5-too-short",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-e6-too-long",
+      "type": "case",
+      "key": "search/search-e6-too-long",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-e7-unrelated-topic",
+      "type": "case",
+      "key": "search/search-e7-unrelated-topic",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-f2-scores-mean-something",
+      "type": "case",
+      "key": "search/search-f2-scores-mean-something",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-f3-limit-5",
+      "type": "case",
+      "key": "search/search-f3-limit-5",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-f3-limit-50",
+      "type": "case",
+      "key": "search/search-f3-limit-50",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-f5-exact-title-on-top",
+      "type": "case",
+      "key": "search/search-f5-exact-title-on-top",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": false,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-f7-same-query-twice",
+      "type": "case",
+      "key": "search/search-f7-same-query-twice",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "component:Conversationactivities",
       "type": "component",
       "key": "Conversationactivities",
@@ -44179,9 +45004,9 @@
       "attributes": {
         "scoped": true,
         "scopes": {
-          "none": 0,
-          "all": 1,
-          "members": 2
+          "none": null,
+          "all": null,
+          "members": null
         },
         "kind": "action"
       }
@@ -64509,6 +65334,111 @@
       "to": "profile:aclNoProject"
     },
     {
+      "from": "case:acl/acl-search-members-cannot-find-other-project-issue-by-number",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-search-members-cannot-find-other-project-issue-by-number",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-search-members-cannot-find-other-project-issue-by-number",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-search-members-cannot-find-other-project-issue-by-number",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:acl/acl-search-members-cannot-find-other-project-issue-by-number",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:acl/acl-search-members-cannot-find-other-project-issue-by-number",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-search-members-cannot-find-other-project-issue-by-number",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectIssueId"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-issue-by-readable-subject",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-issue-by-readable-subject",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-issue-by-readable-subject",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-issue-by-readable-subject",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-issue-by-readable-subject",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-issue-by-readable-subject",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-issue-by-readable-subject",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-own-project-issue-by-number",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-own-project-issue-by-number",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-own-project-issue-by-number",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-own-project-issue-by-number",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-own-project-issue-by-number",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-own-project-issue-by-number",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-search-members-find-own-project-issue-by-number",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
       "from": "case:acl/acl-search-members-hides-other-project-issues",
       "type": "asserts",
       "to": "assertion:idsExcludes"
@@ -64552,6 +65482,41 @@
       "from": "case:acl/acl-search-members-hides-other-project-issues",
       "type": "uses_fixture",
       "to": "fixture:otherProjectIssueId"
+    },
+    {
+      "from": "case:acl/acl-search-text-only-in-unreadable-fields-finds-nothing",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-search-text-only-in-unreadable-fields-finds-nothing",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-search-text-only-in-unreadable-fields-finds-nothing",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-search-text-only-in-unreadable-fields-finds-nothing",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:acl/acl-search-text-only-in-unreadable-fields-finds-nothing",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:acl/acl-search-text-only-in-unreadable-fields-finds-nothing",
+      "type": "runs_as",
+      "to": "profile:aclFields"
+    },
+    {
+      "from": "case:acl/acl-search-text-only-in-unreadable-fields-finds-nothing",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
     },
     {
       "from": "case:acl/acl-searchpending-list-allowed-ares",
@@ -102235,6 +103200,1356 @@
     },
     {
       "from": "case:mail/mail-welcome-password-email-is-delivered",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a1-full-number",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-a1-full-number",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a1-full-number",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a1-full-number",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a1-full-number",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a1-full-number",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a2-number-with-hash",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-a2-number-with-hash",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a2-number-with-hash",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a2-number-with-hash",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a2-number-with-hash",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a2-number-with-hash",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a3-short-code",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-a3-short-code",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a3-short-code",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a3-short-code",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a3-short-code",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a3-short-code",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a3-short-code-any-case",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-a3-short-code-any-case",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a3-short-code-any-case",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a3-short-code-any-case",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a3-short-code-any-case",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a3-short-code-any-case",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a3-short-code-other-project",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-a3-short-code-other-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a3-short-code-other-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a3-short-code-other-project",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a3-short-code-other-project",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a3-short-code-other-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a4-missing-number",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-a4-missing-number",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a4-missing-number",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a4-missing-number",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a4-missing-number",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a4-missing-number",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a5-partial-number",
+      "type": "asserts",
+      "to": "assertion:idsBefore"
+    },
+    {
+      "from": "case:search/search-a5-partial-number",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-a5-partial-number",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a5-partial-number",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a5-partial-number",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a5-partial-number",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a5-partial-number",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a6-exact-title",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-a6-exact-title",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a6-exact-title",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a6-exact-title",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a6-exact-title",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a6-exact-title",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a7-exact-title-case-and-spacing",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-a7-exact-title-case-and-spacing",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a7-exact-title-case-and-spacing",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a7-exact-title-case-and-spacing",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a7-exact-title-case-and-spacing",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a7-exact-title-case-and-spacing",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a8-number-before-words",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-a8-number-before-words",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a8-number-before-words",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a8-number-before-words",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a8-number-before-words",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a8-number-before-words",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a8-number-inside-text",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-a8-number-inside-text",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a8-number-inside-text",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a8-number-inside-text",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a8-number-inside-text",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a8-number-inside-text",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b1-one-keyword",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-b1-one-keyword",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b1-one-keyword",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b1-one-keyword",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b1-one-keyword",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b1-one-keyword",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b10-very-common-word",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-b10-very-common-word",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b10-very-common-word",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b10-very-common-word",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b10-very-common-word",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b10-very-common-word",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b2-several-keywords",
+      "type": "asserts",
+      "to": "assertion:idsBefore"
+    },
+    {
+      "from": "case:search/search-b2-several-keywords",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b2-several-keywords",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b2-several-keywords",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b2-several-keywords",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b2-several-keywords",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b3-keywords-other-order",
+      "type": "asserts",
+      "to": "assertion:idsSameAs"
+    },
+    {
+      "from": "case:search/search-b3-keywords-other-order",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b3-keywords-other-order",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b3-keywords-other-order",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b3-keywords-other-order",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b3-keywords-other-order",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b4-word-forms",
+      "type": "asserts",
+      "to": "assertion:idsSameAs"
+    },
+    {
+      "from": "case:search/search-b4-word-forms",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b4-word-forms",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b4-word-forms",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b4-word-forms",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b4-word-forms",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b4-word-forms-base",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:search/search-b4-word-forms-base",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b4-word-forms-base",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b4-word-forms-base",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b4-word-forms-base",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b4-word-forms-base",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b5-short-keyword",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:search/search-b5-short-keyword",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:search/search-b5-short-keyword",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b5-short-keyword",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b5-short-keyword",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b5-short-keyword",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b5-short-keyword",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b6-technical-name",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-b6-technical-name",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b6-technical-name",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b6-technical-name",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b6-technical-name",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b6-technical-name",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b7-phrase",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:search/search-b7-phrase",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:search/search-b7-phrase",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b7-phrase",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b7-phrase",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b7-phrase",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b7-phrase",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b8-1-excluding-a-word-in-a-path",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b8-3-excluding-a-word-in-a-file-name",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b8-excluding-a-word",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:search/search-b8-excluding-a-word",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:search/search-b8-excluding-a-word",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b8-excluding-a-word",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b8-excluding-a-word",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b8-excluding-a-word",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b8-excluding-a-word",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b9-word-only-in-description",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-b9-word-only-in-description",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b9-word-only-in-description",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b9-word-only-in-description",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b9-word-only-in-description",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b9-word-only-in-description",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-c1-one-typo",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-c1-one-typo",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-c1-one-typo",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-c1-one-typo",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-c1-one-typo",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-c1-one-typo",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-c2-several-typos",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-c2-several-typos",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-c2-several-typos",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-c2-several-typos",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-c2-several-typos",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-c2-several-typos",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-c3-missing-space",
+      "type": "asserts",
+      "to": "assertion:idsSameAs"
+    },
+    {
+      "from": "case:search/search-c3-missing-space",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-c3-missing-space",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-c3-missing-space",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-c3-missing-space",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-c3-missing-space",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-c3-space-base",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:search/search-c3-space-base",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-c3-space-base",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-c3-space-base",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-c3-space-base",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-c3-space-base",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-c4-british-spelling",
+      "type": "asserts",
+      "to": "assertion:idsSameAs"
+    },
+    {
+      "from": "case:search/search-c4-british-spelling",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-c4-british-spelling",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-c4-british-spelling",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-c4-british-spelling",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-c4-british-spelling",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-c4-spelling-base",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:search/search-c4-spelling-base",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-c4-spelling-base",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-c4-spelling-base",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-c4-spelling-base",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-c4-spelling-base",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-c5-abbreviation",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-c5-abbreviation",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-c5-abbreviation",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-c5-abbreviation",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-c5-abbreviation",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-c5-abbreviation",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-d4-pasted-error",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-d4-pasted-error",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-d4-pasted-error",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-d4-pasted-error",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-d4-pasted-error",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-d4-pasted-error",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-e1-gibberish",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-e1-gibberish",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-e1-gibberish",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-e1-gibberish",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-e1-gibberish",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-e1-gibberish",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-e2-stop-words-only",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-e2-stop-words-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-e2-stop-words-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-e2-stop-words-only",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-e2-stop-words-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-e2-stop-words-only",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-e3-symbols-only",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-e3-symbols-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-e3-symbols-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-e3-symbols-only",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-e3-symbols-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-e3-symbols-only",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-e4-other-script",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-e4-other-script",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-e4-other-script",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-e4-other-script",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-e4-other-script",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-e4-other-script",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-e5-too-short",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-e5-too-short",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-e5-too-short",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-e5-too-short",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-e5-too-short",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-e6-too-long",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-e6-too-long",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-e6-too-long",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-e6-too-long",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-e6-too-long",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-e7-unrelated-topic",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-e7-unrelated-topic",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-e7-unrelated-topic",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-e7-unrelated-topic",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-e7-unrelated-topic",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-e7-unrelated-topic",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-f2-scores-mean-something",
+      "type": "asserts",
+      "to": "assertion:scoresFalling"
+    },
+    {
+      "from": "case:search/search-f2-scores-mean-something",
+      "type": "asserts",
+      "to": "assertion:scoresWithin"
+    },
+    {
+      "from": "case:search/search-f2-scores-mean-something",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-f2-scores-mean-something",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-f2-scores-mean-something",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-f2-scores-mean-something",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-f2-scores-mean-something",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-f3-limit-5",
+      "type": "asserts",
+      "to": "assertion:idsSameAs"
+    },
+    {
+      "from": "case:search/search-f3-limit-5",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-f3-limit-5",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-f3-limit-5",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-f3-limit-5",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-f3-limit-5",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-f3-limit-50",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:search/search-f3-limit-50",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-f3-limit-50",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-f3-limit-50",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-f3-limit-50",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-f3-limit-50",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-f5-exact-title-on-top",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:search/search-f5-exact-title-on-top",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-f5-exact-title-on-top",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-f5-exact-title-on-top",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-f5-exact-title-on-top",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-f5-exact-title-on-top",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-f5-exact-title-on-top",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-f7-same-query-twice",
+      "type": "asserts",
+      "to": "assertion:idsSameAs"
+    },
+    {
+      "from": "case:search/search-f7-same-query-twice",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-f7-same-query-twice",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-f7-same-query-twice",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-f7-same-query-twice",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-f7-same-query-twice",
       "type": "runs_as",
       "to": "profile:default"
     },
