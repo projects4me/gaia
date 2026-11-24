@@ -13,6 +13,8 @@ use Gaia\Libraries\Search\ExactTitleMatcher;
 use Gaia\Libraries\Search\FtsSearcher;
 use Gaia\Libraries\Search\FuzzySearcher;
 use Gaia\Libraries\Search\PartialNumberMatcher;
+use Gaia\Libraries\Search\QueryExpander;
+use Gaia\Libraries\Search\QueryExpansion;
 use Gaia\Libraries\Search\ReferenceMatcher;
 use Gaia\Libraries\Search\SearchableRegistry;
 use Gaia\Libraries\Search\SearchQuery;
@@ -467,6 +469,111 @@ class SearchServiceTest extends TestCase
         $this->assertSame(array(), $words->of(array($target), new SearchQuery('the 123 ab zebracorn')));
     }
 
+    public function testFindsAJoinedWordWrittenAsTwoWordsAndTwoWordsWrittenJoined()
+    {
+        $joined = $this->addIssue('Quokkaboard filters reset', null);
+        $apart = $this->addIssue('Quokka board columns overlap', null);
+        $apartToo = $this->addIssue('Quokka board loses card order', null);
+
+        foreach (array('quokkaboard', 'quokka board') as $query) {
+            $keyword = $this->keywordMatches($this->search($query));
+            sort($keyword);
+            $expected = array($joined, $apart, $apartToo);
+            sort($expected);
+            $this->assertSame($expected, $keyword, $query);
+        }
+    }
+
+    public function testASplitPairOnlyOneRecordHasIsNotUsed()
+    {
+        $this->addIssue('Wombatpanel opens twice', null);
+        $once = $this->addIssue('Wombat panel docks left', null);
+
+        $this->assertNotContains($once, $this->keywordMatches($this->search('wombatpanel')));
+    }
+
+    public function testFindsTheOtherSpellingAndMarksItInTheSnippet()
+    {
+        $id = $this->addIssue('Quokkacolor picker stuck', 'The quokkacolor picker never closes.');
+
+        $items = $this->search('quokkacolour');
+
+        $this->assertContains($id, $this->keywordMatches($items));
+        $snippet = array_values(array_filter($items, function ($item) use ($id) {
+            return $item['id'] === $id;
+        }))[0]['snippet'];
+        $this->assertStringContainsString('<mark>quokkacolor</mark>', $snippet);
+    }
+
+    public function testFindsTheFullWordOfAnAbbreviationAndTheOtherWay()
+    {
+        $full = $this->addIssue('Quokka configuration screen hides options', null);
+        $short = $this->addIssue('Quokka config file ignored', null);
+
+        $this->assertContains($full, $this->keywordMatches($this->search('quokka config')));
+        $this->assertContains($short, $this->keywordMatches($this->search('quokka configuration')));
+    }
+
+    public function testLogoutIsNotReadAsLogOut()
+    {
+        $this->addIssue('Logout fails for quokkas', null);
+        $apart = $this->addIssue('Log out button hidden for quokkas', null);
+        $this->addIssue('Log out link hidden for quokkas', null);
+
+        $this->assertNotContains($apart, $this->keywordMatches($this->search('logout quokkas')));
+    }
+
+    public function testATokenWithAWordThatHasFormsStillMatchesWhole()
+    {
+        $this->addIssue('Quokka configuration screen', null);
+        $token = $this->addIssue('Quokka config.php is ignored', null);
+
+        $this->assertContains($token, $this->keywordMatches($this->search('quokka config.php')));
+        $this->assertContains($token, $this->keywordMatches($this->search('quokkas config.php')));
+    }
+
+    public function testChecksEachFormOncePerTypeAndQuery()
+    {
+        $this->addIssue('Quokkacolor picker', null);
+        $candidates = new SearchTestCountingCandidates($this->db);
+        $expansion = $this->expansion($candidates);
+        $target = $this->target();
+
+        $expansion->of($target, new SearchQuery('quokkacolour quokkacolour'));
+        $expansion->of($target, new SearchQuery('quokkacolour quokkacolour'));
+        $expansion->of($target, new SearchQuery('quokkacolour'));
+
+        $this->assertArrayHasKey('quokkacolor', $candidates->lookups);
+        $this->assertArrayHasKey('quokka colour', $candidates->lookups);
+        $this->assertSame(array_fill_keys(array_keys($candidates->lookups), 1), $candidates->lookups);
+    }
+
+    public function testAFormOnlyInAProjectTheUserCannotReadIsNotUsed()
+    {
+        $this->addIssue('Quokkacolor secret', null, null, self::PROJECT_B);
+        $this->addIssue('Quokkacolour open', null, null, self::PROJECT_A);
+        $expansion = $this->expansion(new CandidateQuery($this->db));
+        $query = new SearchQuery('quokkacolour');
+
+        $this->assertNotSame(array(), $expansion->of($this->target(), $query)->groups());
+
+        $this->acl->scope = Acl::SCOPE_MEMBERS;
+        $this->acl->projectIds = array(self::PROJECT_A);
+        $this->assertSame(array(), $this->expansion(new CandidateQuery($this->db))->of($this->target(), $query)->groups());
+    }
+
+    public function testASplitPairCountsOnlyTheRecordsTheUserMayRead()
+    {
+        $this->addIssue('Wombat panel docks left', null, null, self::PROJECT_A);
+        $this->addIssue('Wombat panel docks right', null, null, self::PROJECT_B);
+        $this->acl->scope = Acl::SCOPE_MEMBERS;
+        $this->acl->projectIds = array(self::PROJECT_A);
+
+        $keywords = $this->expansion(new CandidateQuery($this->db))->of($this->target(), new SearchQuery('wombatpanel'));
+
+        $this->assertSame(array(), $keywords->groups());
+    }
+
     public function testSearchersReportTheRawSignalOfEachMatch()
     {
         $this->embeddings->vectors['zebracorn'] = $this->vector(1);
@@ -476,7 +583,7 @@ class SearchServiceTest extends TestCase
         $target = $this->target();
 
         $exact = (new ExactMatcher($candidates, self::NUMBER_QUERY_WORDS))->rank($target, new SearchQuery('987654303'), 10);
-        $fts = (new FtsSearcher($candidates, new TextSearchQuery()))->rank($target, new SearchQuery('zebracorn'), 10);
+        $fts = (new FtsSearcher($candidates, new TextSearchQuery(), $this->expansion($candidates)))->rank($target, new SearchQuery('zebracorn'), 10);
         $fuzzy = (new FuzzySearcher($candidates, 0.3))->rank($target, new SearchQuery('zebracorn'), 10);
         $semantic = (new SemanticSearcher($candidates, $this->embeddings, 0.5))->rank($target, new SearchQuery('zebracorn'), 10);
 
@@ -501,7 +608,7 @@ class SearchServiceTest extends TestCase
         $target = $this->target();
 
         $semantic = (new SemanticSearcher($candidates, $this->embeddings, 0.5))->rank($target, new SearchQuery('zebracorn'), 10);
-        $fts = (new FtsSearcher($candidates, new TextSearchQuery()))->rank($target, new SearchQuery('zebracorn'), 10);
+        $fts = (new FtsSearcher($candidates, new TextSearchQuery(), $this->expansion($candidates)))->rank($target, new SearchQuery('zebracorn'), 10);
 
         $this->assertSame(array($near, $far), array_keys($semantic));
         $this->assertLessThan($semantic[$far], $semantic[$near]);
@@ -893,6 +1000,7 @@ class SearchServiceTest extends TestCase
         $candidates = $candidates ?? new CandidateQuery($this->db);
         $tsquery = new TextSearchQuery();
         $exact = new ExactMatcher($candidates, self::NUMBER_QUERY_WORDS);
+        $expansion = $this->expansion($candidates);
 
         return new SearchService(
             SearchableRegistry::fromMetadata($metaManager),
@@ -903,7 +1011,7 @@ class SearchServiceTest extends TestCase
                 array(
                     $exact,
                     new ExactTitleMatcher($candidates),
-                    new FtsSearcher($candidates, $tsquery),
+                    new FtsSearcher($candidates, $tsquery, $expansion),
                     new FuzzySearcher($candidates, 0.3),
                     new SemanticSearcher($candidates, $this->embeddings, $maxDistance),
                 ),
@@ -914,8 +1022,36 @@ class SearchServiceTest extends TestCase
             new StrongestSignal(self::THRESHOLD, 0.6, 0.3, 0.156, 0.402, 0.5, 0.5),
             new UnknownWords($candidates, $tsquery),
             new DisplayLoader($candidates, new Snippet($tsquery)),
+            $expansion,
             $candidateDepth
         );
+    }
+
+    /**
+     * This function returns the ids of the results the keyword search found.
+     *
+     * @param array $items
+     * @return array
+     */
+    private function keywordMatches(array $items)
+    {
+        $ids = array();
+        foreach ($items as $item) {
+            if (in_array(FtsSearcher::KIND, $item['matchedBy'], true)) {
+                $ids[] = $item['id'];
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
+     * @param CandidateQuery $candidates
+     * @return QueryExpansion
+     */
+    private function expansion(CandidateQuery $candidates)
+    {
+        return new QueryExpansion($candidates, new TextSearchQuery(), new QueryExpander(16, 5, 3), 2);
     }
 
     /**
@@ -1068,5 +1204,46 @@ class SearchTestSettingSpy extends CandidateQuery
         }
 
         return parent::signals($target, $condition, $signal, $order, $bind, $limit);
+    }
+}
+
+/**
+ * A CandidateQuery that counts the lookups of each value it checks.
+ */
+class SearchTestCountingCandidates extends CandidateQuery
+{
+    /**
+     * @var array
+     */
+    public $lookups = array();
+
+    /**
+     * {@inheritdoc}
+     */
+    public function exists(\Gaia\Libraries\Search\SearchTarget $target, $condition, array $bind)
+    {
+        $this->count($bind);
+
+        return parent::exists($target, $condition, $bind);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function countUpTo(\Gaia\Libraries\Search\SearchTarget $target, $condition, array $bind, $max)
+    {
+        $this->count($bind);
+
+        return parent::countUpTo($target, $condition, $bind, $max);
+    }
+
+    /**
+     * @param array $bind
+     * @return void
+     */
+    private function count(array $bind)
+    {
+        $value = isset($bind['search_fts']) ? $bind['search_fts'] : $bind['search_phrase'];
+        $this->lookups[$value] = (isset($this->lookups[$value]) ? $this->lookups[$value] : 0) + 1;
     }
 }

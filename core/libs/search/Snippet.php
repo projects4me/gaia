@@ -42,20 +42,23 @@ class Snippet
     }
 
     /**
-     * This function returns the headline expression over a column, with its parameters.
+     * This function returns the headline expression over a column, with its parameters. It marks the words of the
+     * keyword query, so its kept alternative forms too.
      *
      * @param SearchTarget $target
      * @param string $column The quoted column
-     * @param string $query
+     * @param KeywordQuery $keywords
      * @return array ['sql' => string, 'bind' => array]
      */
-    public function expression(SearchTarget $target, $column, $query)
+    public function expression(SearchTarget $target, $column, KeywordQuery $keywords)
     {
+        $tsquery = $this->tsquery->expression($target, $keywords);
+
         return array(
             'sql' => 'ts_headline(' . $this->tsquery->config()
                 . ', translate(' . $column . ', :search_marks, \'\'), '
-                . $this->tsquery->sql() . ', :search_headline)',
-            'bind' => $this->tsquery->bind($target, $query) + array(
+                . $tsquery['sql'] . ', :search_headline)',
+            'bind' => $tsquery['bind'] + array(
                 'search_marks' => self::START . self::STOP,
                 'search_headline' => 'MaxFragments=1, MaxWords=30, MinWords=10, StartSel=' . self::START
                     . ', StopSel=' . self::STOP,

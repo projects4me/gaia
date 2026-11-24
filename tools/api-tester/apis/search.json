@@ -736,9 +736,7 @@
           "case": "search-c4-spelling-base"
         }
       },
-      "note": "C4: same issues as the American spelling",
-      "enabled": false,
-      "skipReason": "pending agaia-4893: colour also keeps a partial-word fuzzy match (Pinned notes lose their colour label) that color drops"
+      "note": "C4: same issues as the American spelling"
     },
     {
       "id": "search-c5-abbreviation",

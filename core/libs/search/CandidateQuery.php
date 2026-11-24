@@ -129,6 +129,20 @@ class CandidateQuery
     }
 
     /**
+     * This function counts the records in scope that match the condition, up to a maximum, so it stops early.
+     *
+     * @param SearchTarget $target
+     * @param string $condition The match condition, over columns from column() and :search_ parameters
+     * @param array $bind The condition's parameters, named search_*
+     * @param int $max
+     * @return int
+     */
+    public function countUpTo(SearchTarget $target, $condition, array $bind, $max)
+    {
+        return count($this->rows($target, array(), $condition, $bind, ' LIMIT ' . (int) $max));
+    }
+
+    /**
      * This function returns the id and the given columns of the records in scope that have one of the given ids.
      *
      * @param SearchTarget $target

@@ -42,6 +42,10 @@ class SearchServiceFactoryTest extends TestCase
             'partialNumberBoundary' => 0.5,
             'candidateDepth' => 100,
             'numberQueryWords' => 5,
+            'maxAlternatives' => 16,
+            'spellingMinLength' => 5,
+            'splitMinPart' => 3,
+            'splitMinRecords' => 2,
         );
     }
 
@@ -87,6 +91,10 @@ class SearchServiceFactoryTest extends TestCase
             'partialNumberBoundary',
             'candidateDepth',
             'numberQueryWords',
+            'maxAlternatives',
+            'spellingMinLength',
+            'splitMinPart',
+            'splitMinRecords',
         );
 
         return array_combine($names, array_map(function ($name) {

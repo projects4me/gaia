@@ -68,6 +68,11 @@ class SearchService
     private $display;
 
     /**
+     * @var QueryExpansion
+     */
+    private $expansion;
+
+    /**
      * How many candidates each searcher gives per type: the ranking needs more than the limit to reorder.
      *
      * @var int
@@ -83,6 +88,7 @@ class SearchService
      * @param StrongestSignal $ranking
      * @param UnknownWords $unknownWords
      * @param DisplayLoader $display
+     * @param QueryExpansion $expansion The keyword queries the snippets mark, the keyword search's
      * @param int $candidateDepth How many candidates each searcher gives per type, at least 1
      * @throws \Gaia\Exception\Exception When the candidate depth is not a positive whole number
      */
@@ -95,6 +101,7 @@ class SearchService
         StrongestSignal $ranking,
         UnknownWords $unknownWords,
         DisplayLoader $display,
+        QueryExpansion $expansion,
         $candidateDepth
     ) {
         if (filter_var($candidateDepth, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1))) === false) {
@@ -108,6 +115,7 @@ class SearchService
         $this->ranking = $ranking;
         $this->unknownWords = $unknownWords;
         $this->display = $display;
+        $this->expansion = $expansion;
         $this->candidateDepth = (int) $candidateDepth;
     }
 
@@ -163,7 +171,7 @@ class SearchService
         $unknownWords = $this->hasFuzzyResults($found) ? $this->hasUnknownWords($targets, $query) : true;
         $ranked = $this->ranking->rank($found, $request->limit(), $unknownWords, $query->hasSeveralWords());
 
-        return new SearchResults($this->results($ranked, $targets, $query->text()), $unavailable);
+        return new SearchResults($this->results($ranked, $targets, $query), $unavailable);
     }
 
     /**
@@ -308,10 +316,10 @@ class SearchService
      *
      * @param array $ranked Items from StrongestSignal, keys "type:id"
      * @param SearchTarget[] $targets Keyed by type
-     * @param string $query
+     * @param SearchQuery $query
      * @return array
      */
-    private function results(array $ranked, array $targets, $query)
+    private function results(array $ranked, array $targets, SearchQuery $query)
     {
         $idsByType = array();
         foreach ($ranked as $item) {
@@ -322,7 +330,8 @@ class SearchService
         $values = array();
         foreach ($idsByType as $type => $ids) {
             $target = $targets[$type];
-            $values[$type] = $this->display->load($target, $ids, $query, $this->readableDisplay($target));
+            $keywords = $this->expansion->of($target, $query);
+            $values[$type] = $this->display->load($target, $ids, $keywords, $this->readableDisplay($target));
         }
 
         $results = array();

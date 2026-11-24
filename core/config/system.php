@@ -61,6 +61,16 @@ $config['system'] = [
         'numberQueryWords' => 5,
         // Candidates each searcher gives per type: the ranking needs more than the result limit to reorder.
         'candidateDepth' => 100,
+        // Other forms of the query's words (abbreviations, spellings, split and joined words) proposed at most per
+        // query; each is checked against the records once per type searched, so this bounds those lookups.
+        'maxAlternatives' => 16,
+        // Letters a query word needs before its British or American spelling is tried (colour: color), so short
+        // words (door, tour) are left alone.
+        'spellingMinLength' => 5,
+        // Letters each half of a query word split into two needs (taskboard: task board).
+        'splitMinPart' => 3,
+        // Records a joined query word split into two (taskboard: task board) must have the pair in, to be used.
+        'splitMinRecords' => 2,
     ],
 ];
 

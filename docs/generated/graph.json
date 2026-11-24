@@ -29265,7 +29265,7 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": false,
+        "enabled": true,
         "source": null,
         "placeholders": [],
         "stores": []

@@ -65,7 +65,21 @@ class SearchQuery
     /**
      * @var array
      */
-    private $words;
+    private $words = array();
+
+    /**
+     * The text's runs of non-space characters, as typed.
+     *
+     * @var array
+     */
+    private $chunks;
+
+    /**
+     * Each word's chunk, by the word's position.
+     *
+     * @var array
+     */
+    private $chunkOf = array();
 
     /**
      * @param string $text The query text, trimmed and in bounds (SearchRequest)
@@ -73,7 +87,13 @@ class SearchQuery
     public function __construct($text)
     {
         $this->text = (string) $text;
-        $this->words = $this->wordsOf($this->text);
+        $this->chunks = preg_split('/\s+/u', $this->text, -1, PREG_SPLIT_NO_EMPTY) ?: array();
+        foreach ($this->chunks as $chunk => $chunkText) {
+            foreach ($this->wordsOf($chunkText) as $word) {
+                $this->chunkOf[count($this->words)] = $chunk;
+                $this->words[] = $word;
+            }
+        }
     }
 
     /**
@@ -192,6 +212,34 @@ class SearchQuery
     public function nonStopLength()
     {
         return mb_strlen(implode('', $this->nonStopWords()), 'UTF-8');
+    }
+
+    /**
+     * This function tells whether the word at a position stands alone in the text: its run of non-space characters
+     * holds no other word (quotes around it are fine), so it is not part of a token such as config.php or 1.2.3.
+     *
+     * @param int $at
+     * @return bool
+     */
+    public function standsAlone($at)
+    {
+        return isset($this->chunkOf[$at]) && count(array_keys($this->chunkOf, $this->chunkOf[$at], true)) === 1;
+    }
+
+    /**
+     * This function returns the text as typed without the words at the given positions, which must stand alone.
+     *
+     * @param array $positions
+     * @return string
+     */
+    public function textWithout(array $positions)
+    {
+        $left = $this->chunks;
+        foreach ($positions as $at) {
+            unset($left[$this->chunkOf[$at]]);
+        }
+
+        return implode(' ', $left);
     }
 
     /**

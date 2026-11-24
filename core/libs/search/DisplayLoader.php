@@ -41,11 +41,11 @@ class DisplayLoader
      *
      * @param SearchTarget $target
      * @param array $ids
-     * @param string $query
+     * @param KeywordQuery $keywords The keyword query the snippet marks
      * @param array $display The display entries to load: title and/or snippet => field
      * @return array Each id => ['title' => ..., 'snippet' => ...], with the entries asked for
      */
-    public function load(SearchTarget $target, array $ids, $query, array $display)
+    public function load(SearchTarget $target, array $ids, KeywordQuery $keywords, array $display)
     {
         $select = array();
         $bind = array();
@@ -53,7 +53,7 @@ class DisplayLoader
             $select['title'] = $this->candidates->column($display['title']);
         }
         if (isset($display['snippet'])) {
-            $headline = $this->snippet->expression($target, $this->candidates->column($display['snippet']), $query);
+            $headline = $this->snippet->expression($target, $this->candidates->column($display['snippet']), $keywords);
             $select['snippet'] = $headline['sql'];
             $bind += $headline['bind'];
         }

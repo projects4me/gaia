@@ -84,9 +84,8 @@ class UnknownWords
     {
         $vector = $this->candidates->column(SearchBlock::VECTOR);
         foreach ($targets as $target) {
-            $bind = $this->tsquery->bind($target, $word);
-            $condition = $vector . ' @@ plainto_tsquery(' . $this->tsquery->config() . ', :search_fts)';
-            if ($this->candidates->exists($target, $condition, $bind)) {
+            $tsquery = $this->tsquery->expression($target, KeywordQuery::plain($word));
+            if ($this->candidates->exists($target, $vector . ' @@ ' . $tsquery['sql'], $tsquery['bind'])) {
                 return true;
             }
         }
