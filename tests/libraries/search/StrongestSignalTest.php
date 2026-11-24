@@ -31,7 +31,7 @@ class StrongestSignalTest extends TestCase
         $ranked = $this->ranking()->rank(array(
             array('kind' => 'fts', 'signals' => array('issue:a' => 0.3, 'issue:b' => 0.5)),
             array('kind' => 'fuzzy', 'signals' => array('issue:a' => 1.0)),
-        ), 20, false);
+        ), 20, true, false);
 
         $this->assertSame(array('issue:a', 'issue:b'), array_column($ranked, 'key'));
         $this->assertEqualsWithDelta(0.6, $ranked[0]['score'], 1e-12);
@@ -44,7 +44,7 @@ class StrongestSignalTest extends TestCase
     {
         $ranked = $this->ranking(0)->rank(array(
             array('kind' => 'fuzzy', 'signals' => array('issue:a' => 0.3, 'issue:b' => 0.65, 'issue:c' => 1.0)),
-        ), 20, false);
+        ), 20, true, false);
 
         $this->assertSame(
             array('issue:c' => 0.6, 'issue:b' => 0.3, 'issue:a' => 0.0),
@@ -62,7 +62,7 @@ class StrongestSignalTest extends TestCase
                 'issue:mid' => 0.279,
                 'issue:far' => 0.45,
             )),
-        ), 20, false);
+        ), 20, true, false);
 
         $scores = array_column($ranked, 'score', 'key');
         $this->assertEqualsWithDelta(1.0, $scores['issue:near'], 1e-12);
@@ -75,7 +75,7 @@ class StrongestSignalTest extends TestCase
         $ranked = $this->ranking()->rank(array(
             array('kind' => 'fts', 'signals' => array('issue:a' => 0.15, 'issue:b' => 0.1499)),
             array('kind' => 'fuzzy', 'signals' => array('issue:c' => 0.35)),
-        ), 20, false);
+        ), 20, true, false);
 
         $this->assertSame(array('issue:a'), array_column($ranked, 'key'));
     }
@@ -85,7 +85,7 @@ class StrongestSignalTest extends TestCase
         $ranked = $this->ranking()->rank(array(
             array('kind' => 'fts', 'signals' => array('issue:a' => 0.9, 'issue:b' => 0.4)),
             array('kind' => 'exact', 'signals' => array('issue:b' => 1.0, 'issue:c' => 1.0)),
-        ), 20, false);
+        ), 20, true, false);
 
         $this->assertSame(array('issue:b', 'issue:c', 'issue:a'), array_column($ranked, 'key'));
         $this->assertSame(array(1.0, 1.0, 0.9), array_column($ranked, 'score'));
@@ -97,7 +97,7 @@ class StrongestSignalTest extends TestCase
         $ranked = (new StrongestSignal(0.995, 0.6, 0.3, 0.156, 0.402, 0.998))->rank(array(
             array('kind' => 'fts', 'signals' => array('issue:a' => 0.99)),
             array('kind' => 'exact', 'signals' => array('issue:b' => 1.0)),
-        ), 20, false);
+        ), 20, true, false);
 
         $this->assertSame(array('issue:b'), array_column($ranked, 'key'));
     }
@@ -106,20 +106,69 @@ class StrongestSignalTest extends TestCase
     {
         $ranked = $this->ranking()->rank(array(
             array('kind' => 'fts', 'signals' => array('issue:c' => 0.5, 'issue:a' => 0.5, 'issue:b' => 0.5)),
-        ), 2, false);
+        ), 2, true, false);
 
         $this->assertSame(array('issue:a', 'issue:b'), array_column($ranked, 'key'));
     }
 
+    public function testFuzzyOnlyRecordsAreDroppedWhenKeywordOrMeaningMatchesAndNoWordIsUnknown()
+    {
+        $found = array(
+            array('kind' => 'fts', 'signals' => array('issue:a' => 0.5)),
+            array('kind' => 'fuzzy', 'signals' => array('issue:a' => 1.0, 'issue:b' => 1.0)),
+        );
+
+        $this->assertSame(array('issue:a'), array_column($this->ranking()->rank($found, 20, false, false), 'key'));
+        $this->assertSame(array('issue:a', 'issue:b'), array_column($this->ranking()->rank($found, 20, true, false), 'key'));
+    }
+
+    public function testFuzzyOnlyRecordsStayWhenNothingElseMatches()
+    {
+        $found = array(array('kind' => 'fuzzy', 'signals' => array('issue:b' => 1.0)));
+
+        $this->assertSame(array('issue:b'), array_column($this->ranking()->rank($found, 20, false, false), 'key'));
+    }
+
+    public function testAMeaningMatchUnderTheThresholdDoesNotDropFuzzyOnlyRecords()
+    {
+        $found = array(
+            array('kind' => 'semantic', 'signals' => array('issue:a' => 0.4)),
+            array('kind' => 'fuzzy', 'signals' => array('issue:b' => 1.0)),
+        );
+
+        $this->assertSame(array('issue:b'), array_column($this->ranking()->rank($found, 20, false, false), 'key'));
+    }
+
+    public function testAMeaningMatchAtTheThresholdDropsFuzzyOnlyRecords()
+    {
+        $found = array(
+            array('kind' => 'semantic', 'signals' => array('issue:a' => 0.156)),
+            array('kind' => 'fuzzy', 'signals' => array('issue:b' => 1.0)),
+        );
+
+        $this->assertSame(array('issue:a'), array_column($this->ranking()->rank($found, 20, false, false), 'key'));
+    }
+
+    public function testExactRecordsAreNeverDropped()
+    {
+        $found = array(
+            array('kind' => 'fts', 'signals' => array('issue:a' => 0.5)),
+            array('kind' => 'exact', 'signals' => array('issue:e' => 1.0)),
+            array('kind' => 'fuzzy', 'signals' => array('issue:e' => 1.0)),
+        );
+
+        $this->assertSame(array('issue:e', 'issue:a'), array_column($this->ranking()->rank($found, 20, false, false), 'key'));
+    }
+
     public function testNothingFoundRanksToNothing()
     {
-        $this->assertSame(array(), $this->ranking()->rank(array(), 20, false));
+        $this->assertSame(array(), $this->ranking()->rank(array(), 20, true, false));
     }
 
     public function testRejectsAKindWithoutAScale()
     {
         $this->expectException(\Gaia\Exception\Exception::class);
-        $this->ranking()->rank(array(array('kind' => 'psychic', 'signals' => array('issue:a' => 1.0))), 20, false);
+        $this->ranking()->rank(array(array('kind' => 'psychic', 'signals' => array('issue:a' => 1.0))), 20, true, false);
     }
 
     /**
@@ -158,10 +207,10 @@ class StrongestSignalTest extends TestCase
             array('kind' => 'fuzzy', 'signals' => array('issue:b' => 1.0)),
         );
 
-        $plain = $this->ranking()->rank($found, 20, false);
+        $plain = $this->ranking()->rank($found, 20, true, false);
         $this->assertSame(array('issue:b', 'issue:a'), array_column($plain, 'key'));
 
-        $banded = $this->ranking()->rank($found, 20, true);
+        $banded = $this->ranking()->rank($found, 20, true, true);
         $this->assertSame(array('issue:a', 'issue:b'), array_column($banded, 'key'));
         $this->assertEqualsWithDelta($this->upper(0.5), $banded[0]['score'], 1e-12);
         $this->assertEqualsWithDelta($this->lower(0.6), $banded[1]['score'], 1e-12);
@@ -174,7 +223,7 @@ class StrongestSignalTest extends TestCase
             array('kind' => 'fuzzy', 'signals' => array('issue:d' => 1.0, 'issue:e' => 0.5)),
         );
 
-        $banded = $this->ranking()->rank($found, 20, true);
+        $banded = $this->ranking()->rank($found, 20, true, true);
 
         $this->assertSame(array('issue:a', 'issue:b', 'issue:d', 'issue:e'), array_column($banded, 'key'));
         $this->assertEqualsWithDelta($this->upper(0.9), $banded[0]['score'], 1e-12);
@@ -188,7 +237,7 @@ class StrongestSignalTest extends TestCase
         $banded = $this->ranking()->rank(array(
             array('kind' => 'fts', 'signals' => array('issue:a' => 0.2)),
             array('kind' => 'fuzzy', 'signals' => array('issue:a' => 1.0, 'issue:b' => 1.0)),
-        ), 20, true);
+        ), 20, true, true);
 
         $this->assertSame(array('issue:a', 'issue:b'), array_column($banded, 'key'));
         $this->assertEqualsWithDelta($this->upper(0.6), $banded[0]['score'], 1e-12);
@@ -200,7 +249,7 @@ class StrongestSignalTest extends TestCase
         $banded = $ranking->rank(array(
             array('kind' => 'fts', 'signals' => array('issue:a' => 0.7)),
             array('kind' => 'semantic', 'signals' => array('issue:b' => 0.156, 'issue:c' => 0.2)),
-        ), 20, true);
+        ), 20, true, true);
 
         $this->assertSame(array('issue:a', 'issue:b', 'issue:c'), array_column($banded, 'key'));
         $this->assertEqualsWithDelta(0.8 + 0.2 * 0.6 + (0.1 / 0.4) * (1 - 0.92), $banded[0]['score'], 1e-12);
@@ -214,7 +263,7 @@ class StrongestSignalTest extends TestCase
         $banded = $this->ranking()->rank(array(
             array('kind' => 'exact', 'signals' => array('issue:x' => 1.0)),
             array('kind' => 'fts', 'signals' => array('issue:a' => 0.5)),
-        ), 20, true);
+        ), 20, true, true);
 
         $this->assertSame(array('issue:x', 'issue:a'), array_column($banded, 'key'));
         $this->assertSame(1.0, $banded[0]['score']);

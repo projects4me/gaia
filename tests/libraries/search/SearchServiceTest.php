@@ -21,6 +21,7 @@ use Gaia\Libraries\Search\SemanticSearcher;
 use Gaia\Libraries\Search\Snippet;
 use Gaia\Libraries\Search\StrongestSignal;
 use Gaia\Libraries\Search\TextSearchQuery;
+use Gaia\Libraries\Search\UnknownWords;
 use Gaia\Libraries\Security\Acl;
 use Gaia\Exception\EmbeddingsUnavailableException;
 use Gaia\Services\Embeddings;
@@ -263,6 +264,48 @@ class SearchServiceTest extends TestCase
 
         $this->assertSame(array($issue), array_column($results, 'id'));
         $this->assertSame(array('fuzzy'), $results[0]['matchedBy']);
+    }
+
+    public function testDropsFuzzyOnlyResultsWhenEveryWordIsKnownAndSomethingElseMatches()
+    {
+        $match = $this->addIssue('Impossible import', null);
+        $noise = $this->addIssue('Zebracorn invisible', null);
+
+        $ids = array_column($this->search('impossible'), 'id');
+        $this->assertSame(array($match), $ids);
+        $this->assertNotContains($noise, $ids);
+    }
+
+    public function testAnExcludedWordNobodyHasDoesNotCountAsUnknown()
+    {
+        $match = $this->addIssue('Impossible import', null);
+        $noise = $this->addIssue('Zebracorn invisible', null);
+
+        $ids = array_column($this->search('impossible -qwertyuiop'), 'id');
+        $this->assertContains($match, $ids);
+        $this->assertNotContains($noise, $ids);
+    }
+
+    public function testKeepsFuzzyOnlyResultsForAQueryWithAnUnknownWord()
+    {
+        $issue = $this->addIssue('Zebracorn import fails', null);
+
+        $results = $this->search('zebracron import');
+
+        $this->assertContains($issue, array_column($results, 'id'));
+    }
+
+    public function testAWordOnlyInAProjectTheUserCannotReadIsUnknown()
+    {
+        $this->addIssue('Zebracorn secret', null, null, self::PROJECT_B);
+        $this->addIssue('Zebracorns open', null, null, self::PROJECT_A);
+        $this->acl->scope = Acl::SCOPE_MEMBERS;
+        $this->acl->projectIds = array(self::PROJECT_A);
+        $words = new UnknownWords(new CandidateQuery($this->db), new TextSearchQuery());
+        $target = $this->target();
+
+        $this->assertSame(array('secret'), $words->of(array($target), new SearchQuery('secret zebracorn')));
+        $this->assertSame(array(), $words->of(array($target), new SearchQuery('the 123 ab zebracorn')));
     }
 
     public function testSearchersReportTheRawSignalOfEachMatch()
@@ -704,6 +747,7 @@ class SearchServiceTest extends TestCase
                 new SemanticSearcher($candidates, $this->embeddings, $maxDistance),
             ),
             new StrongestSignal(self::THRESHOLD, 0.6, 0.3, 0.156, 0.402, 0.5),
+            new UnknownWords($candidates, $tsquery),
             new DisplayLoader($candidates, new Snippet($tsquery)),
             $candidateDepth
         );

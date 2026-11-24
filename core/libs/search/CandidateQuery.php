@@ -116,6 +116,19 @@ class CandidateQuery
     }
 
     /**
+     * This function tells whether any record in scope matches the condition.
+     *
+     * @param SearchTarget $target
+     * @param string $condition The match condition, over columns from column() and :search_ parameters
+     * @param array $bind The condition's parameters, named search_*
+     * @return bool
+     */
+    public function exists(SearchTarget $target, $condition, array $bind)
+    {
+        return $this->rows($target, array(), $condition, $bind, ' LIMIT 1') !== array();
+    }
+
+    /**
      * This function returns the id and the given columns of the records in scope that have one of the given ids.
      *
      * @param SearchTarget $target
