@@ -12,7 +12,7 @@ use Gaia\Services\Embeddings;
 /**
  * Matching by meaning: the query is embedded through Ares and compared to the type's searchEmbedding column by
  * cosine distance (the <=> operator, which the column's HNSW index serves), keeping the records within the maximum
- * distance, nearest first. A record without an embedding yet is not a candidate.
+ * distance, nearest first; the distance is the signal. A record without an embedding yet is not a candidate.
  *
  * The query is embedded once per search, for every type; when Ares cannot embed it the searcher is unavailable for
  * the whole search and does not ask again.
@@ -118,9 +118,10 @@ class SemanticSearcher implements Searcher
             'hnsw.iterative_scan',
             self::ITERATIVE_SCAN,
             function () use ($target, $column, $distance, $bind, $limit) {
-                return $this->candidates->ids(
+                return $this->candidates->signals(
                     $target,
                     $column . ' IS NOT NULL AND ' . $distance . ' <= :search_semantic_max',
+                    $distance,
                     $distance,
                     $bind,
                     $limit

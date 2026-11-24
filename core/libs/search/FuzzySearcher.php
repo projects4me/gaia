@@ -8,7 +8,7 @@ namespace Gaia\Libraries\Search;
 
 /**
  * Typo tolerant search: pg_trgm word_similarity of the query to the type's fuzzy fields, keeping the records with a
- * field that reaches the threshold, ranked by their best similarity. The match is the <% operator, which the fuzzy
+ * field that reaches the threshold, ranked by their best similarity, which is the signal. The match is the <% operator, which the fuzzy
  * fields' gin_trgm indexes serve; it reads the threshold from pg_trgm.word_similarity_threshold, set before each
  * search.
  *
@@ -95,9 +95,10 @@ class FuzzySearcher implements Searcher
             'pg_trgm.word_similarity_threshold',
             $this->threshold,
             function () use ($target, $matches, $score, $query, $limit) {
-                return $this->candidates->ids(
+                return $this->candidates->signals(
                     $target,
                     implode(' OR ', $matches),
+                    $score,
                     $score . ' DESC',
                     array('search_fuzzy' => $query),
                     $limit

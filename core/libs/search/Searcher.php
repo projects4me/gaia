@@ -32,12 +32,13 @@ interface Searcher
     public function fields(SearchTarget $target);
 
     /**
-     * This function returns the ids of the best matching records in scope, best first.
+     * This function returns the best matching records in scope with the raw signal of each match (what it
+     * means depends on the kind), best first.
      *
      * @param SearchTarget $target
      * @param string $query The query text
-     * @param int $limit The most ids to return
-     * @return array
+     * @param int $limit The most records to return
+     * @return array Each id => its signal as a float, best first
      * @throws SearcherUnavailableException When a service it needs is down; the search goes on without it
      */
     public function rank(SearchTarget $target, $query, $limit);

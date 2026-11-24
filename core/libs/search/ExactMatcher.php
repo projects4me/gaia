@@ -11,7 +11,7 @@ use Gaia\Db\Migration\PostgresSearchDdl;
 /**
  * Finds the records whose exact fields equal the query, e.g. an issue by its number. A numeric field matches only an
  * integer query, which may start with # (#123); a text field matches the query as it is (case-sensitive); a field of
- * any other type never matches. RankFusion pins these first.
+ * any other type never matches. Their signal is 1; RankFusion pins them first.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -95,7 +95,7 @@ class ExactMatcher implements Searcher
             return array();
         }
 
-        return $this->candidates->ids($target, implode(' OR ', $conditions), null, $bind, $limit);
+        return $this->candidates->signals($target, implode(' OR ', $conditions), '1', null, $bind, $limit);
     }
 
     /**
