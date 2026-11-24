@@ -13,6 +13,7 @@ $models['Issue'] = array(
         'fuzzy' => array('subject'),
         'semantic' => array('subject', 'description'),
         'exact' => array('issueNumber'),
+        'referencePrefix' => 'projectShortcode',
         'display' => array('title' => 'subject', 'snippet' => 'description')
     ),
     'fields' => array(

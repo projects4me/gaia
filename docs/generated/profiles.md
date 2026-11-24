@@ -9,7 +9,7 @@
 
 - aclAgent role ACL Agent | allow 27, members 0, deny 1 | cases 23 | ACL Agent
 - aclFields role ACL Field Restricted | allow 8, members 0, deny 7 | cases 26 | issue field ACL matrix for api-tester
-- aclMembers role ACL Project Members | allow 22, members 2, deny 11 | cases 81 | project.get=2 members scope
+- aclMembers role ACL Project Members | allow 22, members 2, deny 11 | cases 85 | project.get=2 members scope
 - aclNoConversation role ACL No Conversation | allow 3, members 0, deny 1 | cases 4 | project+comment allowed, conversationroom.get denied
 - aclNoProject role ACL No Project | allow 3, members 0, deny 3 | cases 24 | issue/comment allowed, project.get denied
 - aclNoSetting role ACL No Setting | allow 17, members 0, deny 27 | cases 59 | issuestatus/issuetype allowed, setting.* denied

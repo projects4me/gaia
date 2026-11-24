@@ -9,10 +9,12 @@ namespace Gaia\Libraries\Search;
 use Gaia\Db\Migration\PostgresSearchDdl;
 
 /**
- * Finds the records whose exact fields equal the query, e.g. an issue by its number. A numeric field matches only an
- * integer query, which may start with # (#123); a text field matches the query as it is (case-sensitive); a field of
- * any other type never matches. Their signal is 1; StrongestSignal
- * scores them 1 and puts them first.
+ * Finds the records whose exact fields equal the query, e.g. an issue by its number. A numeric field matches the
+ * numbers the query refers to: the query when it is a number alone, which may start with # (#123); every number of
+ * a query of up to numberQueryWords words (issue 4174, 4174 login); in a longer query, pasted text, only the numbers
+ * written with # (see #3969). A reference query (agaia-4170) refers to no number here: ReferenceMatcher looks it up.
+ * A text field matches the query as it is (case-sensitive); a field of any other type never matches. Their signal is
+ * 1; StrongestSignal scores them 1 and puts them first.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -42,23 +44,27 @@ class ExactMatcher implements Searcher
     );
 
     /**
-     * An integer query, with an optional leading #.
-     *
-     * @var string
-     */
-    private const INTEGER_PATTERN = '/^#?(\d{1,19})\z/';
-
-    /**
      * @var CandidateQuery
      */
     private $candidates;
 
     /**
-     * @param CandidateQuery $candidates
+     * @var int
      */
-    public function __construct(CandidateQuery $candidates)
+    private $numberQueryWords;
+
+    /**
+     * @param CandidateQuery $candidates
+     * @param int $numberQueryWords The most words a query may have for its plain numbers to be looked up, at least 1
+     * @throws \Gaia\Exception\Exception When the word count is not a positive whole number
+     */
+    public function __construct(CandidateQuery $candidates, $numberQueryWords)
     {
+        if (filter_var($numberQueryWords, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1))) === false) {
+            throw new \Gaia\Exception\Exception('The search number query words must be a whole number from 1.');
+        }
         $this->candidates = $candidates;
+        $this->numberQueryWords = (int) $numberQueryWords;
     }
 
     /**
@@ -82,15 +88,24 @@ class ExactMatcher implements Searcher
      */
     public function rank(SearchTarget $target, SearchQuery $query, $limit)
     {
+        $numbers = $this->referredNumbers($query);
         $conditions = array();
         $bind = array();
         foreach ($this->fields($target) as $i => $field) {
-            $value = $this->valueFor($target->field($field), $query->text());
-            if ($value === null) {
+            $schema = $target->field($field);
+            if (in_array(self::typeOf($schema), PostgresSearchDdl::TEXT_SOURCE_TYPES, true)) {
+                $conditions[] = $this->candidates->column($field) . ' = :search_exact' . $i;
+                $bind['search_exact' . $i] = $query->text();
                 continue;
             }
-            $conditions[] = $this->candidates->column($field) . ' = :search_exact' . $i;
-            $bind['search_exact' . $i] = $value;
+            foreach ($numbers as $j => $digits) {
+                $value = self::integerValue($schema, $digits);
+                if ($value === null) {
+                    continue;
+                }
+                $conditions[] = $this->candidates->column($field) . ' = :search_exact' . $i . '_' . $j;
+                $bind['search_exact' . $i . '_' . $j] = $value;
+            }
         }
         if ($conditions === array()) {
             return array();
@@ -100,30 +115,63 @@ class ExactMatcher implements Searcher
     }
 
     /**
-     * This function returns the value a field is compared with, or null when the query cannot equal the field.
+     * This function tells whether a field's schema is of an integer type.
+     *
+     * @param array $schema
+     * @return bool
+     */
+    public static function isInteger(array $schema)
+    {
+        return isset(self::INTEGER_TYPES[self::typeOf($schema)]);
+    }
+
+    /**
+     * This function returns the value an integer field is compared with for a run of digits, or null when the field
+     * is not an integer or the number is out of its range, so the query is no match instead of a database error.
      *
      * @param array $schema The field's schema
-     * @param string $query
-     * @return int|string|null
+     * @param string $digits
+     * @return int|null
      */
-    private function valueFor(array $schema, $query)
+    public static function integerValue(array $schema, $digits)
     {
-        $type = isset($schema['type']) ? $schema['type'] : '';
-        if (in_array($type, PostgresSearchDdl::TEXT_SOURCE_TYPES, true)) {
-            return $query;
-        }
-        if (!isset(self::INTEGER_TYPES[$type])) {
+        if (!self::isInteger($schema) || !ctype_digit((string) $digits)) {
             return null;
         }
-        if (!preg_match(self::INTEGER_PATTERN, $query, $match)) {
-            return null;
-        }
-        $digits = ltrim($match[1], '0');
-        $max = (string) self::INTEGER_TYPES[$type];
+        $digits = ltrim($digits, '0');
+        $max = (string) self::INTEGER_TYPES[self::typeOf($schema)];
         if (strlen($digits) > strlen($max) || (strlen($digits) === strlen($max) && strcmp($digits, $max) > 0)) {
             return null;
         }
 
         return (int) $digits;
+    }
+
+    /**
+     * This function returns the numbers the query refers to, without repeats.
+     *
+     * @param SearchQuery $query
+     * @return array Runs of digits
+     */
+    private function referredNumbers(SearchQuery $query)
+    {
+        if ($query->number() !== null) {
+            return array($query->number());
+        }
+        if ($query->reference() !== null) {
+            return array();
+        }
+        $numbers = count($query->words()) <= $this->numberQueryWords ? $query->numbers() : $query->hashNumbers();
+
+        return array_values(array_unique($numbers));
+    }
+
+    /**
+     * @param array $schema
+     * @return string
+     */
+    private static function typeOf(array $schema)
+    {
+        return isset($schema['type']) ? $schema['type'] : '';
     }
 }

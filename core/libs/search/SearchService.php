@@ -10,9 +10,10 @@ use Gaia\Libraries\Meta\Manager;
 use Gaia\Libraries\Security\Acl;
 
 /**
- * Module-agnostic search: parses the query once, runs every searcher over each requested type, inside what the user
- * may see, and ranks what they found by its strongest signal, records matching every word first, dropping fuzzy-only
- * results unless the query has an unknown word. A query without a letter or a digit finds nothing.
+ * Module-agnostic search: parses the query once, runs the searchers its shape calls for (SearchRoute: a number or a
+ * reference is looked up, anything else is text) over each requested type, inside what the user may see, and ranks
+ * what they found by its strongest signal, records matching every word first, dropping fuzzy-only results unless the
+ * query has an unknown word. A query without a letter or a digit finds nothing.
  *
  * Each type needs <module>.get (a denied type denies the whole request, as unauthorized query criteria do, D-027).
  * Every candidate query stays inside the module's record scope and deleted = 0 before ranking and LIMIT (D-022).
@@ -47,9 +48,9 @@ class SearchService
     private $scope;
 
     /**
-     * @var Searcher[]
+     * @var SearchRoute
      */
-    private $searchers;
+    private $route;
 
     /**
      * @var StrongestSignal
@@ -78,7 +79,7 @@ class SearchService
      * @param Manager $metaManager
      * @param Acl $acl The ACL of the user searching
      * @param SearchScope $scope
-     * @param Searcher[] $searchers
+     * @param SearchRoute $route
      * @param StrongestSignal $ranking
      * @param UnknownWords $unknownWords
      * @param DisplayLoader $display
@@ -90,7 +91,7 @@ class SearchService
         Manager $metaManager,
         Acl $acl,
         SearchScope $scope,
-        array $searchers,
+        SearchRoute $route,
         StrongestSignal $ranking,
         UnknownWords $unknownWords,
         DisplayLoader $display,
@@ -103,7 +104,7 @@ class SearchService
         $this->metaManager = $metaManager;
         $this->acl = $acl;
         $this->scope = $scope;
-        $this->searchers = $searchers;
+        $this->route = $route;
         $this->ranking = $ranking;
         $this->unknownWords = $unknownWords;
         $this->display = $display;
@@ -137,16 +138,53 @@ class SearchService
         }
 
         $targets = array();
-        $found = array();
-        $unavailable = array();
         foreach ($entries as $type => $entry) {
             $targets[$type] = $this->target($entry);
-            foreach ($this->searchers as $searcher) {
-                if (in_array($searcher->kind(), $unavailable, true) || !$this->mayMatch($targets[$type], $searcher)) {
+        }
+        $knowsReference = function (ReferenceMatcher $reference) use ($targets, $query) {
+            foreach ($targets as $target) {
+                if ($this->mayMatch($target, $reference) && $reference->knows($target, $query)) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        $found = array();
+        $unavailable = array();
+        foreach ($this->route->stages($query, $knowsReference) as $stage) {
+            $found = $this->find($stage, $targets, $query, $unavailable);
+            if ($this->hasResults($found)) {
+                break;
+            }
+        }
+
+        $unknownWords = $this->hasFuzzyResults($found) ? $this->hasUnknownWords($targets, $query) : true;
+        $ranked = $this->ranking->rank($found, $request->limit(), $unknownWords, $query->hasSeveralWords());
+
+        return new SearchResults($this->results($ranked, $targets, $query->text()), $unavailable);
+    }
+
+    /**
+     * This function runs searchers over every type and returns their signals, keyed "type:id".
+     *
+     * @param Searcher[] $searchers
+     * @param SearchTarget[] $targets Keyed by type
+     * @param SearchQuery $query
+     * @param array $unavailable The kinds whose service is down; a searcher found down is added
+     * @return array Each ['kind' => string, 'signals' => "type:id" => raw signal]
+     */
+    private function find(array $searchers, array $targets, SearchQuery $query, array &$unavailable)
+    {
+        $found = array();
+        foreach ($targets as $type => $target) {
+            foreach ($searchers as $searcher) {
+                if (in_array($searcher->kind(), $unavailable, true) || !$this->mayMatch($target, $searcher)) {
                     continue;
                 }
                 try {
-                    $signals = $searcher->rank($targets[$type], $query, $this->candidateDepth);
+                    $signals = $searcher->rank($target, $query, $this->candidateDepth);
                 } catch (SearcherUnavailableException $e) {
                     $this->logUnavailable($searcher->kind(), $e);
                     $unavailable[] = $searcher->kind();
@@ -160,10 +198,22 @@ class SearchService
             }
         }
 
-        $unknownWords = $this->hasFuzzyResults($found) ? $this->hasUnknownWords($targets, $query) : true;
-        $ranked = $this->ranking->rank($found, $request->limit(), $unknownWords, $query->hasSeveralWords());
+        return $found;
+    }
 
-        return new SearchResults($this->results($ranked, $targets, $query->text()), $unavailable);
+    /**
+     * @param array $found
+     * @return bool
+     */
+    private function hasResults(array $found)
+    {
+        foreach ($found as $searcher) {
+            if ($searcher['signals'] !== array()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -195,7 +245,7 @@ class SearchService
     {
         $lookIn = array();
         foreach ($targets as $target) {
-            foreach ($this->searchers as $searcher) {
+            foreach ($this->route->text() as $searcher) {
                 if ($searcher->kind() === FtsSearcher::KIND && $this->mayMatch($target, $searcher)) {
                     $lookIn[] = $target;
                     break;

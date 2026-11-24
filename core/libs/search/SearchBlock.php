@@ -18,6 +18,8 @@ use Gaia\Libraries\Meta\Manager;
  *         'fuzzy' => ['subject'],                            // a gin_trgm index per field
  *         'semantic' => ['subject', 'description'],          // ordered fields of the canonical semantic text
  *         'exact' => ['issueNumber'],                        // fields matched as they are
+ *         'referencePrefix' => 'projectShortcode',          // optional: a text field; prefix-number (agaia-4170)
+ *                                                            //   finds the record by it and an integer exact field
  *         'display' => ['title' => 'subject', 'snippet' => 'description'],
  *     ],
  *
@@ -89,7 +91,7 @@ class SearchBlock
      *
      * @var array
      */
-    private const KEYS = array('type', 'fts', 'fuzzy', 'semantic', 'exact', 'display');
+    private const KEYS = array('type', 'fts', 'fuzzy', 'semantic', 'exact', 'referencePrefix', 'display');
 
     /**
      * Keys of the display entry.
@@ -312,6 +314,8 @@ class SearchBlock
             $normalized[$key] = $list;
         }
 
+        $normalized['referencePrefix'] = self::referencePrefix($model, $block, $fields, $normalized['exact']);
+
         $display = isset($block['display']) ? $block['display'] : null;
         if (!is_array($display) || !isset($display['title'])) {
             self::fail($model, "needs 'display' => ['title' => field, 'snippet' => field]");
@@ -335,6 +339,32 @@ class SearchBlock
         );
 
         return $normalized;
+    }
+
+    /**
+     * This function validates the optional reference prefix: a text field, on a block with an integer exact field for
+     * the number that follows it.
+     *
+     * @param string $model
+     * @param array $block
+     * @param array $fields The model's declared fields
+     * @param array $exact The block's exact fields
+     * @return string|null
+     * @throws \Gaia\Exception\Exception
+     */
+    private static function referencePrefix($model, array $block, array $fields, array $exact)
+    {
+        $prefix = isset($block['referencePrefix']) ? $block['referencePrefix'] : null;
+        if ($prefix === null) {
+            return null;
+        }
+        self::assertField($model, 'referencePrefix', $prefix, $fields, PostgresSearchDdl::TEXT_SOURCE_TYPES);
+        foreach ($exact as $field) {
+            if (ExactMatcher::isInteger($fields[$field])) {
+                return $prefix;
+            }
+        }
+        self::fail($model, "has a referencePrefix but no integer field in 'exact' for the number after it");
     }
 
     /**

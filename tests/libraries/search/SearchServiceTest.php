@@ -12,9 +12,12 @@ use Gaia\Libraries\Search\ExactMatcher;
 use Gaia\Libraries\Search\ExactTitleMatcher;
 use Gaia\Libraries\Search\FtsSearcher;
 use Gaia\Libraries\Search\FuzzySearcher;
+use Gaia\Libraries\Search\PartialNumberMatcher;
+use Gaia\Libraries\Search\ReferenceMatcher;
 use Gaia\Libraries\Search\SearchableRegistry;
 use Gaia\Libraries\Search\SearchQuery;
 use Gaia\Libraries\Search\SearchRequest;
+use Gaia\Libraries\Search\SearchRoute;
 use Gaia\Libraries\Search\SearchScope;
 use Gaia\Libraries\Search\SearchService;
 use Gaia\Libraries\Search\SemanticSearcher;
@@ -28,8 +31,8 @@ use Gaia\Services\Embeddings;
 use PHPUnit\Framework\TestCase;
 
 /**
- * SearchService over Issue (agaia-4666, agaia-4668, agaia-4888): exact, FTS, fuzzy and semantic matching ranked by
- * their strongest signal,
+ * SearchService over Issue (agaia-4666, agaia-4668, agaia-4888, agaia-4890): exact, FTS, fuzzy and semantic matching
+ * ranked by their strongest signal, number, partial number and reference lookups,
  * inside the user's project scope and field ACL. Semantic matching runs on a fake Embeddings and embeddings the test
  * writes. Each test adds its issues in a transaction it rolls back.
  *
@@ -58,6 +61,7 @@ class SearchServiceTest extends TestCase
     private const THRESHOLD = 0.15;
     private const MAX_DISTANCE = 0.5;
     private const CANDIDATE_DEPTH = 100;
+    private const NUMBER_QUERY_WORDS = 5;
 
     /**
      * @var \Phalcon\Db\Adapter\AdapterInterface
@@ -124,17 +128,172 @@ class SearchServiceTest extends TestCase
         }
     }
 
-    public function testPinsTheIssueWhoseNumberIsTheQuery()
+    public function testANumberQueryFindsThatIssueAloneAndNoText()
     {
-        $mentions = $this->addIssue('Follow up on 987654301', 'Same as 987654301.');
+        $this->addIssue('Follow up on 987654301', 'Same as 987654301.');
         $numbered = $this->addIssue('Unrelated title', null, 987654301);
 
         foreach (array('987654301', '#987654301') as $query) {
             $results = $this->search($query);
 
+            $this->assertSame(array($numbered), array_column($results, 'id'), $query);
+            $this->assertSame(array('exact'), $results[0]['matchedBy'], $query);
+            $this->assertSame(1.0, $results[0]['score'], $query);
+        }
+    }
+
+    public function testANumberNobodyHasFindsNothingNotEvenText()
+    {
+        $this->addIssue('Follow up on 987654399', 'Same as 987654399.');
+
+        $this->assertSame(array(), $this->search('987654399'));
+    }
+
+    public function testWithoutThatNumberFindsTheNumbersStartingWithItThenEndingWithItNewestFirst()
+    {
+        $this->acl->scope = Acl::SCOPE_MEMBERS;
+        $this->acl->projectIds = array(self::PROJECT_A);
+        $older = $this->addIssue('Unrelated one', null, 543901701);
+        $newer = $this->addIssue('Unrelated two', null, 543901702);
+        $shorter = $this->addIssue('Unrelated three', null, 54390171);
+        $ending = $this->addIssue('Unrelated four', null, 905439017);
+        $this->addIssue('Unrelated five', null, 543901703, self::PROJECT_B);
+        $this->addIssue('Mentions 5439017 in its title', null, 111543911);
+
+        $results = $this->search('5439017');
+
+        $this->assertSame(array($shorter, $newer, $older, $ending), array_column($results, 'id'));
+        foreach ($results as $result) {
+            $this->assertSame(array('number'), $result['matchedBy']);
+        }
+        $this->assertEqualsWithDelta(0.5 + 0.5 * 7 / 8, $results[0]['score'], 1e-9);
+        $this->assertEqualsWithDelta(0.5 + 0.5 * 7 / 9, $results[1]['score'], 1e-9);
+        $this->assertEqualsWithDelta(self::THRESHOLD + (0.5 - self::THRESHOLD) * 7 / 9, $results[3]['score'], 1e-9);
+    }
+
+    public function testAnExactNumberLeavesThePartialNumbersOut()
+    {
+        $exact = $this->addIssue('Unrelated one', null, 54390181);
+        $this->addIssue('Unrelated two', null, 543901811);
+
+        $this->assertSame(array($exact), array_column($this->search('54390181'), 'id'));
+    }
+
+    public function testASingleDigitHasNoPartialNumbers()
+    {
+        $this->acl->scope = Acl::SCOPE_MEMBERS;
+        $this->acl->projectIds = array(self::PROJECT_A);
+        $this->addIssue('Unrelated one', null, 543901901);
+
+        $this->assertSame(array(), $this->search('#5'));
+    }
+
+    public function testAReferenceFindsThatIssueInThatProjectWithCaseIgnored()
+    {
+        $issue = $this->addIssue('Unrelated title', null, 987654320);
+        $this->addIssue('Mentions srch-987654320', 'srch 987654320', null);
+        $this->addIssue('Another project', null, 987654322, self::PROJECT_B, 0, 'srchb');
+
+        foreach (array('srch-987654320', 'SRCH-987654320', 'Srch-987654320') as $query) {
+            $results = $this->search($query);
+
+            $this->assertSame(array($issue), array_column($results, 'id'), $query);
+            $this->assertSame(array('exact'), $results[0]['matchedBy'], $query);
+        }
+        // A known prefix with a number it does not have finds nothing, not the number elsewhere
+        $this->assertSame(array(), $this->search('srchb-987654320'));
+        $this->assertSame(array(), $this->search('srch-987654322'));
+    }
+
+    public function testAReferenceToAProjectTheUserIsNotInFindsNothing()
+    {
+        $this->addIssue('Unrelated title', null, 987654323);
+        $this->addIssue('Theirs', null, 987654324, self::PROJECT_B, 0, 'srchb');
+        $this->acl->scope = Acl::SCOPE_MEMBERS;
+        $this->acl->projectIds = array(self::PROJECT_A);
+
+        $this->assertSame(array(), $this->search('srchb-987654324'));
+        $this->assertSame(array(), $this->search('srchb-987654323'));
+    }
+
+    public function testAnUnknownPrefixIsPlainTextWithoutTheNumber()
+    {
+        $numbered = $this->addIssue('Unrelated title', null, 987654325);
+        $text = $this->addIssue('Zebracorn import fails', null);
+
+        $results = $this->search('zebracorn-987654325');
+
+        $this->assertNotContains($numbered, array_column($results, 'id'));
+        $this->assertContains($text, array_column($results, 'id'));
+    }
+
+    public function testANumberInsideAShortQueryComesFirstThenTheTextMatches()
+    {
+        $numbered = $this->addIssue('Unrelated title', null, 987654330);
+        $text = $this->addIssue('Zebracorn import fails since 987654330', null);
+
+        foreach (array('zebracorn 987654330', '987654330 zebracorn', '#987654330 zebracorn') as $query) {
+            $results = $this->search($query);
+
             $this->assertSame($numbered, $results[0]['id'], $query);
             $this->assertSame(array('exact'), $results[0]['matchedBy'], $query);
-            $this->assertContains($mentions, array_column($results, 'id'), $query);
+            $this->assertContains($text, array_column($results, 'id'), $query);
+        }
+    }
+
+    public function testALongQueryLooksUpOnlyTheNumbersWrittenWithAHash()
+    {
+        $numbered = $this->addIssue('Unrelated title', null, 987654331);
+        $this->addIssue('Zebracorn import fails', 'The zebracorn importer stops.');
+
+        $bare = $this->search('the zebracorn importer stops again at row 987654331');
+        $hashed = $this->search('the zebracorn importer stops again (see #987654331)');
+
+        $this->assertNotContains($numbered, array_column($bare, 'id'));
+        $this->assertSame($numbered, $hashed[0]['id']);
+    }
+
+    public function testANumberTheUserMayNotReadFindsNothingNotEvenText()
+    {
+        $numbered = $this->addIssue('Unrelated title', null, 987654350);
+        $this->acl->deniedFields = array('issueNumber');
+
+        $this->assertSame(array(), $this->search('987654350'));
+        // Without the number the reference is plain text
+        $this->assertNotContains($numbered, array_column($this->search('srch-987654350'), 'id'));
+    }
+
+    public function testAReferencePrefixTheUserMayNotReadIsPlainText()
+    {
+        $numbered = $this->addIssue('Unrelated title', null, 987654351);
+        $text = $this->addIssue('Srch notes on 987654351', null);
+        $this->acl->deniedFields = array('projectShortcode');
+
+        $ids = array_column($this->search('srch-987654351'), 'id');
+
+        $this->assertNotContains($numbered, $ids);
+        $this->assertContains($text, $ids);
+    }
+
+    public function testLeadingZerosAndHugeNumbersAreNoErrors()
+    {
+        $issue = $this->addIssue('Unrelated title', null, 987654352);
+
+        $this->assertSame(array($issue), array_column($this->search('0987654352'), 'id'));
+        $this->assertSame(array($issue), array_column($this->search('srch-0987654352'), 'id'));
+        $this->assertSame(array(), $this->search('00'));
+        $this->assertSame(array(), $this->search('srch-99999999999999999999999'));
+    }
+
+    public function testANumberOfAnIssueTheUserCannotSeeFindsNothing()
+    {
+        $this->addIssue('Theirs', null, 987654340, self::PROJECT_B);
+        $this->addIssue('Theirs too', null, 987654341, self::PROJECT_B);
+        $this->acl->scope = Acl::SCOPE_MEMBERS;
+        $this->acl->projectIds = array(self::PROJECT_A);
+
+        foreach (array('987654340', '98765434', '7654340', 'zebracorn 987654340') as $query) {
+            $this->assertSame(array(), $this->search($query), $query);
         }
     }
 
@@ -316,7 +475,7 @@ class SearchServiceTest extends TestCase
         $candidates = new CandidateQuery($this->db);
         $target = $this->target();
 
-        $exact = (new ExactMatcher($candidates))->rank($target, new SearchQuery('987654303'), 10);
+        $exact = (new ExactMatcher($candidates, self::NUMBER_QUERY_WORDS))->rank($target, new SearchQuery('987654303'), 10);
         $fts = (new FtsSearcher($candidates, new TextSearchQuery()))->rank($target, new SearchQuery('zebracorn'), 10);
         $fuzzy = (new FuzzySearcher($candidates, 0.3))->rank($target, new SearchQuery('zebracorn'), 10);
         $semantic = (new SemanticSearcher($candidates, $this->embeddings, 0.5))->rank($target, new SearchQuery('zebracorn'), 10);
@@ -733,20 +892,26 @@ class SearchServiceTest extends TestCase
         $metaManager = $di->get('metaManager');
         $candidates = $candidates ?? new CandidateQuery($this->db);
         $tsquery = new TextSearchQuery();
+        $exact = new ExactMatcher($candidates, self::NUMBER_QUERY_WORDS);
 
         return new SearchService(
             SearchableRegistry::fromMetadata($metaManager),
             $metaManager,
             $this->acl,
             new SearchScope($this->acl, $di->get('modelsManager')),
-            array(
-                new ExactMatcher($candidates),
-                new ExactTitleMatcher($candidates),
-                new FtsSearcher($candidates, $tsquery),
-                new FuzzySearcher($candidates, 0.3),
-                new SemanticSearcher($candidates, $this->embeddings, $maxDistance),
+            new SearchRoute(
+                array(
+                    $exact,
+                    new ExactTitleMatcher($candidates),
+                    new FtsSearcher($candidates, $tsquery),
+                    new FuzzySearcher($candidates, 0.3),
+                    new SemanticSearcher($candidates, $this->embeddings, $maxDistance),
+                ),
+                $exact,
+                new PartialNumberMatcher($candidates),
+                new ReferenceMatcher($candidates)
             ),
-            new StrongestSignal(self::THRESHOLD, 0.6, 0.3, 0.156, 0.402, 0.5),
+            new StrongestSignal(self::THRESHOLD, 0.6, 0.3, 0.156, 0.402, 0.5, 0.5),
             new UnknownWords($candidates, $tsquery),
             new DisplayLoader($candidates, new Snippet($tsquery)),
             $candidateDepth
@@ -761,10 +926,17 @@ class SearchServiceTest extends TestCase
      * @param int|null $number
      * @param string $projectId
      * @param int $deleted
+     * @param string $shortcode
      * @return string
      */
-    private function addIssue($subject, $description, $number = null, $projectId = self::PROJECT_A, $deleted = 0)
-    {
+    private function addIssue(
+        $subject,
+        $description,
+        $number = null,
+        $projectId = self::PROJECT_A,
+        $deleted = 0,
+        $shortcode = 'srch'
+    ) {
         $id = sprintf('a4666%03d-0000-4000-8000-%012d', random_int(0, 999), random_int(0, 999999999));
         $user = '1';
         $this->db->execute(
@@ -773,7 +945,7 @@ class SearchServiceTest extends TestCase
             . ' "reportedUser", "typeId", "priority", "isPlanned", "isReopened")'
             . ' VALUES (?, ?, ?, COALESCE(?, nextval(pg_get_serial_sequence(\'issues\', \'issueNumber\'))), ?, ?,'
             . ' ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0)',
-            array($id, $subject, $description, $number, $projectId, 'srch', $deleted, $user, 'Test', $user, 'Test',
+            array($id, $subject, $description, $number, $projectId, $shortcode, $deleted, $user, 'Test', $user, 'Test',
                 $user, $user, $user, 'srch-type', 'medium')
         );
 

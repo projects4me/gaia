@@ -3923,7 +3923,7 @@
           "idsBefore: … ranks above …"
         ],
         "values": [],
-        "example": "search/search-b2-several-keywords"
+        "example": "search/search-a5-partial-number"
       }
     },
     {
@@ -28824,6 +28824,22 @@
       }
     },
     {
+      "id": "case:search/search-a1-number-not-member",
+      "type": "case",
+      "key": "search/search-a1-number-not-member",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:search/search-a2-number-with-hash",
       "type": "case",
       "key": "search/search-a2-number-with-hash",
@@ -28849,7 +28865,7 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": false,
+        "enabled": true,
         "source": null,
         "placeholders": [],
         "stores": []
@@ -28865,7 +28881,23 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": false,
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a3-short-code-not-member",
+      "type": "case",
+      "key": "search/search-a3-short-code-not-member",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
         "source": null,
         "placeholders": [],
         "stores": []
@@ -28897,7 +28929,7 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": false,
+        "enabled": true,
         "source": null,
         "placeholders": [],
         "stores": []
@@ -28913,7 +28945,23 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": false,
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a5-partial-number-not-member",
+      "type": "case",
+      "key": "search/search-a5-partial-number-not-member",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
         "source": null,
         "placeholders": [],
         "stores": []
@@ -28961,7 +29009,7 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": false,
+        "enabled": true,
         "source": null,
         "placeholders": [],
         "stores": []
@@ -28977,7 +29025,23 @@
         "method": "GET",
         "path": "/api/v1/search",
         "resource": "search",
-        "enabled": false,
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a8-number-inside-text-not-member",
+      "type": "case",
+      "key": "search/search-a8-number-inside-text-not-member",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
         "source": null,
         "placeholders": [],
         "stores": []
@@ -103609,6 +103673,36 @@
       "to": "profile:default"
     },
     {
+      "from": "case:search/search-a1-number-not-member",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-a1-number-not-member",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a1-number-not-member",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a1-number-not-member",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a1-number-not-member",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a1-number-not-member",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
       "from": "case:search/search-a2-number-with-hash",
       "type": "asserts",
       "to": "assertion:idsEqual"
@@ -103697,6 +103791,36 @@
       "from": "case:search/search-a3-short-code-any-case",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a3-short-code-not-member",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-a3-short-code-not-member",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a3-short-code-not-member",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a3-short-code-not-member",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a3-short-code-not-member",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a3-short-code-not-member",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
     },
     {
       "from": "case:search/search-a3-short-code-other-project",
@@ -103794,6 +103918,36 @@
       "to": "profile:default"
     },
     {
+      "from": "case:search/search-a5-partial-number-not-member",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:search/search-a5-partial-number-not-member",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a5-partial-number-not-member",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a5-partial-number-not-member",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a5-partial-number-not-member",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a5-partial-number-not-member",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
       "from": "case:search/search-a6-exact-title",
       "type": "asserts",
       "to": "assertion:idsWithin"
@@ -103912,6 +104066,36 @@
       "from": "case:search/search-a8-number-inside-text",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a8-number-inside-text-not-member",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:search/search-a8-number-inside-text-not-member",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a8-number-inside-text-not-member",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a8-number-inside-text-not-member",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a8-number-inside-text-not-member",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a8-number-inside-text-not-member",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
     },
     {
       "from": "case:search/search-b1-one-keyword",

@@ -14,12 +14,15 @@ namespace Gaia\Libraries\Search;
  * - fuzzy: fuzzyWeight x how far its similarity is past the fuzzy threshold (the threshold counts 0, a perfect match
  *   1), since a near spelling is weaker evidence than the words themselves;
  * - semantic: 1 at semanticNear or nearer, 0 at semanticFar or farther, linear in between;
- * - exact (the number, or the display title with case and spacing ignored): 1, first.
+ * - exact (the number, a reference, or the display title with case and spacing ignored): 1, first;
+ * - number (part of a number, PartialNumberMatcher): a number starting with the query from partialNumberBoundary to
+ *   1, one ending with it from the threshold to partialNumberBoundary, each placed by the share of digits matched.
  *
  * A record scores the most of its signals; one under the threshold is dropped, unless exact. When the query has no
  * unknown word (a likely typo) and some record matches by keyword or by meaning at the threshold, a record only
  * fuzzy matched is dropped too: fuzzy on real words is noise. Exact records come
- * first and the rest by score, so scores never rise down the list; equal scores keep the order of their keys.
+ * first and the rest by score, so scores never rise down the list; equal scores keep the order they were found in
+ * (the searchers' order, each best first), so a searcher's tie-break, e.g. newest first, stays.
  *
  * When asked to put all-words matches first (a query of several non-stop words), the records the keyword search
  * matched (it needs every word) have their score mapped to [boundary + (1 - boundary) x threshold, 1] and the
@@ -64,6 +67,11 @@ class StrongestSignal
     private $allWordsBoundary;
 
     /**
+     * @var float
+     */
+    private $partialNumberBoundary;
+
+    /**
      * @param float $threshold The score a record needs to be kept, from 0 to 1
      * @param float $fuzzyWeight What a perfect fuzzy match scores, from 0 to 1
      * @param float $fuzzyThreshold The word_similarity the fuzzy searcher keeps from, from 0 to 1
@@ -71,10 +79,19 @@ class StrongestSignal
      * @param float $semanticFar The cosine distance a meaning match scores 0 at, from 0 to 2, past semanticNear
      * @param float $allWordsBoundary The score that splits all-words matches from the others, past the threshold
      *     and under 1
+     * @param float $partialNumberBoundary The score that splits numbers starting with the query from those ending
+     *     with it, past the threshold and under 1
      * @throws \Gaia\Exception\Exception When a setting is out of bounds
      */
-    public function __construct($threshold, $fuzzyWeight, $fuzzyThreshold, $semanticNear, $semanticFar, $allWordsBoundary)
-    {
+    public function __construct(
+        $threshold,
+        $fuzzyWeight,
+        $fuzzyThreshold,
+        $semanticNear,
+        $semanticFar,
+        $allWordsBoundary,
+        $partialNumberBoundary
+    ) {
         $this->threshold = $this->bounded($threshold, 1, 'threshold');
         $this->fuzzyWeight = $this->bounded($fuzzyWeight, 1, 'fuzzy weight');
         $this->fuzzyThreshold = $this->bounded($fuzzyThreshold, 1, 'fuzzy threshold');
@@ -89,6 +106,12 @@ class StrongestSignal
         if ($this->allWordsBoundary <= $this->threshold || $this->allWordsBoundary >= 1) {
             throw new \Gaia\Exception\Exception(
                 'The search all-words boundary must be past the threshold and under 1.'
+            );
+        }
+        $this->partialNumberBoundary = $this->bounded($partialNumberBoundary, 1, 'partial number boundary');
+        if ($this->partialNumberBoundary <= $this->threshold || $this->partialNumberBoundary >= 1) {
+            throw new \Gaia\Exception\Exception(
+                'The search partial number boundary must be past the threshold and under 1.'
             );
         }
     }
@@ -141,6 +164,7 @@ class StrongestSignal
                 return $this->banded($item);
             }, $items);
         }
+        // usort is stable: equal scores keep the order they were found in
         usort($items, function ($a, $b) {
             if ($a['pinned'] !== $b['pinned']) {
                 return $a['pinned'] ? -1 : 1;
@@ -149,7 +173,7 @@ class StrongestSignal
                 return $a['score'] > $b['score'] ? -1 : 1;
             }
 
-            return strcmp($a['key'], $b['key']);
+            return 0;
         });
 
         return array_map(function ($item) {
@@ -207,6 +231,15 @@ class StrongestSignal
                 return $this->fuzzyWeight * $this->clamp($past);
             case SemanticSearcher::KIND:
                 return $this->clamp(($this->semanticFar - $signal) / ($this->semanticFar - $this->semanticNear));
+            case PartialNumberMatcher::KIND:
+                // The share of digits matched, plus 1 when the number starts with the query
+                if ($signal >= 1) {
+                    $boundary = $this->partialNumberBoundary;
+
+                    return $boundary + (1 - $boundary) * $this->clamp($signal - 1);
+                }
+
+                return $this->threshold + ($this->partialNumberBoundary - $this->threshold) * $this->clamp($signal);
         }
 
         throw new \Gaia\Exception\Exception("Search signals of kind '{$kind}' have no scale.");
