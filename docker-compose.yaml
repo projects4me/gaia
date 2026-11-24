@@ -102,6 +102,41 @@ services:
     networks:
       - backend
 
+  # Same as gaia-test but LLM_SERVICE_URL reaches Ares — for the opt-in meaning-search cases
+  # (api-tester --mode search-semantic). gaia-test keeps no Ares, so its "Ares unavailable" cases still run.
+  gaia-test-ares:
+    container_name: gaia-test-ares
+    environment:
+      FRONTEND_HOST: localhost:4200
+      DB_ADAPTER: Postgres
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USERNAME: nouman
+      DB_PASSWORD: nouman
+      DB_NAME: ${TEST_DB:-pr4m_test}
+      HERMES_URL: http://host.docker.internal:9001
+      HERMES_SECRET: hermes-dev-secret
+      LLM_SERVICE_URL: ${TEST_ARES_URL:-http://host.docker.internal:8000}
+      ARES_INTROSPECTION_SECRET: ${ARES_INTROSPECTION_SECRET:-}
+      SETTINGS_ENCRYPTION_KEY: ${SETTINGS_ENCRYPTION_KEY:-}
+    build: .
+    volumes:
+      - ./:/var/www/html
+      - vendor:/var/www/html/vendor
+      - ./docker/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/zz-custom.ini:ro
+      - ./docker/php/conf.d/diagnostics.ini:/usr/local/etc/php/conf.d/zz-diagnostics.ini:ro
+    ports:
+      - '8083:80'
+    expose:
+      - '80'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+
   # SMTP sink for the opt-in mail suite (api-tester --mode mail): captures messages,
   # delivers nothing. SMTP :1025 stays on the backend network; the HTTP API/UI is :8025.
   mailpit:

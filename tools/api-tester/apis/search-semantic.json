@@ -1,0 +1,185 @@
+{
+  "name": "search-semantic",
+  "version": 1,
+  "basePath": "/api/v1",
+  "description": "Meaning-search cases of the search test catalog (D1, D2, D3, D5) against the search fixture with its stored embeddings (harness/seed-search.sh) and a test API that reaches Ares (gaia-test-ares). Opt-in and local only: queries are embedded live. Checks are loose: the expected issue within the top 3.",
+  "apis": [
+    {
+      "id": "search-semantic-ares-reachable",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "ledger",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "meta.semantic": "ok"
+        }
+      },
+      "stopOnFailure": true,
+      "note": "Precondition: meaning search is ok (the test API reaches Ares). When it is not, the run stops here: start gaia-test-ares and Ares"
+    },
+    {
+      "id": "search-d1-symptom-instead-of-title",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "cannot log into my account",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "meta.semantic": "ok"
+        },
+        "idsWithin": {
+          "rank": 3,
+          "ids": [
+            "issue:api-test-search-012"
+          ]
+        }
+      },
+      "note": "D1: the symptom, not the title's words, finds the sign-in redirect loop in the top 3"
+    },
+    {
+      "id": "search-d2-1-synonym-picture-bug",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "profile picture bug",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "meta.semantic": "ok"
+        },
+        "idsWithin": {
+          "rank": 3,
+          "ids": [
+            "issue:api-test-search-009"
+          ]
+        }
+      },
+      "note": "D2: synonyms (bug, profile picture for avatar) find the avatar upload issue in the top 3"
+    },
+    {
+      "id": "search-d2-2-synonym-defect-accounting",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "defect in the accounting books export",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "meta.semantic": "ok"
+        },
+        "idsWithin": {
+          "rank": 3,
+          "ids": [
+            "issue:api-test-search-002"
+          ]
+        }
+      },
+      "note": "D2: synonyms (defect, accounting books for ledger) find the ledger export issue in the top 3"
+    },
+    {
+      "id": "search-d3-full-sentence",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "When I export the accounts to a spreadsheet the money type is missing so different currencies get mixed up",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "meta.semantic": "ok"
+        },
+        "idsWithin": {
+          "rank": 3,
+          "ids": [
+            "issue:api-test-search-002"
+          ]
+        }
+      },
+      "note": "D3: a full sentence describing the problem finds the ledger export issue in the top 3"
+    },
+    {
+      "id": "search-d5-1-question-reset-password",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "how do I reset my password?",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "meta.semantic": "ok"
+        },
+        "idsWithin": {
+          "rank": 3,
+          "ids": [
+            "issue:api-test-search-012"
+          ]
+        }
+      },
+      "note": "D5: a question about signing in finds the sign-in redirect loop in the top 3 (the fixture has no password issue)"
+    },
+    {
+      "id": "search-d5-2-question-colour-chooser",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "why does the colour chooser not close when I press escape?",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "meta.semantic": "ok"
+        },
+        "idsWithin": {
+          "rank": 3,
+          "ids": [
+            "issue:api-test-search-020"
+          ]
+        }
+      },
+      "note": "D5: a question finds the color picker Escape issue in the top 3"
+    }
+  ]
+}

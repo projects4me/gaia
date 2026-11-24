@@ -3893,7 +3893,7 @@
       "key": "hermes.absent",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 216,
+        "line": 222,
         "messages": [],
         "values": [],
         "example": "live/live-agent-run-non-delegable-agent-request-skips-runtimes"
@@ -3905,7 +3905,7 @@
       "key": "hermes.expect",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 213,
+        "line": 219,
         "messages": [],
         "values": [],
         "example": "live/live-issue-create-publishes-issue-created"
@@ -3995,7 +3995,7 @@
           "idsWithin: … is not in the top …"
         ],
         "values": [],
-        "example": "search/search-a6-exact-title"
+        "example": "search-semantic/search-d1-symptom-instead-of-title"
       }
     },
     {
@@ -4060,7 +4060,7 @@
       "key": "mail.bodyContains",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 343,
+        "line": 349,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -4072,7 +4072,7 @@
       "key": "mail.fromEmail",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 331,
+        "line": 337,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -4084,7 +4084,7 @@
       "key": "mail.fromName",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 331,
+        "line": 337,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -4096,7 +4096,7 @@
       "key": "mail.subject",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 318,
+        "line": 324,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -4108,7 +4108,7 @@
       "key": "mail.to",
       "attributes": {
         "source": "tools/api-tester/src/Runner.php",
-        "line": 318,
+        "line": 324,
         "messages": [],
         "values": [],
         "example": "mail/mail-welcome-password-email-is-delivered"
@@ -28691,6 +28691,118 @@
         "stores": [
           "runtime.mailUserId"
         ]
+      }
+    },
+    {
+      "id": "case:search-semantic/search-d1-symptom-instead-of-title",
+      "type": "case",
+      "key": "search-semantic/search-d1-symptom-instead-of-title",
+      "attributes": {
+        "catalog": "search-semantic",
+        "file": "tools/api-tester/apis/search-semantic.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search-semantic/search-d2-1-synonym-picture-bug",
+      "type": "case",
+      "key": "search-semantic/search-d2-1-synonym-picture-bug",
+      "attributes": {
+        "catalog": "search-semantic",
+        "file": "tools/api-tester/apis/search-semantic.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search-semantic/search-d2-2-synonym-defect-accounting",
+      "type": "case",
+      "key": "search-semantic/search-d2-2-synonym-defect-accounting",
+      "attributes": {
+        "catalog": "search-semantic",
+        "file": "tools/api-tester/apis/search-semantic.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search-semantic/search-d3-full-sentence",
+      "type": "case",
+      "key": "search-semantic/search-d3-full-sentence",
+      "attributes": {
+        "catalog": "search-semantic",
+        "file": "tools/api-tester/apis/search-semantic.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search-semantic/search-d5-1-question-reset-password",
+      "type": "case",
+      "key": "search-semantic/search-d5-1-question-reset-password",
+      "attributes": {
+        "catalog": "search-semantic",
+        "file": "tools/api-tester/apis/search-semantic.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search-semantic/search-d5-2-question-colour-chooser",
+      "type": "case",
+      "key": "search-semantic/search-d5-2-question-colour-chooser",
+      "attributes": {
+        "catalog": "search-semantic",
+        "file": "tools/api-tester/apis/search-semantic.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search-semantic/search-semantic-ares-reachable",
+      "type": "case",
+      "key": "search-semantic/search-semantic-ares-reachable",
+      "attributes": {
+        "catalog": "search-semantic",
+        "file": "tools/api-tester/apis/search-semantic.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
       }
     },
     {
@@ -103237,6 +103349,246 @@
     },
     {
       "from": "case:mail/mail-welcome-password-email-is-delivered",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search-semantic/search-d1-symptom-instead-of-title",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search-semantic/search-d1-symptom-instead-of-title",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:search-semantic/search-d1-symptom-instead-of-title",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search-semantic/search-d1-symptom-instead-of-title",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search-semantic/search-d1-symptom-instead-of-title",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search-semantic/search-d1-symptom-instead-of-title",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search-semantic/search-d1-symptom-instead-of-title",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search-semantic/search-d2-1-synonym-picture-bug",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search-semantic/search-d2-1-synonym-picture-bug",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:search-semantic/search-d2-1-synonym-picture-bug",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search-semantic/search-d2-1-synonym-picture-bug",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search-semantic/search-d2-1-synonym-picture-bug",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search-semantic/search-d2-1-synonym-picture-bug",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search-semantic/search-d2-1-synonym-picture-bug",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search-semantic/search-d2-2-synonym-defect-accounting",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search-semantic/search-d2-2-synonym-defect-accounting",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:search-semantic/search-d2-2-synonym-defect-accounting",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search-semantic/search-d2-2-synonym-defect-accounting",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search-semantic/search-d2-2-synonym-defect-accounting",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search-semantic/search-d2-2-synonym-defect-accounting",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search-semantic/search-d2-2-synonym-defect-accounting",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search-semantic/search-d3-full-sentence",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search-semantic/search-d3-full-sentence",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:search-semantic/search-d3-full-sentence",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search-semantic/search-d3-full-sentence",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search-semantic/search-d3-full-sentence",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search-semantic/search-d3-full-sentence",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search-semantic/search-d3-full-sentence",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search-semantic/search-d5-1-question-reset-password",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search-semantic/search-d5-1-question-reset-password",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:search-semantic/search-d5-1-question-reset-password",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search-semantic/search-d5-1-question-reset-password",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search-semantic/search-d5-1-question-reset-password",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search-semantic/search-d5-1-question-reset-password",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search-semantic/search-d5-1-question-reset-password",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search-semantic/search-d5-2-question-colour-chooser",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search-semantic/search-d5-2-question-colour-chooser",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:search-semantic/search-d5-2-question-colour-chooser",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search-semantic/search-d5-2-question-colour-chooser",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search-semantic/search-d5-2-question-colour-chooser",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search-semantic/search-d5-2-question-colour-chooser",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search-semantic/search-d5-2-question-colour-chooser",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search-semantic/search-semantic-ares-reachable",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:search-semantic/search-semantic-ares-reachable",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search-semantic/search-semantic-ares-reachable",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search-semantic/search-semantic-ares-reachable",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search-semantic/search-semantic-ares-reachable",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search-semantic/search-semantic-ares-reachable",
       "type": "runs_as",
       "to": "profile:default"
     },

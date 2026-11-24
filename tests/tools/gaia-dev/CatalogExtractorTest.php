@@ -100,7 +100,7 @@ class CatalogExtractorTest extends TestCase
 
         $catalogs = (new CatalogExtractor($root))->extract();
 
-        $this->assertSame(['acl', 'backend', 'client', 'live', 'mail', 'search'], array_column($catalogs, 'catalog'));
+        $this->assertSame(['acl', 'backend', 'client', 'live', 'mail', 'search-semantic', 'search'], array_column($catalogs, 'catalog'));
         $this->assertSame($expected, array_sum(array_map(function ($catalog) {
             return count($catalog['cases']);
         }, $catalogs)));

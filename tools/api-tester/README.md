@@ -111,6 +111,10 @@ Both runs should start from a freshly prepared database (`harness/prepare-test-d
 ./tools/api-tester/harness/seed-search.sh
 ./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8081 --mode search
 
+# search-semantic (opt-in, local only) — the search fixture and a test API that reaches Ares (see Meaning-search mode)
+TEST_SERVICE=gaia-test-ares ./tools/api-tester/harness/use-test-db.sh
+./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8083 --mode search-semantic
+
 # remote
 ./tools/api-tester/harness/run-api-tests.sh --base-uri https://api.staging.example.com --mode backend
 ```
@@ -151,9 +155,13 @@ Both runs should start from a freshly prepared database (`harness/prepare-test-d
 - `tools/api-tester/apis/search.json`
   - **search quality**: `GET /api/v1/search` cases following the search test catalog (looking up an issue, topics, mistakes, a pasted error, input that should return nothing, list behaviour); case ids carry the catalog id (`search-a1-…`, `search-b8-1-…`)
   - runs on its own fixture: `harness/seed-search.sh` loads `harness/seed-search.sql` (two projects, `SRA` and `SRB`, issues numbered 8917 and 9101-9172 with made-up words) into the test database. Load it after the other modes have run: its issues would show up in their lists
-  - the test API has no Ares, so meaning search is `unavailable`; meaning cases are not in this catalog
+  - the test API has no Ares, so meaning search is `unavailable`; meaning cases are in `search-semantic.json`
   - cases that wait for a ranking rule are `"enabled": false` with the issue that brings the rule in `skipReason`; that issue turns them on
   - permission cases for search (other project, unreadable fields) are in `acl.json`
+
+- `tools/api-tester/apis/search-semantic.json`
+  - **meaning search** (opt-in, local only; not in CI or `ai test`): the catalog's meaning cases D1 (a symptom instead of the title), D2 (synonyms), D3 (a full sentence) and D5 (a question), with loose checks: the expected issue within the top 3
+  - needs the search fixture with its stored embeddings and a test API that reaches Ares; see Meaning-search mode
 
 Generate catalogs:
 
@@ -172,7 +180,9 @@ These are **not** part of api-tester. Use them only when you need a local seeded
 | Script | Purpose |
 |---|---|
 | `prepare-test-db.sh` | Create `pr4m_test`, clone schema from `pr4m`, seed fixtures, write fixtures JSON |
-| `use-test-db.sh` | Optional: start local `gaia-test` on `:8081` (or `TEST_SERVICE=gaia-test-hermes-down` on `:8082`) |
+| `use-test-db.sh` | Optional: start local `gaia-test` on `:8081` (or `TEST_SERVICE=gaia-test-hermes-down` on `:8082`, `TEST_SERVICE=gaia-test-ares` on `:8083`) |
+| `seed-search.sh` | Load the search fixture and its stored embeddings (`--no-embeddings`: the fixture alone) |
+| `generate-search-embeddings.sh` | Regenerate the search fixture's stored embeddings through Ares |
 | `hermes-wait/` | Node Socket.IO observer used by `--mode live` happy-path cases |
 
 ```bash
@@ -230,6 +240,37 @@ TEST_SERVICE=gaia-test-hermes-down ./tools/api-tester/harness/use-test-db.sh
   --base-uri http://localhost:8082 \
   --mode live \
   --filter fail-open
+```
+
+## Meaning-search mode (Gaia → Ares)
+
+`--mode search-semantic` runs `apis/search-semantic.json`: meaning search with the real embedding model. It is opt-in
+and local only, like live and mail. It needs:
+
+- Ares up, with its embedding model loaded (`POST /embeddings` answers);
+- the search fixture with its stored embeddings, loaded by `harness/seed-search.sh` (as for `--mode search`);
+- a test API that reaches Ares: `gaia-test-ares` (`:8083`) is `gaia-test` with `LLM_SERVICE_URL` set
+  (`TEST_ARES_URL`, default `http://host.docker.internal:8000`). `gaia-test` itself keeps no Ares, so its
+  "Ares unavailable" behaviour stays as it is. `TEST_DB` picks the database (default `pr4m_test`).
+
+```bash
+./tools/api-tester/harness/seed-search.sh
+TEST_SERVICE=gaia-test-ares ./tools/api-tester/harness/use-test-db.sh
+./tools/api-tester/harness/run-api-tests.sh --base-uri http://localhost:8083 --mode search-semantic
+```
+
+The first case checks that `meta.semantic` is `ok` and has `stopOnFailure`: without Ares the run stops there instead
+of failing every case.
+
+**Stored embeddings.** The fixture issues are not embedded during the run: `fixtures/search-embeddings.json` holds,
+for each one, its semantic text (Gaia's `SemanticText` over the Issue search block), the text's hash, its embedding
+and the model that made it. `seed-search.sh` writes them with the hash as both the desired and the actual hash, so a
+reindex finds nothing to re-embed; only the queries are embedded live. The seed stops when a fixture issue's subject or
+description no longer matches the file. Regenerate the file in one command (Ares up, test database prepared), after
+changing `seed-search.sql` or when Ares changes its embedding model:
+
+```bash
+./tools/api-tester/harness/generate-search-embeddings.sh   # ARES_URL defaults to http://localhost:8000
 ```
 
 ## Mail mode (Gaia → SMTP sink)
@@ -300,6 +341,9 @@ Each API entry can declare `expects`:
 - `idsSameAs`: `{ "case": "<earlier case id>", "top": N, "ordered": true }`, the same ids as that case returned (as a set unless `ordered`; only the first N when `top` is given)
 - `scoresWithin`: `[min, max]`, every item's `attributes.score` in the range
 - `scoresFalling`: `true`, no item's `attributes.score` is above the one before it
+
+An entry with `"stopOnFailure": true` ends the run when it fails: the remaining cases are not run and the report's
+`stoppedAt` names it. Use it for a precondition case (e.g. the service a catalog needs is up).
 
 ## Auth profiles
 
