@@ -54,6 +54,7 @@ class SearchServiceFactory
                 new SemanticSearcher($candidates, new \Gaia\Services\Embeddings(), $maxDistance),
             ),
             $ranking,
+            new UnknownWords($candidates, $tsquery),
             new DisplayLoader($candidates, new Snippet($tsquery)),
             $candidateDepth
         );
