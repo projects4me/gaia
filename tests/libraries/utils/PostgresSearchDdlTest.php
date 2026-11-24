@@ -102,11 +102,46 @@ class PostgresSearchDdlTest extends TestCase
 
         $this->assertSame(
             "tsvector GENERATED ALWAYS AS ("
-            . "setweight(to_tsvector('english'::regconfig, coalesce(\"subject\"::text, '')), 'A')"
-            . " || setweight(to_tsvector('english'::regconfig, coalesce(\"description\"::text, '')), 'B')"
+            . "setweight(" . $this->splitWordsVector('english', "coalesce(\"subject\"::text, '')") . ", 'A')"
+            . " || setweight(" . $this->splitWordsVector('english', "coalesce(\"description\"::text, '')") . ", 'B')"
             . ") STORED",
             $sql
         );
+    }
+
+    public function testTsvectorAddsTheWordsOfPathsAndFileNamesItHasNotGotAlready()
+    {
+        $sql = (new PostgresSearchDdl())->columnDefinition(
+            array(
+                'name' => 'searchVector',
+                'type' => 'tsvector',
+                'null' => true,
+                'generated' => array('sources' => array('subject' => 'A')),
+            ),
+            $this->fields()
+        );
+
+        $this->assertStringContainsString(
+            "|| ts_delete(to_tsvector('english'::regconfig,"
+            . " translate(coalesce(\"subject\"::text, ''), '/._\\', '    ')),"
+            . " tsvector_to_array(to_tsvector('english'::regconfig, coalesce(\"subject\"::text, ''))))",
+            $sql
+        );
+    }
+
+    /**
+     * The tsvector of a text: its own tokens, then the words of its paths and file names it has not got already.
+     *
+     * @param string $config
+     * @param string $text
+     * @return string
+     */
+    private function splitWordsVector($config, $text)
+    {
+        $vector = "to_tsvector('{$config}'::regconfig, {$text})";
+
+        return "{$vector} || ts_delete(to_tsvector('{$config}'::regconfig, translate({$text}, '/._\\', '    ')),"
+            . " tsvector_to_array({$vector}))";
     }
 
     public function testTsvectorFieldUsesTheGivenTextSearchConfig()

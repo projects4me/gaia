@@ -7,6 +7,7 @@
 namespace Gaia\Tests\Libraries\Utils;
 
 use Gaia\Db\Migration\Postgres;
+use Gaia\Db\Migration\PostgresSearchDdl;
 use Gaia\Libraries\Meta\Manager;
 use Gaia\Libraries\Meta\Migration;
 use PHPUnit\Framework\TestCase;
@@ -114,6 +115,44 @@ class PostgresSearchMigrationTest extends TestCase
             array('fixture-1')
         );
         $this->assertSame("'plan':2B 'search':1B", $row['v']);
+    }
+
+    public function testAColumnBuiltBeforePathsWereSplitIsRebuiltWithTheirWords()
+    {
+        $meta = $this->fixtureMeta(false);
+        $this->migrate($meta);
+        // The column as it was before agaia-4894: each source as one tsvector, paths and file names kept whole.
+        $old = "tsvector GENERATED ALWAYS AS ("
+            . "setweight(to_tsvector('english'::regconfig, coalesce(\"subject\"::text, '')), 'A')"
+            . " || setweight(to_tsvector('english'::regconfig, coalesce(\"description\"::text, '')), 'B')"
+            . ") STORED";
+        $this->db->execute('ALTER TABLE "' . self::TABLE . '" DROP COLUMN "searchVector"');
+        $this->db->execute('ALTER TABLE "' . self::TABLE . '" ADD COLUMN "searchVector" ' . $old);
+        $this->db->execute(
+            'COMMENT ON COLUMN "' . self::TABLE . '"."searchVector" IS '
+            . $this->db->escapeString((new PostgresSearchDdl())->signature($old))
+        );
+        $this->db->execute(
+            'INSERT INTO "' . self::TABLE . '" ("id", "subject", "description") VALUES (?, ?, ?)',
+            array('fixture-1', 'OAuth/callback loops', 'search in image-upload.js')
+        );
+        $before = $this->column('searchVector')['attnum'];
+
+        $this->migrate($meta);
+
+        $this->assertNotSame($before, $this->column('searchVector')['attnum']);
+        $this->assertStringContainsString('USING gin ("searchVector")', $this->indexDefinition('searchVector'));
+        $row = $this->db->fetchOne(
+            'SELECT "searchVector"::text AS v FROM "' . self::TABLE . '" WHERE "id" = ?',
+            \PDO::FETCH_ASSOC,
+            array('fixture-1')
+        );
+        $this->assertStringContainsString("'oauth/callback':1A", $row['v']);
+        foreach (array('image-upload.js', 'oauth', 'callback', 'imag', 'upload', 'js') as $word) {
+            $this->assertMatchesRegularExpression("/'{$word}':\\d+[AB]/", $row['v']);
+        }
+        // A word the text has already is not added again.
+        $this->assertMatchesRegularExpression("/'search':\\d+B /", $row['v']);
     }
 
     /**

@@ -493,6 +493,75 @@
       "note": "B6: the issue naming it first"
     },
     {
+      "id": "search-b7-path-part",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "oauth",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 1,
+          "ids": [
+            "issue:api-test-search-012"
+          ]
+        }
+      },
+      "note": "B7: the issue naming the OAuth/callback path, by a part of it"
+    },
+    {
+      "id": "search-b7-pasted-path",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "login/OAuth/callback",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 1,
+          "ids": [
+            "issue:api-test-search-012"
+          ]
+        }
+      },
+      "note": "B7: a pasted path is read as its words (login, OAuth, callback), all of which the issue has"
+    },
+    {
+      "id": "search-b8-file-name-part",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "image",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsWithin": {
+          "rank": 3,
+          "ids": [
+            "issue:api-test-search-014"
+          ]
+        }
+      },
+      "note": "B8: the issue naming image-upload.js, by a part of the file name"
+    },
+    {
       "id": "search-plain-text-words",
       "method": "GET",
       "path": "/api/v1/search",

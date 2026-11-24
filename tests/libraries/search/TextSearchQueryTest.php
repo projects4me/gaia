@@ -36,6 +36,33 @@ class TextSearchQueryTest extends TestCase
         $this->assertSame(array('search_config' => 'simple', 'search_fts' => '"ledger" -export'), $tsquery['bind']);
     }
 
+    public function testThePartsOfAPathOrFileNameAreReadAsWords()
+    {
+        $tsquery = (new TextSearchQuery())->expression(
+            $this->target(),
+            KeywordQuery::plain('src/OAuth/callback image-upload.js meta.semantic file_name C:\\dir')
+        );
+
+        $this->assertSame(
+            'src OAuth callback image-upload js meta semantic file name C: dir',
+            $tsquery['bind']['search_fts']
+        );
+    }
+
+    public function testTheWordsWithAlternativesAreReadApartToo()
+    {
+        $keywords = KeywordQuery::expanded(new SearchQuery('docs/colour'), array(
+            array('at' => array(0), 'form' => array('color')),
+        ));
+
+        $tsquery = (new TextSearchQuery())->expression($this->target(), $keywords);
+
+        $this->assertNotContains('docs/colour', $tsquery['bind']);
+        foreach ($tsquery['bind'] as $value) {
+            $this->assertStringNotContainsString('/', $value);
+        }
+    }
+
     public function testAQueryWithNoKeptAlternativeKeepsItsTextAsItIs()
     {
         $keywords = KeywordQuery::expanded(new SearchQuery('real-time "board"'), array());

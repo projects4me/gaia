@@ -12,7 +12,9 @@ use Gaia\Db\Migration\PostgresSearchDdl;
  * A keyword query as a Postgres tsquery, in the text search config the type's searchVector is built with, so the query
  * is parsed the way the records were. The words are read with plainto_tsquery (every word, no operators, so quotes and
  * a leading dash are plain text); a word with alternatives matches it or any of them (OR), a split pair as a phrase
- * (phraseto_tsquery), and a joined pair matches both words or the joined word. Every value is a bound parameter.
+ * (phraseto_tsquery), and a joined pair matches both words or the joined word. The words of a path or file name are
+ * read apart, the way the searchVector indexes them, so a pasted path (OAuth/callback) finds its record. Every value is
+ * a bound parameter.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -32,7 +34,7 @@ class TextSearchQuery
         $bind = $this->configBind($target);
         if ($keywords->groups() === array()) {
             return array('sql' => '(' . $this->words(':search_fts') . ')', 'bind' => $bind + array(
-                'search_fts' => $keywords->text(),
+                'search_fts' => $this->splitWords($keywords->text()),
             ));
         }
 
@@ -40,7 +42,7 @@ class TextSearchQuery
         $next = 1;
         if ($keywords->text() !== '') {
             $parts[] = $this->words(':search_fts');
-            $bind['search_fts'] = $keywords->text();
+            $bind['search_fts'] = $this->splitWords($keywords->text());
         }
         foreach ($keywords->groups() as $group) {
             $sides = array();
@@ -130,6 +132,17 @@ class TextSearchQuery
     }
 
     /**
+     * This function reads the separators of paths and file names in a text as spaces.
+     *
+     * @param string $text
+     * @return string
+     */
+    private function splitWords($text)
+    {
+        return str_replace(PostgresSearchDdl::WORD_SEPARATORS, ' ', $text);
+    }
+
+    /**
      * This function binds a value to the next numbered parameter (search_fts1, search_fts2, ...) and returns its
      * placeholder.
      *
@@ -141,7 +154,7 @@ class TextSearchQuery
     private function parameter($value, array &$bind, &$next)
     {
         $name = 'search_fts' . $next++;
-        $bind[$name] = $value;
+        $bind[$name] = $this->splitWords($value);
 
         return ':' . $name;
     }

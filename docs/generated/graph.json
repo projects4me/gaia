@@ -29176,6 +29176,54 @@
       }
     },
     {
+      "id": "case:search/search-b7-pasted-path",
+      "type": "case",
+      "key": "search/search-b7-pasted-path",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b7-path-part",
+      "type": "case",
+      "key": "search/search-b7-path-part",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-b8-file-name-part",
+      "type": "case",
+      "key": "search/search-b8-file-name-part",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:search/search-b9-word-only-in-description",
       "type": "case",
       "key": "search/search-b9-word-only-in-description",
@@ -104339,6 +104387,96 @@
     },
     {
       "from": "case:search/search-b6-technical-name",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b7-pasted-path",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-b7-pasted-path",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b7-pasted-path",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b7-pasted-path",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b7-pasted-path",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b7-pasted-path",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b7-path-part",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-b7-path-part",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b7-path-part",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b7-path-part",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b7-path-part",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b7-path-part",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-b8-file-name-part",
+      "type": "asserts",
+      "to": "assertion:idsWithin"
+    },
+    {
+      "from": "case:search/search-b8-file-name-part",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-b8-file-name-part",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-b8-file-name-part",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-b8-file-name-part",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-b8-file-name-part",
       "type": "runs_as",
       "to": "profile:default"
     },

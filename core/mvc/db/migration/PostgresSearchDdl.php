@@ -77,6 +77,14 @@ class PostgresSearchDdl
     public const DEFAULT_TEXT_SEARCH_CONFIG = 'english';
 
     /**
+     * Characters that join the parts of a path or file name (OAuth/callback, image-upload.js, meta.semantic) into
+     * one token. A tsvector also indexes its text with them read as spaces, and a query reads them the same way.
+     *
+     * @var array
+     */
+    public const WORD_SEPARATORS = array('/', '.', '_', '\\');
+
+    /**
      * This function tells whether a metadata field type is built by this class.
      *
      * @param string $type Field type from model metadata
@@ -281,11 +289,30 @@ class PostgresSearchDdl
                     "Tsvector field {$schema['name']} gives '{$field}' weight '{$weight}'; use A, B, C or D."
                 );
             }
-            $column = self::quote($fields[$field]['name']);
-            $parts[] = "setweight(to_tsvector('{$config}'::regconfig, coalesce({$column}::text, '')), '{$weight}')";
+            $text = 'coalesce(' . self::quote($fields[$field]['name']) . "::text, '')";
+            $parts[] = 'setweight(' . $this->splitWordsVector($config, $text) . ", '{$weight}')";
         }
 
         return 'tsvector GENERATED ALWAYS AS (' . implode(' || ', $parts) . ') STORED';
+    }
+
+    /**
+     * This function returns the tsvector of a text with, after its own tokens, the words its paths and file names split
+     * into (the separators read as spaces). Only the words the text has not got already are added, so a plain word is
+     * not counted twice and its rank stays as it was. Every function in it is immutable, as a generated column needs.
+     *
+     * @param string $config Text search config
+     * @param string $text SQL of the text
+     * @return string
+     */
+    private function splitWordsVector($config, $text)
+    {
+        $vector = "to_tsvector('{$config}'::regconfig, {$text})";
+        $separators = implode('', self::WORD_SEPARATORS);
+        $split = "to_tsvector('{$config}'::regconfig, translate({$text}, '{$separators}', '"
+            . str_repeat(' ', strlen($separators)) . "'))";
+
+        return "{$vector} || ts_delete({$split}, tsvector_to_array({$vector}))";
     }
 
     /**
