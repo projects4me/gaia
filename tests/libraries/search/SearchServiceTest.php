@@ -127,6 +127,69 @@ class SearchServiceTest extends TestCase
         $this->assertSame(array('fuzzy'), $results[0]['matchedBy']);
     }
 
+    public function testSearchersReportTheRawSignalOfEachMatch()
+    {
+        $this->embeddings->vectors['zebracorn'] = $this->vector(1);
+        $id = $this->addIssue('Zebracorn import fails', 'The zebracorn importer stops.', 987654303);
+        $this->embed($id, $this->vector(0.6, 0.8));
+        $candidates = new CandidateQuery($this->db);
+        $target = $this->target();
+
+        $exact = (new ExactMatcher($candidates))->rank($target, '987654303', 10);
+        $fts = (new FtsSearcher($candidates, new TextSearchQuery()))->rank($target, 'zebracorn', 10);
+        $fuzzy = (new FuzzySearcher($candidates, 0.3))->rank($target, 'zebracorn', 10);
+        $semantic = (new SemanticSearcher($candidates, $this->embeddings, 0.5))->rank($target, 'zebracorn', 10);
+
+        $this->assertSame(array($id => 1.0), $exact);
+        $this->assertSame(array($id), array_keys($fts));
+        $this->assertGreaterThan(0.0, $fts[$id]);
+        $this->assertLessThan(1.0, $fts[$id]);
+        $this->assertEqualsWithDelta(1.0, $fuzzy[$id], 0.0001);
+        $this->assertEqualsWithDelta(0.4, $semantic[$id], 0.0001);
+    }
+
+    public function testSearchersGiveTheStrongerMatchTheStrongerSignalFirst()
+    {
+        $this->embeddings->vectors['zebracorn'] = $this->vector(1);
+        $near = $this->addIssue('Alpha', null);
+        $this->embed($near, $this->vector(0.95, 0.312));
+        $far = $this->addIssue('Beta', null);
+        $this->embed($far, $this->vector(0.7, 0.714));
+        $strong = $this->addIssue('Zebracorn zebracorn zebracorn', null);
+        $weak = $this->addIssue('Zebracorn', 'one more words');
+        $candidates = new CandidateQuery($this->db);
+        $target = $this->target();
+
+        $semantic = (new SemanticSearcher($candidates, $this->embeddings, 0.5))->rank($target, 'zebracorn', 10);
+        $fts = (new FtsSearcher($candidates, new TextSearchQuery()))->rank($target, 'zebracorn', 10);
+
+        $this->assertSame(array($near, $far), array_keys($semantic));
+        $this->assertLessThan($semantic[$far], $semantic[$near]);
+        $this->assertSame(array($strong, $weak), array_keys($fts));
+        $this->assertGreaterThan($fts[$weak], $fts[$strong]);
+    }
+
+    /**
+     * @return \Gaia\Libraries\Search\SearchTarget
+     */
+    private function target()
+    {
+        $di = \Phalcon\Di\Di::getDefault();
+        $metaManager = $di->get('metaManager');
+        $registry = SearchableRegistry::fromMetadata($metaManager);
+        $meta = $metaManager->getModelMeta($registry->forType('issue')['model']);
+        $scope = (new SearchScope($this->acl, $di->get('modelsManager')))
+            ->forModel($registry->forType('issue')['model'], $meta['fields']);
+
+        return new \Gaia\Libraries\Search\SearchTarget(
+            $registry->forType('issue'),
+            $meta['tableName'],
+            $meta['fields'],
+            $scope['sql'],
+            $scope['bind']
+        );
+    }
+
     public function testPutsTheFuzzyThresholdBackAfterTheSearch()
     {
         $this->db->execute("SELECT set_config('pg_trgm.word_similarity_threshold', '0.6', false)");
@@ -597,7 +660,7 @@ class SearchTestSettingSpy extends CandidateQuery
         $this->connection = $db;
     }
 
-    public function ids(\Gaia\Libraries\Search\SearchTarget $target, $condition, $order, array $bind, $limit)
+    public function signals(\Gaia\Libraries\Search\SearchTarget $target, $condition, $signal, $order, array $bind, $limit)
     {
         $row = $this->connection->fetchOne(
             "SELECT current_setting('hnsw.iterative_scan', true) AS s",
@@ -607,6 +670,6 @@ class SearchTestSettingSpy extends CandidateQuery
             $this->settings['semantic'] = $row['s'];
         }
 
-        return parent::ids($target, $condition, $order, $bind, $limit);
+        return parent::signals($target, $condition, $signal, $order, $bind, $limit);
     }
 }

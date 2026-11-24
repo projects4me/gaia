@@ -18,6 +18,13 @@ namespace Gaia\Libraries\Search;
 class CandidateQuery
 {
     /**
+     * The alias of the signal column in signals().
+     *
+     * @var string
+     */
+    private const SIGNAL = 'signal';
+
+    /**
      * @var \Phalcon\Db\Adapter\AdapterInterface
      */
     private $db;
@@ -81,28 +88,31 @@ class CandidateQuery
     }
 
     /**
-     * This function returns the ids of the matching records in scope, in the given order.
+     * This function returns the matching records in scope with the raw signal of each match, in the given order.
      *
      * @param SearchTarget $target
      * @param string $condition The match condition, over columns from column() and :search_ parameters
+     * @param string $signal The expression of the match's raw signal
      * @param string|null $order The ranking expression, best first, or null for none
-     * @param array $bind The condition's and order's parameters, named search_*
+     * @param array $bind The condition's, signal's and order's parameters, named search_*
      * @param int $limit
-     * @return array
+     * @return array Each id => its signal as a float, in the order
      */
-    public function ids(SearchTarget $target, $condition, $order, array $bind, $limit)
+    public function signals(SearchTarget $target, $condition, $signal, $order, array $bind, $limit)
     {
         $rows = $this->rows(
             $target,
-            array(),
+            array(self::SIGNAL => $signal),
             $condition,
             $bind,
             ' ORDER BY ' . ($order === null ? '' : $order . ', ') . $this->column('id') . ' LIMIT ' . (int) $limit
         );
+        $signals = array();
+        foreach ($rows as $row) {
+            $signals[$row['id']] = (float) $row[self::SIGNAL];
+        }
 
-        return array_map(function ($row) {
-            return $row['id'];
-        }, $rows);
+        return $signals;
     }
 
     /**

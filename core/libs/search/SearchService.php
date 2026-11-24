@@ -26,12 +26,12 @@ use Gaia\Libraries\Security\Acl;
 class SearchService
 {
     /**
-     * How many candidates each searcher gives per type, as a multiple of the limit: fusion needs more than the
-     * limit to reorder.
+     * How many candidates each searcher gives per type: fusion and the ranking work need more than the limit to
+     * reorder.
      *
      * @var int
      */
-    private const CANDIDATE_FACTOR = 2;
+    private const CANDIDATE_DEPTH = 100;
 
     /**
      * @var SearchableRegistry
@@ -119,7 +119,6 @@ class SearchService
         $targets = array();
         $rankings = array();
         $unavailable = array();
-        $depth = $request->limit() * self::CANDIDATE_FACTOR;
         foreach ($entries as $type => $entry) {
             $targets[$type] = $this->target($entry);
             foreach ($this->searchers as $searcher) {
@@ -127,7 +126,7 @@ class SearchService
                     continue;
                 }
                 try {
-                    $ids = $searcher->rank($targets[$type], $request->query(), $depth);
+                    $signals = $searcher->rank($targets[$type], $request->query(), self::CANDIDATE_DEPTH);
                 } catch (SearcherUnavailableException $e) {
                     $this->logUnavailable($searcher->kind(), $e);
                     $unavailable[] = $searcher->kind();
@@ -137,7 +136,7 @@ class SearchService
                     'kind' => $searcher->kind(),
                     'keys' => array_map(function ($id) use ($type) {
                         return $type . ':' . $id;
-                    }, $ids),
+                    }, array_keys($signals)),
                 );
             }
         }

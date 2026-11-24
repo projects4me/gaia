@@ -7,7 +7,7 @@
 namespace Gaia\Libraries\Search;
 
 /**
- * Full text search: matches the query as a tsquery against the type's searchVector and ranks by ts_rank_cd.
+ * Full text search: matches the query as a tsquery against the type's searchVector and ranks by ts_rank_cd, normalized to 0-1, which is its signal.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -66,10 +66,14 @@ class FtsSearcher implements Searcher
         $vector = $this->candidates->column(SearchBlock::VECTOR);
         $tsquery = $this->tsquery->sql();
 
-        return $this->candidates->ids(
+        // Normalization 32 divides the rank by itself plus one, so the signal is from 0 to 1
+        $rank = 'ts_rank_cd(' . $vector . ', ' . $tsquery . ', 32)';
+
+        return $this->candidates->signals(
             $target,
             $vector . ' @@ ' . $tsquery,
-            'ts_rank_cd(' . $vector . ', ' . $tsquery . ') DESC',
+            $rank,
+            $rank . ' DESC',
             $this->tsquery->bind($target, $query),
             $limit
         );
