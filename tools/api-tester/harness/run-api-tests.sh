@@ -23,11 +23,13 @@ Required:
   --base-uri <url>                    Running API base URI (local, staging, or production)
 
 Options:
-  --mode <client|backend|acl|live|mail|search>[,<mode>...]
+  --mode <client|backend|acl|live|mail|search|search-semantic>[,<mode>...]
                                       API catalog(s) to run (repeatable; default: backend)
   --hermes-url <url>                  Live Hermes URL (required for live happy-path cases)
   --mail-url <url>                    SMTP sink (Mailpit) HTTP API URL (required for --mode mail)
                                       (--mode search needs the search fixture: harness/seed-search.sh)
+                                      (--mode search-semantic also needs a test API that reaches Ares:
+                                      TEST_SERVICE=gaia-test-ares harness/use-test-db.sh)
   --filter <text|a|b>                 Optional filter (supports OR with |)
   --report <file>                     Report output path (single --mode only)
   --record-bodies                     Record each case's status, content type and body in the report
@@ -100,8 +102,11 @@ resolve_mode_paths() {
     search)
       echo "$ROOT_DIR/tools/api-tester/apis/search.json|$ROOT_DIR/output/api-tester-search-report.json"
       ;;
+    search-semantic)
+      echo "$ROOT_DIR/tools/api-tester/apis/search-semantic.json|$ROOT_DIR/output/api-tester-search-semantic-report.json"
+      ;;
     *)
-      echo "Invalid --mode: $mode (expected client|backend|acl|live|mail|search)" >&2
+      echo "Invalid --mode: $mode (expected client|backend|acl|live|mail|search|search-semantic)" >&2
       return 1
       ;;
   esac

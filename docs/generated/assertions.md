@@ -18,7 +18,7 @@
 - idsExcludes -- idsExcludes: unexpectedly found id … | e.g. acl/acl-members-issuetype-list-includes-system-types
 - idsIncludes -- idsIncludes: missing id … | e.g. acl/acl-project-rels-issues-omitted
 - idsSameAs -- idsSameAs: case … has no results to compare with (not run, skipped, failed or empty) | e.g. search/search-b3-keywords-other-order
-- idsWithin -- idsWithin: needs a rank of 1 or more and at least one id | e.g. search/search-a6-exact-title
+- idsWithin -- idsWithin: needs a rank of 1 or more and at least one id | e.g. search-semantic/search-d1-symptom-instead-of-title
 - includedTypesAbsent -- includedTypesAbsent: unexpectedly found type … | e.g. acl/acl-project-rels-issues-omitted
 - includedTypesPresent -- includedTypesPresent: missing type … | e.g. acl/acl-project-rels-mixed-issues-omitted-members-kept
 - jsonEqual -- jsonEqual: … expected '…', got ' | e.g. acl/acl-system-type-labels-unchanged-after-denied-copy

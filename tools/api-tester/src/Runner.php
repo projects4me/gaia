@@ -58,6 +58,7 @@ class Runner
         $passed = 0;
         $failed = 0;
         $skipped = 0;
+        $stoppedAt = null;
 
         foreach ($apisDoc['apis'] as $api) {
             $id = isset($api['id']) ? $api['id'] : ($api['method'] . ' ' . $api['path']);
@@ -90,14 +91,11 @@ class Runner
             try {
                 $caseResult = $this->runCase($api);
             } catch (\Exception $e) {
-                $failed++;
-                $results[] = [
+                $caseResult = [
                     'id' => $id,
                     'status' => 'failed',
                     'failures' => [$e->getMessage()],
                 ];
-                echo "FAIL {$id}\n  - {$e->getMessage()}\n";
-                continue;
             }
 
             if ($caseResult['status'] === 'passed') {
@@ -114,6 +112,13 @@ class Runner
                 }
             }
             $results[] = $caseResult;
+
+            // A precondition case (e.g. the service the catalog needs is up): the rest would only fail the same way
+            if ($caseResult['status'] === 'failed' && !empty($api['stopOnFailure'])) {
+                $stoppedAt = $id;
+                echo "STOP {$id} failed: the remaining cases were not run\n";
+                break;
+            }
         }
 
         $report = [
@@ -124,6 +129,7 @@ class Runner
             'hermesUrl' => $this->hermesUrl,
             'runId' => $this->runId,
             'recordBodies' => $this->recordBodies,
+            'stoppedAt' => $stoppedAt,
             'summary' => [
                 'passed' => $passed,
                 'failed' => $failed,
