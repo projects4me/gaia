@@ -31,13 +31,6 @@ class SemanticSearcher implements Searcher
     public const KIND = 'semantic';
 
     /**
-     * The cosine distance of system.search.semanticMaxDistance when the config gives none.
-     *
-     * @var float
-     */
-    public const DEFAULT_MAX_DISTANCE = 0.5;
-
-    /**
      * The hnsw.iterative_scan mode: strict_order keeps the records in exact distance order.
      *
      * @var string

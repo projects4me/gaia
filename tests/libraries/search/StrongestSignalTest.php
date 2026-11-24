@@ -144,11 +144,11 @@ class StrongestSignalTest extends TestCase
      * @param float $threshold
      * @return StrongestSignal
      */
-    private function ranking($threshold = StrongestSignal::DEFAULT_THRESHOLD)
+    private function ranking($threshold = 0.15)
     {
         return new StrongestSignal(
             $threshold,
-            StrongestSignal::DEFAULT_FUZZY_WEIGHT,
+            0.6,
             0.3,
             0.156,
             0.402

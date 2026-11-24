@@ -26,13 +26,6 @@ use Gaia\Libraries\Security\Acl;
 class SearchService
 {
     /**
-     * How many candidates each searcher gives per type: the ranking needs more than the limit to reorder.
-     *
-     * @var int
-     */
-    private const CANDIDATE_DEPTH = 100;
-
-    /**
      * @var SearchableRegistry
      */
     private $registry;
@@ -68,6 +61,13 @@ class SearchService
     private $display;
 
     /**
+     * How many candidates each searcher gives per type: the ranking needs more than the limit to reorder.
+     *
+     * @var int
+     */
+    private $candidateDepth;
+
+    /**
      * @param SearchableRegistry $registry
      * @param Manager $metaManager
      * @param Acl $acl The ACL of the user searching
@@ -75,6 +75,8 @@ class SearchService
      * @param Searcher[] $searchers
      * @param StrongestSignal $ranking
      * @param DisplayLoader $display
+     * @param int $candidateDepth How many candidates each searcher gives per type, at least 1
+     * @throws \Gaia\Exception\Exception When the candidate depth is not a positive whole number
      */
     public function __construct(
         SearchableRegistry $registry,
@@ -83,8 +85,12 @@ class SearchService
         SearchScope $scope,
         array $searchers,
         StrongestSignal $ranking,
-        DisplayLoader $display
+        DisplayLoader $display,
+        $candidateDepth
     ) {
+        if (filter_var($candidateDepth, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1))) === false) {
+            throw new \Gaia\Exception\Exception('The search candidate depth must be a whole number from 1.');
+        }
         $this->registry = $registry;
         $this->metaManager = $metaManager;
         $this->acl = $acl;
@@ -92,6 +98,7 @@ class SearchService
         $this->searchers = $searchers;
         $this->ranking = $ranking;
         $this->display = $display;
+        $this->candidateDepth = (int) $candidateDepth;
     }
 
     /**
@@ -130,7 +137,7 @@ class SearchService
                     continue;
                 }
                 try {
-                    $signals = $searcher->rank($targets[$type], $query, self::CANDIDATE_DEPTH);
+                    $signals = $searcher->rank($targets[$type], $query, $this->candidateDepth);
                 } catch (SearcherUnavailableException $e) {
                     $this->logUnavailable($searcher->kind(), $e);
                     $unavailable[] = $searcher->kind();

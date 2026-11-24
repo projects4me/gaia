@@ -50,6 +50,15 @@ class SearchServiceTest extends TestCase
     private const PROJECT_B = 'a4666000-0000-4000-8000-00000000000b';
 
     /**
+     * The search settings the tests run with, those of system.search.
+     *
+     * @var float|int
+     */
+    private const THRESHOLD = 0.15;
+    private const MAX_DISTANCE = 0.5;
+    private const CANDIDATE_DEPTH = 100;
+
+    /**
      * @var \Phalcon\Db\Adapter\AdapterInterface
      */
     private $db;
@@ -210,7 +219,7 @@ class SearchServiceTest extends TestCase
         $this->assertNotEmpty($scores);
         $previous = 1.0;
         foreach ($scores as $score) {
-            $this->assertGreaterThanOrEqual(StrongestSignal::DEFAULT_THRESHOLD, $score);
+            $this->assertGreaterThanOrEqual(self::THRESHOLD, $score);
             $this->assertLessThanOrEqual($previous, $score);
             $previous = $score;
         }
@@ -505,7 +514,7 @@ class SearchServiceTest extends TestCase
         $this->embed($this->addIssue('Alpha', null), $this->vector(1));
         $candidates = new SearchTestSettingSpy($this->db);
 
-        $this->service(SemanticSearcher::DEFAULT_MAX_DISTANCE, $candidates)
+        $this->service(self::MAX_DISTANCE, $candidates)
             ->search(new SearchRequest(array('issue'), 'zebracorn'));
 
         $this->assertSame('strict_order', $candidates->settings['semantic']);
@@ -579,6 +588,28 @@ class SearchServiceTest extends TestCase
     }
 
     /**
+     * @dataProvider badCandidateDepths
+     */
+    public function testRejectsACandidateDepthThatIsNotAPositiveWholeNumber($candidateDepth)
+    {
+        $this->expectException(\Gaia\Exception\Exception::class);
+        $this->service(self::MAX_DISTANCE, null, $candidateDepth);
+    }
+
+    /**
+     * @return array
+     */
+    public static function badCandidateDepths()
+    {
+        return array(
+            'zero' => array(0),
+            'negative' => array(-1),
+            'fraction' => array(1.5),
+            'not a number' => array('deep'),
+        );
+    }
+
+    /**
      * @param string $query
      * @param int|null $limit
      * @return array
@@ -617,10 +648,14 @@ class SearchServiceTest extends TestCase
     /**
      * @param float $maxDistance
      * @param CandidateQuery|null $candidates
+     * @param mixed $candidateDepth
      * @return SearchService
      */
-    private function service($maxDistance = SemanticSearcher::DEFAULT_MAX_DISTANCE, ?CandidateQuery $candidates = null)
-    {
+    private function service(
+        $maxDistance = self::MAX_DISTANCE,
+        ?CandidateQuery $candidates = null,
+        $candidateDepth = self::CANDIDATE_DEPTH
+    ) {
         $di = \Phalcon\Di\Di::getDefault();
         $metaManager = $di->get('metaManager');
         $candidates = $candidates ?? new CandidateQuery($this->db);
@@ -638,14 +673,9 @@ class SearchServiceTest extends TestCase
                 new FuzzySearcher($candidates, 0.3),
                 new SemanticSearcher($candidates, $this->embeddings, $maxDistance),
             ),
-            new StrongestSignal(
-                StrongestSignal::DEFAULT_THRESHOLD,
-                StrongestSignal::DEFAULT_FUZZY_WEIGHT,
-                0.3,
-                StrongestSignal::DEFAULT_SEMANTIC_NEAR,
-                StrongestSignal::DEFAULT_SEMANTIC_FAR
-            ),
-            new DisplayLoader($candidates, new Snippet($tsquery))
+            new StrongestSignal(self::THRESHOLD, 0.6, 0.3, 0.156, 0.402),
+            new DisplayLoader($candidates, new Snippet($tsquery)),
+            $candidateDepth
         );
     }
 

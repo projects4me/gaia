@@ -26,16 +26,6 @@ namespace Gaia\Libraries\Search;
 class StrongestSignal
 {
     /**
-     * The settings of system.search when the config gives none.
-     *
-     * @var float
-     */
-    public const DEFAULT_THRESHOLD = 0.15;
-    public const DEFAULT_FUZZY_WEIGHT = 0.6;
-    public const DEFAULT_SEMANTIC_NEAR = 0.156;
-    public const DEFAULT_SEMANTIC_FAR = 0.402;
-
-    /**
      * @var float
      */
     private $threshold;

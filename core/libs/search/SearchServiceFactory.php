@@ -8,8 +8,9 @@ namespace Gaia\Libraries\Search;
 
 /**
  * Builds the SearchService of the user the DI's acl belongs to: exact (number and title), FTS, fuzzy and semantic
- * matching, ranked by StrongestSignal, with the settings of system.search: fuzzyThreshold, semanticMaxDistance and
- * the ranking's threshold, fuzzyWeight, semanticNear and semanticFar. A new kind of matching is added here.
+ * matching, ranked by StrongestSignal, with the settings of system.search: fuzzyThreshold, semanticMaxDistance,
+ * candidateDepth and the ranking's threshold, fuzzyWeight, semanticNear and semanticFar. Every setting is required:
+ * the values live in the config only. A new kind of matching is added here.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search
@@ -20,17 +21,19 @@ class SearchServiceFactory
     /**
      * @param \Phalcon\Di\DiInterface $di
      * @return SearchService
+     * @throws \Gaia\Exception\Exception When a setting is missing or out of bounds
      */
     public static function create($di)
     {
-        $threshold = self::setting('fuzzyThreshold', FuzzySearcher::DEFAULT_THRESHOLD);
-        $maxDistance = self::setting('semanticMaxDistance', SemanticSearcher::DEFAULT_MAX_DISTANCE);
+        $threshold = self::setting('fuzzyThreshold');
+        $maxDistance = self::setting('semanticMaxDistance');
+        $candidateDepth = self::setting('candidateDepth');
         $ranking = new StrongestSignal(
-            self::setting('threshold', StrongestSignal::DEFAULT_THRESHOLD),
-            self::setting('fuzzyWeight', StrongestSignal::DEFAULT_FUZZY_WEIGHT),
+            self::setting('threshold'),
+            self::setting('fuzzyWeight'),
             $threshold,
-            self::setting('semanticNear', StrongestSignal::DEFAULT_SEMANTIC_NEAR),
-            self::setting('semanticFar', StrongestSignal::DEFAULT_SEMANTIC_FAR)
+            self::setting('semanticNear'),
+            self::setting('semanticFar')
         );
 
         $metaManager = $di->get('metaManager');
@@ -51,21 +54,26 @@ class SearchServiceFactory
                 new SemanticSearcher($candidates, new \Gaia\Services\Embeddings(), $maxDistance),
             ),
             $ranking,
-            new DisplayLoader($candidates, new Snippet($tsquery))
+            new DisplayLoader($candidates, new Snippet($tsquery)),
+            $candidateDepth
         );
     }
 
     /**
-     * This function returns a setting of system.search, or its default when the config gives none.
+     * This function returns a setting of system.search.
      *
      * @param string $name
-     * @param mixed $default
      * @return mixed
+     * @throws \Gaia\Exception\Exception When the config does not give the setting
      */
-    private static function setting($name, $default)
+    private static function setting($name)
     {
         global $settings;
 
-        return isset($settings['system']['search'][$name]) ? $settings['system']['search'][$name] : $default;
+        if (!isset($settings['system']['search'][$name])) {
+            throw new \Gaia\Exception\Exception("The search setting system.search.{$name} is missing from the config.");
+        }
+
+        return $settings['system']['search'][$name];
     }
 }

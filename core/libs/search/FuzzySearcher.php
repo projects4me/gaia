@@ -27,13 +27,6 @@ class FuzzySearcher implements Searcher
     public const KIND = 'fuzzy';
 
     /**
-     * The similarity threshold of system.search.fuzzyThreshold when the config gives none.
-     *
-     * @var float
-     */
-    public const DEFAULT_THRESHOLD = 0.3;
-
-    /**
      * The fewest letters and digits, outside stop words, a query needs for fuzzy matching.
      *
      * @var int
