@@ -77,4 +77,8 @@ SET "workspaceJoinedAt" = w."dateCreated"
 FROM workspaces w
 WHERE w.id = p."workspaceId" AND p."workspaceJoinedAt" IS NULL;
 
+-- 6. Managers (Workspaces D-022): a workspace without a manager is managed by its creator.
+--    Run it after the migration that adds `workspaces.managerId`.
+UPDATE workspaces SET "managerId" = "createdUser" WHERE ("managerId" IS NULL OR "managerId" = '');
+
 COMMIT;

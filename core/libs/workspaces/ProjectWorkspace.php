@@ -30,20 +30,21 @@ class ProjectWorkspace
 
     /**
      * Make sure a new project has a workspace: create one named after the
-     * project, with the project's short code (D-012), when none is given,
-     * otherwise check the given one.
+     * project, with the project's short code (D-012) and the project's manager
+     * as its manager (D-022), when none is given, otherwise check the given one.
      *
      * @param  string|null $workspaceId
      * @param  string|null $projectName
      * @param  string|null $projectShortCode
+     * @param  string|null $projectManager
      * @return string The workspace id for the project
      * @throws \Gaia\Exception\Access    The caller may not update workspaces
      * @throws \InvalidArgumentException The workspace does not exist, or it could not be created
      */
-    public function resolveForNewProject($workspaceId, $projectName, $projectShortCode = null)
+    public function resolveForNewProject($workspaceId, $projectName, $projectShortCode = null, $projectManager = null)
     {
         if ($workspaceId === null || $workspaceId === '') {
-            return $this->createFor((string) $projectName, (string) $projectShortCode);
+            return $this->createFor((string) $projectName, (string) $projectShortCode, $projectManager);
         }
 
         $workspace = Workspace::findFirst([
@@ -96,19 +97,22 @@ class ProjectWorkspace
 
     /**
      * The workspace takes the project's short code, or the first free code
-     * derived from it when another workspace already has it.
+     * derived from it when another workspace already has it. The project's
+     * manager manages it; without one, the creator does (D-022).
      *
-     * @param  string $projectName
-     * @param  string $projectShortCode
+     * @param  string      $projectName
+     * @param  string      $projectShortCode
+     * @param  string|null $projectManager
      * @return string
      * @throws \InvalidArgumentException
      */
-    protected function createFor($projectName, $projectShortCode)
+    protected function createFor($projectName, $projectShortCode, $projectManager = null)
     {
         $workspace = new Workspace();
         $workspace->id = create_guid();
         $workspace->name = mb_substr($projectName, 0, self::NAME_LENGTH);
         $workspace->shortCode = (new WorkspaceShortCode())->freeCodeFrom($projectShortCode);
+        $workspace->managerId = $this->managerFrom($projectManager);
         if (!$workspace->save()) {
             $messages = [];
             foreach ($workspace->getMessages() as $message) {
@@ -118,6 +122,29 @@ class ProjectWorkspace
         }
 
         return (string) $workspace->id;
+    }
+
+    /**
+     * The project's manager when it is a live user, otherwise null so the
+     * workspace falls back to its creator: a project's manager is not
+     * checked, and must not make the project's own workspace fail.
+     *
+     * @param  mixed $projectManager
+     * @return string|null
+     */
+    protected function managerFrom($projectManager)
+    {
+        return $this->managerRule()->isLiveUser($projectManager) ? (string) $projectManager : null;
+    }
+
+    /**
+     * The rule a workspace's manager is checked against.
+     *
+     * @return WorkspaceManager
+     */
+    protected function managerRule()
+    {
+        return new WorkspaceManager();
     }
 
     /**
