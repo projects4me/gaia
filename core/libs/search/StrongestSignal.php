@@ -16,7 +16,8 @@ namespace Gaia\Libraries\Search;
  * - semantic: 1 at semanticNear or nearer, 0 at semanticFar or farther, linear in between;
  * - exact (the number, a reference, or the display title with case and spacing ignored): 1, first;
  * - number (part of a number, PartialNumberMatcher): a number starting with the query from partialNumberBoundary to
- *   1, one ending with it from the threshold to partialNumberBoundary, each placed by the share of digits matched.
+ *   under 1, one ending with it from the threshold to partialNumberBoundary, each placed by the share of digits
+ *   matched, so they follow the exact number, pinned at 1, when both run for one query.
  *
  * A record scores the most of its signals; one under the threshold is dropped, unless exact. When the query has no
  * unknown word (a likely typo) and some record matches by keyword or by meaning at the threshold, a record only

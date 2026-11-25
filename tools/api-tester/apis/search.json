@@ -156,6 +156,30 @@
       "note": "A5: numbers starting with it first (9170-9172), then ending with it (8917)"
     },
     {
+      "id": "search-a5-exact-then-partial-number",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": true,
+      "query": {
+        "types": "issue",
+        "q": "912",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": [
+          "issue:api-test-search-024",
+          "issue:api-test-search-023",
+          "issue:api-test-search-022",
+          "issue:api-test-search-021",
+          "issue:api-test-search-020"
+        ]
+      },
+      "note": "A5: the exact number first, then the numbers starting with it (9123-9120), newest first"
+    },
+    {
       "id": "search-a6-exact-title",
       "method": "GET",
       "path": "/api/v1/search",
@@ -307,6 +331,24 @@
         ]
       },
       "note": "A5: numbers starting or ending with it stay in the user's projects"
+    },
+    {
+      "id": "search-a5-exact-then-partial-number-not-member",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "resource": "search",
+      "auth": "aclMembers",
+      "query": {
+        "types": "issue",
+        "q": "912",
+        "limit": 20
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "idsEqual": []
+      },
+      "note": "A5: neither the exact number nor the numbers starting with it in a project the user is not in"
     },
     {
       "id": "search-a8-number-inside-text-not-member",

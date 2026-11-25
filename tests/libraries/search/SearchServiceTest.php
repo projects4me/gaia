@@ -173,12 +173,29 @@ class SearchServiceTest extends TestCase
         $this->assertEqualsWithDelta(self::THRESHOLD + (0.5 - self::THRESHOLD) * 7 / 9, $results[3]['score'], 1e-9);
     }
 
-    public function testAnExactNumberLeavesThePartialNumbersOut()
+    public function testAnExactNumberComesFirstThenThePartialNumbersInTheScope()
     {
+        $this->acl->scope = Acl::SCOPE_MEMBERS;
+        $this->acl->projectIds = array(self::PROJECT_A);
         $exact = $this->addIssue('Unrelated one', null, 54390181);
-        $this->addIssue('Unrelated two', null, 543901811);
+        $older = $this->addIssue('Unrelated two', null, 543901811);
+        $newer = $this->addIssue('Unrelated three', null, 543901812);
+        $ending = $this->addIssue('Unrelated four', null, 954390181);
+        $this->addIssue('Unrelated five', null, 543901813, self::PROJECT_B);
+        $this->addIssue('Mentions 54390181 in its title', null, 111543912);
 
-        $this->assertSame(array($exact), array_column($this->search('54390181'), 'id'));
+        foreach (array('54390181', '#54390181', '0054390181') as $query) {
+            $results = $this->search($query);
+
+            $this->assertSame(array($exact, $newer, $older, $ending), array_column($results, 'id'), $query);
+            $this->assertSame(array('exact'), $results[0]['matchedBy'], $query);
+            $this->assertSame(1.0, $results[0]['score'], $query);
+            foreach (array_slice($results, 1) as $result) {
+                $this->assertSame(array('number'), $result['matchedBy'], $query);
+                $this->assertLessThan(1.0, $result['score'], $query);
+            }
+        }
+        $this->assertSame(array($exact), array_column($this->search('54390181', 1), 'id'));
     }
 
     public function testASingleDigitHasNoPartialNumbers()

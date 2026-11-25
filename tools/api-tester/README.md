@@ -154,7 +154,7 @@ TEST_SERVICE=gaia-test-ares ./tools/api-tester/harness/use-test-db.sh
 
 - `tools/api-tester/apis/search.json`
   - **search quality**: `GET /api/v1/search` cases following the search test catalog (looking up an issue, topics, mistakes, a pasted error, input that should return nothing, list behaviour); case ids carry the catalog id (`search-a1-…`, `search-b8-1-…`)
-  - runs on its own fixture: `harness/seed-search.sh` loads `harness/seed-search.sql` (two projects, `SRA` and `SRB`, issues numbered 8917 and 9101-9172 with made-up words) into the test database. Load it after the other modes have run: its issues would show up in their lists
+  - runs on its own fixture: `harness/seed-search.sh` loads `harness/seed-search.sql` (two projects, `SRA` and `SRB`, issues numbered 912, 8917 and 9101-9172 with made-up words) into the test database. Load it after the other modes have run: its issues would show up in their lists
   - the test API has no Ares, so meaning search is `unavailable`; meaning cases are in `search-semantic.json`
   - cases that wait for a ranking rule are `"enabled": false` with the issue that brings the rule in `skipReason`; that issue turns them on
   - permission cases for search (other project, unreadable fields) are in `acl.json`

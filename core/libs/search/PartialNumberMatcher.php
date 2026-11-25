@@ -8,10 +8,11 @@ namespace Gaia\Libraries\Search;
 
 /**
  * Finds the records whose integer exact field starts or ends with a number query of two digits or more (917 finds
- * 9170 and 8917), for when no number equals it. Its raw signal is the share of the number's digits the query
- * matched, plus 1 when the number starts with the query, so StrongestSignal can put those first; equal signals come
- * newest (highest number) first. The number is compared as text (CAST ... AS TEXT LIKE), inside the scope: an index
- * would not serve the "ends with" half, and the scope keeps the scan to the user's records.
+ * 9170 and 8917), the number itself left out: ExactMatcher finds that one and pins it above these. Its raw signal is
+ * the share of the number's digits the query matched, plus 1 when the number starts with the query, so
+ * StrongestSignal can put those first; equal signals come newest (highest number) first. The number is compared as
+ * text (CAST ... AS TEXT LIKE), inside the scope: an index would not serve the "ends with" half, and the scope keeps
+ * the scan to the user's records.
  *
  * @author Agent Odysseus <agent.odysseus@projects4.me>
  * @package Gaia\Libraries\Search

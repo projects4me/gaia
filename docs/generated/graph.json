@@ -28936,6 +28936,38 @@
       }
     },
     {
+      "id": "case:search/search-a5-exact-then-partial-number",
+      "type": "case",
+      "key": "search/search-a5-exact-then-partial-number",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:search/search-a5-exact-then-partial-number-not-member",
+      "type": "case",
+      "key": "search/search-a5-exact-then-partial-number-not-member",
+      "attributes": {
+        "catalog": "search",
+        "file": "tools/api-tester/apis/search.json",
+        "method": "GET",
+        "path": "/api/v1/search",
+        "resource": "search",
+        "enabled": true,
+        "source": null,
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
       "id": "case:search/search-a5-partial-number",
       "type": "case",
       "key": "search/search-a5-partial-number",
@@ -103929,6 +103961,66 @@
       "from": "case:search/search-a4-missing-number",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a5-exact-then-partial-number",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-a5-exact-then-partial-number",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a5-exact-then-partial-number",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a5-exact-then-partial-number",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a5-exact-then-partial-number",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a5-exact-then-partial-number",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:search/search-a5-exact-then-partial-number-not-member",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:search/search-a5-exact-then-partial-number-not-member",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:search/search-a5-exact-then-partial-number-not-member",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:search/search-a5-exact-then-partial-number-not-member",
+      "type": "covers",
+      "to": "controller:search"
+    },
+    {
+      "from": "case:search/search-a5-exact-then-partial-number-not-member",
+      "type": "exercises",
+      "to": "route:GET /api/v1/search"
+    },
+    {
+      "from": "case:search/search-a5-exact-then-partial-number-not-member",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
     },
     {
       "from": "case:search/search-a5-partial-number",
