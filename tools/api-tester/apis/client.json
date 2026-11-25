@@ -11150,6 +11150,86 @@
       }
     },
     {
+      "id": "workspace-manager-defaults-to-creator",
+      "method": "GET",
+      "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "query": {
+        "rels": "manager"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "managerId": "{userId}"
+        },
+        "includedTypesPresent": [
+          "user"
+        ]
+      }
+    },
+    {
+      "id": "workspace-manager-change",
+      "method": "PATCH",
+      "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "id": "{runtime.createdWorkspaceId}",
+          "attributes": {
+            "managerId": "{memberUserId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "managerId": "{memberUserId}"
+        }
+      }
+    },
+    {
+      "id": "workspace-manager-unknown-user-refused",
+      "method": "PATCH",
+      "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "workspace",
+          "id": "{runtime.createdWorkspaceId}",
+          "attributes": {
+            "managerId": "api-test-user-missing"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "json",
+        "jsonEqual": {
+          "messages.0": "managerId must be the id of a user."
+        }
+      }
+    },
+    {
+      "id": "workspace-manager-unknown-user-kept",
+      "method": "GET",
+      "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "managerId": "{memberUserId}"
+        }
+      }
+    },
+    {
       "id": "workspace-delete-soft-deletes",
       "method": "DELETE",
       "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
@@ -11204,6 +11284,61 @@
           "name": "Workspace Own Project",
           "shortCode": "{runtime.ownWorkspaceProjectCode}"
         }
+      }
+    },
+    {
+      "id": "project-create-own-workspace-takes-manager",
+      "method": "POST",
+      "path": "/api/v1/project",
+      "resource": "project",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "project",
+          "attributes": {
+            "name": "Workspace Managed Project",
+            "status": "new",
+            "type": "software",
+            "projectManager": "{memberUserId}",
+            "done": 0
+          }
+        }
+      },
+      "store": {
+        "runtime.managedWorkspaceProjectId": "data.id",
+        "runtime.managedWorkspaceId": "data.attributes.workspaceId"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesPresent": [
+          "workspaceId"
+        ]
+      }
+    },
+    {
+      "id": "project-own-workspace-managed-by-project-manager",
+      "method": "GET",
+      "path": "/api/v1/workspace/{runtime.managedWorkspaceId}",
+      "resource": "workspace",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "managerId": "{memberUserId}"
+        }
+      }
+    },
+    {
+      "id": "project-delete-managed-workspace-project",
+      "method": "DELETE",
+      "path": "/api/v1/project/{runtime.managedWorkspaceProjectId}",
+      "resource": "project",
+      "auth": true,
+      "expects": {
+        "status": 200,
+        "shape": "json"
       }
     },
     {

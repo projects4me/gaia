@@ -4665,6 +4665,18 @@
       }
     },
     {
+      "id": "behaviour:workspaceManagerBehavior",
+      "type": "behaviour",
+      "key": "workspaceManagerBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\workspaceManagerBehavior",
+        "file": "core/mvc/models/behaviors/workspaceManagerBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:workspaceRuntimeBehavior",
       "type": "behaviour",
       "key": "workspaceRuntimeBehavior",
@@ -21300,6 +21312,27 @@
       }
     },
     {
+      "id": "case:client/project-create-own-workspace-takes-manager",
+      "type": "case",
+      "key": "client/project-create-own-workspace-takes-manager",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/project",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId"
+        ],
+        "stores": [
+          "runtime.managedWorkspaceProjectId",
+          "runtime.managedWorkspaceId"
+        ]
+      }
+    },
+    {
       "id": "case:client/project-create-unknown-workspace-422",
       "type": "case",
       "key": "client/project-create-unknown-workspace-422",
@@ -21330,6 +21363,24 @@
         "enabled": true,
         "source": null,
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-delete-managed-workspace-project",
+      "type": "case",
+      "key": "client/project-delete-managed-workspace-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/project/{runtime.managedWorkspaceProjectId}",
+        "resource": "project",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.managedWorkspaceProjectId"
+        ],
         "stores": []
       }
     },
@@ -22029,6 +22080,25 @@
         "placeholders": [
           "runtime.ownWorkspaceId",
           "runtime.ownWorkspaceProjectCode"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/project-own-workspace-managed-by-project-manager",
+      "type": "case",
+      "key": "client/project-own-workspace-managed-by-project-manager",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{runtime.managedWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.managedWorkspaceId"
         ],
         "stores": []
       }
@@ -26481,6 +26551,81 @@
         "source": null,
         "placeholders": [
           "runId",
+          "runtime.createdWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-manager-change",
+      "type": "case",
+      "key": "client/workspace-manager-change",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.createdWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-manager-defaults-to-creator",
+      "type": "case",
+      "key": "client/workspace-manager-defaults-to-creator",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.createdWorkspaceId",
+          "userId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-manager-unknown-user-kept",
+      "type": "case",
+      "key": "client/workspace-manager-unknown-user-kept",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "memberUserId",
+          "runtime.createdWorkspaceId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/workspace-manager-unknown-user-refused",
+      "type": "case",
+      "key": "client/workspace-manager-unknown-user-refused",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/workspace/{runtime.createdWorkspaceId}",
+        "resource": "workspace",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
           "runtime.createdWorkspaceId"
         ],
         "stores": []
@@ -41676,6 +41821,18 @@
       }
     },
     {
+      "id": "field:Workspace.managerId",
+      "type": "field",
+      "key": "Workspace.managerId",
+      "attributes": {
+        "label": "LBL_WORKSPACES_MANAGER_ID",
+        "type": "varchar",
+        "length": "36",
+        "null": true,
+        "relatedIdentifier": true
+      }
+    },
+    {
       "id": "field:Workspace.modifiedUser",
       "type": "field",
       "key": "Workspace.modifiedUser",
@@ -49241,6 +49398,16 @@
       "attributes": {
         "kind": "hasOne",
         "primaryKey": "createdUser",
+        "relatedKey": "id"
+      }
+    },
+    {
+      "id": "relationship:Workspace.manager",
+      "type": "relationship",
+      "key": "Workspace.manager",
+      "attributes": {
+        "kind": "hasOne",
+        "primaryKey": "managerId",
         "relatedKey": "id"
       }
     },
@@ -89838,6 +90005,41 @@
       "to": "fixture:userId"
     },
     {
+      "from": "case:client/project-create-own-workspace-takes-manager",
+      "type": "asserts",
+      "to": "assertion:attributesPresent"
+    },
+    {
+      "from": "case:client/project-create-own-workspace-takes-manager",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-create-own-workspace-takes-manager",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-create-own-workspace-takes-manager",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-create-own-workspace-takes-manager",
+      "type": "exercises",
+      "to": "route:POST /api/v1/project"
+    },
+    {
+      "from": "case:client/project-create-own-workspace-takes-manager",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-create-own-workspace-takes-manager",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
       "from": "case:client/project-create-unknown-workspace-422",
       "type": "asserts",
       "to": "assertion:shape"
@@ -89884,6 +90086,36 @@
     },
     {
       "from": "case:client/project-create-validation-fails-422",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-delete-managed-workspace-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-delete-managed-workspace-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-delete-managed-workspace-project",
+      "type": "covers",
+      "to": "controller:project"
+    },
+    {
+      "from": "case:client/project-delete-managed-workspace-project",
+      "type": "depends_on",
+      "to": "case:client/project-create-own-workspace-takes-manager"
+    },
+    {
+      "from": "case:client/project-delete-managed-workspace-project",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/project/{id}"
+    },
+    {
+      "from": "case:client/project-delete-managed-workspace-project",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -91176,6 +91408,46 @@
       "from": "case:client/project-own-workspace-is-named-after-project",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-own-workspace-managed-by-project-manager",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/project-own-workspace-managed-by-project-manager",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/project-own-workspace-managed-by-project-manager",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/project-own-workspace-managed-by-project-manager",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/project-own-workspace-managed-by-project-manager",
+      "type": "depends_on",
+      "to": "case:client/project-create-own-workspace-takes-manager"
+    },
+    {
+      "from": "case:client/project-own-workspace-managed-by-project-manager",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/project-own-workspace-managed-by-project-manager",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/project-own-workspace-managed-by-project-manager",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
     },
     {
       "from": "case:client/project-patch-unknown-workspace-422",
@@ -99444,6 +99716,166 @@
     },
     {
       "from": "case:client/workspace-list-by-short-code",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-manager-change",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-manager-change",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-manager-change",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-manager-change",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-manager-change",
+      "type": "depends_on",
+      "to": "case:client/workspace-create-keeps-description"
+    },
+    {
+      "from": "case:client/workspace-manager-change",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-manager-change",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-manager-change",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:client/workspace-manager-defaults-to-creator",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-manager-defaults-to-creator",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:client/workspace-manager-defaults-to-creator",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-manager-defaults-to-creator",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-manager-defaults-to-creator",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-manager-defaults-to-creator",
+      "type": "depends_on",
+      "to": "case:client/workspace-create-keeps-description"
+    },
+    {
+      "from": "case:client/workspace-manager-defaults-to-creator",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-manager-defaults-to-creator",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-manager-defaults-to-creator",
+      "type": "uses_fixture",
+      "to": "fixture:userId"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-kept",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-kept",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-kept",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-kept",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-kept",
+      "type": "depends_on",
+      "to": "case:client/workspace-create-keeps-description"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-kept",
+      "type": "exercises",
+      "to": "route:GET /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-kept",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-kept",
+      "type": "uses_fixture",
+      "to": "fixture:memberUserId"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-refused",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-refused",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-refused",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-refused",
+      "type": "covers",
+      "to": "controller:workspace"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-refused",
+      "type": "depends_on",
+      "to": "case:client/workspace-create-keeps-description"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-refused",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/workspace/{id}"
+    },
+    {
+      "from": "case:client/workspace-manager-unknown-user-refused",
       "type": "runs_as",
       "to": "profile:default"
     },
@@ -117230,6 +117662,11 @@
     {
       "from": "model:Workspace",
       "type": "has_field",
+      "to": "field:Workspace.managerId"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_field",
       "to": "field:Workspace.modifiedUser"
     },
     {
@@ -117261,6 +117698,11 @@
       "from": "model:Workspace",
       "type": "has_relationship",
       "to": "relationship:Workspace.createdBy"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "has_relationship",
+      "to": "relationship:Workspace.manager"
     },
     {
       "from": "model:Workspace",
@@ -117331,6 +117773,11 @@
       "from": "model:Workspace",
       "type": "uses_behaviour",
       "to": "behaviour:workspaceActivityBehavior"
+    },
+    {
+      "from": "model:Workspace",
+      "type": "uses_behaviour",
+      "to": "behaviour:workspaceManagerBehavior"
     },
     {
       "from": "model:Workspace",
@@ -120684,6 +121131,11 @@
     },
     {
       "from": "relationship:Workspace.createdBy",
+      "type": "targets",
+      "to": "model:User"
+    },
+    {
+      "from": "relationship:Workspace.manager",
       "type": "targets",
       "to": "model:User"
     },

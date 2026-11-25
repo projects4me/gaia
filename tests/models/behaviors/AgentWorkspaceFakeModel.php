@@ -17,6 +17,8 @@ class AgentWorkspaceFakeModel extends \Phalcon\Mvc\Model
     public $userId;
     public $runtimeId;
     public $shortCode;
+    public $managerId;
+    public $createdUser;
     public $id;
 
     /**

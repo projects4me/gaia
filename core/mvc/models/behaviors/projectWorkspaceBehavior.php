@@ -60,7 +60,12 @@ class projectWorkspaceBehavior extends Behavior implements BehaviorInterface
         try {
             $workspace = new ProjectWorkspace();
             $model->workspaceId = $workspace
-                ->resolveForNewProject($model->workspaceId ?? null, $model->name ?? '', $model->shortCode ?? null);
+                ->resolveForNewProject(
+                    $model->workspaceId ?? null,
+                    $model->name ?? '',
+                    $model->shortCode ?? null,
+                    $model->projectManager ?? null
+                );
             $model->workspaceJoinedAt = $workspace->joinedAt(null, $model->workspaceId, $this->now());
         } catch (\InvalidArgumentException $e) {
             $model->appendMessage(new Message($e->getMessage(), 'workspaceId', 'InvalidValue'));

@@ -10,7 +10,8 @@
  * workspace actions (get, create, update, delete) are permissioned. A
  * workspace may be bound to one runtime (`runtimeId`), the only runtime that
  * may act for its agents (Workspaces D-009). Its `shortCode` is unique among
- * the live workspaces (D-012).
+ * the live workspaces (D-012). Its manager (`managerId`) is a user, the creator
+ * unless another one is given (D-022).
  */
 $models['Workspace'] = array(
     'tableName' => 'workspaces',
@@ -49,6 +50,16 @@ $models['Workspace'] = array(
         'runtimeId' => array(
             'name' => 'runtimeId',
             'label' => 'LBL_WORKSPACES_RUNTIME_ID',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+            'relatedIdentifier' => true
+        ),
+        // The workspace manager (D-022): a user, the creator unless another is given. Nullable so the declarative
+        // migration can add it to existing rows; workspaceManagerBehavior fills it on create.
+        'managerId' => array(
+            'name' => 'managerId',
+            'label' => 'LBL_WORKSPACES_MANAGER_ID',
             'type' => 'varchar',
             'length' => '36',
             'null' => true,
@@ -186,6 +197,7 @@ $models['Workspace'] = array(
         'name' => 'index',
         'shortCode' => 'index',
         'runtimeId' => 'index',
+        'managerId' => 'index',
     ),
     'foriegnKeys' => array(
 
@@ -196,6 +208,11 @@ $models['Workspace'] = array(
     'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
+            'manager' => array(
+                'primaryKey' => 'managerId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\User',
+                'relatedKey' => 'id'
+            ),
             'createdBy' => array(
                 'primaryKey' => 'createdUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
@@ -251,6 +268,7 @@ $models['Workspace'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
+        'workspaceManagerBehavior',
         'softDeleteBehavior',
         'workspaceRuntimeBehavior',
         'workspaceShortCodeBehavior',
