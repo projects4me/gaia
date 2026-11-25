@@ -8,10 +8,10 @@ namespace Gaia\Libraries\Search;
 
 /**
  * Picks the searchers a query runs, by its shape, as stages: the search runs a stage only when the stages before it
- * found nothing.
+ * found nothing. Each route is one stage today; the stages stay for a route that needs a fallback.
  *
- * - A number alone (4170, #4170) is a lookup: the record with that number, or else (two digits or more) the numbers
- *   starting or ending with it. Never a text match, so a number nobody has finds nothing.
+ * - A number alone (4170, #4170) is a lookup, in one stage: the record with that number first, then (two digits or
+ *   more) the other numbers starting or ending with it. Never a text match, so a number nobody has finds nothing.
  * - A reference with a known prefix (agaia-4170) is a lookup of that record alone. A prefix no record the user may
  *   see has is plain text, e.g. covid-19.
  * - Anything else is text: every text searcher, the exact one with the numbers the query refers to.
@@ -45,7 +45,7 @@ class SearchRoute
     /**
      * @param Searcher[] $text The searchers of a text query, in order
      * @param ExactMatcher $exact The number lookup
-     * @param PartialNumberMatcher $partial The partial number lookup, when no number equals the query
+     * @param PartialNumberMatcher $partial The partial number lookup, after the exact number
      * @param ReferenceMatcher $reference The reference lookup
      */
     public function __construct(
@@ -81,7 +81,7 @@ class SearchRoute
     public function stages(SearchQuery $query, callable $knowsReference)
     {
         if ($query->number() !== null) {
-            return array(array($this->exact), array($this->partial));
+            return array(array($this->exact, $this->partial));
         }
         if ($query->reference() !== null && $knowsReference($this->reference)) {
             return array(array($this->reference));
