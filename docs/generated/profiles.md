@@ -16,7 +16,7 @@
 - aclProjectOnly role ACL Project Only | allow 5, members 0, deny 5 | cases 10 | project allowed, issue.get denied
 - aclScopedToken role ACL Agent | allow 27, members 0, deny 1 | cases 9 | ACL Agent
 - anonymous no login | allow 0, members 0, deny 0 | cases 50
-- default role Admin | allow 220, members 0, deny 0 | cases 1060 | Admin role of the seeded main user
+- default role Admin | allow 220, members 0, deny 0 | cases 1090 | Admin role of the seeded main user
 - serviceAres no login | allow 0, members 0, deny 0 | cases 21
 - serviceHermes no login | allow 0, members 0, deny 0 | cases 9
 - serviceRuntime no login | allow 0, members 0, deny 0 | cases 25

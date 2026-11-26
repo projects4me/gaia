@@ -90,9 +90,20 @@ class RelationshipValidatorTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    public function testNoRelsJoinsEveryRelationSoAnyQueryPasses()
+    public function testQueryOnARelationWithNoRelsIsBadRequest()
     {
+        // An empty rels joins no relationship, so the filter would reach an unjoined alias (agaia-4987).
+        $this->expectException(BadRequest::class);
+        $this->expectExceptionMessage(
+            'Invalid query: relationship "project" is used in the query but not requested in rels.'
+        );
+
         $this->validator->assertQueriedAreRequested('((project.name : Gaia))', [], 'Issue');
+    }
+
+    public function testNoRelsWithAQueryOnTheModelOnlyPasses()
+    {
+        $this->validator->assertQueriedAreRequested('((Issue.subject : x) AND (status : open))', [], 'Issue');
         $this->addToAssertionCount(1);
     }
 

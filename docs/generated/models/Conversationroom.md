@@ -35,4 +35,4 @@
 - controller: Gaia\MVC\REST\Controllers\ConversationroomController
 - routes: DELETE /api/v1/conversationroom, DELETE /api/v1/conversationroom/{id}, GET /api/v1/conversationroom, GET /api/v1/conversationroom/{id}, GET /api/v1/conversationroom/{id}/{relation}, OPTIONS /api/v1/conversationroom, PATCH /api/v1/conversationroom, PATCH /api/v1/conversationroom/{id}, POST /api/v1/conversationroom, PUT /api/v1/conversationroom, PUT /api/v1/conversationroom/{id}
 - components: Conversationactivities, Events\ConversationLiveEvents
-- cases: 27 (acl 3, backend 6, client 16, live 2); gaia-dev cases conversationroom
+- cases: 41 (acl 3, backend 6, client 30, live 2); gaia-dev cases conversationroom

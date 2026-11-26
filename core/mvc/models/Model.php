@@ -11,6 +11,8 @@ use Phalcon\Mvc\Model\MetaData;
 use Gaia\Libraries\Utils\Util;
 use Gaia\Core\MVC\Models\Query;
 use Gaia\Core\MVC\Models\DataExtractor;
+use Gaia\Core\MVC\Models\Query\ManyToManyDeferral;
+use Gaia\Core\MVC\Models\Query\ManyToManyFilter;
 use Gaia\Core\MVC\Models\Query\Meta as QueryMeta;
 use Gaia\Core\MVC\Models\Query\Params as QueryParams;
 use Gaia\Core\MVC\Models\Relationships\HasMany;
@@ -228,6 +230,12 @@ class Model extends PhalconModel
         $this->query = $this->instantiateQuery($this->modelAlias, $params);
         $this->query->prepareClauses($params, $this->query);
 
+        // Many-to-many relationships are read for the page's records afterwards, so their rows never multiply the
+        // records the limit counts (Tags D-002).
+        $deferral = new ManyToManyDeferral(new ManyToManyFilter($this->di));
+        $deferredRels = $deferral->deferredRels($this->modelAlias, $params, $this->unbufferedExecution);
+        $params = $deferral->withoutRels($params, $deferredRels);
+
         $this->relationship = $this->bootstrapRelationship($params);
         $this->relationship->loadRequestedRelationships($params['rels']);
         $this->relationship->setRelationshipFields($params['rels'], $this->query);
@@ -237,7 +245,16 @@ class Model extends PhalconModel
 
         $this->query->prepareReadAllQuery($this->getModelPath(), $params, $this->relationship);
         $this->fireEvent("beforeQuery");
-        $resultSets = $this->executeQuery($params, 'prepareReadAllQuery');
+        $resultSets = $this->executeQuery($params, 'prepareReadAllQuery', empty($deferredRels));
+
+        if (!empty($deferredRels)) {
+            $baseModelIds = $deferral->extractBaseModelIds($resultSets['baseModel'], $this->modelAlias);
+            foreach ($deferredRels as $relName) {
+                if (!empty($baseModelIds)) {
+                    $resultSets[$relName] = $this->executeHasManyRel($relName, $params, $baseModelIds);
+                }
+            }
+        }
 
         $this->fireEvent("afterQuery");
 
@@ -392,9 +409,9 @@ class Model extends PhalconModel
         $secondaryModelName = Util::extractClassFromNamespace($relMeta['secondaryModel']);
         $relatedModelName = Util::extractClassFromNamespace($relMeta['relatedModel']);
 
-        //Prepare where for relationship
+        //Prepare where for relationship; read for given base records, the relationship is read whole.
         $hasManyToManyRel = new HasManyToMany($this->di);
-        if ($whereClauses) {
+        if ($whereClauses && $baseModelids === null) {
             $whereClause = $hasManyToManyRel->prepareWhere($relMeta, $whereClauses);
             $relParams['where'] = $whereClause;
         }
@@ -428,8 +445,8 @@ class Model extends PhalconModel
         $result = $this->executeModel($query);
         $this->fireEvent('afterQuery');
 
-        //Update Base model where clause
-        $relWheres = $baseModelQuery->getClause()->getWhereClause('translated', $relName);
+        //Update Base model where clause (only when the relationship is read before the base model)
+        $relWheres = ($baseModelids === null) ? $baseModelQuery->getClause()->getWhereClause('translated', $relName) : [];
         foreach ($relWheres as $relWhere) {
             $ids = DataExtractor::extractRelIds($relatedModelName, $result, $relMeta['rhsKey']);
             $baseModelQuery->getClause()->updateBaseWhereWithIds($ids, $relMeta, $this->modelAlias, $relWhere);
