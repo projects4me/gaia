@@ -15808,6 +15808,26 @@
       }
     },
     {
+      "id": "client-tagged-list-rels-tag-single",
+      "method": "GET",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": true,
+      "query": {
+        "query": "((Tagged.relatedTo : issue) AND (Tagged.relatedId : {issueId}) AND (Tagged.tagId : {tagId}))",
+        "rels": "tag"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "data.0.relationships.tag.data.type": "tag",
+          "data.0.relationships.tag.data.id": "{tagId}",
+          "included.0.attributes.tag": "API Tester Tag"
+        }
+      }
+    },
+    {
       "id": "client-tagged-create-duplicate-rejected",
       "method": "POST",
       "path": "/api/v1/tagged",
