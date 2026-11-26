@@ -585,7 +585,9 @@ VALUES
   ('atp-acl-pi-workflowrun-create', 'api-test-role-acl-pi', 'workflowrun.create', 1, NOW(), NOW()),
   ('atp-acl-pi-workflownode-config-get', 'api-test-role-acl-pi', 'workflownode.config.get', 0, NOW(), NOW()),
   -- Docs D-005: a doc write needs doc.update.
-  ('atp-acl-pi-doc-update', 'api-test-role-acl-pi', 'doc.update', 0, NOW(), NOW());
+  ('atp-acl-pi-doc-update', 'api-test-role-acl-pi', 'doc.update', 0, NOW(), NOW()),
+  ('atp-acl-pi-tag-get', 'api-test-role-acl-pi', 'tag.get', 0, NOW(), NOW()),
+  ('atp-acl-pi-tagged-create', 'api-test-role-acl-pi', 'tagged.create', 0, NOW(), NOW());
 
 -- No-conversation role: project+comment allowed, conversationroom.get denied (multi-group)
 INSERT INTO permissions (id, "roleId", "resourceName", allowed, "dateCreated", "dateModified")
@@ -621,7 +623,11 @@ VALUES
   ('atp-acl-mem-ideaplan-get', 'api-test-role-acl-mem', 'ideaplan.get', 1, NOW(), NOW()),
   ('atp-acl-mem-ideaplan-create', 'api-test-role-acl-mem', 'ideaplan.create', 1, NOW(), NOW()),
   ('atp-acl-mem-ideaplanissue-get', 'api-test-role-acl-mem', 'ideaplanissue.get', 1, NOW(), NOW()),
-  ('atp-acl-mem-ideaplanissue-create', 'api-test-role-acl-mem', 'ideaplanissue.create', 1, NOW(), NOW());
+  ('atp-acl-mem-ideaplanissue-create', 'api-test-role-acl-mem', 'ideaplanissue.create', 1, NOW(), NOW()),
+  ('atp-acl-mem-tag-get', 'api-test-role-acl-mem', 'tag.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-tag-create', 'api-test-role-acl-mem', 'tag.create', 1, NOW(), NOW()),
+  ('atp-acl-mem-tagged-get', 'api-test-role-acl-mem', 'tagged.get', 1, NOW(), NOW()),
+  ('atp-acl-mem-tagged-create', 'api-test-role-acl-mem', 'tagged.create', 1, NOW(), NOW());
 
 -- No-setting role: full issuestatus/issuetype access, setting.* denied.
 -- System statuses/types (system = 1) are settings: writes need setting.update.
@@ -808,6 +814,23 @@ INSERT INTO doccontent (
   ('api-test-doccontent-0003', 'api-test-doc-000007', 'api-test-project-001', 'c2VlZA==', '<p>Seed</p>', 'Seed', 8, FALSE,
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = FALSE;
+
+-- Tags (Tags D-001): the same name in each project, so per-project names and the
+-- members scope can be checked; one tagging per project on its seeded issue.
+INSERT INTO tags (
+  id, "projectId", tag, deleted,
+  "createdUser", "createdUserName", "modifiedUser", "modifiedUserName", "dateCreated", "dateModified"
+) VALUES
+  ('api-test-tag-000001', 'api-test-project-001', 'API Tester Tag', 0,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-tag-000002', 'api-test-project-002', 'API Tester Tag', 0,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET deleted = 0, tag = EXCLUDED.tag, "projectId" = EXCLUDED."projectId";
+
+INSERT INTO tagged (id, "tagId", "relatedTo", "relatedId") VALUES
+  ('api-test-tagged-00001', 'api-test-tag-000001', 'issue', 'api-test-issue-000001'),
+  ('api-test-tagged-00002', 'api-test-tag-000002', 'issue', 'api-test-issue-000003')
+ON CONFLICT (id) DO NOTHING;
 
 -- Ideas: one per project so members scope can be checked through the idea's children
 INSERT INTO ideas (
@@ -1774,6 +1797,10 @@ data = {
     "commentId": "api-test-comment-000001",
     "docId": "api-test-doc-000001",
     "otherProjectDocId": "api-test-doc-000002",
+    "tagId": "api-test-tag-000001",
+    "otherProjectTagId": "api-test-tag-000002",
+    "taggedId": "api-test-tagged-00001",
+    "otherProjectTaggedId": "api-test-tagged-00002",
     "doccontentDocId": "api-test-doc-000003",
     "contentClientDocId": "api-test-doc-000004",
     "doccontentId": "api-test-doccontent-0001",

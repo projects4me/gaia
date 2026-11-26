@@ -25,6 +25,16 @@ $models['Tag'] = array(
             'null' => true,
             'fts' => true
         ),
+        // Required on create (tagBehavior); nullable so legacy global tags
+        // survive the migration. Tags without a project are unreadable (Tags D-001).
+        'projectId' => array(
+            'name' => 'projectId',
+            'label' => 'LBL_TAG_PROJECT',
+            'type' => 'varchar',
+            'length' => '36',
+            'null' => true,
+            'relatedIdentifier' => true
+        ),
         'dateCreated' => array(
             'name' => 'dateCreated',
             'label' => 'LBL_TAG_DATE_CREATED',
@@ -83,7 +93,9 @@ $models['Tag'] = array(
     ),
     'indexes' => array(
         'id' => 'primary',
-        'tag' => 'unique'
+        // Unique per project, case-insensitively: enforced by tagBehavior.
+        'projectId' => 'INDEX',
+        'tag' => 'INDEX'
     ),
     'foriegnKeys' => array(
 
@@ -94,6 +106,11 @@ $models['Tag'] = array(
     'functions' => array(),
     'relationships' => array(
         'hasOne' => array(
+            'project' => array(
+                'primaryKey' => 'projectId',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
+                'relatedKey' => 'id'
+            ),
             'createdBy' => array(
                 'primaryKey' => 'createdUser',
                 'relatedModel' => '\\Gaia\\MVC\\Models\\User',
@@ -123,15 +140,6 @@ $models['Tag'] = array(
                 'secondaryModel' => '\\Gaia\\MVC\\Models\\Issue',
                 'secondaryKey' => 'id',
                 'condition' => 'issueTagged.relatedTo = "issue"'
-            ),
-            'project' => array(
-                'primaryKey' => 'id',
-                'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
-                'rhsKey' => 'tagId',
-                'lhsKey' => 'relatedId',
-                'secondaryModel' => '\\Gaia\\MVC\\Models\\Project',
-                'secondaryKey' => 'id',
-                'condition' => 'projectTagged.relatedTo = "project"'
             )
         )
     ),
@@ -141,8 +149,16 @@ $models['Tag'] = array(
         'dateModifiedBehavior',
         'createdUserBehavior',
         'modifiedUserBehavior',
-        'softDeleteBehavior'
-    )
+        'softDeleteBehavior',
+        'tagBehavior'
+    ),
+    // A tag belongs to one project and only its members can see or use it (Tags D-001).
+    'acl' => [
+        'groups' => ['Project'],
+        'groupKeys' => [
+            'Project' => 'projectId',
+        ],
+    ],
 );
 
 return $models;

@@ -8779,6 +8779,7 @@
               "data": {
                 "type": "tag",
                 "attributes": {
+                  "projectId": "{projectId}",
                   "tag": "api-tester-bulk-tag-{runId}"
                 }
               }
@@ -15550,6 +15551,243 @@
       "auth": true,
       "expects": {
         "status": 404
+      }
+    },
+    {
+      "id": "client-tag-create-normalises-name",
+      "method": "POST",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "attributes": {
+            "projectId": "{projectId}",
+            "tag": "  Client   Tag {runId} "
+          }
+        }
+      },
+      "store": {
+        "runtime.clientTagId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "projectId": "{projectId}",
+          "tag": "Client Tag {runId}"
+        }
+      }
+    },
+    {
+      "id": "client-tag-create-duplicate-in-project-rejected",
+      "method": "POST",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "attributes": {
+            "projectId": "{projectId}",
+            "tag": "client tag {runId} "
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "The project already has a tag with this name."
+        }
+      }
+    },
+    {
+      "id": "client-tag-create-same-name-in-other-project",
+      "method": "POST",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "attributes": {
+            "projectId": "{otherProjectId}",
+            "tag": "Client Tag {runId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "projectId": "{otherProjectId}",
+          "tag": "Client Tag {runId}"
+        }
+      }
+    },
+    {
+      "id": "client-tag-create-without-project-rejected",
+      "method": "POST",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "attributes": {
+            "tag": "Projectless {runId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "A tag needs a project."
+        }
+      }
+    },
+    {
+      "id": "client-tag-create-blank-rejected",
+      "method": "POST",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "attributes": {
+            "projectId": "{projectId}",
+            "tag": "   "
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "A tag needs a name."
+        }
+      }
+    },
+    {
+      "id": "client-tag-create-too-long-rejected",
+      "method": "POST",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "attributes": {
+            "projectId": "{projectId}",
+            "tag": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "A tag name can be at most 50 characters long."
+        }
+      }
+    },
+    {
+      "id": "client-tag-list-by-project",
+      "method": "GET",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": true,
+      "query": {
+        "query": "((Tag.projectId : {projectId}))",
+        "limit": 200
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{tagId}",
+          "{runtime.clientTagId}"
+        ],
+        "idsExcludes": [
+          "{otherProjectTagId}"
+        ]
+      }
+    },
+    {
+      "id": "client-tagged-create-conversationroom",
+      "method": "POST",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tagged",
+          "attributes": {
+            "tagId": "{runtime.clientTagId}",
+            "relatedTo": "conversationroom",
+            "relatedId": "{conversationroomId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "relatedTo": "conversationroom",
+          "relatedId": "{conversationroomId}"
+        }
+      }
+    },
+    {
+      "id": "client-tagged-create-duplicate-rejected",
+      "method": "POST",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tagged",
+          "attributes": {
+            "tagId": "{tagId}",
+            "relatedTo": "issue",
+            "relatedId": "{issueId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "The record already has this tag."
+        }
+      }
+    },
+    {
+      "id": "client-tagged-create-other-project-tag-rejected",
+      "method": "POST",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tagged",
+          "attributes": {
+            "tagId": "{tagId}",
+            "relatedTo": "issue",
+            "relatedId": "{otherProjectIssueId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "The tag belongs to another project than the record."
+        }
       }
     }
   ]

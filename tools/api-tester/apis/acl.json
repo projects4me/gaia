@@ -3822,6 +3822,159 @@
       "query": { "types": "issue", "q": "Seed Issue" },
       "expects": { "status": 200, "shape": "json", "idsIncludes": ["issue:{issueId}"] },
       "source": "acl-field"
+    },
+    {
+      "id": "acl-members-tag-list-member-only",
+      "method": "GET",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{tagId}"], "idsExcludes": ["{otherProjectTagId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-tag-detail-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/tag/{otherProjectTagId}",
+      "resource": "tag",
+      "auth": "aclMembers",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-tag-create-member-allowed",
+      "method": "POST",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "tag",
+          "attributes": {
+            "projectId": "{projectId}",
+            "tag": "acl-members-tag-{runId}"
+          }
+        }
+      },
+      "store": { "runtime.membersTagId": "data.id" },
+      "expects": { "status": 201, "shape": "jsonapi.resource", "attributesEqual": {"projectId": "{projectId}", "tag": "acl-members-tag-{runId}"} },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-tag-create-non-member-denied",
+      "method": "POST",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "tag",
+          "attributes": {
+            "projectId": "{otherProjectId}",
+            "tag": "acl-members-tag-{runId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-tagged-create-member-allowed",
+      "method": "POST",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "tagged",
+          "attributes": {
+            "tagId": "{runtime.membersTagId}",
+            "relatedTo": "issue",
+            "relatedId": "{issueId}"
+          }
+        }
+      },
+      "expects": { "status": 201, "shape": "jsonapi.resource", "attributesEqual": {"tagId": "{runtime.membersTagId}", "relatedTo": "issue", "relatedId": "{issueId}"} },
+      "source": "acl-group",
+      "note": "tags the member's issue with the tag acl-members-tag-create-member-allowed made"
+    },
+    {
+      "id": "acl-members-tagged-create-non-member-denied",
+      "method": "POST",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "tagged",
+          "attributes": {
+            "tagId": "{otherProjectTagId}",
+            "relatedTo": "issue",
+            "relatedId": "{otherProjectIssueId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-members-tagged-create-other-project-tag-rejected",
+      "method": "POST",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "tagged",
+          "attributes": {
+            "tagId": "{otherProjectTagId}",
+            "relatedTo": "issue",
+            "relatedId": "{issueId}"
+          }
+        }
+      },
+      "expects": { "status": 422, "shape": "error", "jsonEqual": {"messages.0": "The tag belongs to another project than the record."} },
+      "source": "acl-group",
+      "note": "the record is the member's, so the ACL lets it through; the other project's tag is refused"
+    },
+    {
+      "id": "acl-members-tagged-list-member-only",
+      "method": "GET",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": "aclMembers",
+      "query": { "limit": 50, "page": 1 },
+      "expects": { "status": 200, "shape": "jsonapi.collection", "idsIncludes": ["{taggedId}"], "idsExcludes": ["{otherProjectTaggedId}"] },
+      "source": "acl-group"
+    },
+    {
+      "id": "acl-tag-list-denied-without-tag-get",
+      "method": "GET",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": "aclProjectOnly",
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-action"
+    },
+    {
+      "id": "acl-tagged-create-denied-without-tagged-create",
+      "method": "POST",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": "aclProjectOnly",
+      "body": {
+        "data": {
+          "type": "tagged",
+          "attributes": {
+            "tagId": "{tagId}",
+            "relatedTo": "doc",
+            "relatedId": "{docId}"
+          }
+        }
+      },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-action"
     }
   ]
 }

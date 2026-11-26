@@ -6,7 +6,7 @@
 ## Fields
 
 - relatedId varchar(36) required
-- relatedTo varchar(15) required
+- relatedTo varchar(25) required
 - tagId varchar(36) required
 - also: id
 
@@ -15,16 +15,15 @@
 
 - doc hasMany -> Doc
 - issue hasMany -> Issue
-- project hasMany -> Project
 - tag hasMany -> Tag
 - wiki hasMany -> Wiki
 
 <a id="summary"></a>
 ## Summary
 
-- behaviours: -
-- acl: -
+- behaviours: taggedBehavior
+- acl: group Project via {"paths":[{"when":{"relatedTo":"issue"},"relatedModel":"Issue","localKey":"relatedId","relatedKey":"id","projectField":"projectId"},{"when":{"relatedTo":"conversationroom"},"relatedModel":"Conversationroom","localKey":"relatedId","relatedKey":"id","projectField":"projectId"},{"when":{"relatedTo":"wiki"},"relatedModel":"Wiki","localKey":"relatedId","relatedKey":"id","projectField":"projectId"},{"when":{"relatedTo":"doc"},"relatedModel":"Doc","localKey":"relatedId","relatedKey":"id","projectField":"projectId"}]}
 - controller: Gaia\MVC\REST\Controllers\TaggedController
 - routes: DELETE /api/v1/tagged, DELETE /api/v1/tagged/{id}, GET /api/v1/tagged, GET /api/v1/tagged/{id}, GET /api/v1/tagged/{id}/{relation}, OPTIONS /api/v1/tagged, POST /api/v1/tagged
 - components: -
-- cases: 4 (backend 4); gaia-dev cases tagged
+- cases: 12 (acl 5, backend 4, client 3); gaia-dev cases tagged

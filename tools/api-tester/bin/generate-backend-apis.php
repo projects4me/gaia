@@ -127,7 +127,8 @@ $relatedDefaults = [
     'comment' => ['relatedTo' => 'conversationrooms', 'relatedId' => '{conversationroomId}'],
     'vote' => ['relatedTo' => 'conversationrooms', 'relatedId' => '{conversationroomId}'],
     'membership' => ['projectId' => '{projectId}', 'userId' => '{memberUserId}'],
-    'tagged' => ['relatedTo' => 'issue', 'relatedId' => '{issueId}'],
+    // A seeded tag of the doc's project that the doc doesn't have yet (Tags D-001).
+    'tagged' => ['relatedTo' => 'doc', 'relatedId' => '{docId}', 'tagId' => '{tagId}'],
 ];
 
 /** Extra required/useful attributes beyond null=>false inference. */
@@ -188,7 +189,7 @@ $extraAttributes = [
         'type' => 'degree',
         'title' => 'API Tester Degree',
     ],
-    'tag' => ['tag' => 'api-tester-tag-{runId}'],
+    'tag' => ['tag' => 'api-tester-tag-{runId}', 'projectId' => '{projectId}'],
     'issuestatus' => [
         'name' => 'api_tester_status',
         'translations' => ['en-us' => 'API Tester Status'],
