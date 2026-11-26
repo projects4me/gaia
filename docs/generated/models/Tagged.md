@@ -13,11 +13,11 @@
 <a id="relationships"></a>
 ## Relationships
 
-- conversationroom hasMany -> Conversationroom
-- doc hasMany -> Doc
-- issue hasMany -> Issue
-- tag hasMany -> Tag
-- wiki hasMany -> Wiki
+- conversationroom hasOne -> Conversationroom
+- doc hasOne -> Doc
+- issue hasOne -> Issue
+- tag hasOne -> Tag
+- wiki hasOne -> Wiki
 
 <a id="summary"></a>
 ## Summary
@@ -27,4 +27,4 @@
 - controller: Gaia\MVC\REST\Controllers\TaggedController
 - routes: DELETE /api/v1/tagged, DELETE /api/v1/tagged/{id}, GET /api/v1/tagged, GET /api/v1/tagged/{id}, GET /api/v1/tagged/{id}/{relation}, OPTIONS /api/v1/tagged, POST /api/v1/tagged
 - components: -
-- cases: 12 (acl 5, backend 4, client 3); gaia-dev cases tagged
+- cases: 13 (acl 5, backend 4, client 4); gaia-dev cases tagged
