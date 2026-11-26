@@ -268,6 +268,31 @@ class PostgresSearchMigrationTest extends TestCase
         $this->assertSame(0, (int) $constraint['total']);
     }
 
+    public function testUniqueIndexesAreDroppedWhenTheMetadataIndexIsPlain()
+    {
+        (new Postgres())->createExtensions($this->db, array('pg_trgm'));
+        $meta = $this->fixtureMeta(false);
+        $this->migrate($meta);
+        $this->db->execute('CREATE UNIQUE INDEX "idx_legacy_description" ON "' . self::TABLE . '" ("description")');
+        $this->db->execute(
+            'ALTER TABLE "' . self::TABLE . '" ADD CONSTRAINT "' . self::TABLE . '_description" UNIQUE ("description")'
+        );
+
+        $meta['TestSearchFixture']['indexes']['description'] = 'INDEX';
+        $this->migrate($meta);
+
+        $unique = $this->db->fetchOne(
+            'SELECT COUNT(*) AS total FROM pg_index index_info
+             JOIN pg_class table_class ON table_class.oid = index_info.indrelid
+             WHERE table_class.relname = ? AND index_info.indisunique AND NOT index_info.indisprimary',
+            \PDO::FETCH_ASSOC,
+            array(self::TABLE)
+        );
+        $this->assertSame(0, (int) $unique['total']);
+        $this->assertStringContainsString('btree (description)', $this->indexDefinition('description'));
+        $this->assertStringNotContainsString('UNIQUE', $this->indexDefinition('description'));
+    }
+
     public function testIndexNameUsedByAnotherTableIsReported()
     {
         (new Postgres())->createExtensions($this->db, array('pg_trgm'));

@@ -4593,6 +4593,30 @@
       }
     },
     {
+      "id": "behaviour:tagBehavior",
+      "type": "behaviour",
+      "key": "tagBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\tagBehavior",
+        "file": "core/mvc/models/behaviors/tagBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
+      "id": "behaviour:taggedBehavior",
+      "type": "behaviour",
+      "key": "taggedBehavior",
+      "attributes": {
+        "class": "Gaia\\MVC\\Models\\Behaviors\\taggedBehavior",
+        "file": "core/mvc/models/behaviors/taggedBehavior.php",
+        "hooks": [
+          "notify"
+        ]
+      }
+    },
+    {
       "id": "behaviour:translationCacheBehavior",
       "type": "behaviour",
       "key": "translationCacheBehavior",
@@ -7254,6 +7278,159 @@
       }
     },
     {
+      "id": "case:acl/acl-members-tag-create-member-allowed",
+      "type": "case",
+      "key": "acl/acl-members-tag-create-member-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "projectId",
+          "runId"
+        ],
+        "stores": [
+          "runtime.membersTagId"
+        ]
+      }
+    },
+    {
+      "id": "case:acl/acl-members-tag-create-non-member-denied",
+      "type": "case",
+      "key": "acl/acl-members-tag-create-non-member-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectId",
+          "runId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-tag-detail-non-member-denied",
+      "type": "case",
+      "key": "acl/acl-members-tag-detail-non-member-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/tag/{otherProjectTagId}",
+        "resource": "tag",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-tag-list-member-only",
+      "type": "case",
+      "key": "acl/acl-members-tag-list-member-only",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectTagId",
+          "tagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-tagged-create-member-allowed",
+      "type": "case",
+      "key": "acl/acl-members-tagged-create-member-allowed",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "issueId",
+          "runtime.membersTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-tagged-create-non-member-denied",
+      "type": "case",
+      "key": "acl/acl-members-tagged-create-non-member-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectIssueId",
+          "otherProjectTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-tagged-create-other-project-tag-rejected",
+      "type": "case",
+      "key": "acl/acl-members-tagged-create-other-project-tag-rejected",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "issueId",
+          "otherProjectTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-tagged-list-member-only",
+      "type": "case",
+      "key": "acl/acl-members-tagged-list-member-only",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectTaggedId",
+          "taggedId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-members-workflowrun-detail-member-allowed",
       "type": "case",
       "key": "acl/acl-members-workflowrun-detail-member-allowed",
@@ -9255,6 +9432,41 @@
         "source": "acl-setting",
         "placeholders": [
           "issuetypeId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-tag-list-denied-without-tag-get",
+      "type": "case",
+      "key": "acl/acl-tag-list-denied-without-tag-get",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": "acl-action",
+        "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-tagged-create-denied-without-tagged-create",
+      "type": "case",
+      "key": "acl/acl-tagged-create-denied-without-tagged-create",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "POST",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": "acl-action",
+        "placeholders": [
+          "docId",
+          "tagId"
         ],
         "stores": []
       }
@@ -14261,6 +14473,7 @@
         "enabled": true,
         "source": "backend-metadata",
         "placeholders": [
+          "projectId",
           "runId"
         ],
         "stores": [
@@ -14281,7 +14494,8 @@
         "enabled": true,
         "source": "backend-metadata",
         "placeholders": [
-          "issueId"
+          "docId",
+          "tagId"
         ],
         "stores": [
           "runtime.taggedId"
@@ -15662,6 +15876,7 @@
         "enabled": true,
         "source": null,
         "placeholders": [
+          "projectId",
           "runId"
         ],
         "stores": []
@@ -16149,6 +16364,197 @@
         "stores": [
           "runtime.clientPlanissueId"
         ]
+      }
+    },
+    {
+      "id": "case:client/client-tag-create-blank-rejected",
+      "type": "case",
+      "key": "client/client-tag-create-blank-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-create-duplicate-in-project-rejected",
+      "type": "case",
+      "key": "client/client-tag-create-duplicate-in-project-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "runId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-create-normalises-name",
+      "type": "case",
+      "key": "client/client-tag-create-normalises-name",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "runId"
+        ],
+        "stores": [
+          "runtime.clientTagId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/client-tag-create-same-name-in-other-project",
+      "type": "case",
+      "key": "client/client-tag-create-same-name-in-other-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectId",
+          "runId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-create-too-long-rejected",
+      "type": "case",
+      "key": "client/client-tag-create-too-long-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-create-without-project-rejected",
+      "type": "case",
+      "key": "client/client-tag-create-without-project-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-list-by-project",
+      "type": "case",
+      "key": "client/client-tag-list-by-project",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectTagId",
+          "projectId",
+          "runtime.clientTagId",
+          "tagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tagged-create-conversationroom",
+      "type": "case",
+      "key": "client/client-tagged-create-conversationroom",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "runtime.clientTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tagged-create-duplicate-rejected",
+      "type": "case",
+      "key": "client/client-tagged-create-duplicate-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "tagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tagged-create-other-project-tag-rejected",
+      "type": "case",
+      "key": "client/client-tagged-create-other-project-tag-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectIssueId",
+          "tagId"
+        ],
+        "stores": []
       }
     },
     {
@@ -37756,6 +38162,18 @@
       }
     },
     {
+      "id": "field:Tag.projectId",
+      "type": "field",
+      "key": "Tag.projectId",
+      "attributes": {
+        "label": "LBL_TAG_PROJECT",
+        "type": "varchar",
+        "length": "36",
+        "null": true,
+        "relatedIdentifier": true
+      }
+    },
+    {
       "id": "field:Tag.tag",
       "type": "field",
       "key": "Tag.tag",
@@ -37798,7 +38216,7 @@
       "attributes": {
         "label": "LBL_TAGGED_RELATED_TO",
         "type": "varchar",
-        "length": "15",
+        "length": "25",
         "null": false,
         "linkedTo": "relatedId"
       }
@@ -42521,6 +42939,22 @@
       }
     },
     {
+      "id": "fixture:otherProjectTagId",
+      "type": "fixture",
+      "key": "otherProjectTagId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:otherProjectTaggedId",
+      "type": "fixture",
+      "key": "otherProjectTaggedId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
       "id": "fixture:otherProjectWorkflowrunId",
       "type": "fixture",
       "key": "otherProjectWorkflowrunId",
@@ -42716,6 +43150,22 @@
       "id": "fixture:systemnotificationrecipientId",
       "type": "fixture",
       "key": "systemnotificationrecipientId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:tagId",
+      "type": "fixture",
+      "key": "tagId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:taggedId",
+      "type": "fixture",
+      "key": "taggedId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -43795,7 +44245,14 @@
         "isView": false,
         "registered": true,
         "hasMetadata": true,
-        "acl": null
+        "acl": {
+          "groups": [
+            "Project"
+          ],
+          "groupKeys": {
+            "Project": "projectId"
+          }
+        }
       }
     },
     {
@@ -43808,7 +44265,53 @@
         "isView": false,
         "registered": true,
         "hasMetadata": true,
-        "acl": null
+        "acl": {
+          "groups": [
+            "Project"
+          ],
+          "groupKeys": {
+            "Project": {
+              "paths": [
+                {
+                  "when": {
+                    "relatedTo": "issue"
+                  },
+                  "relatedModel": "Issue",
+                  "localKey": "relatedId",
+                  "relatedKey": "id",
+                  "projectField": "projectId"
+                },
+                {
+                  "when": {
+                    "relatedTo": "conversationroom"
+                  },
+                  "relatedModel": "Conversationroom",
+                  "localKey": "relatedId",
+                  "relatedKey": "id",
+                  "projectField": "projectId"
+                },
+                {
+                  "when": {
+                    "relatedTo": "wiki"
+                  },
+                  "relatedModel": "Wiki",
+                  "localKey": "relatedId",
+                  "relatedKey": "id",
+                  "projectField": "projectId"
+                },
+                {
+                  "when": {
+                    "relatedTo": "doc"
+                  },
+                  "relatedModel": "Doc",
+                  "localKey": "relatedId",
+                  "relatedKey": "id",
+                  "projectField": "projectId"
+                }
+              ]
+            }
+          }
+        }
       }
     },
     {
@@ -48424,12 +48927,9 @@
       "type": "relationship",
       "key": "Tag.project",
       "attributes": {
-        "kind": "hasManyToMany",
-        "primaryKey": "id",
-        "rhsKey": "tagId",
-        "lhsKey": "relatedId",
-        "secondaryKey": "id",
-        "condition": "projectTagged.relatedTo = \"project\""
+        "kind": "hasOne",
+        "primaryKey": "projectId",
+        "relatedKey": "id"
       }
     },
     {
@@ -48465,17 +48965,6 @@
         "primaryKey": "relatedId",
         "relatedKey": "id",
         "condition": "Tagged.relatedTo = \"issue\""
-      }
-    },
-    {
-      "id": "relationship:Tagged.project",
-      "type": "relationship",
-      "key": "Tagged.project",
-      "attributes": {
-        "kind": "hasMany",
-        "primaryKey": "relatedId",
-        "relatedKey": "id",
-        "condition": "Tagged.relatedTo = \"project\""
       }
     },
     {
@@ -64375,6 +64864,321 @@
       "to": "fixture:projectId"
     },
     {
+      "from": "case:acl/acl-members-tag-create-member-allowed",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-member-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-member-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-member-allowed",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-member-allowed",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tag"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-member-allowed",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-member-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-non-member-denied",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-non-member-denied",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tag"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-non-member-denied",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-tag-create-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectId"
+    },
+    {
+      "from": "case:acl/acl-members-tag-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-tag-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-tag-detail-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-tag-detail-non-member-denied",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:acl/acl-members-tag-detail-non-member-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tag/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-tag-detail-non-member-denied",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-tag-detail-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectTagId"
+    },
+    {
+      "from": "case:acl/acl-members-tag-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-members-tag-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-members-tag-list-member-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-tag-list-member-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-tag-list-member-only",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:acl/acl-members-tag-list-member-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tag"
+    },
+    {
+      "from": "case:acl/acl-members-tag-list-member-only",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-tag-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectTagId"
+    },
+    {
+      "from": "case:acl/acl-members-tag-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:tagId"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-member-allowed",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-member-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-member-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-member-allowed",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-member-allowed",
+      "type": "depends_on",
+      "to": "case:acl/acl-members-tag-create-member-allowed"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-member-allowed",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tagged"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-member-allowed",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-member-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-non-member-denied",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-non-member-denied",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tagged"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-non-member-denied",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectIssueId"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectTagId"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-other-project-tag-rejected",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-other-project-tag-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-other-project-tag-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-other-project-tag-rejected",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-other-project-tag-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tagged"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-other-project-tag-rejected",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-other-project-tag-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-create-other-project-tag-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectTagId"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-list-member-only",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-list-member-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-list-member-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-list-member-only",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-list-member-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tagged"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-list-member-only",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectTaggedId"
+    },
+    {
+      "from": "case:acl/acl-members-tagged-list-member-only",
+      "type": "uses_fixture",
+      "to": "fixture:taggedId"
+    },
+    {
       "from": "case:acl/acl-members-workflowrun-detail-member-allowed",
       "type": "asserts",
       "to": "assertion:idsIncludes"
@@ -68188,6 +68992,76 @@
       "from": "case:acl/acl-system-type-update-denied-without-setting",
       "type": "uses_fixture",
       "to": "fixture:issuetypeId"
+    },
+    {
+      "from": "case:acl/acl-tag-list-denied-without-tag-get",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-tag-list-denied-without-tag-get",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-tag-list-denied-without-tag-get",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-tag-list-denied-without-tag-get",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:acl/acl-tag-list-denied-without-tag-get",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tag"
+    },
+    {
+      "from": "case:acl/acl-tag-list-denied-without-tag-get",
+      "type": "runs_as",
+      "to": "profile:aclProjectOnly"
+    },
+    {
+      "from": "case:acl/acl-tagged-create-denied-without-tagged-create",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-tagged-create-denied-without-tagged-create",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-tagged-create-denied-without-tagged-create",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-tagged-create-denied-without-tagged-create",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:acl/acl-tagged-create-denied-without-tagged-create",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tagged"
+    },
+    {
+      "from": "case:acl/acl-tagged-create-denied-without-tagged-create",
+      "type": "runs_as",
+      "to": "profile:aclProjectOnly"
+    },
+    {
+      "from": "case:acl/acl-tagged-create-denied-without-tagged-create",
+      "type": "uses_fixture",
+      "to": "fixture:docId"
+    },
+    {
+      "from": "case:acl/acl-tagged-create-denied-without-tagged-create",
+      "type": "uses_fixture",
+      "to": "fixture:tagId"
     },
     {
       "from": "case:acl/acl-tool-denied-acl-no-setting",
@@ -77070,6 +77944,11 @@
       "to": "profile:default"
     },
     {
+      "from": "case:backend/post-tag-api-v1-tag",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
       "from": "case:backend/post-tagged-api-v1-tagged",
       "type": "asserts",
       "to": "assertion:shape"
@@ -77097,7 +77976,12 @@
     {
       "from": "case:backend/post-tagged-api-v1-tagged",
       "type": "uses_fixture",
-      "to": "fixture:issueId"
+      "to": "fixture:docId"
+    },
+    {
+      "from": "case:backend/post-tagged-api-v1-tagged",
+      "type": "uses_fixture",
+      "to": "fixture:tagId"
     },
     {
       "from": "case:backend/post-timelog-api-v1-timelog",
@@ -79640,6 +80524,11 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/bulk-write-kept-when-later-item-fails",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
       "from": "case:client/client-doc-create",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -80558,6 +81447,386 @@
       "from": "case:client/client-ideaplanissue-create",
       "type": "uses_fixture",
       "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/client-tag-create-blank-rejected",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-create-blank-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-create-blank-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-create-blank-rejected",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-create-blank-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tag"
+    },
+    {
+      "from": "case:client/client-tag-create-blank-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-create-blank-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-tag-create-duplicate-in-project-rejected",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-create-duplicate-in-project-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-create-duplicate-in-project-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-create-duplicate-in-project-rejected",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-create-duplicate-in-project-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tag"
+    },
+    {
+      "from": "case:client/client-tag-create-duplicate-in-project-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-create-duplicate-in-project-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-tag-create-normalises-name",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-tag-create-normalises-name",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-create-normalises-name",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-create-normalises-name",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-create-normalises-name",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tag"
+    },
+    {
+      "from": "case:client/client-tag-create-normalises-name",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-create-normalises-name",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-tag-create-same-name-in-other-project",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-tag-create-same-name-in-other-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-create-same-name-in-other-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-create-same-name-in-other-project",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-create-same-name-in-other-project",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tag"
+    },
+    {
+      "from": "case:client/client-tag-create-same-name-in-other-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-create-same-name-in-other-project",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectId"
+    },
+    {
+      "from": "case:client/client-tag-create-too-long-rejected",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-create-too-long-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-create-too-long-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-create-too-long-rejected",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-create-too-long-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tag"
+    },
+    {
+      "from": "case:client/client-tag-create-too-long-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-create-too-long-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-tag-create-without-project-rejected",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-create-without-project-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-create-without-project-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-create-without-project-rejected",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-create-without-project-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tag"
+    },
+    {
+      "from": "case:client/client-tag-create-without-project-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-list-by-project",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/client-tag-list-by-project",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/client-tag-list-by-project",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-list-by-project",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-list-by-project",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-list-by-project",
+      "type": "depends_on",
+      "to": "case:client/client-tag-create-normalises-name"
+    },
+    {
+      "from": "case:client/client-tag-list-by-project",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tag"
+    },
+    {
+      "from": "case:client/client-tag-list-by-project",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-list-by-project",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectTagId"
+    },
+    {
+      "from": "case:client/client-tag-list-by-project",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-tag-list-by-project",
+      "type": "uses_fixture",
+      "to": "fixture:tagId"
+    },
+    {
+      "from": "case:client/client-tagged-create-conversationroom",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-tagged-create-conversationroom",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tagged-create-conversationroom",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tagged-create-conversationroom",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:client/client-tagged-create-conversationroom",
+      "type": "depends_on",
+      "to": "case:client/client-tag-create-normalises-name"
+    },
+    {
+      "from": "case:client/client-tagged-create-conversationroom",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tagged"
+    },
+    {
+      "from": "case:client/client-tagged-create-conversationroom",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tagged-create-conversationroom",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/client-tagged-create-duplicate-rejected",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tagged-create-duplicate-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tagged-create-duplicate-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tagged-create-duplicate-rejected",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:client/client-tagged-create-duplicate-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tagged"
+    },
+    {
+      "from": "case:client/client-tagged-create-duplicate-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tagged-create-duplicate-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/client-tagged-create-duplicate-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:tagId"
+    },
+    {
+      "from": "case:client/client-tagged-create-other-project-tag-rejected",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tagged-create-other-project-tag-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tagged-create-other-project-tag-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tagged-create-other-project-tag-rejected",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:client/client-tagged-create-other-project-tag-rejected",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tagged"
+    },
+    {
+      "from": "case:client/client-tagged-create-other-project-tag-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tagged-create-other-project-tag-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectIssueId"
+    },
+    {
+      "from": "case:client/client-tagged-create-other-project-tag-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:tagId"
     },
     {
       "from": "case:client/conversationroomcount-empty-room-is-zero",
@@ -114747,6 +116016,11 @@
     {
       "from": "model:Tag",
       "type": "has_field",
+      "to": "field:Tag.projectId"
+    },
+    {
+      "from": "model:Tag",
+      "type": "has_field",
       "to": "field:Tag.tag"
     },
     {
@@ -114805,6 +116079,11 @@
       "to": "behaviour:softDeleteBehavior"
     },
     {
+      "from": "model:Tag",
+      "type": "uses_behaviour",
+      "to": "behaviour:tagBehavior"
+    },
+    {
       "from": "model:Tagged",
       "type": "has_field",
       "to": "field:Tagged.id"
@@ -114837,17 +116116,17 @@
     {
       "from": "model:Tagged",
       "type": "has_relationship",
-      "to": "relationship:Tagged.project"
-    },
-    {
-      "from": "model:Tagged",
-      "type": "has_relationship",
       "to": "relationship:Tagged.tag"
     },
     {
       "from": "model:Tagged",
       "type": "has_relationship",
       "to": "relationship:Tagged.wiki"
+    },
+    {
+      "from": "model:Tagged",
+      "type": "uses_behaviour",
+      "to": "behaviour:taggedBehavior"
     },
     {
       "from": "model:Timelog",
@@ -118312,6 +119591,26 @@
     {
       "from": "profile:aclMembers",
       "type": "grants",
+      "to": "permission:tag.create"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:tag.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:tagged.create"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
+      "to": "permission:tagged.get"
+    },
+    {
+      "from": "profile:aclMembers",
+      "type": "grants",
       "to": "permission:workflowrun.get"
     },
     {
@@ -118608,6 +119907,16 @@
       "from": "profile:aclProjectOnly",
       "type": "denies",
       "to": "permission:issue.get"
+    },
+    {
+      "from": "profile:aclProjectOnly",
+      "type": "denies",
+      "to": "permission:tag.get"
+    },
+    {
+      "from": "profile:aclProjectOnly",
+      "type": "denies",
+      "to": "permission:tagged.create"
     },
     {
       "from": "profile:aclProjectOnly",
@@ -120630,11 +121939,6 @@
       "to": "model:Project"
     },
     {
-      "from": "relationship:Tag.project",
-      "type": "via",
-      "to": "model:Tagged"
-    },
-    {
       "from": "relationship:Tag.wiki",
       "type": "targets",
       "to": "model:Wiki"
@@ -120653,11 +121957,6 @@
       "from": "relationship:Tagged.issue",
       "type": "targets",
       "to": "model:Issue"
-    },
-    {
-      "from": "relationship:Tagged.project",
-      "type": "targets",
-      "to": "model:Project"
     },
     {
       "from": "relationship:Tagged.tag",

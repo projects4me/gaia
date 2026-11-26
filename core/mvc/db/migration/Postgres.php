@@ -421,6 +421,10 @@ class Postgres
                 continue;
             }
 
+            if ($type !== 'unique' && $this->dropUniqueIndexesOn($connection, $tableName, $field)) {
+                unset($existing[$field]);
+            }
+
             $indexName = $connection->escapeIdentifier($tableName . '_' . $field);
             $quotedField = $connection->escapeIdentifier($field);
             $unique = ($type === 'unique') ? 'UNIQUE ' : '';
@@ -438,6 +442,49 @@ class Postgres
             }
             $connection->execute($createSql);
         }
+    }
+
+    /**
+     * This function drops the unique, non-primary indexes on exactly one column, for a
+     * field the metadata now indexes without uniqueness (e.g. a name that became unique
+     * per project only). Any name is matched, so indexes from older imports go too. An
+     * index that backs a constraint is removed by dropping the constraint.
+     *
+     * @param SchemaConnection $connection
+     * @param string $tableName
+     * @param string $field
+     * @return bool Whether an index was dropped
+     */
+    private function dropUniqueIndexesOn($connection, $tableName, $field)
+    {
+        $rows = $connection->fetchAll(
+            'SELECT index_class.relname AS index_name, owning_constraint.conname AS constraint_name
+             FROM pg_index index_info
+             JOIN pg_class index_class ON index_class.oid = index_info.indexrelid
+             JOIN pg_class table_class ON table_class.oid = index_info.indrelid
+             JOIN pg_namespace table_schema ON table_schema.oid = table_class.relnamespace
+             JOIN pg_attribute key_attribute ON key_attribute.attrelid = table_class.oid
+                 AND key_attribute.attnum = index_info.indkey[0]
+             LEFT JOIN pg_constraint owning_constraint ON owning_constraint.conindid = index_class.oid
+                 AND owning_constraint.conrelid = index_info.indrelid
+             WHERE table_schema.nspname = ? AND table_class.relname = ? AND key_attribute.attname = ?
+             AND index_info.indisunique AND NOT index_info.indisprimary AND index_info.indnatts = 1',
+            \PDO::FETCH_ASSOC,
+            array($this->getDefaultSchema(), $tableName, $field)
+        );
+
+        foreach ($rows as $row) {
+            if ($row['constraint_name'] !== null) {
+                $connection->execute(
+                    'ALTER TABLE ' . $connection->escapeIdentifier($tableName)
+                    . ' DROP CONSTRAINT ' . $connection->escapeIdentifier($row['constraint_name'])
+                );
+            } else {
+                $connection->execute('DROP INDEX IF EXISTS ' . $connection->escapeIdentifier($row['index_name']));
+            }
+        }
+
+        return !empty($rows);
     }
 
     /**

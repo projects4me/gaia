@@ -3951,7 +3951,8 @@
                 "data": {
                     "type": "tag",
                     "attributes": {
-                        "tag": "api-tester-tag-{runId}"
+                        "tag": "api-tester-tag-{runId}",
+                        "projectId": "{projectId}"
                     }
                 }
             },
@@ -4156,9 +4157,9 @@
                 "data": {
                     "type": "tagged",
                     "attributes": {
-                        "relatedId": "{issueId}",
-                        "relatedTo": "issue",
-                        "tagId": "api-tagged-tagId"
+                        "relatedId": "{docId}",
+                        "relatedTo": "doc",
+                        "tagId": "{tagId}"
                     }
                 }
             },

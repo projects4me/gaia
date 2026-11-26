@@ -27,7 +27,7 @@ $models['Tagged'] = array(
             'name' => 'relatedTo',
             'label' => 'LBL_TAGGED_RELATED_TO',
             'type' => 'varchar',
-            'length' => '15',
+            'length' => '25',
             'null' => false,
             'linkedTo' => 'relatedId'
         ),
@@ -62,12 +62,6 @@ $models['Tagged'] = array(
               'relatedModel' => '\\Gaia\\MVC\\Models\\Tag',
               'relatedKey' => 'id'
           ),
-          'project' => array(
-              'primaryKey' => 'relatedId',
-              'relatedModel' => '\\Gaia\\MVC\\Models\\Project',
-              'relatedKey' => 'id',
-              'condition' => 'Tagged.relatedTo = "project"'
-          ),
           'issue' => array(
               'primaryKey' => 'relatedId',
               'relatedModel' => '\\Gaia\\MVC\\Models\\Issue',
@@ -83,7 +77,48 @@ $models['Tagged'] = array(
         ),
     ),
     'behaviors' => array(
-    )
+        'taggedBehavior'
+    ),
+    // Scoped by the tagged record's project (Tags D-001): a tagging is visible
+    // and writable only where the record is. Other relatedTo values match no
+    // path, and taggedBehavior refuses them.
+    'acl' => [
+        'groups' => ['Project'],
+        'groupKeys' => [
+            'Project' => [
+                'paths' => [
+                    [
+                        'when' => ['relatedTo' => 'issue'],
+                        'relatedModel' => 'Issue',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'projectId',
+                    ],
+                    [
+                        'when' => ['relatedTo' => 'conversationroom'],
+                        'relatedModel' => 'Conversationroom',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'projectId',
+                    ],
+                    [
+                        'when' => ['relatedTo' => 'wiki'],
+                        'relatedModel' => 'Wiki',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'projectId',
+                    ],
+                    [
+                        'when' => ['relatedTo' => 'doc'],
+                        'relatedModel' => 'Doc',
+                        'localKey' => 'relatedId',
+                        'relatedKey' => 'id',
+                        'projectField' => 'projectId',
+                    ],
+                ],
+            ],
+        ],
+    ],
 );
 
 return $models;
