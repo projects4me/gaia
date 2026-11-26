@@ -23,6 +23,8 @@
 - issue hasOne -> Issue
 - modifiedBy hasOne -> User
 - project hasOne -> Project
+- tag hasManyToMany -> Tag via Tagged
+- tagged hasMany -> Tagged
 - votes hasMany -> Vote
 
 <a id="summary"></a>
@@ -33,4 +35,4 @@
 - controller: Gaia\MVC\REST\Controllers\ConversationroomController
 - routes: DELETE /api/v1/conversationroom, DELETE /api/v1/conversationroom/{id}, GET /api/v1/conversationroom, GET /api/v1/conversationroom/{id}, GET /api/v1/conversationroom/{id}/{relation}, OPTIONS /api/v1/conversationroom, PATCH /api/v1/conversationroom, PATCH /api/v1/conversationroom/{id}, POST /api/v1/conversationroom, PUT /api/v1/conversationroom, PUT /api/v1/conversationroom/{id}
 - components: Conversationactivities, Events\ConversationLiveEvents
-- cases: 24 (acl 2, backend 6, client 14, live 2); gaia-dev cases conversationroom
+- cases: 27 (acl 3, backend 6, client 16, live 2); gaia-dev cases conversationroom

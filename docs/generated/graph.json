@@ -6353,6 +6353,24 @@
       }
     },
     {
+      "id": "case:acl/acl-members-conversationroom-tag-relation-non-member-denied",
+      "type": "case",
+      "key": "acl/acl-members-conversationroom-tag-relation-non-member-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom/{otherProjectConversationroomId}",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectConversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-members-conversationroomcount-detail-member-allowed",
       "type": "case",
       "key": "acl/acl-members-conversationroomcount-detail-member-allowed",
@@ -7077,6 +7095,24 @@
         "source": "acl-group",
         "placeholders": [
           "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-issue-tag-relation-non-member-denied",
+      "type": "case",
+      "key": "acl/acl-members-issue-tag-relation-non-member-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{otherProjectIssueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": "acl-group",
+        "placeholders": [
+          "otherProjectIssueId"
         ],
         "stores": []
       }
@@ -15883,6 +15919,44 @@
       }
     },
     {
+      "id": "case:client/client-conversationroom-get-with-tag",
+      "type": "case",
+      "key": "client/client-conversationroom-get-with-tag",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom/{conversationroomId}",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-conversationroom-list-filtered-by-tag",
+      "type": "case",
+      "key": "client/client-conversationroom-list-filtered-by-tag",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "otherProjectConversationroomId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/client-doc-create",
       "type": "case",
       "key": "client/client-doc-create",
@@ -16364,6 +16438,44 @@
         "stores": [
           "runtime.clientPlanissueId"
         ]
+      }
+    },
+    {
+      "id": "case:client/client-issue-get-with-tag",
+      "type": "case",
+      "key": "client/client-issue-get-with-tag",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue/{issueId}",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-issue-list-filtered-by-tag",
+      "type": "case",
+      "key": "client/client-issue-list-filtered-by-tag",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "otherProjectIssueId",
+          "projectId"
+        ],
+        "stores": []
       }
     },
     {
@@ -47844,6 +47956,30 @@
       }
     },
     {
+      "id": "relationship:Conversationroom.tag",
+      "type": "relationship",
+      "key": "Conversationroom.tag",
+      "attributes": {
+        "kind": "hasManyToMany",
+        "primaryKey": "id",
+        "rhsKey": "relatedId",
+        "lhsKey": "tagId",
+        "secondaryKey": "id",
+        "condition": "tagTagged.relatedTo = \"conversationroom\""
+      }
+    },
+    {
+      "id": "relationship:Conversationroom.tagged",
+      "type": "relationship",
+      "key": "Conversationroom.tagged",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "relatedId",
+        "condition": "tagged.relatedTo = \"conversationroom\""
+      }
+    },
+    {
       "id": "relationship:Conversationroom.votes",
       "type": "relationship",
       "key": "Conversationroom.votes",
@@ -48306,6 +48442,30 @@
         "primaryKey": "id",
         "relatedKey": "issueId",
         "condition": "spent.context = \"spent\" AND spent.deleted = \"0\""
+      }
+    },
+    {
+      "id": "relationship:Issue.tag",
+      "type": "relationship",
+      "key": "Issue.tag",
+      "attributes": {
+        "kind": "hasManyToMany",
+        "primaryKey": "id",
+        "rhsKey": "relatedId",
+        "lhsKey": "tagId",
+        "secondaryKey": "id",
+        "condition": "tagTagged.relatedTo = \"issue\""
+      }
+    },
+    {
+      "id": "relationship:Issue.tagged",
+      "type": "relationship",
+      "key": "Issue.tagged",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "id",
+        "relatedKey": "relatedId",
+        "condition": "tagged.relatedTo = \"issue\""
       }
     },
     {
@@ -48943,6 +49103,17 @@
         "lhsKey": "relatedId",
         "secondaryKey": "id",
         "condition": "wikiTagged.relatedTo = \"wiki\""
+      }
+    },
+    {
+      "id": "relationship:Tagged.conversationroom",
+      "type": "relationship",
+      "key": "Tagged.conversationroom",
+      "attributes": {
+        "kind": "hasMany",
+        "primaryKey": "relatedId",
+        "relatedKey": "id",
+        "condition": "Tagged.relatedTo = \"conversationroom\""
       }
     },
     {
@@ -63054,6 +63225,41 @@
       "to": "profile:aclNoSetting"
     },
     {
+      "from": "case:acl/acl-members-conversationroom-tag-relation-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroom-tag-relation-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroom-tag-relation-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroom-tag-relation-non-member-denied",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroom-tag-relation-non-member-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroom-tag-relation-non-member-denied",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-conversationroom-tag-relation-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectConversationroomId"
+    },
+    {
       "from": "case:acl/acl-members-conversationroomcount-detail-member-allowed",
       "type": "asserts",
       "to": "assertion:idsIncludes"
@@ -64497,6 +64703,41 @@
       "from": "case:acl/acl-members-issue-list-includes-member-issue",
       "type": "uses_fixture",
       "to": "fixture:issueId"
+    },
+    {
+      "from": "case:acl/acl-members-issue-tag-relation-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-issue-tag-relation-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-issue-tag-relation-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-issue-tag-relation-non-member-denied",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:acl/acl-members-issue-tag-relation-non-member-denied",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-issue-tag-relation-non-member-denied",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-issue-tag-relation-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectIssueId"
     },
     {
       "from": "case:acl/acl-members-issue-upload-file-member-allowed",
@@ -80529,6 +80770,96 @@
       "to": "fixture:projectId"
     },
     {
+      "from": "case:client/client-conversationroom-get-with-tag",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/client-conversationroom-get-with-tag",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:client/client-conversationroom-get-with-tag",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-conversationroom-get-with-tag",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-conversationroom-get-with-tag",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/client-conversationroom-get-with-tag",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom/{id}"
+    },
+    {
+      "from": "case:client/client-conversationroom-get-with-tag",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-conversationroom-get-with-tag",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/client-conversationroom-list-filtered-by-tag",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/client-conversationroom-list-filtered-by-tag",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/client-conversationroom-list-filtered-by-tag",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-conversationroom-list-filtered-by-tag",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-conversationroom-list-filtered-by-tag",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/client-conversationroom-list-filtered-by-tag",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/client-conversationroom-list-filtered-by-tag",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-conversationroom-list-filtered-by-tag",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/client-conversationroom-list-filtered-by-tag",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectConversationroomId"
+    },
+    {
+      "from": "case:client/client-conversationroom-list-filtered-by-tag",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
       "from": "case:client/client-doc-create",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -81447,6 +81778,96 @@
       "from": "case:client/client-ideaplanissue-create",
       "type": "uses_fixture",
       "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/client-issue-get-with-tag",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/client-issue-get-with-tag",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:client/client-issue-get-with-tag",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-issue-get-with-tag",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-issue-get-with-tag",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/client-issue-get-with-tag",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue/{id}"
+    },
+    {
+      "from": "case:client/client-issue-get-with-tag",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-issue-get-with-tag",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/client-issue-list-filtered-by-tag",
+      "type": "asserts",
+      "to": "assertion:idsExcludes"
+    },
+    {
+      "from": "case:client/client-issue-list-filtered-by-tag",
+      "type": "asserts",
+      "to": "assertion:idsIncludes"
+    },
+    {
+      "from": "case:client/client-issue-list-filtered-by-tag",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-issue-list-filtered-by-tag",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-issue-list-filtered-by-tag",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/client-issue-list-filtered-by-tag",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/client-issue-list-filtered-by-tag",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-issue-list-filtered-by-tag",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/client-issue-list-filtered-by-tag",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectIssueId"
+    },
+    {
+      "from": "case:client/client-issue-list-filtered-by-tag",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
     },
     {
       "from": "case:client/client-tag-create-blank-rejected",
@@ -112496,6 +112917,16 @@
     {
       "from": "model:Conversationroom",
       "type": "has_relationship",
+      "to": "relationship:Conversationroom.tag"
+    },
+    {
+      "from": "model:Conversationroom",
+      "type": "has_relationship",
+      "to": "relationship:Conversationroom.tagged"
+    },
+    {
+      "from": "model:Conversationroom",
+      "type": "has_relationship",
       "to": "relationship:Conversationroom.votes"
     },
     {
@@ -113597,6 +114028,16 @@
       "from": "model:Issue",
       "type": "has_relationship",
       "to": "relationship:Issue.spent"
+    },
+    {
+      "from": "model:Issue",
+      "type": "has_relationship",
+      "to": "relationship:Issue.tag"
+    },
+    {
+      "from": "model:Issue",
+      "type": "has_relationship",
+      "to": "relationship:Issue.tagged"
     },
     {
       "from": "model:Issue",
@@ -116102,6 +116543,11 @@
       "from": "model:Tagged",
       "type": "has_field",
       "to": "field:Tagged.tagId"
+    },
+    {
+      "from": "model:Tagged",
+      "type": "has_relationship",
+      "to": "relationship:Tagged.conversationroom"
     },
     {
       "from": "model:Tagged",
@@ -121394,6 +121840,21 @@
       "to": "model:Project"
     },
     {
+      "from": "relationship:Conversationroom.tag",
+      "type": "targets",
+      "to": "model:Tag"
+    },
+    {
+      "from": "relationship:Conversationroom.tag",
+      "type": "via",
+      "to": "model:Tagged"
+    },
+    {
+      "from": "relationship:Conversationroom.tagged",
+      "type": "targets",
+      "to": "model:Tagged"
+    },
+    {
       "from": "relationship:Conversationroom.votes",
       "type": "targets",
       "to": "model:Vote"
@@ -121622,6 +122083,21 @@
       "from": "relationship:Issue.spent",
       "type": "targets",
       "to": "model:Timelog"
+    },
+    {
+      "from": "relationship:Issue.tag",
+      "type": "targets",
+      "to": "model:Tag"
+    },
+    {
+      "from": "relationship:Issue.tag",
+      "type": "via",
+      "to": "model:Tagged"
+    },
+    {
+      "from": "relationship:Issue.tagged",
+      "type": "targets",
+      "to": "model:Tagged"
     },
     {
       "from": "relationship:Issue.watchers",
@@ -121947,6 +122423,11 @@
       "from": "relationship:Tag.wiki",
       "type": "via",
       "to": "model:Tagged"
+    },
+    {
+      "from": "relationship:Tagged.conversationroom",
+      "type": "targets",
+      "to": "model:Conversationroom"
     },
     {
       "from": "relationship:Tagged.doc",

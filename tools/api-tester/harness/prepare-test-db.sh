@@ -829,7 +829,9 @@ ON CONFLICT (id) DO UPDATE SET deleted = 0, tag = EXCLUDED.tag, "projectId" = EX
 
 INSERT INTO tagged (id, "tagId", "relatedTo", "relatedId") VALUES
   ('api-test-tagged-00001', 'api-test-tag-000001', 'issue', 'api-test-issue-000001'),
-  ('api-test-tagged-00002', 'api-test-tag-000002', 'issue', 'api-test-issue-000003')
+  ('api-test-tagged-00002', 'api-test-tag-000002', 'issue', 'api-test-issue-000003'),
+  ('api-test-tagged-00003', 'api-test-tag-000001', 'conversationroom', 'api-test-convroom-001'),
+  ('api-test-tagged-00004', 'api-test-tag-000002', 'conversationroom', 'api-test-convroom-cnt-other')
 ON CONFLICT (id) DO NOTHING;
 
 -- Ideas: one per project so members scope can be checked through the idea's children

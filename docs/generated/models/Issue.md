@@ -49,6 +49,8 @@
 - project hasOne -> Project
 - reportedBy hasOne -> User
 - spent hasMany -> Timelog
+- tag hasManyToMany -> Tag via Tagged
+- tagged hasMany -> Tagged
 - watchers hasMany -> Issuewatcher
 
 <a id="summary"></a>
@@ -59,4 +61,4 @@
 - controller: Gaia\MVC\REST\Controllers\IssueController
 - routes: DELETE /api/v1/issue, DELETE /api/v1/issue/{id}, GET /api/v1/issue, GET /api/v1/issue/{id}, GET /api/v1/issue/{id}/{relation}, OPTIONS /api/v1/issue, PATCH /api/v1/issue, PATCH /api/v1/issue/{id}, POST /api/v1/issue, PUT /api/v1/issue, PUT /api/v1/issue/{id}
 - components: Events\IssueLiveEvents, Events\WorkflowReplies, Events\WorkflowTriggers, Filethumb, Issueactivities, Notification
-- cases: 141 (acl 38, backend 6, client 91, live 6); gaia-dev cases issue
+- cases: 144 (acl 39, backend 6, client 93, live 6); gaia-dev cases issue

@@ -13,6 +13,7 @@
 <a id="relationships"></a>
 ## Relationships
 
+- conversationroom hasMany -> Conversationroom
 - doc hasMany -> Doc
 - issue hasMany -> Issue
 - tag hasMany -> Tag

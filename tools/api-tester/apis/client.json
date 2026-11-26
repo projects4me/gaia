@@ -15789,6 +15789,92 @@
           "messages.0": "The tag belongs to another project than the record."
         }
       }
+    },
+    {
+      "id": "client-issue-get-with-tag",
+      "method": "GET",
+      "path": "/api/v1/issue/{issueId}",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "rels": "tag"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{issueId}"
+        ],
+        "includedTypesPresent": [
+          "tag"
+        ]
+      }
+    },
+    {
+      "id": "client-issue-list-filtered-by-tag",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag : 'API Tester Tag'))",
+        "rels": "tag",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{issueId}"
+        ],
+        "idsExcludes": [
+          "{otherProjectIssueId}"
+        ]
+      }
+    },
+    {
+      "id": "client-conversationroom-get-with-tag",
+      "method": "GET",
+      "path": "/api/v1/conversationroom/{conversationroomId}",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "rels": "tag"
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "idsIncludes": [
+          "{conversationroomId}"
+        ],
+        "includedTypesPresent": [
+          "tag"
+        ]
+      }
+    },
+    {
+      "id": "client-conversationroom-list-filtered-by-tag",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag : 'API Tester Tag'))",
+        "rels": "tag",
+        "limit": 5,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsIncludes": [
+          "{conversationroomId}"
+        ],
+        "idsExcludes": [
+          "{otherProjectConversationroomId}"
+        ]
+      }
     }
   ]
 }

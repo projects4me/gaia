@@ -68,6 +68,12 @@ $models['Tagged'] = array(
               'relatedKey' => 'id',
               'condition' => 'Tagged.relatedTo = "issue"'
           ),
+          'conversationroom' => array(
+              'primaryKey' => 'relatedId',
+              'relatedModel' => '\\Gaia\\MVC\\Models\\Conversationroom',
+              'relatedKey' => 'id',
+              'condition' => 'Tagged.relatedTo = "conversationroom"'
+          ),
           'wiki' => array(
               'primaryKey' => 'relatedId',
               'relatedModel' => '\\Gaia\\MVC\\Models\\Wiki',
