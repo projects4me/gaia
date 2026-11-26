@@ -797,6 +797,8 @@ class RestController extends \Phalcon\Mvc\Controller implements \Phalcon\Events\
 
         $modelAlias = Util::extractClassFromNamespace($modelName);
         $this->assertCountParam($count, $groupBy, $modelAlias);
+        (new RelationshipValidator($this->getDI()))
+            ->assertQueriedAreRequested($query, $this->getRequestedRels(), $modelAlias);
 
         $params = $export ? $this->updateParamsForExport($params) : $params;
 
