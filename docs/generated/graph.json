@@ -15815,6 +15815,25 @@
       }
     },
     {
+      "id": "case:client/bulk-gantt-milestone-search-matches-direct-list",
+      "type": "case",
+      "key": "client/bulk-gantt-milestone-search-matches-direct-list",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/bulk",
+        "resource": "bulk",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "milestoneId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/bulk-nested-bulk-rejected",
       "type": "case",
       "key": "client/bulk-nested-bulk-rejected",
@@ -18436,6 +18455,44 @@
         "enabled": true,
         "source": null,
         "placeholders": [],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-list-query-relation-in-rels-allowed",
+      "type": "case",
+      "key": "client/issue-list-query-relation-in-rels-allowed",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "milestoneId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/issue-list-query-relation-not-in-rels-bad-request",
+      "type": "case",
+      "key": "client/issue-list-query-relation-not-in-rels-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "milestoneId",
+          "projectId"
+        ],
         "stores": []
       }
     },
@@ -80575,6 +80632,46 @@
       "to": "profile:serviceAres"
     },
     {
+      "from": "case:client/bulk-gantt-milestone-search-matches-direct-list",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/bulk-gantt-milestone-search-matches-direct-list",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/bulk-gantt-milestone-search-matches-direct-list",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/bulk-gantt-milestone-search-matches-direct-list",
+      "type": "covers",
+      "to": "controller:bulk"
+    },
+    {
+      "from": "case:client/bulk-gantt-milestone-search-matches-direct-list",
+      "type": "exercises",
+      "to": "route:POST /api/v1/bulk"
+    },
+    {
+      "from": "case:client/bulk-gantt-milestone-search-matches-direct-list",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/bulk-gantt-milestone-search-matches-direct-list",
+      "type": "uses_fixture",
+      "to": "fixture:milestoneId"
+    },
+    {
+      "from": "case:client/bulk-gantt-milestone-search-matches-direct-list",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
       "from": "case:client/bulk-nested-bulk-rejected",
       "type": "asserts",
       "to": "assertion:errorEqual"
@@ -85358,6 +85455,81 @@
       "from": "case:client/issue-list-count-without-group-bad-request",
       "type": "runs_as",
       "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-in-rels-allowed",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-in-rels-allowed",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-in-rels-allowed",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-in-rels-allowed",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-in-rels-allowed",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-in-rels-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:milestoneId"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-in-rels-allowed",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-not-in-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-not-in-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-not-in-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-not-in-rels-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-not-in-rels-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-not-in-rels-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-not-in-rels-bad-request",
+      "type": "uses_fixture",
+      "to": "fixture:milestoneId"
+    },
+    {
+      "from": "case:client/issue-list-query-relation-not-in-rels-bad-request",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
     },
     {
       "from": "case:client/issue-list-rels-none",

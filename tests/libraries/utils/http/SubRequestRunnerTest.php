@@ -169,6 +169,41 @@ class SubRequestRunnerTest extends TestCase
         $this->assertSame(Request::class, $method->getDeclaringClass()->getName());
     }
 
+    /**
+     * Query strings a client can send to a list directly, encoded or raw: a
+     * bulk item carrying them routes to the same list with the same query
+     * (agaia-4985 suspected the URL parsing of the Gantt's milestone search).
+     *
+     * @return array
+     */
+    public static function queryStringProvider(): array
+    {
+        $gantt = '((Issue.milestoneId : m-1) AND (Issue.projectId : p-1)) AND ((issuemilestone.name : Sprint 1/2))';
+
+        return [
+            'encoded Gantt milestone search' => ['query=' . rawurlencode($gantt) . '&limit=-1', $gantt],
+            'form-encoded Gantt milestone search' => ['query=' . urlencode($gantt) . '&limit=-1', $gantt],
+            'raw Gantt milestone search' => ['query=' . $gantt . '&limit=-1', $gantt],
+            'raw colon at the end' => ['limit=-1&query=((issuemilestone.name : v1:', '((issuemilestone.name : v1:'],
+            'raw colon and port-like digits at the end' => ['limit=-1&query=v1:0', 'v1:0'],
+            'raw colon and too many digits at the end' => ['limit=-1&query=v1:999999', 'v1:999999'],
+            'double slash in the query' => ['query=a//b:c', 'a//b:c'],
+        ];
+    }
+
+    /**
+     * @dataProvider queryStringProvider
+     */
+    public function testListQueryRoutesWhateverTheQueryString(string $queryString, string $expected): void
+    {
+        $result = $this->runner()->run('GET', '/api/v1/probe?' . $queryString, null, 'Bearer inner');
+
+        $this->assertSame(200, $result->status(), json_encode($result->body()));
+        $this->assertSame('/api/v1/probe', $result->body()['url']);
+        $this->assertSame($expected, $result->body()['query']);
+        $this->assertOuterStateRestored();
+    }
+
     public function testUnknownRouteIsNotFound(): void
     {
         $result = $this->runner()->run('GET', '/api/v1/nothing/here', null, 'Bearer inner');

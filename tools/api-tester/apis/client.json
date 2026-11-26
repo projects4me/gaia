@@ -8764,6 +8764,37 @@
       }
     },
     {
+      "id": "bulk-gantt-milestone-search-matches-direct-list",
+      "method": "POST",
+      "path": "/api/v1/bulk",
+      "resource": "bulk",
+      "auth": true,
+      "body": {
+        "requests": [
+          {
+            "id": "joined",
+            "method": "GET",
+            "url": "/api/v1/issue?query=((Issue.milestoneId : {milestoneId}) AND (Issue.projectId : {projectId})) AND ((issuemilestone.name : 'api-tester-no-such-milestone'))&rels=assignedTo,issuetype,issuestatus,issuemilestone&limit=-1"
+          },
+          {
+            "id": "unjoined",
+            "method": "GET",
+            "url": "/api/v1/issue?query=((Issue.milestoneId : {milestoneId}) AND (Issue.projectId : {projectId})) AND ((issuemilestone.name : 'api-tester-no-such-milestone'))&rels=assignedTo,issuetype,issuestatus&limit=-1"
+          }
+        ]
+      },
+      "expects": {
+        "status": 200,
+        "shape": "json",
+        "jsonEqual": {
+          "responses.0.status": 200,
+          "responses.1.status": 400,
+          "responses.1.body.error": "Invalid query: relationship \"issuemilestone\" is used in the query but not requested in rels."
+        }
+      },
+      "note": "agaia-4985: a Gantt lane with a milestone search answers as the direct GET does"
+    },
+    {
       "id": "bulk-write-kept-when-later-item-fails",
       "method": "POST",
       "path": "/api/v1/bulk",
@@ -9947,6 +9978,40 @@
         "status": 400,
         "shape": "error",
         "errorEqual": "Unknown relationship \"milestone\" in rels."
+      }
+    },
+    {
+      "id": "issue-list-query-relation-not-in-rels-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.milestoneId : {milestoneId}) AND (Issue.projectId : {projectId})) AND ((issuemilestone.name : 'api-tester-no-such-milestone'))",
+        "rels": "assignedTo,issuetype,issuestatus",
+        "limit": -1
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid query: relationship \"issuemilestone\" is used in the query but not requested in rels."
+      },
+      "note": "agaia-4985: Gaia joins only what rels names, so a filter on another relationship is a 400, not a 500"
+    },
+    {
+      "id": "issue-list-query-relation-in-rels-allowed",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.milestoneId : {milestoneId}) AND (Issue.projectId : {projectId})) AND ((issuemilestone.name : 'api-tester-no-such-milestone'))",
+        "rels": "assignedTo,issuetype,issuestatus,issuemilestone",
+        "limit": -1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection"
       }
     },
     {

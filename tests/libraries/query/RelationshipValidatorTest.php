@@ -63,6 +63,52 @@ class RelationshipValidatorTest extends TestCase
 
         $this->validator->assertKnown(['project'], 'Upload');
     }
+
+    public function testQueryOnARelationNotInRelsIsBadRequestNamingIt()
+    {
+        // The Gantt's milestone search: Gaia joins only what rels names, so the filter would reach an unjoined
+        // alias and fail with a 500 (agaia-4985).
+        $this->expectException(BadRequest::class);
+        $this->expectExceptionMessage(
+            'Invalid query: relationship "project" is used in the query but not requested in rels.'
+        );
+
+        $this->validator->assertQueriedAreRequested(
+            '((Issue.projectId : p-1) AND (assignedTo.name : Ann)) AND ((project.name : Gaia))',
+            ['assignedTo'],
+            'Issue'
+        );
+    }
+
+    public function testQueryOnRequestedRelationsPasses()
+    {
+        $this->validator->assertQueriedAreRequested(
+            "((Issue.subject : 'a (project.name : x)') AND (project.name : Gaia) AND (assignedTo.name : Ann))",
+            ['project', 'assignedTo'],
+            'Issue'
+        );
+        $this->addToAssertionCount(1);
+    }
+
+    public function testNoRelsJoinsEveryRelationSoAnyQueryPasses()
+    {
+        $this->validator->assertQueriedAreRequested('((project.name : Gaia))', [], 'Issue');
+        $this->addToAssertionCount(1);
+    }
+
+    public function testQueryWithoutRelationsAndEmptyQueryPass()
+    {
+        $this->validator->assertQueriedAreRequested('((Issue.subject : x) OR (status : open))', ['project'], 'Issue');
+        $this->validator->assertQueriedAreRequested('', ['project'], 'Issue');
+        $this->addToAssertionCount(1);
+    }
+
+    public function testUnknownAliasIsLeftToTheFieldValidator()
+    {
+        // WhereFieldValidator answers an unknown alias with its own 400 when the query is prepared.
+        $this->validator->assertQueriedAreRequested('((milestone.name : x))', ['project'], 'Issue');
+        $this->addToAssertionCount(1);
+    }
 }
 
 /**
