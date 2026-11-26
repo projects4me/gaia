@@ -365,7 +365,24 @@ $models['Issue'] = array(
                 'relatedModel' => '\\Gaia\\MVC\\Models\\Issuewatcher',
                 'relatedKey' => 'issueId',
             ),
-        )
+            'tagged' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
+                'relatedKey' => 'relatedId',
+                'condition' => 'tagged.relatedTo = "issue"'
+            ),
+        ),
+        'hasManyToMany' => array(
+            'tag' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
+                'rhsKey' => 'relatedId',
+                'lhsKey' => 'tagId',
+                'secondaryModel' => '\\Gaia\\MVC\\Models\\Tag',
+                'secondaryKey' => 'id',
+                'condition' => 'tagTagged.relatedTo = "issue"'
+            )
+        ),
     ),
     'behaviors' => array(
         'auditBehavior',

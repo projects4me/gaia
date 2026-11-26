@@ -179,6 +179,23 @@ $models['Conversationroom'] = array(
                 'relatedKey' => 'relatedId',
                 'condition' => 'votes.relatedTo = "conversationrooms"'
             ),
+            'tagged' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
+                'relatedKey' => 'relatedId',
+                'condition' => 'tagged.relatedTo = "conversationroom"'
+            ),
+        ),
+        'hasManyToMany' => array(
+            'tag' => array(
+                'primaryKey' => 'id',
+                'relatedModel' => '\\Gaia\\MVC\\Models\\Tagged',
+                'rhsKey' => 'relatedId',
+                'lhsKey' => 'tagId',
+                'secondaryModel' => '\\Gaia\\MVC\\Models\\Tag',
+                'secondaryKey' => 'id',
+                'condition' => 'tagTagged.relatedTo = "conversationroom"'
+            )
         ),
     ),
     'behaviors' => array(

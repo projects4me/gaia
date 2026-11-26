@@ -3975,6 +3975,28 @@
       },
       "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
       "source": "acl-action"
+    },
+    {
+      "id": "acl-members-issue-tag-relation-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/issue/{otherProjectIssueId}",
+      "resource": "issue",
+      "auth": "aclMembers",
+      "query": { "rels": "tag" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group",
+      "note": "a member of another project gets neither the issue nor its tags through rels=tag"
+    },
+    {
+      "id": "acl-members-conversationroom-tag-relation-non-member-denied",
+      "method": "GET",
+      "path": "/api/v1/conversationroom/{otherProjectConversationroomId}",
+      "resource": "conversationroom",
+      "auth": "aclMembers",
+      "query": { "rels": "tag" },
+      "expects": { "status": 403, "shape": "error", "errorEqual": "Access Denied" },
+      "source": "acl-group",
+      "note": "a member of another project gets neither the thread nor its tags through rels=tag"
     }
   ]
 }
