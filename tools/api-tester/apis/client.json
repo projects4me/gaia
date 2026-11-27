@@ -7928,7 +7928,8 @@
       "query": {
         "limit": 5,
         "page": 1,
-        "query": "(project.nope : x)"
+        "query": "(project.nope : x)",
+        "rels": "project"
       },
       "expects": {
         "status": 400,
@@ -15960,6 +15961,780 @@
           "{otherProjectConversationroomId}"
         ]
       }
+    },
+    {
+      "id": "tag-filter-issue-no-rels-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag : 'api-tester-frontend'))",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid query: relationship \"tag\" is used in the query but not requested in rels."
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-rels-tag",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag : 'api-tester-frontend'))",
+        "rels": "tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{issueId}",
+          "{backlogIssueId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 2
+        },
+        "jsonPathAbsent": [
+          "meta.links.next"
+        ],
+        "includedTypesPresent": [
+          "tag"
+        ]
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-list-rels-with-tag",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag : 'api-tester-frontend'))",
+        "rels": "ownedBy,assignedTo,issuemilestone,project,createdBy,modifiedBy,reportedBy,issuetype,issuestatus,parentissue,tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{issueId}",
+          "{backlogIssueId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 2
+        }
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-list-rels-without-tag-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag : 'api-tester-frontend'))",
+        "rels": "ownedBy,assignedTo,issuemilestone,project,createdBy,modifiedBy,reportedBy,issuetype,issuestatus,parentissue",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid query: relationship \"tag\" is used in the query but not requested in rels."
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-contains-both-tags-once",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "rels": "tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{issueId}",
+          "{backlogIssueId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 2
+        }
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-contains-both-tags-once-no-rels-bad-request",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid query: relationship \"tag\" is used in the query but not requested in rels."
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-contains-page-1-full",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "rels": "tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 1,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{issueId}"
+        ]
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-contains-page-2-full",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "rels": "tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 1,
+        "page": 2
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{backlogIssueId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 1
+        },
+        "jsonPathAbsent": [
+          "meta.links.next"
+        ]
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-contains-page-3-empty",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "rels": "tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 1,
+        "page": 3
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [],
+        "jsonEqual": {
+          "meta.count": 0
+        }
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-list-rels-page-1-full",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "rels": "ownedBy,assignedTo,issuemilestone,project,createdBy,modifiedBy,reportedBy,issuetype,issuestatus,parentissue,tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 1,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{issueId}"
+        ],
+        "includedTypesPresent": [
+          "tag"
+        ]
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-list-rels-page-2-full",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "rels": "ownedBy,assignedTo,issuemilestone,project,createdBy,modifiedBy,reportedBy,issuetype,issuestatus,parentissue,tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 1,
+        "page": 2
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{backlogIssueId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 1
+        },
+        "jsonPathAbsent": [
+          "meta.links.next"
+        ],
+        "includedTypesPresent": [
+          "tag"
+        ]
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-or-two-tags",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND ((tag.tag : 'api-tester-frontend') OR (tag.tag : 'api-tester-backend')))",
+        "rels": "tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{issueId}",
+          "{backlogIssueId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 2
+        },
+        "jsonPathAbsent": [
+          "meta.links.next"
+        ]
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-and-two-tags",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND ((tag.tag : 'api-tester-frontend') AND (tag.tag : 'api-tester-backend')))",
+        "rels": "tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{issueId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 1
+        }
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-stored-spelling-only",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag : 'API-Tester-Frontend'))",
+        "rels": "tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [],
+        "jsonEqual": {
+          "meta.count": 0
+        }
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-no-rels-bad-request",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag : 'api-tester-frontend'))",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid query: relationship \"tag\" is used in the query but not requested in rels."
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-rels-tag",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag : 'api-tester-frontend'))",
+        "rels": "tag",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{conversationroomId}",
+          "{voteConversationroomId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 2
+        },
+        "jsonPathAbsent": [
+          "meta.links.next"
+        ],
+        "includedTypesPresent": [
+          "tag"
+        ]
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-list-rels-with-tag",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag : 'api-tester-frontend'))",
+        "rels": "createdBy,modifiedBy,project,issue,tag",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{conversationroomId}",
+          "{voteConversationroomId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 2
+        }
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-list-rels-without-tag-bad-request",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag : 'api-tester-frontend'))",
+        "rels": "createdBy,modifiedBy,project,issue",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid query: relationship \"tag\" is used in the query but not requested in rels."
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-contains-both-tags-once",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "rels": "tag",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{conversationroomId}",
+          "{voteConversationroomId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 2
+        }
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-contains-both-tags-once-no-rels-bad-request",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 400,
+        "shape": "error",
+        "errorEqual": "Invalid query: relationship \"tag\" is used in the query but not requested in rels."
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-contains-page-1-full",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "rels": "tag",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 1,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{conversationroomId}"
+        ]
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-contains-page-2-full",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "rels": "tag",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 1,
+        "page": 2
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{voteConversationroomId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 1
+        },
+        "jsonPathAbsent": [
+          "meta.links.next"
+        ]
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-contains-page-3-empty",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "rels": "tag",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 1,
+        "page": 3
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [],
+        "jsonEqual": {
+          "meta.count": 0
+        }
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-list-rels-page-1-full",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "rels": "createdBy,modifiedBy,project,issue,tag",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 1,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{conversationroomId}"
+        ],
+        "includedTypesPresent": [
+          "tag"
+        ]
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-list-rels-page-2-full",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag CONTAINS 'api-tester-frontend','api-tester-backend'))",
+        "rels": "createdBy,modifiedBy,project,issue,tag",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 1,
+        "page": 2
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{voteConversationroomId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 1
+        },
+        "jsonPathAbsent": [
+          "meta.links.next"
+        ],
+        "includedTypesPresent": [
+          "tag"
+        ]
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-or-two-tags",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND ((tag.tag : 'api-tester-frontend') OR (tag.tag : 'api-tester-backend')))",
+        "rels": "tag",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{conversationroomId}",
+          "{voteConversationroomId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 2
+        },
+        "jsonPathAbsent": [
+          "meta.links.next"
+        ]
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-and-two-tags",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND ((tag.tag : 'api-tester-frontend') AND (tag.tag : 'api-tester-backend')))",
+        "rels": "tag",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{conversationroomId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 1
+        }
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-conversationroom-stored-spelling-only",
+      "method": "GET",
+      "path": "/api/v1/conversationroom",
+      "resource": "conversationroom",
+      "auth": true,
+      "query": {
+        "query": "((Conversationroom.projectId : {projectId}) AND (tag.tag : 'API-Tester-Frontend'))",
+        "rels": "tag",
+        "sort": "Conversationroom.id",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [],
+        "jsonEqual": {
+          "meta.count": 0
+        }
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-with-status",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND ((Issue.status : 'new') AND (tag.tag : 'api-tester-backend')))",
+        "rels": "tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [
+          "{issueId}"
+        ],
+        "jsonEqual": {
+          "meta.count": 1
+        }
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
+    },
+    {
+      "id": "tag-filter-issue-with-other-status-empty",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND ((Issue.status : 'done') AND (tag.tag : 'api-tester-frontend')))",
+        "rels": "tag",
+        "sort": "Issue.issueNumber",
+        "order": "ASC",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "idsEqual": [],
+        "jsonEqual": {
+          "meta.count": 0
+        }
+      },
+      "note": "agaia-4987: a tag filter lists each record once, counted and paged right"
     }
   ]
 }

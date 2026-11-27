@@ -3937,7 +3937,7 @@
           "idsEqual: expected ["
         ],
         "values": [],
-        "example": "search/search-a1-full-number"
+        "example": "client/tag-filter-issue-rels-tag"
       }
     },
     {
@@ -24975,6 +24975,573 @@
       }
     },
     {
+      "id": "case:client/tag-filter-conversationroom-and-two-tags",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-and-two-tags",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-contains-both-tags-once",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-contains-both-tags-once",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "projectId",
+          "voteConversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-contains-both-tags-once-no-rels-bad-request",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-contains-both-tags-once-no-rels-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-contains-page-1-full",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-contains-page-1-full",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-contains-page-2-full",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-contains-page-2-full",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "voteConversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-contains-page-3-empty",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-contains-page-3-empty",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-list-rels-page-1-full",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-list-rels-page-1-full",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-list-rels-page-2-full",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-list-rels-page-2-full",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "voteConversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-list-rels-with-tag",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-list-rels-with-tag",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "projectId",
+          "voteConversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-list-rels-without-tag-bad-request",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-list-rels-without-tag-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-no-rels-bad-request",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-no-rels-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-or-two-tags",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-or-two-tags",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "projectId",
+          "voteConversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-rels-tag",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "projectId",
+          "voteConversationroomId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-conversationroom-stored-spelling-only",
+      "type": "case",
+      "key": "client/tag-filter-conversationroom-stored-spelling-only",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/conversationroom",
+        "resource": "conversationroom",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-and-two-tags",
+      "type": "case",
+      "key": "client/tag-filter-issue-and-two-tags",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-contains-both-tags-once",
+      "type": "case",
+      "key": "client/tag-filter-issue-contains-both-tags-once",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "backlogIssueId",
+          "issueId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-contains-both-tags-once-no-rels-bad-request",
+      "type": "case",
+      "key": "client/tag-filter-issue-contains-both-tags-once-no-rels-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-contains-page-1-full",
+      "type": "case",
+      "key": "client/tag-filter-issue-contains-page-1-full",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-contains-page-2-full",
+      "type": "case",
+      "key": "client/tag-filter-issue-contains-page-2-full",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "backlogIssueId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-contains-page-3-empty",
+      "type": "case",
+      "key": "client/tag-filter-issue-contains-page-3-empty",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-list-rels-page-1-full",
+      "type": "case",
+      "key": "client/tag-filter-issue-list-rels-page-1-full",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-list-rels-page-2-full",
+      "type": "case",
+      "key": "client/tag-filter-issue-list-rels-page-2-full",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "backlogIssueId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-list-rels-with-tag",
+      "type": "case",
+      "key": "client/tag-filter-issue-list-rels-with-tag",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "backlogIssueId",
+          "issueId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-list-rels-without-tag-bad-request",
+      "type": "case",
+      "key": "client/tag-filter-issue-list-rels-without-tag-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-no-rels-bad-request",
+      "type": "case",
+      "key": "client/tag-filter-issue-no-rels-bad-request",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-or-two-tags",
+      "type": "case",
+      "key": "client/tag-filter-issue-or-two-tags",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "backlogIssueId",
+          "issueId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-rels-tag",
+      "type": "case",
+      "key": "client/tag-filter-issue-rels-tag",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "backlogIssueId",
+          "issueId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-stored-spelling-only",
+      "type": "case",
+      "key": "client/tag-filter-issue-stored-spelling-only",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-with-other-status-empty",
+      "type": "case",
+      "key": "client/tag-filter-issue-with-other-status-empty",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/tag-filter-issue-with-status",
+      "type": "case",
+      "key": "client/tag-filter-issue-with-status",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "projectId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/token-agent-delegation-granted-for-bound-workspace",
       "type": "case",
       "key": "client/token-agent-delegation-granted-for-bound-workspace",
@@ -42754,6 +43321,14 @@
       "id": "fixture:agenttoolId",
       "type": "fixture",
       "key": "agenttoolId",
+      "attributes": {
+        "file": "tools/api-tester/fixtures/default.json"
+      }
+    },
+    {
+      "id": "fixture:backlogIssueId",
+      "type": "fixture",
+      "key": "backlogIssueId",
       "attributes": {
         "file": "tools/api-tester/fixtures/default.json"
       }
@@ -97574,6 +98149,1361 @@
       "from": "case:client/skill-patch-workspace-refused",
       "type": "uses_fixture",
       "to": "fixture:otherWorkspaceId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-and-two-tags",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-and-two-tags",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-and-two-tags",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-and-two-tags",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-and-two-tags",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-and-two-tags",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-and-two-tags",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-and-two-tags",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-and-two-tags",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once",
+      "type": "uses_fixture",
+      "to": "fixture:voteConversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once-no-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once-no-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once-no-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once-no-rels-bad-request",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once-no-rels-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once-no-rels-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-both-tags-once-no-rels-bad-request",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-1-full",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-1-full",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-1-full",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-1-full",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-1-full",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-1-full",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-1-full",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-1-full",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-2-full",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-2-full",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-2-full",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-2-full",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-2-full",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-2-full",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-2-full",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-2-full",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-2-full",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-2-full",
+      "type": "uses_fixture",
+      "to": "fixture:voteConversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-3-empty",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-3-empty",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-3-empty",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-3-empty",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-3-empty",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-3-empty",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-3-empty",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-contains-page-3-empty",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-1-full",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-1-full",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-1-full",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-1-full",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-1-full",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-1-full",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-1-full",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-1-full",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-1-full",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-2-full",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-2-full",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-2-full",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-2-full",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-2-full",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-2-full",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-2-full",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-2-full",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-2-full",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-2-full",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-page-2-full",
+      "type": "uses_fixture",
+      "to": "fixture:voteConversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-with-tag",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-with-tag",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-with-tag",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-with-tag",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-with-tag",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-with-tag",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-with-tag",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-with-tag",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-with-tag",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-with-tag",
+      "type": "uses_fixture",
+      "to": "fixture:voteConversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-without-tag-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-without-tag-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-without-tag-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-without-tag-bad-request",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-without-tag-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-without-tag-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-list-rels-without-tag-bad-request",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-no-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-no-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-no-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-no-rels-bad-request",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-no-rels-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-no-rels-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-no-rels-bad-request",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-or-two-tags",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-or-two-tags",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-or-two-tags",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-or-two-tags",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-or-two-tags",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-or-two-tags",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-or-two-tags",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-or-two-tags",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-or-two-tags",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-or-two-tags",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-or-two-tags",
+      "type": "uses_fixture",
+      "to": "fixture:voteConversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-rels-tag",
+      "type": "uses_fixture",
+      "to": "fixture:voteConversationroomId"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-stored-spelling-only",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-stored-spelling-only",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-stored-spelling-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-stored-spelling-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-stored-spelling-only",
+      "type": "covers",
+      "to": "controller:conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-stored-spelling-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/conversationroom"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-stored-spelling-only",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-conversationroom-stored-spelling-only",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-and-two-tags",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-and-two-tags",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-and-two-tags",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-and-two-tags",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-and-two-tags",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-and-two-tags",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-and-two-tags",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-and-two-tags",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-and-two-tags",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once",
+      "type": "uses_fixture",
+      "to": "fixture:backlogIssueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once-no-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once-no-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once-no-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once-no-rels-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once-no-rels-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once-no-rels-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-both-tags-once-no-rels-bad-request",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-1-full",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-1-full",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-1-full",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-1-full",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-1-full",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-1-full",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-1-full",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-1-full",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-2-full",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-2-full",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-2-full",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-2-full",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-2-full",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-2-full",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-2-full",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-2-full",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-2-full",
+      "type": "uses_fixture",
+      "to": "fixture:backlogIssueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-2-full",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-3-empty",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-3-empty",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-3-empty",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-3-empty",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-3-empty",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-3-empty",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-3-empty",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-contains-page-3-empty",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-1-full",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-1-full",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-1-full",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-1-full",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-1-full",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-1-full",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-1-full",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-1-full",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-1-full",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-2-full",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-2-full",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-2-full",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-2-full",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-2-full",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-2-full",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-2-full",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-2-full",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-2-full",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-2-full",
+      "type": "uses_fixture",
+      "to": "fixture:backlogIssueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-page-2-full",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-with-tag",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-with-tag",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-with-tag",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-with-tag",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-with-tag",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-with-tag",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-with-tag",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-with-tag",
+      "type": "uses_fixture",
+      "to": "fixture:backlogIssueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-with-tag",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-with-tag",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-without-tag-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-without-tag-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-without-tag-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-without-tag-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-without-tag-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-without-tag-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-list-rels-without-tag-bad-request",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-no-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-no-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-no-rels-bad-request",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-no-rels-bad-request",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-no-rels-bad-request",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-no-rels-bad-request",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-no-rels-bad-request",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-or-two-tags",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-or-two-tags",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-or-two-tags",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/tag-filter-issue-or-two-tags",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-or-two-tags",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-or-two-tags",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-or-two-tags",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-or-two-tags",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-or-two-tags",
+      "type": "uses_fixture",
+      "to": "fixture:backlogIssueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-or-two-tags",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-or-two-tags",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-rels-tag",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-rels-tag",
+      "type": "asserts",
+      "to": "assertion:includedTypesPresent"
+    },
+    {
+      "from": "case:client/tag-filter-issue-rels-tag",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-rels-tag",
+      "type": "asserts",
+      "to": "assertion:jsonPathAbsent"
+    },
+    {
+      "from": "case:client/tag-filter-issue-rels-tag",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-rels-tag",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-rels-tag",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-rels-tag",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-rels-tag",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-rels-tag",
+      "type": "uses_fixture",
+      "to": "fixture:backlogIssueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-rels-tag",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-rels-tag",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-stored-spelling-only",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-stored-spelling-only",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-stored-spelling-only",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-stored-spelling-only",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-stored-spelling-only",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-stored-spelling-only",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-stored-spelling-only",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-stored-spelling-only",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-other-status-empty",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-other-status-empty",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-other-status-empty",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-other-status-empty",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-other-status-empty",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-other-status-empty",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-other-status-empty",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-other-status-empty",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-status",
+      "type": "asserts",
+      "to": "assertion:idsEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-status",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-status",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-status",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-status",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-status",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-status",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-status",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/tag-filter-issue-with-status",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
     },
     {
       "from": "case:client/token-agent-delegation-granted-for-bound-workspace",

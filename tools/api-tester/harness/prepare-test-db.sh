@@ -824,6 +824,10 @@ INSERT INTO tags (
   ('api-test-tag-000001', 'api-test-project-001', 'API Tester Tag', 0,
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
   ('api-test-tag-000002', 'api-test-project-002', 'API Tester Tag', 0,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-tag-000003', 'api-test-project-001', 'api-tester-frontend', 0,
+   'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW()),
+  ('api-test-tag-000004', 'api-test-project-001', 'api-tester-backend', 0,
    'api-test-user-0001', 'API Tester', 'api-test-user-0001', 'API Tester', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET deleted = 0, tag = EXCLUDED.tag, "projectId" = EXCLUDED."projectId";
 
@@ -831,7 +835,15 @@ INSERT INTO tagged (id, "tagId", "relatedTo", "relatedId") VALUES
   ('api-test-tagged-00001', 'api-test-tag-000001', 'issue', 'api-test-issue-000001'),
   ('api-test-tagged-00002', 'api-test-tag-000002', 'issue', 'api-test-issue-000003'),
   ('api-test-tagged-00003', 'api-test-tag-000001', 'conversationroom', 'api-test-convroom-001'),
-  ('api-test-tagged-00004', 'api-test-tag-000002', 'conversationroom', 'api-test-convroom-cnt-other')
+  ('api-test-tagged-00004', 'api-test-tag-000002', 'conversationroom', 'api-test-convroom-cnt-other'),
+  -- agaia-4987: issue 1 and room 001 carry two tags, issue 2 and the vote room one, so a tag filter
+  -- that matches both tags must still list each record once, counted and paged right.
+  ('api-test-tagged-00005', 'api-test-tag-000003', 'issue', 'api-test-issue-000001'),
+  ('api-test-tagged-00006', 'api-test-tag-000004', 'issue', 'api-test-issue-000001'),
+  ('api-test-tagged-00007', 'api-test-tag-000003', 'issue', 'api-test-issue-000002'),
+  ('api-test-tagged-00008', 'api-test-tag-000003', 'conversationroom', 'api-test-convroom-001'),
+  ('api-test-tagged-00009', 'api-test-tag-000004', 'conversationroom', 'api-test-convroom-001'),
+  ('api-test-tagged-00010', 'api-test-tag-000003', 'conversationroom', 'api-test-convroom-cnt-vote')
 ON CONFLICT (id) DO NOTHING;
 
 -- Ideas: one per project so members scope can be checked through the idea's children
@@ -1803,6 +1815,7 @@ data = {
     "otherProjectTagId": "api-test-tag-000002",
     "taggedId": "api-test-tagged-00001",
     "otherProjectTaggedId": "api-test-tagged-00002",
+    "backlogIssueId": "api-test-issue-000002",
     "doccontentDocId": "api-test-doc-000003",
     "contentClientDocId": "api-test-doc-000004",
     "doccontentId": "api-test-doccontent-0001",

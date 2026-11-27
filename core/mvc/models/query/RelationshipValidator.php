@@ -57,19 +57,19 @@ class RelationshipValidator
 
     /**
      * Throw a BadRequest naming the first relationship the query filters on that `rels` does not request.
-     * Gaia joins only the requested relationships (all of them when `rels` is empty), so a filter on any other
-     * one would reach an unjoined alias. An alias that is no relationship of the model is left to
+     * Gaia joins only the requested relationships (none when `rels` is empty), so a filter on any other one would
+     * reach an unjoined alias. An alias that is no relationship of the model is left to
      * WhereFieldValidator, which rejects it when the query is prepared.
      *
      * @param  string $where      The request's `query`.
-     * @param  array  $rels       The requested relationship names; empty joins them all.
+     * @param  array  $rels       The requested relationship names; empty joins none.
      * @param  string $modelAlias Alias of the queried model.
      * @return void
      * @throws BadRequest
      */
     public function assertQueriedAreRequested($where, array $rels, $modelAlias)
     {
-        if (empty($rels) || trim((string) $where) === '') {
+        if (trim((string) $where) === '') {
             return;
         }
 

@@ -28,11 +28,13 @@ class Clause
     function __construct(
         \Phalcon\Di\FactoryDefault $di,
         ?WhereFieldValidator $fieldValidator = null,
-        ?WhereTokenizer $tokenizer = null
+        ?WhereTokenizer $tokenizer = null,
+        ?ManyToManyFilter $manyToManyFilter = null
     ) {
         $this->di = $di;
         $this->fieldValidator = $fieldValidator ?? new WhereFieldValidator($di);
         $this->tokenizer = $tokenizer ?? new WhereTokenizer();
+        $this->manyToManyFilter = $manyToManyFilter ?? new ManyToManyFilter($di);
     }
 
     /**
@@ -58,6 +60,13 @@ class Clause
      * @var WhereTokenizer
      */
     protected $tokenizer;
+
+    /**
+     * Rewrites a leaf on a hasManyToMany relationship into a subquery on the record's id.
+     *
+     * @var ManyToManyFilter
+     */
+    protected $manyToManyFilter;
 
     /**
      * Values bound to the placeholders of $where, keyed by placeholder name.
@@ -235,7 +244,9 @@ class Clause
                             'Possible issue in ' . $substatement);
                     }
                     $this->whereConditions['translated'][$fieldParts[0]][] = $translatedStatement;
-                    $translatedLeaves[] = $translatedStatement;
+                    $translatedLeaves[] = (count($fieldParts) > 1)
+                        ? $this->manyToManyFilter->rewrite($query->modelAlias, $fieldParts[0], $translatedStatement)
+                        : $translatedStatement;
                 }
 
                 // Splice the translations in by position, last leaf first so earlier offsets stay valid.

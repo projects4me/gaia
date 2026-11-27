@@ -14,7 +14,7 @@
 - hermes.absent | e.g. live/live-agent-run-non-delegable-agent-request-skips-runtimes
 - hermes.expect | e.g. live/live-issue-create-publishes-issue-created
 - idsBefore -- idsBefore: missing id … | e.g. search/search-a5-partial-number
-- idsEqual -- idsEqual: expected [ | e.g. search/search-a1-full-number
+- idsEqual -- idsEqual: expected [ | e.g. client/tag-filter-issue-rels-tag
 - idsExcludes -- idsExcludes: unexpectedly found id … | e.g. acl/acl-members-issuetype-list-includes-system-types
 - idsIncludes -- idsIncludes: missing id … | e.g. acl/acl-project-rels-issues-omitted
 - idsSameAs -- idsSameAs: case … has no results to compare with (not run, skipped, failed or empty) | e.g. search/search-b3-keywords-other-order
