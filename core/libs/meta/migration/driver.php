@@ -56,7 +56,12 @@ class Driver
      */
     public function migrate()
     {
-        return $this->run(new AdapterConnection($this->openConnection()));
+        $result = $this->run(new AdapterConnection($this->openConnection()));
+        // A schema change must never be served from a stale cached model metadata
+        if ($this->di->has('cache')) {
+            $this->di->get('cache')->clear();
+        }
+        return $result;
     }
 
     /**

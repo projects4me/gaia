@@ -24,6 +24,10 @@ require APP_PATH . '/vendor/autoload.php';
 
 require_once APP_PATH . '/core/libs/file/handler.php';
 
+require_once APP_PATH . '/core/libs/meta/ModelMetadataSource.php';
+require_once APP_PATH . '/core/libs/meta/FileModelMetadataSource.php';
+require_once APP_PATH . '/core/libs/meta/CachedModelMetadataSource.php';
+require_once APP_PATH . '/core/libs/meta/ModelMetadataSourceFactory.php';
 require_once APP_PATH . '/core/libs/meta/manager.php';
 require_once APP_PATH . '/core/libs/meta/migration.php';
 require_once APP_PATH . '/core/libs/meta/migration/plan.php';

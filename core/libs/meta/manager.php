@@ -10,7 +10,6 @@ use Phalcon\Db\Column;
 use Phalcon\Mvc\Model\MetaData;
 use Gaia\Libraries\file\Handler as fileHandler;
 use Gaia\Libraries\Utils\Util;
-use Gaia\Libraries\Search\SearchBlock;
 
 /**
  * This class is used for the metadata storage, retrival and maintenance.
@@ -33,6 +32,13 @@ class Manager
      * @var \Phalcon\Di\DiInterface $di
      */
     protected $di;
+
+    /**
+     * Where model metadata is read from, built on first use
+     *
+     * @var ModelMetadataSource|null $source
+     */
+    protected $source = null;
 
     /**
      * This is the cached metadata
@@ -60,9 +66,25 @@ class Manager
      *
      * @param \Phalcon\Di\DiInterface $di
      */
-    public function __construct(\Phalcon\Di\FactoryDefault $di)
+    public function __construct(\Phalcon\Di\FactoryDefault $di, ?ModelMetadataSource $source = null)
     {
         $this->di = $di;
+        $this->source = $source;
+    }
+
+    /**
+     * Returns where model metadata is read from: the injected source, else the metadata files,
+     * behind the cache when one other than NullCache is configured.
+     *
+     * @return ModelMetadataSource
+     */
+    protected function getSource()
+    {
+        if ($this->source === null) {
+            $this->source = ModelMetadataSourceFactory::create($this->di, $this);
+        }
+
+        return $this->source;
     }
 
     /**
@@ -79,75 +101,7 @@ class Manager
             return self::$cachedModelMeta[$model];
         }
 
-        $metadata = $this->di->get('fileHandler')->readFile(APP_PATH . self::basePath . '/model/' . $model . '.php');
-        // Routes without a model metadata file (e.g. Issueplanning) read as null
-        $metadata = isset($metadata[$model]) ? $metadata[$model] : array();
-        // A search block adds its system columns (D-071) before the fields are parsed
-        $metadata = SearchBlock::apply($model, $metadata);
-        $fields = $this->parseFields($metadata);
-
-        $modelMeta = array(
-            // Set the table name
-            'tableName' => $fields['tableName'],
-
-            // Every column in the mapped table
-            MetaData::MODELS_ATTRIBUTES => $fields['attributes'],
-
-            // Every column part of the primary key
-            MetaData::MODELS_PRIMARY_KEY => $fields['primary'],
-
-            // Every column that isn't part of the primary key
-            MetaData::MODELS_NON_PRIMARY_KEY => $fields['nonPrimary'],
-
-            // Every column that doesn't allows null values
-            MetaData::MODELS_NOT_NULL => $fields['notNull'],
-
-            // Every column and their data types
-            MetaData::MODELS_DATA_TYPES => $fields['type'],
-
-            // The columns that have numeric data types
-            MetaData::MODELS_DATA_TYPES_NUMERIC => $fields['numeric'],
-
-            // The identity (auto-increment) column, or false when the table has none. A GUID primary key is not
-            // an identity column: the ORM would read it back from a sequence after the INSERT.
-            MetaData::MODELS_IDENTITY_COLUMN => $fields['id'],
-
-            // How every column must be bound/casted
-            MetaData::MODELS_DATA_TYPES_BIND => $fields['bind'],
-
-            // Fields that must be ignored from INSERT SQL statements: columns the ORM never writes
-            MetaData::MODELS_AUTOMATIC_DEFAULT_INSERT => $fields['skipWrite'],
-
-            // Fields that must be ignored from UPDATE SQL statements
-            MetaData::MODELS_AUTOMATIC_DEFAULT_UPDATE => $fields['skipWrite'],
-
-            // The columns the database fills when an INSERT leaves them out, with their default
-            MetaData::MODELS_DEFAULT_VALUES => $fields['default'],
-
-            // Fields that allow empty strings on a not-null column; none, as with the schema introspection
-            MetaData::MODELS_EMPTY_STRING_VALUES => array(),
-
-            'fields' => (isset($metadata['fields']) ? $metadata['fields'] : array()),
-
-            // Read-only values computed on read, not columns (Workspaces D-013)
-            'computed' => (isset($metadata['computed']) && is_array($metadata['computed']) ? $metadata['computed'] : array()),
-
-            // All the relationships for the model
-            // For now we will just copy things over and see if for future
-            // we need any adjustment in the format
-            'relationships' => (isset($metadata['relationships']) ? $metadata['relationships'] : array()),
-
-            // Load the behaviors as well
-            'behaviors' => (isset($metadata['behaviors']) ? $metadata['behaviors'] : array()),
-
-            'acl' => (isset($metadata['acl']) ? $metadata['acl'] : array()),
-
-            // The text fields whose user mentions are recorded (see mentionsBehavior)
-            'mentions' => (isset($metadata['mentions']) ? $metadata['mentions'] : array()),
-
-            // The validated search block, or null when the model is not searchable
-            SearchBlock::KEY => (isset($metadata[SearchBlock::KEY]) ? $metadata[SearchBlock::KEY] : null),
-        );
+        $modelMeta = $this->getSource()->get($model);
 
         self::$cachedModelMeta[$model] = $modelMeta;
 
