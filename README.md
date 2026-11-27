@@ -31,6 +31,26 @@ design, more so than most of the other frameworks, it was the best choice to bui
 
 See `docs/architecture/search/decisions.md` (D-006, D-009).
 
+## Cache
+
+Gaia caches through `Gaia\Libraries\Cache\CacheInterface` (the shared `cache` service). With no cache variables
+set it is a `NullCache`: every read is a miss and Gaia behaves as with no cache. Set in the environment
+(`config/cache.php`):
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `CACHE_ADAPTER` | `none` | `none`, `stream`, `apcu`, `redis` or `memory` (per request only) |
+| `CACHE_PREFIX` | `gaia-` | Prefix of every key |
+| `CACHE_VERSION` | `0` | Part of every key; set it per deploy (e.g. the image tag) so a new image never reads an older one's entries |
+| `CACHE_TTL` | `3600` | Default lifetime of an entry, in seconds |
+| `CACHE_STREAM_DIR` | `cache/data` | Directory of the `stream` adapter (git-ignored; writable in the dev image) |
+| `CACHE_REDIS_HOST`, `CACHE_REDIS_PORT`, `CACHE_REDIS_INDEX` | `127.0.0.1`, `6379`, `0` | Redis server of the `redis` adapter |
+
+The cache fails open: an adapter that can't be used (missing APCu or redis extension, Redis unreachable, stream
+directory not writable) logs one warning in `logs/application.log` and leaves caching off; a failing read is a miss
+and a failing write is logged and ignored. The image has neither APCu nor redis. `php cli.php cache clear` empties
+the configured cache.
+
 # Contributions
 
 # License

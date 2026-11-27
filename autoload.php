@@ -96,6 +96,7 @@ $loader->setNamespaces(
         "Gaia\\Workflows\\Actions" => APP_PATH . '/core/workflows/actions/',
         "Gaia\\Libraries\\Utils" => APP_PATH . '/core/libs/utils/',
         "Gaia\\Libraries\\Search" => APP_PATH . '/core/libs/search/',
+        "Gaia\\Libraries\\Cache" => APP_PATH . '/core/libs/cache/',
         "Gaia\\Services" => APP_PATH . '/core/services/',
     ]
 );
