@@ -42,6 +42,7 @@ $models['Conversationroom'] = array(
             'name' => 'deleted',
             'label' => 'LBL_CONVERSATION_ROOMS_DELETED',
             'type' => 'bool',
+            'storage' => 'smallint',
             'length' => '1',
             'null' => false,
             'default' => 0,

@@ -63,6 +63,7 @@ $models['Vote'] = array(
             'name' => 'vote',
             'label' => 'LBL_VOTE_VOTE',
             'type' => 'bool',
+            'storage' => 'smallint',
             'null' => false,
         ),
         'relatedTo' => array(

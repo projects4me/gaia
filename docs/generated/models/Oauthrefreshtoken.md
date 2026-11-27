@@ -8,7 +8,7 @@
 - client_id varchar(36) required
 - expires datetime(6)
 - refresh_token varchar(40) required
-- rememberMe int required
+- rememberMe int
 - scope varchar(2000)
 - sessionExpires datetime
 - user_id varchar(36)

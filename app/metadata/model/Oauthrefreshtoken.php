@@ -47,7 +47,7 @@ $models['Oauthrefreshtoken'] = array(
            'name' => 'rememberMe',
            'label' => 'LBL_OAUTH_REFRESH_TOKENS_REMEMBER_ME',
            'type' => 'int',
-           'null' => false,
+           'null' => true,
            'default' => 0
        ),
        'sessionExpires' => array(

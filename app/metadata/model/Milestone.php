@@ -42,6 +42,7 @@ $models['Milestone'] = array(
             'name' => 'deleted',
             'label' => 'LBL_MILESTONES_DELETED',
             'type' => 'bool',
+            'storage' => 'smallint',
             'length' => '1',
             'null' => false,
             'default' => 0,

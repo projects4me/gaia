@@ -73,6 +73,7 @@ $models['Chatroom'] = array(
             'name' => 'deleted',
             'label' => 'LBL_CHAT_ROOMS_DELETED',
             'type' => 'bool',
+            'storage' => 'smallint',
             'length' => '1',
             'null' => false,
             'default' => 0,

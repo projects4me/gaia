@@ -41,6 +41,7 @@ $models['Mention'] = array(
             'name' => 'deleted',
             'label' => 'LBL_MENTIONS_DELETED',
             'type' => 'bool',
+            'storage' => 'smallint',
             'length' => '1',
             'null' => false,
             'default' => 0,
@@ -74,7 +75,7 @@ $models['Mention'] = array(
             'name' => 'isNotified',
             'label' => 'LBL_MENTIONS_NOTIFIED',
             'type' => 'bool',
-            'null' => false,
+            'null' => true,
             'default' => false
         ),
         'userId' => array(

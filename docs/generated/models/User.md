@@ -31,7 +31,7 @@
 - status varchar(25)
 - timezone varchar(25)
 - title varchar(100)
-- type varchar(10) required
+- type varchar(10)
 - also: createdUser, createdUserName, dateCreated, dateModified, deleted, id, modifiedUser, modifiedUserName
 
 <a id="relationships"></a>

@@ -260,10 +260,12 @@ class Migration
                 continue;
             }
 
+            // The column is created as the field is stored ('storage', e.g. a legacy bool kept in a smallint)
+            $storedType = $metaManager->getStoredType($schema);
             $fieldOptions = array();
             $fieldOptions['type'] = $handler->normalizeColumnType(
-                $schema['type'],
-                $metaManager->getFieldType($schema['type'])
+                $storedType,
+                $metaManager->getFieldType($storedType)
             );
             if (isset($schema['length'])) {
                 $fieldOptions['size'] = $schema['length'];

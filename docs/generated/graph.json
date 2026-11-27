@@ -32668,6 +32668,7 @@
       "attributes": {
         "label": "LBL_ACL_CONTROLLERS_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0
@@ -32813,6 +32814,7 @@
       "attributes": {
         "label": "LBL_ACTIVITIES_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -33553,6 +33555,7 @@
       "attributes": {
         "label": "LBL_BADGES_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -33672,6 +33675,7 @@
       "attributes": {
         "label": "LBL_BADGE_LEVELS_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -33801,6 +33805,7 @@
       "attributes": {
         "label": "LBL_CHAT_ROOMS_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -33944,6 +33949,7 @@
       "attributes": {
         "label": "LBL_COMMENTS_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -34074,6 +34080,7 @@
       "attributes": {
         "label": "LBL_CONVERSATION_ROOMS_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -34323,7 +34330,7 @@
       "attributes": {
         "label": "LBL_DASHBOARD_DATE_CREATED",
         "type": "datetime",
-        "null": false
+        "null": true
       }
     },
     {
@@ -34333,7 +34340,7 @@
       "attributes": {
         "label": "LBL_DASHBOARD_DATE_MODIFIED",
         "type": "datetime",
-        "null": false
+        "null": true
       }
     },
     {
@@ -34343,6 +34350,7 @@
       "attributes": {
         "label": "LBL_DASHBOARD_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -35346,6 +35354,7 @@
       "attributes": {
         "label": "LBL_ISSUES_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -35393,6 +35402,7 @@
       "attributes": {
         "label": "LBL_PROJECTS_ISSUE_IS_PLANNED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0
@@ -35405,6 +35415,7 @@
       "attributes": {
         "label": "LBL_PROJECTS_ISSUE_IS_REOPENED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0
@@ -35803,6 +35814,7 @@
       "attributes": {
         "label": "LBL_ISSUE_STATUSES_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -35826,6 +35838,7 @@
       "attributes": {
         "label": "LBL_ISSUE_STATUSES_DONE",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false
       }
@@ -35906,6 +35919,7 @@
       "attributes": {
         "label": "LBL_ISSUE_STATUSES_SYSTEM",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false
       }
@@ -35973,6 +35987,7 @@
       "attributes": {
         "label": "LBL_ISSUE_TYPES_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -36054,6 +36069,7 @@
       "attributes": {
         "label": "LBL_ISSUE_TYPES_SYSTEM",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false
       }
@@ -36120,6 +36136,7 @@
       "attributes": {
         "label": "LBL_ISSUE_WATCHERS_IS_WATCHING",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0
@@ -36325,6 +36342,7 @@
       "attributes": {
         "label": "LBL_MENTIONS_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -36350,7 +36368,7 @@
       "attributes": {
         "label": "LBL_MENTIONS_NOTIFIED",
         "type": "bool",
-        "null": false,
+        "null": true,
         "default": false
       }
     },
@@ -36454,6 +36472,7 @@
       "attributes": {
         "label": "LBL_MILESTONES_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -36749,7 +36768,7 @@
         "label": "LBL_OAUTH_CLIENTS_KIND",
         "type": "varchar",
         "length": "10",
-        "null": false,
+        "null": true,
         "default": "app"
       }
     },
@@ -36880,7 +36899,7 @@
       "attributes": {
         "label": "LBL_OAUTH_REFRESH_TOKENS_REMEMBER_ME",
         "type": "int",
-        "null": false,
+        "null": true,
         "default": 0
       }
     },
@@ -36934,6 +36953,7 @@
       "attributes": {
         "label": "LBL_OAUTH_SCOPES_IS_DEFAULT",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": true,
         "default": "0"
@@ -37068,6 +37088,7 @@
       "attributes": {
         "label": "LBL_PROJECTS_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -37092,6 +37113,7 @@
       "attributes": {
         "label": "LBL_PROJECTS_DONE",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0
@@ -37493,6 +37515,7 @@
       "attributes": {
         "label": "LBL_ROLES_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -37599,7 +37622,7 @@
       "attributes": {
         "label": "LBL_SAVED_SEARCHES_DATE_CREATED",
         "type": "datetime",
-        "null": false
+        "null": true
       }
     },
     {
@@ -37609,6 +37632,7 @@
       "attributes": {
         "label": "LBL_SAVED_SEARCHES_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -37657,6 +37681,7 @@
       "attributes": {
         "label": "LBL_SAVED_SEARCHES_PUBLIC",
         "type": "bool",
+        "storage": "smallint",
         "null": true
       }
     },
@@ -37743,6 +37768,7 @@
       "attributes": {
         "label": "LBL_SCOREBOARD_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -38632,7 +38658,7 @@
       "attributes": {
         "label": "LBL_SYSTEM_NOTIFICATION_DATE_CREATED",
         "type": "datetime",
-        "null": false
+        "null": true
       }
     },
     {
@@ -38642,7 +38668,7 @@
       "attributes": {
         "label": "LBL_SYSTEM_NOTIFICATION_DATE_MODIFIED",
         "type": "datetime",
-        "null": false
+        "null": true
       }
     },
     {
@@ -38740,7 +38766,7 @@
       "attributes": {
         "label": "LBL_SYSTEM_NOTIFICATION_RECIPIENT_DATE_CREATED",
         "type": "datetime",
-        "null": false
+        "null": true
       }
     },
     {
@@ -38750,7 +38776,7 @@
       "attributes": {
         "label": "LBL_SYSTEM_NOTIFICATION_RECIPIENT_DATE_MODIFIED",
         "type": "datetime",
-        "null": false
+        "null": true
       }
     },
     {
@@ -38772,6 +38798,7 @@
       "attributes": {
         "label": "LBL_SYSTEM_NOTIFICATION_RECIPIENT_IS_READ",
         "type": "bool",
+        "storage": "smallint",
         "null": false,
         "default": 0
       }
@@ -38873,6 +38900,7 @@
       "attributes": {
         "label": "LBL_TAG_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -39060,6 +39088,7 @@
       "attributes": {
         "label": "LBL_TIME_LOGS_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -39746,6 +39775,7 @@
       "attributes": {
         "label": "LBL_UPLOAD_FILE_THUMBNAIL",
         "type": "bool",
+        "storage": "smallint",
         "null": true
       }
     },
@@ -39932,6 +39962,7 @@
       "attributes": {
         "label": "LBL_USERS_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -40253,7 +40284,7 @@
         "label": "LBL_USERS_TYPE",
         "type": "varchar",
         "length": "10",
-        "null": false,
+        "null": true,
         "default": "human"
       }
     },
@@ -40947,6 +40978,7 @@
       "attributes": {
         "label": "LBL_USER_QUALIFICATIONS_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -41086,7 +41118,7 @@
         "label": "LBL_USER_ROLES_DELETED",
         "type": "bool",
         "length": "1",
-        "null": false,
+        "null": true,
         "default": 0,
         "acl": false
       }
@@ -41200,6 +41232,7 @@
       "attributes": {
         "label": "LBL_USER_SKILLS_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -41475,6 +41508,7 @@
       "attributes": {
         "label": "LBL_VOTE_VOTE",
         "type": "bool",
+        "storage": "smallint",
         "null": false
       }
     },
@@ -41531,6 +41565,7 @@
       "attributes": {
         "label": "LBL_WIKI_DELETED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "default": 0,
@@ -41556,6 +41591,7 @@
       "attributes": {
         "label": "LBL_WIKI_LOCKED",
         "type": "bool",
+        "storage": "smallint",
         "length": "1",
         "null": false,
         "fts": true

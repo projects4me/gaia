@@ -8,7 +8,7 @@
 - client_id varchar(36) required
 - client_secret varchar(80) required
 - grant_types varchar(80)
-- kind varchar(10) required
+- kind varchar(10)
 - previous_client_secret varchar(80)
 - previous_secret_expires datetime
 - redirect_uri varchar(2000) required

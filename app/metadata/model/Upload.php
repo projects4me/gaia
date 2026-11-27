@@ -127,6 +127,7 @@ $models['Upload'] = array(
             'name' => 'fileThumbnail',
             'label' => 'LBL_UPLOAD_FILE_THUMBNAIL',
             'type' => 'bool',
+            'storage' => 'smallint',
             'null' => true,
         ),
         'fileDestination' => array(
