@@ -55,6 +55,10 @@ class ModelMetadataParityTest extends TestCase
     private const SEARCH_COLUMN = 'a search column (vector/tsvector) carried as text; introspection reports the type '
         . 'it cannot name as varchar, and the ORM never writes it (generated or ormWrite false)';
 
+    private const STALE_DEFAULT = 'the column predates its metadata default, and migrate sets a default only when it '
+        . 'adds a column, so databases loaded from db/Dump20261118.sql keep the old default. The model sets the value '
+        . 'before every create, so Phalcon never sends DEFAULT for it';
+
     /**
      * Known differences: '<Model>' (the whole model), '<Model>.<aspect>' (the whole aspect) or
      * '<Model>.<aspect>.<field>' => why it is allowed.
@@ -97,6 +101,9 @@ class ModelMetadataParityTest extends TestCase
 
         'Issue.dataTypes.searchEmbedding' => self::SEARCH_COLUMN,
         'Issue.dataTypes.searchVector' => self::SEARCH_COLUMN,
+
+        'Issuestatus.defaults.textColor' => self::STALE_DEFAULT,
+        'User.defaults.type' => self::STALE_DEFAULT,
     );
 
     protected function setUp(): void
