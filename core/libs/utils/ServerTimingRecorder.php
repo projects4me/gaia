@@ -18,6 +18,13 @@ class ServerTimingRecorder
 {
     const SCHEMA = 'schema';
     const DB = 'db';
+    const META = 'meta';
+
+    /** @var int metadata reads served from the cache */
+    private $metaHits = 0;
+
+    /** @var int metadata reads built from the files */
+    private $metaMisses = 0;
 
     /**
      * @var ServerTiming
@@ -83,6 +90,19 @@ class ServerTimingRecorder
         $this->timing->set('boot', microtime(true) - $this->requestStart);
         $this->timing->ensure(self::SCHEMA);
         $this->timing->ensure(self::DB);
+    }
+
+    /**
+     * Records one metadata read that reached the metadata source (not the per-request array).
+     *
+     * @param float $seconds time spent fetching or building it
+     * @param bool $hit whether the cache served it
+     */
+    public function recordMeta($seconds, $hit)
+    {
+        $this->timing->add(self::META, $seconds);
+        $hit ? $this->metaHits++ : $this->metaMisses++;
+        $this->timing->describe(self::META, $this->metaHits . ' hits, ' . $this->metaMisses . ' misses');
     }
 
     /**
