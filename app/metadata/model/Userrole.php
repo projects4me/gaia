@@ -78,7 +78,7 @@ $models['Userrole'] = array(
             'label' => 'LBL_USER_ROLES_DELETED',
             'type' => 'bool',
             'length' => '1',
-            'null' => false,
+            'null' => true,
             'default' => 0,
             'acl' => false
         ),

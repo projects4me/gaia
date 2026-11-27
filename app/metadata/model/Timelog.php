@@ -31,6 +31,7 @@ $models['Timelog'] = array(
             'name' => 'deleted',
             'label' => 'LBL_TIME_LOGS_DELETED',
             'type' => 'bool',
+            'storage' => 'smallint',
             'length' => '1',
             'null' => false,
             'default' => 0,

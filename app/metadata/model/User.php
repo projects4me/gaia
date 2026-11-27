@@ -43,6 +43,7 @@ $models['User'] = array(
             'name' => 'deleted',
             'label' => 'LBL_USERS_DELETED',
             'type' => 'bool',
+            'storage' => 'smallint',
             'length' => '1',
             'null' => false,
             'default' => 0,
@@ -277,7 +278,7 @@ $models['User'] = array(
             'label' => 'LBL_USERS_TYPE',
             'type' => 'varchar',
             'length' => '10',
-            'null' => false,
+            'null' => true,
             'default' => 'human'
         ),
     ),

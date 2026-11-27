@@ -33,13 +33,13 @@ $models['Dashboard'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_DASHBOARD_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'dateModified' => array(
             'name' => 'dateModified',
             'label' => 'LBL_DASHBOARD_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'widgets' => array(
             'name' => 'widgets',
@@ -51,6 +51,7 @@ $models['Dashboard'] = array(
             'name' => 'deleted',
             'label' => 'LBL_DASHBOARD_DELETED',
             'type' => 'bool',
+            'storage' => 'smallint',
             'length' => '1',
             'null' => false,
             'default' => 0,

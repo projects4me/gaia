@@ -74,6 +74,7 @@ $models['Issuewatcher'] = [
             'name' => 'isWatching',
             'label' => 'LBL_ISSUE_WATCHERS_IS_WATCHING',
             'type' => 'bool',
+            'storage' => 'smallint',
             'length' => '1',
             'null' => false,
             'default' => 0,

@@ -65,6 +65,7 @@ $models['Aclcontroller'] = array(
             'name' => 'deleted',
             'label' => 'LBL_ACL_CONTROLLERS_DELETED',
             'type' => 'bool',
+            'storage' => 'smallint',
             'length' => '1',
             'null' => false,
             'default' => 0

@@ -68,6 +68,14 @@ $di->set(
     new metaManager($di)
 );
 
+// As in public/index.php: the meta manager asks the adapter's migration handler how a metadata type is stored
+$di->set(
+    'migrationHandler',
+    function () use ($di) {
+        return (new \Gaia\Db\Factory\MigrationFactory($di, $GLOBALS['settings']['database']['adapter']))->getHandler();
+    }
+);
+
 $di->set(
     'config',
     new \Gaia\Libraries\Config($di)

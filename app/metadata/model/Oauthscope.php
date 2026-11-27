@@ -25,6 +25,7 @@ $models['Oauthscope'] = array(
            'name' => 'is_default',
            'label' => 'LBL_OAUTH_SCOPES_IS_DEFAULT',
            'type' => 'bool',
+           'storage' => 'smallint',
            'length' => '1',
            'null' => true,
            'default' => '0'

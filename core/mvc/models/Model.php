@@ -129,8 +129,9 @@ class Model extends PhalconModel
     {
         $metadata = $this->getMetaData();
 
-        // The ORM introspects the table, so name the columns it never writes (generated or 'ormWrite' => false).
-        // initialize() runs before onConstruct(), so set the table first or the introspection reads the wrong one.
+        // The ORM reads its metadata from metaData() (Gaia's model metadata), keyed by the table, so set the table
+        // first: initialize() runs before onConstruct(). metaData() already lists the columns the ORM never writes
+        // (generated or 'ormWrite' => false); naming them here as well keeps them skipped whatever the metadata source.
         $this->setSource($metadata['tableName']);
         $skipWrite = array_keys(array_merge(
             $metadata[MetaData::MODELS_AUTOMATIC_DEFAULT_INSERT] ?? array(),
@@ -614,6 +615,19 @@ class Model extends PhalconModel
     public function getMetaData()
     {
         return $this->getDI()->get('metaManager')->getModelMeta($this->getModelName());
+    }
+
+    /**
+     * Phalcon's models metadata service calls this instead of introspecting the table (Phalcon 5 honours it when
+     * the method exists), so a request never queries the schema. It returns the ORM entries (MetaData::MODELS_*) of
+     * Gaia's model metadata, the same source the migrations build the schema from; ModelMetadataParityTest keeps
+     * the two in step.
+     *
+     * @return array
+     */
+    public function metaData()
+    {
+        return $this->getDI()->get('metaManager')->getOrmMetaData($this->getModelName());
     }
 
     /**

@@ -5,7 +5,7 @@
 <a id="fields"></a>
 ## Fields
 
-- isNotified bool required
+- isNotified bool
 - projectId varchar(36)
 - relatedId varchar(36)
 - relatedTo varchar(30) required

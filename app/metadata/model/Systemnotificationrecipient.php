@@ -32,6 +32,7 @@ $models['Systemnotificationrecipient'] = [
             'name' => 'isRead',
             'label' => 'LBL_SYSTEM_NOTIFICATION_RECIPIENT_IS_READ',
             'type' => 'bool',
+            'storage' => 'smallint',
             'null' => false,
             'default' => 0
         ],
@@ -67,13 +68,13 @@ $models['Systemnotificationrecipient'] = [
             'name' => 'dateCreated',
             'label' => 'LBL_SYSTEM_NOTIFICATION_RECIPIENT_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false
+            'null' => true
         ],
         'dateModified' => [
             'name' => 'dateModified',
             'label' => 'LBL_SYSTEM_NOTIFICATION_RECIPIENT_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false
+            'null' => true
         ]
     ],
     'indexes' => [

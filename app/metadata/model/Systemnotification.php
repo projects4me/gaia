@@ -19,13 +19,13 @@ $models['Systemnotification'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_SYSTEM_NOTIFICATION_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false
+            'null' => true
         ],
         'dateModified' => [
             'name' => 'dateModified',
             'label' => 'LBL_SYSTEM_NOTIFICATION_DATE_MODIFIED',
             'type' => 'datetime',
-            'null' => false
+            'null' => true
         ],
         'description' => [
             'name' => 'description',

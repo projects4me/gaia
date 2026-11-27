@@ -26,7 +26,7 @@ $models['Savedsearch'] = array(
             'name' => 'dateCreated',
             'label' => 'LBL_SAVED_SEARCHES_DATE_CREATED',
             'type' => 'datetime',
-            'null' => false,
+            'null' => true,
         ),
         'createdUser' => array(
             'name' => 'createdUser',
@@ -48,6 +48,7 @@ $models['Savedsearch'] = array(
             'name' => 'deleted',
             'label' => 'LBL_SAVED_SEARCHES_DELETED',
             'type' => 'bool',
+            'storage' => 'smallint',
             'length' => '1',
             'null' => false,
             'default' => 0,
@@ -57,6 +58,7 @@ $models['Savedsearch'] = array(
             'name' => 'public',
             'label' => 'LBL_SAVED_SEARCHES_PUBLIC',
             'type' => 'bool',
+            'storage' => 'smallint',
             'null' => true,
         ),
         'relatedTo' => array(

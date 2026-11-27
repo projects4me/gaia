@@ -65,7 +65,7 @@ $models['Oauthclient'] = array(
            'label' => 'LBL_OAUTH_CLIENTS_KIND',
            'type' => 'varchar',
            'length' => '10',
-           'null' => false,
+           'null' => true,
            'default' => 'app',
        ),
        // A rotated service secret's previous hash, still accepted until

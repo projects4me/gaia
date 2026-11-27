@@ -67,6 +67,7 @@ $models['Userqualification'] = array(
             'name' => 'deleted',
             'label' => 'LBL_USER_QUALIFICATIONS_DELETED',
             'type' => 'bool',
+            'storage' => 'smallint',
             'length' => '1',
             'null' => false,
             'default' => 0,

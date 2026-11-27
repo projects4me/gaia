@@ -106,11 +106,10 @@ class Manager
             MetaData::MODELS_DATA_TYPES => $fields['type'],
 
             // The columns that have numeric data types
-            MetaData::MODELS_DATA_TYPES_NUMERIC => array(
-            ),
+            MetaData::MODELS_DATA_TYPES_NUMERIC => $fields['numeric'],
 
-            // The identity column, use boolean false if the model doesn't have
-            // an identity column
+            // The identity (auto-increment) column, or false when the table has none. A GUID primary key is not
+            // an identity column: the ORM would read it back from a sequence after the INSERT.
             MetaData::MODELS_IDENTITY_COLUMN => $fields['id'],
 
             // How every column must be bound/casted
@@ -122,12 +121,11 @@ class Manager
             // Fields that must be ignored from UPDATE SQL statements
             MetaData::MODELS_AUTOMATIC_DEFAULT_UPDATE => $fields['skipWrite'],
 
-            // Default values for columns
-            MetaData::MODELS_DEFAULT_VALUES => array(),//$fields['default'],
+            // The columns the database fills when an INSERT leaves them out, with their default
+            MetaData::MODELS_DEFAULT_VALUES => $fields['default'],
 
-            // Fields that allow empty strings
-            MetaData::MODELS_EMPTY_STRING_VALUES => array(
-            ),
+            // Fields that allow empty strings on a not-null column; none, as with the schema introspection
+            MetaData::MODELS_EMPTY_STRING_VALUES => array(),
 
             'fields' => (isset($metadata['fields']) ? $metadata['fields'] : array()),
 
@@ -211,6 +209,7 @@ class Manager
             'type' => array(),
             'bind' => array(),
             'skipWrite' => array(),
+            'numeric' => array(),
             'id' => false,
         );
         // Routes without model metadata (e.g. Issueplanning) have no table and no fields
@@ -223,21 +222,41 @@ class Manager
             // Sort out the primary and non primary fields
             if(isset($metadata['indexes'][$field]) && $metadata['indexes'][$field] == 'primary') {
                 $data['primary'][] = $field;
-                $data['id'] = $field;
             } else {
                 $data['nonPrimary'][] = $field;
             }
 
+            // An auto-increment column is the identity column; the database fills it from its sequence, and
+            // PostgreSQL makes it NOT NULL (SERIAL) even when the metadata allows null
+            $autoIncrement = $this->isAutoIncrement($properties);
+            if ($autoIncrement) {
+                $data['id'] = $field;
+            }
+
             // Set if any field can be nul
-            if (!$properties['null']) {
+            if (!$properties['null'] || $autoIncrement) {
                 $data['notNull'][] = $field;
             }
 
+            // The ORM types, binds and casts a field as the column is stored (getStoredType())
+            $storedType = $this->getStoredType($properties);
+
             // set the field type
-            $data['type'][$field] = $this->getFieldType($properties['type']);
+            $data['type'][$field] = $this->getFieldType($storedType);
 
             // set the field data bind type
-            $data['bind'][$field] = $this->getBindType($properties['type']);
+            $data['bind'][$field] = $this->getBindType($storedType);
+
+            if ($this->isNumericType($storedType)) {
+                $data['numeric'][$field] = true;
+            }
+
+            // The columns the database fills when an INSERT leaves them out: those with a default, and the nullable
+            // ones (default null). The ORM inserts DEFAULT for them, so a not-null column with a default is not
+            // required on create. The sequence fills the identity column.
+            if (!$autoIncrement && (isset($properties['default']) || $properties['null'])) {
+                $data['default'][$field] = isset($properties['default']) ? $properties['default'] : null;
+            }
 
             // The ORM never writes a generated column (e.g. a search tsvector), which the database computes, nor a
             // column flagged 'ormWrite' => false, which has its own writer (e.g. a search embedding)
@@ -245,15 +264,93 @@ class Manager
                 || (isset($properties['ormWrite']) && $properties['ormWrite'] === false)) {
                 $data['skipWrite'][$field] = true;
             }
-
-            // if default value is set in metadata then set it
-            if (isset($properties['default'])) {
-                //$data['bind'][$field] = $properties['default'];
-                $data['default'][$field] = $properties['default'];
-            }
-
         }
         return $data;
+    }
+
+    /**
+     * This function tells whether a metadata field is an auto-increment (sequence-filled) column.
+     *
+     * @param  array $properties Field metadata
+     * @return bool
+     */
+    public function isAutoIncrement(array $properties)
+    {
+        if (!isset($properties['autoIncrement'])) {
+            return false;
+        }
+
+        return filter_var($properties['autoIncrement'], FILTER_VALIDATE_BOOLEAN);
+    }
+
+    /**
+     * This function tells whether a metadata type is stored in a numeric column (the ORM casts these values).
+     *
+     * @param  string $type
+     * @return bool
+     */
+    public function isNumericType($type)
+    {
+        return in_array($type, array('int', 'smallint', 'bigInt', 'decimal', 'float'), true);
+    }
+
+    /**
+     * This function returns the type a field's column is stored as: its 'storage' type when the metadata names one,
+     * else its 'type'. The legacy tables loaded from the original dump keep some 'bool' fields in smallint columns
+     * ('storage' => 'smallint'); the API still treats them as booleans, while the ORM and the migrations use the
+     * stored type so a fresh database and one loaded from the dump agree.
+     *
+     * @param  array $properties Field metadata
+     * @return string
+     */
+    public function getStoredType(array $properties)
+    {
+        return isset($properties['storage']) ? $properties['storage'] : $properties['type'];
+    }
+
+    /**
+     * This function returns the Phalcon column type a metadata type is stored as. The database adapter's migration
+     * handler decides it (e.g. PostgreSQL stores 'datetime' as TIMESTAMP), so the ORM sees the type the migration
+     * created; without a handler it is the plain metadata mapping.
+     *
+     * @param  string $type
+     * @return integer
+     */
+    public function getColumnType($type)
+    {
+        $fieldType = $this->getFieldType($type);
+        if (!$this->di->has('migrationHandler')) {
+            return $fieldType;
+        }
+
+        return $this->di->get('migrationHandler')->normalizeColumnType($type, $fieldType);
+    }
+
+    /**
+     * This function returns the metadata Phalcon's ORM reads for a model (the MetaData::MODELS_* entries), in place
+     * of introspecting its table. The data types are those of the columns as stored (getColumnType()); they are
+     * resolved here rather than in getModelMeta() because the model metadata is first read while the config loads,
+     * before the migration handler is registered.
+     *
+     * @param  string $model
+     * @return array
+     */
+    public function getOrmMetaData($model)
+    {
+        $modelMeta = $this->getModelMeta($model);
+
+        $ormMeta = array_filter(
+            $modelMeta,
+            function ($key) {
+                return is_int($key);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
+        foreach ($modelMeta['fields'] as $field => $properties) {
+            $ormMeta[MetaData::MODELS_DATA_TYPES][$field] = $this->getColumnType($this->getStoredType($properties));
+        }
+
+        return $ormMeta;
     }
 
     /**
@@ -269,6 +366,9 @@ class Manager
         switch ($type) {
             case 'int':
                 $dbType = Column::TYPE_INTEGER;
+                break;
+            case 'smallint':
+                $dbType = Column::TYPE_SMALLINTEGER;
                 break;
             case 'date':
                 $dbType = Column::TYPE_DATE;
@@ -340,6 +440,7 @@ class Manager
         $bindType = '';
         switch ($type) {
             case 'int':
+            case 'smallint':
                 $bindType = Column::BIND_PARAM_INT;
                 break;
             case 'date':
@@ -357,8 +458,12 @@ class Manager
             case 'char':
                 $bindType = Column::BIND_PARAM_STR;
                 break;
+            // Text columns are bound as strings, as the schema introspection binds them
             case 'text':
-                $bindType = Column::BIND_PARAM_BLOB;
+            case 'tinytext':
+            case 'mediumtext':
+            case 'longtext':
+                $bindType = Column::BIND_PARAM_STR;
                 break;
             case 'float':
                 $bindType = Column::BIND_PARAM_DECIMAL;
