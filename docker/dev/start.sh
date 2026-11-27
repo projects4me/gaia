@@ -32,6 +32,8 @@ fi
 
 # Anything created while running as root must still be writable for Apache (agaia-4772).
 chown -R www-data:www-data /var/www/html/logs
+mkdir -p /var/www/html/cache/data
+chown -R www-data:www-data /var/www/html/cache
 
 # Start Apache2 in foreground
 echo "Starting Apache2..."

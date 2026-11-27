@@ -190,6 +190,14 @@ try {
         $GLOBALS['serverTiming'] = $serverTiming;
     }
 
+    // Gaia's cache, built on first use from config/cache.php (a NullCache unless CACHE_ADAPTER is set)
+    $di->setShared('cache', function () {
+        return \Gaia\Libraries\Cache\CacheFactory::fromSettings(
+            $GLOBALS['settings']['cache'] ?? null,
+            $GLOBALS['logger'] ?? null
+        );
+    });
+
     $di->set(
         'dialectFactory',
         new \Gaia\Db\Factory\DialectFactory($di, $GLOBALS['settings']['database']['adapter'])
