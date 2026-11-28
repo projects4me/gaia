@@ -7391,6 +7391,44 @@
       }
     },
     {
+      "id": "case:acl/acl-members-tag-merge-non-member-denied",
+      "type": "case",
+      "key": "acl/acl-members-tag-merge-non-member-denied",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/tag/{otherProjectTagId}",
+        "resource": "tag",
+        "enabled": true,
+        "source": "acl-action",
+        "placeholders": [
+          "otherProjectTagId",
+          "tagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:acl/acl-members-tag-merge-other-project-target-rejected",
+      "type": "case",
+      "key": "acl/acl-members-tag-merge-other-project-target-rejected",
+      "attributes": {
+        "catalog": "acl",
+        "file": "tools/api-tester/apis/acl.json",
+        "method": "PATCH",
+        "path": "/api/v1/tag/{runtime.membersTagId}",
+        "resource": "tag",
+        "enabled": true,
+        "source": "acl-action",
+        "placeholders": [
+          "otherProjectTagId",
+          "runtime.membersTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:acl/acl-members-tagged-create-member-allowed",
       "type": "case",
       "key": "acl/acl-members-tagged-create-member-allowed",
@@ -16611,6 +16649,61 @@
       }
     },
     {
+      "id": "case:client/client-tag-delete-issue-filter-empty",
+      "type": "case",
+      "key": "client/client-tag-delete-issue-filter-empty",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/issue",
+        "resource": "issue",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "runId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-delete-removes-taggings",
+      "type": "case",
+      "key": "client/client-tag-delete-removes-taggings",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.mergeTargetTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-delete-with-records",
+      "type": "case",
+      "key": "client/client-tag-delete-with-records",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "DELETE",
+        "path": "/api/v1/tag/{runtime.mergeTargetTagId}",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.mergeTargetTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
       "id": "case:client/client-tag-list-by-project",
       "type": "case",
       "key": "client/client-tag-list-by-project",
@@ -16627,6 +16720,330 @@
           "projectId",
           "runtime.clientTagId",
           "tagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-create-source",
+      "type": "case",
+      "key": "client/client-tag-merge-create-source",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "runId"
+        ],
+        "stores": [
+          "runtime.mergeSourceTagId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-create-target",
+      "type": "case",
+      "key": "client/client-tag-merge-create-target",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "projectId",
+          "runId"
+        ],
+        "stores": [
+          "runtime.mergeTargetTagId"
+        ]
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-into-itself-rejected",
+      "type": "case",
+      "key": "client/client-tag-merge-into-itself-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/tag/{runtime.mergeSourceTagId}",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.mergeSourceTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-into-missing-tag-rejected",
+      "type": "case",
+      "key": "client/client-tag-merge-into-missing-tag-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/tag/{runtime.mergeSourceTagId}",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.mergeSourceTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-into-other-project-rejected",
+      "type": "case",
+      "key": "client/client-tag-merge-into-other-project-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/tag/{runtime.mergeSourceTagId}",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "otherProjectTagId",
+          "runtime.mergeSourceTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-overlapping-records",
+      "type": "case",
+      "key": "client/client-tag-merge-overlapping-records",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/tag/{runtime.mergeSourceTagId}",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.mergeSourceTagId",
+          "runtime.mergeTargetTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-repeat-source-gone",
+      "type": "case",
+      "key": "client/client-tag-merge-repeat-source-gone",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/tag/{runtime.mergeSourceTagId}",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.mergeSourceTagId",
+          "runtime.mergeTargetTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-source-gone",
+      "type": "case",
+      "key": "client/client-tag-merge-source-gone",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/tag",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.mergeSourceTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-source-has-no-records",
+      "type": "case",
+      "key": "client/client-tag-merge-source-has-no-records",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.mergeSourceTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-source-on-backlog-issue",
+      "type": "case",
+      "key": "client/client-tag-merge-source-on-backlog-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "backlogIssueId",
+          "runtime.mergeSourceTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-source-on-issue",
+      "type": "case",
+      "key": "client/client-tag-merge-source-on-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "runtime.mergeSourceTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-source-on-thread",
+      "type": "case",
+      "key": "client/client-tag-merge-source-on-thread",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "conversationroomId",
+          "runtime.mergeSourceTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-target-has-all-records",
+      "type": "case",
+      "key": "client/client-tag-merge-target-has-all-records",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runtime.mergeTargetTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-target-on-issue",
+      "type": "case",
+      "key": "client/client-tag-merge-target-on-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "POST",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "runtime.mergeTargetTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-merge-target-once-on-shared-issue",
+      "type": "case",
+      "key": "client/client-tag-merge-target-once-on-shared-issue",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "GET",
+        "path": "/api/v1/tagged",
+        "resource": "tagged",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "issueId",
+          "runtime.mergeTargetTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-rename-to-free-name",
+      "type": "case",
+      "key": "client/client-tag-rename-to-free-name",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/tag/{runtime.mergeTargetTagId}",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.mergeTargetTagId"
+        ],
+        "stores": []
+      }
+    },
+    {
+      "id": "case:client/client-tag-rename-to-taken-name-rejected",
+      "type": "case",
+      "key": "client/client-tag-rename-to-taken-name-rejected",
+      "attributes": {
+        "catalog": "client",
+        "file": "tools/api-tester/apis/client.json",
+        "method": "PATCH",
+        "path": "/api/v1/tag/{runtime.mergeSourceTagId}",
+        "resource": "tag",
+        "enabled": true,
+        "source": null,
+        "placeholders": [
+          "runId",
+          "runtime.mergeSourceTagId"
         ],
         "stores": []
       }
@@ -65942,6 +66359,86 @@
       "to": "fixture:tagId"
     },
     {
+      "from": "case:acl/acl-members-tag-merge-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:errorEqual"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-non-member-denied",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-non-member-denied",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-non-member-denied",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/tag/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-non-member-denied",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectTagId"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-non-member-denied",
+      "type": "uses_fixture",
+      "to": "fixture:tagId"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-other-project-target-rejected",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-other-project-target-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-other-project-target-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-other-project-target-rejected",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-other-project-target-rejected",
+      "type": "depends_on",
+      "to": "case:acl/acl-members-tag-create-member-allowed"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-other-project-target-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/tag/{id}"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-other-project-target-rejected",
+      "type": "runs_as",
+      "to": "profile:aclMembers"
+    },
+    {
+      "from": "case:acl/acl-members-tag-merge-other-project-target-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectTagId"
+    },
+    {
       "from": "case:acl/acl-members-tagged-create-member-allowed",
       "type": "asserts",
       "to": "assertion:attributesEqual"
@@ -82802,6 +83299,106 @@
       "to": "profile:default"
     },
     {
+      "from": "case:client/client-tag-delete-issue-filter-empty",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-delete-issue-filter-empty",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-delete-issue-filter-empty",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-delete-issue-filter-empty",
+      "type": "covers",
+      "to": "controller:issue"
+    },
+    {
+      "from": "case:client/client-tag-delete-issue-filter-empty",
+      "type": "exercises",
+      "to": "route:GET /api/v1/issue"
+    },
+    {
+      "from": "case:client/client-tag-delete-issue-filter-empty",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-delete-issue-filter-empty",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-tag-delete-removes-taggings",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-delete-removes-taggings",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-delete-removes-taggings",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-delete-removes-taggings",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:client/client-tag-delete-removes-taggings",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-target"
+    },
+    {
+      "from": "case:client/client-tag-delete-removes-taggings",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tagged"
+    },
+    {
+      "from": "case:client/client-tag-delete-removes-taggings",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-delete-with-records",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-delete-with-records",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-delete-with-records",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-delete-with-records",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-target"
+    },
+    {
+      "from": "case:client/client-tag-delete-with-records",
+      "type": "exercises",
+      "to": "route:DELETE /api/v1/tag/{id}"
+    },
+    {
+      "from": "case:client/client-tag-delete-with-records",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
       "from": "case:client/client-tag-list-by-project",
       "type": "asserts",
       "to": "assertion:idsExcludes"
@@ -82855,6 +83452,626 @@
       "from": "case:client/client-tag-list-by-project",
       "type": "uses_fixture",
       "to": "fixture:tagId"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-source",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-source",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-source",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-source",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-source",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tag"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-source",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-source",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-target",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-target",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-target",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-target",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-target",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tag"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-target",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-create-target",
+      "type": "uses_fixture",
+      "to": "fixture:projectId"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-itself-rejected",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-itself-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-itself-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-itself-rejected",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-itself-rejected",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-source"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-itself-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/tag/{id}"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-itself-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-missing-tag-rejected",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-missing-tag-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-missing-tag-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-missing-tag-rejected",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-missing-tag-rejected",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-source"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-missing-tag-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/tag/{id}"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-missing-tag-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-other-project-rejected",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-other-project-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-other-project-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-other-project-rejected",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-other-project-rejected",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-source"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-other-project-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/tag/{id}"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-other-project-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-into-other-project-rejected",
+      "type": "uses_fixture",
+      "to": "fixture:otherProjectTagId"
+    },
+    {
+      "from": "case:client/client-tag-merge-overlapping-records",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-tag-merge-overlapping-records",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-merge-overlapping-records",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-overlapping-records",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-overlapping-records",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-merge-overlapping-records",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-source"
+    },
+    {
+      "from": "case:client/client-tag-merge-overlapping-records",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-target"
+    },
+    {
+      "from": "case:client/client-tag-merge-overlapping-records",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/tag/{id}"
+    },
+    {
+      "from": "case:client/client-tag-merge-overlapping-records",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-repeat-source-gone",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-merge-repeat-source-gone",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-repeat-source-gone",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-repeat-source-gone",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-merge-repeat-source-gone",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-source"
+    },
+    {
+      "from": "case:client/client-tag-merge-repeat-source-gone",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-target"
+    },
+    {
+      "from": "case:client/client-tag-merge-repeat-source-gone",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/tag/{id}"
+    },
+    {
+      "from": "case:client/client-tag-merge-repeat-source-gone",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-gone",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-gone",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-gone",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-gone",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-gone",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-source"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-gone",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tag"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-gone",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-has-no-records",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-has-no-records",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-has-no-records",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-has-no-records",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-has-no-records",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-source"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-has-no-records",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-has-no-records",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-backlog-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-backlog-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-backlog-issue",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-backlog-issue",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-source"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-backlog-issue",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-backlog-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-backlog-issue",
+      "type": "uses_fixture",
+      "to": "fixture:backlogIssueId"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-issue",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-issue",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-source"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-issue",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-thread",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-thread",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-thread",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-thread",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-source"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-thread",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-thread",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-source-on-thread",
+      "type": "uses_fixture",
+      "to": "fixture:conversationroomId"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-has-all-records",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-has-all-records",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-has-all-records",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-has-all-records",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-has-all-records",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-target"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-has-all-records",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-has-all-records",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-on-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-on-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-on-issue",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-on-issue",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-target"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-on-issue",
+      "type": "exercises",
+      "to": "route:POST /api/v1/tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-on-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-on-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-once-on-shared-issue",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-once-on-shared-issue",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-once-on-shared-issue",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-once-on-shared-issue",
+      "type": "covers",
+      "to": "controller:tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-once-on-shared-issue",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-target"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-once-on-shared-issue",
+      "type": "exercises",
+      "to": "route:GET /api/v1/tagged"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-once-on-shared-issue",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-merge-target-once-on-shared-issue",
+      "type": "uses_fixture",
+      "to": "fixture:issueId"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-free-name",
+      "type": "asserts",
+      "to": "assertion:attributesEqual"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-free-name",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-free-name",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-free-name",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-free-name",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-target"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-free-name",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/tag/{id}"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-free-name",
+      "type": "runs_as",
+      "to": "profile:default"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-taken-name-rejected",
+      "type": "asserts",
+      "to": "assertion:jsonEqual"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-taken-name-rejected",
+      "type": "asserts",
+      "to": "assertion:shape"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-taken-name-rejected",
+      "type": "asserts",
+      "to": "assertion:status"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-taken-name-rejected",
+      "type": "covers",
+      "to": "controller:tag"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-taken-name-rejected",
+      "type": "depends_on",
+      "to": "case:client/client-tag-merge-create-source"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-taken-name-rejected",
+      "type": "exercises",
+      "to": "route:PATCH /api/v1/tag/{id}"
+    },
+    {
+      "from": "case:client/client-tag-rename-to-taken-name-rejected",
+      "type": "runs_as",
+      "to": "profile:default"
     },
     {
       "from": "case:client/client-tagged-create-conversationroom",

@@ -54,6 +54,22 @@ class Tags
     }
 
     /**
+     * The live tag with the id, or null when it is unknown or deleted.
+     *
+     * @param  string $tagId
+     * @return Tag|null
+     */
+    public function findLive($tagId)
+    {
+        $tag = Tag::findFirst([
+            'conditions' => 'id = :id: AND deleted = :deleted:',
+            'bind' => ['id' => (string) $tagId, 'deleted' => 0],
+        ]);
+
+        return $tag ?: null;
+    }
+
+    /**
      * The project of a live tag, or null when the tag is unknown, deleted or has no project.
      *
      * @param  string $tagId

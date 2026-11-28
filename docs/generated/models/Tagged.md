@@ -27,4 +27,4 @@
 - controller: Gaia\MVC\REST\Controllers\TaggedController
 - routes: DELETE /api/v1/tagged, DELETE /api/v1/tagged/{id}, GET /api/v1/tagged, GET /api/v1/tagged/{id}, GET /api/v1/tagged/{id}/{relation}, OPTIONS /api/v1/tagged, POST /api/v1/tagged
 - components: -
-- cases: 13 (acl 5, backend 4, client 4); gaia-dev cases tagged
+- cases: 21 (acl 5, backend 4, client 12); gaia-dev cases tagged

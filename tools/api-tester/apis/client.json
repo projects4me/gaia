@@ -15877,6 +15877,439 @@
       }
     },
     {
+      "id": "client-tag-merge-create-source",
+      "method": "POST",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "attributes": {
+            "projectId": "{projectId}",
+            "tag": "Merge Source {runId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.mergeSourceTagId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "tag": "Merge Source {runId}"
+        }
+      }
+    },
+    {
+      "id": "client-tag-merge-create-target",
+      "method": "POST",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "attributes": {
+            "projectId": "{projectId}",
+            "tag": "Merge Target {runId}"
+          }
+        }
+      },
+      "store": {
+        "runtime.mergeTargetTagId": "data.id"
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "tag": "Merge Target {runId}"
+        }
+      }
+    },
+    {
+      "id": "client-tag-merge-source-on-issue",
+      "method": "POST",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tagged",
+          "attributes": {
+            "tagId": "{runtime.mergeSourceTagId}",
+            "relatedTo": "issue",
+            "relatedId": "{issueId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "client-tag-merge-source-on-backlog-issue",
+      "method": "POST",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tagged",
+          "attributes": {
+            "tagId": "{runtime.mergeSourceTagId}",
+            "relatedTo": "issue",
+            "relatedId": "{backlogIssueId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "client-tag-merge-source-on-thread",
+      "method": "POST",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tagged",
+          "attributes": {
+            "tagId": "{runtime.mergeSourceTagId}",
+            "relatedTo": "conversationroom",
+            "relatedId": "{conversationroomId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "client-tag-merge-target-on-issue",
+      "method": "POST",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tagged",
+          "attributes": {
+            "tagId": "{runtime.mergeTargetTagId}",
+            "relatedTo": "issue",
+            "relatedId": "{issueId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 201,
+        "shape": "jsonapi.resource"
+      }
+    },
+    {
+      "id": "client-tag-rename-to-taken-name-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/tag/{runtime.mergeSourceTagId}",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "id": "{runtime.mergeSourceTagId}",
+          "attributes": {
+            "tag": "merge target {runId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "The project already has a tag with this name."
+        }
+      }
+    },
+    {
+      "id": "client-tag-merge-into-itself-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/tag/{runtime.mergeSourceTagId}",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "id": "{runtime.mergeSourceTagId}",
+          "attributes": {
+            "mergeInto": "{runtime.mergeSourceTagId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "A tag can't be merged into itself."
+        }
+      }
+    },
+    {
+      "id": "client-tag-merge-into-missing-tag-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/tag/{runtime.mergeSourceTagId}",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "id": "{runtime.mergeSourceTagId}",
+          "attributes": {
+            "mergeInto": "no-such-tag-{runId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "The tag to merge into doesn't exist."
+        }
+      }
+    },
+    {
+      "id": "client-tag-merge-into-other-project-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/tag/{runtime.mergeSourceTagId}",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "id": "{runtime.mergeSourceTagId}",
+          "attributes": {
+            "mergeInto": "{otherProjectTagId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "A tag can only be merged into a tag of the same project."
+        }
+      }
+    },
+    {
+      "id": "client-tag-merge-overlapping-records",
+      "method": "PATCH",
+      "path": "/api/v1/tag/{runtime.mergeSourceTagId}",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "id": "{runtime.mergeSourceTagId}",
+          "attributes": {
+            "mergeInto": "{runtime.mergeTargetTagId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "jsonEqual": {
+          "data.id": "{runtime.mergeTargetTagId}"
+        },
+        "attributesEqual": {
+          "tag": "Merge Target {runId}"
+        }
+      }
+    },
+    {
+      "id": "client-tag-merge-repeat-source-gone",
+      "method": "PATCH",
+      "path": "/api/v1/tag/{runtime.mergeSourceTagId}",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "id": "{runtime.mergeSourceTagId}",
+          "attributes": {
+            "mergeInto": "{runtime.mergeTargetTagId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 404,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "The tag doesn't exist."
+        }
+      },
+      "note": "agaia-5050: merging the same tag again moves nothing"
+    },
+    {
+      "id": "client-tag-merge-target-once-on-shared-issue",
+      "method": "GET",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": true,
+      "query": {
+        "query": "((Tagged.tagId : {runtime.mergeTargetTagId}) AND (Tagged.relatedTo : issue) AND (Tagged.relatedId : {issueId}))",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "meta.count": 1
+        }
+      },
+      "note": "agaia-5050: an issue that had both tags keeps the target once"
+    },
+    {
+      "id": "client-tag-merge-target-has-all-records",
+      "method": "GET",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": true,
+      "query": {
+        "query": "((Tagged.tagId : {runtime.mergeTargetTagId}))",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "meta.count": 3
+        }
+      },
+      "note": "agaia-5050: issue, backlog issue and thread"
+    },
+    {
+      "id": "client-tag-merge-source-has-no-records",
+      "method": "GET",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": true,
+      "query": {
+        "query": "((Tagged.tagId : {runtime.mergeSourceTagId}))",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "meta.count": 0
+        }
+      }
+    },
+    {
+      "id": "client-tag-merge-source-gone",
+      "method": "GET",
+      "path": "/api/v1/tag",
+      "resource": "tag",
+      "auth": true,
+      "query": {
+        "query": "((Tag.id : {runtime.mergeSourceTagId}))",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "meta.count": 0
+        }
+      }
+    },
+    {
+      "id": "client-tag-rename-to-free-name",
+      "method": "PATCH",
+      "path": "/api/v1/tag/{runtime.mergeTargetTagId}",
+      "resource": "tag",
+      "auth": true,
+      "body": {
+        "data": {
+          "type": "tag",
+          "id": "{runtime.mergeTargetTagId}",
+          "attributes": {
+            "tag": "Merge Renamed {runId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.resource",
+        "attributesEqual": {
+          "tag": "Merge Renamed {runId}"
+        }
+      }
+    },
+    {
+      "id": "client-tag-delete-with-records",
+      "method": "DELETE",
+      "path": "/api/v1/tag/{runtime.mergeTargetTagId}",
+      "resource": "tag",
+      "auth": true,
+      "expects": {
+        "status": [
+          200,
+          204
+        ],
+        "shape": "json"
+      }
+    },
+    {
+      "id": "client-tag-delete-removes-taggings",
+      "method": "GET",
+      "path": "/api/v1/tagged",
+      "resource": "tagged",
+      "auth": true,
+      "query": {
+        "query": "((Tagged.tagId : {runtime.mergeTargetTagId}))",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "meta.count": 0
+        }
+      },
+      "note": "agaia-5050: the deleted tag is gone from the issues and the thread"
+    },
+    {
+      "id": "client-tag-delete-issue-filter-empty",
+      "method": "GET",
+      "path": "/api/v1/issue",
+      "resource": "issue",
+      "auth": true,
+      "query": {
+        "query": "((Issue.projectId : {projectId}) AND (tag.tag : 'Merge Renamed {runId}'))",
+        "rels": "tag",
+        "limit": 25,
+        "page": 1
+      },
+      "expects": {
+        "status": 200,
+        "shape": "jsonapi.collection",
+        "jsonEqual": {
+          "meta.count": 0
+        }
+      }
+    },
+    {
       "id": "client-issue-get-with-tag",
       "method": "GET",
       "path": "/api/v1/issue/{issueId}",
