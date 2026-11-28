@@ -109,12 +109,12 @@ class ScaffoldActionTest extends TestCase
 
     public function testTheCheckReportsAScaffoldedActionWithoutCases()
     {
-        $spec = new ActionSpec('Tag', 'patch', []);
+        $spec = new ActionSpec('Badge', 'patch', []);
         $root = $this->scratchRoot();
         file_put_contents(
             $root . '/' . $spec->controllerPath(),
             "<?php
-class TagController
+class BadgeController
 {
 " . (new ActionRenderer())->method($spec) . "}
 "
@@ -122,8 +122,8 @@ class TagController
         $problems = implode("
 ", (new ActionCheck($root, $this->graph()))->problems());
 
-        $this->assertStringContainsString('TagController::patchAction: no enabled acl case for PATCH on tag', $problems);
-        $this->assertStringContainsString('TagController::patchAction: no enabled client case for PATCH on tag', $problems);
+        $this->assertStringContainsString('BadgeController::patchAction: no enabled acl case for PATCH on badge', $problems);
+        $this->assertStringContainsString('BadgeController::patchAction: no enabled client case for PATCH on badge', $problems);
         $this->assertStringNotContainsString('route', $problems);
     }
 

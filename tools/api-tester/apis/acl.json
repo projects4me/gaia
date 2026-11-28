@@ -3862,6 +3862,52 @@
       "source": "acl-group"
     },
     {
+      "id": "acl-members-tag-merge-other-project-target-rejected",
+      "method": "PATCH",
+      "path": "/api/v1/tag/{runtime.membersTagId}",
+      "resource": "tag",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "tag",
+          "id": "{runtime.membersTagId}",
+          "attributes": {
+            "mergeInto": "{otherProjectTagId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 422,
+        "shape": "error",
+        "jsonEqual": {
+          "messages.0": "A tag can only be merged into a tag of the same project."
+        }
+      },
+      "source": "acl-action"
+    },
+    {
+      "id": "acl-members-tag-merge-non-member-denied",
+      "method": "PATCH",
+      "path": "/api/v1/tag/{otherProjectTagId}",
+      "resource": "tag",
+      "auth": "aclMembers",
+      "body": {
+        "data": {
+          "type": "tag",
+          "id": "{otherProjectTagId}",
+          "attributes": {
+            "mergeInto": "{tagId}"
+          }
+        }
+      },
+      "expects": {
+        "status": 403,
+        "shape": "error",
+        "errorEqual": "Access Denied"
+      },
+      "source": "acl-action"
+    },
+    {
       "id": "acl-members-tag-create-non-member-denied",
       "method": "POST",
       "path": "/api/v1/tag",

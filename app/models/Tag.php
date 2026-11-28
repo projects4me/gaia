@@ -7,6 +7,8 @@
 namespace Gaia\MVC\Models;
 
 use Gaia\Core\MVC\Models\Model;
+use Gaia\Libraries\Tags\TagLinks;
+use Gaia\Libraries\Utils\TransactionScope;
 
 /**
  * Tag Model
@@ -18,5 +20,31 @@ use Gaia\Core\MVC\Models\Model;
  */
 class Tag extends Model
 {
+    /**
+     * On a delete, remove the tag from its records in the same transaction,
+     * so no record keeps a link to a deleted tag (Tags D-003). A save inside
+     * a caller's transaction joins it.
+     *
+     * @return bool
+     * @throws \Throwable
+     */
+    public function save(): bool
+    {
+        if (empty($this->isDeleting)) {
+            return parent::save();
+        }
 
+        $work = function () {
+            return parent::save() && (new TagLinks())->removeAll($this->id);
+        };
+
+        $connection = $this->getWriteConnection();
+        if ($connection->isUnderTransaction()) {
+            return $work();
+        }
+
+        return (new TransactionScope($connection))->run($work, function ($saved) {
+            return $saved;
+        });
+    }
 }
